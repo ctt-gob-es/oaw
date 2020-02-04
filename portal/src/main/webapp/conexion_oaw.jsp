@@ -45,6 +45,7 @@
         String type = "url";
         String confirm = "false";
         String complexity ="";
+        String fileName;
 
         private final List<String> errores;
 
@@ -76,12 +77,14 @@
                     } else {
                         // Si no es campo de formulario es el fichero
                         codigo = new String(item.get());
+                        fileName = item.getName();
+                        
                     }
                 }
             } catch (FileUploadException fue) {
             }
 
-            // TODO: Controlar el punto del flujo en el que estamos (request, select_historico, confirm_request,...)
+            // Controlar el punto del flujo en el que estamos (request, select_historico, confirm_request,...)
             this.errores = new ArrayList<String>();
             validateRequest();
         }
@@ -94,6 +97,8 @@
                 this.urls = item.getString();
             } else if (paramName.equalsIgnoreCase("content")) {
                 this.codigo = item.getString();
+                //Save filename
+                this.fileName = item.getName();
             } else if (paramName.equalsIgnoreCase("correo")) {
                 this.correo = item.getString();
             } else if (paramName.equalsIgnoreCase("profundidad")) {
@@ -160,8 +165,8 @@
             final URLCodec codec = new URLCodec();
             try {
                 final String encodedCodigo = codec.encode(codigo);
-                                               
-                final String postRequest = String.format("content=%s&url=%s&correo=%s&complexity=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s&type=%s",
+                //Save filename
+                final String postRequest = String.format("content=%s&url=%s&correo=%s&complexity=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s&type=%s&filename=%s",
                         encodedCodigo != null ? encodedCodigo : "",
                         url != null ? url : "",
                         correo,
@@ -173,7 +178,8 @@
                         analysisToDelete,
                         nobroken,
                         urls,
-                        type
+                        type,
+                        fileName
                 );
                 return postRequest;
             } catch (Exception e) {

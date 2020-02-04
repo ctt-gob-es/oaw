@@ -208,7 +208,7 @@ public final class BasicServiceExport {
 	 * @param reportFile the report file
 	 * @return the string
 	 */
-	public static String compressReportWithCode(final String reportFile) {
+	public static String compressReportWithCode(final String reportFile, final boolean isContentAnalysis, final String filename) {
 		final String reportCompressFile;
 		if (reportFile.endsWith(".pdf")) {
 			reportCompressFile = reportFile.substring(0, reportFile.length() - 4) + ".zip";
@@ -226,7 +226,9 @@ public final class BasicServiceExport {
 			zos.closeEntry();
 			try {
 				File parentFile = new File(reportFile).getParentFile();
-				zipFile(new File(parentFile + "/paginas/"), "paginas", zos);
+				zipFile(new File(parentFile + "/codigo_fuente.zip"), "codigo_fuente.zip", zos);
+				// PENDING (disable) wcagem-report.json
+//				zipFile(new File(parentFile + "/wcagem-report.json"), "wcagem-report.json", zos);
 			} catch (Exception e) {
 				Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
 			}

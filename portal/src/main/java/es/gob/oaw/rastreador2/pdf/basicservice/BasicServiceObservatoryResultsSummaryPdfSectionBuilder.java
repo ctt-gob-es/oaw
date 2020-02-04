@@ -83,7 +83,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		document.add(chapter);
 		pdfTocManager.addChapterCount();
 	}
-	
+
 	/**
 	 * Adds the observatory results summary accesibility.
 	 *
@@ -93,15 +93,14 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	 * @throws DocumentException the document exception
 	 */
 	public void addObservatoryResultsSummaryAccesibility(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager) throws DocumentException {
-		Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager.getIndex(),
+				pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_verificacion");
 		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
 		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p2"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
 		addResultsByVerificationAccesibility(messageResources, chapter, currentEvaluationPageList, pdfTocManager);
 		document.add(chapter);
 		pdfTocManager.addChapterCount();
 	}
-	
-	
 
 	/**
 	 * Adds the observatory results summary with compliance.
@@ -114,7 +113,9 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	 */
 	public void addObservatoryResultsSummaryWithCompliance(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, ScoreForm currentScore)
 			throws DocumentException {
-		Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+//		Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), pdfTocManager.getIndex(),
+				pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_verificacion");
 //		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
 //		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p2"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
 		final ArrayList<String> boldWords = new ArrayList<>();
@@ -158,7 +159,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		chapter.newPage();
 		createTablaResumenResultadosPorNivel(messageResources, chapter, evaList, LEVEL_II_GROUP_INDEX, pdfTocManager);
 	}
-	
+
 	/**
 	 * Adds the results by verification accesibility.
 	 *
@@ -167,13 +168,11 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	 * @param evaList          the eva list
 	 * @param pdfTocManager    the pdf toc manager
 	 */
-	private void addResultsByVerificationAccesibility(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, final PdfTocManager pdfTocManager) {
-		chapter.newPage();
+	private void addResultsByVerificationAccesibility(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList,
+			final PdfTocManager pdfTocManager) {
+		// chapter.newPage();
 		createTablaResumenResultadosPorNivelAccesibilidad(messageResources, chapter, evaList, LEVEL_I_GROUP_INDEX, pdfTocManager);
-
 	}
-	
-	
 
 	/**
 	 * Adds the results by verification and compliance.
@@ -230,7 +229,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			section.add(createTablaResumenResultadosPorNivelLeyendaWithCompliance(messageResources, observatoryLevelForm));
 		}
 	}
-	
+
 	/**
 	 * Creates the tabla resumen resultados por nivel accesibilidad.
 	 *
@@ -246,8 +245,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		List<ObservatoryLevelForm> groups = observatoryEvaluationForm.getGroups();
 		if (groups != null && !groups.isEmpty() && groups.size() > groupIndex) {
 			final ObservatoryLevelForm observatoryLevelForm = groups.get(groupIndex);
-			final Section section = PDFUtils.createSection(
-					messageResources.getMessage("resultados.primarios.res.verificacion.tabla.title"), pdfTocManager.getIndex(),
+			final Section section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.res.verificacion.tabla.title"), pdfTocManager.getIndex(),
 					ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
 			final PdfPTable table = createTablaResumenResultadosPorNivelHeader(messageResources, observatoryLevelForm.getSuitabilityGroups());
 			int contadorPagina = 1;
@@ -301,8 +299,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			}
 			// Add final row with compliance
 			Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(evaList, Constants.OBS_PRIORITY_NONE);
-			table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.primarios.res.verificacion.tabla.sitioweb"), Color.WHITE, ConstantsFont.ANCHOR_FONT, Element.ALIGN_CENTER, 0,
-					"anchor_resultados_page_" + contadorPagina));
+			table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.primarios.res.verificacion.tabla.sitioweb"), Color.WHITE, ConstantsFont.PARAGRAPH, Element.ALIGN_CENTER, 0));
 			if (LEVEL_I_GROUP_INDEX == groupIndex) {
 				for (LabelValueBean value : currentScore.getVerifications1()) {
 					evaluateCompliance(table, value);
@@ -380,7 +377,8 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			widths[i] = 0.10f;
 		}
 		final PdfPTable table = new PdfPTable(widths);
-		table.setKeepTogether(true);
+		table.setHeaderRows(1);
+		table.setKeepTogether(false);
 		table.setWidthPercentage(95);
 		table.setSpacingBefore(ConstantsFont.LINE_SPACE);
 		table.setSpacingAfter(ConstantsFont.THIRD_LINE_SPACE);
@@ -424,7 +422,6 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			backgroundColor = Constants.COLOR_RESULTADO_0_FALLA;
 			break;
 		case Constants.OBS_VALUE_GREEN_ZERO:
-			// TODO CERO PASA FROM PROPERTIES
 			valor = messageResources.getMessage("resultados.observatorio.vista.primaria.valor.cero.pasa");
 			modalidad = "P";
 			fuente = ConstantsFont.labelHeaderCellFont;
@@ -495,7 +492,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		}
 		return table;
 	}
-	
+
 	/**
 	 * Creates the tabla resumen resultados por nivel leyenda.
 	 *

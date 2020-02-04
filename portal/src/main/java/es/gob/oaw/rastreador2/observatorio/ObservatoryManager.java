@@ -1,5 +1,16 @@
 package es.gob.oaw.rastreador2.observatorio;
 
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
@@ -18,16 +29,6 @@ import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.pdf.ExportAction;
 import es.inteco.rastreador2.pdf.utils.RankingInfo;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
-
-import javax.xml.parsers.ParserConfigurationException;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 /**
  * Clase para manejar Observatorios.
@@ -214,7 +215,7 @@ public class ObservatoryManager {
 							rankingInfo.incrementCategoryRank();
 						}
 					}
-					// TODO Complexity rank
+					// Complexity rank
 					if (currentSeed.getComplejidad() != null && currentSeed.getComplejidad().getId() != null
 							&& currentSeed.getComplejidad().getId().equals(String.valueOf(seedForm.getIdComplexity()))) {
 						rankingInfo.setCategorySeedsNumber(rankingInfo.getCategorySeedsNumber() + 1);

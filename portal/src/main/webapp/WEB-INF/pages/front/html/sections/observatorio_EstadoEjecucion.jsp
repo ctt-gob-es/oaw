@@ -205,14 +205,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 						<logic:empty name="notCrawledSeedsYet">
 							<tr>
-								<td colspan="2">Sin resultados</td>
+								<td colspan="3">Sin resultados</td>
 							</tr>
 						</logic:empty>
 
 						<logic:iterate name="notCrawledSeedsYet" id="notCrawledSeedsYet" indexId="index">
 
 							<tr>
-								<td class="col-md-1"><c:out value="${index + 1}"/></td>
+								<td class="col-md-1"><c:out value="${index + 1}" /></td>
 								<td style="text-align: left"><bean:write name="notCrawledSeedsYet" property="nombre" /></td>
 								<td style="text-align: left" title="<bean:write name="notCrawledSeedsYet" property="listaUrlsString" />"><bean:write
 										name="notCrawledSeedsYet" property="listaUrlsString" /></td>
@@ -244,14 +244,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 					<logic:empty name="finishWithoutResults">
 						<tr>
-							<td colspan="3">Sin resultados</td>
+							<td colspan="4">Sin resultados</td>
 						</tr>
 					</logic:empty>
 
 					<logic:iterate name="finishWithoutResults" id="crawlWithoutAnalisis" indexId="index">
 
 						<tr>
-							<td class="col-md-1"><c:out value="${index + 1}"/></td>
+							<td class="col-md-1"><c:out value="${index + 1}" /></td>
 							<td style="text-align: left" class="col-md-4"><bean:write name="crawlWithoutAnalisis" property="nombre" /></td>
 							<td style="text-align: left" class="col-md-5"
 								title="<logic:iterate

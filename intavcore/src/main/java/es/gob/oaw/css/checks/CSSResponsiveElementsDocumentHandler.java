@@ -36,17 +36,13 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 
 /**
- * Clase para detectar si se aplican 'line-height', 'letter-spacing',
- * 'word-spacing' con important.
+ * Clase para detectar si se aplican 'line-height', 'letter-spacing', 'word-spacing' con important.
  */
 public class CSSResponsiveElementsDocumentHandler extends OAWCSSVisitor {
-
 	/** The has media queries. */
 	private boolean hasMediaQueries = false;
-
 	/** The has grid tags. */
 	private boolean hasGridTags = false;
-
 	/** The has flexbox tags. */
 	private boolean hasFlexboxTags = false;
 
@@ -75,30 +71,22 @@ public class CSSResponsiveElementsDocumentHandler extends OAWCSSVisitor {
 	 */
 	@Override
 	public List<CSSProblem> evaluate(final Document document, final CSSResource cssResource) {
-
 		final List<CSSProblem> cssProblems = new ArrayList<>();
-
 		if (!cssResource.getContent().isEmpty()) {
-
 			try {
 				resource = cssResource;
-				final CascadingStyleSheet aCSS = CSSReader.readFromString(cssResource.getContent(), ECSSVersion.CSS30,
-						new CollectingCSSParseErrorHandler());
+				final CascadingStyleSheet aCSS = CSSReader.readFromString(cssResource.getContent(), ECSSVersion.CSS30, new CollectingCSSParseErrorHandler());
 				if (aCSS != null) {
-
-					// TODO Si encontramos las media query o los tas añadimos un error (que luego
+					// Si encontramos las media query o los tas añadimos un error (que luego
 					// gestionaremos para devolver)
-
 					if (aCSS.hasMediaRules()) {
 						hasMediaQueries = true;
 					}
-
 					CSSVisitor.visitCSS(aCSS, this);
 				}
 			} catch (Exception e) {
 				Logger.putLog("Error al intentar parsear el CSS", OAWCSSVisitor.class, Logger.LOG_LEVEL_INFO, e);
 			}
-
 			if (!hasFlexboxTags && !hasGridTags && !hasMediaQueries) {
 				cssProblems.add(createCSSProblem());
 			}
@@ -113,49 +101,35 @@ public class CSSResponsiveElementsDocumentHandler extends OAWCSSVisitor {
 	 */
 	@Override
 	public void onDeclaration(@Nonnull final CSSDeclaration cssDeclaration) {
-
 		PropertiesManager pm = new PropertiesManager();
-
 		// check.479.regex.pattern.grid
 		// check.479.regex.pattern.flexbox
-
 		String[] regexpGrid = pm.getValue("check.patterns.properties", "check.479.regex.pattern.grid").split(",");
-
 		String[] regexpFlexbox = pm.getValue("check.patterns.properties", "check.479.regex.pattern.flexbox").split(",");
-
 		// Grid properties
 		for (String stringPattern : regexpGrid) {
-
 			try {
 				Pattern patternGrid = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-
 				if (patternGrid.matcher(cssDeclaration.getProperty()).find()) {
 					hasGridTags = true;
 					break;
 				}
 			} catch (Exception e) {
-				Logger.putLog("Error al procesar el patrón" + stringPattern, AccesibilityDeclarationCheckUtils.class,
-						Logger.LOG_LEVEL_ERROR, e);
+				Logger.putLog("Error al procesar el patrón" + stringPattern, AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			}
 		}
-
 		// Flexbox properties
 		for (String stringPattern : regexpFlexbox) {
-
 			try {
 				Pattern patternFlexbox = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-
 				if (patternFlexbox.matcher(cssDeclaration.getProperty()).find()) {
 					hasFlexboxTags = true;
 					break;
 				}
-
 			} catch (Exception e) {
-				Logger.putLog("Error al procesar el patrón" + stringPattern, AccesibilityDeclarationCheckUtils.class,
-						Logger.LOG_LEVEL_ERROR, e);
+				Logger.putLog("Error al procesar el patrón" + stringPattern, AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			}
 		}
-
 	}
 
 	/**
@@ -170,7 +144,6 @@ public class CSSResponsiveElementsDocumentHandler extends OAWCSSVisitor {
 		cssProblem.setColumnNumber(0);
 		cssProblem.setSelector("");
 		cssProblem.setElement(null);
-
 		return cssProblem;
 	}
 }

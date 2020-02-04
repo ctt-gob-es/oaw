@@ -90,7 +90,7 @@ public final class DiagnosisDAO {
 	 */
 	public static long insertBasicServices(final Connection conn, final BasicServiceForm basicServiceForm, final String status) {
 		try (PreparedStatement ps = conn.prepareStatement(
-				"INSERT INTO basic_service (usr, language, domain, email, depth, width, report, date, status, scheduling_date, analysis_type, in_directory, register_result, complexity) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+				"INSERT INTO basic_service (usr, language, domain, email, depth, width, report, date, status, scheduling_date, analysis_type, in_directory, register_result, complexity, filename) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 				Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, basicServiceForm.getUser());
 			ps.setString(2, basicServiceForm.getLanguage());
@@ -115,6 +115,7 @@ public final class DiagnosisDAO {
 			ps.setBoolean(12, basicServiceForm.isInDirectory());
 			ps.setBoolean(13, basicServiceForm.isRegisterAnalysis());
 			ps.setString(14, basicServiceForm.getComplexity());
+			ps.setString(15, basicServiceForm.getFileName());
 			ps.executeUpdate();
 			try (ResultSet rs = ps.getGeneratedKeys()) {
 				if (rs.next()) {
@@ -160,6 +161,7 @@ public final class DiagnosisDAO {
 						basicServiceForm.setDomain(rs.getString("domain"));
 					}
 					basicServiceForm.setComplexity(rs.getString("complexity"));
+					basicServiceForm.setFileName(rs.getString("filename"));
 					return basicServiceForm;
 				}
 			}
@@ -320,7 +322,7 @@ public final class DiagnosisDAO {
 	 */
 	private static String getHistoricoResultadosQueryByType(final BasicServiceAnalysisType type) {
 		if (BasicServiceAnalysisType.URL == type) {
-			// TODO Revisar si esto no altera los informes anteriores
+			// PENDING Revisar si esto no altera los informes anteriores
 			return "SELECT id, date FROM basic_service WHERE domain LIKE ? AND status='finished' AND depth=? AND width=? AND analysis_type='url' AND register_result=TRUE AND report LIKE ? ORDER BY date DESC LIMIT ?";
 		} else if (BasicServiceAnalysisType.LISTA_URLS == type) {
 			return "SELECT id, date FROM basic_service WHERE domain REGEXP ? AND status='finished' AND analysis_type='lista_urls' AND register_result=TRUE AND report LIKE ? ORDER BY date DESC LIMIT ?";
@@ -400,8 +402,7 @@ public final class DiagnosisDAO {
 		}
 		return 0;
 	}
-	
-	
+
 	/**
 	 * Gets the average time.
 	 *
@@ -427,9 +428,6 @@ public final class DiagnosisDAO {
 		}
 		return 0f;
 	}
-	
-	
-	
 
 	/**
 	 * Gets the basic service request CSV.
@@ -439,31 +437,10 @@ public final class DiagnosisDAO {
 	 * @return the basic service request CSV
 	 */
 	public static String getCSV(final Connection conn, final ServicioDiagnosticoForm search) {
-		//StringBuilder query = new StringBuilder("SELECT * FROM basic_service WHERE 1=1 ");
-		
-		
-
-		StringBuilder query = new StringBuilder("SELECT id,"
-				+ "usr,"
-				+ "language,"
-				+ "domain,"
-				+ "email,"
-				+ "depth,"
-				+ "width,"
-				+ "(select lower(nombre) from complejidades_lista where id_complejidad = complexity) as complexity,"
-				+ "report,"
-				+ "date,"
-				+ "status,"
-				+ "send_date,"
-				+ "scheduling_date,"
-				+ "analysis_type,"
-				+ "in_directory,"
-				+ "register_result"
-				+ " FROM basic_service WHERE 1=1");
-				
-		
-		
-		
+		// StringBuilder query = new StringBuilder("SELECT * FROM basic_service WHERE 1=1 ");
+		StringBuilder query = new StringBuilder(
+				"SELECT id," + "usr," + "language," + "domain," + "email," + "depth," + "width," + "(select lower(nombre) from complejidades_lista where id_complejidad = complexity) as complexity,"
+						+ "report," + "date," + "status," + "send_date," + "scheduling_date," + "analysis_type," + "in_directory," + "register_result" + " FROM basic_service WHERE 1=1");
 		addSearchParameters(search, query);
 		try (PreparedStatement ps = conn.prepareStatement(query.toString())) {
 			int nextParameterCount = 1;

@@ -19,87 +19,204 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class ObservatorySubgroupForm.
+ */
 public class ObservatorySubgroupForm implements Serializable {
-    private String description;
-    private String guidelineId;
-    private String aspect;
-    private List<Integer> failChecks;
-    private List<Integer> onlyWarningChecks;
-    private List<Integer> ignoreRelatedChecks;
-    private List<ProblemForm> problems;
-    private int value;
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = -6269110944570286474L;
+	/** The description. */
+	private String description;
+	/** The guideline id. */
+	private String guidelineId;
+	/** The aspect. */
+	private String aspect;
+	/** The fail checks. */
+	private List<Integer> failChecks;
+	/** The only warning checks. */
+	private List<Integer> onlyWarningChecks;
+	/** The ignore related checks. */
+	private List<Integer> ignoreRelatedChecks;
+	/** The success checks. */
+	private List<Integer> successChecks;
+	/** The problems. */
+	private List<ProblemForm> problems;
+	/** The value. */
+	private int value;
 
-    public ObservatorySubgroupForm() {
-        this.failChecks = new ArrayList<>();
-        this.onlyWarningChecks = new ArrayList<>();
-        this.problems = new ArrayList<>();
-        this.ignoreRelatedChecks = new ArrayList<>();
-    }
+	/**
+	 * Instantiates a new observatory subgroup form.
+	 */
+	public ObservatorySubgroupForm() {
+		this.failChecks = new ArrayList<>();
+		this.onlyWarningChecks = new ArrayList<>();
+		this.problems = new ArrayList<>();
+		this.ignoreRelatedChecks = new ArrayList<>();
+		this.successChecks = new ArrayList<>();
+	}
 
-    public List<Integer> getIgnoreRelatedChecks() {
-        return ignoreRelatedChecks;
-    }
+	/**
+	 * Gets the ignore related checks.
+	 *
+	 * @return the ignore related checks
+	 */
+	public List<Integer> getIgnoreRelatedChecks() {
+		return ignoreRelatedChecks;
+	}
 
-    public void setIgnoreRelatedChecks(List<Integer> ignoreRelatedChecks) {
-        this.ignoreRelatedChecks = ignoreRelatedChecks;
-    }
+	/**
+	 * Sets the ignore related checks.
+	 *
+	 * @param ignoreRelatedChecks the new ignore related checks
+	 */
+	public void setIgnoreRelatedChecks(List<Integer> ignoreRelatedChecks) {
+		this.ignoreRelatedChecks = ignoreRelatedChecks;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	/**
+	 * Gets the description.
+	 *
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	/**
+	 * Sets the description.
+	 *
+	 * @param description the new description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public int getValue() {
-        return value;
-    }
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
+	public int getValue() {
+		return value;
+	}
 
-    public void setValue(int value) {
-        this.value = value;
-    }
+	/**
+	 * Sets the value.
+	 *
+	 * @param value the new value
+	 */
+	public void setValue(int value) {
+		this.value = value;
+	}
 
-    public String getGuidelineId() {
-        return guidelineId;
-    }
+	/**
+	 * Gets the guideline id.
+	 *
+	 * @return the guideline id
+	 */
+	public String getGuidelineId() {
+		return guidelineId;
+	}
 
-    public void setGuidelineId(String guidelineId) {
-        this.guidelineId = guidelineId;
-    }
+	/**
+	 * Sets the guideline id.
+	 *
+	 * @param guidelineId the new guideline id
+	 */
+	public void setGuidelineId(String guidelineId) {
+		this.guidelineId = guidelineId;
+	}
 
-    public List<Integer> getFailChecks() {
-        return failChecks;
-    }
+	/**
+	 * Gets the fail checks.
+	 *
+	 * @return the fail checks
+	 */
+	public List<Integer> getFailChecks() {
+		return failChecks;
+	}
 
-    public void setFailChecks(List<Integer> failChecks) {
-        this.failChecks = failChecks;
-    }
+	/**
+	 * Sets the fail checks.
+	 *
+	 * @param failChecks the new fail checks
+	 */
+	public void setFailChecks(List<Integer> failChecks) {
+		this.failChecks = failChecks;
+	}
 
-    public String getAspect() {
-        return aspect;
-    }
+	/**
+	 * Gets the aspect.
+	 *
+	 * @return the aspect
+	 */
+	public String getAspect() {
+		return aspect;
+	}
 
-    public void setAspect(String aspect) {
-        this.aspect = aspect;
-    }
+	/**
+	 * Sets the aspect.
+	 *
+	 * @param aspect the new aspect
+	 */
+	public void setAspect(String aspect) {
+		this.aspect = aspect;
+	}
 
-    public List<ProblemForm> getProblems() {
-        if (problems == null) {
-            problems = new ArrayList<>();
-        }
-        return problems;
-    }
+	/**
+	 * Gets the problems.
+	 *
+	 * @return the problems
+	 */
+	public List<ProblemForm> getProblems() {
+		if (problems == null) {
+			problems = new ArrayList<>();
+		}
+		return problems;
+	}
 
-    public void setProblems(List<ProblemForm> problems) {
-        this.problems = problems;
-    }
+	/**
+	 * Sets the problems.
+	 *
+	 * @param problems the new problems
+	 */
+	public void setProblems(List<ProblemForm> problems) {
+		this.problems = problems;
+	}
 
-    public List<Integer> getOnlyWarningChecks() {
-        return onlyWarningChecks;
-    }
+	/**
+	 * Gets the only warning checks.
+	 *
+	 * @return the only warning checks
+	 */
+	public List<Integer> getOnlyWarningChecks() {
+		return onlyWarningChecks;
+	}
 
-    public void setOnlyWarningChecks(List<Integer> onlyWarningChecks) {
-        this.onlyWarningChecks = onlyWarningChecks;
-    }
+	/**
+	 * Sets the only warning checks.
+	 *
+	 * @param onlyWarningChecks the new only warning checks
+	 */
+	public void setOnlyWarningChecks(List<Integer> onlyWarningChecks) {
+		this.onlyWarningChecks = onlyWarningChecks;
+	}
+
+	/**
+	 * Gets the success checks.
+	 *
+	 * @return the success checks
+	 */
+	public List<Integer> getSuccessChecks() {
+		return successChecks;
+	}
+
+	/**
+	 * Sets the success checks.
+	 *
+	 * @param successChecks the new success checks
+	 */
+	public void setSuccessChecks(List<Integer> successChecks) {
+		this.successChecks = successChecks;
+	}
 }

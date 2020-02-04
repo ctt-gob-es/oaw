@@ -42,16 +42,12 @@ import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 
 public final class AnalisisDatos {
-
 	private AnalisisDatos() {
 	}
 
-	public static int setAnalisis(final Connection connection, final Analysis analisis,
-			final List<CSSResource> cssResources) throws SQLException {
-
+	public static int setAnalisis(final Connection connection, final Analysis analisis, final List<CSSResource> cssResources) throws SQLException {
 		try (PreparedStatement pstmt = connection.prepareStatement(
-				"INSERT INTO tanalisis (fec_analisis, cod_url, num_duracion, nom_entidad, cod_rastreo, cod_guideline, estado, cod_fuente)"
-						+ " VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?);",
+				"INSERT INTO tanalisis (fec_analisis, cod_url, num_duracion, nom_entidad, cod_rastreo, cod_guideline, estado, cod_fuente)" + " VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?);",
 				Statement.RETURN_GENERATED_KEYS)) {
 			connection.setAutoCommit(false);
 			pstmt.setString(1, analisis.getUrl());
@@ -60,15 +56,13 @@ public final class AnalisisDatos {
 			pstmt.setLong(4, analisis.getTracker());
 			pstmt.setInt(5, getCodGuideline(connection, analisis.getGuideline()));
 			pstmt.setInt(6, IntavConstants.STATUS_EXECUTING);
-			// TODO ENCODE COD_FUENTE BASE 64
+			// Encode BASE64 code
 			String codigoFuente = analisis.getSource();
 			if (!StringUtils.isEmpty(codigoFuente)) {
 				codigoFuente = new String(Base64.encodeBase64(codigoFuente.getBytes()));
 			}
-
 			pstmt.setString(7, codigoFuente);
 			pstmt.executeUpdate();
-
 			final int codigoAnalisis;
 			try (ResultSet rs = pstmt.getGeneratedKeys()) {
 				if (rs.next()) {
@@ -77,7 +71,6 @@ public final class AnalisisDatos {
 					return 0;
 				}
 			}
-
 			saveCSSResources(connection, codigoAnalisis, cssResources);
 			connection.commit();
 			connection.setAutoCommit(true);
@@ -90,25 +83,18 @@ public final class AnalisisDatos {
 		}
 	}
 
-	private static void saveCSSResources(final Connection connection, final int codigoAnalisis,
-			final List<CSSResource> cssResources) throws SQLException {
-
-		try (PreparedStatement pstmt = connection
-				.prepareStatement("INSERT INTO tanalisis_css (url, codigo, cod_analisis) VALUES (?,?,?);")) {
+	private static void saveCSSResources(final Connection connection, final int codigoAnalisis, final List<CSSResource> cssResources) throws SQLException {
+		try (PreparedStatement pstmt = connection.prepareStatement("INSERT INTO tanalisis_css (url, codigo, cod_analisis) VALUES (?,?,?);")) {
 			for (CSSResource cssResource : cssResources) {
 				if (cssResource.isImported()) {
 					pstmt.setString(1, cssResource.getStringSource());
-
-					// TODO Encode BASE64 code
-
+					// Encode BASE64 code
 					String codigoFuente = cssResource.getContent();
 					if (!StringUtils.isEmpty(codigoFuente)) {
 						codigoFuente = new String(Base64.encodeBase64(codigoFuente.getBytes()));
 					}
-
 					pstmt.setString(2, codigoFuente);
 					pstmt.setInt(3, codigoAnalisis);
-
 					pstmt.addBatch();
 				}
 			}
@@ -122,8 +108,7 @@ public final class AnalisisDatos {
 	public static int setAnalysisError(final CheckAccessibility checkAccessibility) {
 		try (Connection conn = DataBaseManager.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(
-						"INSERT INTO tanalisis (FEC_ANALISIS, COD_URL, NUM_DURACION, NOM_ENTIDAD, COD_RASTREO, COD_GUIDELINE, ESTADO)"
-								+ " VALUES (NOW(), ?, ?, ?, ?, ?, ?);",
+						"INSERT INTO tanalisis (FEC_ANALISIS, COD_URL, NUM_DURACION, NOM_ENTIDAD, COD_RASTREO, COD_GUIDELINE, ESTADO)" + " VALUES (NOW(), ?, ?, ?, ?, ?, ?);",
 						Statement.RETURN_GENERATED_KEYS)) {
 			pstmt.setString(1, checkAccessibility.getUrl());
 			pstmt.setLong(2, 0);
@@ -132,7 +117,6 @@ public final class AnalisisDatos {
 			pstmt.setInt(5, getCodGuideline(conn, checkAccessibility.getGuidelineFile()));
 			pstmt.setInt(6, IntavConstants.STATUS_ERROR);
 			pstmt.executeUpdate();
-
 			int codigoAnalisis = 0;
 			try (ResultSet rs = pstmt.getGeneratedKeys()) {
 				if (rs.next()) {
@@ -147,8 +131,7 @@ public final class AnalisisDatos {
 	}
 
 	private static int getCodGuideline(final Connection connection, final String guideline) throws SQLException {
-		try (PreparedStatement pstmt = connection
-				.prepareStatement("SELECT cod_guideline FROM tguidelines WHERE des_guideline = ?;")) {
+		try (PreparedStatement pstmt = connection.prepareStatement("SELECT cod_guideline FROM tguidelines WHERE des_guideline = ?;")) {
 			pstmt.setString(1, getGuideline(guideline));
 			try (ResultSet rs = pstmt.executeQuery()) {
 				if (rs.next()) {
@@ -161,9 +144,7 @@ public final class AnalisisDatos {
 	}
 
 	public static void updateChecksEjecutados(final String updatedChecks, final long idAnalisis) {
-		try (Connection conn = DataBaseManager.getConnection();
-				final PreparedStatement pstmt = conn
-						.prepareStatement("UPDATE tanalisis SET CHECKS_EJECUTADOS = ? WHERE COD_ANALISIS = ?;")) {
+		try (Connection conn = DataBaseManager.getConnection(); final PreparedStatement pstmt = conn.prepareStatement("UPDATE tanalisis SET CHECKS_EJECUTADOS = ? WHERE COD_ANALISIS = ?;")) {
 			pstmt.setString(1, updatedChecks);
 			pstmt.setLong(2, idAnalisis);
 			pstmt.executeUpdate();
@@ -174,8 +155,7 @@ public final class AnalisisDatos {
 
 	public static void endAnalysisSuccess(final Evaluation eval) {
 		try (Connection conn = DataBaseManager.getConnection();
-				final PreparedStatement pstmt = conn.prepareStatement(
-						"UPDATE tanalisis SET CHECKS_EJECUTADOS = ?, ESTADO = ? WHERE COD_ANALISIS = ?;")) {
+				final PreparedStatement pstmt = conn.prepareStatement("UPDATE tanalisis SET CHECKS_EJECUTADOS = ?, ESTADO = ? WHERE COD_ANALISIS = ?;")) {
 			pstmt.setString(1, eval.getChecksExecutedStr());
 			pstmt.setInt(2, IntavConstants.STATUS_SUCCESS);
 			pstmt.setLong(3, eval.getIdAnalisis());
@@ -187,7 +167,7 @@ public final class AnalisisDatos {
 
 	public static Analysis getAnalisisFromId(Connection conn, long id) {
 		final Analysis analisis = new Analysis();
-		// TODO DECODE BASE 64 COD_FUENTE
+		// Decode base 64 cod_fuente
 		try (PreparedStatement pstmt = conn.prepareStatement(
 				"SELECT COD_ANALISIS,FEC_ANALISIS,COD_URL,NOM_ENTIDAD,COD_RASTREO,DES_GUIDELINE,CHECKS_EJECUTADOS, FROM_BASE64(COD_FUENTE) as COD_FUENTE FROM tanalisis A INNER JOIN tguidelines G ON A.cod_guideline = G.cod_guideline "
 						+ "WHERE cod_analisis = ?;")) {
@@ -223,14 +203,12 @@ public final class AnalisisDatos {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final int pagSize = Integer.parseInt(pmgr.getValue("intav.properties", "pagination.size"));
 		final int resultFrom = pagSize * pagina;
-		try (Connection conn = DataBaseManager.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(query)) {
+		try (Connection conn = DataBaseManager.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
 			pstmt.setLong(1, idTracking);
 			if (pagina != IntavConstants.NO_PAGINATION) {
 				pstmt.setInt(2, pagSize);
 				pstmt.setInt(3, resultFrom);
 			}
-
 			try (ResultSet rs = pstmt.executeQuery()) {
 				return getAnalysisList(conn, rs, EvaluatorUtility.getLanguage(request));
 			}
@@ -242,8 +220,7 @@ public final class AnalisisDatos {
 
 	public static List<Long> getAnalysisIdsByTracking(final Connection conn, final long idTracking) {
 		final List<Long> results = new ArrayList<>();
-		try (PreparedStatement pstmt = conn.prepareStatement(
-				"SELECT cod_analisis FROM tanalisis WHERE cod_rastreo = ? AND checks_ejecutados IS NOT NULL")) {
+		try (PreparedStatement pstmt = conn.prepareStatement("SELECT cod_analisis FROM tanalisis WHERE cod_rastreo = ? AND checks_ejecutados IS NOT NULL")) {
 			pstmt.setLong(1, idTracking);
 			try (ResultSet rs = pstmt.executeQuery()) {
 				while (rs.next()) {
@@ -253,14 +230,11 @@ public final class AnalisisDatos {
 		} catch (Exception ex) {
 			Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
 		}
-
 		return results;
 	}
 
 	public static int countAnalysisByTracking(long idTracking) {
-		try (Connection conn = DataBaseManager.getConnection();
-				PreparedStatement pstmt = conn
-						.prepareStatement("SELECT COUNT(*) FROM tanalisis WHERE cod_rastreo = ?")) {
+		try (Connection conn = DataBaseManager.getConnection(); PreparedStatement pstmt = conn.prepareStatement("SELECT COUNT(*) FROM tanalisis WHERE cod_rastreo = ?")) {
 			pstmt.setLong(1, idTracking);
 			try (ResultSet rs = pstmt.executeQuery()) {
 				if (rs.next()) {
@@ -273,8 +247,7 @@ public final class AnalisisDatos {
 		return 0;
 	}
 
-	private static List<Analysis> getAnalysisList(final Connection conn, final ResultSet rs, final String language)
-			throws SQLException {
+	private static List<Analysis> getAnalysisList(final Connection conn, final ResultSet rs, final String language) throws SQLException {
 		final List<Analysis> listAnalysis = new ArrayList<>();
 		while (rs.next()) {
 			final Analysis analysis = new Analysis();
@@ -284,26 +257,20 @@ public final class AnalisisDatos {
 			analysis.setEntity(rs.getString("nom_entidad"));
 			analysis.setTracker(rs.getInt("cod_rastreo"));
 			analysis.setStatus(rs.getInt("estado"));
-
 			if (analysis.getStatus() == IntavConstants.STATUS_SUCCESS) {
 				final Evaluator evaluator = new Evaluator();
 				try {
-					final Evaluation evaluation = evaluator.getAnalisisDB(conn, analysis.getCode(),
-							EvaluatorUtils.getDocList(), true);
+					final Evaluation evaluation = evaluator.getAnalisisDB(conn, analysis.getCode(), EvaluatorUtils.getDocList(), true);
 					final EvaluationForm evaluationForm = EvaluatorUtils.generateEvaluationForm(evaluation, language);
 					for (int i = 0; i < evaluationForm.getPriorities().size(); i++) {
-						analysis.setProblems(
-								analysis.getProblems() + evaluationForm.getPriorities().get(i).getNumProblems());
-						analysis.setWarnings(
-								analysis.getWarnings() + evaluationForm.getPriorities().get(i).getNumWarnings());
-						analysis.setObservations(
-								analysis.getObservations() + evaluationForm.getPriorities().get(i).getNumInfos());
+						analysis.setProblems(analysis.getProblems() + evaluationForm.getPriorities().get(i).getNumProblems());
+						analysis.setWarnings(analysis.getWarnings() + evaluationForm.getPriorities().get(i).getNumWarnings());
+						analysis.setObservations(analysis.getObservations() + evaluationForm.getPriorities().get(i).getNumInfos());
 					}
 				} catch (Exception e) {
 					Logger.putLog("getAnalysisList: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
-
 			listAnalysis.add(analysis);
 		}
 		return listAnalysis;
@@ -311,10 +278,7 @@ public final class AnalisisDatos {
 
 	public static List<Long> getEvaluationIdsFromRastreoRealizado(long idRastreoRealizado) {
 		final List<Long> evaluationIds = new ArrayList<>();
-
-		try (Connection conn = DataBaseManager.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(
-						"SELECT cod_analisis FROM tanalisis t WHERE cod_rastreo = ? ORDER by cod_analisis")) {
+		try (Connection conn = DataBaseManager.getConnection(); PreparedStatement pstmt = conn.prepareStatement("SELECT cod_analisis FROM tanalisis t WHERE cod_rastreo = ? ORDER by cod_analisis")) {
 			pstmt.setLong(1, idRastreoRealizado);
 			try (ResultSet rs = pstmt.executeQuery()) {
 				while (rs.next()) {
@@ -325,26 +289,20 @@ public final class AnalisisDatos {
 			Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
 			return evaluationIds;
 		}
-
 		return evaluationIds;
 	}
 
 	/**
-	 * Obtiene todos los recursos CSS (CSSDTO) que están asociados a una evaluación,
-	 * análisis de una página.
+	 * Obtiene todos los recursos CSS (CSSDTO) que están asociados a una evaluación, análisis de una página.
 	 *
-	 * @param idCodAnalisis
-	 *            el identificador de la evaluación.
-	 * @return una lista con todos los recursos CSS (CSSDTO) que se analizaron para
-	 *         esa evaluación.
+	 * @param idCodAnalisis el identificador de la evaluación.
+	 * @return una lista con todos los recursos CSS (CSSDTO) que se analizaron para esa evaluación.
 	 */
 	public static List<CSSDTO> getCSSResourcesFromEvaluation(final long idCodAnalisis) {
 		final List<CSSDTO> evaluationIds = new ArrayList<>();
-
 		try (Connection conn = DataBaseManager.getConnection();
-				// TODO Decode codigo BASE64
-				PreparedStatement pstmt = conn.prepareStatement(
-						"SELECT url, FROM_BASE64(codigo) AS codigo FROM tanalisis_css t WHERE cod_analisis = ?")) {
+				// Decode codigo BASE64
+				PreparedStatement pstmt = conn.prepareStatement("SELECT url, FROM_BASE64(codigo) AS codigo FROM tanalisis_css t WHERE cod_analisis = ?")) {
 			pstmt.setLong(1, idCodAnalisis);
 			try (ResultSet rs = pstmt.executeQuery()) {
 				while (rs.next()) {
@@ -354,7 +312,6 @@ public final class AnalisisDatos {
 		} catch (Exception ex) {
 			Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
 		}
-
 		return evaluationIds;
 	}
 

@@ -182,12 +182,31 @@ public class BasicServiceManager {
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfAccesibilidad(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
 				}
-				// TODO Generar código analizado
+				/***
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 */
+				// PENDING (Disable) Generar JSON compatible con WCAG-EM
+//				WcagEmReport report = WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), basicServiceForm.getName(), idCrawling);
+//				ObjectMapper mapper = new ObjectMapper();
+//				String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);
+//				org.apache.commons.io.FileUtils.writeStringToFile(new File(new File(pdfPath).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
+				// Generar código analizado
 				final SourceFilesManager sourceFilesManager = new SourceFilesManager(new File(pdfPath).getParentFile());
 				final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
-				sourceFilesManager.writeSourceFiles(DataBaseManager.getConnection(), analysisIdsByTracking);
+				// TODO Source code analysis
+				if (basicServiceForm.isContentAnalysis()) {
+					sourceFilesManager.writeSourceFilesContent(DataBaseManager.getConnection(), analysisIdsByTracking, basicServiceForm.getFileName());
+					sourceFilesManager.zipSources(true);
+				} else {
+					sourceFilesManager.writeSourceFiles(DataBaseManager.getConnection(), analysisIdsByTracking);
+					sourceFilesManager.zipSources(true);
+				}
 				// Comprimimos el fichero
-				pdfPath = BasicServiceExport.compressReportWithCode(pdfPath);
+				pdfPath = BasicServiceExport.compressReportWithCode(pdfPath, basicServiceForm.isContentAnalysis(), basicServiceForm.getFileName());
 				if (!basicServiceForm.isRegisterAnalysis()) {
 					// Si no es necesario registrar el análisis se borra
 					Logger.putLog("Borrando analisis " + idCrawling, BasicServiceManager.class, Logger.LOG_LEVEL_INFO);

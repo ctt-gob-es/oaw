@@ -1367,7 +1367,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 	 * @throws Exception the exception
 	 */
 	@Override
-	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, String observatoryId, String filePath, String[] tagsFilter, String[] exObsIds) throws Exception {
-		// TODO Auto-generated method stub
+	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, String observatoryId, String filePath, String[] tagsFilter, String[] exObsIds)
+			throws Exception {
 	}
 }

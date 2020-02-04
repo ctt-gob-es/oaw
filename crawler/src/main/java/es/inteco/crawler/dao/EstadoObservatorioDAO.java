@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.crawler.job.ObservatoryStatus;
@@ -77,7 +75,6 @@ public class EstadoObservatorioDAO {
 	 */
 	public static Integer updateEstado(final Connection connection, ObservatoryStatus estado) throws SQLException {
 		if (estado.getId() != null) {
-			// TODO
 			try (PreparedStatement ps = connection.prepareStatement(
 					"UPDATE observatorio_estado SET nombre = ? , url =?, ultima_url = ?, actual_url = ?, fecha_ultima_url = ?, tiempo_medio = ?,  total_url_analizadas= ? , tiempo_acumulado = ? WHERE id = ?")) {
 				ps.setString(1, estado.getNombre());
@@ -173,12 +170,6 @@ public class EstadoObservatorioDAO {
 			ps.setInt(8, idEjecucionObservatorio);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
-					// TODO Estado
-					// int STATUS_NOT_LAUNCHED = 1;
-					// int STATUS_LAUNCHED = 2;
-					// int STATUS_STOPPED = 3;
-					// int STATUS_FINALIZED = 4;
-					// int STATUS_ERROR = 5;
 					summary.setIdEstado(rs.getLong("ESTADO_OBS"));
 					switch (rs.getInt("ESTADO_OBS")) {
 					case 1:
@@ -197,21 +188,15 @@ public class EstadoObservatorioDAO {
 						summary.setEstado("Error");
 						break;
 					}
-					// TODO Total semillas
-					// SELECT count(*) FROM rastreo r WHERE r.id_observatorio = 6 AND r.activo = 1
+					// Total semillas
 					summary.setTotalSemillas(rs.getInt("TOTAL_SEMILLAS"));
 					summary.setSemillasAnalizadasOk(rs.getInt("TOTAL_ANALIZADAS_OK"));
-					// TODO Semillas analizadas correctamente
-					// SELECT count(*) FROM rastreo r WHERE r.id_observatorio = 6 AND r.activo = 1
-					// AND r.estado = 4
+					// Semillas analizadas correctamente
 					summary.setSemillasAnalizadas(rs.getInt("TOTAL_ANALIZADAS"));
 					// Porcentaje completado
 					summary.setPorcentajeCompletado(((float) summary.getSemillasAnalizadas() / (float) summary.getTotalSemillas()) * 100);
 					summary.setPorcentajeCompletadoOk(((float) summary.getSemillasAnalizadasOk() / (float) summary.getTotalSemillas()) * 100);
-					// TODO Diferencia en minutos entre la primera y al última ejecución
-					// SELECT TIMESTAMPDIFF(MINUTE,(SELECT MIN(fecha) FROM rastreos_realizados WHERE
-					// id_obs_realizado=11),(SELECT MAX(fecha) FROM rastreos_realizados WHERE
-					// id_obs_realizado=11))
+					// Diferencia en minutos entre la primera y al última ejecución
 					summary.setTiempoTotal(rs.getInt("TIEMPO"));
 					summary.setTiempoTotalHoras(rs.getInt("TIEMPO") / 60);
 					// Tiempo medio
@@ -223,7 +208,7 @@ public class EstadoObservatorioDAO {
 					// Tiempo estimado
 					summary.setTiempoEstimado((summary.getTotalSemillas() - summary.getSemillasAnalizadas()) * summary.getTiempoMedio());
 					summary.setTiempoEstimadoHoras(summary.getTiempoEstimado() / 60);
-					// TODO Tiempo minimo
+					// Tiempo minimo
 					summary.setTiempoMinimo(new ObservatorySummaryTimes(11, "http://www.defensa.gob.es", "Ministerio de Defensa"));
 					summary.setTiempoMaximo(new ObservatorySummaryTimes(11, "http://www.mineco.gob.es", "Ministerio de Economía"));
 				}

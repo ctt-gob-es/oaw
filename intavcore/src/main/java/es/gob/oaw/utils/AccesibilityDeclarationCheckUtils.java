@@ -13,13 +13,11 @@
 package es.gob.oaw.utils;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +40,7 @@ import es.inteco.intav.utils.EvaluatorUtils;
  * Clase con métodos de ayuda para las comprobaciones relacionadas con la sección de accesibilidad.
  */
 public final class AccesibilityDeclarationCheckUtils {
+	/** The Constant CONTENTTAGS. */
 	private static final String[] CONTENTTAGS = { "address", "article", "aside", "footer", "header", "hgroup", "main", "nav", "section" };
 
 	/**
@@ -83,7 +82,7 @@ public final class AccesibilityDeclarationCheckUtils {
 					}
 				} catch (IOException e) {
 					Logger.putLog("Error al comprobar la URL: " + link.getAttribute("href"), AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
-					// TODO La añadirmos igualmente
+					// La añadirmos igualmente
 					linksFound.add(link);
 				}
 			}
