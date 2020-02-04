@@ -15,20 +15,34 @@
 ******************************************************************************/
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
-import es.inteco.common.logging.Logger;
-import es.inteco.common.utils.StringUtils;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.ArrayList;
-import java.util.List;
+import es.inteco.common.logging.Logger;
+import es.inteco.common.utils.StringUtils;
 
+/**
+ * The Class CheckTables.
+ */
 public final class CheckTables {
-
+	/**
+	 * Instantiates a new check tables.
+	 */
 	private CheckTables() {
 	}
 
+	/**
+	 * Function row count.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	protected static boolean functionRowCount(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		int number;
 		int rows;
@@ -38,9 +52,7 @@ public final class CheckTables {
 		} catch (Exception e) { // number could not be parsed
 			return false;
 		}
-		final String position = checkCode.getFunctionPosition().isEmpty() ? "not-equals"
-				: checkCode.getFunctionPosition();
-
+		final String position = checkCode.getFunctionPosition().isEmpty() ? "not-equals" : checkCode.getFunctionPosition();
 		if ("equals".equalsIgnoreCase(position)) {
 			return rows == number;
 		} else if ("greater".equalsIgnoreCase(position)) {
@@ -53,6 +65,14 @@ public final class CheckTables {
 		}
 	}
 
+	/**
+	 * Function column count.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	protected static boolean functionColumnCount(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		int number;
 		int cols;
@@ -62,10 +82,7 @@ public final class CheckTables {
 		} catch (Exception e) { // number could not be parsed
 			return false;
 		}
-
-		final String position = checkCode.getFunctionPosition().isEmpty() ? "not-equals"
-				: checkCode.getFunctionPosition();
-
+		final String position = checkCode.getFunctionPosition().isEmpty() ? "not-equals" : checkCode.getFunctionPosition();
 		if ("equals".equalsIgnoreCase(position)) {
 			return cols == number;
 		} else if ("greater".equalsIgnoreCase(position)) {
@@ -79,16 +96,22 @@ public final class CheckTables {
 	}
 
 	// Checks if the given table is the given type.
+	/**
+	 * Function table type.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Returns true if the given table is the given type.
 	protected static boolean functionTableType(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		String tableShouldBe = checkCode.getFunctionValue();
 		tableShouldBe = tableShouldBe.toLowerCase();
 		if (!tableShouldBe.equalsIgnoreCase("data") && !tableShouldBe.equalsIgnoreCase("layout")) {
-			Logger.putLog("Warning: invalid table type in functionTableType: " + tableShouldBe, Check.class,
-					Logger.LOG_LEVEL_WARNING);
+			Logger.putLog("Warning: invalid table type in functionTableType: " + tableShouldBe, Check.class, Logger.LOG_LEVEL_WARNING);
 			return false;
 		}
-
 		if (isDataTable(elementGiven)) {
 			return tableShouldBe.equalsIgnoreCase("data");
 		}
@@ -96,6 +119,12 @@ public final class CheckTables {
 	}
 
 	// Makes a guess about the table type.
+	/**
+	 * Checks if is data table.
+	 *
+	 * @param elementGiven the element given
+	 * @return true, if is data table
+	 */
 	// Returns true if this should be a data table, false if layout table.
 	protected static boolean isDataTable(Element elementGiven) {
 		// check for TH elements
@@ -103,7 +132,6 @@ public final class CheckTables {
 		if (listTh.getLength() > 0) {
 			return true;
 		}
-
 		// no TH elements
 		// check for caption element
 		NodeList listCaption = elementGiven.getElementsByTagName("caption");
@@ -111,14 +139,12 @@ public final class CheckTables {
 	}
 
 	/**
-	 * Comprueba si una tabla es compleja. Se considera como ese tipo de tabla
-	 * aquellas que tienen encabezados de filas O columnas multinivel (puede
-	 * presentar encabezados en solo uno de los ejes)
+	 * Comprueba si una tabla es compleja. Se considera como ese tipo de tabla aquellas que tienen encabezados de filas O columnas multinivel (puede presentar encabezados en solo uno de los ejes)
 	 *
-	 * @param checkCode
-	 * @param nodeNode
-	 * @param elementGiven
-	 * @return
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
 	 */
 	protected static boolean functionTableComplex(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// Creamos la matriz que representa la tabla
@@ -129,7 +155,6 @@ public final class CheckTables {
 		}
 		int y = trList.getLength();
 		TableNode[][] table = createTable(trList, x, y);
-
 		// Comprobamos si tiene mas de una fila de encabezados, entonces también será
 		// compleja
 		boolean complex = true;
@@ -146,7 +171,6 @@ public final class CheckTables {
 				}
 			}
 		}
-
 		// Comprobamos si tiene mas de una columna de encabezados, entonces también será
 		// compleja
 		complex = true;
@@ -161,19 +185,17 @@ public final class CheckTables {
 				return false;
 			}
 		}
-
 		return false;
 	}
 
 	/**
-	 * Comprueba si una tabla tiene encabezados de complejidad superior. Se
-	 * considera como ese tipo de tabla aquellas que teniendo encabezados de filas Y
-	 * columnas al menos uno de ellos es además multinivel
+	 * Comprueba si una tabla tiene encabezados de complejidad superior. Se considera como ese tipo de tabla aquellas que teniendo encabezados de filas Y columnas al menos uno de ellos es además
+	 * multinivel
 	 *
-	 * @param checkCode
-	 * @param nodeNode
-	 * @param elementGiven
-	 * @return
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
 	 */
 	protected static boolean functionTableHeadingComplex(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// Creamos la matriz que representa la tabla
@@ -184,12 +206,10 @@ public final class CheckTables {
 		}
 		int y = trList.getLength();
 		TableNode[][] table = createTable(trList, x, y);
-
 		// Si la tabla es bidireccional, es compleja
 		if (!isBidirectionalHeading(table, x, y)) {
 			return false;
 		}
-
 		// Comprobamos si tiene mas de una fila de encabezados, entonces también será
 		// compleja
 		boolean complex = true;
@@ -207,7 +227,6 @@ public final class CheckTables {
 			}
 			// }
 		}
-
 		// Comprobamos si tiene mas de una columna de encabezados, entonces también será
 		// compleja
 		complex = true;
@@ -222,10 +241,17 @@ public final class CheckTables {
 				return false;
 			}
 		}
-
 		return false;
 	}
 
+	/**
+	 * Function table heading blank.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	protected static boolean functionTableHeadingBlank(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// Creamos la matriz que representa la tabla
 		NodeList trList = elementGiven.getElementsByTagName("tr");
@@ -235,23 +261,18 @@ public final class CheckTables {
 		}
 		int maxRows = trList.getLength();
 		final TableNode[][] table = createTable(trList, maxCols, maxRows);
-
 		final boolean isBidirectionalCheck = isBidirectionalHeading(table, maxCols, maxRows);
 		final int initialCounter = isBidirectionalCheck ? 1 : 0;
 		for (int col = 0; col < maxCols; col++) {
 			for (int row = initialCounter; row < maxRows; row++) {
-				//TODO REvisar condición añadida table[row][col].getNode() !=null
-				
-				if (table[row][col].isHeaderCell() && table[row][col].getNode() !=null && StringUtils
-						.isEmpty(StringUtils.normalizeWhiteSpaces(table[row][col].getNode().getTextContent()))) {
+				if (table[row][col].isHeaderCell() && table[row][col].getNode() != null && StringUtils.isEmpty(StringUtils.normalizeWhiteSpaces(table[row][col].getNode().getTextContent()))) {
 					return true;
 				}
 			}
 		}
 		for (int row = initialCounter; row < maxRows; row++) {
 			try {
-				if (table[row][0].isHeaderCell() && StringUtils
-						.isEmpty(StringUtils.normalizeWhiteSpaces(table[row][0].getNode().getTextContent()))) {
+				if (table[row][0].isHeaderCell() && StringUtils.isEmpty(StringUtils.normalizeWhiteSpaces(table[row][0].getNode().getTextContent()))) {
 					return true;
 				}
 			} catch (Exception e) {
@@ -263,10 +284,17 @@ public final class CheckTables {
 				return false;
 			}
 		}
-
 		return false;
 	}
 
+	/**
+	 * Function missing id headers.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	protected static boolean functionMissingIdHeaders(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final NodeList listRows = elementGiven.getElementsByTagName("tr");
 		for (int i = 0; i < listRows.getLength(); i++) {
@@ -285,8 +313,7 @@ public final class CheckTables {
 				final Element td = (Element) listTd.item(j);
 				final String content = StringUtils.normalizeWhiteSpaces(td.getTextContent());
 				final boolean onlyWhiteChars = content.trim().isEmpty();
-				if (!onlyWhiteChars
-						&& (!td.hasAttribute("headers") || (StringUtils.isEmpty(td.getAttribute("headers"))))) {
+				if (!onlyWhiteChars && (!td.hasAttribute("headers") || (StringUtils.isEmpty(td.getAttribute("headers"))))) {
 					return true;
 				}
 			}
@@ -295,24 +322,29 @@ public final class CheckTables {
 	}
 
 	/**
-	 * Consideraremos que una tabla tiene encabezamientos en un sentido sí: 1.-
-	 * Todas las celdas de la primera fila o columna son encabezados (encabezamiento
-	 * correcto o solo una celda en esa fila o columna) 2.- Tiene más de una celda
-	 * de encabezamiento en esa fila o columna
+	 * Consideraremos que una tabla tiene encabezamientos en un sentido sí: 1.- Todas las celdas de la primera fila o columna son encabezados (encabezamiento correcto o solo una celda en esa fila o
+	 * columna) 2.- Tiene más de una celda de encabezamiento en esa fila o columna
 	 *
-	 * @param table
-	 * @return
+	 * @param table the table
+	 * @param x     the x
+	 * @param y     the y
+	 * @return true, if is bidirectional heading
 	 */
-	//TODO Comprobar además que no sea una tabla irregular, ya que, aun teniedo la primera fila y columna de encabezado, puede tener encabezados en su interior
 	protected static boolean isBidirectionalHeading(TableNode[][] table, int x, int y) {
 		return isCorrectHorizontalHeading(table, 0, x, true) && isCorrectVerticalHeading(table, y, 0, true) && !isIrregularTable(table, x, y);
 	}
 
+	/**
+	 * Function correct heading.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	protected static boolean functionCorrectHeading(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-		if (elementGiven.getElementsByTagName("th") != null
-				&& ((NodeList) elementGiven.getElementsByTagName("th")).getLength() != 0) {
+		if (elementGiven.getElementsByTagName("th") != null && ((NodeList) elementGiven.getElementsByTagName("th")).getLength() != 0) {
 			NodeList trList = elementGiven.getElementsByTagName("tr");
-
 			// Calculamos el número de celdas en la horizontal y en la vertical de la tabla
 			// x será el número de elementos que tenga el primer tr de la tabla (primera
 			// fila) teniendo en cuanenta los colspan
@@ -324,13 +356,11 @@ public final class CheckTables {
 				}
 				int y = trList.getLength();
 				TableNode[][] table = createTable(trList, x, y);
-
 				// Comprobamos que no todos los elementos de la tabla sean encabezados, si es
 				// asi ERROR
 				if (isFullHeaderTable(table, x, y)) {
 					return false;
 				}
-
 				// Si la tabla tiene datos y encabezados, entonces comprobamos que estos sean
 				// correctos
 				if (isBidirectionalHeading(table, x, y)) {
@@ -343,8 +373,8 @@ public final class CheckTables {
 					}
 				} else {
 					// Cmprobamos si la tabla es horizontal o vertical y si está bien formada
-					if(isIrregularTable(table, x, y)) {
-						//TODO Si es irregular no evaluamos nada y delegramos esto en otras validaciones 
+					if (isIrregularTable(table, x, y)) {
+						// Si es irregular no evaluamos nada y delegramos esto en otras validaciones
 						return true;
 					}
 					if (isCorrectHorizontalHeading(table, 0, x, false)) {
@@ -361,6 +391,14 @@ public final class CheckTables {
 		return true;
 	}
 
+	/**
+	 * Checks if is full header table.
+	 *
+	 * @param table the table
+	 * @param x     the x
+	 * @param y     the y
+	 * @return true, if is full header table
+	 */
 	// Comprueba si la tabla tiene algun elemento que no sea un encabezado
 	private static boolean isFullHeaderTable(TableNode[][] table, int x, int y) {
 		for (int i = 0; i < y; i++) {
@@ -371,8 +409,7 @@ public final class CheckTables {
 					// Comprobamos que no sea un encabezado ni un th, porque, en el casod e que
 					// fuese un th
 					// vacio no sería un encabezado correcto y no estaría marcado como tal.
-					if (!table[i][j].isHeaderCell() && !table[i][j].isSpanCell()
-							&& !"th".equalsIgnoreCase(table[i][j].getNode().getNodeName())) {
+					if (!table[i][j].isHeaderCell() && !table[i][j].isSpanCell() && !"th".equalsIgnoreCase(table[i][j].getNode().getNodeName())) {
 						return false;
 					}
 				}
@@ -383,6 +420,12 @@ public final class CheckTables {
 
 	// Le pasamos u nodo y nos dice si la primera celda es o no encabezado
 	// Consideramos esta y solo esta (la 0,0) encabezado cuando es th(con o sin
+	/**
+	 * Checks if is first header cell.
+	 *
+	 * @param node the node
+	 * @return true, if is first header cell
+	 */
 	// texto) o td vacío
 	private static boolean isFirstHeaderCell(Node node) {
 		final String content = StringUtils.normalizeWhiteSpaces(node.getTextContent());
@@ -392,6 +435,14 @@ public final class CheckTables {
 
 	// Recorremos la tabla, si encontramos una celda encabezado, comprobamos que o
 	// la fila o la columna o ambas,
+	/**
+	 * Checks if is correct bidirectional table.
+	 *
+	 * @param table the table
+	 * @param x     the x
+	 * @param y     the y
+	 * @return true, if is correct bidirectional table
+	 */
 	// a la que pertenece es de encabezados, en caso contrario ERROR
 	private static boolean isCorrectBidirectionalTable(TableNode[][] table, int x, int y) {
 		boolean correctHeader;
@@ -408,12 +459,19 @@ public final class CheckTables {
 		return true;
 	}
 
+	/**
+	 * Check row column from cell.
+	 *
+	 * @param table  the table
+	 * @param x      the x
+	 * @param y      the y
+	 * @param file   the file
+	 * @param column the column
+	 * @return true, if successful
+	 */
 	/*
-	 * Comprobamos si la fila o columna (o ambas) a la que pertenece una celda es
-	 * una fila o columna de encabezados Como se ha dado por bueno un encabezado si
-	 * es o un th con texto o un td vacío, y en el caso de tablas bidireccionales se
-	 * permite que la primera celda (y solo esta) pueda ser un th vacío, hay que
-	 * hacer una comprobación más.
+	 * Comprobamos si la fila o columna (o ambas) a la que pertenece una celda es una fila o columna de encabezados Como se ha dado por bueno un encabezado si es o un th con texto o un td vacío, y en
+	 * el caso de tablas bidireccionales se permite que la primera celda (y solo esta) pueda ser un th vacío, hay que hacer una comprobación más.
 	 */
 	private static boolean checkRowColumnFromCell(TableNode[][] table, int x, int y, int file, int column) {
 		// Comprobamos si la fila es de encabezados si no lo es, entonces para que la
@@ -426,11 +484,9 @@ public final class CheckTables {
 				isCorrect = false;
 			}
 		}
-
 		if (isCorrect) {
 			return true;
 		}
-
 		// Comprobamos si la columna es de encabezados, si hemos llegado a este puntoes
 		// porque la fila de la celda
 		// no es de encabezados, entonces, en cuanto encontremos una celda en la columna
@@ -444,6 +500,14 @@ public final class CheckTables {
 		return true;
 	}
 
+	/**
+	 * Checks if is correct horizontal table.
+	 *
+	 * @param table the table
+	 * @param x     the x
+	 * @param y     the y
+	 * @return true, if is correct horizontal table
+	 */
 	// Comprueba si una tabla con encabezados en la horizontal está bien formada
 	private static boolean isCorrectHorizontalTable(TableNode[][] table, int x, int y) {
 		// Se comprueba que todas las filas sean o encabezados o datos, (no híbridos)
@@ -460,6 +524,14 @@ public final class CheckTables {
 		return true;
 	}
 
+	/**
+	 * Checks if is correct vertical table.
+	 *
+	 * @param table the table
+	 * @param x     the x
+	 * @param y     the y
+	 * @return true, if is correct vertical table
+	 */
 	// Comprueba si una tabla con encabezados en la vertical está bien formada
 	private static boolean isCorrectVerticalTable(TableNode[][] table, int x, int y) {
 		// Se comprueba que todas las columnas sean o encabezados o datos, (no híbridos)
@@ -478,17 +550,23 @@ public final class CheckTables {
 
 	// Crea una matriz representativa de la tabla nxn (si nos entcontramos rowSpan o
 	// colSpan incluimos en las celdas
+	/**
+	 * Creates the table.
+	 *
+	 * @param trList the tr list
+	 * @param x      the x
+	 * @param y      the y
+	 * @return the table node[][]
+	 */
 	// correspondientes un elemento tableNode con la propiedad isSpanCell = true)
 	private static TableNode[][] createTable(NodeList trList, int x, int y) {
 		TableNode[][] table = new TableNode[y][x];
 		// Inicializamos la matriz
 		inizializeTable(table, y, x);
-
 		// Recorremos las filas de tabla
 		for (int i = 0; i < y; i++) {
 			NodeList rowList = trList.item(i).getChildNodes();
 			List<Node> nodeElementList = createNodeElementList(rowList);
-
 			int j = 0;
 			int element = 0;
 			// Vamos recorriendo los elementos de cada fila e incluyendo en la tabla los
@@ -524,7 +602,7 @@ public final class CheckTables {
 							if (isHeaderCell(nodeElementList.get(element - 1))) {
 								// Es un th con texto, estamos seguros de que es encabezado
 								tableNode.setHeaderCell(true);
-								node.setHeaderCell(true);// TODO Marcar como cabeceras las celdas de span si la que no
+								node.setHeaderCell(true);// Marcar como cabeceras las celdas de span si la que no
 															// es span lo es
 							}
 							if (i + z < y) {
@@ -538,7 +616,7 @@ public final class CheckTables {
 							if (isHeaderCell(nodeElementList.get(element - 1))) {
 								// Es un th con texto, estamos seguros de que es encabezado
 								tableNode.setHeaderCell(true);
-								node.setHeaderCell(true);// TODO Marcar como cabeceras las celdas de span si la que no
+								node.setHeaderCell(true);// Marcar como cabeceras las celdas de span si la que no
 															// es span lo es
 							}
 							if (j + z < x) {
@@ -553,6 +631,12 @@ public final class CheckTables {
 		return table;
 	}
 
+	/**
+	 * Creates the node element list.
+	 *
+	 * @param nodeList the node list
+	 * @return the list
+	 */
 	private static List<Node> createNodeElementList(NodeList nodeList) {
 		List<Node> elementListNode = new ArrayList<>();
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -563,13 +647,18 @@ public final class CheckTables {
 		return elementListNode;
 	}
 
+	/**
+	 * Count length.
+	 *
+	 * @param nodeList the node list
+	 * @return the int
+	 */
 	private static int countLength(NodeList nodeList) {
 		int counter = 0;
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
 				final Element element = (Element) nodeList.item(i);
-				if (element.getAttribute("colspan") != null
-						&& StringUtils.isNotEmpty(element.getAttribute("colspan"))) {
+				if (element.getAttribute("colspan") != null && StringUtils.isNotEmpty(element.getAttribute("colspan"))) {
 					counter = counter + Integer.parseInt(element.getAttribute("colspan"));
 				} else {
 					counter++;
@@ -579,6 +668,13 @@ public final class CheckTables {
 		return counter;
 	}
 
+	/**
+	 * Inizialize table.
+	 *
+	 * @param table the table
+	 * @param x     the x
+	 * @param y     the y
+	 */
 	private static void inizializeTable(TableNode[][] table, int x, int y) {
 		for (int i = 0; i < x; i++) {
 			for (int j = 0; j < y; j++) {
@@ -590,6 +686,12 @@ public final class CheckTables {
 	}
 
 	// Comprueba si la lista de nodos que se le pasan corresponden a elementos de
+	/**
+	 * Checks if is hybrid list.
+	 *
+	 * @param nodeList the node list
+	 * @return true, if is hybrid list
+	 */
 	// encabezados
 	private static boolean isHybridList(List<TableNode> nodeList) {
 		boolean isHeader = nodeList.get(0).isHeaderCell();
@@ -601,15 +703,29 @@ public final class CheckTables {
 		return false;
 	}
 
+	/**
+	 * Checks if is header cell.
+	 *
+	 * @param node the node
+	 * @return true, if is header cell
+	 */
 	// Comprueba si una celda corresponde o no a un encabezado
 	private static boolean isHeaderCell(Node node) {
 		return node.getNodeName().equalsIgnoreCase("th") && StringUtils.isNotEmpty(node.getTextContent());
 	}
 
 	// Comprueba si la columna "colum" de una tabla es una columna de encabezados
+	/**
+	 * Checks if is correct vertical heading.
+	 *
+	 * @param table                the table
+	 * @param x                    the x
+	 * @param colum                the colum
+	 * @param isBidirectionalCheck the is bidirectional check
+	 * @return true, if is correct vertical heading
+	 */
 	// Ignoramos la primera celda que es especial
-	private static boolean isCorrectVerticalHeading(TableNode[][] table, int x, int colum,
-			boolean isBidirectionalCheck) {
+	private static boolean isCorrectVerticalHeading(TableNode[][] table, int x, int colum, boolean isBidirectionalCheck) {
 		int initialCounter = 0;
 		if (isBidirectionalCheck) {
 			initialCounter = 1;
@@ -632,9 +748,17 @@ public final class CheckTables {
 	}
 
 	// Comprueba si la fila "row" de una tabla es una fila de encabezados
+	/**
+	 * Checks if is correct horizontal heading.
+	 *
+	 * @param table                the table
+	 * @param row                  the row
+	 * @param y                    the y
+	 * @param isBidirectionalCheck the is bidirectional check
+	 * @return true, if is correct horizontal heading
+	 */
 	// Ignoramos la primera celda que es especial
-	private static boolean isCorrectHorizontalHeading(TableNode[][] table, int row, int y,
-			boolean isBidirectionalCheck) {
+	private static boolean isCorrectHorizontalHeading(TableNode[][] table, int row, int y, boolean isBidirectionalCheck) {
 		int initialCounter = 0;
 		if (isBidirectionalCheck) {
 			initialCounter = 1;
@@ -647,23 +771,34 @@ public final class CheckTables {
 		return true;
 	}
 
+	/**
+	 * Function header with only cell.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	protected static boolean functionHeaderWithOnlyCell(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList trList = elementGiven.getElementsByTagName("tr");
-
 		if (trList.item(0) != null) {
 			int numTds = ((Element) trList.item(0)).getElementsByTagName("td").getLength();
 			int numThs = ((Element) trList.item(0)).getElementsByTagName("th").getLength();
-
 			return numTds + numThs == 1;
 		}
-
 		return false;
 	}
 
+	/**
+	 * Checks if is irregular table.
+	 *
+	 * @param table the table
+	 * @param x     the x
+	 * @param y     the y
+	 * @return true, if is irregular table
+	 */
 	protected static boolean isIrregularTable(TableNode[][] table, int x, int y) {
-
 		boolean isIrregular = false;
-
 		for (int i = 1; i < y; i++) {
 			for (int j = 1; j < x; j++) {
 				if (table[i][j].isHeaderCell()) {
@@ -671,7 +806,6 @@ public final class CheckTables {
 				}
 			}
 		}
-
 		return isIrregular;
 	}
 }

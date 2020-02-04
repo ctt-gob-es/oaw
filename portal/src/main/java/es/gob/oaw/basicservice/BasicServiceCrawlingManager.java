@@ -102,10 +102,8 @@ public class BasicServiceCrawlingManager {
 		crawlerData.setFicheroNorma(includeBrokenLinksCheck(CrawlerUtils.getFicheroNorma(idGuideline), basicServiceForm.getReport()));
 		crawlerData.setDomains(es.inteco.utils.CrawlerUtils.addDomainsToList(basicServiceForm.getDomain(), true, Constants.ID_LISTA_SEMILLA));
 		crawlerData.setInDirectory(basicServiceForm.isInDirectory());
-		// TODO Calculate complex
+		// Calculate complex
 		ComplejidadForm comp = ComplejidadDAO.getById(DataBaseManager.getConnection(), basicServiceForm.getComplexity());
-		// crawlerData.setTopN(Integer.parseInt(basicServiceForm.getAmplitud()));
-		// crawlerData.setProfundidad(Integer.parseInt(basicServiceForm.getProfundidad()));
 		if (comp != null) {
 			crawlerData.setTopN(comp.getAmplitud());
 			crawlerData.setProfundidad(comp.getProfundidad());

@@ -36,17 +36,13 @@ import es.inteco.plugin.Cartucho;
 import es.inteco.plugin.dao.DataBaseManager;
 
 /**
- * Implementación de un cartucho que analiza las urls, así como el contenido de
- * las páginas y clasificarlas como maliciosas o no.
+ * Implementación de un cartucho que analiza las urls, así como el contenido de las páginas y clasificarlas como maliciosas o no.
  */
 public class CartuchoAccesibilidad extends Cartucho {
-
 	@Override
 	public void analyzer(final Map<String, Object> datos) {
 		Logger.putLog("Iniciando evaluación de accesibilidad desde el rastreador de la url: " + datos.get("url"), CartuchoAccesibilidad.class, Logger.LOG_LEVEL_INFO);
-
 		final PropertiesManager pmgr = new PropertiesManager();
-
 		final CheckAccessibility checkAccesibility = new CheckAccessibility();
 		checkAccesibility.setEntity((String) datos.get("entity"));
 		checkAccesibility.setGuideline(datos.get("guidelineFile").toString().substring(0, datos.get("guidelineFile").toString().lastIndexOf('.')).replace("-nobroken", ""));
@@ -56,22 +52,17 @@ public class CartuchoAccesibilidad extends Cartucho {
 		checkAccesibility.setIdRastreo((Long) datos.get("idFulfilledCrawling"));
 		checkAccesibility.setIdObservatory((Long) datos.get("idObservatory"));
 		checkAccesibility.setContent((String) datos.get("contenido"));
-
-		// TODO Propagar el charset
+		// Propagar el charset
 		checkAccesibility.setCharset((String) datos.get("charset"));
-
 		boolean isLast = (Boolean) datos.get("isLast");
-
 		try {
 			EvaluatorUtils.evaluateContent(checkAccesibility, pmgr.getValue("crawler.core.properties", "check.accessibility.default.language"));
 		} catch (Exception e) {
 			Logger.putLog("Excepcion: ", CartuchoAccesibilidad.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-
 		if (isLast) {
 			CacheUtils.removeFromCache(IntavConstants.CHECKED_LINKS_CACHE_KEY + checkAccesibility.getIdRastreo());
 			Logger.putLog("Realizando tareas post-analisis", CartuchoAccesibilidad.class, Logger.LOG_LEVEL_DEBUG);
-
 			// Calculamos el resultado de la comprobacion titulos diferentes ya
 			// que requiere haber realizado el rastreo completo
 			if (checkAccesibility.getGuidelineFile().startsWith(IntavConstants.GUIDELINE_FILENAME_START_2012)
@@ -80,7 +71,6 @@ public class CartuchoAccesibilidad extends Cartucho {
 				final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idRastreo);
 				processDiferentTitlesCheck(idRastreo, evaluationIds);
 			}
-
 		}
 	}
 
@@ -119,5 +109,4 @@ public class CartuchoAccesibilidad extends Cartucho {
 			}
 		}
 	}
-
 }

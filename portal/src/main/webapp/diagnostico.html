@@ -28,7 +28,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	<div id="cabeza">
 		<h1>
 			<img class="pull-left" src="/oaw/images/logo.jpg" alt="Observatorio de Accesibilidad Web" /> <img
-				src="/oaw/images/logo-mptfp.png"
+				src="/oaw/images/logo-vice-maetd.png"
 				alt="MINHAFP - Ministerio de Pol&iacute;tica Territorial y Funci&oacute;n P&uacute;blica" width="265px" />
 		</h1>
 	</div>
@@ -290,7 +290,7 @@ fieldset p {
 	<div id="pie">
 		<div id="creditos">
 			Copyright &#169; 2019 - <span class="negrita">Ministerio de Pol&iacute;tica Territorial y Funci&oacute;n
-				P&uacute;blica</span> &nbsp; Versi&#243;n: <b>5.0.0</b>
+				P&uacute;blica</span> &nbsp; Versi&#243;n: <b>5.0.2</b>
 		</div>
 	</div>
 	<script type="application/javascript">
@@ -310,7 +310,25 @@ fieldset p {
 		
 		
 		
-		
+		$("#radio-1").click(function () {
+          $("#crawler").show();
+          $("#urlset").hide();
+          $("#source").hide();
+        });
+
+        $("#radio-2").click(function () {
+          $("#crawler").hide();
+          $("#urlset").show();
+          $("#source").hide();
+          $("#historico").show();
+        });
+
+        $("#radio-3").click(function () {
+          $("#crawler").hide();
+          $("#urlset").hide();
+          $("#source").show();
+          $("#historico").hide();
+        });
 		
 		
 		

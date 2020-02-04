@@ -41,13 +41,13 @@ public class BasicServiceMailService {
 	/** The Constant OBSERVATORIO_ACCESIBILIDAD. */
 	private static final String OBSERVATORIO_ACCESIBILIDAD = "Observatorio Accesibilidad (beta)";
 	/** The Constant OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS. */
-	private static final String OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS = "Observatorio Accesibilidad (beta sin comprobar enlaces rotos)";
+	private static final String OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS = "Observatorio Accesibilidad (beta) (sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_UNE_EN2019. */
 //	private static final String OBSERVATORIO_UNE_EN2019 = "Observatorio UNE EN2019 (beta)";
-	private static final String OBSERVATORIO_UNE_EN2019 = "Seguimiento simplificado Directiva";
+	private static final String OBSERVATORIO_UNE_EN2019 = "Seguimiento simplificado Directiva (beta)";
 	/** The Constant OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS. */
 //	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Observatorio UNE EN2019 (beta sin comprobar enlaces rotos)";
-	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Seguimiento simplificado Directiva (beta sin comprobar enlaces rotos)";
+	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Seguimiento simplificado Directiva (beta) (sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_UNE_2012_VERSION_2. */
 	private static final String OBSERVATORIO_UNE_2012_VERSION_2 = "Observatorio UNE 2012 (versión 2)";
 	/** The Constant OBSERVATORIO_UNE_2012_ANTIGUA. */
@@ -122,18 +122,21 @@ public class BasicServiceMailService {
 	 */
 	private String getMailBody(final BasicServiceForm basicServiceForm) {
 		final String text;
+		String complexName = "";
 		if (basicServiceForm.isContentAnalysis()) {
 			text = MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory.content"), basicServiceForm.getUser(),
 					reportToString(basicServiceForm.getReport()));
 		} else {
 			if ("0".equals(basicServiceForm.getComplexity())) {
-				basicServiceForm.setAmplitud("1");
-				basicServiceForm.setProfundidad("1");
+				basicServiceForm.setAmplitud("-");
+				basicServiceForm.setProfundidad("-");
+				complexName = "Única";
 			} else {
 				try (Connection c = DataBaseManager.getConnection()) {
 					ComplejidadForm comp = ComplejidadDAO.getById(c, basicServiceForm.getComplexity());
 					basicServiceForm.setAmplitud(String.valueOf(comp.getAmplitud()));
 					basicServiceForm.setProfundidad(String.valueOf(comp.getProfundidad()));
+					complexName = comp.getName();
 				} catch (Exception e) {
 					Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				}
@@ -148,7 +151,7 @@ public class BasicServiceMailService {
 			} catch (Exception e) {
 				Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			}
-			text = MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory"), basicServiceForm.getUser(), basicServiceForm.getDomain(),
+			text = MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory"), basicServiceForm.getUser(), basicServiceForm.getDomain(), complexName,
 					basicServiceForm.getProfundidad(), basicServiceForm.getAmplitud(), inDirectory, reportToString(basicServiceForm.getReport()), proxyActive);
 		}
 		return text;

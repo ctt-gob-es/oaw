@@ -25,7 +25,6 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
-import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.dao.proxy.ProxyDAO;
 
@@ -151,13 +150,13 @@ public final class ComplejidadDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static ComplejidadForm getById(Connection c, String id) throws SQLException {
-
 		final String query = "SELECT * FROM complejidades_lista WHERE id_complejidad = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, Long.parseLong(id));
 			ResultSet result = ps.executeQuery();
 			if (result.next()) {
 				ComplejidadForm cmp = new ComplejidadForm();
+				cmp.setName(result.getString("nombre"));
 				cmp.setAmplitud(result.getInt("amplitud"));
 				cmp.setProfundidad(result.getInt("profundidad"));
 				return cmp;
@@ -226,64 +225,48 @@ public final class ComplejidadDAO {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * Gets the complexity by name.
 	 *
-	 * @param c            the c
+	 * @param c              the c
 	 * @param complexityName the complexity name
 	 * @return the complexity by name
 	 * @throws Exception the exception
 	 */
 	public static ComplejidadForm getComplexityByName(Connection c, String complexityName) throws Exception {
-
 		ComplejidadForm complexity = null;
-
 		String query = "SELECT c.id_complejidad, c.nombre FROM complejidades_lista c WHERE c.nombre = ?";
-
 		try (PreparedStatement ps = c.prepareStatement(query)) {
-
 			ps.setString(1, complexityName);
-
 			try (ResultSet rs = ps.executeQuery()) {
-
 				if (rs.next()) {
 					complexity = new ComplejidadForm();
 					complexity.setId(rs.getString("c.id_complejidad"));
 					complexity.setName(rs.getString("c.nombre"));
-
 				}
 			}
-
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return complexity;
-
 	}
-	
+
 	/**
 	 * Gets the complexity by id.
 	 *
-	 * @param c            the c
+	 * @param c              the c
 	 * @param complexityName the complexity name
 	 * @return the complexity by id
 	 * @throws Exception the exception
 	 */
 	public static ComplejidadForm getComplexityById(Connection c, String complexityId) throws Exception {
-
 		ComplejidadForm complexity = null;
-
 		String query = "SELECT * FROM complejidades_lista WHERE id_complejidad = ?";
-
 		try (PreparedStatement ps = c.prepareStatement(query)) {
-
 			ps.setString(1, complexityId);
-
 			try (ResultSet rs = ps.executeQuery()) {
-
 				if (rs.next()) {
 					complexity = new ComplejidadForm();
 					complexity.setId(rs.getString("id_complejidad"));
@@ -292,16 +275,10 @@ public final class ComplejidadDAO {
 					complexity.setAmplitud(Integer.parseInt(rs.getString("amplitud")));
 				}
 			}
-
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return complexity;
-
 	}
-	
-	
-
 }

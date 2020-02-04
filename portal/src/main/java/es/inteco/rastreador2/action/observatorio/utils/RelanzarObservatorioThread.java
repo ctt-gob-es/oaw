@@ -76,7 +76,7 @@ public class RelanzarObservatorioThread extends Thread {
 		try {
 			c = DataBaseManager.getConnection();
 			c.setAutoCommit(false);
-			// TODO Borramos de la tabla de estado
+			// Borramos de la tabla de estado
 			EstadoObservatorioDAO.deleteEstado(c, Integer.parseInt(idObservatorio), Integer.parseInt(idEjecucionObservatorio));
 			// Recuperamos los rastreos pendentes de este observatorio
 			List<Long> pendindCrawlings = RastreoDAO.getPendingCrawlerFromSeedAndObservatory(c, Long.parseLong(idObservatorio), Long.parseLong(idEjecucionObservatorio));
@@ -107,7 +107,7 @@ public class RelanzarObservatorioThread extends Thread {
 							Long idNewExecution = Long.valueOf(RastreoDAO.getExecutedCrawling(c, idCrawling, RastreoDAO.getIdSeedByIdRastreo(c, idCrawling)).getId());
 							RastreoDAO.setObservatoryExecutionToCrawlerExecution(c, Long.parseLong(idEjecucionObservatorio), idNewExecution);
 							RastreoDAO.actualizarEstadoRastreo(c, idCrawling.intValue(), es.inteco.crawler.common.Constants.STATUS_FINALIZED);
-							// TODO Calculate scores
+							// Calculate scores
 							ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idEjecucionObservatorio), 0, null);
 							final List<ResultadoSemillaFullForm> seedsResults2 = ObservatorioDAO.getResultSeedsFullFromObservatory(c, new SemillaForm(), Long.parseLong(idEjecucionObservatorio), 0L,
 									-1);

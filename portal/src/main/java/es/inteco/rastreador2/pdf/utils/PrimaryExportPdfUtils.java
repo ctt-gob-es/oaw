@@ -239,7 +239,16 @@ public final class PrimaryExportPdfUtils {
 				writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
 				writer.getExtraCatalog().put(new PdfName("Lang"), new PdfString("es"));
 				final String crawlingDate = crawling != null ? crawling.getDate() : CrawlerUtils.formatDate(new Date());
-				final String footerText = messageResources.getMessage("ob.resAnon.intav.report.foot", new String[] { seed, crawlingDate });
+				String footerText = "";
+				String seedFooter = seed;
+				if (seed.length() > 50) {
+					seedFooter = seed.substring(0, 50).concat("...");
+				}
+				if (!pdfBuilder.isBasicService()) {
+					footerText = messageResources.getMessage("ob.resAnon.intav.report.foot", new String[] { seedFooter, crawlingDate });
+				} else {
+					footerText = messageResources.getMessage("ob.resAnon.intav.report.foot.simple");
+				}
 				writer.setPageEvent(new ExportPageEventsObservatoryMP(footerText, crawlingDate));
 				ExportPageEventsObservatoryMP.setPrintFooter(true);
 				final IndexEvents index = new IndexEvents();
@@ -255,22 +264,13 @@ public final class PrimaryExportPdfUtils {
 						PDFUtils.addCoverPage(document, messageResourcesAccesibility.getMessage("pdf.accessibility.title", new String[] { seed.toUpperCase(), pdfBuilder.getTitle() }),
 								pdfBuilder.getBasicServiceForm().getName(), "Informe emitido bajo demanda.");
 					} else {
-						AnonymousResultExportPdfAccesibilidad.addCoverPage(document, messageResources2019.getMessage("pdf.accessibility.title"),
+						AnonymousResultExportPdfAccesibilidad.addCoverPage(document, messageResourcesAccesibility.getMessage("pdf.accessibility.title"),
 								messageResourcesAccesibility.getMessage("pdf.accessibility.subtitle"),
 								messageResourcesAccesibility.getMessage("pdf.accessibility.portal", new String[] { seed.toUpperCase(), currentEvaluationPageList.get(0).getUrl() }),
 								messageResourcesAccesibility.getMessage("pdf.accessibility.info.estimated"));
 					}
 					// Introduction chapter
 					pdfBuilder.createIntroductionChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
-					pdfTocManager.addChapterCount();
-					if (!pdfBuilder.isBasicService()) {
-						// Seed detail chapter
-						((AnonymousResultExportPdfAccesibilidad) pdfBuilder).createSeedDetailsChapter(messageResourcesAccesibility, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT,
-								crawling.getSeed());
-					}
-					pdfTocManager.addChapterCount();
-					// Muestra de páginas
-					pdfBuilder.createObjetiveChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType);
 					pdfTocManager.addChapterCount();
 					// Resumen de resultados
 					final RankingInfo rankingActual = crawling != null ? observatoryManager.calculateRankingWithCompliance(idObservatoryExecution, crawling.getSeed()) : null;
@@ -292,7 +292,7 @@ public final class PrimaryExportPdfUtils {
 				// Nuevo informe 2019
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 					if (pdfBuilder.isBasicService()) {
-						PDFUtils.addCoverPage(document, messageResources2019.getMessage("pdf.accessibility.title", new String[] { seed.toUpperCase(), pdfBuilder.getTitle() }),
+						PDFUtils.addCoverPage(document, messageResources2019.getMessage("pdf.accessibility.title.basic.service", new String[] { seed.toUpperCase(), pdfBuilder.getTitle() }),
 								pdfBuilder.getBasicServiceForm().getName(), "Informe emitido bajo demanda.");
 					} else {
 						AnonymousResultExportPdfUNEEN2019.addCoverPage(document, messageResources2019.getMessage("pdf.accessibility.title"),
@@ -355,7 +355,8 @@ public final class PrimaryExportPdfUtils {
 					final BasicServiceObservatoryResultsSummaryPdfSectionBuilder observatoryResultsSummarySectionBuilder = new BasicServiceObservatoryResultsSummaryPdfSectionBuilder(
 							currentEvaluationPageList);
 					if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad) {
-						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), document, pdfTocManager);
+						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryAccesibility(MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), document,
+								pdfTocManager);
 					} else if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources2019, document, pdfTocManager);
 					} else if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
@@ -382,6 +383,12 @@ public final class PrimaryExportPdfUtils {
 				// en el índice
 				IndexUtils.createIndex(writer, document, messageResources.getMessage("pdf.accessibility.index.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 				ExportPageEventsObservatoryMP.setPrintFooter(true);
+				// PENDING (Disable) Generar JSON compatible con WCAG-EM
+//				WcagEmReport report = WcagEmUtils.generateReport(messageResources, pdfBuilder, BasicServiceUtils.getTitleDocFromContent(currentEvaluationPageList.get(0).getSource(), false),
+//						Long.parseLong(crawling.getId()));
+//				ObjectMapper mapper = new ObjectMapper();
+//				String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);
+//				org.apache.commons.io.FileUtils.writeStringToFile(new File(new File(file.getPath()).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
 			} catch (DocumentException e) {
 				Logger.putLog("Error al exportar a pdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;

@@ -94,9 +94,17 @@ public final class ExportOpenOfficeUtils {
 	 * @param date                        the date
 	 * @param tipoObservatorio            the tipo observatorio
 	 * @param numberObservatoryExecutions the number observatory executions
+	 * @param tagsToFilter                the tags to filter
+	 * @param grpahicConditional          the grpahic conditional
+	 * @param exObsIds                    the ex obs ids
+	 * @param idBaseTemplate              the id base template
+	 * @param idSegmentTemplate           the id segment template
+	 * @param idComplexityTemplate        the id complexity template
+	 * @param reportTitle                 the report title
 	 */
 	public static void createOpenOfficeDocumentFiltered(final HttpServletRequest request, final String filePath, final String graphicPath, final String date, final Long tipoObservatorio,
-			int numberObservatoryExecutions, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate, String reportTitle) {
+			int numberObservatoryExecutions, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate,
+			String reportTitle) {
 		final long idObservatory;
 		if (request.getParameter(Constants.ID_OBSERVATORIO) != null) {
 			idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
@@ -105,11 +113,9 @@ public final class ExportOpenOfficeUtils {
 		}
 		try (Connection c = DataBaseManager.getConnection()) {
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
-
-			//TODO Apply tags filter
+			// Apply tags filter
 			final List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioUNEEN2019Utils.getGlobalResultData(request.getParameter(Constants.ID),
 					Constants.COMPLEXITY_SEGMENT_NONE, null, false, tagsToFilter);
-
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, Long.valueOf(request.getParameter(Constants.ID)));
 			final OpenOfficeDocumentBuilder openOfficeDocumentBuilder = getDocumentBuilder(request.getParameter(Constants.ID), request.getParameter(Constants.ID_OBSERVATORIO), tipoObservatorio,
 					CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId()));

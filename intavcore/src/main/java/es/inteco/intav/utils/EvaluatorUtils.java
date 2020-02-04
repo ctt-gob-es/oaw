@@ -559,7 +559,7 @@ public final class EvaluatorUtils {
 											codigo.add(HTMLEntities.htmlAngleBrackets(cadena.substring(0, numChars - 1)));
 										}
 									} catch (Exception e) {
-										// TODO: ver si hay que hacer algo
+										Logger.putLog("Excepcion: ", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
 									}
 									codigo.add("...");
 									break;
@@ -839,9 +839,10 @@ public final class EvaluatorUtils {
 	 * <p/>
 	 * Se calcula también la puntuación por aspectos, a través de un mapa que asociará cada aspecto (asociado a un grupo) con una lista de puntuaciones de cada check que forma el grupo.
 	 *
-	 * @param evaluation  the evaluation
-	 * @param methodology the methodology
-	 * @param isDebugMode the is debug mode
+	 * @param evaluation   the evaluation
+	 * @param methodology  the methodology
+	 * @param isDebugMode  the is debug mode
+	 * @param pointWarning the point warning
 	 * @return the observatory evaluation form
 	 */
 	public static ObservatoryEvaluationForm generateObservatoryEvaluationForm(Evaluation evaluation, String methodology, boolean isDebugMode, boolean pointWarning) {
@@ -895,6 +896,8 @@ public final class EvaluatorUtils {
 								if (subgroup.getRelatedChecks().containsKey(check)) {
 									observatorySubgroupForm.getIgnoreRelatedChecks().add(subgroup.getRelatedChecks().get(check));
 								}
+							} else { // PENDING Save passed checks to generate wcag.em report
+								observatorySubgroupForm.getSuccessChecks().add(check);
 							}
 						}
 					}
@@ -966,6 +969,7 @@ public final class EvaluatorUtils {
 	 * @param hasProblem              the has problem
 	 * @param hasWarning              the has warning
 	 * @param executedSubgroup        the executed subgroup
+	 * @param pointWarning            the point warning
 	 */
 	private static void addSubgroupScore(ObservatorySubgroupForm observatorySubgroupForm, GuidelineGroup subgroup, Map<String, List<Float>> aspects, boolean hasProblem, boolean hasWarning,
 			boolean executedSubgroup, boolean pointWarning) {
@@ -1058,6 +1062,7 @@ public final class EvaluatorUtils {
 	 * Calcula la puntuación total de la evaluación. Se suma un punto por cada <code>Uno Verde</code> y se divide entre el número de verificaciones que se han tenido en cuenta.
 	 *
 	 * @param evaluationForm the evaluation form
+	 * @param pointWarning   the point warning
 	 * @return the evaluation score
 	 */
 	private static BigDecimal getEvaluationScore(ObservatoryEvaluationForm evaluationForm, boolean pointWarning) {
@@ -1092,6 +1097,7 @@ public final class EvaluatorUtils {
 	 * Gets the partial score.
 	 *
 	 * @param observatoryLevelForm the observatory level form
+	 * @param pointWarning         the point warning
 	 * @return the partial score
 	 */
 	private static BigDecimal getPartialScore(ObservatoryLevelForm observatoryLevelForm, boolean pointWarning) {
@@ -1124,6 +1130,7 @@ public final class EvaluatorUtils {
 	 * Gets the partial score.
 	 *
 	 * @param observatorySuitabilityForm the observatory suitability form
+	 * @param pointWarning               the point warning
 	 * @return the partial score
 	 */
 	private static BigDecimal getPartialScore(ObservatorySuitabilityForm observatorySuitabilityForm, boolean pointWarning) {
@@ -1276,7 +1283,7 @@ public final class EvaluatorUtils {
 			Logger.putLog("Error: ", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		HttpURLConnection connection = null;
-		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
+		// Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
 		// método también es usado por al JSP de conexión
 		final PropertiesManager pmgr = new PropertiesManager();
 		Logger.putLog("Conectando con la URL: " + url, EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
@@ -1318,7 +1325,7 @@ public final class EvaluatorUtils {
 			Logger.putLog("Error: ", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		HttpURLConnection connection = null;
-		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
+		// Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
 		// método también es usado por al JSP de conexión
 		final PropertiesManager pmgr = new PropertiesManager();
 		if (applyProxy(url, proxyActive, proxyHttpHost, proxyHttpPort)) {

@@ -12,10 +12,42 @@
 ******************************************************************************/
 package es.inteco.rastreador2.pdf.builder;
 
-import com.lowagie.text.*;
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import static es.inteco.common.ConstantsFont.DEFAULT_PADDING;
+import static es.inteco.common.ConstantsFont.HALF_LINE_SPACE;
+import static es.inteco.common.ConstantsFont.LINE_SPACE;
+
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Connection;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.ListIterator;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
+
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Chapter;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.List;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Section;
+import com.lowagie.text.TextElementArray;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.events.IndexEvents;
@@ -45,29 +77,6 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioAccesibilidadUt
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 import es.inteco.rastreador2.utils.ResultadosPrimariosObservatorioIntavUtils;
-import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.struts.util.LabelValueBean;
-import org.apache.struts.util.MessageResources;
-
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Connection;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.ListIterator;
-import java.util.Map;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-import static es.inteco.common.ConstantsFont.DEFAULT_PADDING;
-import static es.inteco.common.ConstantsFont.HALF_LINE_SPACE;
-import static es.inteco.common.ConstantsFont.LINE_SPACE;
 
 /**
  * AnonymousResultExportPdfUNE2012b. Clase replicada de {@link AnonymousResultExportPdfUNE2012} para la nueva versión de la metodología basada en la misma norma que la mencionada y conservar ambas
@@ -112,59 +121,90 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 	public void createIntroductionChapter(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, final Font titleFont) throws Exception {
 		final Chapter chapter = PDFUtils.createChapterWithTitle(this.messageResources.getMessage("ob.resAnon.intav.report.chapter1.title"), pdfTocManager, titleFont);
 		if (!isBasicService()) {
-			final SpecialChunk externalLink = new SpecialChunk("Observatorio de Accesibilidad Web", ConstantsFont.ANCHOR_FONT);
+			// P1
+			Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
+			SpecialChunk externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.p1.anchor1.text"), ConstantsFont.ANCHOR_FONT);
 			externalLink.setExternalLink(true);
-			externalLink.setAnchor("http://administracionelectronica.gob.es/PAe/accesibilidad");
-			final Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
+			externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.p1.anchor1.url"));
 			specialChunkMap.put(1, externalLink);
-			final String intro = "Mediante el [anchor1] se pretende ayudar a las Administraciones Públicas en el cumplimiento de los requisitos de accesibilidad vigentes. ";
-			chapter.add(PDFUtils.createParagraphAnchor(intro, specialChunkMap, ConstantsFont.PARAGRAPH));
-			PDFUtils.addParagraph(
-					"La realización de las iteraciones periódicas del Observatorio de Accesibilidad Web permite conocer el grado de cumplimiento de los principios de Accesibilidad Web, cómo éste va evolucionando a lo largo del tiempo, y los principales problemas que hay que resolver. De esta forma se consigue extraer las conclusiones y planes de acción adecuados para apoyar a las organizaciones a alcanzar el siguiente "
-							+ "objetivo: Conseguir afianzar un nivel óptimo de cumplimiento de forma sostenible en el tiempo.",
-					ConstantsFont.PARAGRAPH, chapter);
-			final SpecialChunk anchor = new SpecialChunk("ANEXO I", "anchor_annex", false, ConstantsFont.ANCHOR_FONT);
-			specialChunkMap.put(1, anchor);
-			chapter.add(PDFUtils.createParagraphAnchor(
-					"Las diferentes iteraciones del Estudio de Observatorio se realizan según una metodología propia acordada (disponible en el [anchor1]) y que supone una abstracción de los principios de accesibilidad en función de un conjunto de evaluaciones significativas. De este modo se consigue una estimación del estado de accesibilidad de los portales.",
-					specialChunkMap, ConstantsFont.PARAGRAPH));
-			final Section section1 = PDFUtils.createSection(this.messageResources.getMessage("ob.resAnon.intav.report.chapter11.title"), pdfTocManager.getIndex(),
-					ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
-			createSection11(this.messageResources, section1);
+			final SpecialChunk externalLink2 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.p1.anchor2.text"), ConstantsFont.ANCHOR_FONT);
+			externalLink2.setExternalLink(true);
+			externalLink2.setAnchor(messageResources.getMessage("pdf.accessibility.intro.p1.anchor2.url"));
+			specialChunkMap.put(2, externalLink2);
+			chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.p1"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			// P2
+			specialChunkMap = new HashMap<>();
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.p2.bold1"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(1, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.p2.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			externalLink.setExternalLink(true);
+			externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.p2.anchor1.url"));
+			specialChunkMap.put(2, externalLink);
+			chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.p2"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			// P3
+			specialChunkMap = new HashMap<>();
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.p3.bold1"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(1, externalLink);
+			chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.p3"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			/// createSection11(this.messageResources, section1);
 		} else {
-			final ArrayList<String> boldWords = new ArrayList<>();
-			boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.2.p1.bold"));
-			chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(
-					"El {0} realiza un análisis estimativo del grado de cumplimiento en materia de accesibilidad de los portales de las Administraciones Públicas realizando iteraciones oficiales en los ámbitos:  Administración General del Estado, Comunidades Autónomas y Entidades Locales. Todo ello con el objetivo de ofrecer un informe de situación que ayude a mejorar la accesibilidad de estos portales y centrar los esfuerzos futuros.",
-					boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
-			final String masInfo = "Más información en ";
-			final String link = "http://administracionelectronica.gob.es/PAe/accesibilidad";
-			Paragraph p = new Paragraph(masInfo, ConstantsFont.PARAGRAPH);
-			p.setSpacingBefore(LINE_SPACE);
-			p.add(PDFUtils.createPhraseLink(link, link, ConstantsFont.LINK_FONT));
-			chapter.add(p);
-			final String mensajeEmitidoAPeticion = "Este informe concreto se emite a {0}, herramienta puesta a disposición por el Observatorio de Accesibilidad Web, para su uso por parte de cualquier portal de las Administraciones Públicas.";
-			boldWords.clear();
-			boldWords.add("solicitud del interesado desde el Servicio de Diagnóstico en línea");
-			chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(mensajeEmitidoAPeticion, boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
-			boldWords.clear();
-			boldWords.add("ofrece una estimación de la situación general de la accesibilidad en ese portal");
-			final String annexAnchor = "ANEXO I";
-			final String parrafoEstimacionSituacionPreLink = "El informe {0} basado en la metodología acordada (";
-			final String parrafoEstimacionSituacionPostLink = ") pero no se trata de una \"Auditoría de Accesibilidad\".";
-			p = PDFUtils.createParagraphWithDiferentFormatWord(parrafoEstimacionSituacionPreLink, boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
-			Chunk chunk = new Chunk(annexAnchor, ConstantsFont.ANCHOR_FONT);
-			chunk.setLocalGoto("anchor_annex");
-			p.add(chunk);
-			p.add(PDFUtils.createPhrase(parrafoEstimacionSituacionPostLink, ConstantsFont.PARAGRAPH));
-			chapter.add(p);
-			boldWords.clear();
-			boldWords.add("Guía de validación de accesibilidad web");
-			final String revisionManual = "Para revisar la accesibilidad de un portal es necesario complementarlo con un análisis exhaustivo utilizando tanto herramientas manuales como automáticas. Para ayudar en este proceso puede consultarse la Guía Práctica del Observatorio de Accesibilidad Web \"{0}\"  disponible en ";
-			p = PDFUtils.createParagraphWithDiferentFormatWord(revisionManual, boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
-			final String linkDocumentacion = "http://administracionelectronica.gob.es/PAe/accesibilidad/documentacion";
-			p.add(PDFUtils.createPhraseLink(linkDocumentacion, linkDocumentacion, ConstantsFont.LINK_FONT));
-			chapter.add(p);
+//			final ArrayList<String> boldWords = new ArrayList<>();
+//			boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.2.p1.bold"));
+//			chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(
+//					"El {0} realiza un análisis estimativo del grado de cumplimiento en materia de accesibilidad de los portales de las Administraciones Públicas realizando iteraciones oficiales en los ámbitos:  Administración General del Estado, Comunidades Autónomas y Entidades Locales. Todo ello con el objetivo de ofrecer un informe de situación que ayude a mejorar la accesibilidad de estos portales y centrar los esfuerzos futuros.",
+//					boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
+//			final String masInfo = "Más información en ";
+//			final String link = "http://administracionelectronica.gob.es/PAe/accesibilidad";
+//			Paragraph p = new Paragraph(masInfo, ConstantsFont.PARAGRAPH);
+//			p.setSpacingBefore(LINE_SPACE);
+//			p.add(PDFUtils.createPhraseLink(link, link, ConstantsFont.LINK_FONT));
+//			chapter.add(p);
+//			final String mensajeEmitidoAPeticion = "Este informe concreto se emite a {0}, herramienta puesta a disposición por el Observatorio de Accesibilidad Web, para su uso por parte de cualquier portal de las Administraciones Públicas.";
+//			boldWords.clear();
+//			boldWords.add("solicitud del interesado desde el Servicio de Diagnóstico en línea");
+//			chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(mensajeEmitidoAPeticion, boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
+//			boldWords.clear();
+//			boldWords.add("ofrece una estimación de la situación general de la accesibilidad en ese portal");
+//			final String annexAnchor = "ANEXO I";
+//			final String parrafoEstimacionSituacionPreLink = "El informe {0} basado en la metodología acordada (";
+//			final String parrafoEstimacionSituacionPostLink = ") pero no se trata de una \"Auditoría de Accesibilidad\".";
+//			p = PDFUtils.createParagraphWithDiferentFormatWord(parrafoEstimacionSituacionPreLink, boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
+//			Chunk chunk = new Chunk(annexAnchor, ConstantsFont.ANCHOR_FONT);
+//			chunk.setLocalGoto("anchor_annex");
+//			p.add(chunk);
+//			p.add(PDFUtils.createPhrase(parrafoEstimacionSituacionPostLink, ConstantsFont.PARAGRAPH));
+//			chapter.add(p);
+//			boldWords.clear();
+//			boldWords.add("Guía de validación de accesibilidad web");
+//			final String revisionManual = "Para revisar la accesibilidad de un portal es necesario complementarlo con un análisis exhaustivo utilizando tanto herramientas manuales como automáticas. Para ayudar en este proceso puede consultarse la Guía Práctica del Observatorio de Accesibilidad Web \"{0}\"  disponible en ";
+//			p = PDFUtils.createParagraphWithDiferentFormatWord(revisionManual, boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
+//			final String linkDocumentacion = "http://administracionelectronica.gob.es/PAe/accesibilidad/documentacion";
+//			p.add(PDFUtils.createPhraseLink(linkDocumentacion, linkDocumentacion, ConstantsFont.LINK_FONT));
+//			chapter.add(p);
+			Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
+			SpecialChunk externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.p1.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			externalLink.setExternalLink(true);
+			externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.p1.anchor1.url"));
+			specialChunkMap.put(1, externalLink);
+			final SpecialChunk externalLink2 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.p1.anchor2.text"), ConstantsFont.ANCHOR_FONT);
+			externalLink2.setExternalLink(true);
+			externalLink2.setAnchor(messageResources.getMessage("pdf.accessibility.intro.p1.anchor2.url"));
+			specialChunkMap.put(2, externalLink2);
+			chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.p1"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			// P2
+			specialChunkMap = new HashMap<>();
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.p2.bold1"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(1, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.p2.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			externalLink.setExternalLink(true);
+			externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.p2.anchor1.url"));
+			specialChunkMap.put(2, externalLink);
+			chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.p2"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			// P3
+			specialChunkMap = new HashMap<>();
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.p3.bold1"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(1, externalLink);
+			chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.p3"), specialChunkMap, ConstantsFont.PARAGRAPH));
 		}
 		document.add(chapter);
 	}
@@ -1244,8 +1284,8 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 	public static void addObservatoryScoreSummary(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources, Document document, PdfTocManager pdfTocManager,
 			final java.util.List<ObservatoryEvaluationForm> currentEvaluationPageList, java.util.List<ObservatoryEvaluationForm> previousEvaluationPageList, final File file,
 			final RankingInfo rankingActual, final RankingInfo rankingPrevio) throws Exception {
-		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager,
-				ConstantsFont.CHAPTER_TITLE_MP_FONT);
+		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager.getIndex(),
+				pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resumen_resultados");
 		final ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p1.bold"));
 		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p1"), boldWords, ConstantsFont.paragraphBoldFont,
@@ -1322,7 +1362,6 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 			tablaRankings.addCell(createEvolutionLevelCell(messageResources, currentScore.getLevel(), previousScore.getLevel()));
 		}
 		tablaRankings.completeRow();
-
 		if (rankingActual != null) {
 			// Posición en categoría
 			tablaRankings.addCell(
@@ -1362,18 +1401,9 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 			tablaRankings.completeRow();
 		}
 		chapter.add(tablaRankings);
-		// TODO Gráficos
+		// Gráficos
 		final String noDataMess = messageResources.getMessage("grafica.sin.datos");
-
-//		chapter.add(Chunk.NEWLINE);
-//		chapter.add(new Paragraph("A continuación se muestra la distribución de páginas según el nivel de adecuación estimado (No válido, A o AA)", ConstantsFont.PARAGRAPH));
-//		// Gráfica nivel de adecuación
-//		addLevelAllocationResultsSummary(messageResources, chapter, file, currentEvaluationPageList, previousEvaluationPageList, noDataMess, pdfBuilder.isBasicService());
-//		// TODO Puntuación media y nivel de adecuación por página
-//		PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.pagina.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L,
-//				chapter, pdfTocManager.addSection(), 1);
-//		addResultsByPage(messageResources, chapter, file, currentEvaluationPageList, noDataMess);
-		// TODO Puntuación media por verificación
+		// Puntuación media por verificación
 		chapter.add(Chunk.NEXTPAGE);
 		Section section = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title"), pdfTocManager.getIndex(),
 				ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
@@ -1385,10 +1415,6 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 				ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, section, pdfTocManager.addSection(), 1);
 		addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section1, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_1);
 		section1.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_1, pdfBuilder.isBasicService()));
-//		Section section2 = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title.level2"), pdfTocManager.getIndex(),
-//				ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, section, pdfTocManager.addSection(), 1);
-//		addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section2, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_2);
-//		section2.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_2, pdfBuilder.isBasicService()));
 		document.add(chapter);
 	}
 
@@ -1748,7 +1774,6 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 		table.setSpacingAfter(0);
 		return table;
 	}
-	
 
 	/**
 	 * Creates the evolution difference cell value.
@@ -1778,44 +1803,44 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 		return PDFUtils.createTableCell(getEvolutionImage(actualValue, previousValue), new DecimalFormat("+0.00;-0.00").format(actualValue.subtract(previousValue)), color, ConstantsFont.noteCellFont,
 				Element.ALIGN_CENTER, DEFAULT_PADDING, -1);
 	}
-	
+
+	/**
+	 * Generate scores.
+	 *
+	 * @param messageResources the message resources
+	 * @param evaList          the eva list
+	 * @return the score form
+	 */
 	@Override
 	public ScoreForm generateScores(final MessageResources messageResources, final java.util.List<ObservatoryEvaluationForm> evaList) {
 		final ScoreForm scoreForm = new ScoreForm();
-
 		int suitabilityGroups = 0;
-
 		for (ObservatoryEvaluationForm evaluationForm : evaList) {
 			scoreForm.setTotalScore(scoreForm.getTotalScore().add(evaluationForm.getScore()));
-
 			// Codigo duplicado en IntavUtils
-
 			final String pageSuitabilityLevel = ObservatoryUtils.pageSuitabilityLevel(evaluationForm);
 			if (pageSuitabilityLevel.equals(Constants.OBS_AA)) {
 				scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().add(BigDecimal.TEN));
 			} else if (pageSuitabilityLevel.equals(Constants.OBS_A)) {
 				scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().add(new BigDecimal(5)));
-			} else 
-
-			for (ObservatoryLevelForm levelForm : evaluationForm.getGroups()) {
-				suitabilityGroups = levelForm.getSuitabilityGroups().size();
-				if (levelForm.getName().equalsIgnoreCase("priority 1")) {
-					scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().add(levelForm.getScore()));
-				} else if (levelForm.getName().equalsIgnoreCase("priority 2")) {
-					scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().add(levelForm.getScore()));
-				}
-				for (ObservatorySuitabilityForm suitabilityForm : levelForm.getSuitabilityGroups()) {
-					if (suitabilityForm.getName().equalsIgnoreCase("A")) {
-						scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().add(suitabilityForm.getScore()));
-					} else if (suitabilityForm.getName().equalsIgnoreCase("AA")) {
-						scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().add(suitabilityForm.getScore()));
+			} else
+				for (ObservatoryLevelForm levelForm : evaluationForm.getGroups()) {
+					suitabilityGroups = levelForm.getSuitabilityGroups().size();
+					if (levelForm.getName().equalsIgnoreCase("priority 1")) {
+						scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().add(levelForm.getScore()));
+					} else if (levelForm.getName().equalsIgnoreCase("priority 2")) {
+						scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().add(levelForm.getScore()));
+					}
+					for (ObservatorySuitabilityForm suitabilityForm : levelForm.getSuitabilityGroups()) {
+						if (suitabilityForm.getName().equalsIgnoreCase("A")) {
+							scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().add(suitabilityForm.getScore()));
+						} else if (suitabilityForm.getName().equalsIgnoreCase("AA")) {
+							scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().add(suitabilityForm.getScore()));
+						}
 					}
 				}
-			}
 		}
-
 		generateScoresVerificacion(messageResources, scoreForm, evaList);
-
 		if (!evaList.isEmpty()) {
 			scoreForm.setTotalScore(scoreForm.getTotalScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
@@ -1824,10 +1849,23 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 			scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
 		}
-
 		// El nivel de validación del portal
 		scoreForm.setLevel(getValidationLevel(scoreForm, messageResources));
-
 		return scoreForm;
+	}
+
+	/**
+	 * Creates the introduction chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param titleFont        the title font
+	 * @param isBasicService   the is basic service
+	 * @throws Exception the exception
+	 */
+	@Override
+	public void createIntroductionChapter(MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont, boolean isBasicService) throws Exception {
+		this.createIntroductionChapter(messageResources, document, pdfTocManager, titleFont);
 	}
 }

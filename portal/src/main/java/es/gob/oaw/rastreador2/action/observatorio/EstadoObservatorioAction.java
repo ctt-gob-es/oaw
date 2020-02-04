@@ -75,7 +75,7 @@ public class EstadoObservatorioAction extends Action {
 				finishWithoutResults = ObservatorioDAO.getResultSeedsFullFromObservatoryByIds(c, new SemillaForm(), idEjecucionObservatorio.longValue(), 0l, -1,
 						finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis);
 			}
-			// TODO Datos del observatorio
+			// Datos del observatorio
 			request.setAttribute("idCartucho", idCartucho);
 			request.setAttribute("idObservatory", idObservatory);
 			request.setAttribute("idExecutedObservatorio", idEjecucionObservatorio);

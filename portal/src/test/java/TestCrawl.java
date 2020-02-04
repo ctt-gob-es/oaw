@@ -37,7 +37,6 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.CheckerParser;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
-import es.gob.oaw.MailService;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -105,7 +104,6 @@ public class TestCrawl {
 
 	@Test
 	public void crawlPrincipales() throws Exception {
-		
 		this.test("http://www.melilla.es/melillaPortal/index.jsp", false);
 		this.test("http://www.comunidad.madrid", false);
 		this.test("https://web.gencat.cat/ca/inici/", false);
@@ -185,10 +183,10 @@ public class TestCrawl {
 							// Si hay redirecciones, puede que el dominio cambie
 							domain = connection.getURL().getHost();
 							final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(url, domain));
-							// TODO Sólo se pasa al renderizador para recuperar el contenido
+							// PENDING Sólo se pasa al renderizador para recuperar el contenido
 							final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
 							markableInputStream.reset();
-							// TODO Recuerar el charset
+							// Recuerar el charset
 							final String charset = CrawlerUtils.getCharset(connection, markableInputStream);
 							markableInputStream.close();
 							final Document document = CrawlerDOMUtils.getDocument(textContent);
@@ -201,7 +199,7 @@ public class TestCrawl {
 								// Si no está ya incluida en el rastreo
 								if (!md5Content.contains(textContentHash)) {
 									final CrawledLink crawledLink = new CrawledLink(url, textContent, numRetries, numRedirections);
-									// TODO Propagar el charset
+									// Propagar el charset
 									crawledLink.setCharset(charset);
 									crawlingDomains.add(crawledLink);
 									md5Content.add(textContentHash);

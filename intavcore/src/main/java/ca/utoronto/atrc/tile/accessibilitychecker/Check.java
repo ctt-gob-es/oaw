@@ -75,7 +75,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
 
 import es.gob.oaw.language.Diccionario;
@@ -91,8 +90,10 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.flesch.FleschAdapter;
 import es.inteco.flesch.FleschAnalyzer;
 import es.inteco.flesch.FleschUtils;
+import es.inteco.intav.dao.TAnalisisAccesibilidadDAO;
 import es.inteco.intav.form.CheckedLinks;
 import es.inteco.intav.utils.EvaluatorUtils;
+import es.inteco.plugin.dao.DataBaseManager;
 
 /**
  * The Class Check.
@@ -397,11 +398,12 @@ public class Check {
 	 * Do evaluation.
 	 *
 	 * @param elementGiven the element given
+	 * @param idAnalysis   the id analysis
 	 * @return true, if successful
 	 * @throws AccessibilityError the accessibility error
 	 */
 	// Lanza una excepción si hay un problema de accesibilidad
-	public boolean doEvaluation(Element elementGiven) throws AccessibilityError {
+	public boolean doEvaluation(Element elementGiven, final Long idAnalysis) throws AccessibilityError {
 		// Crea una lista de funciones basadas en el lenguage requerido
 		List<CheckCode> vectorFunctions = createVectorFunctions();
 		// Ejecuta las funciones
@@ -411,6 +413,8 @@ public class Check {
 				// Las comprobaciones de CSS se ejecutan posteriormente en el
 				// método Evaluator.performEvaluation
 				if (!"css".equalsIgnoreCase(triggerElement)) {
+					// PENDING Add to checkcode the idAnalysys
+					checkCode.setIdAnalysis(idAnalysis);
 					if (evaluateCode(checkCode, elementGiven) != CheckFunctionConstants.CODE_RESULT_PROBLEM) {
 						return true;
 					}
@@ -973,7 +977,7 @@ public class Check {
 	 */
 	public static boolean functionTitleNotContains(final CheckCode checkCode, final Node nodeNode, final Element elementGiven) {
 		String key = checkCode.getFunctionValue();
-		// TODO Modificada para recuperar la expresión de un fichero
+		// Modificada para recuperar la expresión de un fichero
 		PropertiesManager pm = new PropertiesManager();
 		String regexp = pm.getValue("check.patterns.properties", key);
 		final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
@@ -1026,7 +1030,7 @@ public class Check {
 		final int minInputs = Integer.parseInt(checkCode.getFunctionNumber());
 		if (filteredControls > minInputs) {
 			final String formText = EvaluatorUtility.getLabelText(elementGiven);
-			// TODO Recupera la expresión regular de un fichero de propiedades
+			// Recupera la expresión regular de un fichero de propiedades
 			PropertiesManager pm = new PropertiesManager();
 			String regexp = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
 			Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
@@ -3399,7 +3403,7 @@ public class Check {
 			return false;
 		}
 		String key = checkCode.getFunctionValue();
-		// TODO Recupera la expresión regular de un fichero de propiedades
+		// Recupera la expresión regular de un fichero de propiedades
 		PropertiesManager pm = new PropertiesManager();
 		String regexp = pm.getValue("check.patterns.properties", key);
 		Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
@@ -3433,12 +3437,10 @@ public class Check {
 				attributeText.append(node.getAttribute(attribute));
 			}
 		}
-		// TODO Recupera de fichero de propiedades
+		// Recupera de fichero de propiedades
 		PropertiesManager pm = new PropertiesManager();
 		String regexp = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
 		return StringUtils.textMatchs(attributeText.toString(), regexp);
-		// return StringUtils.textMatchs(attributeText.toString(),
-		// checkCode.getFunctionValue());
 	}
 
 	/**
@@ -3692,7 +3694,7 @@ public class Check {
 		if (nodeNode == null) {
 			return false;
 		}
-		// TODO Recupera la expresión regular de un fichero de propiedades
+		// Recupera la expresión regular de un fichero de propiedades
 		PropertiesManager pm = new PropertiesManager();
 		String[] strings = pm.getValue("check.patterns.properties", checkCode.getFunctionValue()).split("\\|");
 		boolean textEquals = false;
@@ -4748,7 +4750,7 @@ public class Check {
 	 */
 	private boolean functionHasNotSectionLink(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("A");
-		// TODO Se recupera la expresión regular del fichero de propiedades
+		// Se recupera la expresión regular del fichero de propiedades
 		PropertiesManager pm = new PropertiesManager();
 		String regex = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
 		return AccesibilityDeclarationCheckUtils.getSectionLink(links, regex).isEmpty();
@@ -4781,7 +4783,7 @@ public class Check {
 			// (en caso contrario falla la comprobacion 126 y no se ejecuta
 			// esta)
 			try {
-				// TODO Recuperar de fichero las expresiones regulares
+				// Recuperar de fichero las expresiones regulares
 				return !AccesibilityDeclarationCheckUtils.hasContact(elementGiven.getOwnerDocument(), regexp1, regexp2);
 			} catch (Exception e) {
 				Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
@@ -4812,7 +4814,7 @@ public class Check {
 	 * @return true, if successful
 	 */
 	private boolean functionAccessibilityDeclarationNoRevisionDate(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-		// TODO Recuperar de fichero las expresiones regulares
+		// Recuperar de fichero las expresiones regulares
 		PropertiesManager pm = new PropertiesManager();
 		String key = checkCode.getFunctionValue();
 		String regexp = pm.getValue("check.patterns.properties", key);
@@ -5795,7 +5797,7 @@ public class Check {
 
 	/**
 	 * 
-	 * TODO Function attributes are equals.
+	 * Function attributes are equals.
 	 *
 	 * @param checkCode    the check code
 	 * @param nodeNode     the node node
@@ -5805,8 +5807,6 @@ public class Check {
 	private boolean functionAttributesAreEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		String attribute1 = checkCode.getFunctionAttribute1();
 		String attribute2 = checkCode.getFunctionAttribute2();
-		// <meta name='viewport' content='width=device-width, initial-scale=1.0,
-		// maximum-scale=1.0, user-scalable=0'/>
 		elementGiven.getAttribute("content");
 		String content = elementGiven.getAttributes().getNamedItem("content").getTextContent();
 		if (content != null && content.contains("initial-scale") && content.contains("maximum-scale")) {
@@ -5935,6 +5935,12 @@ public class Check {
 			return false;
 		} else {
 			boolean hasSection = false;
+			// PENDING Save accesibility links
+			try {
+				TAnalisisAccesibilidadDAO.insert(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLinks);
+			} catch (Exception e1) {
+				Logger.putLog("Error al guardar los links de accesibilidad: ", Check.class, Logger.LOG_LEVEL_ERROR, e1);
+			}
 			for (Element accessibilityLink : accessibilityLinks) {
 				try {
 					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
@@ -5976,7 +5982,6 @@ public class Check {
 				for (int i = 0; i < elements.size(); i++) {
 					textSection += getText(elements.get(i));
 				}
-				// TODO
 				String[] regexAutocomplete = pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2()).split(",");
 				for (String stringPattern : regexAutocomplete) {
 					try {
@@ -6005,7 +6010,6 @@ public class Check {
 						for (int i = 0; i < elements.size(); i++) {
 							textSection += getText(elements.get(i));
 						}
-						// TODO
 						String[] regexAutocomplete = pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2()).split(",");
 						for (String stringPattern : regexAutocomplete) {
 							try {
@@ -6054,7 +6058,6 @@ public class Check {
 				for (int i = 0; i < elements.size(); i++) {
 					textSection += getText(elements.get(i));
 				}
-				// TODO
 				try {
 					Pattern patterAutocomplete = Pattern.compile(pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2()), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 					if (patterAutocomplete.matcher(textSection).find()) {
@@ -6081,7 +6084,6 @@ public class Check {
 						for (int i = 0; i < elements.size(); i++) {
 							textSection += getText(elements.get(i));
 						}
-						// TODO
 						try {
 							Pattern patterAutocomplete = Pattern.compile(pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2()), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 							if (patterAutocomplete.matcher(textSection).find()) {
@@ -6270,7 +6272,7 @@ public class Check {
 				Pattern patternPrepared = Pattern.compile(regexDatePrepared, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 				Pattern patternReview = Pattern.compile(regexDateReview, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 				if (patternPrepared.matcher(textSection).find() && patternReview.matcher(textSection).find()) {
-					// TODO Sacar los años
+					// Get years
 					String preparedDate = printMatches(textSection, regexDatePrepared);
 					String reviewDate = printMatches(textSection, regexDateReview);
 					String preparedYear = printMatches(preparedDate, "\\d{4}");
@@ -6298,7 +6300,7 @@ public class Check {
 							Pattern patternPrepared = Pattern.compile(regexDatePrepared, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 							Pattern patternReview = Pattern.compile(regexDateReview, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 							if (patternPrepared.matcher(sectionText).find() && patternReview.matcher(sectionText).find()) {
-								// TODO Sacar los años
+								// Get years
 								String preparedDate = printMatches(sectionText, regexDatePrepared);
 								String reviewDate = printMatches(sectionText, regexDatePrepared);
 								String preparedYear = printMatches(preparedDate, "\\d{4}");
