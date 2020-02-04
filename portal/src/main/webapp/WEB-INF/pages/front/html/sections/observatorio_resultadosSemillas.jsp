@@ -190,8 +190,6 @@ Email: observ.accesibilidad@correo.gob.es
 
 			})
 
-
-
 	}
 	
 	function dialogAddSeed(){
@@ -266,6 +264,58 @@ Email: observ.accesibilidad@correo.gob.es
 		});
 	}
 
+	function reduceSize(){
+		
+		windowWidth = $(window).width() * 0.3;
+		windowHeight = $(window).height() * 0.2;
+		
+		window.scrollTo(0, 0);
+
+		$('#erroresReduceSizeObservatory').hide();
+
+		var dialogoReducir = $('<div id="dialogoReducirContent"></div>');
+
+		dialogoReducir.append('<p>&#191;Desea eliminar el contenido de las tablas relacionadas con este rastreo?</p>');
+		
+		dialogoReducir
+			.dialog({
+				autoOpen : false,
+				height : windowHeight,
+				width : windowWidth,
+				modal : true,
+				title: 'RASTREADOR WEB - Liberar espacio del observatorio',
+				buttons : {
+				"Aceptar" : {
+					click: function() {
+						$
+						.ajax(
+								{
+									url : '/oaw/secure/ViewReducirTablasObservatorio.do?action=removeTables&idExObs='
+											+ $('[name=idExObs]').val(),
+									method : 'POST',
+									cache : false
+								}).success(function(response) {
+							reloadGrid(lastUrl);
+							dialogoReducir.dialog("close");
+						});
+			},
+			text: 'Aceptar',
+			class: 'jdialog-btn-save'
+				},
+				"Cancelar" : {
+					click:function() {
+						dialogoReducir.dialog("close");
+					},
+					text: 'Cancelar',
+					class: 'jdialog-btn-cancel'
+				}
+			}
+		});
+
+		dialogoReducir.dialog("open");
+	}
+
+	
 	//Guardar la nueva semilla
 
 	function editarNuevaSemilla() {
@@ -375,6 +425,7 @@ Email: observ.accesibilidad@correo.gob.es
 </div>
 
 
+
 <div id="main">
 
 	<div id="container_menu_izq">
@@ -453,6 +504,11 @@ Email: observ.accesibilidad@correo.gob.es
 						aria-hidden="true" data-toggle="tooltip" title="Regenerar las puntuaciones" /> </span>
 					<span>Regenerar puntuaciones</span>
 				</html:link>
+				
+				<a onclick="reduceSize()"> <span class="btn btn-default btn-lg"><span
+						class="glyphicon glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip"
+						title="Liberar espacio" /> </span> <span>Liberar espacio</span>
+				</a>
 			</p>
 
 

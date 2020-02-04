@@ -125,7 +125,7 @@ Email: observ.accesibilidad@correo.gob.es
 
 		<logic:equal name="<%=Constants.SUBMENU%>" value="<%=Constants.SUBMENU_OBS_PLANTILLAS%>">
 			<li class="active"><html:link styleId="subselected" forward="observatoryPlantillas"
-					titleKey="menu.config.etiquetas.title">
+					titleKey="menu.config.plantillas.title">
 					<bean:message key="menu.config.plantillas" />
 				</html:link>
 		</logic:equal>
@@ -134,6 +134,12 @@ Email: observ.accesibilidad@correo.gob.es
 					<bean:message key="menu.config.plantillas" />
 				</html:link>
 		</logic:notEqual>
+		<logic:equal name="<%=Constants.SUBMENU%>" value="<%=Constants.SUBMENU_OBS_REDUCIRTABLAS%>">
+			<li class="active"><html:link styleId="subselected" forward="observatoryReducirTablas"
+					titleKey="menu.config.reducirtablas.title">
+					<bean:message key="menu.config.reducirtablas" />
+				</html:link>
+		</logic:equal>
 		</li>
 
 	</inteco:menu>

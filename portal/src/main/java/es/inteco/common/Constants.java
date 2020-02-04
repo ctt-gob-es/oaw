@@ -1133,6 +1133,8 @@ public interface Constants {
 	String SUBMENU_OBS_COMPLEJIDADES = "submenuComplejidadesObs";
 	/** The submenu obs plantillas. */
 	String SUBMENU_OBS_PLANTILLAS = "submenuPlantillassObs";
+	
+	String SUBMENU_OBS_REDUCIRTABLAS = "submenuReducirTablasObs";
 	/** The submenu obs etiquetas. */
 	String SUBMENU_OBS_ETIQUETAS = "submenuEtiquetasObs";
 	/** The submenu observatorio. */
