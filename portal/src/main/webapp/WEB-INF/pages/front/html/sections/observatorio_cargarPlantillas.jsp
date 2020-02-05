@@ -444,6 +444,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		$('#existosPlantilla').html("");
 		$('#erroresPlantilla').hide();
 		$('#erroresPlantilla').html("");
+		$('#loading_cover_div').show();
 
 		var guardado = $.ajax({
 			url : '/oaw/secure/Plantilla.do?action=save',
@@ -455,6 +456,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			cache : false
 		}).success(
 				function(response) {
+					$('#loading_cover_div').fadeOut(1000);
 					$('#existosPlantilla').addClass('alert alert-success');
 					$('#existosPlantilla').append("<ul>");
 
@@ -496,6 +498,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		$('#erroresPlantilla').hide();
 		$('#erroresPlantilla').html("");
 
+		$('#loading_cover_div').show();
+		
 		var guardado = $.ajax({
 			url : '/oaw/secure/Plantilla.do?action=upload',
 			data: new FormData($("#nuevaPlantillaForm")[0]),
@@ -504,7 +508,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			method : 'POST',
 			cache : false
 		}).success(
+				
+
 				function(response) {
+					$('#loading_cover_div').fadeOut(1000);
 					$('#existosPlantilla').addClass('alert alert-success');
 					$('#existosPlantilla').append("<ul>");
 
@@ -540,7 +547,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	}
 </script>
 
-
+<div id="loading_cover_div"></div>
 <!-- observatorio_cargarDependencias.jsp -->
 <div id="main">
 

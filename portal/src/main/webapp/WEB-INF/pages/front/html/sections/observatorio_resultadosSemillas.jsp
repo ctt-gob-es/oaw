@@ -287,6 +287,10 @@ Email: observ.accesibilidad@correo.gob.es
 				buttons : {
 				"Aceptar" : {
 					click: function() {
+						
+						$('#loading_cover_div').show();
+						
+						
 						$
 						.ajax(
 								{
@@ -295,6 +299,7 @@ Email: observ.accesibilidad@correo.gob.es
 									method : 'POST',
 									cache : false
 								}).success(function(response) {
+							$('#loading_cover_div').fadeOut(1000);
 							reloadGrid(lastUrl);
 							dialogoReducir.dialog("close");
 						});
@@ -381,6 +386,8 @@ Email: observ.accesibilidad@correo.gob.es
 	}
 </script>
 
+
+
 <link rel="stylesheet" href="/oaw/css/jqgrid.semillas.css">
 
 
@@ -401,6 +408,7 @@ Email: observ.accesibilidad@correo.gob.es
 <bean:parameter name="<%=Constants.ID_EX_OBS%>" id="idExObs" />
 <bean:parameter name="<%=Constants.ID_CARTUCHO%>" id="idCartucho" />
 
+<div id="loading_cover_div"></div>
 <div id="dialogoEditarSemilla" style="display: none">
 	<jsp:include page="./observatorio_nuevaSemilla_multidependencia.jsp"></jsp:include>
 

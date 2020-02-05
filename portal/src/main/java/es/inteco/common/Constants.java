@@ -278,6 +278,7 @@ public interface Constants {
 	String XML_ACRONIMO = "acronimo";
 	/** The xml activa. */
 	String XML_ACTIVA = "activa";
+	String XML_ELIMINADA = "eliminada";
 	/** The xml in directory. */
 	String XML_IN_DIRECTORY = "en_directorio";
 	/** The xml segmento. */
@@ -1133,7 +1134,6 @@ public interface Constants {
 	String SUBMENU_OBS_COMPLEJIDADES = "submenuComplejidadesObs";
 	/** The submenu obs plantillas. */
 	String SUBMENU_OBS_PLANTILLAS = "submenuPlantillassObs";
-	
 	String SUBMENU_OBS_REDUCIRTABLAS = "submenuReducirTablasObs";
 	/** The submenu obs etiquetas. */
 	String SUBMENU_OBS_ETIQUETAS = "submenuEtiquetasObs";
