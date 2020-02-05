@@ -78,6 +78,12 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
  * Clase encargada de construir el documento OpenOffice con los resultados del observatorio usando la metodología UNE 2012 - VERSIÓN 2017.
  */
 public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilder {
+	/** The Constant TYPE_PUNTUACTION. */
+	private static final String TYPE_PUNTUACTION = "PUNTUACTION";
+	/** The Constant TYPE_COMPLIANCE. */
+	private static final String TYPE_COMPLIANCE = "COMPLIANCE";
+	/** The Constant TYPE_ALLOCATION. */
+	private static final String TYPE_ALLOCATION = "ALLOCATION";
 	/** The Constant STYLE_LFO3. */
 	private static final String STYLE_LFO3 = "LFO3";
 	/** The Constant TEXT_STYLE_NAME. */
@@ -953,14 +959,14 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 					replaceSectionMidAllocationLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 				} else {
 					// remove pmasection
-					removeSection(odtCategory, odfFileContentCategory, PMV_SECTION_NAME);
+					removeElement(odtCategory, odfFileContentCategory, PMV_SECTION_NAME);
 				}
 				if (grpahicConditional.containsKey(Constants.CHECK_SEGMENT_MODALITY_GRPAHICS) && Boolean.TRUE.equals(grpahicConditional.get(Constants.CHECK_SEGMENT_MODALITY_GRPAHICS))) {
 					replaceSectionModalityLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 					replaceSectionModalityLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 				} else {
 					// remove pmasection
-					removeSection(odtCategory, odfFileContentCategory, CMV_SECTION_NAME);
+					removeElement(odtCategory, odfFileContentCategory, CMV_SECTION_NAME);
 				}
 				replaceSectionCompilanceByVerificationLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 				replaceSectionCompilanceByVerificationLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
@@ -968,7 +974,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 					replaceSectionAspectsGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 				} else {
 					// remove pmasection
-					removeSection(odtCategory, odfFileContentCategory, PMASECTION_NAME);
+					removeElement(odtCategory, odfFileContentCategory, PMASECTION_NAME);
 				}
 				// Replace titles with group name
 				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_SPAN_NODE);
@@ -1020,7 +1026,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			replaceSectionModalityByVerificationLevel2(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		} else {
 			// remove pmasection
-			removeSection(odt, odfFileContent, PMASECTION_NAME);
+			removeElement(odt, odfFileContent, PMASECTION_NAME);
 		}
 		replaceSectionCompilanceByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		replaceSectionCompilanceByVerificationLevel2(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
@@ -1028,7 +1034,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			replaceSectionComparisionAspects(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		} else {
 			// remove pmasection
-			removeSection(odt, odfFileContent, CMV_SECTION_NAME);
+			removeElement(odt, odfFileContent, CMV_SECTION_NAME);
 		}
 	}
 
@@ -1060,7 +1066,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param sectionName    the section name
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void removeSection(final OdfTextDocument odt, final OdfFileDom odfFileContent, String sectionName) throws XPathExpressionException {
+	private void removeElement(final OdfTextDocument odt, final OdfFileDom odfFileContent, String sectionName) throws XPathExpressionException {
 		XPath xpath = odt.getXPath();
 		NodeList nodeList = (NodeList) xpath.evaluate(String.format(TEXT_SECTION_NAME_S, sectionName), odfFileContent, XPathConstants.NODESET);
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -1305,6 +1311,149 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	}
 
 	/**
+	 * Generate table segment (rows) percentaje and portals (columns).
+	 *
+	 * @param header1          the header 1
+	 * @param header2          the header 2
+	 * @param columna1         the columna 1
+	 * @param columna2         the columna 2
+	 * @param columna3         the columna 3
+	 * @param categories       the categories
+	 * @param res              the res
+	 * @param messageResources the message resources
+	 * @param resultsType      the results type
+	 * @param isPercentaje     the is percentaje
+	 * @return the string builder
+	 * @throws Exception the exception
+	 */
+	private StringBuilder generateTableRowSegments(String header1, String header2, String columna1, String columna2, String columna3, final List<CategoriaForm> categories,
+			final Map<CategoriaForm, Map<String, BigDecimal>> res, final MessageResources messageResources, final String resultsType, final boolean isPercentaje) throws Exception {
+		StringBuilder sb = generateTableHeader(columna1, columna2, columna3);
+		for (CategoriaForm category : categories) {
+			List<LabelValueBean> results = null;
+			switch (resultsType) {
+			case TYPE_COMPLIANCE:
+				results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonCompilancePuntuaction(messageResources, res.get(category));
+				break;
+			case TYPE_ALLOCATION:
+				results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(category));
+				break;
+			case TYPE_PUNTUACTION:
+				results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonAllocationPuntuation(messageResources, res.get(category));
+				break;
+			}
+			generateGroupRow(sb, category.getName(), results, isPercentaje);
+		}
+		sb.append("</table:table>");
+		return sb;
+	}
+
+	/**
+	 * Generate group row.
+	 *
+	 * @param sb           the sb
+	 * @param name         the name
+	 * @param results      the results
+	 * @param isPercentaje the is percentaje
+	 */
+	private void generateGroupRow(StringBuilder sb, final String name, List<LabelValueBean> results, final boolean isPercentaje) {
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+		sb.append("<text:p text:style-name='GraphicTableCenter'>").append(name).append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+		sb.append("<text:p text:style-name='GraphicTableCenter'>").append(results.get(0).getValue());
+		if (isPercentaje)
+			sb.append("%");
+		sb.append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+		sb.append("<text:p text:style-name='GraphicTableCenter'>").append(results.get(1).getValue());
+		if (isPercentaje)
+			sb.append("%");
+		sb.append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+		sb.append("<text:p text:style-name='GraphicTableCenter'>").append(results.get(2).getValue());
+		if (isPercentaje)
+			sb.append("%");
+		sb.append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("</table:table-row>");
+	}
+
+	/**
+	 * Generate table header.
+	 *
+	 * @param columna1 the columna 1
+	 * @param columna2 the columna 2
+	 * @param columna3 the columna 3
+	 * @return the string builder
+	 */
+	private StringBuilder generateTableHeader(String columna1, String columna2, String columna3) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<table:table table:name='Table_Allocation_").append("Segments").append("' table:style-name='TableGraphic'>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn2'/>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn3'/>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn4'/>");
+		// Header row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append("Segmento").append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(columna1).append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(columna2).append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(columna3).append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("</table:table-row>");
+		return sb;
+	}
+
+	/**
+	 * Generate table row complexity.
+	 *
+	 * @param header1          the header 1
+	 * @param header2          the header 2
+	 * @param columna1         the columna 1
+	 * @param columna2         the columna 2
+	 * @param columna3         the columna 3
+	 * @param complexities     the complexities
+	 * @param res              the res
+	 * @param messageResources the message resources
+	 * @param resultsType      the results type
+	 * @param isPercentaje     the is percentaje
+	 * @return the string builder
+	 * @throws Exception the exception
+	 */
+	private StringBuilder generateTableRowComplexity(String header1, String header2, String columna1, String columna2, String columna3, final List<ComplejidadForm> complexities,
+			final Map<ComplejidadForm, Map<String, BigDecimal>> res, final MessageResources messageResources, final String resultsType, final boolean isPercentaje) throws Exception {
+		StringBuilder sb = generateTableHeader(columna1, columna2, columna3);
+		for (ComplejidadForm complex : complexities) {
+			List<LabelValueBean> results = null;
+			switch (resultsType) {
+			case TYPE_COMPLIANCE:
+				results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonCompilancePuntuaction(messageResources, res.get(complex));
+				break;
+			case TYPE_ALLOCATION:
+				results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(complex));
+				break;
+			case TYPE_PUNTUACTION:
+				results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonAllocationPuntuation(messageResources, res.get(complex));
+				break;
+			}
+			generateGroupRow(sb, complex.getName(), results, isPercentaje);
+		}
+		sb.append("</table:table>");
+		return sb;
+	}
+
+	/**
 	 * Replace global section comparison allocation by segment.
 	 *
 	 * @param messageResources  the message resources
@@ -1341,19 +1490,30 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		String columna1 = HEADER_AA;
 		String columna2 = HEADER_A;
 		String columna3 = HEADER_NO_VALIDO;
-		for (CategoriaForm category : categories) {
-			String name = category.getName();
-			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Nivel de adecuación estimado: " + name + "</text:p>";
-			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASSEGMENTO_BOOKMARK);
-			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(category));
-			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
-			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASSEGMENTO_BOOKMARK);
-			appendParagraphToMarker(odt, odfFileContent, TABLASSEGMENTO_BOOKMARK);
-			// Estilos de las tablas
-			addTableStyles(odt);
-		}
+		// PENDING Una única tabla
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Nivel de adecuación estimado (% de sitios web) por segmento</text:p>";
+		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASSEGMENTO_BOOKMARK);
+		StringBuilder sb = generateTableRowSegments(header1, header2, columna1, columna2, columna3, categories, res, messageResources, TYPE_ALLOCATION, true);
+		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASSEGMENTO_BOOKMARK);
+		appendParagraphToMarker(odt, odfFileContent, TABLASSEGMENTO_BOOKMARK);
+		// Estilos de las tablas
+		addTableStyles(odt);
+		// generateTableSegmentPercentajeAndPortals
+//		for (CategoriaForm category : categories) {
+//			String name = category.getName();
+//			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Nivel de adecuación estimado: " + name + "</text:p>";
+//			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+//			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASSEGMENTO_BOOKMARK);
+//			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(category));
+//			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
+//			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+//			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASSEGMENTO_BOOKMARK);
+//			appendParagraphToMarker(odt, odfFileContent, TABLASSEGMENTO_BOOKMARK);
+//			// Estilos de las tablas
+//			addTableStyles(odt);
+//		}
 		return numImg;
 	}
 
@@ -1392,17 +1552,24 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		String columna1 = HEADER_AA;
 		String columna2 = HEADER_A;
 		String columna3 = HEADER_NO_VALIDO;
-		for (ComplejidadForm complejidad : complexities) {
-			String name = complejidad.getName();
-			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Porcentaje de adecuación: " + name + "</text:p>";
-			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASCOMPLEJIDAD_BOOKMARK);
-			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(complejidad));
-			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
-			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCOMPLEJIDAD_BOOKMARK);
-			appendParagraphToMarker(odt, odfFileContent, TABLASCOMPLEJIDAD_BOOKMARK);
-		}
+//		for (ComplejidadForm complejidad : complexities) {
+//			String name = complejidad.getName();
+//			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Porcentaje de adecuación: " + name + "</text:p>";
+//			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+//			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASCOMPLEJIDAD_BOOKMARK);
+//			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(complejidad));
+//			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
+//			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+//			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCOMPLEJIDAD_BOOKMARK);
+//			appendParagraphToMarker(odt, odfFileContent, TABLASCOMPLEJIDAD_BOOKMARK);
+//		}
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Nivel de adecuación estimado (% de sitios web ) por complejidad</text:p>";
+		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASCOMPLEJIDAD_BOOKMARK);
+		StringBuilder sb = generateTableRowComplexity(header1, header2, columna1, columna2, columna3, complexities, res, messageResources, TYPE_ALLOCATION, true);
+		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCOMPLEJIDAD_BOOKMARK);
+		appendParagraphToMarker(odt, odfFileContent, TABLASCOMPLEJIDAD_BOOKMARK);
 	}
 
 	/**
@@ -1439,17 +1606,24 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		String columna1 = HEADER_TOTALMENTE_CONFORME;
 		String columna2 = HEADER_PARCIALMENTE_CONFORME;
 		String columna3 = HEADER_NO_CONFORME;
-		for (CategoriaForm category : categories) {
-			String name = category.getName();
-			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Porcentaje de cumplimiento estimado: " + name + "</text:p>";
-			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASCUMPLIMIENTOSEGMENTO_BOOKMARK);
-			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonCompilancePuntuaction(messageResources, res.get(category));
-			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
-			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCUMPLIMIENTOSEGMENTO_BOOKMARK);
-			appendParagraphToMarker(odt, odfFileContent, TABLASCUMPLIMIENTOSEGMENTO_BOOKMARK);
-		}
+//		for (CategoriaForm category : categories) {
+//			String name = category.getName();
+//			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Porcentaje de cumplimiento estimado: " + name + "</text:p>";
+//			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+//			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASCUMPLIMIENTOSEGMENTO_BOOKMARK);
+//			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonCompilancePuntuaction(messageResources, res.get(category));
+//			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
+//			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+//			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCUMPLIMIENTOSEGMENTO_BOOKMARK);
+//			appendParagraphToMarker(odt, odfFileContent, TABLASCUMPLIMIENTOSEGMENTO_BOOKMARK);
+//		}
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Situación de cumplimiento estimada (% de sitios web) por segmento</text:p>";
+		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASCUMPLIMIENTOSEGMENTO_BOOKMARK);
+		StringBuilder sb = generateTableRowSegments(header1, header2, columna1, columna2, columna3, categories, res, messageResources, TYPE_COMPLIANCE, true);
+		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCUMPLIMIENTOSEGMENTO_BOOKMARK);
+		appendParagraphToMarker(odt, odfFileContent, TABLASCUMPLIMIENTOSEGMENTO_BOOKMARK);
 	}
 
 	/**
@@ -1487,17 +1661,24 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		String columna1 = HEADER_TOTALMENTE_CONFORME;
 		String columna2 = HEADER_PARCIALMENTE_CONFORME;
 		String columna3 = HEADER_NO_CONFORME;
-		for (ComplejidadForm complejidad : complexitivities) {
-			String name = complejidad.getName();
-			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Porcentaje de cumplimiento: " + name + "</text:p>";
-			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
-			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonCompilancePuntuaction(messageResources, res.get(complejidad));
-			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
-			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
-			appendParagraphToMarker(odt, odfFileContent, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
-		}
+//		for (ComplejidadForm complejidad : complexitivities) {
+//			String name = complejidad.getName();
+//			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Porcentaje de cumplimiento: " + name + "</text:p>";
+//			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+//			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
+//			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonCompilancePuntuaction(messageResources, res.get(complejidad));
+//			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
+//			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+//			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
+//			appendParagraphToMarker(odt, odfFileContent, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
+//		}
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Situación de cumplimiento estimado (% de sitios web) por complejidad</text:p>";
+		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
+		StringBuilder sb = generateTableRowComplexity(header1, header2, columna1, columna2, columna3, complexitivities, res, messageResources, TYPE_COMPLIANCE, true);
+		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
+		appendParagraphToMarker(odt, odfFileContent, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
 	}
 
 	/**
@@ -1629,17 +1810,24 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		String columna1 = HEADER_AA;
 		String columna2 = HEADER_A;
 		String columna3 = HEADER_NO_VALIDO;
-		for (CategoriaForm category : categories) {
-			String name = category.getName();
-			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Puntuación Media de los Portales: " + name + "</text:p>";
-			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
-			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(category));
-			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
-			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
-			appendParagraphToMarker(odt, odfFileContent, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
-		}
+//		for (CategoriaForm category : categories) {
+//			String name = category.getName();
+//			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Puntuación Media de los Portales: " + name + "</text:p>";
+//			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+//			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
+//			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(category));
+//			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
+//			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+//			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
+//			appendParagraphToMarker(odt, odfFileContent, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
+//		}
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Puntuación Media de los portales por segmento</text:p>";
+		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
+		StringBuilder sb = generateTableRowSegments(header1, header2, columna1, columna2, columna3, categories, res, messageResources, TYPE_PUNTUACTION, false);
+		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
+		appendParagraphToMarker(odt, odfFileContent, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
 	}
 
 	/**
@@ -1677,17 +1865,24 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		String columna1 = HEADER_AA;
 		String columna2 = HEADER_A;
 		String columna3 = HEADER_NO_VALIDO;
-		for (ComplejidadForm complexitivity : complexitivities) {
-			String name = complexitivity.getName();
-			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Puntuación Media de los Portales: " + name + "</text:p>";
-			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASPUNTUACIONCOMPLEJIDAD_BOOKMARK);
-			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(complexitivity));
-			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
-			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASPUNTUACIONCOMPLEJIDAD_BOOKMARK);
-			appendParagraphToMarker(odt, odfFileContent, TABLASPUNTUACIONCOMPLEJIDAD_BOOKMARK);
-		}
+//		for (ComplejidadForm complexitivity : complexitivities) {
+//			String name = complexitivity.getName();
+//			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Puntuación Media de los Portales: " + name + "</text:p>";
+//			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+//			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASPUNTUACIONCOMPLEJIDAD_BOOKMARK);
+//			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(complexitivity));
+//			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
+//			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+//			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASPUNTUACIONCOMPLEJIDAD_BOOKMARK);
+//			appendParagraphToMarker(odt, odfFileContent, TABLASPUNTUACIONCOMPLEJIDAD_BOOKMARK);
+//		}
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Puntuación Media de los Portales por complejidad</text:p>";
+		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASPUNTUACIONCOMPLEJIDAD_BOOKMARK);
+		StringBuilder sb = generateTableRowComplexity(header1, header2, columna1, columna2, columna3, complexitivities, res, messageResources, TYPE_PUNTUACTION, false);
+		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASPUNTUACIONCOMPLEJIDAD_BOOKMARK);
+		appendParagraphToMarker(odt, odfFileContent, TABLASPUNTUACIONCOMPLEJIDAD_BOOKMARK);
 	}
 
 	/**
