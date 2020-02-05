@@ -887,7 +887,7 @@ public final class EvaluatorUtility {
 		final NodeList links = doc.getElementsByTagName("link");
 		for (int i = 0; i < links.getLength(); i++) {
 			final Element link = (Element) links.item(i);
-			if (link.hasAttribute("rel") && link.hasAttribute("type") && link.getAttribute("rel").equalsIgnoreCase("stylesheet") && link.getAttribute("type").equalsIgnoreCase("text/css")) {
+			if ((link.hasAttribute("rel") && link.getAttribute("rel").equalsIgnoreCase("stylesheet")) || (link.hasAttribute("type") && link.getAttribute("type").equalsIgnoreCase("text/css"))) {
 				styleSheets.add(link);
 			}
 		}

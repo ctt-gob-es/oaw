@@ -149,6 +149,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				generateComplexityGraphics(messageResources, executionId, complejidad, filePath, color, regenerate, tagsFilter);
 			}
 			generateEvolutionGraphics(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, exObsIds);
+			generateEvolutionGraphicsFixed(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, exObsIds);
 		} catch (Exception e) {
 			Logger.putLog("No se han generado las gráficas correctamente.", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -417,6 +418,99 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				getMidMarkAspectEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID, noDataMess, filePath, resultsByAspect, color, regenerate);
 				getMidMarkAspectEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID, noDataMess, filePath, resultsByAspect, color, regenerate);
 				getMidMarkAspectEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID, noDataMess, filePath, resultsByAspect, color, regenerate);
+			}
+		}
+		return evolutionGraphics;
+	}
+
+	/**
+	 * Generate evolution graphics fixed.
+	 *
+	 * @param messageResources the message resources
+	 * @param observatoryId    the observatory id
+	 * @param executionId      the execution id
+	 * @param filePath         the file path
+	 * @param color            the color
+	 * @param regenerate       the regenerate
+	 * @param tagsFilter       the tags filter
+	 * @param exObsIds         the ex obs ids
+	 * @return the map
+	 * @throws Exception the exception
+	 */
+	public static Map<String, Object> generateEvolutionGraphicsFixed(MessageResources messageResources, String observatoryId, final String executionId, String filePath, String color,
+			boolean regenerate, String[] tagsFilter, String[] exObsIds) throws Exception {
+		final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId), Long.valueOf(executionId),
+				new String[] { "1" }, exObsIds);
+		final Map<String, Object> evolutionGraphics = new HashMap<>();
+		if (pageObservatoryMap != null && !pageObservatoryMap.isEmpty()) {
+			if (pageObservatoryMap.size() != 1) {
+				final String noDataMess = messageResources.getMessage(GRAFICA_SIN_DATOS);
+				String title = messageResources.getMessage("observatory.graphic.accessibility.evolution.approval.A.title");
+				String file = filePath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.A.name") + "Fijos.jpg";
+				getApprovalLevelEvolutionGraphic(messageResources, observatoryId, executionId, evolutionGraphics, Constants.OBS_A, title, file, noDataMess, pageObservatoryMap, color, regenerate,
+						exObsIds);
+				title = messageResources.getMessage("observatory.graphic.accessibility.evolution.approval.AA.title");
+				file = filePath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.AA.name") + "Fijos.jpg";
+				getApprovalLevelEvolutionGraphic(messageResources, observatoryId, executionId, evolutionGraphics, Constants.OBS_AA, title, file, noDataMess, pageObservatoryMap, color, regenerate,
+						exObsIds);
+				title = messageResources.getMessage("observatory.graphic.accessibility.evolution.approval.NV.title");
+				file = filePath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.NV.name") + "Fijos.jpg";
+				getApprovalLevelEvolutionGraphic(messageResources, observatoryId, executionId, evolutionGraphics, Constants.OBS_NV, title, file, noDataMess, pageObservatoryMap, color, regenerate,
+						exObsIds);
+				file = filePath + messageResources.getMessage("observatory.graphic.evolution.mid.puntuation.name") + "Fijos.jpg";
+				getMidMarkEvolutionGraphic(messageResources, evolutionGraphics, noDataMess, file, pageObservatoryMap, color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_2_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_3_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_4_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_5_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_6_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_7_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_8_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_9_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_10_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_11_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_12_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_13_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_14_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				getMidMarkVerificationEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION, noDataMess, filePath, pageObservatoryMap,
+						color, regenerate);
+				Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
+				for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
+					resultsByAspect.put(entry.getKey(), aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
+				}
+				getMidMarkAspectEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID, noDataMess, filePath, resultsByAspect, color,
+						regenerate);
+				getMidMarkAspectEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID, noDataMess, filePath, resultsByAspect, color, regenerate);
+				getMidMarkAspectEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID, noDataMess, filePath, resultsByAspect, color,
+						regenerate);
+				getMidMarkAspectEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID, noDataMess, filePath, resultsByAspect, color,
+						regenerate);
+				getMidMarkAspectEvolutionGraphicFixed(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID, noDataMess, filePath, resultsByAspect, color, regenerate);
 			}
 		}
 		return evolutionGraphics;
@@ -1403,6 +1497,59 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	}
 
 	/**
+	 * Gets the mid mark aspect evolution graphic fixed.
+	 *
+	 * @param messageResources  the message resources
+	 * @param evolutionGraphics the evolution graphics
+	 * @param aspect            the aspect
+	 * @param noDataMess        the no data mess
+	 * @param filePath          the file path
+	 * @param resultsByAspect   the results by aspect
+	 * @param color             the color
+	 * @param regenerate        the regenerate
+	 * @return the mid mark aspect evolution graphic fixed
+	 * @throws Exception the exception
+	 */
+	public static void getMidMarkAspectEvolutionGraphicFixed(final MessageResources messageResources, Map<String, Object> evolutionGraphics, final String aspect, final String noDataMess,
+			final String filePath, final Map<Date, Map<String, BigDecimal>> resultsByAspect, final String color, final boolean regenerate) throws Exception {
+		final String fileName = filePath + messageResources.getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", aspect) + "Fijos.jpg";
+		final File file = new File(fileName);
+		final String aspectStr;
+		if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID)) {
+			aspectStr = messageResources.getMessage("observatory.aspect.general");
+		} else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID)) {
+			aspectStr = messageResources.getMessage("observatory.aspect.alternatives");
+		} else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID)) {
+			aspectStr = messageResources.getMessage("observatory.aspect.structure");
+		} else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID)) {
+			aspectStr = messageResources.getMessage("observatory.aspect.navigation");
+		} else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID)) {
+			aspectStr = messageResources.getMessage("observatory.aspect.presentation");
+		} else {
+			aspectStr = "";
+		}
+		// Recuperamos los resultados
+		final Map<String, BigDecimal> resultData = calculateAspectEvolutionPuntuationDataSet(aspectStr, resultsByAspect);
+		// Incluimos los resultados en la request
+		if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AG, infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
+		} else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AAL, infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
+		} else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AE, infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
+		} else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AN, infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
+		} else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AP, infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
+		}
+		infoMidMarkAspectEvolutionGraphic(messageResources, resultData);
+		// Si no existe la gráfica, la creamos
+		if (!file.exists() || regenerate) {
+			GraphicsUtils.createBarChart(resultData, "", "", "", color, false, false, true, fileName, noDataMess, messageResources, x, y);
+		}
+	}
+
+	/**
 	 * Gets the mid mark verification evolution graphic.
 	 *
 	 * @param messageResources  the message resources
@@ -1419,6 +1566,87 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	public static void getMidMarkVerificationEvolutionGraphic(final MessageResources messageResources, Map<String, Object> evolutionGraphics, final String verification, final String noDataMess,
 			final String filePath, final Map<Date, List<ObservatoryEvaluationForm>> result, final String color, final boolean regenerate) throws Exception {
 		final String fileName = filePath + File.separator + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", verification) + ".jpg";
+		final File file = new File(fileName);
+		// Recuperamos los resultados
+		final Map<String, BigDecimal> resultData = calculateVerificationEvolutionPuntuationDataSet(verification, result);
+		// Los incluimos en la request
+		if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V111, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_2_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V112, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_3_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V113, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_4_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V114, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_5_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V115, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_6_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V116, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_7_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V117, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V121, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V122, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V123, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_124_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V124, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_125_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V125, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_126_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V126, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_8_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V211, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_9_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V212, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_10_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V213, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_11_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V214, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_12_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V215, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_13_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V216, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_14_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V217, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V221, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V222, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V223, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_224_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V224, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_225_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V225, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_226_VERIFICATION)) {
+			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V226, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
+		}
+		infoMidMarkVerificationEvolutionGraphic(messageResources, resultData);
+		// Si no existe la gráfica, la creamos
+		if (!file.exists() || regenerate) {
+			GraphicsUtils.createBarChart(resultData, "", "", "", color, false, false, true, fileName, noDataMess, messageResources, x, y);
+		}
+	}
+
+	/**
+	 * Gets the mid mark verification evolution graphic fixed.
+	 *
+	 * @param messageResources  the message resources
+	 * @param evolutionGraphics the evolution graphics
+	 * @param verification      the verification
+	 * @param noDataMess        the no data mess
+	 * @param filePath          the file path
+	 * @param result            the result
+	 * @param color             the color
+	 * @param regenerate        the regenerate
+	 * @return the mid mark verification evolution graphic fixed
+	 * @throws Exception the exception
+	 */
+	public static void getMidMarkVerificationEvolutionGraphicFixed(final MessageResources messageResources, Map<String, Object> evolutionGraphics, final String verification, final String noDataMess,
+			final String filePath, final Map<Date, List<ObservatoryEvaluationForm>> result, final String color, final boolean regenerate) throws Exception {
+		final String fileName = filePath + File.separator + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", verification) + "Fijos.jpg";
 		final File file = new File(fileName);
 		// Recuperamos los resultados
 		final Map<String, BigDecimal> resultData = calculateVerificationEvolutionPuntuationDataSet(verification, result);

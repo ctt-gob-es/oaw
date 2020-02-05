@@ -2033,7 +2033,7 @@ public final class SemillaDAO {
 		final List<SemillaForm> results = new ArrayList<>();
 		String query = "SELECT l.* FROM lista l LEFT JOIN semilla_etiqueta el ON l.id_lista=el.id_lista WHERE l.id_categoria=? ";
 		if (tags != null && tags.length > 0) {
-			query = query + " AND ( 1=1 ";
+			query = query + " AND ( 1=0 ";
 			for (int i = 0; i < tags.length; i++) {
 				if (!org.apache.commons.lang3.StringUtils.isEmpty(tags[i])) {
 					query = query + " OR el.id_etiqueta= ?";
