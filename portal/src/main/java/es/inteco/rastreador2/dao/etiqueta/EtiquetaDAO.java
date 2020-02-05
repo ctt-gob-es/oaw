@@ -100,7 +100,7 @@ public final class EtiquetaDAO {
 		final List<EtiquetaForm> results = new ArrayList<>();
 		
 		String query = "SELECT e.id_etiqueta, e.nombre, e.id_clasificacion, c.id_clasificacion, c.nombre"
-				+ " FROM etiqueta e LEFT JOIN clasificacion_etiqueta c ON(e.id_clasificacion = c.id_clasificacion) WHERE 1=1  ORDER BY UPPER(e.nombre) ASC";
+				+ " FROM etiqueta e LEFT JOIN clasificacion_etiqueta c ON(e.id_clasificacion = c.id_clasificacion) WHERE 1=1  ORDER BY UPPER(c.nombre) ASC, UPPER(e.nombre) ASC";
 
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			try (ResultSet rs = ps.executeQuery()) {
