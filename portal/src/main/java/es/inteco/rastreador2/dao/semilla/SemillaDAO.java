@@ -305,13 +305,13 @@ public final class SemillaDAO {
 			}
 			query = query + ")";
 		}
-		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+		if (searchForm.getinDirectorio() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
 			query += " AND l.in_directory = ? ";
 		}
-		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+		if (searchForm.getisActiva() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
 			query += " AND l.activa = ? ";
 		}
-		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+		if (searchForm.getEliminada() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
 			query += " AND l.eliminar = ? ";
 		}
 		if (searchForm.getEtiquetas() != null && searchForm.getEtiquetas().length > 0) {
@@ -351,13 +351,13 @@ public final class SemillaDAO {
 					ps.setLong(count++, Long.parseLong(searchForm.getComplejidad()[i]));
 				}
 			}
-			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+			if (searchForm.getinDirectorio() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
 				ps.setString(count++, String.valueOf(searchForm.getinDirectorio()));
 			}
-			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+			if (searchForm.getisActiva() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
 				ps.setString(count++, String.valueOf(searchForm.getisActiva()));
 			}
-			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+			if (searchForm.getEliminada() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
 				ps.setString(count++, String.valueOf(searchForm.getEliminada()));
 			}
 			if (searchForm.getEtiquetas() != null && searchForm.getEtiquetas().length > 0) {
@@ -705,13 +705,13 @@ public final class SemillaDAO {
 			}
 			query = query + ")";
 		}
-		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+		if (searchForm.getinDirectorio() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
 			query += " AND l.in_directory = ? ";
 		}
-		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+		if (searchForm.getisActiva() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
 			query += " AND l.activa = ? ";
 		}
-		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+		if (searchForm.getEliminada() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
 			query += " AND l.eliminar = ? ";
 		}
 		if (searchForm.getEtiquetas() != null && searchForm.getEtiquetas().length > 0) {
@@ -752,15 +752,15 @@ public final class SemillaDAO {
 					ps.setLong(count++, Long.parseLong(searchForm.getComplejidad()[i]));
 				}
 			}
-			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+			if (searchForm.getinDirectorio() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
 				String str = String.valueOf(searchForm.getinDirectorio());
 				ps.setString(count++, str);
 			}
-			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+			if (searchForm.getisActiva() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
 				String str = String.valueOf(searchForm.getisActiva());
 				ps.setString(count++, str);
 			}
-			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+			if (searchForm.getEliminada() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
 				String str = String.valueOf(searchForm.getEliminada());
 				ps.setString(count++, str);
 			}
@@ -3420,10 +3420,10 @@ public final class SemillaDAO {
 					} else {
 						ps.setBoolean(9, true);
 					}
-					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr()) && semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
-						ps.setBoolean(10, false);
-					} else {
+					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr()) && semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.TRUE.toString())) {
 						ps.setBoolean(10, true);
+					} else {
+						ps.setBoolean(10, false);
 					}
 				}
 				int affectedRows = ps.executeUpdate();

@@ -1307,3 +1307,14 @@ to {
 	text-overflow: ellipsis;
 }
 
+#loading_cover_div {
+     background: url(/oaw/images/loading.gif) no-repeat scroll center center #000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: none;
+    z-index: 10000;
+    opacity: 0.5;
+}

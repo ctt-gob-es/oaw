@@ -227,34 +227,11 @@ public class SeedMassImportAction extends Action {
 	 *
 	 * @param request  the request
 	 * @param response the response
-	 * @return the all seeds file
-	 * @throws Exception the exception
-	 */
-	private ActionForward getAllSeedsFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		try (Connection c = DataBaseManager.getConnection()) {
-			final List<SemillaForm> seeds = SemillaDAO.getAllObservatorySeeds(c);
-			SeedUtils.writeFileToResponse(response, seeds, true);
-			return null;
-		}
-	}
-
-	/**
-	 * Gets the all seeds file.
-	 *
-	 * @param request  the request
-	 * @param response the response
 	 * @param form     the form
 	 * @return the all seeds file
 	 * @throws Exception the exception
 	 */
 	private ActionForward getSeedsFile(HttpServletRequest request, HttpServletResponse response, ActionForm form) throws Exception {
-//		try (Connection c = DataBaseManager.getConnection()) {
-//			SemillaSearchForm search = composeFilterFromRequest(request);
-//						
-//			SeedUtils.writeFileToResponse(response, seeds, true);
-//		} catch (Exception e) {
-//			Logger.putLog("ERROR al intentar exportar datos del servicio de diagnóstico", ServicioDiagnosticoAction.class, Logger.LOG_LEVEL_ERROR, e);
-//		}
 		try (Connection c = DataBaseManager.getConnection()) {
 			SemillaSearchForm searchForm = (SemillaSearchForm) form;
 			if (searchForm != null) {
@@ -374,6 +351,8 @@ public class SeedMassImportAction extends Action {
 		seedComparision.setComplejidadNuevo(seed2.getComplejidad());
 		seedComparision.setEtiquetas(seed1.getEtiquetas());
 		seedComparision.setEtiquetasNuevo(seed2.getEtiquetas());
+		seedComparision.setEliminada(seed1.isEliminar());
+		seedComparision.setEliminadaNuevo(seed2.isEliminar());
 		return seedComparision;
 	}
 
@@ -389,6 +368,10 @@ public class SeedMassImportAction extends Action {
 		private String acronimo;
 		/** The activa. */
 		private boolean activa;
+		/** The eliminada. */
+		private boolean eliminada;
+		/** The eliminada nuevo. */
+		private boolean eliminadaNuevo;
 		/** The categoria. */
 		private CategoriaForm categoria;
 		/** The in directory. */
@@ -769,6 +752,42 @@ public class SeedMassImportAction extends Action {
 		private boolean sameComplejidad;
 
 		/**
+		 * Checks if is eliminada.
+		 *
+		 * @return true, if is eliminada
+		 */
+		public boolean isEliminada() {
+			return eliminada;
+		}
+
+		/**
+		 * Sets the eliminada.
+		 *
+		 * @param eliminada the new eliminada
+		 */
+		public void setEliminada(boolean eliminada) {
+			this.eliminada = eliminada;
+		}
+
+		/**
+		 * Checks if is eliminada nuevo.
+		 *
+		 * @return true, if is eliminada nuevo
+		 */
+		public boolean isEliminadaNuevo() {
+			return eliminadaNuevo;
+		}
+
+		/**
+		 * Sets the eliminada nuevo.
+		 *
+		 * @param eliminadaNuevo the new eliminada nuevo
+		 */
+		public void setEliminadaNuevo(boolean eliminadaNuevo) {
+			this.eliminadaNuevo = eliminadaNuevo;
+		}
+
+		/**
 		 * Sets the same complejidad.
 		 *
 		 * @param sameComplejidad the new same complejidad
@@ -979,6 +998,15 @@ public class SeedMassImportAction extends Action {
 		}
 
 		/**
+		 * Checks if is same eliminada.
+		 *
+		 * @return true, if is same eliminada
+		 */
+		public boolean isSameEliminada() {
+			return eliminada == eliminadaNuevo;
+		}
+
+		/**
 		 * Checks if is same in directory.
 		 *
 		 * @return true, if is same in directory
@@ -1021,7 +1049,7 @@ public class SeedMassImportAction extends Action {
 		 */
 		public boolean isSame() {
 			return this.isSameAcronimo() && this.isSameActiva() && this.isSameCategoria() && this.isSameDependencias() && this.isSameInDirectory() && this.isSameListaURLs() && this.isSameNombre()
-					&& this.isSameAmbito() && this.isSameEtiquetas() && this.isSameComplejidad();
+					&& this.isSameAmbito() && this.isSameEtiquetas() && this.isSameComplejidad() && this.isSameEliminada();
 		}
 	}
 }
