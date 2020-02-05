@@ -151,8 +151,10 @@ function reloadGrid(path) {
 														editrules : {
 															required : true
 														},
-														sortable : false,
-														align : "center"
+														
+														align : "center",
+														sortable : false
+															
 													},
 													{
 														name : "clasificacionaux",
@@ -187,6 +189,7 @@ function reloadGrid(path) {
 
 														},
 														hidden : false,
+														
 // editrules : {
 // required : true,
 // edithidden : true
