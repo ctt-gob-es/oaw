@@ -1453,6 +1453,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		String etiquetasTematica = "";
 		String etiquetasGeografia = "";
 		String etiquetasRecurrencia = "";
+		String etiquetasOtros = "";
 		if (etiquetas != null && !etiquetas.isEmpty()) {
 			for (EtiquetaForm etiqueta : etiquetas) {
 				if (etiqueta.getClasificacion() != null && "1".equals(etiqueta.getClasificacion().getId())) {
@@ -1461,6 +1462,8 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 					etiquetasGeografia = etiquetasGeografia + etiqueta.getName() + ";";
 				} else if (etiqueta.getClasificacion() != null && "3".equals(etiqueta.getClasificacion().getId())) {
 					etiquetasRecurrencia = etiquetasRecurrencia + etiqueta.getName() + ";";
+				} else if (etiqueta.getClasificacion() != null && "4".equals(etiqueta.getClasificacion().getId())) {
+					etiquetasOtros = etiquetasOtros + etiqueta.getName() + ";";
 				}
 			}
 		}
@@ -1506,7 +1509,11 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		// Discapacidad
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.seed.detail.tabla.discapacidad"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
 				Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
-		table.addCell(PDFUtils.createTableCell("No", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
+		if (!StringUtils.isEmpty(etiquetasOtros) && etiquetasOtros.contains("discapaci")) {
+			table.addCell(PDFUtils.createTableCell("Sí", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
+		} else {
+			table.addCell(PDFUtils.createTableCell("No", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
+		}
 		chapter.add(table);
 		document.add(chapter);
 	}

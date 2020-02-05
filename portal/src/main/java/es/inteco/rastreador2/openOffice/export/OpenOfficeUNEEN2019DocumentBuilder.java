@@ -78,10 +78,8 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
  * Clase encargada de construir el documento OpenOffice con los resultados del observatorio usando la metodología UNE 2012 - VERSIÓN 2017.
  */
 public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilder {
-	
 	/** The Constant STYLE_LFO3. */
 	private static final String STYLE_LFO3 = "LFO3";
-	
 	/** The Constant TEXT_STYLE_NAME. */
 	private static final String TEXT_STYLE_NAME = "text:style-name";
 	/** The Constant EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO. */
@@ -329,7 +327,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	public OdfTextDocument buildDocument(final HttpServletRequest request, final String graphicPath, final String date, final boolean evolution,
 			final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories) throws Exception {
 		final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
-		//Generate grpahics to use in the document generated
+		// Generate grpahics to use in the document generated
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath,
 				Constants.MINISTERIO_P, true, null, null);
 		final OdfTextDocument odt = getOdfTemplate();
@@ -347,6 +345,21 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		// Evolution
 		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, null, null, null);
 		finishDocumentConfiguration(odt, odfFileContent, "");
+		// Remove files on tmp
+		try {
+			// Lists all files in folder
+			File folder = new File("/tmp");
+			File fList[] = folder.listFiles();
+			// Searchs .lck
+			for (int i = 0; i < fList.length; i++) {
+				File pes = fList[i];
+				if (pes.getName().endsWith(".jpg") || pes.getName().endsWith(".odt")) {
+					// and deletes
+					pes.delete();
+				}
+			}
+		} catch (Exception e) {
+		}
 		return odt;
 	}
 
@@ -391,6 +404,20 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, tagsToFilter, grpahicConditional);
 		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, tagsToFilter, exObsIds, categories);
 		finishDocumentConfiguration(odt, odfFileContent, reportTitle);
+		try {
+			// Lists all files in folder
+			File folder = new File("/tmp");
+			File fList[] = folder.listFiles();
+			// Searchs .lck
+			for (int i = 0; i < fList.length; i++) {
+				File pes = fList[i];
+				if (pes.getName().endsWith(".jpg") || pes.getName().endsWith(".odt")) {
+					// and deletes
+					pes.delete();
+				}
+			}
+		} catch (Exception e) {
+		}
 		return odt;
 	}
 
@@ -888,6 +915,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				mergeFontTypesToPrimaryDoc(odt, odtComplexity);
 				forceContinueNumbering(odt, odfFileContent);
 			}
+			odtComplexity = null;
+			odfFileContentComplejidad = null;
+			System.gc();
 		}
 	}
 
@@ -932,8 +962,8 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 					// remove pmasection
 					removeSection(odtCategory, odfFileContentCategory, CMV_SECTION_NAME);
 				}
-				replaceSectionCompilanceByVerificationLevel1Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionCompilanceByVerificationLevel2Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, pageExecutionListCat);
+				replaceSectionCompilanceByVerificationLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				replaceSectionCompilanceByVerificationLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 				if (grpahicConditional.containsKey(Constants.CHECK_SEGMENT_ASPECTS_GRPAHICS) && Boolean.TRUE.equals(grpahicConditional.get(Constants.CHECK_SEGMENT_ASPECTS_GRPAHICS))) {
 					replaceSectionAspectsGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 				} else {
@@ -953,6 +983,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				mergeFontTypesToPrimaryDoc(odt, odtCategory);
 				forceContinueNumbering(odt, odfFileContent);
 			}
+			odtCategory = null;
+			odfFileContentCategory = null;
+			System.gc();
 		}
 	}
 
@@ -2408,14 +2441,14 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		numSection = 10;
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateEvolutionPuntuationDataSet(pageExecutionList);
-			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.mid.puntuation.name") + JPG_EXTENSION, IMAGE_JPEG);
+			// replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.mid.puntuation.name") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t3", resultData);
 		} else {
 			final PropertiesManager pmgr = new PropertiesManager();
-			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_OPEN_OFFICE_GRAPHIC_NO_RESULTS), IMAGE_JPEG);
-			numImg++;
-			numImg++;
+//			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_OPEN_OFFICE_GRAPHIC_NO_RESULTS), IMAGE_JPEG);
+//			numImg++;
+//			numImg++;
 		}
 		return numImg;
 	}

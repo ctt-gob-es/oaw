@@ -38,7 +38,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		
 		return "<span style='cursor:pointer' onclick='uploadPlantilla("
 		+ options.rowId
-		+ ")'class='glyphicon glyphicon-cloud-upload'></span><span class='sr-only'>Eliminar</span></span>";
+		+ ")'class='glyphicon glyphicon-cloud-upload'></span><span class='sr-only'>Cargar</span></span>";
 	}
 	
 	function downloadFormatter(cellvalue, options, rowObject){
