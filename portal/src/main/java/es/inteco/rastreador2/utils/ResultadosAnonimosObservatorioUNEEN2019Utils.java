@@ -1406,9 +1406,21 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		// Process results
 		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
 			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
+				String keyCompilance = verificationResult.getKey().concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX);
+				String keyNoCompilance = verificationResult.getKey().concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX);
+				String keyNoApply = verificationResult.getKey().concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX);
+				// TODO Add all posbible values???
+				if (!resultsC.containsKey(keyCompilance)) {
+					resultsC.put(keyCompilance, new BigDecimal(0));
+				}
+				if (!resultsC.containsKey(keyNoCompilance)) {
+					resultsC.put(keyNoCompilance, new BigDecimal(0));
+				}
+				if (!resultsC.containsKey(keyNoApply)) {
+					resultsC.put(keyNoApply, new BigDecimal(0));
+				}
 				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
 					// If exists +1
-					String keyCompilance = verificationResult.getKey().concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX);
 					if (resultsC.containsKey(keyCompilance)) {
 						resultsC.put(keyCompilance, resultsC.get(keyCompilance).add(new BigDecimal(1)));
 					} else {
@@ -1416,7 +1428,6 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 					}
 				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
 					// If exists +1
-					String keyNoCompilance = verificationResult.getKey().concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX);
 					if (resultsC.containsKey(keyNoCompilance)) {
 						resultsC.put(keyNoCompilance, resultsC.get(keyNoCompilance).add(new BigDecimal(1)));
 					} else {
@@ -1424,11 +1435,10 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 					}
 				} else {
 					// If exists +1
-					String keyNoCompilance = verificationResult.getKey().concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX);
-					if (resultsC.containsKey(keyNoCompilance)) {
-						resultsC.put(keyNoCompilance, resultsC.get(keyNoCompilance).add(new BigDecimal(1)));
+					if (resultsC.containsKey(keyNoApply)) {
+						resultsC.put(keyNoApply, resultsC.get(keyNoApply).add(new BigDecimal(1)));
 					} else {
-						resultsC.put(keyNoCompilance, new BigDecimal(1));
+						resultsC.put(keyNoApply, new BigDecimal(1));
 					}
 				}
 			}
