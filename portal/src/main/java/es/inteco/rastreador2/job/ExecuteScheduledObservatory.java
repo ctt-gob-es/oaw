@@ -171,10 +171,15 @@ public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJo
 			final List<SemillaForm> totalSeedsAdded = new ArrayList<>();
 			if (observatorioForm.getCategoria() != null) {
 				for (String categoria : observatorioForm.getCategoria()) {
-					totalSeedsAdded.addAll(SemillaDAO.getSeedsByCategory(conn, Long.parseLong(categoria), es.inteco.common.Constants.NO_PAGINACION, new SemillaForm()));
+					String[] tags = {};
+					if (!org.apache.commons.lang3.StringUtils.isEmpty(observatorioForm.getTagsString())) {
+						tags = observatorioForm.getTagsString().split(",");
+					}
+					totalSeedsAdded.addAll(SemillaDAO.getSeedsObservatory(conn, Long.parseLong(categoria), -1, tags));
 				}
-				ObservatorioDAO.insertNewCrawlers(conn, observatoryId, totalSeedsAdded);
 			}
+			ObservatorioDAO.deleteSeedAssociation(conn, observatoryId);
+			ObservatorioDAO.updateCrawlers(conn, observatoryId, totalSeedsAdded);
 		} catch (Exception e) {
 			Logger.putLog("Error añadir los rastreos nuevos al observatorio", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_ERROR, e);
 		}

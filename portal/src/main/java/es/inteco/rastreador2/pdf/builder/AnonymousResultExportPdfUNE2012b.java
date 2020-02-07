@@ -225,7 +225,7 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 		final com.lowagie.text.List listaConfiguracionRastreo = new com.lowagie.text.List();
 		listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
 		PDFUtils.addListItem("Tipo: Código fuente", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
-		PDFUtils.addListItem("Normativa: " + getBasicServiceForm().reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+		PDFUtils.addListItem("Metodología: " + getBasicServiceForm().reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 		chapter.add(listaConfiguracionRastreo);
 		d.add(chapter);
 	}
@@ -273,7 +273,7 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 				}
 				PDFUtils.addListItem("Selección restringida a directorio: " + (getBasicServiceForm().isInDirectory() ? "Sí" : "No"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			}
-			PDFUtils.addListItem("Normativa: " + getBasicServiceForm().reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+			PDFUtils.addListItem("Metodología: " + getBasicServiceForm().reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			chapter.add(listaConfiguracionRastreo);
 		}
 		document.add(chapter);

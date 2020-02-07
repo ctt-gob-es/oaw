@@ -2031,7 +2031,7 @@ public final class SemillaDAO {
 	 */
 	public static List<SemillaForm> getSeedsObservatory(Connection c, long idCategory, int page, String[] tags) throws SQLException {
 		final List<SemillaForm> results = new ArrayList<>();
-		String query = "SELECT l.* FROM lista l LEFT JOIN semilla_etiqueta el ON l.id_lista=el.id_lista WHERE l.id_categoria=? ";
+		String query = "SELECT DISTINCT l.* FROM lista l LEFT JOIN semilla_etiqueta el ON l.id_lista=el.id_lista WHERE l.id_categoria=? ";
 		if (tags != null && tags.length > 0) {
 			query = query + " AND ( 1=0 ";
 			for (int i = 0; i < tags.length; i++) {
