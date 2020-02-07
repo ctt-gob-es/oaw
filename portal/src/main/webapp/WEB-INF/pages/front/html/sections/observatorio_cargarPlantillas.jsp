@@ -44,7 +44,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	function downloadFormatter(cellvalue, options, rowObject){
 		return "<span style='cursor:pointer' onclick='downloadPlantilla("
 		+ options.rowId
-		+ ")'class='glyphicon glyphicon-cloud-download'></span><span class='sr-only'>Dscargar</span></span>";
+		+ ")'class='glyphicon glyphicon-cloud-download'></span><span class='sr-only'>Descargar</span></span>";
 	}
 
 	function downloadPlantilla(rowId){

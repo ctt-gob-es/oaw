@@ -125,21 +125,30 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 			} else {
 				addCheckCodes(messageResources, evaluationForm, chapter);
 			}
-			final SpecialChunk externalLink = new SpecialChunk(messageResources.getMessage("observatory.servicio.diagnostico.url"), ConstantsFont.ANCHOR_FONT);
-			externalLink.setExternalLink(true);
-			externalLink.setAnchor(messageResources.getMessage("observatory.servicio.diagnostico.url"));
-			final Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
-			specialChunkMap.put(1, externalLink);
-			PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.errores.mas.info"), specialChunkMap, ConstantsFont.PARAGRAPH);
-			final PdfPTable notice = new PdfPTable(1);
-			notice.setSpacingBefore(25f);
-			PdfPCell cell = new PdfPCell();
-			cell.setBackgroundColor(Constants.GRIS_MUY_CLARO);
-			cell.addElement(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.errores.mas.info"), specialChunkMap, ConstantsFont.PARAGRAPH));
-			cell.setPadding(10f);
-			notice.addCell(cell);
-			notice.setWidthPercentage(100f);
-			chapter.add(notice);
+			boolean hasProblems = false;
+			for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
+				if (hasProblems(priority)) {
+					hasProblems = true;
+					break;
+				}
+			}
+			if (hasProblems) {
+				final SpecialChunk externalLink = new SpecialChunk(messageResources.getMessage("observatory.servicio.diagnostico.url"), ConstantsFont.ANCHOR_FONT);
+				externalLink.setExternalLink(true);
+				externalLink.setAnchor(messageResources.getMessage("observatory.servicio.diagnostico.url"));
+				final Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
+				specialChunkMap.put(1, externalLink);
+				PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.errores.mas.info"), specialChunkMap, ConstantsFont.PARAGRAPH);
+				final PdfPTable notice = new PdfPTable(1);
+				notice.setSpacingBefore(25f);
+				PdfPCell cell = new PdfPCell();
+				cell.setBackgroundColor(Constants.GRIS_MUY_CLARO);
+				cell.addElement(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.errores.mas.info"), specialChunkMap, ConstantsFont.PARAGRAPH));
+				cell.setPadding(10f);
+				notice.addCell(cell);
+				notice.setWidthPercentage(100f);
+				chapter.add(notice);
+			}
 			document.add(chapter);
 			pdfTocManager.addChapterCount();
 			counter++;

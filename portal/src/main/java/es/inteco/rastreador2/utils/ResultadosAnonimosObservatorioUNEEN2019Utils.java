@@ -178,46 +178,61 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
 			// Adecuación global
 			String file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.name") + ".jpg";
-			getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, pageExecutionList, globalGraphics, "", file, noDataMess, regenerate);
+			String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.title");
+			getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, regenerate);
 			// Cumplimiento global
+			title = messageResources.getMessage("observatory.graphic.compilance.level.allocation.name.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.compilance.level.allocation.name") + ".jpg";
-			getGlobalCompilanceGraphic(messageResources, pageExecutionList, globalGraphics, "", file, noDataMess, regenerate);
+			getGlobalCompilanceGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, regenerate);
 			// Gráfico nivel de cumplimiento global
+			title = messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.name") + ".jpg";
-			getGlobalMarkBySegmentGraphic(messageResources, executionId, pageExecutionList, globalGraphics, "", file, noDataMess, categories, tagsFilter);
-			// Comparación adecuación segmento
+			getGlobalMarkBySegmentGraphic(messageResources, executionId, pageExecutionList, globalGraphics, title, file, noDataMess, categories, tagsFilter);
+			// PENDING ADD TITLE -- Comparación adecuación segmento
+			title = messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.name") + ".jpg";
-			getGlobalAllocationBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, categories, regenerate, tagsFilter);
-			// Comparación adecuación complejidad
+			getGlobalAllocationBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, categories, regenerate, tagsFilter, title);
+			// PENDING ADD TITLE -- Comparación adecuación complejidad
+			title = messageResources.getMessage("observatory.graphic.global.puntuation.allocation.complexity.mark.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.complexity.mark.name") + ".jpg";
-			getGloballAllocationByComplexity(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate, tagsFilter);
+			getGloballAllocationByComplexity(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate, tagsFilter, title);
 			// Comparación cumplimiento por segmento
+			title = messageResources.getMessage("observatory.graphic.global.puntuation.compilance.segments.mark.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.compilance.segments.mark.name") + ".jpg";
-			getGlobalCompilanceBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, categories, regenerate, tagsFilter);
+			getGlobalCompilanceBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, categories, regenerate, tagsFilter, title);
 			// Comparación complimiento por complejidad
+			title = messageResources.getMessage("observatory.graphic.global.puntuation.compilance.complexitiviy.mark.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.compilance.complexitiviy.mark.name") + ".jpg";
-			getGlobalCompilanceByComplexitivity(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate, tagsFilter);
+			getGlobalCompilanceByComplexitivity(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate, tagsFilter, title);
 			// Comparación de la puntuación por complejidad
+			title = messageResources.getMessage("observatory.graphic.global.puntuation.allocation.complexitiviy.strached.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.complexitiviy.strached.name") + ".jpg";
-			getGlobalMarkByComplexitivityGraphic(messageResources, executionId, pageExecutionList, globalGraphics, "", file, noDataMess, complejidades, tagsFilter);
+			getGlobalMarkByComplexitivityGraphic(messageResources, executionId, pageExecutionList, globalGraphics, title, file, noDataMess, complejidades, tagsFilter);
 			// Comparación puntuación por verificación
+			title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg";
-			getMidsComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
+			getMidsComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_1, title, file, noDataMess, pageExecutionList, color, regenerate);
+			title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + ".jpg";
-			getMidsComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_2, "", file, noDataMess, pageExecutionList, color, regenerate);
+			getMidsComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_2, title, file, noDataMess, pageExecutionList, color, regenerate);
 			// Comparación modalidad por verificación
+			title = messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg";
-			getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, globalGraphics, "", file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
+			getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
+			title = messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + ".jpg";
-			getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, globalGraphics, "", file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
+			getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
 			// Comparación de conformidad por verificación
+			title = messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.1.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.1.name") + ".jpg";
-			getCompilanceComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
+			getCompilanceComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_1, title, file, noDataMess, pageExecutionList, color, regenerate);
+			title = messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.1.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.2.name") + ".jpg";
-			getCompilanceComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_2, "", file, noDataMess, pageExecutionList, color, regenerate);
+			getCompilanceComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_2, title, file, noDataMess, pageExecutionList, color, regenerate);
 			// Analítica orientada a aspectos
+			title = messageResources.getMessage("observatory.graphic.aspect.mid.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.aspect.mid.name") + ".jpg";
-			getAspectMidsGraphic(messageResources, globalGraphics, file, noDataMess, pageExecutionList, color, "", regenerate);
+			getAspectMidsGraphic(messageResources, globalGraphics, file, noDataMess, pageExecutionList, color, title, regenerate);
 		}
 		return globalGraphics;
 	}
@@ -844,6 +859,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		if (!file.exists() || regenerate) {
 			final PropertiesManager pmgr = new PropertiesManager();
 			final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.compilance.colors"));
+			chartForm.setTitle(title);
 			GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
 		}
 	}
@@ -1043,7 +1059,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static void getGlobalAllocationBySegment(final MessageResources messageResources, final String executionId, Map<String, Object> globalGraphics, final String filePath,
-			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final boolean regenerate, String[] tagsFilter) throws Exception {
+			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final boolean regenerate, String[] tagsFilter, final String title)
+			throws Exception {
 		final Map<Integer, List<CategoriaForm>> resultLists = createGraphicsMap(categories);
 		final List<CategoryViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
@@ -1054,6 +1071,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			// Si la gráfica no existe, la creamos
 			if (!file.exists() || regenerate) {
 				final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+				chartForm.setTitle(title);
 				GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
 			}
 			// Incluimos los resultados en la request
@@ -1082,7 +1100,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static void getGlobalCompilanceBySegment(final MessageResources messageResources, final String executionId, Map<String, Object> globalGraphics, final String filePath,
-			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final boolean regenerate, String[] tagsFilter) throws Exception {
+			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final boolean regenerate, String[] tagsFilter, final String title)
+			throws Exception {
 		final Map<Integer, List<CategoriaForm>> resultLists = createGraphicsMap(categories);
 		final List<CategoryViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
@@ -1093,6 +1112,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			// Si la gráfica no existe, la creamos
 			if (!file.exists() || regenerate) {
 				final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+				chartForm.setTitle(title);
 				GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
 			}
 			// Incluimos los resultados en la request
@@ -1121,8 +1141,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static void getGlobalCompilanceByComplexitivity(final MessageResources messageResources, final String executionId, Map<String, Object> globalGraphics, final String filePath,
-			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<ComplejidadForm> complexities, final boolean regenerate, String[] tagsFilter)
-			throws Exception {
+			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<ComplejidadForm> complexities, final boolean regenerate, String[] tagsFilter,
+			final String title) throws Exception {
 		final Map<Integer, List<ComplejidadForm>> resultLists = createGraphicsMapComplexities(complexities);
 		final List<ComplexityViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
@@ -1134,6 +1154,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			// Si la gráfica no existe, la creamos
 			if (!file.exists() || regenerate) {
 				final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+				chartForm.setTitle(title);
 				GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
 			}
 			// Incluimos los resultados en la request
@@ -1162,8 +1183,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static void getGloballAllocationByComplexity(final MessageResources messageResources, final String executionId, Map<String, Object> globalGraphics, final String filePath,
-			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<ComplejidadForm> complexities, final boolean regenerate, String[] tagsFilter)
-			throws Exception {
+			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<ComplejidadForm> complexities, final boolean regenerate, String[] tagsFilter,
+			final String title) throws Exception {
 		final Map<Integer, List<ComplejidadForm>> resultLists = createGraphicsMapComplexities(complexities);
 		final List<ComplexityViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
@@ -1174,6 +1195,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			// Si la gráfica no existe, la creamos
 			if (!file.exists() || regenerate) {
 				final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+				chartForm.setTitle(title);
 				GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
 			}
 			// Incluimos los resultados en la request
@@ -2746,7 +2768,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			dataSet.setValue(parseLevelLabel(Constants.OBS_PARCIAL, messageResources), result.get(Constants.OBS_NV));
 			dataSet.setValue(parseLevelLabel(Constants.OBS_A, messageResources), result.get(Constants.OBS_A));
 			dataSet.setValue(parseLevelLabel(Constants.OBS_AA, messageResources), result.get(Constants.OBS_AA));
-			GraphicsUtils.createPieChart(dataSet, "", messageResources.getMessage("observatory.graphic.site.number"), total, filePath, noDataMess,
+			GraphicsUtils.createPieChart(dataSet, title, messageResources.getMessage("observatory.graphic.site.number"), total, filePath, noDataMess,
 					pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
 		}
 		graphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, infoGlobalAccessibilityLevel(messageResources, result));
@@ -2782,7 +2804,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			dataSet.setValue(Constants.OBS_COMPILANCE_NONE, resultCompilance.get(Constants.OBS_COMPILANCE_NONE));
 			dataSet.setValue(Constants.OBS_COMPILANCE_PARTIAL, resultCompilance.get(Constants.OBS_COMPILANCE_PARTIAL));
 			dataSet.setValue(Constants.OBS_COMPILANCE_FULL, resultCompilance.get(Constants.OBS_COMPILANCE_FULL));
-			GraphicsUtils.createPieChart(dataSet, "", messageResources.getMessage("observatory.graphic.site.number"), total, filePath, noDataMess,
+			GraphicsUtils.createPieChart(dataSet, title, messageResources.getMessage("observatory.graphic.site.number"), total, filePath, noDataMess,
 					pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
 		}
 		graphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, infoGlobalCompilanceLevel(messageResources, resultCompilance));
@@ -2874,7 +2896,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			dataSet.setValue(Constants.OBS_COMPILANCE_NONE, totalNC);
 			dataSet.setValue(Constants.OBS_COMPILANCE_PARTIAL, totalPC);
 			dataSet.setValue(Constants.OBS_COMPILANCE_FULL, totalC);
-			GraphicsUtils.createPieChart(dataSet, "", messageResources.getMessage("observatory.graphic.site.number"), total, filePath, noDataMess,
+			GraphicsUtils.createPieChart(dataSet, title, messageResources.getMessage("observatory.graphic.site.number"), total, filePath, noDataMess,
 					pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
 		}
 		graphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, infoGlobalCompilanceLevel(messageResources, resultCompilance));
@@ -2961,6 +2983,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			if (!file.exists()) {
 				final ChartForm observatoryGraphicsForm = new ChartForm(createDataSet(resultDataBySegment, messageResources), true, true, false, false, true, false, false, x, y,
 						pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+				observatoryGraphicsForm.setTitle(title);
 				GraphicsUtils.createSeriesBarChart(observatoryGraphicsForm, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg", noDataMess, messageResources, true);
 			}
 			for (CategoriaForm category : resultLists.get(i)) {
@@ -2999,6 +3022,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			if (!file.exists()) {
 				final ChartForm observatoryGraphicsForm = new ChartForm(createDataSetComplexity(resultDataBySegment, messageResources), true, true, false, false, true, false, false, x, y,
 						pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+				observatoryGraphicsForm.setTitle(title);
 				GraphicsUtils.createSeriesBarChart(observatoryGraphicsForm, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg", noDataMess, messageResources, true);
 			}
 			for (ComplejidadForm complexitivity : resultLists.get(i)) {

@@ -523,12 +523,12 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		final com.lowagie.text.List listaConfiguracionRastreo = new com.lowagie.text.List();
 		listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
 		PDFUtils.addListItem("Tipo: Código fuente", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
-		PDFUtils.addListItem("Normativa: " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 		if (Constants.REPORT_OBSERVATORY_4.equals(getBasicServiceForm().getReport())) {
 			PDFUtils.addListItem("Comprobación de enlaces rotos: Sí", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 		} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
 			PDFUtils.addListItem("Comprobación de enlaces rotos: No", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 		}
+		PDFUtils.addListItem("Normativa: " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 		chapter.add(listaConfiguracionRastreo);
 		d.add(chapter);
 	}
@@ -579,12 +579,12 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				}
 				PDFUtils.addListItem("Selección restringida a directorio: " + (getBasicServiceForm().isInDirectory() ? "Sí" : "No"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			}
-			PDFUtils.addListItem("Normativa: " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			if (Constants.REPORT_OBSERVATORY_4.equals(getBasicServiceForm().getReport())) {
 				PDFUtils.addListItem("Comprobación de enlaces rotos: Sí", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
 				PDFUtils.addListItem("Comprobación de enlaces rotos: No", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			}
+			PDFUtils.addListItem("Normativa: " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			chapter.add(listaConfiguracionRastreo);
 		}
 		document.add(chapter);
@@ -1478,15 +1478,14 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		// Complejidad
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.seed.detail.tabla.complejidad"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
 				Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
-		table.addCell(PDFUtils.createTableCell(
-				(fullSeed.getComplejidad() != null) ? fullSeed.getComplejidad().getName() + " (" + fullSeed.getComplejidad().getAmplitud() * fullSeed.getComplejidad().getProfundidad() + " páginas)"
-						: "",
-				Color.white, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
+		table.addCell(PDFUtils.createTableCell((fullSeed.getComplejidad() != null)
+				? fullSeed.getComplejidad().getName() + " (" + ((fullSeed.getComplejidad().getAmplitud() * fullSeed.getComplejidad().getProfundidad()) + 1) + " páginas)"
+				: "", Color.white, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
 		// Temática
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.seed.detail.tabla.tematica"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_JUSTIFIED,
 				ConstantsFont.DEFAULT_PADDING, -1));
 		if (!StringUtils.isEmpty(etiquetasTematica)) {
-			table.addCell(PDFUtils.createListTableCell(this.createTextList(etiquetasTematica, Element.ALIGN_LEFT), Color.white, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING));
+			table.addCell(PDFUtils.createListTableCell(this.createTextList(etiquetasTematica, Element.ALIGN_LEFT), Color.white, Element.ALIGN_JUSTIFIED, -1));
 		} else {
 			table.addCell(PDFUtils.createTableCell("-", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
 		}
@@ -1494,7 +1493,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.seed.detail.tabla.geografia"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_JUSTIFIED,
 				ConstantsFont.DEFAULT_PADDING, -1));
 		if (!StringUtils.isEmpty(etiquetasGeografia)) {
-			table.addCell(PDFUtils.createListTableCell(this.createTextList(etiquetasGeografia, Element.ALIGN_LEFT), Color.white, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING));
+			table.addCell(PDFUtils.createListTableCell(this.createTextList(etiquetasGeografia, Element.ALIGN_LEFT), Color.white, Element.ALIGN_JUSTIFIED, -1));
 		} else {
 			table.addCell(PDFUtils.createTableCell("-", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
 		}
@@ -1502,7 +1501,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.seed.detail.tabla.recurrencia"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
 				Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
 		if (!StringUtils.isEmpty(etiquetasRecurrencia)) {
-			table.addCell(PDFUtils.createListTableCell(this.createTextList(etiquetasRecurrencia, Element.ALIGN_LEFT), Color.white, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING));
+			table.addCell(PDFUtils.createListTableCell(this.createTextList(etiquetasRecurrencia, Element.ALIGN_LEFT), Color.white, Element.ALIGN_JUSTIFIED, -1));
 		} else {
 			table.addCell(PDFUtils.createTableCell("-", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
 		}
@@ -1664,7 +1663,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		}
 		section.add(tablaRankings);
 		// Gráficos
-		section.add(Chunk.NEWLINE);
+		section.add(Chunk.NEXTPAGE);
 		section.add(new Paragraph("A continuación se muestra la distribución de páginas según el nivel de adecuación estimado (No válido, A o AA)", ConstantsFont.PARAGRAPH));
 		// Gráfica nivel de adecuación
 		final String noDataMess = messageResources.getMessage("grafica.sin.datos");

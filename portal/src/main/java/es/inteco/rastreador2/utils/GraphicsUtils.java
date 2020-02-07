@@ -114,7 +114,7 @@ public final class GraphicsUtils {
 		} catch (Exception e) {
 			Logger.putLog("No se ha podido cargar la fuente Roboto ubicada en " + pmgr.getValue("pdf.properties", "path.pdf.font.monospaced"), GraphicsUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-		TITLE_FONT = new Font(fontFamily, Font.BOLD, 22);
+		TITLE_FONT = new Font(fontFamily, Font.BOLD, 18);
 		LEGEND_FONT = new Font(fontFamily, Font.PLAIN, 14);
 		TICK_LABEL_FONT = new Font(fontFamily, Font.PLAIN, 14);
 		TICK_LABEL_FONT_SMALL = new Font(fontFamily, Font.PLAIN, 12);
@@ -355,6 +355,7 @@ public final class GraphicsUtils {
 	public static void createStackedBarChart(final ChartForm chartForm, final String noDataMess, final String filePath) throws IOException {
 		final JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), chartForm.getDataSet(), PlotOrientation.VERTICAL,
 				chartForm.isPrintLegend(), true, false);
+		chart.getTitle().setFont(TITLE_FONT);
 		formatLegend(chart);
 		CategoryPlot plot = chart.getCategoryPlot();
 		plot.setBackgroundPaint(Color.WHITE);
@@ -405,6 +406,7 @@ public final class GraphicsUtils {
 			throws IOException {
 		final JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), chartForm.getDataSet(), PlotOrientation.VERTICAL,
 				chartForm.isPrintLegend(), true, false);
+		chart.getTitle().setFont(TITLE_FONT);
 		formatLegend(chart);
 		CategoryPlot plot = chart.getCategoryPlot();
 		plot.setBackgroundPaint(Color.WHITE);
@@ -447,6 +449,7 @@ public final class GraphicsUtils {
 			throws IOException {
 		final JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), chartForm.getDataSet(), PlotOrientation.VERTICAL,
 				chartForm.isPrintLegend(), true, false);
+		chart.getTitle().setFont(TITLE_FONT);
 		formatLegend(chart);
 		CategoryPlot plot = chart.getCategoryPlot();
 		plot.setBackgroundPaint(Color.WHITE);
@@ -911,7 +914,9 @@ public final class GraphicsUtils {
 				value = value * p;
 				float tmp = Math.round(value);
 				value = tmp / p;
-				return key + "\n" + sectionLabel + dataset.getValue(key).toString() + "\n" + " (" + value.toString() + "%)";
+				// PENDING Labels as integers
+				// return key + "\n" + sectionLabel + dataset.getValue(key).toString() + "\n" + " (" + value.toString() + "%)";
+				return key + "\n" + sectionLabel + dataset.getValue(key).toString() + "\n" + " (" + Math.round(value) + "%)";
 			} else {
 				return null;
 			}
