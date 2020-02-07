@@ -343,7 +343,9 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			p.add(new Phrase(this.messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.2.bold"), ConstantsFont.paragraphBoldFont));
 			p.add(new Phrase(this.messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.2"), ConstantsFont.PARAGRAPH));
 			PDFUtils.addListItem(p, list, ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_LEFT); // L3
-			// L3
+			section.add(list);
+			list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
+			// L3 --> P
 			specialChunkMap = new HashMap<>();
 			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3.bold1"), ConstantsFont.paragraphBoldFont);
 			specialChunkMap.put(1, externalLink);
@@ -356,9 +358,10 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3.anchor2.text"), ConstantsFont.ANCHOR_FONT); // externalLink.setExternalLink(true);
 																																										// //
 			externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3.anchor2.url")); // specialChunkMap.put(10, externalLink);
-			PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
-					ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
-			// L4
+//			PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
+//					ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			// L4 --> P
 			specialChunkMap = new HashMap<>();
 			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4.bold1"), ConstantsFont.paragraphBoldFont);
 			specialChunkMap.put(1, externalLink);
@@ -368,11 +371,9 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			externalLink.setExternalLink(true);
 			externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4.anchor1.url"));
 			specialChunkMap.put(3, externalLink);
-			PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
-					ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
-			list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
-			section.add(list);
-			section.add(list);
+//			PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
+//					ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4"), specialChunkMap, ConstantsFont.PARAGRAPH));
 		} else {
 			// L1
 			specialChunkMap = new HashMap<>();
@@ -528,7 +529,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
 			PDFUtils.addListItem("Comprobación de enlaces rotos: No", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 		}
-		PDFUtils.addListItem("Normativa: " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+		PDFUtils.addListItem("Metodología: " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 		chapter.add(listaConfiguracionRastreo);
 		d.add(chapter);
 	}
@@ -584,7 +585,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
 				PDFUtils.addListItem("Comprobación de enlaces rotos: No", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			}
-			PDFUtils.addListItem("Normativa: " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+			PDFUtils.addListItem("Metodología: " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			chapter.add(listaConfiguracionRastreo);
 		}
 		document.add(chapter);

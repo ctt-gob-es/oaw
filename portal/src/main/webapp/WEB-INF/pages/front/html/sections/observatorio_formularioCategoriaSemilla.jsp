@@ -263,7 +263,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					<div class="formItem">
 						<label for="name" class="control-label"><strong class="labelVisu"><acronym
 								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="migas.categoria" />: </strong></label>
-						<html:text styleClass="texto form-control" property="name" styleId="name" maxlength="30" />
+						<html:text styleClass="texto form-control" property="name" styleId="name" maxlength="256" />
 					</div>
 					<div class="formItem">
 						<label for="orden" class="control-label"><strong class="labelVisu"><bean:message

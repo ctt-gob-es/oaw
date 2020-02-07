@@ -1378,6 +1378,33 @@ public final class RastreoDAO {
 	}
 
 	/**
+	 * Update rastreo.
+	 *
+	 * @param c                   the c
+	 * @param esMenu              the es menu
+	 * @param insertarRastreoForm the insertar rastreo form
+	 * @param idRastreo           the id rastreo
+	 * @throws SQLException the SQL exception
+	 */
+	public static void updateRastreo(Connection c, boolean esMenu, InsertarRastreoForm insertarRastreoForm, Long idRastreo) throws SQLException {
+		PreparedStatement ps = null;
+		try {
+			PropertiesManager pmgr = new PropertiesManager();
+			ps = c.prepareStatement("UPDATE rastreo SET profundidad = ?, topn = ?, in_directory = ? WHERE id_rastreo = ?");
+			ps.setInt(1, insertarRastreoForm.getProfundidad());
+			ps.setLong(2, insertarRastreoForm.getTopN());
+			ps.setBoolean(3, insertarRastreoForm.isInDirectory());
+			ps.setLong(4, idRastreo);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			Logger.putLog("Exception", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(ps, null);
+		}
+	}
+
+	/**
 	 * Gets the num active crawlings.
 	 *
 	 * @param conn      the conn
@@ -1932,9 +1959,7 @@ public final class RastreoDAO {
 	 */
 	public static FulfilledCrawlingForm getFullfilledCrawlingExecution(Connection conn, long idExecution) throws SQLException {
 		try (PreparedStatement ps = conn.prepareStatement("SELECT rr.*, l.*, cl.*, cm.* FROM rastreos_realizados rr " + "JOIN lista l ON (rr.id_lista = l.id_lista) "
-				+ "LEFT JOIN categorias_lista cl ON (l.id_categoria = cl.id_categoria) " 
-				+ "LEFT JOIN complejidades_lista cm ON (l.id_complejidad = cm.id_complejidad) " + 
-				"WHERE id = ? ")) {
+				+ "LEFT JOIN categorias_lista cl ON (l.id_categoria = cl.id_categoria) " + "LEFT JOIN complejidades_lista cm ON (l.id_complejidad = cm.id_complejidad) " + "WHERE id = ? ")) {
 			ps.setLong(1, idExecution);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
@@ -1954,8 +1979,7 @@ public final class RastreoDAO {
 					categoria.setId(rs.getString("cl.id_categoria"));
 					categoria.setOrden(rs.getInt("cl.orden"));
 					semilla.setCategoria(categoria);
-					
-					//Complejidad
+					// Complejidad
 					final ComplejidadForm complejidad = new ComplejidadForm();
 					complejidad.setId(rs.getString("cm.id_complejidad"));
 					complejidad.setName(rs.getString("cm.nombre"));

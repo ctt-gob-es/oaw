@@ -117,7 +117,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</logic:equal> <logic:equal name="semilla" property="eliminada" value="false">
 											<bean:message key="no" />
 										</logic:equal></td>
-										
+
 									<td><logic:equal name="semilla" property="inDirectory" value="true">
 											<bean:message key="si" />
 										</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
@@ -176,7 +176,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<td class='<c:if test="${semilla.sameInDirectory!=true}">warning-import</c:if>'><logic:equal
 											name="semilla" property="inDirectoryNuevo" value="true">
 											<bean:message key="si" />
-										</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
+										</logic:equal> <logic:equal name="semilla" property="inDirectoryNuevo" value="false">
 											<bean:message key="no" />
 										</logic:equal></td>
 								</tr>
@@ -322,11 +322,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</logic:iterate></td>
 
 
-										<td><logic:equal name="semilla" property="inDirectory" value="true">
-												<bean:message key="si" />
-											</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
-												<bean:message key="no" />
-											</logic:equal></td>
 
 
 										<td><logic:equal name="semilla" property="activa" value="true">
@@ -339,6 +334,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										<td><logic:equal name="semilla" property="eliminar" value="true">
 												<bean:message key="si" />
 											</logic:equal> <logic:equal name="semilla" property="eliminar" value="false">
+												<bean:message key="no" />
+											</logic:equal></td>
+
+
+										<td><logic:equal name="semilla" property="inDirectory" value="true">
+												<bean:message key="si" />
+											</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
 												<bean:message key="no" />
 											</logic:equal></td>
 									</tr>

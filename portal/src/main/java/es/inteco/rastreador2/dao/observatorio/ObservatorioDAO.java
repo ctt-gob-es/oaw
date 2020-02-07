@@ -938,6 +938,7 @@ public final class ObservatorioDAO {
 					observatorioForm.setPseudoAleatorio(rs.getBoolean("pseudoaleatorio"));
 					observatorioForm.setLenguaje(rs.getLong("id_language"));
 					observatorioForm.setTipo(rs.getLong("id_tipo"));
+					observatorioForm.setTagsString(rs.getString("tags"));
 					final CartuchoForm cartuchoForm = new CartuchoForm();
 					cartuchoForm.setId(rs.getLong("id_cartucho"));
 					observatorioForm.setCartucho(cartuchoForm);
@@ -1679,12 +1680,25 @@ public final class ObservatorioDAO {
 				}
 				ps.executeBatch();
 			}
-			editCrawlings(c, modificarObservatorioForm);
+//			editCrawlings(c, modificarObservatorioForm);
 			disableCrawlers(c, modificarObservatorioForm.getSemillasNoAnadidas(), modificarObservatorioForm.getId_observatorio());
+//			deleteSeedAssociation(c, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
+//			addObservatorySeeds(c, modificarObservatorioForm.getSemillasAnadidas(), Long.parseLong(modificarObservatorioForm.getId_observatorio()));
+//			// Insertamos los rastreos independientes de la categoría asociada
+//			insertNewCrawlers(c, Long.parseLong(modificarObservatorioForm.getId_observatorio()), modificarObservatorioForm.getSemillasAnadidas());
+			List<SemillaForm> totalSeedsAdded = new ArrayList<SemillaForm>();
+			// add seeds to observatory
+			if (modificarObservatorioForm.getCategoria() != null) {
+				for (String categoria : modificarObservatorioForm.getCategoria()) {
+					String[] tags = {};
+					if (!org.apache.commons.lang3.StringUtils.isEmpty(modificarObservatorioForm.getTagsString())) {
+						tags = modificarObservatorioForm.getTagsString().split(",");
+					}
+					totalSeedsAdded.addAll(SemillaDAO.getSeedsObservatory(c, Long.parseLong(categoria), Constants.NO_PAGINACION, tags));
+				}
+			}
 			deleteSeedAssociation(c, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
-			addObservatorySeeds(c, modificarObservatorioForm.getSemillasAnadidas(), Long.parseLong(modificarObservatorioForm.getId_observatorio()));
-			// Insertamos los rastreos independientes de la categoría asociada
-			insertNewCrawlers(c, Long.parseLong(modificarObservatorioForm.getId_observatorio()), modificarObservatorioForm.getSemillasAnadidas());
+			updateCrawlers(c, Long.parseLong(modificarObservatorioForm.getId_observatorio()), totalSeedsAdded);
 			c.commit();
 		} catch (SQLException e) {
 			try {
@@ -1758,6 +1772,54 @@ public final class ObservatorioDAO {
 	}
 
 	/**
+	 * Update crawlers.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @param seeds         the seeds
+	 * @throws SQLException the SQL exception
+	 */
+	public static void updateCrawlers(final Connection c, final long idObservatory, final List<SemillaForm> seeds) throws SQLException {
+		// Disable all
+		try (PreparedStatement ps = c.prepareStatement("UPDATE rastreo SET activo = 0 WHERE id_observatorio = ?")) {
+			ps.setLong(1, idObservatory);
+			ps.executeUpdate();
+			// Insert new or update existing
+			final InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
+			final ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
+			if (seeds != null) {
+				for (SemillaForm semillaForm : seeds) {
+					insertarRastreoForm.setCodigo(observatorioForm.getNombre() + "-" + SemillaDAO.getSeedById(c, semillaForm.getId()).getNombre());
+					insertarRastreoForm.setId_semilla(semillaForm.getId());
+					insertarRastreoForm.setId_observatorio(idObservatory);
+					insertarRastreoForm.setInDirectory(semillaForm.isInDirectory());
+					insertarRastreoForm.setProfundidad(observatorioForm.getProfundidad());
+					insertarRastreoForm.setTopN(observatorioForm.getAmplitud());
+					final Long idCrawler = ObservatorioDAO.existObservatoryCrawl(c, idObservatory, semillaForm.getId());
+					if (idCrawler == -1) {
+						insertarRastreoForm.setActive(semillaForm.isActiva());
+						RastreoDAO.insertarRastreo(c, insertarRastreoForm, true);
+						// Desactivamos si la semilla está desactivada o borrada
+						if (!semillaForm.isActiva() || semillaForm.isEliminar()) {
+							RastreoDAO.enableDisableCrawler(c, idCrawler, false);
+						} else {
+							RastreoDAO.enableDisableCrawler(c, idCrawler, true);
+						}
+					} else {
+						// Desactivamos si la semilla está desactivada o borrada
+						RastreoDAO.updateRastreo(c, false, insertarRastreoForm, idCrawler);
+						if (!semillaForm.isActiva() || semillaForm.isEliminar()) {
+							RastreoDAO.enableDisableCrawler(c, idCrawler, false);
+						} else {
+							RastreoDAO.enableDisableCrawler(c, idCrawler, true);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * Disable crawlers.
 	 *
 	 * @param c             the c
@@ -1788,7 +1850,7 @@ public final class ObservatorioDAO {
 	 * @param idObservatorio the id observatorio
 	 * @throws SQLException the SQL exception
 	 */
-	private static void deleteSeedAssociation(Connection c, long idObservatorio) throws SQLException {
+	public static void deleteSeedAssociation(Connection c, long idObservatorio) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_lista WHERE id_observatorio = ?")) {
 			ps.setLong(1, idObservatorio);
 			ps.executeUpdate();
