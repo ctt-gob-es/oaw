@@ -447,6 +447,8 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		// Add generated tables styles
 		addTableStyles(odt);
 		addHeaderStyles(odt);
+		addTableHeaderStyles(odt);
+		// TODO Remove all bookmarks??
 	}
 
 	/**
@@ -568,6 +570,11 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		Element newImageCompliance = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(imageComplianceDom.getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, newImageCompliance, SEGMENT_EVOLUTION_BOOKMARK);
 		insertFileInsideODTFile(odt, PICTURES_ODT_PATH + fC.getName(), fC, MIME_TYPE_JPG);
+		// Table title
+		sb = new StringBuilder("");
+		sb.append("<text:p text:style-name=\"PTableTitle\">Evolución de la Situación de cumplimiento estimada: " + category.getName() + "</text:p>");
+		Element tableTitle = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, tableTitle, SEGMENT_EVOLUTION_BOOKMARK);
 		// Table
 		final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByCompliance(observatoryId, executionId,
 				pageObservatoryMap, exObsIds);
@@ -683,6 +690,11 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		Element newIMage = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(newImageDOm.getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, newIMage, SEGMENT_EVOLUTION_BOOKMARK);
 		insertFileInsideODTFile(odt, PICTURES_ODT_PATH + f.getName(), f, MIME_TYPE_JPG);
+		// Table title
+		sb = new StringBuilder("");
+		sb.append("<text:p text:style-name=\"PTableTitle\">Evolución del Nivel de adecuación estimado: " + category.getName() + "</text:p>");
+		Element tableTitle = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, tableTitle, SEGMENT_EVOLUTION_BOOKMARK);
 		// Table
 		final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByType(observatoryId, executionId,
 				pageObservatoryMap, exObsIds);
@@ -1757,6 +1769,19 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		paragraphStyleH3.setAttribute("style:name", "HeaderStyle3");
 		paragraphStyleH3.setAttribute("style:parent-style-name", "H3");
 		paragraphStyleH3.setAttribute("style:list-style-name", STYLE_LFO3);
+	}
+
+	/**
+	 * Adds the table header styles.
+	 *
+	 * @param odt the odt
+	 * @throws Exception the exception
+	 */
+	private void addTableHeaderStyles(final OdfTextDocument odt) throws Exception {
+		OdfOfficeAutomaticStyles styles = odt.getContentDom().getOrCreateAutomaticStyles();
+		OdfStyle paragraphStyleH2 = styles.newStyle(OdfStyleFamily.Paragraph);
+		paragraphStyleH2.setAttribute("style:name", "PTableTitle");
+		paragraphStyleH2.setAttribute("style:parent-style-name", "Titulo_5f_tablas");
 	}
 
 	/**

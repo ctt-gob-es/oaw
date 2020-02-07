@@ -256,6 +256,11 @@ td {
 	margin-top: 8%
 }
 
+.innerFieldset .formItem {
+	margin-top:1%;
+	    height: 35px;
+	
+}
 .eliminateLink {
 	float: right
 }

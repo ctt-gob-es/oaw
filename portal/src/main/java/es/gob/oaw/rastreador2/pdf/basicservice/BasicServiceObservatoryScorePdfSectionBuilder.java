@@ -135,7 +135,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 			// Info
 			final PdfPTable notice = new PdfPTable(new float[] { 100f });
 			notice.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
-			notice.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.intro.info"), Constants.GRIS_MUY_CLARO, ConstantsFont.paragraphBoldFont, Element.ALIGN_JUSTIFIED,
+			notice.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.summary.info"), Constants.GRIS_MUY_CLARO, ConstantsFont.paragraphBoldFont, Element.ALIGN_JUSTIFIED,
 					ConstantsFont.DEFAULT_PADDING, 50));
 			section31.add(notice);
 			currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);

@@ -102,7 +102,7 @@ Email: observ.accesibilidad@correo.gob.es
 
 											<html:link forward="estadoObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
-													title="Relanzar esta iteraci&oacute;n del observatorio" />
+													title="Estado de esta iteraci&oacute;n del observatorio" />
 												<span class="sr-only">Estado esta iteraci&oacute;n del observatorio</span>
 											</html:link>
 
@@ -146,7 +146,7 @@ Email: observ.accesibilidad@correo.gob.es
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.terminado" />
 											<html:link forward="estadoObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
-													title="Relanzar esta iteraci&oacute;n del observatorio" />
+													title="Estado de esta iteraci&oacute;n del observatorio" />
 												<span class="sr-only">Estado esta iteraci&oacute;n del observatorio</span>
 											</html:link>
 										</logic:equal> <logic:equal name="fulfilledObservatory" property="observatorio.estado" value="2">

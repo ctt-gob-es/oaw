@@ -329,10 +329,10 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			} else if (bigDecimal.compareTo(new BigDecimal(0)) >= 0) {
 				table.addCell(PDFUtils.createTableCell("NC", Constants.MARRRON_C_NC, ConstantsFont.labelHeaderCellFont, Element.ALIGN_CENTER, 0));
 			} else {
-				table.addCell(PDFUtils.createTableCell("NP", Constants.MARRRON_C_NC, ConstantsFont.labelHeaderCellFont, Element.ALIGN_CENTER, 0));
+				table.addCell(PDFUtils.createTableCell("NA", Constants.MARRRON_C_NC, ConstantsFont.labelHeaderCellFont, Element.ALIGN_CENTER, 0));
 			}
 		} catch (NumberFormatException e) {
-			table.addCell(PDFUtils.createTableCell("NP", Constants.MARRRON_C_NC, ConstantsFont.labelHeaderCellFont, Element.ALIGN_CENTER, 0));
+			table.addCell(PDFUtils.createTableCell("NA", Constants.MARRRON_C_NC, ConstantsFont.labelHeaderCellFont, Element.ALIGN_CENTER, 0));
 		}
 	}
 
@@ -472,7 +472,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItemBold("Conformidad de verificación en el sitio web", ""));
 		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("Conforme", "C"));
 		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("No conforme", "NC:"));
-		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("No puntúa", "N:"));
+		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("No aplica", "NA:"));
 		final PdfPCell leyendaValoresConformidadTableCell = PDFUtils.createListTableCell(leyendaValoresConformidad, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
 		leyendaValoresConformidadTableCell.setBorder(0);
 		table.addCell(leyendaValoresConformidadTableCell);
