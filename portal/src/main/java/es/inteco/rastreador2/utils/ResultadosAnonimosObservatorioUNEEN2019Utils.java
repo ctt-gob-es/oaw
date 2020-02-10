@@ -226,7 +226,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			title = messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.1.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.1.name") + ".jpg";
 			getCompilanceComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_1, title, file, noDataMess, pageExecutionList, color, regenerate);
-			title = messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.1.title");
+			title = messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.2.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.2.name") + ".jpg";
 			getCompilanceComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_2, title, file, noDataMess, pageExecutionList, color, regenerate);
 			// Analítica orientada a aspectos
@@ -263,7 +263,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.title", name);
 				String file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.name", graphicSuffix) + ".jpg";
 				getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, pageExecutionList, categoryGraphics, title, file, noDataMess, regenerate);
-				title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.title", name);
+				title = messageResources.getMessage("observatory.graphic.accessibility.level.compilance.segment.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.compilance.segment.name", graphicSuffix) + ".jpg";
 				getSegmentCompilanceGraphic(messageResources, pageExecutionList, categoryGraphics, title, file, noDataMess, regenerate);
 				title = messageResources.getMessage("observatory.graphic.mark.allocation.segment.title", name);
@@ -273,16 +273,23 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				file = filePath + messageResources.getMessage("observatory.graphic.aspect.mid.name") + graphicSuffix + ".jpg";
 				title = messageResources.getMessage("observatory.graphic.segment.aspect.mid.title", name);
 				getAspectMidsGraphic(messageResources, categoryGraphics, file, noDataMess, pageExecutionList, color, title, regenerate);
+				//
+				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.cat.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + graphicSuffix + ".jpg";
 				getMidsComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
+				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.cat.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + graphicSuffix + ".jpg";
 				getMidsComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_2, "", file, noDataMess, pageExecutionList, color, regenerate);
+				title = messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.category.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + graphicSuffix + ".jpg";
-				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, "", file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
+				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, title, file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
+				title = messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.category.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + graphicSuffix + ".jpg";
-				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, "", file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
+				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, title, file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
+				title = messageResources.getMessage("observatory.graphic.compilance.by.verification.level.1.category.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.compilance.by.verification.level.1.name") + graphicSuffix + ".jpg";
 				getCompilanceComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_1, title, file, noDataMess, pageExecutionList, color, regenerate);
+				title = messageResources.getMessage("observatory.graphic.compilance.by.verification.level.2.category.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.compilance.by.verification.level.2.name") + graphicSuffix + ".jpg";
 				getCompilanceComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_2, title, file, noDataMess, pageExecutionList, color, regenerate);
 			}
@@ -329,16 +336,22 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				file = filePath + messageResources.getMessage("observatory.graphic.aspect.mid.name") + graphicSuffix + ".jpg";
 				title = messageResources.getMessage("observatory.graphic.segment.aspect.mid.title", name);
 				getAspectMidsGraphic(messageResources, categoryGraphics, file, noDataMess, pageExecutionList, color, title, regenerate);
+				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.cat.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + graphicSuffix + ".jpg";
 				getMidsComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
+				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.cat.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + graphicSuffix + ".jpg";
 				getMidsComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_2, "", file, noDataMess, pageExecutionList, color, regenerate);
+				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.cat.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + graphicSuffix + ".jpg";
-				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, "", file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
+				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, title, file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
+				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.cat.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + graphicSuffix + ".jpg";
-				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, "", file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
+				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, title, file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
+				title = messageResources.getMessage("observatory.graphic.compilance.by.verification.level.1.category.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.compilance.by.verification.level.1.name") + graphicSuffix + ".jpg";
 				getCompilanceComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_1, title, file, noDataMess, pageExecutionList, color, regenerate);
+				title = messageResources.getMessage("observatory.graphic.compilance.by.verification.level.2.category.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.compilance.by.verification.level.2.name") + graphicSuffix + ".jpg";
 				getCompilanceComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_2, title, file, noDataMess, pageExecutionList, color, regenerate);
 			}
@@ -1835,7 +1848,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		}
 		// Si no existe la gráfica, la creamos
 		if (!file.exists() || regenerate) {
-			GraphicsUtils.createBar1PxChart(result2, "", "", "", filePath, noDataMess, messageResources, x, y, showColLab);
+			GraphicsUtils.createBar1PxChart(result2, title, "", "", filePath, noDataMess, messageResources, x, y, showColLab);
 		}
 	}
 
