@@ -139,9 +139,8 @@ public class TestCrawl {
 //				"https://www.mjusticia.gob.es", "https://www.mpr.gob.es/paginas/index.aspx", "https://www.mptfp.gob.es/portal/index.html", "https://www.mscbs.gob.es/home.htm",
 //				"http://www.mitramiss.gob.es/es/index.htm", "http://www.interior.gob.es/", "https://www.miteco.gob.es/es/", "https://administracion.gob.es", "http://www.seg-social.es",
 //				"https://www.lamoncloa.gob.es/serviciosdeprensa/Paginas/index.aspx", "http://www.guardiareal.org/" };
-		String[] urls = new String[] { "https://www.mincotur.gob.es", "https://www.mjusticia.gob.es", "https://www.mpr.gob.es/paginas/index.aspx", "https://www.mptfp.gob.es/portal/index.html",
-				"https://www.mscbs.gob.es/home.htm", "http://www.mitramiss.gob.es/es/index.htm", "http://www.interior.gob.es/", "https://www.miteco.gob.es/es/", "https://administracion.gob.es",
-				"http://www.seg-social.es", "https://www.lamoncloa.gob.es/serviciosdeprensa/Paginas/index.aspx", "http://www.guardiareal.org/" };
+		String[] urls = new String[] { "https://www.mscbs.gob.es/home.htm", "http://www.mitramiss.gob.es/es/index.htm", "http://www.interior.gob.es/", "https://www.miteco.gob.es/es/",
+				"https://administracion.gob.es", "http://www.seg-social.es", "https://www.lamoncloa.gob.es/serviciosdeprensa/Paginas/index.aspx", "http://www.guardiareal.org/" };
 		for (String url : urls) {
 			this.test(url, false);
 		}

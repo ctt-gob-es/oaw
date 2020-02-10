@@ -353,7 +353,21 @@ public final class GraphicsUtils {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void createStackedBarChart(final ChartForm chartForm, final String noDataMess, final String filePath) throws IOException {
-		final JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), chartForm.getDataSet(), PlotOrientation.VERTICAL,
+		// PENDING Review if remove zero values do not alter other results
+		DefaultCategoryDataset dataset = chartForm.getDataSet();
+		for (int i = 0; i < dataset.getRowCount(); i++) {
+			for (int j = 0; j < dataset.getColumnCount(); j++) {
+				// if current value is zero, remove from dataset to prevent print top of rows from diferent color if is zero
+				if (dataset.getValue(i, j) != null && dataset.getValue(i, j).intValue() == 0) {
+					dataset.removeValue(dataset.getRowKey(i), dataset.getColumnKey(j));
+				}
+			}
+		}
+		for (Object key : dataset.getRowKeys()) {
+		}
+//		final JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), chartForm.getDataSet(), PlotOrientation.VERTICAL,
+//				chartForm.isPrintLegend(), true, false);
+		final JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), dataset, PlotOrientation.VERTICAL,
 				chartForm.isPrintLegend(), true, false);
 		chart.getTitle().setFont(TITLE_FONT);
 		formatLegend(chart);
@@ -916,7 +930,7 @@ public final class GraphicsUtils {
 				value = tmp / p;
 				// PENDING Labels as integers
 				// return key + "\n" + sectionLabel + dataset.getValue(key).toString() + "\n" + " (" + value.toString() + "%)";
-				return key + "\n" + sectionLabel + dataset.getValue(key).toString() + "\n" + " (" + Math.round(value) + "%)";
+				return key + "\n" + sectionLabel + dataset.getValue(key).intValue() + "\n" + " (" + Math.round(value) + "%)";
 			} else {
 				return null;
 			}

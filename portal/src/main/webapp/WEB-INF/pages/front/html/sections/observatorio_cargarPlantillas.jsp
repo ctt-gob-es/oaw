@@ -56,9 +56,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		var plantilla = $('#grid').jqGrid('getRowData', rowId);
 		
 		$("#nuevaPlantillaForm #nombre").val(plantilla.nombre);
-		$('#nuevaPlantillaForm').append('<input type="hidden" name="id" value="'+rowId+'" />')
+		$('#nuevaPlantillaForm #templateId').val(rowId);
 		
-		$("#dialogoNuevaPlantilla").append
 		
 		window.scrollTo(0, 0);
 
@@ -472,6 +471,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 				}).error(
 				function(response) {
+					$('#loading_cover_div').fadeOut(1000);
 					$('#erroresPlantilla').addClass('alert alert-danger');
 					$('#erroresPlantilla').append("<ul>");
 
@@ -527,6 +527,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 				}).error(
 				function(response) {
+					$('#loading_cover_div').fadeOut(1000);
 					$('#erroresPlantilla').addClass('alert alert-danger');
 					$('#erroresPlantilla').append("<ul>");
 
@@ -578,6 +579,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<input type="file" name="file" accept=".odt" />
 					</div>
 				</div>
+				
+				<input type="hidden" name="id" value="0" id="templateId" />
 
 			</form>
 		</div>
