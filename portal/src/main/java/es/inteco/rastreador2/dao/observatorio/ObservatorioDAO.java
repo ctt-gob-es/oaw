@@ -367,6 +367,34 @@ public final class ObservatorioDAO {
 				if (rs.next()) {
 					ambit.setId(String.valueOf(rs.getLong("id_ambito")));
 					ambit.setName(rs.getString("nombre"));
+					ambit.setDescripcion(rs.getString("descripcion"));
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return ambit;
+	}
+
+	/**
+	 * Gets the ambit by id.
+	 *
+	 * @param c  the c
+	 * @param id the id
+	 * @return the ambit by id
+	 * @throws SQLException the SQL exception
+	 */
+	public static AmbitoForm getAmbitByObservatoryId(final Connection c, final Long idObservatory) throws SQLException {
+		AmbitoForm ambit = null;
+		try (PreparedStatement ps = c.prepareStatement("SELECT al.* FROM ambitos_lista al JOIN observatorio o ON o.id_ambito= al.id_ambito WHERE o.id_observatorio = ? ORDER BY id_ambito ASC")) {
+			ps.setLong(1, idObservatory);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					ambit = new AmbitoForm();
+					ambit.setId(String.valueOf(rs.getLong("id_ambito")));
+					ambit.setName(rs.getString("nombre"));
+					ambit.setDescripcion(rs.getString("descripcion"));
 				}
 			}
 		} catch (SQLException e) {

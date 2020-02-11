@@ -48,6 +48,7 @@ import org.odftoolkit.odfdom.doc.office.OdfOfficeAutomaticStyles;
 import org.odftoolkit.odfdom.doc.style.OdfStyle;
 import org.odftoolkit.odfdom.dom.element.OdfStyleBase;
 import org.odftoolkit.odfdom.dom.style.OdfStyleFamily;
+import org.odftoolkit.odfdom.dom.style.props.OdfParagraphProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTableCellProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTableColumnProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTableProperties;
@@ -1340,7 +1341,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 */
 	private StringBuilder generateTableRowSegments(String header1, String header2, String columna1, String columna2, String columna3, final List<CategoriaForm> categories,
 			final Map<CategoriaForm, Map<String, BigDecimal>> res, final MessageResources messageResources, final String resultsType, final boolean isPercentaje) throws Exception {
-		StringBuilder sb = generateTableHeader(columna1, columna2, columna3);
+		StringBuilder sb = generateTableHeader(columna1, columna2, columna3, "Segmento");
 		for (CategoriaForm category : categories) {
 			List<LabelValueBean> results = null;
 			switch (resultsType) {
@@ -1402,7 +1403,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param columna3 the columna 3
 	 * @return the string builder
 	 */
-	private StringBuilder generateTableHeader(String columna1, String columna2, String columna3) {
+	private StringBuilder generateTableHeader(String columna1, String columna2, String columna3, final String header0) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<table:table table:name='Table_Allocation_").append("Segments").append("' table:style-name='TableGraphic'>");
 		sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
@@ -1412,7 +1413,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		// Header row
 		sb.append("<table:table-row>");
 		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
-		sb.append("<text:p text:style-name='GraphicTableHeader'>").append("Segmento").append("</text:p>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header0).append("</text:p>");
 		sb.append("</table:table-cell>");
 		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
 		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(columna1).append("</text:p>");
@@ -1445,7 +1446,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 */
 	private StringBuilder generateTableRowComplexity(String header1, String header2, String columna1, String columna2, String columna3, final List<ComplejidadForm> complexities,
 			final Map<ComplejidadForm, Map<String, BigDecimal>> res, final MessageResources messageResources, final String resultsType, final boolean isPercentaje) throws Exception {
-		StringBuilder sb = generateTableHeader(columna1, columna2, columna3);
+		StringBuilder sb = generateTableHeader(columna1, columna2, columna3, "Complejidad");
 		for (ComplejidadForm complex : complexities) {
 			List<LabelValueBean> results = null;
 			switch (resultsType) {
@@ -1503,7 +1504,8 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		String columna2 = HEADER_A;
 		String columna3 = HEADER_NO_VALIDO;
 		// PENDING Una única tabla
-		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Nivel de adecuación estimado (% de sitios web) por segmento</text:p>";
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + messageResources.getMessage("observatory.global.allocation.segment.comparision.table.title")
+				+ "</text:p>";
 		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASSEGMENTO_BOOKMARK);
 		StringBuilder sb = generateTableRowSegments(header1, header2, columna1, columna2, columna3, categories, res, messageResources, TYPE_ALLOCATION, true);
@@ -1582,6 +1584,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCOMPLEJIDAD_BOOKMARK);
 		appendParagraphToMarker(odt, odfFileContent, TABLASCOMPLEJIDAD_BOOKMARK);
+		addTableStyles(odt);
 	}
 
 	/**
@@ -1636,6 +1639,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCUMPLIMIENTOSEGMENTO_BOOKMARK);
 		appendParagraphToMarker(odt, odfFileContent, TABLASCUMPLIMIENTOSEGMENTO_BOOKMARK);
+		addTableStyles(odt);
 	}
 
 	/**
@@ -1691,6 +1695,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
 		appendParagraphToMarker(odt, odfFileContent, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
+		addTableStyles(odt);
 	}
 
 	/**
@@ -1742,6 +1747,8 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		graphicTableHeader.setProperty(OdfTextProperties.FontSizeComplex, "10pt");
 		graphicTableHeader.setProperty(OdfTextProperties.FontWeight, "bold");
 		graphicTableHeader.setProperty(OdfTextProperties.FontWeightComplex, "bold");
+		graphicTableHeader.setProperty(OdfParagraphProperties.TextAlign, "center");
+		graphicTableHeader.setProperty(OdfParagraphProperties.JustifySingleWord, "false");
 		OdfStyle graphicTableCenter = styles.newStyle(OdfStyleFamily.Paragraph);
 		graphicTableCenter.setAttribute("style:name", "GraphicTableCenter");
 		graphicTableCenter.setProperty(OdfTextProperties.Color, "#000000");
@@ -1751,6 +1758,8 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		graphicTableCenter.setProperty(OdfTextProperties.FontSizeComplex, "10pt");
 		graphicTableCenter.setProperty(OdfTextProperties.FontWeight, "normal");
 		graphicTableCenter.setProperty(OdfTextProperties.FontWeightComplex, "normal");
+		graphicTableCenter.setProperty(OdfParagraphProperties.TextAlign, "center");
+		graphicTableCenter.setProperty(OdfParagraphProperties.JustifySingleWord, "false");
 	}
 
 	/**
@@ -1846,7 +1855,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 //			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
 //			appendParagraphToMarker(odt, odfFileContent, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
 //		}
-		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Puntuación Media de los portales por segmento</text:p>";
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Puntuación media de los sitios web por segmento</text:p>";
 		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
 		StringBuilder sb = generateTableRowSegments(header1, header2, columna1, columna2, columna3, categories, res, messageResources, TYPE_PUNTUACTION, false);
@@ -1901,7 +1910,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 //			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASPUNTUACIONCOMPLEJIDAD_BOOKMARK);
 //			appendParagraphToMarker(odt, odfFileContent, TABLASPUNTUACIONCOMPLEJIDAD_BOOKMARK);
 //		}
-		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Puntuación Media de los Portales por complejidad</text:p>";
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Puntuación media de los sitios web por complejidad</text:p>";
 		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASPUNTUACIONCOMPLEJIDAD_BOOKMARK);
 		StringBuilder sb = generateTableRowComplexity(header1, header2, columna1, columna2, columna3, complexitivities, res, messageResources, TYPE_PUNTUACTION, false);
