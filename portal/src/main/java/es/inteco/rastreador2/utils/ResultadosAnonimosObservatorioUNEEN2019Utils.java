@@ -323,35 +323,35 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			String graphicSuffix = "_".concat(name.replaceAll("\\s+", ""));
 			final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(idExecution, Long.parseLong(id), null, true, tagsFilter);
 			if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
-				String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.title", name);
+				String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.complex.title", name);
 				String file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.name", graphicSuffix) + ".jpg";
 				getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, pageExecutionList, categoryGraphics, title, file, noDataMess, regenerate);
-				title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.title", name);
+				title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.complex.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.compilance.segment.name", graphicSuffix) + ".jpg";
 				getSegmentCompilanceGraphic(messageResources, pageExecutionList, categoryGraphics, title, file, noDataMess, regenerate);
-				title = messageResources.getMessage("observatory.graphic.mark.allocation.segment.title", name);
+				title = messageResources.getMessage("observatory.graphic.mark.allocation.complex.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.mark.allocation.segment.name", graphicSuffix) + ".jpg";
 				List<ObservatorySiteEvaluationForm> result = getSitesListByLevel(pageExecutionList);
 				getMarkAllocationLevelSegmentGraphic(messageResources, title, file, noDataMess, result, false, regenerate);
 				file = filePath + messageResources.getMessage("observatory.graphic.aspect.mid.name") + graphicSuffix + ".jpg";
-				title = messageResources.getMessage("observatory.graphic.segment.aspect.mid.title", name);
+				title = messageResources.getMessage("observatory.graphic.segment.aspect.mid.title.complex", name);
 				getAspectMidsGraphic(messageResources, categoryGraphics, file, noDataMess, pageExecutionList, color, title, regenerate);
-				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.cat.title", name);
+				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.complex.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + graphicSuffix + ".jpg";
-				getMidsComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
-				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.cat.title", name);
+				getMidsComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_1, title, file, noDataMess, pageExecutionList, color, regenerate);
+				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.complex.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + graphicSuffix + ".jpg";
-				getMidsComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_2, "", file, noDataMess, pageExecutionList, color, regenerate);
-				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.cat.title", name);
+				getMidsComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_2, title, file, noDataMess, pageExecutionList, color, regenerate);
+				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.complex.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + graphicSuffix + ".jpg";
 				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, title, file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
-				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.cat.title", name);
+				title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.complex.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + graphicSuffix + ".jpg";
 				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, title, file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
-				title = messageResources.getMessage("observatory.graphic.compilance.by.verification.level.1.category.title", name);
+				title = messageResources.getMessage("observatory.graphic.compilance.by.verification.level.1.complex.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.compilance.by.verification.level.1.name") + graphicSuffix + ".jpg";
 				getCompilanceComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_1, title, file, noDataMess, pageExecutionList, color, regenerate);
-				title = messageResources.getMessage("observatory.graphic.compilance.by.verification.level.2.category.title", name);
+				title = messageResources.getMessage("observatory.graphic.compilance.by.verification.level.2.complex.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.compilance.by.verification.level.2.name") + graphicSuffix + ".jpg";
 				getCompilanceComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_2, title, file, noDataMess, pageExecutionList, color, regenerate);
 			}
@@ -905,6 +905,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		if (!file.exists() || regenerate) {
 			final PropertiesManager pmgr = new PropertiesManager();
 			final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.modality.colors"));
+			chartForm.setTitle(title);
 			GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
 		}
 	}

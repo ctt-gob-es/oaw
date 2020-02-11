@@ -84,7 +84,7 @@ public final class ComplejidadDAO {
 		if (StringUtils.isNotEmpty(nombre)) {
 			query += " AND UPPER(d.nombre) like UPPER(?) ";
 		}
-		query += "ORDER BY UPPER(d.nombre) ASC ";
+		query += "ORDER BY UPPER(d.id_complejidad) ASC ";
 		if (page != Constants.NO_PAGINACION) {
 			query += "LIMIT ? OFFSET ?";
 		}

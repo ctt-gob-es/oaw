@@ -355,18 +355,17 @@ public final class GraphicsUtils {
 	public static void createStackedBarChart(final ChartForm chartForm, final String noDataMess, final String filePath) throws IOException {
 		// PENDING Review if remove zero values do not alter other results
 		DefaultCategoryDataset dataset = chartForm.getDataSet();
-		for (int i = 0; i < dataset.getRowCount(); i++) {
-			for (int j = 0; j < dataset.getColumnCount(); j++) {
-				// if current value is zero, remove from dataset to prevent print top of rows from diferent color if is zero
-				if (dataset.getValue(i, j) != null && dataset.getValue(i, j).intValue() == 0) {
-					dataset.removeValue(dataset.getRowKey(i), dataset.getColumnKey(j));
-				}
-			}
-		}
-		for (Object key : dataset.getRowKeys()) {
-		}
+//		for (int i = 0; i < dataset.getRowCount(); i++) {
+//			for (int j = 0; j < dataset.getColumnCount(); j++) {
+//				// if current value is zero, remove from dataset to prevent print top of rows from diferent color if is zero
+//				if (dataset.getValue(i, j) != null && dataset.getValue(i, j).intValue() == 0) {
+//					dataset.removeValue(dataset.getRowKey(i), dataset.getColumnKey(j));
+//				}
+//			}
+//		}
 //		final JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), chartForm.getDataSet(), PlotOrientation.VERTICAL,
 //				chartForm.isPrintLegend(), true, false);
+		// PENDING Inverted to stack 0 on bottom??
 		final JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), dataset, PlotOrientation.VERTICAL,
 				chartForm.isPrintLegend(), true, false);
 		chart.getTitle().setFont(TITLE_FONT);
