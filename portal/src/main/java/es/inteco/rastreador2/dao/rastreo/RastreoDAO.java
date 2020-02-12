@@ -1390,11 +1390,12 @@ public final class RastreoDAO {
 		PreparedStatement ps = null;
 		try {
 			PropertiesManager pmgr = new PropertiesManager();
-			ps = c.prepareStatement("UPDATE rastreo SET profundidad = ?, topn = ?, in_directory = ? WHERE id_rastreo = ?");
+			ps = c.prepareStatement("UPDATE rastreo SET profundidad = ?, topn = ?, in_directory = ?, id_guideline= ? WHERE id_rastreo = ?");
 			ps.setInt(1, insertarRastreoForm.getProfundidad());
 			ps.setLong(2, insertarRastreoForm.getTopN());
 			ps.setBoolean(3, insertarRastreoForm.isInDirectory());
-			ps.setLong(4, idRastreo);
+			ps.setString(4, insertarRastreoForm.getCartucho());
+			ps.setLong(5, idRastreo);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("Exception", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
