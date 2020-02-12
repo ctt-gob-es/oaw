@@ -1823,6 +1823,8 @@ public final class ObservatorioDAO {
 					insertarRastreoForm.setInDirectory(semillaForm.isInDirectory());
 					insertarRastreoForm.setProfundidad(observatorioForm.getProfundidad());
 					insertarRastreoForm.setTopN(observatorioForm.getAmplitud());
+					insertarRastreoForm.setCartucho(String.valueOf(observatorioForm.getCartucho().getId()));
+					insertarRastreoForm.setNormaAnalisis(String.valueOf(observatorioForm.getCartucho().getId()));
 					final Long idCrawler = ObservatorioDAO.existObservatoryCrawl(c, idObservatory, semillaForm.getId());
 					if (idCrawler == -1) {
 						insertarRastreoForm.setActive(semillaForm.isActiva());
