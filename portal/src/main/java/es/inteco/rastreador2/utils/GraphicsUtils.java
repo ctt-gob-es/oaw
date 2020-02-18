@@ -24,6 +24,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,8 +32,10 @@ import java.math.BigDecimal;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,6 +55,8 @@ import org.jfree.chart.labels.CategoryItemLabelGenerator;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.labels.PieSectionLabelGenerator;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
+import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PieLabelLinkStyle;
 import org.jfree.chart.plot.PiePlot;
@@ -62,6 +67,7 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.BarRenderer3D;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.GroupedStackedBarRenderer;
+import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.KeyToGroupMap;
 import org.jfree.data.Range;
@@ -261,6 +267,96 @@ public final class GraphicsUtils {
 	}
 
 	/**
+	 * Creates the bar chart grouped.
+	 *
+	 * @param result           the result
+	 * @param title            the title
+	 * @param rowTitle         the row title
+	 * @param columnTitle      the column title
+	 * @param color            the color
+	 * @param withLegend       the with legend
+	 * @param percentage       the percentage
+	 * @param labelRotated     the label rotated
+	 * @param filePaths        the file paths
+	 * @param noDataMessage    the no data message
+	 * @param messageResources the message resources
+	 * @param x                the x
+	 * @param y                the y
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	// TODO Gropued stacked
+	public static void createBarChartGrouped(Map<String, Map<String, BigDecimal>> result, String title, String rowTitle, String columnTitle, String color, boolean withLegend, boolean percentage,
+			boolean labelRotated, final String filePath, String noDataMessage, final MessageResources messageResources, int x, int y) throws IOException {
+		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+		// int v = 0;
+		for (Map.Entry<String, Map<String, BigDecimal>> entry : result.entrySet()) {
+			// Necesitamos reordenar los resputados para que el valor 1.10
+			// vaya después de 1.9 y no de 1.1
+			Map<String, BigDecimal> results = new TreeMap<>(new Comparator<String>() {
+				@Override
+				public int compare(String version1, String version2) {
+					String[] v1 = version1.split("\\.");
+					String[] v2 = version2.split("\\.");
+					int major1 = major(v1);
+					int major2 = major(v2);
+					if (major1 == major2) {
+						if (minor(v1) == minor(v2)) { // Devolvemos 1
+														// aunque sean iguales
+														// porque las claves lleva
+														// asociado un subfijo que
+														// aqui no tenemos en cuenta
+							return 1;
+						}
+						return minor(v1).compareTo(minor(v2));
+					}
+					return major1 > major2 ? 1 : -1;
+				}
+
+				private int major(String[] version) {
+					return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "")
+							.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""));
+				}
+
+				private Integer minor(String[] version) {
+					return version.length > 1 ? Integer.parseInt(version[1].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "")
+							.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "")) : 0;
+				}
+			});
+			for (Map.Entry<String, BigDecimal> entryU : entry.getValue().entrySet()) {
+				results.put(entryU.getKey(), entryU.getValue());
+			}
+			for (Map.Entry<String, BigDecimal> entryC : results.entrySet()) {
+				final BigDecimal valueC = entryC.getValue();
+				final String date = entry.getKey();
+				final String verficationC = entryC.getKey();
+				String verificacionPoint = "";
+				String verificationText = "";
+				if (verficationC != null) {
+					if (verficationC.endsWith(Constants.OBS_VALUE_COMPILANCE_SUFFIX)) {
+						verificacionPoint = verficationC.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "");
+						verificationText = Constants.OBS_COMPILANCE_FULL;
+					} else if (verficationC.endsWith(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX)) {
+						verificacionPoint = verficationC.replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "");
+						verificationText = Constants.OBS_COMPILANCE_PARTIAL;
+					} else if (verficationC.endsWith(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX)) {
+						verificacionPoint = verficationC.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "");
+						verificationText = Constants.OBS_COMPILANCE_NONE;
+					}
+				}
+				// PENDING Multiply 7 verifications for number of observatories
+				// if (v < (7 * result.size())) {
+				dataSet.addValue(valueC, date + " " + verificationText, verificacionPoint);
+				/*
+				 * } else { dataSet2.addValue(valueC, date + " " + verificationText, verificacionPoint); }
+				 */
+				// v++;
+			}
+		}
+		final ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, true, false, false, percentage, withLegend, labelRotated, false, x, y, color);
+		createStandardGroupedBarChart(observatoryGraphicsForm, filePath, noDataMessage, messageResources, true);
+	}
+
+	/**
 	 * Creates the bar 1 px chart.
 	 *
 	 * @param result            the result
@@ -353,7 +449,7 @@ public final class GraphicsUtils {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void createStackedBarChart(final ChartForm chartForm, final String noDataMess, final String filePath) throws IOException {
-		// PENDING Review if remove zero values do not alter other results
+		// PENDING Inverted to stack 0 on bottom?? Review if remove zero values do not alter other results
 		DefaultCategoryDataset dataset = chartForm.getDataSet();
 //		for (int i = 0; i < dataset.getRowCount(); i++) {
 //			for (int j = 0; j < dataset.getColumnCount(); j++) {
@@ -365,7 +461,6 @@ public final class GraphicsUtils {
 //		}
 //		final JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), chartForm.getDataSet(), PlotOrientation.VERTICAL,
 //				chartForm.isPrintLegend(), true, false);
-		// PENDING Inverted to stack 0 on bottom??
 		final JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), dataset, PlotOrientation.VERTICAL,
 				chartForm.isPrintLegend(), true, false);
 		chart.getTitle().setFont(TITLE_FONT);
@@ -579,6 +674,155 @@ public final class GraphicsUtils {
 	}
 
 	/**
+	 * Creates the standard grouped bar chart.
+	 *
+	 * @param observatoryGraphicsForm the observatory graphics form
+	 * @param filePath                the file path
+	 * @param noDataMess              the no data mess
+	 * @param messageResources        the message resources
+	 * @param withRange               the with range
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	// TODO GROUPED 2D CHART
+	public static void createStandardGroupedBarChart(ChartForm observatoryGraphicsForm, String filePath, String noDataMess, MessageResources messageResources, boolean withRange) throws IOException {
+		final JFreeChart chart;
+		if (observatoryGraphicsForm.isTridimensional()) {
+			chart = ChartFactory.createStackedBarChart3D(observatoryGraphicsForm.getTitle(), observatoryGraphicsForm.getColumnTitle(), observatoryGraphicsForm.getRowTitle(),
+					observatoryGraphicsForm.getDataSet(), PlotOrientation.VERTICAL, observatoryGraphicsForm.isPrintLegend(), true, false);
+		} else {
+			chart = ChartFactory.createStackedBarChart(observatoryGraphicsForm.getTitle(), observatoryGraphicsForm.getColumnTitle(), observatoryGraphicsForm.getRowTitle(),
+					observatoryGraphicsForm.getDataSet(), PlotOrientation.VERTICAL, observatoryGraphicsForm.isPrintLegend(), true, false);
+		}
+		chart.getTitle().setFont(TITLE_FONT);
+		if (observatoryGraphicsForm.isPrintLegend()) {
+			formatLegend(chart);
+		}
+		CategoryPlot plot = chart.getCategoryPlot();
+		plot.setNoDataMessage(noDataMess);
+		configNoDataMessage(plot);
+		plot.setBackgroundPaint(Color.WHITE);
+		// Elimina la transparencia de las gráficas
+		plot.setForegroundAlpha(1.0f);
+		/**
+		 * 
+		 * 
+		 */
+		GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
+		renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER));
+		renderer.setBaseItemLabelsVisible(true);
+		renderer.setDrawBarOutline(true);
+		renderer.setBaseOutlinePaint(Color.BLACK);
+		renderer.setBarPainter(new StandardBarPainter());
+		renderer.setRenderAsPercentages(true);
+		renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER));
+		renderer.setBaseItemLabelFont(ITEM_LABEL_FONT);
+		renderer.setBaseItemLabelsVisible(true);
+		renderer.setDrawBarOutline(true);
+		renderer.setBaseItemLabelsVisible(true);
+		renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+		renderer.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator());
+		DefaultCategoryDataset dataset = observatoryGraphicsForm.getDataSet();
+		/*
+		 * 
+		 */
+		String dateText = "";
+		if (dataset.getRowKeys().get(0) != null) {
+			if (dataset.getRowKeys().get(0).toString().endsWith(Constants.OBS_COMPILANCE_FULL)) {
+				dateText = dataset.getRowKeys().get(0).toString().replace(Constants.OBS_COMPILANCE_FULL, "");
+			} else if (dataset.getRowKeys().get(0).toString().endsWith(Constants.OBS_COMPILANCE_PARTIAL)) {
+				dateText = dataset.getRowKeys().get(0).toString().replace(Constants.OBS_COMPILANCE_PARTIAL, "");
+			} else if (dataset.getRowKeys().get(0).toString().endsWith(Constants.OBS_COMPILANCE_NONE)) {
+				dateText = dataset.getRowKeys().get(0).toString().replace(Constants.OBS_COMPILANCE_NONE, "");
+			}
+		}
+		KeyToGroupMap map = new KeyToGroupMap(dateText);
+		// TODO Review keys
+		for (int j = 0; j < dataset.getRowKeys().size(); j++) {
+			dateText = "";
+			if (dataset.getRowKeys().get(j) != null) {
+				if (dataset.getRowKeys().get(j).toString().endsWith(Constants.OBS_COMPILANCE_FULL)) {
+					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_FULL, "");
+				} else if (dataset.getRowKeys().get(j).toString().endsWith(Constants.OBS_COMPILANCE_PARTIAL)) {
+					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_PARTIAL, "");
+				} else if (dataset.getRowKeys().get(j).toString().endsWith(Constants.OBS_COMPILANCE_NONE)) {
+					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_NONE, "");
+				}
+			}
+			map.mapKeyToGroup(dataset.getRowKeys().get(j).toString(), dateText);
+		}
+		renderer.setSeriesToGroupMap(map);
+		renderer.setItemMargin(0.0);
+		renderer.setItemMargin(0.0);
+		Paint p1 = new Color(225, 18, 13);
+		Paint p2 = new Color(255, 225, 0);
+		Paint p3 = new Color(38, 187, 8);
+		List<Paint> colors = new ArrayList<Paint>();
+		colors.add(p1);
+		colors.add(p2);
+		colors.add(p3);
+		for (int i = 0; i < 40; i += 3) {
+			renderer.setSeriesPaint(i, p1);
+		}
+		for (int i = 1; i < 40; i += 3) {
+			renderer.setSeriesPaint(i, p2);
+		}
+		for (int i = 2; i < 40; i += 3) {
+			renderer.setSeriesPaint(i, p3);
+		}
+		SubCategoryAxis domainAxis = new SubCategoryAxis("Verificación / Fecha");
+		domainAxis.setCategoryMargin(0.15);
+		List<String> datesText = new ArrayList<>();
+		for (int j = 0; j < dataset.getRowKeys().size(); j++) {
+			dateText = "";
+			if (dataset.getRowKeys().get(j) != null) {
+				if (dataset.getRowKeys().get(j).toString().endsWith(Constants.OBS_COMPILANCE_FULL)) {
+					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_FULL, "");
+				} else if (dataset.getRowKeys().get(j).toString().endsWith(Constants.OBS_COMPILANCE_PARTIAL)) {
+					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_PARTIAL, "");
+				} else if (dataset.getRowKeys().get(j).toString().endsWith(Constants.OBS_COMPILANCE_NONE)) {
+					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_NONE, "");
+				}
+			}
+			if (!datesText.contains(dateText)) {
+				datesText.add(dateText);
+				domainAxis.addSubCategory(dateText);
+			}
+		}
+		domainAxis.setCategoryLabelPositionOffset(55);
+		// apply the affine trasnform with a rotation and a translate
+		AffineTransform trans = AffineTransform.getTranslateInstance(-15, 45);
+		trans.concatenate(AffineTransform.getRotateInstance(-Math.PI / 4));
+		domainAxis.setSubLabelFont((Font) domainAxis.getSubLabelFont().deriveFont(1, trans));
+		plot.setDomainAxis(domainAxis);
+		plot.setRenderer(renderer);
+		if (observatoryGraphicsForm.isPrintLegend()) {
+			plot.setFixedLegendItems(generateLegendG(colors, plot));
+		}
+		saveChartToFile(filePath, chart, observatoryGraphicsForm.getX(), observatoryGraphicsForm.getY());
+	}
+
+	/**
+	 * The Class CstmStandardCategoryItemLabelGenerator.
+	 */
+	public class PercentajeItemLabelGenerator extends StandardCategoryItemLabelGenerator {
+		/** The Constant serialVersionUID. */
+		private static final long serialVersionUID = -8008487243214911926L;
+
+		/**
+		 * Generate label.
+		 *
+		 * @param dataset the dataset
+		 * @param row     the row
+		 * @param column  the column
+		 * @return the string
+		 */
+		@Override
+		public String generateLabel(CategoryDataset dataset, int row, int column) {
+			return String.format("%.0f%%", dataset.getValue(row, column).doubleValue());
+		}
+	}
+
+	/**
 	 * Parses the level label.
 	 *
 	 * @param key              the key
@@ -739,6 +983,27 @@ public final class GraphicsUtils {
 		BasicStroke stroke = new BasicStroke();
 		for (int i = 0; i < legend.getItemCount(); i++) {
 			LegendItem item = legend.get(i);
+			item = new LegendItem(item.getLabel() + LABEL_SPACE, item.getLabel() + LABEL_SPACE, item.getLabel() + LABEL_SPACE, item.getLabel() + LABEL_SPACE, shape, colors.get(i), stroke,
+					Color.black);
+			newLegend.add(item);
+		}
+		return newLegend;
+	}
+
+	/**
+	 * Generate legend.
+	 *
+	 * @param colors the colors
+	 * @param plot   the plot
+	 * @return the legend item collection
+	 */
+	private static LegendItemCollection generateLegendG(List<Paint> colors, CategoryPlot plot) {
+		LegendItemCollection newLegend = new LegendItemCollection();
+		final String[] legendLabels = new String[] { "No conforme", "Parcialmente conforme", "Totalmente conforme" };
+		Shape shape = new Rectangle(15, 15);
+		BasicStroke stroke = new BasicStroke();
+		for (int i = 0; i < legendLabels.length; i++) {
+			LegendItem item = new LegendItem(legendLabels[i]);
 			item = new LegendItem(item.getLabel() + LABEL_SPACE, item.getLabel() + LABEL_SPACE, item.getLabel() + LABEL_SPACE, item.getLabel() + LABEL_SPACE, shape, colors.get(i), stroke,
 					Color.black);
 			newLegend.add(item);

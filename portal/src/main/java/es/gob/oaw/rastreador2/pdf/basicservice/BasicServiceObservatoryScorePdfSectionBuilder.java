@@ -182,7 +182,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 				// Cumplimiento
 				tablaRankings.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatorio.nivel.cumplimiento"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_LEFT,
 						DEFAULT_PADDING, -1));
-				// TODO Cumplimiento
+				// Cumplimiento
 				tablaRankings.addCell(PDFUtils.createTableCell(currentScore.getCompliance(), Color.WHITE, ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
 				if (previousScore != null) {
 					tablaRankings.addCell(PDFUtils.createTableCell(previousScore.getCompliance(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));

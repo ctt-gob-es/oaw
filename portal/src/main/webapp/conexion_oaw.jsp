@@ -269,15 +269,6 @@
                         }
                     }
                 }
-              /* final int depth = Integer.parseInt(profundidad);
-                final int width = Integer.parseInt(amplitud);
-                // TODO 2017
-                if (depth < 0 || depth > 4) {
-                    errores.add("La profundidad de rastreo es incorrecta");
-                }
-                if (width < 0 || width > 8) {
-                    errores.add("La amplitud de rastreo es incorrecta");
-                }*/
             } else if (isListaUrlsRequest()) {
                 if (urls.isEmpty()) {
                   errores.add("Indique al menos una url para análisis de tipo 'Conjunto de URLs'");

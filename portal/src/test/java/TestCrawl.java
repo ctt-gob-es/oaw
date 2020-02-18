@@ -212,7 +212,7 @@ public class TestCrawl {
 							// Si hay redirecciones, puede que el dominio cambie
 							domain = connection.getURL().getHost();
 							final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(url, domain));
-							// PENDING Sólo se pasa al renderizador para recuperar el contenido
+							// Generate renderer connection (applies proxy config)
 							final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
 							markableInputStream.reset();
 							// Recuerar el charset

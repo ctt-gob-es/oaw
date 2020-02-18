@@ -66,9 +66,6 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 	 */
 	@Override
 	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, String observatoryId, String filePath) throws Exception {
-		// FIXME: Refactor
-		// FIXME: Refactor
-		// ResultadosAnonimosObservatorioIntavUtils.generateGraphics(messageResources, , filePath, Constants.MINISTERIO_P, true);
 	}
 
 	/**

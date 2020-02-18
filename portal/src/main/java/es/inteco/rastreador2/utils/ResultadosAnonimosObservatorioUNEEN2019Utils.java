@@ -107,6 +107,15 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		x = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.x"));
 		y = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.y"));
 	}
+	private static final List<String> LEVEL_I_VERIFICATIONS = Arrays.asList(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_2_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_3_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_4_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_5_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_6_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_7_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_8_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_9_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_10_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_11_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_12_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_13_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_14_VERIFICATION);
+	/** The Constant LEVEL_II_VERIFICATIONS. */
+	private static final List<String> LEVEL_II_VERIFICATIONS = Arrays.asList(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION);
 
 	/**
 	 * COnstructor.
@@ -1071,6 +1080,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param categories        the categories
 	 * @param regenerate        the regenerate
 	 * @param tagsFilter        the tags filter
+	 * @param title             the title
 	 * @return the global mark by segments group graphic
 	 * @throws Exception the exception
 	 */
@@ -1112,6 +1122,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param categories        the categories
 	 * @param regenerate        the regenerate
 	 * @param tagsFilter        the tags filter
+	 * @param title             the title
 	 * @return the global compilance by segment
 	 * @throws Exception the exception
 	 */
@@ -1153,6 +1164,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param complexities      the complexities
 	 * @param regenerate        the regenerate
 	 * @param tagsFilter        the tags filter
+	 * @param title             the title
 	 * @return the global compilance by complexitivity
 	 * @throws Exception the exception
 	 */
@@ -1195,6 +1207,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param complexities      the complexities
 	 * @param regenerate        the regenerate
 	 * @param tagsFilter        the tags filter
+	 * @param title             the title
 	 * @return the global mark by complexity group graphic
 	 * @throws Exception the exception
 	 */
@@ -1447,7 +1460,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				String keyCompilance = verificationResult.getKey().concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX);
 				String keyNoCompilance = verificationResult.getKey().concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX);
 				String keyNoApply = verificationResult.getKey().concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX);
-				// TODO Add all posbible values???
+				// Add all posbible values???
 				if (!resultsC.containsKey(keyCompilance)) {
 					resultsC.put(keyCompilance, new BigDecimal(0));
 				}
@@ -1769,6 +1782,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param observatoryResult the observatory result
 	 * @param color             the color
 	 * @param regenerate        the regenerate
+	 * @param title             the title
 	 * @return the mid mark evolution graphic
 	 * @throws Exception the exception
 	 */
@@ -2230,6 +2244,65 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				resultData.put(df.format(entry.getKey()), value);
 			} else {
 				resultData.put(df.format(entry.getKey()), BigDecimal.ZERO);
+			}
+		}
+		return resultData;
+	}
+
+	/**
+	 * Calculate verification evolution compliance data set.
+	 *
+	 * @param verification the verification
+	 * @param result       the result
+	 * @return the map
+	 */
+	public static Map<String, Map<String, BigDecimal>> calculateVerificationEvolutionComplianceDataSetDetailed(final List<String> verifications,
+			final Map<Date, List<ObservatoryEvaluationForm>> result) {
+		final TreeMap<String, Map<String, BigDecimal>> resultData = new TreeMap<>(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final PropertiesManager pmgr = new PropertiesManager();
+				final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+				try {
+					final Date fecha1 = new Date(df.parse(o1).getTime());
+					final Date fecha2 = new Date(df.parse(o2).getTime());
+					return fecha1.compareTo(fecha2);
+				} catch (Exception e) {
+					Logger.putLog("Error al ordenar fechas de evolución.", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+				return 0;
+			}
+		});
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+		TreeMap<String, BigDecimal> resultC = new TreeMap<>();
+		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : result.entrySet()) {
+			for (String verification : verifications) {
+				// Para un observatorio en concreto recuperamos la puntuación de una
+				// verificación
+				final Map<Long, Map<String, BigDecimal>> results = getVerificationResultsByPointAndCrawl(entry.getValue(), Constants.OBS_PRIORITY_NONE);
+				// C
+				BigDecimal value = generatePercentajesCompilanceVerification(results).get(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX));
+				if (value != null) {
+					resultC.put(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX), value);
+				} else {
+					resultC.put(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX), BigDecimal.ZERO);
+				}
+				// NC
+				value = generatePercentajesCompilanceVerification(results).get(verification.concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX));
+				if (value != null) {
+					resultC.put(verification.concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX), value);
+				} else {
+					resultC.put(verification.concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX), BigDecimal.ZERO);
+				}
+				// NA
+				value = generatePercentajesCompilanceVerification(results).get(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX));
+				if (value != null) {
+					resultC.put(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX), value);
+				} else {
+					resultC.put(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX), BigDecimal.ZERO);
+				}
+				resultData.put(df.format(entry.getKey()), resultC);
 			}
 		}
 		return resultData;
@@ -4222,6 +4295,30 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		chartForm2.setFixedColorBars(true);
 		chartForm2.setShowColumsLabels(false);
 		GraphicsUtils.createStandardBarChart(chartForm2, filePaths[1], "", messageResources, true);
+	}
+
+	/**
+	 * Generate evolution compliance by verification chart split.
+	 *
+	 * @param messageResources   the message resources
+	 * @param filePaths          the file paths
+	 * @param pageObservatoryMap the page observatory map
+	 * @param verifications      the verifications
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static void generateEvolutionComplianceByVerificationChartSplitGrouped(final MessageResources messageResources, final String[] filePaths,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws IOException {
+		final PropertiesManager pmgr = new PropertiesManager();
+		Map<String, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(LEVEL_I_VERIFICATIONS.subList(0, 7),
+				pageObservatoryMap);
+		GraphicsUtils.createBarChartGrouped(results, "Evolución de la conformidad de las verificaciones: en términos globales. Nivel de adecuación A", "", "",
+				pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR), false, true, true, filePaths[0], "", messageResources, 1465, 654);
+		results = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(LEVEL_I_VERIFICATIONS.subList(7, 14), pageObservatoryMap);
+		GraphicsUtils.createBarChartGrouped(results, "Evolución de la conformidad de las verificaciones: en términos globales. Nivel de adecuación A", "", "",
+				pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR), false, true, true, filePaths[1], "", messageResources, 1465, 654);
+		results = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(LEVEL_II_VERIFICATIONS, pageObservatoryMap);
+		GraphicsUtils.createBarChartGrouped(results, "Evolución de la conformidad de las verificaciones: en términos globales. Nivel de adecuación AA", "", "",
+				pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR), false, true, true, filePaths[2], "", messageResources, 1465, 654);
 	}
 
 	/**
