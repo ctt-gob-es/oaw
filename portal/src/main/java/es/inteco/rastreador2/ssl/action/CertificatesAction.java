@@ -213,7 +213,6 @@ public class CertificatesAction extends Action {
 		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 		loadKeyStore(keyStore);
 		String alias = request.getParameter(Constants.ALIAS);
-		// PENDING: ¿Por qué no funciona esto?
 		if (keyStore.containsAlias(alias)) {
 			PropertiesManager pmgr = new PropertiesManager();
 			File file = new File(pmgr.getValue("certificados.properties", "truststore.path"));
@@ -249,7 +248,6 @@ public class CertificatesAction extends Action {
 		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
 		loadKeyStore(keyStore);
 		String alias = request.getParameter(Constants.ALIAS);
-		// PENDING: ¿Por qué no funciona esto?
 		PropertiesManager pmgr = new PropertiesManager();
 		DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
 		request.setAttribute(Constants.CERTIFICATE_FORM, getCertificateForm((X509Certificate) keyStore.getCertificate(alias), df, alias));

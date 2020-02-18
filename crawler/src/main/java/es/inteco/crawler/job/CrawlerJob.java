@@ -424,7 +424,6 @@ public class CrawlerJob implements InterruptableJob {
 							// Si hay redirecciones, puede que el dominio cambie
 							domain = connection.getURL().getHost();
 							final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(url, domain));
-							// PENDING Sólo se pasa al renderizador para recuperar el contenido
 							final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
 							markableInputStream.reset();
 							// Recuerar el charset
@@ -1096,7 +1095,7 @@ public class CrawlerJob implements InterruptableJob {
 				connection = CrawlerUtils.followRedirection(cookie, new URL(connectedURL), connection.getHeaderField("location"));
 			} else if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE) {
 				final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-				// PENDING Sólo aqui es cuando se debería llamar al renderizador
+				// Generate renderer connection (applies proxy config)
 				final String remoteContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(urlLink, domain), markableInputStream);
 				markableInputStream.close();
 				if (!CrawlerUtils.isRss(remoteContent)) {

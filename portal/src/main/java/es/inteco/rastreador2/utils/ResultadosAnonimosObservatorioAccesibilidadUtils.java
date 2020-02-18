@@ -2271,7 +2271,6 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @param verifications      list of verifications to include on the chart
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	// PENDING Mejorar la compresión de estos gráficos
 	public static void generateEvolutionAverageScoreByVerificationChart(final MessageResources messageResources, final String filePath,
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<String> verifications) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
