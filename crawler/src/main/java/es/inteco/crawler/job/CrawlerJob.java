@@ -1094,7 +1094,8 @@ public class CrawlerJob implements InterruptableJob {
 				numRedirections++;
 				connection = CrawlerUtils.followRedirection(cookie, new URL(connectedURL), connection.getHeaderField("location"));
 			} else if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE) {
-				final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
+				// final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
+				final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(urlLink, domain));
 				// Generate renderer connection (applies proxy config)
 				final String remoteContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(urlLink, domain), markableInputStream);
 				markableInputStream.close();
