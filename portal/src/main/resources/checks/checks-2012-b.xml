@@ -6142,6 +6142,8 @@
 				attribute1="check.485.regex.pattern" attribute2="form" />
 			<function call="section-has-text" node="." value="check.126.regex.pattern.2"
 				attribute1="check.485.regex.pattern" attribute2="check.486.regex.pattern.contact" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2"
+				attribute1="check.485.regex.pattern" attribute2="check.486.regex.pattern.mail.arroba" />
 		</machine>
 	</check>
 
