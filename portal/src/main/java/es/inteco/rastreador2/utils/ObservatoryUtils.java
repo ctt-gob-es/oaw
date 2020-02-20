@@ -22,7 +22,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -424,42 +423,42 @@ public final class ObservatoryUtils {
 		final List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE,
 				null);
 		// IdExecutedCrawl and verifications
-		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(observatories, Constants.OBS_PRIORITY_NONE);
-		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
+		final Map<String, BigDecimal> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPoint(observatories, Constants.OBS_PRIORITY_NONE);
+		// Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(observatories, Constants.OBS_PRIORITY_NONE);
+		String calculatedCompliance = calculateCrawlingCompliance(results);
 		for (ResultadoSemillaForm seedResult : seedsResults) {
-			seedResult.setCompliance(calculatedCompliance.get(Long.parseLong(seedResult.getIdFulfilledCrawling())));
+			seedResult.setCompliance(calculatedCompliance);
 		}
 		return seedsResults;
 	}
 
 	/**
-	 * Calculate crawling compliance.
+	 * PENDING Calculate crawling compliance.
 	 *
 	 * @param results the results
 	 * @return the map
 	 */
-	private static Map<Long, String> calculateCrawlingCompliance(Map<Long, Map<String, BigDecimal>> results) {
-		final Map<Long, String> resultCompilance = new TreeMap<>();
+	private static String calculateCrawlingCompliance(Map<String, BigDecimal> results) {
 		// Process results
-		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
-			int countC = 0;
-			int countNC = 0;
-			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
-				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
-					countC++;
-				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
-					countNC++;
-				}
-			}
-			if (countC == result.getValue().size()) {
-				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_FULL);
-			} else if (countC > countNC) {
-				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_PARTIAL);
-			} else {
-				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_NONE);
+		int countC = 0;
+		int countNC = 0;
+		int countNA = 0;
+		for (Map.Entry<String, BigDecimal> verificationResult : results.entrySet()) {
+			if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
+				countC++;
+			} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
+				countNC++;
+			} else if (verificationResult.getValue().compareTo(new BigDecimal(-1)) >= 0) {
+				countNA++;
 			}
 		}
-		return resultCompilance;
+		if (countC == (results.size() - countNA)) {
+			return Constants.OBS_COMPILANCE_FULL;
+		} else if (countC > countNC) {
+			return Constants.OBS_COMPILANCE_PARTIAL;
+		} else {
+			return Constants.OBS_COMPILANCE_NONE;
+		}
 	}
 
 	/**
