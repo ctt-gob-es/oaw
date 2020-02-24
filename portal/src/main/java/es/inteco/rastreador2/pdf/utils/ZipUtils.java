@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -33,6 +35,7 @@ import es.inteco.common.logging.Logger;
 import es.inteco.rastreador2.pdf.ExportAction;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.IntecoFileFilter;
+import es.inteco.utils.FileUtils;
 
 /**
  * The Class ZipUtils.
@@ -70,13 +73,40 @@ public final class ZipUtils {
 			}
 			generateZipFile(finalPath, finalZipPath, false);
 			// PENDING No eliminamos los temporales
-			// FileUtils.removeFile(basePath + idObservatory + File.separator + idExecutionOb + File.separator + "temp" + File.separator);
+			FileUtils.removeFile(basePath + idObservatory + File.separator + idExecutionOb + File.separator + "temp" + File.separator);
 			CrawlerUtils.returnFile(response, finalZipPath, "application/zip", true);
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
 			return mapping.findForward(Constants.ERROR);
 		}
 		return null;
+	}
+
+	public static List<String> pdfsZipToList(final Long idObservatory, final Long idExecutionOb, final String basePath) {
+		List<String> zipFiles = new ArrayList<>();
+		final String executionPath = basePath + idObservatory + File.separator + idExecutionOb + File.separator;
+		try {
+			final File directory = new File(executionPath);
+			final File[] directoryFiles = directory.listFiles();
+			if (directoryFiles != null) {
+				for (File file : directoryFiles) {
+					if (file.isDirectory()) {
+						final String path = executionPath + file.getName() + File.separator;
+						final String zipPath = executionPath + File.separator + file.getName() + ".zip";
+						// final String zipPath = executionPath + "temp" + File.separator + file.getName() + ".zip";
+						generateZipFile(path, zipPath, false);
+						zipFiles.add(zipPath);
+					}
+				}
+			}
+			// NO generate zip with sirectoruies
+			// generateZipFile(finalPath, finalZipPath, false);
+			// PENDING No eliminamos los temporales
+			// FileUtils.removeFile(basePath + idObservatory + File.separator + idExecutionOb + File.separator + "temp" + File.separator);
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return zipFiles;
 	}
 
 	/**

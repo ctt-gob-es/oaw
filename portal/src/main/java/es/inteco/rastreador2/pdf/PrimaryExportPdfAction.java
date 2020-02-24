@@ -37,6 +37,7 @@ import org.apache.struts.action.ActionMapping;
 import com.lowagie.text.pdf.PdfReader;
 
 import es.gob.oaw.rastreador2.pdf.PdfGeneratorThread;
+import es.gob.oaw.rastreador2.pdf.PdfGeneratorThread2;
 import es.gob.oaw.rastreador2.pdf.SourceFilesManager;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -73,8 +74,12 @@ public class PrimaryExportPdfAction extends Action {
 	public final ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request, final HttpServletResponse response) {
 		if (request.getSession().getAttribute(Constants.ROLE) == null || CrawlerUtils.hasAccess(request, "export.observatory")) {
 			final String action = request.getParameter(Constants.ACTION);
-			if (Constants.EXPORT_ALL_PDFS.equals(action)) {
-				return exportAllPdfs(mapping, request, response);
+			if ("downloadFile".equals(action)) {
+				return downloadFile(mapping, request, response);
+			} else if (Constants.EXPORT_ALL_PDFS.equals(action)) {
+				// TODO Alternative PDF mass generation
+				// return exportAllPdfs(mapping, request, response);
+				return exportAllPdfsAndSendEmail(mapping, request, response);
 			} else {
 				return exportSinglePdf(mapping, request, response);
 			}
@@ -267,6 +272,56 @@ public class PrimaryExportPdfAction extends Action {
 	}
 
 	/**
+	 * Export all pdfs in parts and send an email when the porcess complete with links.
+	 *
+	 * @param mapping  the mapping
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
+	private ActionForward exportAllPdfsAndSendEmail(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response) {
+		// Url de invocacion:
+		//
+		final long idExecutionOb = request.getParameter(Constants.ID_EX_OBS) != null ? Long.parseLong(request.getParameter(Constants.ID_EX_OBS)) : 0;
+		final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null ? Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)) : 0;
+		try (Connection c = DataBaseManager.getConnection()) {
+			final List<FulFilledCrawling> fulfilledCrawlings = ObservatorioDAO.getFulfilledCrawlingByObservatoryExecution(c, idExecutionOb);
+			if (request.getParameter("reverse") != null && request.getParameter("reverse").equalsIgnoreCase(Boolean.TRUE.toString())) {
+				Collections.reverse(fulfilledCrawlings);
+			}
+			int reportsToGenerate = 0;
+			for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
+				List<File> pdfFiles = getReportFiles(idObservatory, idExecutionOb, SemillaDAO.getSeedById(c, RastreoDAO.getIdSeedByIdRastreo(c, fulfilledCrawling.getIdCrawling())));
+				if (pdfFiles != null && !pdfFiles.isEmpty()) {
+					for (File pdfFile : pdfFiles) {
+						final SourceFilesManager sourceFilesManager = new SourceFilesManager(pdfFile.getParentFile());
+						final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(fulfilledCrawling.getId());
+						// Contabilizamos los informes que no están creados
+						// entre los
+						// portales para los que tenemos resultados (los
+						// portales no
+						// analizados no cuentan)
+						if (!pdfFile.exists() || !sourceFilesManager.existsSourcesZip() && evaluationIds != null && !evaluationIds.isEmpty()) {
+							reportsToGenerate++;
+						}
+					}
+				}
+			}
+			String url = request.getRequestURL().toString();
+			String baseURL = url.substring(0, url.length() - request.getRequestURI().length()) + request.getContextPath() + "/";
+			final DatosForm userData = LoginDAO.getUserDataByName(c, request.getSession().getAttribute(Constants.USER).toString());
+			final PdfGeneratorThread2 pdfGeneratorThread = new PdfGeneratorThread2(idObservatory, idExecutionOb, fulfilledCrawlings, userData.getEmail(), baseURL);
+			pdfGeneratorThread.start();
+			request.setAttribute("GENERATE_TIME", String.format("%d", TimeUnit.SECONDS.toMinutes(Math.max(60, reportsToGenerate * 2))));
+			request.setAttribute("EMAIL", userData.getEmail());
+			return mapping.findForward(Constants.GENERATE_ALL_REPORTS);
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+			return mapping.findForward(Constants.ERROR);
+		}
+	}
+
+	/**
 	 * Gets the report files.
 	 *
 	 * @param idObservatory the id observatory
@@ -309,5 +364,30 @@ public class PrimaryExportPdfAction extends Action {
 		final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecutionOb + File.separator + dependOn + File.separator
 				+ PDFUtils.formatSeedName(seed.getNombre());
 		pdfFiles.add(new File(path + File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf"));
+	}
+
+	/**
+	 * Download file.
+	 *
+	 * @param mapping  the mapping
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
+	private ActionForward downloadFile(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response) {
+		// Url de invocacion:
+		// http://localhost:8080/oaw/secure/primaryExportPdfAction.do?id_observatorio=8&idExObs=33&action=exportAllPdfs
+		final long idExecutionOb = request.getParameter(Constants.ID_EX_OBS) != null ? Long.parseLong(request.getParameter(Constants.ID_EX_OBS)) : 0;
+		final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null ? Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)) : 0;
+		final String filename = request.getParameter("file");
+		try (Connection c = DataBaseManager.getConnection()) {
+			final PropertiesManager pmgr = new PropertiesManager();
+			String filePath = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecutionOb + File.separator + filename;
+			CrawlerUtils.returnFile(response, filePath, "application/zip", false);
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+			return mapping.findForward(Constants.ERROR);
+		}
+		return null;
 	}
 }
