@@ -1111,7 +1111,7 @@ public final class ObservatorioDAO {
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"));
 		final int resultFrom = pagSize * page;
 		int paramCount = 1;
-		String query = "SELECT l.id_lista, l.nombre, r.activo, r.id_rastreo, l.id_categoria, rr.id, rr.level, rr.score FROM lista l "
+		String query = "SELECT l.id_lista, l.nombre, r.activo, r.id_rastreo, l.id_categoria, rr.id, rr.level, rr.score, l.id_complejidad FROM lista l "
 				+ "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) " + "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";
 		if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
 			query += " AND l.lista like ?";
@@ -1153,6 +1153,7 @@ public final class ObservatorioDAO {
 					resultadoSemillaForm.setIdFulfilledCrawling(rs.getString("rr.id"));
 					resultadoSemillaForm.setScore(rs.getString("rr.score"));
 					resultadoSemillaForm.setNivel(rs.getString("rr.level"));
+					resultadoSemillaForm.setIdComplexity(rs.getLong("l.id_complejidad"));
 					semillasFormList.add(resultadoSemillaForm);
 				}
 			}

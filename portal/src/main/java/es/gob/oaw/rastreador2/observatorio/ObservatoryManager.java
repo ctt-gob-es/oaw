@@ -180,8 +180,10 @@ public class ObservatoryManager {
 				return null;
 			}
 			final RankingInfo rankingInfo = new RankingInfo();
+			// Global
 			rankingInfo.setGlobalSeedsNumber(seedsResults.size());
 			rankingInfo.setCategorySeedsNumber(0);
+			rankingInfo.setComplexitySeedsNumber(0);
 			rankingInfo.setGlobalRank(1);
 			rankingInfo.setCategoryRank(1);
 			rankingInfo.setComplexityRank(1);
@@ -218,9 +220,9 @@ public class ObservatoryManager {
 					// Complexity rank
 					if (currentSeed.getComplejidad() != null && currentSeed.getComplejidad().getId() != null
 							&& currentSeed.getComplejidad().getId().equals(String.valueOf(seedForm.getIdComplexity()))) {
-						rankingInfo.setCategorySeedsNumber(rankingInfo.getCategorySeedsNumber() + 1);
+						rankingInfo.setComplexitySeedsNumber(rankingInfo.getComplexitySeedsNumber() + 1);
 						if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
-							rankingInfo.incrementCategoryRank();
+							rankingInfo.incrementComplexityRank();
 						}
 					}
 				}

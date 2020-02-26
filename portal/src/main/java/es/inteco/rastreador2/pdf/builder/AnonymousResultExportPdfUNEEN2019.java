@@ -1625,7 +1625,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		}
 		tablaRankings.completeRow();
 		if (rankingActual != null) {
-			// Posición en categoría
+			// Global rank
 			tablaRankings.addCell(
 					PDFUtils.createTableCell(messageResources.getMessage("observatorio.posicion.global"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 			tablaRankings.addCell(PDFUtils.createTableCell(rankingActual.getGlobalRank() + " \n(" + messageResources.getMessage("de.text", rankingActual.getGlobalSeedsNumber()) + ")", Color.WHITE,
@@ -1652,12 +1652,12 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			// Posición en complejidad
 			tablaRankings.addCell(PDFUtils.createTableCell("Posición en complejidad " + rankingActual.getComplejidad().getName(), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_LEFT,
 					DEFAULT_PADDING, -1));
-			tablaRankings.addCell(PDFUtils.createTableCell(rankingActual.getComplexityRank() + " \n(" + messageResources.getMessage("de.text", rankingActual.getCategorySeedsNumber()) + ")",
+			tablaRankings.addCell(PDFUtils.createTableCell(rankingActual.getComplexityRank() + " \n(" + messageResources.getMessage("de.text", rankingActual.getComplexitySeedsNumber()) + ")",
 					Color.WHITE, ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
 			if (rankingPrevio != null) {
-				tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getComplexityRank() + " \n(" + messageResources.getMessage("de.text", rankingPrevio.getCategorySeedsNumber()) + ")",
+				tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getComplexityRank() + " \n(" + messageResources.getMessage("de.text", rankingPrevio.getComplexitySeedsNumber()) + ")",
 						Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-				tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(rankingActual.getComplexityRank(), rankingPrevio.getCategoryRank(), true),
+				tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(rankingActual.getComplexityRank(), rankingPrevio.getComplexityRank(), true),
 						String.valueOf(rankingPrevio.getComplexityRank() - rankingActual.getComplexityRank()), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 			}
 			tablaRankings.completeRow();

@@ -1395,7 +1395,7 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 			if (rankingPrevio != null) {
 				tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getComplexityRank() + " \n(" + messageResources.getMessage("de.text", rankingPrevio.getCategorySeedsNumber()) + ")",
 						Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-				tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(rankingActual.getComplexityRank(), rankingPrevio.getCategoryRank(), true),
+				tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(rankingActual.getComplexityRank(), rankingPrevio.getComplexityRank(), true),
 						String.valueOf(rankingPrevio.getComplexityRank() - rankingActual.getComplexityRank()), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 			}
 			tablaRankings.completeRow();

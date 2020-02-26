@@ -107,6 +107,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		x = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.x"));
 		y = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.y"));
 	}
+	/** The Constant LEVEL_I_VERIFICATIONS. */
 	private static final List<String> LEVEL_I_VERIFICATIONS = Arrays.asList(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_2_VERIFICATION,
 			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_3_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_4_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_5_VERIFICATION,
 			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_6_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_7_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_8_VERIFICATION,
@@ -2252,8 +2253,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	/**
 	 * Calculate verification evolution compliance data set.
 	 *
-	 * @param verification the verification
-	 * @param result       the result
+	 * @param verifications the verifications
+	 * @param result        the result
 	 * @return the map
 	 */
 	public static Map<String, Map<String, BigDecimal>> calculateVerificationEvolutionComplianceDataSetDetailed(final List<String> verifications,
@@ -3752,21 +3753,28 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @return the verification results by point and crawl
 	 */
 	public static Map<Long, Map<String, BigDecimal>> getVerificationResultsByPointAndCrawl(final List<ObservatoryEvaluationForm> resultData, final String level) {
-		final Map<Long, Map<String, BigDecimal>> results = new TreeMap<>();
-		final Map<Long, Map<String, Integer>> numPointG = new LinkedHashMap<>();
+		final Map<Long, Map<String, BigDecimal>> groupedResults = new TreeMap<>();
+		final Map<Long, Map<String, Integer>> groupedNumPoint = new LinkedHashMap<>();
 		if (resultData != null && !resultData.isEmpty()) {
 			for (ObservatoryEvaluationForm observatoryEvaluationForm : resultData) {
+				if (!groupedResults.containsKey(observatoryEvaluationForm.getCrawlerExecutionId())) {
+					groupedResults.put(observatoryEvaluationForm.getCrawlerExecutionId(), new TreeMap<String, BigDecimal>());
+				}
+				if (!groupedNumPoint.containsKey(observatoryEvaluationForm.getCrawlerExecutionId())) {
+					groupedNumPoint.put(observatoryEvaluationForm.getCrawlerExecutionId(), new TreeMap<String, Integer>());
+				}
 				for (ObservatoryLevelForm observatoryLevelForm : observatoryEvaluationForm.getGroups()) {
 					if (level.equals(Constants.OBS_PRIORITY_NONE) || observatoryLevelForm.getName().equals(level)) {
 						for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevelForm.getSuitabilityGroups()) {
 							for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
-								Map<String, BigDecimal> results2 = new TreeMap<>();
-								Map<String, Integer> numPoint = new TreeMap<>();
+								// Se comprueba si puntúa o no puntúa
+								Map<String, BigDecimal> currentResults = groupedResults.get(observatoryEvaluationForm.getCrawlerExecutionId());
+								Map<String, Integer> currentNumPoint = groupedNumPoint.get(observatoryEvaluationForm.getCrawlerExecutionId());
 								// Se comprueba si puntúa o no puntúa
 								if (observatorySubgroupForm.getValue() != Constants.OBS_VALUE_NOT_SCORE) {
-									if (results2.get(observatorySubgroupForm.getDescription()) == null) {
-										results2.put(observatorySubgroupForm.getDescription(), new BigDecimal(0));
-										numPoint.put(observatorySubgroupForm.getDescription(), 0);
+									if (currentResults.get(observatorySubgroupForm.getDescription()) == null) {
+										currentResults.put(observatorySubgroupForm.getDescription(), new BigDecimal(0));
+										currentNumPoint.put(observatorySubgroupForm.getDescription(), 0);
 									}
 									// Si puntúa, se isNombreValido si se le da un 0
 									// o un 1
@@ -3776,45 +3784,30 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 										// Si le damos un 1, lo añadimos a la
 										// puntuación e incrementamos el número de
 										// puntos que han puntuado
-										results2.put(observatorySubgroupForm.getDescription(), results2.get(observatorySubgroupForm.getDescription()).add(new BigDecimal(0.5)));
-										if (numPoint.get(observatorySubgroupForm.getDescription()) == -1) {
-											numPoint.put(observatorySubgroupForm.getDescription(), numPoint.get(observatorySubgroupForm.getDescription()) + 2);
+										currentResults.put(observatorySubgroupForm.getDescription(), currentResults.get(observatorySubgroupForm.getDescription()).add(new BigDecimal(0.5)));
+										if (currentNumPoint.get(observatorySubgroupForm.getDescription()) == -1) {
+											currentNumPoint.put(observatorySubgroupForm.getDescription(), currentNumPoint.get(observatorySubgroupForm.getDescription()) + 2);
 										} else {
-											numPoint.put(observatorySubgroupForm.getDescription(), numPoint.get(observatorySubgroupForm.getDescription()) + 1);
+											currentNumPoint.put(observatorySubgroupForm.getDescription(), currentNumPoint.get(observatorySubgroupForm.getDescription()) + 1);
 										}
 									} else if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_GREEN_ONE) {
 										// Si le damos un 1, lo añadimos a la
 										// puntuación e incrementamos el número de
 										// puntos que han puntuado
-										results2.put(observatorySubgroupForm.getDescription(), results2.get(observatorySubgroupForm.getDescription()).add(new BigDecimal(1)));
-										if (numPoint.get(observatorySubgroupForm.getDescription()) == -1) {
-											numPoint.put(observatorySubgroupForm.getDescription(), numPoint.get(observatorySubgroupForm.getDescription()) + 2);
+										currentResults.put(observatorySubgroupForm.getDescription(), currentResults.get(observatorySubgroupForm.getDescription()).add(new BigDecimal(1)));
+										if (currentNumPoint.get(observatorySubgroupForm.getDescription()) == -1) {
+											currentNumPoint.put(observatorySubgroupForm.getDescription(), currentNumPoint.get(observatorySubgroupForm.getDescription()) + 2);
 										} else {
-											numPoint.put(observatorySubgroupForm.getDescription(), numPoint.get(observatorySubgroupForm.getDescription()) + 1);
+											currentNumPoint.put(observatorySubgroupForm.getDescription(), currentNumPoint.get(observatorySubgroupForm.getDescription()) + 1);
 										}
 									} else {
 										// Si le damos un 0 solamente incrementamos
 										// el número de puntos
-										numPoint.put(observatorySubgroupForm.getDescription(), numPoint.get(observatorySubgroupForm.getDescription()) + 1);
+										currentNumPoint.put(observatorySubgroupForm.getDescription(), currentNumPoint.get(observatorySubgroupForm.getDescription()) + 1);
 									}
-								} else if (results2.get(observatorySubgroupForm.getDescription()) == null) {
-									results2.put(observatorySubgroupForm.getDescription(), new BigDecimal(0));
-									numPoint.put(observatorySubgroupForm.getDescription(), -1);
-								}
-								// ADDD
-								if (results.get(observatoryEvaluationForm.getCrawlerExecutionId()) != null) {
-									final Map<String, BigDecimal> value = results.get(observatoryEvaluationForm.getCrawlerExecutionId());
-									value.putAll(results2);
-									results.put(observatoryEvaluationForm.getCrawlerExecutionId(), value);
-								} else {
-									results.put(observatoryEvaluationForm.getCrawlerExecutionId(), results2);
-								}
-								if (numPointG.get(observatoryEvaluationForm.getCrawlerExecutionId()) != null) {
-									final Map<String, Integer> value = numPointG.get(observatoryEvaluationForm.getCrawlerExecutionId());
-									value.putAll(numPoint);
-									numPointG.put(observatoryEvaluationForm.getCrawlerExecutionId(), value);
-								} else {
-									numPointG.put(observatoryEvaluationForm.getCrawlerExecutionId(), numPoint);
+								} else if (currentResults.get(observatorySubgroupForm.getDescription()) == null) {
+									currentResults.put(observatorySubgroupForm.getDescription(), new BigDecimal(0));
+									currentNumPoint.put(observatorySubgroupForm.getDescription(), -1);
 								}
 							}
 						}
@@ -3823,7 +3816,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			}
 		}
 		final Map<Long, Map<String, BigDecimal>> verificationResultsByPointPage = new TreeMap<>();
-		for (Map.Entry<Long, Map<String, BigDecimal>> resultEntry : results.entrySet()) {
+		for (Map.Entry<Long, Map<String, BigDecimal>> resultEntry : groupedResults.entrySet()) {
 			// Cambiamos las claves por el nombre y calculamos la media
 			// Necesitamos implementar un orden específico para que p.e.
 			// 1.10 vaya después de 1.9 y no de 1.
@@ -3852,7 +3845,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				// Generar las claves con minhap.observatory.5_0.subgroup.
 				final String name = resultEntry2.getKey().substring(resultEntry2.getKey().indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length());
 				final BigDecimal value;
-				Map<String, Integer> numPoint = numPointG.get(resultEntry.getKey());
+				Map<String, Integer> numPoint = groupedNumPoint.get(resultEntry.getKey());
 				if (numPoint.get(resultEntry2.getKey()) != -1 && numPoint.get(resultEntry2.getKey()) != 0) {
 					value = resultEntry2.getValue().divide(BigDecimal.valueOf(numPoint.get(resultEntry2.getKey())), 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN);
 				} else if (numPoint.get(resultEntry2.getKey()) == -1) {
@@ -4325,7 +4318,6 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param messageResources   the message resources
 	 * @param filePaths          the file paths
 	 * @param pageObservatoryMap the page observatory map
-	 * @param verifications      the verifications
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionComplianceByVerificationChartSplitGrouped(final MessageResources messageResources, final String[] filePaths,
