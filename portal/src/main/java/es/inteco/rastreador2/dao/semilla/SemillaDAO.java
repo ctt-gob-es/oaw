@@ -669,7 +669,9 @@ public final class SemillaDAO {
 	public static int countObservatorySeeds(Connection c, SemillaSearchForm searchForm) throws SQLException {
 		int count = 1;
 		// String query = "SELECT COUNT(*) FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? ";
-		String query = "SELECT COUNT(*) FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN semilla_dependencia sd ON(l.id_lista = sd.id_lista) LEFT JOIN semilla_etiqueta se ON(l.id_lista = se.id_lista) WHERE id_tipo_lista = ? ";
+		// String query = "SELECT COUNT(*) FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN semilla_dependencia sd ON(l.id_lista = sd.id_lista) LEFT JOIN
+		// semilla_etiqueta se ON(l.id_lista = se.id_lista) WHERE id_tipo_lista = ? ";
+		String query = "SELECT distinct l.* FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) LEFT JOIN complejidades_lista cxl ON (cxl.id_complejidad = l.id_complejidad) LEFT JOIN semilla_dependencia sd ON(l.id_lista = sd.id_lista) LEFT JOIN semilla_etiqueta se ON(l.id_lista = se.id_lista) WHERE id_tipo_lista = ? ";
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 			query += " AND UPPER(l.nombre) like UPPER(?) ";
 		}
@@ -721,6 +723,7 @@ public final class SemillaDAO {
 			}
 			query = query + ")";
 		}
+		query = "SELECT COUNT(*) FROM ( " + query + ") AS R";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(count++, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 			if (StringUtils.isNotEmpty(searchForm.getNombre())) {

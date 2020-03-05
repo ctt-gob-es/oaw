@@ -335,6 +335,10 @@ public final class EvaluatorUtils {
 				code.add(problem.getNode().getTextContent());
 			} else if (check.getId() == 436) {
 				code.add(problem.getNode().getTextContent());
+			} else if (check.getId() == 476) {
+				code.add(problem.getNode().getTextContent());
+			} else if (check.getId() == 478) {
+				code.add(problem.getNode().getTextContent());
 			}
 		} else if ("legend".equals(checkKeyElement)) {
 			code = getHtml(elementProblem, true, false);

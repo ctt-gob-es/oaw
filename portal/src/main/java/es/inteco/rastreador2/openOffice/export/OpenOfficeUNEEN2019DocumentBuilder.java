@@ -690,8 +690,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		Element paragrhphSuitability = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, paragrhphSuitability, SEGMENT_EVOLUTION_BOOKMARK);
 		// Graphic suitability
+		String title = "Evolución del nivel de adecuación estimado: segmento " + category.getName();
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + "EvolucionNivelConformidadCombinadaSegmento" + graphicSuffix + ".jpg",
-				pageObservatoryMap, exObsIds);
+				pageObservatoryMap, exObsIds, title);
 		final File f = new File(graphicPath + "EvolucionNivelConformidadCombinadaSegmento" + graphicSuffix + ".jpg");
 		String newImageDOm = "<text:p text:style-name=\"P\"><draw:frame draw:style-name='fr4' draw:name='" + "EvolucionNivelConformidadCombinadaSegmento" + graphicSuffix
 				+ "' text:anchor-type='as-char' svg:y='0mm' svg:width='149.45mm' style:rel-width='scale' svg:height='120.21mm' style:rel-height='scale' draw:z-index='118'>"
@@ -788,8 +789,10 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
 			resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNEEN2019Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
 		}
+		// TODO Title
+		String title = messageResources.getMessage("report.evolution.allocation.graphic.title.global");
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA + JPG_EXTENSION,
-				pageObservatoryMap, exObsIds);
+				pageObservatoryMap, exObsIds, title);
 		replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA + JPG_EXTENSION, EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA, MIME_TYPE_JPG);
 		// Section compliance
@@ -812,6 +815,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2 + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2,
 				MIME_TYPE_JPG);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA, MIME_TYPE_JPG);
+		// TODO Gloabal vertificacion conformity
 		// TODO Compliance by verification
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChartSplitGrouped(messageResources,
 				new String[] { graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1 + JPG_EXTENSION,
@@ -847,8 +851,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
 			resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNEEN2019Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
 		}
+		String title = messageResources.getMessage("report.evolution.allocation.graphic.title.fixed");
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED + JPG_EXTENSION,
-				pageObservatoryMap, exObsIds);
+				pageObservatoryMap, exObsIds, title);
 		replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED, MIME_TYPE_JPG);
 		// Section compliance
@@ -878,8 +883,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				new String[] { graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION,
 						graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED + JPG_EXTENSION },
 				pageObservatoryMap, LEVEL_I_VERIFICATIONS);
+		title = messageResources.getMessage("report.evolution.compliance.graphic.title.fixed");
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChart(messageResources,
-				new String[] { graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION }, pageObservatoryMap, LEVEL_II_VERIFICATIONS);
+				new String[] { graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION }, pageObservatoryMap, LEVEL_II_VERIFICATIONS, title);
 		replaceSectionComplianceByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED,
 				MIME_TYPE_JPG);
@@ -2778,111 +2784,17 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String prefix) throws Exception {
 		numSection = 10;
 		if (pageObservatoryMap != null && !pageObservatoryMap.isEmpty()) {
-			// TABLA 1
-//			Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION,
-//					pageObservatoryMap);
+			// Verications level I
 			Map<String, Map<String, BigDecimal>> resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(LEVEL_I_VERIFICATIONS,
 					pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.1") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
 			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_2_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.2") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.2", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_3_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.3") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.3", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_4_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.4") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.4", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_5_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.5") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.5", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_6_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.6") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.6", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_7_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.7") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.7", resultData);
-//			// Reorganización de los datos
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_8_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.8") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.8", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_9_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.9") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.9", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_10_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.10") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.10", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_11_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.11") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.11", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_12_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.12") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.12", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_13_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.13") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.13", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_14_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.14") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.14", resultData);
-//			// TABLA 2
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.2") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.21", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.2") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.22", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.3") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.23", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.4") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.24", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.5") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.25", resultData);
-//			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION,
-//					pageObservatoryMap);
-//			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.6") + JPG_EXTENSION, IMAGE_JPEG);
-//			numImg++;
-//			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.26", resultData);
+			// Verications level I
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(LEVEL_II_VERIFICATIONS, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.1") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionComplianceTextCellTables(odt, odfFileContent, prefix + ".t5.2", resultData);
 		} else {
 			final PropertiesManager pmgr = new PropertiesManager();
 			for (int i = 5; i < 25; i++) {

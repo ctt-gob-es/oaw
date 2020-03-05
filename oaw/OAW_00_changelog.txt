@@ -1,6 +1,14 @@
 5.0.3
 ------------------------------------------------------------------------------------------------------------------------------------
 - Correcciones informe oficial UNE-EN301549:2019
+- Correcciones varias validaciones
+- Nueva forma de generar los informes individuales (enlaces por email)
+- Corregidos contadores de ranking de portales, complejidad y segmento
+- Corregida paginación de etiquetas
+- Corregida paginación de semillas
+- Corregido el cálculo del cumplimiento estimado de un sitio web
+- Corregido acceso al motor de JS cuando un sitio web repospondia un código http 30x
+- Corregido un error que provocaba que en la edición de un observatorio no se actualziar la normativa para las nuevas semillas
 
 5.0.2
 ------------------------------------------------------------------------------------------------------------------------------------
