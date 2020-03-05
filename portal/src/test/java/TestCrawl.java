@@ -139,8 +139,11 @@ public class TestCrawl {
 //				"https://www.mjusticia.gob.es", "https://www.mpr.gob.es/paginas/index.aspx", "https://www.mptfp.gob.es/portal/index.html", "https://www.mscbs.gob.es/home.htm",
 //				"http://www.mitramiss.gob.es/es/index.htm", "http://www.interior.gob.es/", "https://www.miteco.gob.es/es/", "https://administracion.gob.es", "http://www.seg-social.es",
 //				"https://www.lamoncloa.gob.es/serviciosdeprensa/Paginas/index.aspx", "http://www.guardiareal.org/" };
-		String[] urls = new String[] { "https://www.mscbs.gob.es/home.htm", "http://www.mitramiss.gob.es/es/index.htm", "http://www.interior.gob.es/", "https://www.miteco.gob.es/es/",
-				"https://administracion.gob.es", "http://www.seg-social.es", "https://www.lamoncloa.gob.es/serviciosdeprensa/Paginas/index.aspx", "http://www.guardiareal.org/" };
+//		String[] urls = new String[] { "http://www.melilla.es/melillaPortal/index.jsp", "http://www.comunidad.madrid", "https://www.gva.es", "https://web.gencat.cat/ca/inici/",
+//				",https://www.euskadi.eus/hasiera/", "https://www.aragon.es", "https://www.gobiernodecanarias.org/principal/", "https://www.cantabria.es/", "https://www.navarra.es/home_es/",
+//				"https://web.larioja.org", "http://www.caib.es/govern/index.do?lang=ca", "https://www.asturias.es/", "https://www.juntadeandalucia.es/institucional/index.html", "https://www.jcyl.es/",
+//				"http://www.juntaex.es/web/", "https://www.castillalamancha.es/", "http://www.carm.es", "https://www.xunta.gal/portada" };
+		String[] urls = new String[] { "https://www.gva.es/es" };
 		for (String url : urls) {
 			this.test(url, false);
 		}

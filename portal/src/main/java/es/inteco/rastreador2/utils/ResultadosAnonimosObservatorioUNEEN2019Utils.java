@@ -1506,6 +1506,84 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	}
 
 	/**
+	 * Generate percentajes compilance verification.
+	 *
+	 * @param results the results
+	 * @return the map
+	 */
+	public static Map<String, BigDecimal> generatePercentajesConformanceVerification(final Map<Long, Map<String, BigDecimal>> results) {
+		Map<String, BigDecimal> resultsC = new TreeMap<>();
+		Map<String, BigDecimal> resultsOrdered = new TreeMap<>(new Comparator<String>() {
+			@Override
+			public int compare(String version1, String version2) {
+				String[] v1 = version1.split("\\.");
+				String[] v2 = version2.split("\\.");
+				int major1 = major(v1);
+				int major2 = major(v2);
+				if (major1 == major2) {
+					if (minor(v1) == minor(v2)) { // Devolvemos 1
+													// aunque sean iguales
+													// porque las claves lleva
+													// asociado un subfijo que
+													// aqui no tenemos en cuenta
+						return 1;
+					}
+					return minor(v1).compareTo(minor(v2));
+				}
+				return major1 > major2 ? 1 : -1;
+			}
+
+			private int major(String[] version) {
+				return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "")
+						.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""));
+			}
+
+			private Integer minor(String[] version) {
+				return version.length > 1 ? Integer.parseInt(
+						version[1].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""))
+						: 0;
+			}
+		});
+		// Process results
+		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
+			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
+				String keyCompilance = verificationResult.getKey().concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX);
+				String keyNoCompilance = verificationResult.getKey().concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX);
+				// Add all posbible values???
+				if (!resultsC.containsKey(keyCompilance)) {
+					resultsC.put(keyCompilance, new BigDecimal(0));
+				}
+				if (!resultsC.containsKey(keyNoCompilance)) {
+					resultsC.put(keyNoCompilance, new BigDecimal(0));
+				}
+				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
+					// If exists +1
+					if (resultsC.containsKey(keyCompilance)) {
+						resultsC.put(keyCompilance, resultsC.get(keyCompilance).add(new BigDecimal(1)));
+					} else {
+						resultsC.put(keyCompilance, new BigDecimal(1));
+					}
+				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
+					// If exists +1
+					if (resultsC.containsKey(keyNoCompilance)) {
+						resultsC.put(keyNoCompilance, resultsC.get(keyNoCompilance).add(new BigDecimal(1)));
+					} else {
+						resultsC.put(keyNoCompilance, new BigDecimal(1));
+					}
+				}
+			}
+		}
+		for (Map.Entry<String, BigDecimal> entry : resultsC.entrySet()) {
+			resultsOrdered.put(entry.getKey(), entry.getValue().divide(new BigDecimal(results.size()), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+		}
+		Map<String, BigDecimal> resultsP = new TreeMap<>();
+		for (Map.Entry<String, BigDecimal> entry : resultsOrdered.entrySet()) {
+			resultsP.put(entry.getKey(), entry.getValue());
+		}
+		return resultsP;
+	}
+
+	/**
 	 * Gets the mid mark aspect evolution graphic.
 	 *
 	 * @param messageResources  the message resources
@@ -2283,26 +2361,26 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				// verificación
 				final Map<Long, Map<String, BigDecimal>> results = getVerificationResultsByPointAndCrawl(entry.getValue(), Constants.OBS_PRIORITY_NONE);
 				// C
-				BigDecimal value = generatePercentajesCompilanceVerification(results).get(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX));
+				BigDecimal value = generatePercentajesConformanceVerification(results).get(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX));
 				if (value != null) {
 					resultC.put(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX), value);
 				} else {
 					resultC.put(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX), BigDecimal.ZERO);
 				}
 				// NC
-				value = generatePercentajesCompilanceVerification(results).get(verification.concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX));
+				value = generatePercentajesConformanceVerification(results).get(verification.concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX));
 				if (value != null) {
 					resultC.put(verification.concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX), value);
 				} else {
 					resultC.put(verification.concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX), BigDecimal.ZERO);
 				}
 				// NA
-				value = generatePercentajesCompilanceVerification(results).get(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX));
-				if (value != null) {
-					resultC.put(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX), value);
-				} else {
-					resultC.put(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX), BigDecimal.ZERO);
-				}
+//				value = generatePercentajesCompilanceVerification(results).get(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX));
+//				if (value != null) {
+//					resultC.put(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX), value);
+//				} else {
+//					resultC.put(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX), BigDecimal.ZERO);
+//				}
 				resultData.put(df.format(entry.getKey()), resultC);
 			}
 		}
@@ -4062,7 +4140,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionSuitabilityChart(final String observatoryId, final String executionId, final String filePath,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String[] exObsIds) throws IOException {
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String[] exObsIds, final String title) throws IOException {
 		final Map<String, Map<String, BigDecimal>> evolutionSuitabilityDatePercentMap = new LinkedHashMap<>();
 		final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(observatoryId, executionId, pageObservatoryMap, exObsIds);
 		evolutionSuitabilityDatePercentMap.put(Constants.OBS_NV_LABEL, calculatePercentageApprovalSiteLevel(result, Constants.OBS_NV));
@@ -4077,6 +4155,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		final String noDataMess = "noData";
 		final PropertiesManager pmgr = new PropertiesManager();
 		final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+		chartForm.setTitle(title);
 		GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
 	}
 
@@ -4325,13 +4404,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		final PropertiesManager pmgr = new PropertiesManager();
 		Map<String, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(LEVEL_I_VERIFICATIONS.subList(0, 7),
 				pageObservatoryMap);
-		GraphicsUtils.createBarChartGrouped(results, "Evolución de la conformidad de las verificaciones: en términos globales. Nivel de adecuación A", "", "",
+		GraphicsUtils.createBarChartGrouped(results, "Evolución de la conformidad de las verificaciones: en términos generales. Nivel de adecuación A", "", "",
 				pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR), false, true, true, filePaths[0], "", messageResources, 1465, 654);
 		results = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(LEVEL_I_VERIFICATIONS.subList(7, 14), pageObservatoryMap);
-		GraphicsUtils.createBarChartGrouped(results, "Evolución de la conformidad de las verificaciones: en términos globales. Nivel de adecuación A", "", "",
+		GraphicsUtils.createBarChartGrouped(results, "Evolución de la conformidad de las verificaciones: en términos generales. Nivel de adecuación A", "", "",
 				pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR), false, true, true, filePaths[1], "", messageResources, 1465, 654);
 		results = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(LEVEL_II_VERIFICATIONS, pageObservatoryMap);
-		GraphicsUtils.createBarChartGrouped(results, "Evolución de la conformidad de las verificaciones: en términos globales. Nivel de adecuación AA", "", "",
+		GraphicsUtils.createBarChartGrouped(results, "Evolución de la conformidad de las verificaciones: en términos generales. Nivel de adecuación AA", "", "",
 				pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR), false, true, true, filePaths[2], "", messageResources, 1465, 654);
 	}
 
@@ -4345,7 +4424,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionComplianceByVerificationChart(final MessageResources messageResources, final String[] filePaths,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<String> verifications) throws IOException {
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<String> verifications, final String title) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DefaultCategoryDataset dataSet1 = new DefaultCategoryDataset();
 		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
@@ -4361,6 +4440,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		final ChartForm chartForm1 = new ChartForm(dataSet1, true, true, false, true, false, false, false, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR));
 		chartForm1.setFixedColorBars(true);
 		chartForm1.setShowColumsLabels(false);
+		chartForm1.setTitle(title);
 		GraphicsUtils.createStandardBarChart(chartForm1, filePaths[0], "", messageResources, true);
 	}
 
