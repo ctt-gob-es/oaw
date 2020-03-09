@@ -197,10 +197,10 @@ public class BasicServiceManager {
 				// Generar código analizado
 				final SourceFilesManager sourceFilesManager = new SourceFilesManager(new File(pdfPath).getParentFile());
 				final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
-				// TODO Source code analysis
+				// Source code analysis
 				if (basicServiceForm.isContentAnalysis()) {
 					sourceFilesManager.writeSourceFilesContent(DataBaseManager.getConnection(), analysisIdsByTracking, basicServiceForm.getFileName());
-					sourceFilesManager.zipSources(true);
+					sourceFilesManager.zipSourcesContent(true);
 				} else {
 					sourceFilesManager.writeSourceFiles(DataBaseManager.getConnection(), analysisIdsByTracking);
 					sourceFilesManager.zipSources(true);

@@ -36,6 +36,7 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
+import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.plantilla.PlantillaDAO;
@@ -74,7 +75,14 @@ public class ExportOpenOfficeAction extends Action {
 		try {
 			Connection connection = DataBaseManager.getConnection();
 			application = CartuchoDAO.getApplication(connection, idCartucho);
+			// GET AMBIT BY ID
 			if (Constants.NORMATIVA_UNE_EN2019.equals(application)) {
+				AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryId(connection, idObservatory);
+				if (ambito != null) {
+					request.setAttribute("ambito", ambito.getDescripcion());
+				} else {
+					request.setAttribute("ambito", "");
+				}
 				request.setAttribute("plantillas", PlantillaDAO.findAll(connection, -1));
 				request.setAttribute(Constants.ID_OBSERVATORIO, request.getParameter(Constants.ID_OBSERVATORIO));
 				request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null));

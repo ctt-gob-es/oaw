@@ -138,7 +138,6 @@ public final class CheckUtils {
 	 */
 	public static Document getRemoteDocument(final String documentUrlStr, final String remoteUrlStr, int redirects) throws IOException, SAXException {
 		final int maxNumRedirections = 5;
-		// PENDING Este remote debería pasar por el proxy
 		try {
 			final HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrlStr, "GET", true);
 			connection.setRequestProperty("referer", documentUrlStr);
@@ -177,7 +176,6 @@ public final class CheckUtils {
 	 * @throws SAXException the SAX exception
 	 */
 	public static Document getRemoteDocumentRenderer(final String documentUrlStr, final String remoteUrlStr) throws IOException, SAXException {
-		// PENDING Este remote debería pasar por el proxy
 		try {
 			final HttpURLConnection connection = EvaluatorUtils.getRendererConnection(remoteUrlStr, "GET", true);
 			connection.setRequestProperty("referer", documentUrlStr);

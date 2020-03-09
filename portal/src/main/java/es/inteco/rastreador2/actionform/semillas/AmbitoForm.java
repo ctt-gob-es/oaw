@@ -15,141 +15,138 @@
 ******************************************************************************/
 package es.inteco.rastreador2.actionform.semillas;
 
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
-import org.apache.struts.validator.ValidatorForm;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+import org.apache.struts.validator.ValidatorForm;
 
 /**
  * The Class AmbitoForm.
  */
 public class AmbitoForm extends ValidatorForm implements Serializable {
-    
-    /** The Constant serialVersionUID. */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1752910926145527308L;
-
 	/** The id. */
-    private String id;
-    
-    /** The name. */
-    private String name;
-    
-    /** The file seeds. */
-    private FormFile fileSeeds;
-    
-    /** The seeds. */
-    private List<SemillaForm> seeds;
-    
-    /** The orden. */
-    private int orden;
-    
-    /**
-     * Gets the id.
-     *
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
+	private String id;
+	/** The name. */
+	private String name;
+	/** The descripcion. */
+	private String descripcion;
+	/** The file seeds. */
+	private FormFile fileSeeds;
+	/** The seeds. */
+	private List<SemillaForm> seeds;
+	/** The orden. */
+	private int orden;
 
-    /**
-     * Sets the id.
-     *
-     * @param id the new id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * Gets the name.
-     *
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Sets the id.
+	 *
+	 * @param id the new id
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    /**
-     * Sets the name.
-     *
-     * @param name the new name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Gets the file seeds.
-     *
-     * @return the file seeds
-     */
-    public FormFile getFileSeeds() {
-        return fileSeeds;
-    }
+	/**
+	 * Sets the name.
+	 *
+	 * @param name the new name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    /**
-     * Sets the file seeds.
-     *
-     * @param fileSeeds the new file seeds
-     */
-    public void setFileSeeds(FormFile fileSeeds) {
-        this.fileSeeds = fileSeeds;
-    }
+	/**
+	 * Gets the file seeds.
+	 *
+	 * @return the file seeds
+	 */
+	public FormFile getFileSeeds() {
+		return fileSeeds;
+	}
 
-    /**
-     * Gets the seeds.
-     *
-     * @return the seeds
-     */
-    public List<SemillaForm> getSeeds() {
-        return seeds;
-    }
+	/**
+	 * Sets the file seeds.
+	 *
+	 * @param fileSeeds the new file seeds
+	 */
+	public void setFileSeeds(FormFile fileSeeds) {
+		this.fileSeeds = fileSeeds;
+	}
 
-    /**
-     * Sets the seeds.
-     *
-     * @param seeds the new seeds
-     */
-    public void setSeeds(List<SemillaForm> seeds) {
-        this.seeds = seeds;
-    }
+	/**
+	 * Gets the seeds.
+	 *
+	 * @return the seeds
+	 */
+	public List<SemillaForm> getSeeds() {
+		return seeds;
+	}
 
-    /**
-     * Gets the orden.
-     *
-     * @return the orden
-     */
-    public int getOrden() {
-        return orden;
-    }
+	/**
+	 * Sets the seeds.
+	 *
+	 * @param seeds the new seeds
+	 */
+	public void setSeeds(List<SemillaForm> seeds) {
+		this.seeds = seeds;
+	}
 
-    /**
-     * Sets the orden.
-     *
-     * @param orden the new orden
-     */
-    public void setOrden(int orden) {
-        this.orden = orden;
-    }
+	/**
+	 * Gets the orden.
+	 *
+	 * @return the orden
+	 */
+	public int getOrden() {
+		return orden;
+	}
 
-    /**
-     * Reset.
-     *
-     * @param mapping the mapping
-     * @param request the request
-     */
-    @Override
-    public void reset(ActionMapping mapping, HttpServletRequest request) {
-        super.reset(mapping, request);
-        if (seeds == null) {
-            seeds = new ArrayList<>();
-        }
-    }
+	/**
+	 * Sets the orden.
+	 *
+	 * @param orden the new orden
+	 */
+	public void setOrden(int orden) {
+		this.orden = orden;
+	}
+
+	/**
+	 * Reset.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 */
+	@Override
+	public void reset(ActionMapping mapping, HttpServletRequest request) {
+		super.reset(mapping, request);
+		if (seeds == null) {
+			seeds = new ArrayList<>();
+		}
+	}
 
 	/**
 	 * Hash code.
@@ -162,6 +159,24 @@ public class AmbitoForm extends ValidatorForm implements Serializable {
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
+	}
+
+	/**
+	 * Gets the descripcion.
+	 *
+	 * @return the descripcion
+	 */
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	/**
+	 * Sets the descripcion.
+	 *
+	 * @param descripcion the new descripcion
+	 */
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
 	}
 
 	/**
@@ -186,7 +201,4 @@ public class AmbitoForm extends ValidatorForm implements Serializable {
 			return false;
 		return true;
 	}
-    
-    
-    
 }

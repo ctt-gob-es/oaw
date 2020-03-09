@@ -81,6 +81,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<th><bean:message key="cargar.semilla.observatorio.etiquetas" /></th>
 									<th><bean:message key="cargar.semilla.observatorio.urls" /></th>
 									<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.eliminada" /></th>
 									<th><bean:message key="cargar.semilla.observatorio.directorio" /></th>
 
 								</tr>
@@ -108,6 +109,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<td><logic:equal name="semilla" property="activa" value="true">
 											<bean:message key="si" />
 										</logic:equal> <logic:equal name="semilla" property="activa" value="false">
+											<bean:message key="no" />
+										</logic:equal></td>
+
+									<td><logic:equal name="semilla" property="eliminada" value="true">
+											<bean:message key="si" />
+										</logic:equal> <logic:equal name="semilla" property="eliminada" value="false">
 											<bean:message key="no" />
 										</logic:equal></td>
 
@@ -156,12 +163,20 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</logic:equal> <logic:equal name="semilla" property="activaNuevo" value="false">
 											<bean:message key="no" />
 										</logic:equal></td>
+									<td class='<c:if test="${semilla.sameEliminada!=true}">warning-import</c:if>'><logic:equal name="semilla"
+											property="eliminadaNuevo" value="true">
+											<bean:message key="si" />
+										</logic:equal> <logic:equal name="semilla" property="eliminadaNuevo" value="false">
+											<bean:message key="no" />
+										</logic:equal></td>
+
+
 
 
 									<td class='<c:if test="${semilla.sameInDirectory!=true}">warning-import</c:if>'><logic:equal
 											name="semilla" property="inDirectoryNuevo" value="true">
 											<bean:message key="si" />
-										</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
+										</logic:equal> <logic:equal name="semilla" property="inDirectoryNuevo" value="false">
 											<bean:message key="no" />
 										</logic:equal></td>
 								</tr>
@@ -200,6 +215,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								<th><bean:message key="cargar.semilla.observatorio.etiquetas" /></th>
 								<th><bean:message key="cargar.semilla.observatorio.urls" /></th>
 								<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
+								<th><bean:message key="cargar.semilla.observatorio.eliminada" /></th>
 								<th><bean:message key="cargar.semilla.observatorio.directorio" /></th>
 
 							</tr>
@@ -234,6 +250,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<td><logic:equal name="semilla" property="activa" value="true">
 											<bean:message key="si" />
 										</logic:equal> <logic:equal name="semilla" property="activa" value="false">
+											<bean:message key="no" />
+										</logic:equal></td>
+
+
+									<td><logic:equal name="semilla" property="eliminar" value="true">
+											<bean:message key="si" />
+										</logic:equal> <logic:equal name="semilla" property="eliminar" value="false">
 											<bean:message key="no" />
 										</logic:equal></td>
 								</tr>
@@ -275,6 +298,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<th><bean:message key="cargar.semilla.observatorio.dependencia" /></th>
 									<th style="max-width: 20%"><bean:message key="cargar.semilla.observatorio.urls" /></th>
 									<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.eliminada" /></th>
 									<th><bean:message key="cargar.semilla.observatorio.directorio" /></th>
 
 								</tr>
@@ -298,16 +322,25 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</logic:iterate></td>
 
 
-										<td><logic:equal name="semilla" property="inDirectory" value="true">
-												<bean:message key="si" />
-											</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
-												<bean:message key="no" />
-											</logic:equal></td>
 
 
 										<td><logic:equal name="semilla" property="activa" value="true">
 												<bean:message key="si" />
 											</logic:equal> <logic:equal name="semilla" property="activa" value="false">
+												<bean:message key="no" />
+											</logic:equal></td>
+
+
+										<td><logic:equal name="semilla" property="eliminar" value="true">
+												<bean:message key="si" />
+											</logic:equal> <logic:equal name="semilla" property="eliminar" value="false">
+												<bean:message key="no" />
+											</logic:equal></td>
+
+
+										<td><logic:equal name="semilla" property="inDirectory" value="true">
+												<bean:message key="si" />
+											</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
 												<bean:message key="no" />
 											</logic:equal></td>
 									</tr>

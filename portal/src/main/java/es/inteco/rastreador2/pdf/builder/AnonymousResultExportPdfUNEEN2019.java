@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.util.LabelValueBean;
@@ -58,6 +59,8 @@ import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
+import es.inteco.intav.form.ObservatoryLevelForm;
+import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
@@ -340,7 +343,9 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			p.add(new Phrase(this.messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.2.bold"), ConstantsFont.paragraphBoldFont));
 			p.add(new Phrase(this.messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.2"), ConstantsFont.PARAGRAPH));
 			PDFUtils.addListItem(p, list, ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_LEFT); // L3
-			// L3
+			section.add(list);
+			list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
+			// L3 --> P
 			specialChunkMap = new HashMap<>();
 			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3.bold1"), ConstantsFont.paragraphBoldFont);
 			specialChunkMap.put(1, externalLink);
@@ -353,9 +358,10 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3.anchor2.text"), ConstantsFont.ANCHOR_FONT); // externalLink.setExternalLink(true);
 																																										// //
 			externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3.anchor2.url")); // specialChunkMap.put(10, externalLink);
-			PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
-					ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
-			// L4
+//			PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
+//					ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			// L4 --> P
 			specialChunkMap = new HashMap<>();
 			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4.bold1"), ConstantsFont.paragraphBoldFont);
 			specialChunkMap.put(1, externalLink);
@@ -365,11 +371,9 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			externalLink.setExternalLink(true);
 			externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4.anchor1.url"));
 			specialChunkMap.put(3, externalLink);
-			PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
-					ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
-			list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
-			section.add(list);
-			section.add(list);
+//			PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
+//					ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4"), specialChunkMap, ConstantsFont.PARAGRAPH));
 		} else {
 			// L1
 			specialChunkMap = new HashMap<>();
@@ -520,12 +524,12 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		final com.lowagie.text.List listaConfiguracionRastreo = new com.lowagie.text.List();
 		listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
 		PDFUtils.addListItem("Tipo: Código fuente", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
-		PDFUtils.addListItem("Normativa: " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 		if (Constants.REPORT_OBSERVATORY_4.equals(getBasicServiceForm().getReport())) {
 			PDFUtils.addListItem("Comprobación de enlaces rotos: Sí", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 		} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
 			PDFUtils.addListItem("Comprobación de enlaces rotos: No", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 		}
+		PDFUtils.addListItem("Metodología: " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 		chapter.add(listaConfiguracionRastreo);
 		d.add(chapter);
 	}
@@ -576,15 +580,45 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				}
 				PDFUtils.addListItem("Selección restringida a directorio: " + (getBasicServiceForm().isInDirectory() ? "Sí" : "No"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			}
-			PDFUtils.addListItem("Normativa: " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			if (Constants.REPORT_OBSERVATORY_4.equals(getBasicServiceForm().getReport())) {
 				PDFUtils.addListItem("Comprobación de enlaces rotos: Sí", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
 				PDFUtils.addListItem("Comprobación de enlaces rotos: No", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			}
+			PDFUtils.addListItem("Metodología: " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			chapter.add(listaConfiguracionRastreo);
 		}
 		document.add(chapter);
+	}
+
+	/**
+	 * Calculate crawling compliance.
+	 *
+	 * @param results the results
+	 * @return the map
+	 */
+	private static Map<Long, String> calculateCrawlingCompliance(Map<Long, Map<String, BigDecimal>> results) {
+		final Map<Long, String> resultCompilance = new TreeMap<>();
+		// Process results
+		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
+			int countC = 0;
+			int countNC = 0;
+			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
+				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
+					countC++;
+				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
+					countNC++;
+				}
+			}
+			if (countC == result.getValue().size()) {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_FULL);
+			} else if (countC > countNC) {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_PARTIAL);
+			} else {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_NONE);
+			}
+		}
+		return resultCompilance;
 	}
 
 	/**
@@ -1420,6 +1454,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		String etiquetasTematica = "";
 		String etiquetasGeografia = "";
 		String etiquetasRecurrencia = "";
+		String etiquetasOtros = "";
 		if (etiquetas != null && !etiquetas.isEmpty()) {
 			for (EtiquetaForm etiqueta : etiquetas) {
 				if (etiqueta.getClasificacion() != null && "1".equals(etiqueta.getClasificacion().getId())) {
@@ -1428,6 +1463,8 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 					etiquetasGeografia = etiquetasGeografia + etiqueta.getName() + ";";
 				} else if (etiqueta.getClasificacion() != null && "3".equals(etiqueta.getClasificacion().getId())) {
 					etiquetasRecurrencia = etiquetasRecurrencia + etiqueta.getName() + ";";
+				} else if (etiqueta.getClasificacion() != null && "4".equals(etiqueta.getClasificacion().getId())) {
+					etiquetasOtros = etiquetasOtros + etiqueta.getName() + ";";
 				}
 			}
 		}
@@ -1442,15 +1479,14 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		// Complejidad
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.seed.detail.tabla.complejidad"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
 				Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
-		table.addCell(PDFUtils.createTableCell(
-				(fullSeed.getComplejidad() != null) ? fullSeed.getComplejidad().getName() + " (" + fullSeed.getComplejidad().getAmplitud() * fullSeed.getComplejidad().getProfundidad() + " páginas)"
-						: "",
-				Color.white, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
+		table.addCell(PDFUtils.createTableCell((fullSeed.getComplejidad() != null)
+				? fullSeed.getComplejidad().getName() + " (" + ((fullSeed.getComplejidad().getAmplitud() * fullSeed.getComplejidad().getProfundidad()) + 1) + " páginas)"
+				: "", Color.white, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
 		// Temática
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.seed.detail.tabla.tematica"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_JUSTIFIED,
 				ConstantsFont.DEFAULT_PADDING, -1));
 		if (!StringUtils.isEmpty(etiquetasTematica)) {
-			table.addCell(PDFUtils.createListTableCell(this.createTextList(etiquetasTematica, Element.ALIGN_LEFT), Color.white, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING));
+			table.addCell(PDFUtils.createListTableCell(this.createTextList(etiquetasTematica, Element.ALIGN_LEFT), Color.white, Element.ALIGN_JUSTIFIED, -1));
 		} else {
 			table.addCell(PDFUtils.createTableCell("-", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
 		}
@@ -1458,7 +1494,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.seed.detail.tabla.geografia"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_JUSTIFIED,
 				ConstantsFont.DEFAULT_PADDING, -1));
 		if (!StringUtils.isEmpty(etiquetasGeografia)) {
-			table.addCell(PDFUtils.createListTableCell(this.createTextList(etiquetasGeografia, Element.ALIGN_LEFT), Color.white, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING));
+			table.addCell(PDFUtils.createListTableCell(this.createTextList(etiquetasGeografia, Element.ALIGN_LEFT), Color.white, Element.ALIGN_JUSTIFIED, -1));
 		} else {
 			table.addCell(PDFUtils.createTableCell("-", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
 		}
@@ -1466,14 +1502,18 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.seed.detail.tabla.recurrencia"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
 				Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
 		if (!StringUtils.isEmpty(etiquetasRecurrencia)) {
-			table.addCell(PDFUtils.createListTableCell(this.createTextList(etiquetasRecurrencia, Element.ALIGN_LEFT), Color.white, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING));
+			table.addCell(PDFUtils.createListTableCell(this.createTextList(etiquetasRecurrencia, Element.ALIGN_LEFT), Color.white, Element.ALIGN_JUSTIFIED, -1));
 		} else {
 			table.addCell(PDFUtils.createTableCell("-", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
 		}
 		// Discapacidad
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.seed.detail.tabla.discapacidad"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
 				Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
-		table.addCell(PDFUtils.createTableCell("No", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
+		if (!StringUtils.isEmpty(etiquetasOtros) && etiquetasOtros.contains("discapaci")) {
+			table.addCell(PDFUtils.createTableCell("Sí", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
+		} else {
+			table.addCell(PDFUtils.createTableCell("No", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, -1));
+		}
 		chapter.add(table);
 		document.add(chapter);
 	}
@@ -1585,7 +1625,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		}
 		tablaRankings.completeRow();
 		if (rankingActual != null) {
-			// Posición en categoría
+			// Global rank
 			tablaRankings.addCell(
 					PDFUtils.createTableCell(messageResources.getMessage("observatorio.posicion.global"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 			tablaRankings.addCell(PDFUtils.createTableCell(rankingActual.getGlobalRank() + " \n(" + messageResources.getMessage("de.text", rankingActual.getGlobalSeedsNumber()) + ")", Color.WHITE,
@@ -1612,19 +1652,19 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			// Posición en complejidad
 			tablaRankings.addCell(PDFUtils.createTableCell("Posición en complejidad " + rankingActual.getComplejidad().getName(), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_LEFT,
 					DEFAULT_PADDING, -1));
-			tablaRankings.addCell(PDFUtils.createTableCell(rankingActual.getComplexityRank() + " \n(" + messageResources.getMessage("de.text", rankingActual.getCategorySeedsNumber()) + ")",
+			tablaRankings.addCell(PDFUtils.createTableCell(rankingActual.getComplexityRank() + " \n(" + messageResources.getMessage("de.text", rankingActual.getComplexitySeedsNumber()) + ")",
 					Color.WHITE, ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
 			if (rankingPrevio != null) {
-				tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getComplexityRank() + " \n(" + messageResources.getMessage("de.text", rankingPrevio.getCategorySeedsNumber()) + ")",
+				tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getComplexityRank() + " \n(" + messageResources.getMessage("de.text", rankingPrevio.getComplexitySeedsNumber()) + ")",
 						Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-				tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(rankingActual.getComplexityRank(), rankingPrevio.getCategoryRank(), true),
+				tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(rankingActual.getComplexityRank(), rankingPrevio.getComplexityRank(), true),
 						String.valueOf(rankingPrevio.getComplexityRank() - rankingActual.getComplexityRank()), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 			}
 			tablaRankings.completeRow();
 		}
 		section.add(tablaRankings);
 		// Gráficos
-		section.add(Chunk.NEWLINE);
+		section.add(Chunk.NEXTPAGE);
 		section.add(new Paragraph("A continuación se muestra la distribución de páginas según el nivel de adecuación estimado (No válido, A o AA)", ConstantsFont.PARAGRAPH));
 		// Gráfica nivel de adecuación
 		final String noDataMess = messageResources.getMessage("grafica.sin.datos");
@@ -2038,5 +2078,62 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		table.setSpacingBefore(ConstantsFont.HALF_LINE_SPACE);
 		table.setSpacingAfter(0);
 		chapter.add(table);
+	}
+
+	/**
+	 * Generate scores.
+	 *
+	 * @param messageResources the message resources
+	 * @param evaList          the eva list
+	 * @return the score form
+	 */
+	@Override
+	public ScoreForm generateScores(final MessageResources messageResources, final java.util.List<ObservatoryEvaluationForm> evaList) {
+		final ScoreForm scoreForm = new ScoreForm();
+		int suitabilityGroups = 0;
+		for (ObservatoryEvaluationForm evaluationForm : evaList) {
+			scoreForm.setTotalScore(scoreForm.getTotalScore().add(evaluationForm.getScore()));
+			// Codigo duplicado en IntavUtils
+			final String pageSuitabilityLevel = ObservatoryUtils.pageSuitabilityLevel(evaluationForm);
+			if (pageSuitabilityLevel.equals(Constants.OBS_AA)) {
+				scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().add(BigDecimal.TEN));
+			} else if (pageSuitabilityLevel.equals(Constants.OBS_A)) {
+				scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().add(new BigDecimal(5)));
+			}
+			for (ObservatoryLevelForm levelForm : evaluationForm.getGroups()) {
+				suitabilityGroups = levelForm.getSuitabilityGroups().size();
+				if (levelForm.getName().equalsIgnoreCase("priority 1")) {
+					scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().add(levelForm.getScore()));
+				} else if (levelForm.getName().equalsIgnoreCase("priority 2")) {
+					scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().add(levelForm.getScore()));
+				}
+				for (ObservatorySuitabilityForm suitabilityForm : levelForm.getSuitabilityGroups()) {
+					if (suitabilityForm.getName().equalsIgnoreCase("A")) {
+						scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().add(suitabilityForm.getScore()));
+					} else if (suitabilityForm.getName().equalsIgnoreCase("AA")) {
+						scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().add(suitabilityForm.getScore()));
+					}
+				}
+			}
+		}
+		generateScoresVerificacion(messageResources, scoreForm, evaList);
+		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(evaList, Constants.OBS_PRIORITY_NONE);
+		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
+		/**
+		 * for (ResultadoSemillaForm seedResult : seedsResults) { seedResult.setCompliance(calculatedCompliance.get(Long.parseLong(seedResult.getIdFulfilledCrawling()))); }
+		 */
+		if (!evaList.isEmpty()) {
+			scoreForm.setTotalScore(scoreForm.getTotalScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			// REVIEW Calculated compliance
+			scoreForm.setCompliance(calculatedCompliance.get(evaList.get(0).getCrawlerExecutionId()));
+		}
+		// El nivel de validación del portal
+		scoreForm.setLevel(getValidationLevel(scoreForm, messageResources));
+		return scoreForm;
 	}
 }

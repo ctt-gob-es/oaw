@@ -275,7 +275,7 @@ Email: observ.accesibilidad@correo.gob.es
 
 		var dialogoReducir = $('<div id="dialogoReducirContent"></div>');
 
-		dialogoReducir.append('<p>&#191;Desea eliminar el contenido de las tablas relacionadas con esta ejecuci&#243n?</p>');
+		dialogoReducir.append('<p>&#191;Desea eliminar el código fuente analizado (html y css) de este observatorio? </p><p>Se conservarán las puntuaciones e incidencias, así como el listado de páginas analizadas.</p> <p>Esta acción <b>no puede deshacerse</b></p>');
 		
 		dialogoReducir
 			.dialog({
@@ -287,6 +287,10 @@ Email: observ.accesibilidad@correo.gob.es
 				buttons : {
 				"Aceptar" : {
 					click: function() {
+						
+						$('#loading_cover_div').show();
+						
+						
 						$
 						.ajax(
 								{
@@ -295,6 +299,7 @@ Email: observ.accesibilidad@correo.gob.es
 									method : 'POST',
 									cache : false
 								}).success(function(response) {
+							$('#loading_cover_div').fadeOut(1000);
 							reloadGrid(lastUrl);
 							dialogoReducir.dialog("close");
 						});
@@ -381,6 +386,8 @@ Email: observ.accesibilidad@correo.gob.es
 	}
 </script>
 
+
+
 <link rel="stylesheet" href="/oaw/css/jqgrid.semillas.css">
 
 
@@ -401,6 +408,7 @@ Email: observ.accesibilidad@correo.gob.es
 <bean:parameter name="<%=Constants.ID_EX_OBS%>" id="idExObs" />
 <bean:parameter name="<%=Constants.ID_CARTUCHO%>" id="idCartucho" />
 
+<div id="loading_cover_div"></div>
 <div id="dialogoEditarSemilla" style="display: none">
 	<jsp:include page="./observatorio_nuevaSemilla_multidependencia.jsp"></jsp:include>
 
@@ -504,10 +512,10 @@ Email: observ.accesibilidad@correo.gob.es
 						aria-hidden="true" data-toggle="tooltip" title="Regenerar las puntuaciones" /> </span>
 					<span>Regenerar puntuaciones</span>
 				</html:link>
-				
+
 				<a onclick="reduceSize()"> <span class="btn btn-default btn-lg"><span
-						class="glyphicon glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip"
-						title="Liberar espacio" /> </span> <span>Liberar espacio</span>
+						class="glyphicon glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="Liberar espacio en base de datos eliminando el código fuente almacenado" />
+				</span> <span>Liberar espacio</span>
 				</a>
 			</p>
 

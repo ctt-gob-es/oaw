@@ -114,6 +114,7 @@ public final class SeedUtils {
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ID, "setIdStr", 0);
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_NOMBRE, "setNombre", 0);
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ACTIVA, "setActivaStr", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ELIMINADA, "setEliminarStr", 0);
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_IN_DIRECTORY, "setInDirectoryStr", 0);
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ACRONIMO, "setAcronimo", 0);
 			// URL como lista
@@ -173,6 +174,9 @@ public final class SeedUtils {
 			hd.startElement("", "", Constants.XML_ACTIVA, null);
 			hd.characters(String.valueOf(semillaForm.isActiva()).toCharArray(), 0, String.valueOf(semillaForm.isActiva()).length());
 			hd.endElement("", "", Constants.XML_ACTIVA);
+			hd.startElement("", "", Constants.XML_ELIMINADA, null);
+			hd.characters(String.valueOf(semillaForm.isEliminar()).toCharArray(), 0, String.valueOf(semillaForm.isEliminar()).length());
+			hd.endElement("", "", Constants.XML_ELIMINADA);
 			// Lista de URLs
 			List<String> urls = null;
 			if (semillaForm.getListaUrlsString() != null) {

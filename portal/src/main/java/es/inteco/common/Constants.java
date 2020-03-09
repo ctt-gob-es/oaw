@@ -278,6 +278,8 @@ public interface Constants {
 	String XML_ACRONIMO = "acronimo";
 	/** The xml activa. */
 	String XML_ACTIVA = "activa";
+	/** The xml eliminada. */
+	String XML_ELIMINADA = "eliminada";
 	/** The xml in directory. */
 	String XML_IN_DIRECTORY = "en_directorio";
 	/** The xml segmento. */
@@ -634,6 +636,8 @@ public interface Constants {
 	String EXPORT_PDF_REGENERATE = "regeneratePDF";
 	/** The export all pdfs. */
 	String EXPORT_ALL_PDFS = "exportAllPdfs";
+	/** The export all pdfs email. */
+	String EXPORT_ALL_PDFS_EMAIL = "exportAllPdfsMail";
 	/** The pdf error forward. */
 	String PDF_ERROR_FORWARD = "verRastreosRealizados";
 	/** The rojo inteco. */
@@ -735,6 +739,8 @@ public interface Constants {
 	String EXPORT_ALL_PDF_FORWARD = "exportAllPdfs";
 	/** The export all pdf forward multilanguage. */
 	String EXPORT_ALL_PDF_FORWARD_MULTILANGUAGE = "exportAllPdfsM";
+	/** The export all pdf forward mail. */
+	String EXPORT_ALL_PDF_FORWARD_MAIL = "exportAllPdfsMail";
 	/** The accion add seed. */
 	String ACCION_ADD_SEED = "addSeed";
 	/** The seed detail. */
@@ -1133,7 +1139,7 @@ public interface Constants {
 	String SUBMENU_OBS_COMPLEJIDADES = "submenuComplejidadesObs";
 	/** The submenu obs plantillas. */
 	String SUBMENU_OBS_PLANTILLAS = "submenuPlantillassObs";
-	
+	/** The submenu obs reducirtablas. */
 	String SUBMENU_OBS_REDUCIRTABLAS = "submenuReducirTablasObs";
 	/** The submenu obs etiquetas. */
 	String SUBMENU_OBS_ETIQUETAS = "submenuEtiquetasObs";
@@ -1378,9 +1384,9 @@ public interface Constants {
 	/** The obs parcial. */
 	String OBS_PARCIAL = "PARCIAL";
 	/** The obs a label. */
-	String OBS_A_LABEL = "Nivel A";
+	String OBS_A_LABEL = "A";
 	/** The obs aa label. */
-	String OBS_AA_LABEL = "Nivel AA";
+	String OBS_AA_LABEL = "AA";
 	/** The obs nv label. */
 	String OBS_NV_LABEL = "No Válido";
 	/** The obs type none. */
@@ -1395,6 +1401,8 @@ public interface Constants {
 	String OBS_PRIORITY_2 = "Priority 2";
 	/** The obs priority none. */
 	String OBS_PRIORITY_NONE = "none";
+	/** The obs compilance. */
+	String OBS_COMPILANCE = "Conforme";
 	/** The obs compilance none. */
 	String OBS_COMPILANCE_NONE = "No conforme";
 	/** The obs compilance partial. */
@@ -1404,7 +1412,7 @@ public interface Constants {
 	/** The obs accesibility full. */
 	String OBS_ACCESIBILITY_FULL = "Completo";
 	/** The obs accesibility partial. */
-	String OBS_ACCESIBILITY_PARTIAL = "PArcial";
+	String OBS_ACCESIBILITY_PARTIAL = "Parcial";
 	/** The obs accesibility none. */
 	String OBS_ACCESIBILITY_NONE = "No válido";
 	/** The obs accesibility na. */

@@ -156,6 +156,12 @@ public class SourceFilesManager {
 	 */
 	public void zipSources(final boolean deleteFiles) {
 		ZipUtils.generateZipFile(parentDir.toString() + "/paginas", parentDir.toString() + "/codigo_fuente.zip", true);
+		if (deleteFiles) {
+			FileUtils.deleteDir(new File(parentDir, "paginas"));
+		}
+	}
+
+	public void zipSourcesContent(final boolean deleteFiles) {
 		ZipUtils.generateZipFile(parentDir.toString() + "/codigo_fuente", parentDir.toString() + "/codigo_fuente.zip", true);
 		if (deleteFiles) {
 			FileUtils.deleteDir(new File(parentDir, "paginas"));

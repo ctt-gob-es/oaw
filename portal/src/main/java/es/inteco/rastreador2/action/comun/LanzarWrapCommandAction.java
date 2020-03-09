@@ -36,7 +36,19 @@ import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 
+/**
+ * The Class LanzarWrapCommandAction.
+ */
 public class LanzarWrapCommandAction extends org.apache.struts.action.Action {
+	/**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		try {
 			ActionErrors errors = new ActionErrors();
@@ -116,7 +128,6 @@ public class LanzarWrapCommandAction extends org.apache.struts.action.Action {
 							ActionUtils.setSuccesActionAttributes(request, "mensaje.error.noPermisos", "volver.cargar.rastreos");
 							return mapping.findForward(Constants.NO_RASTREO_PERMISO);
 						}
-						// PENDING ¿Se puede eliminar esta condición?
 						if (destino.equals(Constants.EXITO_INTERMEDIO)) {
 							return mapping.findForward(destino);
 						}
@@ -137,6 +148,14 @@ public class LanzarWrapCommandAction extends org.apache.struts.action.Action {
 		}
 	}
 
+	/**
+	 * Cargar datos.
+	 *
+	 * @param lanzarWrapCommandForm the lanzar wrap command form
+	 * @param request               the request
+	 * @param sesion                the sesion
+	 * @return the lanzar wrap command form
+	 */
 	public LanzarWrapCommandForm cargarDatos(LanzarWrapCommandForm lanzarWrapCommandForm, HttpServletRequest request, HttpSession sesion) {
 		String user = (String) request.getSession().getAttribute(Constants.USER);
 		if (user != null) {

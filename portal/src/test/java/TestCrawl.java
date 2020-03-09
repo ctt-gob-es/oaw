@@ -54,14 +54,24 @@ import es.inteco.utils.CrawlerUtils;
  * Created by mikunis on 26/11/14.
  */
 public class TestCrawl {
+	/** The Constant LOG. */
 	public static final Log LOG = LogFactory.getLog("root");
 	/** Constante EMPTY_STRING. */
 	private static final String EMPTY_STRING = "";
+	/** The crawling domains. */
 	private final List<CrawledLink> crawlingDomains = new ArrayList<CrawledLink>();
+	/** The aux domains. */
 	private final List<String> auxDomains = new ArrayList<String>();
+	/** The md 5 content. */
 	private final List<String> md5Content = new ArrayList<String>();
+	/** The rejected domains. */
 	private final List<String> rejectedDomains = new ArrayList<String>();
 
+	/**
+	 * Sets the up class.
+	 *
+	 * @throws Exception the exception
+	 */
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		// Create initial context
@@ -81,6 +91,13 @@ public class TestCrawl {
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.OFF);
 	}
 
+	/**
+	 * Checks if is outer domain.
+	 *
+	 * @param domain the domain
+	 * @param url    the url
+	 * @return true, if is outer domain
+	 */
 	private static boolean isOuterDomain(String domain, String url) {
 		try {
 			if (domain.equalsIgnoreCase(new URL(url).getHost())) {
@@ -92,6 +109,13 @@ public class TestCrawl {
 		return true;
 	}
 
+	/**
+	 * Checks if is in the same directory.
+	 *
+	 * @param link    the link
+	 * @param urlRoot the url root
+	 * @return true, if is in the same directory
+	 */
 	private static boolean isInTheSameDirectory(String link, String urlRoot) {
 		final String protocolRegExp = "https?://";
 		final String urlRootDirectory = urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1
@@ -102,36 +126,48 @@ public class TestCrawl {
 		return linkDirectory.contains(urlRootDirectory);
 	}
 
+	/**
+	 * Crawl principales.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void crawlPrincipales() throws Exception {
-		this.test("http://www.melilla.es/melillaPortal/index.jsp", false);
-		this.test("http://www.comunidad.madrid", false);
-		this.test("https://web.gencat.cat/ca/inici/", false);
-		this.test("https://www.gva.es/va/inicio/presentacion", false);
-		this.test("https://www.aragon.es/", false);
-		this.test("https://www.gobiernodecanarias.org/principal/", false);
-		this.test("http://www.cantabria.es/", false);
-		this.test("https://www.larioja.org/es", false);
-		this.test("http://www.caib.es/govern/index.do?lang=ca", false);
-		this.test("http://www.navarra.es/home_es/", false);
-		this.test("https://www.asturias.es/", false);
-		this.test("http://www.euskadi.eus/hasiera/", false);
-		this.test("https://www.juntadeandalucia.es/institucional/index.html", true);
-		this.test("https://www.jcyl.es/", false);
-		this.test("http://www.juntaex.es/web/", false);
-		this.test("http://www.ceuta.es/", false);
-		this.test("https://www.castillalamancha.es/", true);
-		this.test("http://www.carm.es", false);
-		this.test("https://www.xunta.gal/portada", false);
+//		String[] urls = new String[] { "https://www.agenciatributaria.es", "https://www.boe.es", "https://www.mapa.gob.es", "http://www.exteriores.gob.es/Portal/es/Paginas/inicio.aspx",
+//				"http://www.ciencia.gob.es", "http://www.culturaydeporte.gob.es", "http://www.defensa.gob.es", "http://www.mineco.gob.es/portal/site/mineco/",
+//				"http://www.educacionyfp.gob.es/portada.html", "https://www.fomento.gob.es/", "https://www.hacienda.gob.es/es-ES/Paginas/Home.aspx", "https://www.mincotur.gob.es",
+//				"https://www.mjusticia.gob.es", "https://www.mpr.gob.es/paginas/index.aspx", "https://www.mptfp.gob.es/portal/index.html", "https://www.mscbs.gob.es/home.htm",
+//				"http://www.mitramiss.gob.es/es/index.htm", "http://www.interior.gob.es/", "https://www.miteco.gob.es/es/", "https://administracion.gob.es", "http://www.seg-social.es",
+//				"https://www.lamoncloa.gob.es/serviciosdeprensa/Paginas/index.aspx", "http://www.guardiareal.org/" };
+//		String[] urls = new String[] { "http://www.melilla.es/melillaPortal/index.jsp", "http://www.comunidad.madrid", "https://www.gva.es", "https://web.gencat.cat/ca/inici/",
+//				",https://www.euskadi.eus/hasiera/", "https://www.aragon.es", "https://www.gobiernodecanarias.org/principal/", "https://www.cantabria.es/", "https://www.navarra.es/home_es/",
+//				"https://web.larioja.org", "http://www.caib.es/govern/index.do?lang=ca", "https://www.asturias.es/", "https://www.juntadeandalucia.es/institucional/index.html", "https://www.jcyl.es/",
+//				"http://www.juntaex.es/web/", "https://www.castillalamancha.es/", "http://www.carm.es", "https://www.xunta.gal/portada" };
+		String[] urls = new String[] {};
+		String[] urlsD = new String[] { "https://web.larioja.org/bor-portada/", "https://www.larioja.org/larioja-client/cm/oficina-electronica/", "https://www.larioja.org/educacion/es",
+				"https://www.larioja.org/empleo-formacion/es", "https://web.larioja.org/portal-transparencia", "https://www.asturias.es/transparencia" };
+		for (String url : urls) {
+			this.crawl(url, false);
+		}
+		for (String url : urlsD) {
+			this.crawl(url, true);
+		}
 	}
 
-	public void test(String url, boolean enDirectorio) throws Exception {
+	/**
+	 * Test.
+	 *
+	 * @param url          the url
+	 * @param enDirectorio the en directorio
+	 * @throws Exception the exception
+	 */
+	public void crawl(String url, boolean enDirectorio) throws Exception {
 		System.out.println(url);
 		System.out.println("-------------------------------------------------------------------------------------------\n\n");
 		final CrawlerData crawlerData = new CrawlerData();
 		crawlerData.setUrls(Collections.singletonList(url));
-		crawlerData.setProfundidad(4);
-		crawlerData.setTopN(8);
+		crawlerData.setProfundidad(5);
+		crawlerData.setTopN(10);
 		crawlerData.setPseudoaleatorio(true);
 		crawlerData.setTest(true);
 		crawlerData.setIdCrawling(-1);
@@ -141,8 +177,8 @@ public class TestCrawl {
 			System.out.println(cl.getUrl());
 		}
 		System.out.println("-------------------------------------------------------------------------------------------\n\n");
+		System.out.println(crawlingDomains.size() + "\n\n");
 		crawlingDomains.clear();
-		// Assert.assertEquals(33, crawlingDomains.size());
 	}
 
 	/**
@@ -152,7 +188,6 @@ public class TestCrawl {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
-		final PropertiesManager pmgr = new PropertiesManager();
 		final int maxNumRetries = 3;
 		final int maxNumRedirections = 15;
 		final long timeRetry = 20000;
@@ -183,7 +218,7 @@ public class TestCrawl {
 							// Si hay redirecciones, puede que el dominio cambie
 							domain = connection.getURL().getHost();
 							final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(url, domain));
-							// PENDING Sólo se pasa al renderizador para recuperar el contenido
+							// Generate renderer connection (applies proxy config)
 							final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
 							markableInputStream.reset();
 							// Recuerar el charset
@@ -204,7 +239,7 @@ public class TestCrawl {
 									crawlingDomains.add(crawledLink);
 									md5Content.add(textContentHash);
 									Logger.putLog(String.format("Introducida la URL número %d: %s", crawlingDomains.size(), url), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-									System.out.println(String.format("Introducida la URL número %d: %s", crawlingDomains.size(), url));
+									// System.out.println(String.format("Introducida la URL número %d: %s", crawlingDomains.size(), url));
 									if (crawlerData.getProfundidad() > 1 || crawlerData.getTopN() != 1) {
 										// Si se trata de un observatorio, o la
 										// petición viene del servicio básico
@@ -277,135 +312,13 @@ public class TestCrawl {
 		}
 	}
 
-//	private void makeCrawl(CrawlerData crawlerData) throws Exception {
-//		PropertiesManager pmgr = new PropertiesManager();
-//
-//		int maxNumRetries = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.retries"));
-//		long timeRetry = Long.parseLong(pmgr.getValue("crawler.core.properties", "time.retry"));
-//
-//		List<IgnoredLink> ignoredLinks = null;
-//
-//		String cookie = null;
-//
-//		int chosenDepth = crawlerData.getProfundidad();
-//		for (String url : crawlerData.getUrls()) {
-//			String domain = null;
-//
-//			try {
-//				HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
-//				int counter = 0;
-//				int numRedirections = 0;
-//				int maxNumRedirections = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.redirections"));
-//				int responseCode = Integer.MAX_VALUE;
-//
-//				while ((counter < maxNumRetries) && (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE) && (numRedirections < maxNumRedirections)) {
-//					url = connection.getURL().toString();
-//					connection.connect();
-//					responseCode = connection.getResponseCode();
-//					if (numRedirections == 0) {
-//						cookie = CrawlerUtils.getCookie(connection);
-//					}
-//					if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE && !contains(crawlingDomains, url) && !CrawlerUtils.isOpenDNSResponse(connection)) {
-//						// Si hay redirecciones, puede que el dominio cambie
-//						domain = connection.getURL().getHost();
-//
-//						InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-//						String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
-//
-//						Document document = CrawlerDOMUtils.getDocument(textContent);
-//
-//						String metaRedirect = CrawlerDOMUtils.getMetaRedirect(url, document);
-//						if (StringUtils.isEmpty(metaRedirect)) {
-//							String textContentHash = CrawlerUtils.getHash(textContent);
-//							if (!md5Content.contains(textContentHash)) {
-//								CrawledLink crawledLink = new CrawledLink(url, textContent, counter, numRedirections);
-//								crawlingDomains.add(crawledLink);
-//								md5Content.add(textContentHash);
-//								LOG.info("Introducida la URL número " + crawlingDomains.size() + ": " + url);
-//								if (crawlerData.getProfundidad() > 1 || crawlerData.getTopN() != 1) {
-//									// Si se trata de un observatorio, o la
-//									// petición viene del servicio básico
-//									if (crawlerData.getIdObservatory() != 0 || crawlerData.getIdCrawling() < 0) {
-//										// Cogemos lista de idiomas para no
-//										// coger enlaces de cambio de idioma
-//										ignoredLinks = Utils.getIgnoredLinks();
-//									}
-//
-//									makeCrawl(domain, url, url, cookie, crawlerData, ignoredLinks);
-//								}
-//							} else {
-//								LOG.info("La url " + url + " ha sido rechazada por estar incluida en el rastreo");
-//								rejectedDomains.add(url);
-//							}
-//						} else {
-//							numRedirections++;
-//							connection = CrawlerUtils.followRedirection(cookie, new URL(url), metaRedirect);
-//							responseCode = Integer.MAX_VALUE;
-//						}
-//
-//					} else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
-//						numRedirections++;
-//						connection = CrawlerUtils.followRedirection(cookie, new URL(url), connection.getHeaderField("location"));
-//					} else {
-//						if (CrawlerUtils.isOpenDNSResponse(connection)) {
-//							LOG.info("La URL solicitada ha provocado la respuesta del OpenDNS");
-//							if ((counter < maxNumRetries - 1) && (responseCode >= HttpURLConnection.HTTP_BAD_REQUEST)) {
-//								Thread.sleep(timeRetry);
-//							}
-//							counter++;
-//						} else if (contains(crawlingDomains, url)) {
-//							LOG.info("La url " + url + " ha sido rechazada por estar incluida en el rastreo");
-//							rejectedDomains.add(url);
-//						} else {
-//							LOG.info("No se ha podido acceder a la raiz del rastreo configurado " + url + " ya que ha respondido con el código " + responseCode);
-//							if (counter < maxNumRetries - 1) {
-//								Thread.sleep(timeRetry);
-//							}
-//							counter++;
-//						}
-//					}
-//				}
-//
-//				connection.disconnect();
-//
-//				Collections.reverse(auxDomains);
-//				for (String auxDomain : auxDomains) {
-//					try {
-//						if ((crawlingDomains.size() <= (chosenDepth * crawlerData.getTopN()))) {
-//							if (!contains(crawlingDomains, auxDomain) && !rejectedDomains.contains(auxDomain)) {
-//								isLinkToAdd(url, domain, auxDomain, cookie, null, crawlerData, false, ignoredLinks);
-//							}
-//						} else {
-//							break;
-//						}
-//					} catch (Exception e) {
-//						LOG.info("Error al intentar introducir la url auxiliar " + auxDomain + ": " + e.getMessage());
-//					}
-//				}
-//
-//				Logger.putLog("Terminado el rastreo para " + url + ", se han recogido " + crawlingDomains.size() + " enlaces: ", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-//				for (CrawledLink crawledLink : crawlingDomains) {
-//					Logger.putLog(crawledLink.getUrl(), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-//				}
-//
-//			} catch (Exception e) {
-//				LOG.info("Error al rastrear el dominio " + url + ": " + e.getMessage());
-//			}
-//		}
-//
-//		// Avisa si se han rastreado menos páginas de las debidas
-//		if (!crawlerData.isTest()) {
-//			if ((crawlerData.getUrls().size() != 1) || (crawlerData.getTopN() != 1 && chosenDepth != 1)) {
-//				if ((crawlingDomains.size() < crawlerData.getUrls().size()) || (crawlingDomains.size() < (crawlerData.getTopN() * chosenDepth + 1))) {
-//					final List<String> mailTo = Collections.<String>emptyList();// Arrays.asList(pmgr.getValue("crawler.core.properties",
-//																				// "incomplete.crawler.warning.emails").split(";"));
-//					final String text = "El rastreo para " + crawlerData.getUrls().get(0) + " ha devuelto solo " + crawlingDomains.size() + " resultados";
-//
-//					mailService.sendMail(mailTo, "Rastreo inacabado", text);
-//				}
-//			}
-//		}
-//	}
+	/**
+	 * Contains.
+	 *
+	 * @param crawledLinks the crawled links
+	 * @param url          the url
+	 * @return true, if successful
+	 */
 	private boolean contains(List<CrawledLink> crawledLinks, String url) {
 		for (CrawledLink crawledLink : crawledLinks) {
 			if (crawledLink.getUrl().equals(url)) {
@@ -415,11 +328,34 @@ public class TestCrawl {
 		return false;
 	}
 
+	/**
+	 * Checks if is link to add.
+	 *
+	 * @param rootUrl           the root url
+	 * @param domain            the domain
+	 * @param urlLink           the url link
+	 * @param cookie            the cookie
+	 * @param levelLinks        the level links
+	 * @param crawlerData       the crawler data
+	 * @param addAuxiliaryLinks the add auxiliary links
+	 * @param ignoredLinks      the ignored links
+	 * @return true, if is link to add
+	 * @throws Exception the exception
+	 */
 	private boolean isLinkToAdd(String rootUrl, String domain, String urlLink, String cookie, List<CrawledLink> levelLinks, CrawlerData crawlerData, boolean addAuxiliaryLinks,
 			List<IgnoredLink> ignoredLinks) throws Exception {
 		return isHtmlTextContent(domain, urlLink, cookie) && hasAccessToUrl(rootUrl, domain, urlLink, cookie, levelLinks, crawlerData, addAuxiliaryLinks, ignoredLinks);
 	}
 
+	/**
+	 * Checks if is html text content.
+	 *
+	 * @param domain  the domain
+	 * @param urlLink the url link
+	 * @param cookie  the cookie
+	 * @return true, if is html text content
+	 * @throws Exception the exception
+	 */
 	private boolean isHtmlTextContent(String domain, String urlLink, String cookie) throws Exception {
 		HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, domain, true);
 		connection.setRequestProperty("Cookie", cookie);
@@ -440,6 +376,20 @@ public class TestCrawl {
 		return false;
 	}
 
+	/**
+	 * Checks for access to url.
+	 *
+	 * @param rootUrl           the root url
+	 * @param domain            the domain
+	 * @param urlLink           the url link
+	 * @param cookie            the cookie
+	 * @param levelLinks        the level links
+	 * @param crawlerData       the crawler data
+	 * @param addAuxiliaryLinks the add auxiliary links
+	 * @param ignoredLinks      the ignored links
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
 	private boolean hasAccessToUrl(String rootUrl, String domain, String urlLink, String cookie, List<CrawledLink> levelLinks, CrawlerData crawlerData, boolean addAuxiliaryLinks,
 			List<IgnoredLink> ignoredLinks) throws Exception {
 		HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, domain, false);
@@ -478,7 +428,7 @@ public class TestCrawl {
 								crawlingDomains.add(crawledLink);
 								md5Content.add(remoteContentHash);
 								LOG.info("Introducida la URL número " + crawlingDomains.size() + ": " + urlLink);
-								System.out.println(String.format("Introducida la URL número %d: %s", crawlingDomains.size(), urlLink));
+								// System.out.println(String.format("Introducida la URL número %d: %s", crawlingDomains.size(), urlLink));
 								return true;
 							} else {
 								LOG.info("La url " + urlLink + " ha sido rechazada por estar incluida en el rastreo");
@@ -592,6 +542,15 @@ public class TestCrawl {
 		}
 	}
 
+	/**
+	 * Checks if is valid url.
+	 *
+	 * @param urlRoot     the url root
+	 * @param domain      the domain
+	 * @param urlLink     the url link
+	 * @param crawlerData the crawler data
+	 * @return true, if is valid url
+	 */
 	private boolean isValidUrl(String urlRoot, String domain, String urlLink, CrawlerData crawlerData) {
 		PropertiesManager pmgr = new PropertiesManager();
 		if (urlLink.length() < Integer.parseInt(pmgr.getValue("crawler.core.properties", "link.chars.max.length"))) {
@@ -788,10 +747,10 @@ public class TestCrawl {
 	/**
 	 * Check if content is not an HTML
 	 * 
-	 * This is mandatory if this page is passed by JS renderer that sometimes returns XML or other content no HTML as HTML header
-	 * 
-	 * @param textContent
-	 * @return
+	 * This is mandatory if this page is passed by JS renderer that sometimes returns XML or other content no HTML as HTML header.
+	 *
+	 * @param textContent the text content
+	 * @return true, if successful
 	 */
 	private boolean checkIfContentIsNotHTML(final String textContent) {
 		return textContent.contains("</rss>");

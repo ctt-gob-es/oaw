@@ -24,7 +24,6 @@ import org.dom4j.Document;
 import com.helger.css.ECSSVersion;
 import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CascadingStyleSheet;
-import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.errorhandler.CollectingCSSParseErrorHandler;
 
@@ -45,6 +44,9 @@ public class CSSResponsiveElementsDocumentHandler extends OAWCSSVisitor {
 	private boolean hasGridTags = false;
 	/** The has flexbox tags. */
 	private boolean hasFlexboxTags = false;
+	private int countMediaQueries;
+	private int countGridTags;
+	private int countFelxbox;
 
 	/**
 	 * Evaluate.
@@ -55,9 +57,16 @@ public class CSSResponsiveElementsDocumentHandler extends OAWCSSVisitor {
 	 */
 	@Override
 	public List<CSSProblem> evaluate(final Document document, final List<CSSResource> cssResources) {
+		countMediaQueries = 0;
+		countFelxbox = 0;
+		countGridTags = 0;
 		final List<CSSProblem> cssProblems = new ArrayList<>();
 		for (CSSResource cssResource : cssResources) {
 			cssProblems.addAll(evaluate(document, cssResource));
+		}
+		// Si no hay ninguna
+		if (countMediaQueries + countFelxbox + countGridTags == 0) {
+			cssProblems.add(createCSSProblem());
 		}
 		return cssProblems;
 	}
@@ -73,6 +82,46 @@ public class CSSResponsiveElementsDocumentHandler extends OAWCSSVisitor {
 	public List<CSSProblem> evaluate(final Document document, final CSSResource cssResource) {
 		final List<CSSProblem> cssProblems = new ArrayList<>();
 		if (!cssResource.getContent().isEmpty()) {
+			PropertiesManager pm = new PropertiesManager();
+			String[] regexpMedia = pm.getValue("check.patterns.properties", "check.479.regex.pattern.media").split(",");
+			String[] regexpGrid = pm.getValue("check.patterns.properties", "check.479.regex.pattern.grid").split(",");
+			String[] regexpFlexbox = pm.getValue("check.patterns.properties", "check.479.regex.pattern.flexbox").split(",");
+			// Grid properties
+			for (String stringPattern : regexpMedia) {
+				try {
+					Pattern patternMedia = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+					if (patternMedia.matcher(cssResource.getContent()).find()) {
+						countMediaQueries++;
+						break;
+					}
+				} catch (Exception e) {
+					Logger.putLog("Error al procesar el patrón" + stringPattern, AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
+			// Grid properties
+			for (String stringPattern : regexpGrid) {
+				try {
+					Pattern patternGrid = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+					if (patternGrid.matcher(cssResource.getContent()).find()) {
+						countGridTags++;
+						break;
+					}
+				} catch (Exception e) {
+					Logger.putLog("Error al procesar el patrón" + stringPattern, AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
+			// Flexbox properties
+			for (String stringPattern : regexpFlexbox) {
+				try {
+					Pattern patternFlexbox = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+					if (patternFlexbox.matcher(cssResource.getContent()).find()) {
+						countFelxbox++;
+						break;
+					}
+				} catch (Exception e) {
+					Logger.putLog("Error al procesar el patrón" + stringPattern, AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
 			try {
 				resource = cssResource;
 				final CascadingStyleSheet aCSS = CSSReader.readFromString(cssResource.getContent(), ECSSVersion.CSS30, new CollectingCSSParseErrorHandler());
@@ -81,15 +130,16 @@ public class CSSResponsiveElementsDocumentHandler extends OAWCSSVisitor {
 					// gestionaremos para devolver)
 					if (aCSS.hasMediaRules()) {
 						hasMediaQueries = true;
+						countMediaQueries++;
 					}
-					CSSVisitor.visitCSS(aCSS, this);
+//					CSSVisitor.visitCSS(aCSS, this);
 				}
 			} catch (Exception e) {
 				Logger.putLog("Error al intentar parsear el CSS", OAWCSSVisitor.class, Logger.LOG_LEVEL_INFO, e);
 			}
-			if (!hasFlexboxTags && !hasGridTags && !hasMediaQueries) {
-				cssProblems.add(createCSSProblem());
-			}
+//			if (!hasFlexboxTags && !hasGridTags && !hasMediaQueries) {
+//				cssProblems.add(createCSSProblem());
+//			}
 		}
 		return cssProblems;
 	}
