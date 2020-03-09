@@ -1,0 +1,2548 @@
+<!--
+Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+This program is licensed and may be used, modified and redistributed under the terms
+of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+version as soon as they are approved by the European Commission.
+Unless required by applicable law or agreed to in writing, software distributed under the 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+ANY KIND, either express or implied. See the License for the specific language governing 
+permissions and more details.
+You should have received a copy of the EUPL1.2 license along with this program; if not, 
+you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
+Email: observ.accesibilidad@correo.gob.es
+-->
+<!doctype html public "-//W3C//DTD HTML 4.01 Transitional//ES">
+
+<html lang="ES">
+<head>
+    <title>&middot;CIS&middot;Listado de colecci&#243;n</title>
+    <meta HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; CHARSET=UTF-8">
+    <meta name="author" content="Jesus Rodri­guez Peñas">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link rel="stylesheet" type="text/css" href="/cis/opencms/system/modules/es.cis.www/recursos/CIS.css">
+
+    <SCRIPT language=javascript>
+        function resizeVerticalDiv(oDiv) {
+        // Esta función reajusta el tamaño del DIV para que el scroll ocupe toda la pantalla
+        var iMinHeight = 100; //DIV won't get smaller than this
+        var iClientHeight=0;
+        iClientHeight = document.body.clientHeight; //the browser's viewable area
+        var iAbsoluteYTop = 154;
+        var iAbsoluteYBottom=65;
+        var iNewHeight = document.body.clientHeight - iAbsoluteYTop - iAbsoluteYBottom;
+        oDiv.style.posHeight = (iNewHeight >= iMinHeight ? iNewHeight : iMinHeight);
+        }
+    </SCRIPT>
+
+
+</head>
+
+<!-- <BODY onResize="window.location.href = window.location.href;" onload="resizeVerticalDiv(divScroller)"> -->
+<BODY onResize="resizeVerticalDiv(divScroller)" onload="resizeVerticalDiv(divScroller)">
+
+<!-- tabla encabezado -->
+<table width="98%" align="center" border="0" cellspacing="0" cellpadding="0">
+
+    <tr valign="bottom">
+        <td rowspan="6" width="168">
+            <a href="/cis/opencms/ES/index.html" title="Página de inicio">
+                <img align="absbottom" border="0" vspace="0" hspace="0"
+                     src="/cis/opencms/system/modules/es.cis.www/recursos/logopages.gif" alt="Página de inicio">
+            </a>
+        </td>
+        <td>
+            <img align="absbottom" border="0" vspace="0" hspace="0" width="100%" height="58"
+                 src="/cis/opencms/system/modules/es.cis.www/recursos/top.gif" alt="Dibujo de rayas">
+        </td>
+        <td rowspan="4" width="172" valign="bottom">
+            <a href="/cis/opencms/ES/index.html" title="Página de inicio">
+                <img border="0" align="absbottom" vspace="0" hspace="0"
+                     src="/cis/opencms/system/modules/es.cis.www/recursos/tophouse.gif" alt="Página de inicio">
+            </a>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="line"></td>
+    </tr>
+    <tr>
+
+        <form name="buscador" method="get" action="/cis/opencms/ES/busqueda.jsp">
+            <td class="menutop">
+
+
+                &nbsp;<a class="menutop" href="/cis/opencms/ES/contactar.html" title='Contactar'>Contactar</a>&nbsp;|
+
+                &nbsp;<a class="menutop" href="/cis/opencms/ES/Mapa.jsp" title='Mapa del web'>Mapa</a>&nbsp;|
+
+                &nbsp;<a class="menutop" href="/cis/opencms/ES/enlaces.html" title='Enlaces Web'>Enlaces</a>&nbsp;|
+
+
+                Buscador
+                &nbsp;<input class="txt" type="text" size="15" name="query" value=>
+                &nbsp;<IMG onClick="javascript:document.buscador.submit();" align="absmiddle" title="Buscar"
+                           src="/cis/opencms/system/modules/es.cis.www/recursos/ic_lupa.gif" border=0 alt="Buscar">
+            </td>
+        </form>
+    </tr>
+    <tr>
+        <td class="line"></td>
+    </tr>
+    <tr class="background">
+        <td colspan="2" align="right">
+
+
+            <span class=menutopselec>BIENVENIDOS</span>
+            <a class="menutop" title='Benvinguts'
+               href='/cis/opencm/CA/3_publicaciones/catalogo/listaColeccion.jsp?&coleccion=Estudios y Encuestas '>&nbsp;BENVINGUTS&nbsp;</a>
+            <a class="menutop" title='Ongi etorri'
+               href='/cis/opencm/EU/3_publicaciones/catalogo/listaColeccion.jsp?&coleccion=Estudios y Encuestas '>&nbsp;ONGI
+                ETORRI&nbsp;</a>
+            <a class="menutop" title='Benvidos'
+               href='/cis/opencm/GA/3_publicaciones/catalogo/listaColeccion.jsp?&coleccion=Estudios y Encuestas '>&nbsp;BENVIDOS&nbsp;</a>
+            <a class="menutop" title='Welcome'
+               href='/cis/opencm/EN/3_publicaciones/catalogo/listaColeccion.jsp?&coleccion=Estudios y Encuestas '>&nbsp;WELCOME&nbsp;</a>
+            <a class="menutop" title='Bienvenus'
+               href='/cis/opencm/FR/3_publicaciones/catalogo/listaColeccion.jsp?&coleccion=Estudios y Encuestas '>&nbsp;BIENVENUS&nbsp;</a>
+
+
+        </td>
+    </tr>
+    <tr>
+        <td class="lineP" colspan="2"></td>
+    </tr>
+</table>
+<!-- Fin de tabla encabezado -->
+
+
+<!-- Tabla central que contiene el menï¿½ de navegaciï¿½n izquierdo y el body -->
+<TABLE width="98%" border=0 align=center cellPadding=0 cellSpacing=0>
+<tr>
+<td width="168" valign="top">
+<!-- Tabla que contiene el menï¿½ izquierdo de navegaciï¿½n -->
+<table width="100%" height="100%" cellpadding="1" cellspacing="1" align="center" border="0">
+<tr>
+<td align="left">
+
+
+<link rel="stylesheet" href="/cis/opencms/system/modules/es.cis.www/recursos/menu.css" type="text/css">
+
+
+<script type="text/javascript" src="/cis/opencms/system/modules/es.cis.www/elementos/menumulti.jsp"></script>
+<script language="javascript">
+    var colIdExpanded = new Array();
+    var IdSelected = "";
+    var Selecmenu = "L01";
+
+    function seleccionarmenunode(Seleccionado)
+    {
+    var i;
+    var s;
+    var sNivel = "";
+    var sActual= "";
+    if (Seleccionado != 0)
+    {
+    s = Seleccionado.lastIndexOf("_");
+    if (s !=-1)
+    {
+    aszNiveles = Seleccionado.split("_");
+    i = 0;
+    for ( elemento in aszNiveles)
+    {
+    if ( i == 0)
+    {
+    sActual = aszNiveles[elemento];
+    }
+    else
+    {
+    sActual = sNivel + "_" + aszNiveles[elemento] ;
+    }
+    moveMenu('', sActual);
+    sNivel = sActual;
+    i++;
+    }
+    }
+    else
+    {
+    moveMenu('', Seleccionado);
+    }
+    }
+    }
+    document.RestoreInitialDHTML = function()
+    {
+    getobjeto("divdhtmlmenu").innerHTML = "" + initialmenudhtml;
+    }
+
+    document.SelectSectionFromMenu = function(sidsection)
+    {
+    try
+    {
+    var path = "";
+    if (window["a" + sidsection])
+    {
+    path = window["a" + sidsection];
+    //alert(path);
+    if (path != "")
+    {
+    //alert(IdSelected);
+    if (IdSelected != path)
+    {
+    window.document.RestoreInitialDHTML();
+    seleccionarmenunode(path);
+    }
+    }
+
+    }
+    }catch(e)
+    {
+    window.document.RestoreInitialDHTML();
+    }
+    }
+
+</script>
+
+
+<div id="divdhtmlmenu" style="WIDTH:100%">
+
+<div id='L01' name='L01' style='display:block'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+            <td width=95% class=menu onclick="moveMenu('/cis/opencms/ES/1_encuestas/','L01');">
+                <a href=# class=menu>Encuestas</a>
+            </td>
+            <td width=5% class=menu onclick="javascript:moveMenu('#','L01');">
+                <a href=# class=menu><img class=menu
+                                          src='/cis/opencms/system/modules/es.cis.www/recursos/ic_menu_mas.gif'
+                                          border=0/></a>
+            </td>
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L01_01' name='L01_01' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/1_encuestas/catalogo.html','L01_01');">
+                <a href=# class=menu3>Catálogo de encuestas</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/1_encuestas/catalogo.html','L01_01');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L01_02' name='L01_02' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencm/ES/1_encuestas/meses3.jsp','L01_02');">
+                <a href=# class=menu3>Últimos estudios</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencm/ES/1_encuestas/meses3.jsp','L01_02');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L01_03' name='L01_03' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/1_encuestas/avances.html','L01_03');">
+                <a href=# class=menu3>Avances de resultados</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/1_encuestas/avances.html','L01_03');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L01_04' name='L01_04' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/1_encuestas/boletin.html','L01_04');">
+                <a href=# class=menu3>Boletín Datos de Opinión</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/1_encuestas/boletin.html','L01_04');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L01_05' name='L01_05' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/1_encuestas/cdrom.jsp','L01_05');">
+                <a href=# class=menu3>Estudios en CD-ROM</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/1_encuestas/cdrom.jsp','L01_05');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L01_06' name='L01_06' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/1_encuestas/Productos.html','L01_06');">
+                <a href=# class=menu3>Productos y tarifas</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/1_encuestas/Productos.html','L01_06');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L01_07' name='L01_07' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/1_encuestas/impreso.jsp','L01_07');">
+                <a href=# class=menu3>Impreso de solicitud</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/1_encuestas/impreso.jsp','L01_07');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L02' name='L02' style='display:block'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+            <td width=95% class=menu onclick="moveMenu('/cis/opencms/ES/2_barometros/','L02');">
+                <a href=# class=menu>Barómetros de opinión</a>
+            </td>
+            <td width=5% class=menu onclick="javascript:moveMenu('#','L02');">
+                <a href=# class=menu><img class=menu
+                                          src='/cis/opencms/system/modules/es.cis.www/recursos/ic_menu_mas.gif'
+                                          border=0/></a>
+            </td>
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L02_01' name='L02_01' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencm/ES/2_barometros/depositados.jsp','L02_01');">
+                <a href=# class=menu3>Depositados en Banco de Datos</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencm/ES/1_encuestas/depositados.jsp','L02_01');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L02_02' name='L02_02' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/2_barometros/avances.html','L02_02');">
+                <a href=# class=menu3>Avances de resultados</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/2_barometros/avances.html','L02_02');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L02_03' name='L02_03' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/2_barometros/indicadores.html','L02_03');">
+                <a href=# class=menu3>Los indicadores del barómetro</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/2_barometros/indicadores.html','L02_03');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L03' name='L03' style='display:block'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+            <td width=95% class=menu onclick="moveMenu('/cis/opencms/ES/3_publicaciones/','L03');">
+                <a href=# class=menu>Publicaciones</a>
+            </td>
+            <td width=5% class=menu onclick="javascript:moveMenu('#','L03');">
+                <a href=# class=menu><img class=menu
+                                          src='/cis/opencms/system/modules/es.cis.www/recursos/ic_menu_mas.gif'
+                                          border=0/></a>
+            </td>
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L03_01' name='L03_01' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/3_publicaciones/catalogo.html','L03_01');">
+                <a href=# class=menu3>Catálogo de publicaciones</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/3_publicaciones/catalogo.html','L03_01');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L03_02' name='L03_02' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencm/ES/3_publicaciones/ultimas.jsp','L03_02');">
+                <a href=# class=menu3>Últimas publicaciones</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencm/ES/3_publicaciones/ultimas.jsp','L03_02');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L03_03' name='L03_03' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencm/ES/3_publicaciones/adquisicion.jsp','L03_03');">
+                <a href=# class=menu3>Formulario</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencm/ES/3_publicaciones/adquisicion.jsp','L03_03');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L03_04' name='L03_04' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/3_publicaciones/distribucion.html','L03_04');">
+                <a href=# class=menu3>Adquisición de publicaciones</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/3_publicaciones/distribucion.html','L03_04');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L04' name='L04' style='display:block'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+            <td width=95% class=menu onclick="moveMenu('/cis/opencms/ES/4_biblioteca/','L04');">
+                <a href=# class=menu>Biblioteca </a>
+            </td>
+            <td width=5% class=menu onclick="javascript:moveMenu('#','L04');">
+                <a href=# class=menu><img class=menu
+                                          src='/cis/opencms/system/modules/es.cis.www/recursos/ic_menu_mas.gif'
+                                          border=0/></a>
+            </td>
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L05' name='L05' style='display:block'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+            <td width=95% class=menu onclick="moveMenu('/cis/opencms/ES/5_Reis/','L05');">
+                <a href=# class=menu>REIS</a>
+            </td>
+            <td width=5% class=menu onclick="javascript:moveMenu('#','L05');">
+                <a href=# class=menu><img class=menu
+                                          src='/cis/opencms/system/modules/es.cis.www/recursos/ic_menu_mas.gif'
+                                          border=0/></a>
+            </td>
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L06' name='L06' style='display:block'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+            <td width=95% class=menu onclick="moveMenu('/cis/opencms/ES/6_formacion/','L06');">
+                <a href=# class=menu>Formacion y ayudas</a>
+            </td>
+            <td width=5% class=menu onclick="javascript:moveMenu('#','L06');">
+                <a href=# class=menu><img class=menu
+                                          src='/cis/opencms/system/modules/es.cis.www/recursos/ic_menu_mas.gif'
+                                          border=0/></a>
+            </td>
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L06_01' name='L06_01' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/6_formacion/becas.html','L06_01');">
+                <a href=# class=menu3>Becas de formación</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/6_formacion/becas.html','L06_01');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L06_02' name='L06_02' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/6_formacion/ayudas.html','L06_02');">
+                <a href=# class=menu3>Ayudas a la investigación</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/6_formacion/ayudas.html','L06_02');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L06_03' name='L06_03' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/6_formacion/curso.html','L06_03');">
+                <a href=# class=menu3>Curso de posgrado</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/6_formacion/curso.html','L06_03');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L06_04' name='L06_04' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/6_formacion/premio.html','L06_04');">
+                <a href=# class=menu3>Premio Nacional de Sociología y Ciencia Política</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/6_formacion/premio.html','L06_04');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L07' name='L07' style='display:block'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+            <td width=95% class=menu onclick="moveMenu('/cis/opencms/ES/7_arces/','L07');">
+                <a href=# class=menu>ARCES</a>
+            </td>
+            <td width=5% class=menu onclick="javascript:moveMenu('#','L07');">
+                <a href=# class=menu><img class=menu
+                                          src='/cis/opencms/system/modules/es.cis.www/recursos/ic_menu_mas.gif'
+                                          border=0/></a>
+            </td>
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L07_01' name='L07_01' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/7_arces/catalogo.html','L07_01');">
+                <a href=# class=menu3>Catálogo de Instituciones</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/7_arces/catalogo.html','L07_01');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L07_02' name='L07_02' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/7_arces/impreso.html','L07_02');">
+                <a href=# class=menu3>Impreso de solicitud</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/7_arces/impreso.html','L07_02');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L07_03' name='L07_03' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/7_arces/donaciones.html','L07_03');">
+                <a href=# class=menu3>Donaciones al archivo ARCES</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/7_arces/donaciones.html','L07_03');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L08' name='L08' style='display:block'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+            <td width=95% class=menu onclick="moveMenu('/cis/opencms/ES/8_cis/','L08');">
+                <a href=# class=menu>El CIS</a>
+            </td>
+            <td width=5% class=menu onclick="javascript:moveMenu('#','L08');">
+                <a href=# class=menu><img class=menu
+                                          src='/cis/opencms/system/modules/es.cis.www/recursos/ic_menu_mas.gif'
+                                          border=0/></a>
+            </td>
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L08_01' name='L08_01' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/8_cis/boletines.html','L08_01');">
+                <a href=# class=menu3>Boletín CIS</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/8_cis/boletines.html','L08_01');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L08_02' name='L08_02' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/8_cis/funciones.html','L08_02');">
+                <a href=# class=menu3>Funciones y Organización</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/8_cis/funciones.html','L08_02');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L08_03' name='L08_03' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/8_cis/legislacion.html','L08_03');">
+                <a href=# class=menu3>Legislación</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/8_cis/legislacion.html','L08_03');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L08_04' name='L08_04' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/8_cis/memoria.html','L08_04');">
+                <a href=# class=menu3>Memoria de actividades</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/8_cis/memoria.html','L08_04');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L08_05' name='L08_05' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/8_cis/PerfilContratante','L08_05');">
+                <a href=# class=menu3>Perfil del contratante</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/8_cis/PerfilContratante','L08_05');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L08_06' name='L08_06' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/8_cis/SedeElectronica','L08_06');">
+                <a href=# class=menu3>Sede Electrónica</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/8_cis/SedeElectronica','L08_06');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L09' name='L09' style='display:block'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+            <td width=95% class=menu onclick="moveMenu('/cis/opencms/ES/9_Prensa/','L09');">
+                <a href=# class=menu>Centro de Prensa</a>
+            </td>
+            <td width=5% class=menu onclick="javascript:moveMenu('#','L09');">
+                <a href=# class=menu><img class=menu
+                                          src='/cis/opencms/system/modules/es.cis.www/recursos/ic_menu_mas.gif'
+                                          border=0/></a>
+            </td>
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L09_01' name='L09_01' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/9_Prensa/estudios.html','L09_01');">
+                <a href=# class=menu3>Últimos estudios</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/9_Prensa/estudios.html','L09_01');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L09_02' name='L09_02' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/9_Prensa/editoriales.html','L09_02');">
+                <a href=# class=menu3>Novedades editoriales</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/9_Prensa/editoriales.html','L09_02');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L09_03' name='L09_03' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/9_Prensa/premios.html','L09_03');">
+                <a href=# class=menu3>Premios de Sociología</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/9_Prensa/premios.html','L09_03');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L09_04' name='L09_04' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/9_Prensa/noticias.html','L09_04');">
+                <a href=# class=menu3>Noticias</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/9_Prensa/noticias.html','L09_04');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L09_05' name='L09_05' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/9_Prensa/fototeca.html','L09_05');">
+                <a href=# class=menu3>Fototeca</a>
+            </td>
+            <td class=5% class=fondo3 onclick="javascript:moveMenu('/cis/opencms/ES/9_Prensa/fototeca.html','L09_05');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+<div id='L09_06' name='L09_06' style='display:none'>
+    <table width=100% border=0 cellspacing=0 cellpadding=0>
+        <tr>
+
+            <td width=95% class=menu3 onclick="moveMenu('/cis/opencms/ES/9_Prensa/formulario.jsp','L09_06');">
+                <a href=# class=menu3>Contacto</a>
+            </td>
+            <td class=5% class=fondo3
+                onclick="javascript:moveMenu('/cis/opencms/ES/9_Prensa/formulario.jsp','L09_06');">
+                <a href=# class=fondo3>
+                    <img class=fondo3 src='/cis/opencms/system/modules/es.cis.www/recursos/transp.gif' border=0/>
+                </a>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td background="FFFFFF" colspan="2" height="2"></td>
+        </tr>
+    </table>
+</div>
+
+</div>
+<input name="niveles" id="niveles" type="hidden" style="WIDTH: 48px; HEIGHT: 22px" size="2" value="9"/>
+</form>
+<script language="javascript">
+
+
+    var initialmenudhtml = "";
+    initialmenudhtml = getobjeto("divdhtmlmenu").innerHTML;
+    seleccionarmenunode(Selecmenu);
+    window.document.SelectSectionFromMenu(500);
+
+
+</script>
+<NOSCRIPT>
+
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/1_encuestas/">
+    Encuestas
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/1_encuestas/catalogo.html">
+    Catálogo de encuestas
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/1_encuestas/3meses.jsp">
+    Últimos estudios
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/1_encuestas/avances.html">
+    Avances de resultados
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/1_encuestas/boletin.html">
+    Boletín Datos de Opinión
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/1_encuestas/cdrom.jsp">
+    Estudios en CD-ROM
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/1_encuestas/Productos.html">
+    Productos y tarifas
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/1_encuestas/impreso.jsp">
+    Impreso de solicitud
+</a>
+<br>
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/2_barometros/">
+    Barómetros de opinión
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/2_barometros/depositados.jsp">
+    Depositados en Banco de Datos
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/2_barometros/avances.html">
+    Avances de resultados
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/2_barometros/indicadores.html">
+    Los indicadores del barómetro
+</a>
+<br>
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/3_publicaciones/">
+    Publicaciones
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/3_publicaciones/catalogo.html">
+    Catálogo de publicaciones
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/3_publicaciones/ultimas.jsp">
+    Últimas publicaciones
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/3_publicaciones/adquisicion.jsp">
+    Formulario
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/3_publicaciones/distribucion.html">
+    Adquisición de publicaciones
+</a>
+<br>
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/4_biblioteca/">
+    Biblioteca
+</a>
+<br>
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/5_Reis/">
+    REIS
+</a>
+<br>
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/6_formacion/">
+    Formacion y ayudas
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/6_formacion/becas.html">
+    Becas de formación
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/6_formacion/ayudas.html">
+    Ayudas a la investigación
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/6_formacion/curso.html">
+    Curso de posgrado
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/6_formacion/premio.html">
+    Premio Nacional de Sociología y Ciencia Política
+</a>
+<br>
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/7_arces/">
+    ARCES
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/7_arces/catalogo.html">
+    Catálogo de Instituciones
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/7_arces/impreso.html">
+    Impreso de solicitud
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/7_arces/donaciones.html">
+    Donaciones al archivo ARCES
+</a>
+<br>
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/8_cis/">
+    El CIS
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/8_cis/boletines.html">
+    Boletín CIS
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/8_cis/funciones.html">
+    Funciones y Organización
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/8_cis/legislacion.html">
+    Legislación
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/8_cis/memoria.html">
+    Memoria de actividades
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/8_cis/PerfilContratante">
+    Perfil del contratante
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/8_cis/SedeElectronica">
+    Sede Electrónica
+</a>
+<br>
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/9_Prensa/">
+    Centro de Prensa
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/9_Prensa/estudios.html">
+    Últimos estudios
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/9_Prensa/editoriales.html">
+    Novedades editoriales
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/9_Prensa/premios.html">
+    Premios de Sociología
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/9_Prensa/noticias.html">
+    Noticias
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/9_Prensa/fototeca.html">
+    Fototeca
+</a>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a title="Enlace a otra página" class="enlace" href="/cis/opencms/ES/9_Prensa/formulario.jsp">
+    Contacto
+</a>
+
+
+</NOSCRIPT>
+
+</td>
+</tr>
+</table>
+<!-- Fin de Tabla que contiene el menï¿½ izquierdo de navegaciï¿½n -->
+</td>
+<td valign="top" align="left">
+<!-- Tabla para el body -->
+<table width="90%" cellpadding="0" cellspacing="0" border="0" align="center">
+<tr>
+    <td class="titlePage" align="left" height="100%">
+						<span id="lblCabecera" class="titlePage">
+							LISTADO DE COLECCIÓN
+
+						</span>
+    </td>
+
+    <td class="note" align="right">
+
+        <a class="note" target="_blank" href="/cis/opencm/ES/3_publicaciones/catalogo/listaColeccion.jsp?imprimir=si"
+           title="Versión para imprimir">
+            Versión para imprimir
+            <IMG src="/cis/opencms/system/modules/es.cis.www/recursos/ic_print.gif" align="absBottom" border="0"
+                 alt="Versión para imprimir">
+        </a>
+
+    </td>
+</tr>
+<tr valign="top">
+    <td align="center" width="100%" colspan="2">
+        <img align="top" src="/cis/opencms/system/modules/es.cis.www/recursos/pixelMorado.gif" border="0" width="100%"
+             height="2">
+    </td>
+</tr>
+<!-- InclusiÃ³n de la barra de ruta -->
+<tr>
+    <td colspan=2>
+
+
+        <table border="0" cellspacing="1" cellpadding="1" class="backgroundRuta" width="100%" align="left">
+            <tr>
+                <td class="txt"><span id="labelCis">CIS</span>
+
+                    <IMG hspace="4" src="/cis/opencms/system/modules/es.cis.www/recursos/ic_nav.gif" align="absBottom">
+                    Publicaciones
+
+                    <IMG hspace="4" src="/cis/opencms/system/modules/es.cis.www/recursos/ic_nav.gif" align="absBottom">
+                    Catálogo de publicaciones
+
+                    <IMG hspace="4" src="/cis/opencms/system/modules/es.cis.www/recursos/ic_nav.gif" align="absBottom">
+                    Listado de colección
+
+                </td>
+            </tr>
+        </table>
+        <br><br>
+    </td>
+</tr>
+
+
+<tr>
+<td width="100%" align="left" colspan="2">
+
+<DIV id=divScroller class="divScroller">
+
+
+<!-- INICIO INCLUSION BODY -->
+
+
+<!-- Tabla para el body -->
+<table width="95%" cellpadding="3" cellspacing="0" border="0" align="center">
+
+
+<tr>
+    <td class="txt">
+
+
+        <!-- Tabla con el numero de resultados -->
+        <table rules="all" class="txt" width="100%" cellpadding="2" cellspacing="2" border="0">
+            <tr>
+                <td colspan=2 class="titlePage">
+                    Estudios y Encuestas
+                </td>
+            </tr>
+
+
+            <tr>
+                <td align="left">
+                    <strong>Seleccione una publicación:</strong>
+                    <br><br>
+
+                </td>
+                <td align="right">
+                    <strong>Resultados: 1-26 / 26</strong>
+                    <br><br>
+                </td>
+            </tr>
+        </table>
+        <!-- Fin de Tabla con el numero de resultados -->
+    </td>
+</tr>
+
+<!-- Paginacion -->
+
+<!-- Fin de paginacion -->
+
+
+<tr>
+<td>
+<!-- Tabla con los resultados -->
+<table cellspacing="0" class="tablaResultados" border="1" width="100%"
+       summary="Esta tabla lista las publicaciones filtradas según la consulta especificada">
+<tr class="headDG">
+    <th class="headDG" nowrap>
+        <a class="txt" title="Pulse para ordenar la tabla según este campo"
+           href="listaColeccion.jsp?orden=4&desc=&coleccion=Estudios y Encuestas &pagina=1">
+            Nº
+            <img align="absbottom" border="0" vspace="0" hspace="0"
+                 src="/cis/opencms/system/modules/es.cis.www/recursos/ic_ord.gif"
+                 alt="Pulse para ordenar la tabla según este campo">
+        </a>
+    </th>
+
+    <th class="headDG">
+        <a class="txt" title="Pulse para ordenar la tabla según este campo"
+           href="listaColeccion.jsp?orden=1&desc=&coleccion=Estudios y Encuestas &pagina=1">
+            Título
+            <img align="absbottom" border="0" vspace="0" hspace="0"
+                 src="/cis/opencms/system/modules/es.cis.www/recursos/ic_ord.gif"
+                 alt="Pulse para ordenar la tabla según este campo">
+        </a>
+    </th>
+    <th class="headDG">
+        <a class="txt" title="Pulse para ordenar la tabla según este campo"
+           href="listaColeccion.jsp?orden=2&desc=&coleccion=Estudios y Encuestas &pagina=1">
+            Autor
+            <img align="absbottom" border="0" vspace="0" hspace="0"
+                 src="/cis/opencms/system/modules/es.cis.www/recursos/ic_ord.gif"
+                 alt="Pulse para ordenar la tabla según este campo">
+        </a>
+    </th>
+    <th class="headDG" nowrap>
+        <a class="txt" title="Pulse para ordenar la tabla según este campo"
+           href="listaColeccion.jsp?orden=3&desc=&coleccion=Estudios y Encuestas &pagina=1">
+            Precio
+            <img align="absbottom" border="0" vspace="0" hspace="0"
+                 src="/cis/opencms/system/modules/es.cis.www/recursos/ic_ord.gif"
+                 alt="Pulse para ordenar la tabla según este campo">
+        </a>
+    </th>
+    <th class="headDG" nowrap>
+        <a class="txt" title="Ficheros">
+            Ficheros
+        </a>
+    </th>
+</tr>
+
+
+<tr class=pairRow>
+    <td align="center">
+        <a class=pairRow href="ver.jsp?id=123" title="Ver">
+            26
+        </a>
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=123" title=" Ver ">
+            Actitudes y opiniones de los españoles ante la Infancia
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=123" title="Ver">
+            Juste, Mª Gracia; Ramírez, Ana; Barbadillo Griñán, Patricia
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=pairRow href="ver.jsp?id=123" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=oddRow>
+    <td align="center">
+        <a class=oddRow href="ver.jsp?id=122" title="Ver">
+            25
+        </a>
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=122" title=" Ver ">
+            Los jóvenes ante el sistema educativo
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=122" title="Ver">
+            Latiesa, Margarita
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=oddRow href="ver.jsp?id=122" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=pairRow>
+    <td align="center">
+        <a class=pairRow href="ver.jsp?id=120" title="Ver">
+            24
+        </a>
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=120" title=" Ver ">
+            Las mujeres españolas: lo privado y los público
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=120" title="Ver">
+            Cruz Cantero, Pepa; Cobo, Rosa
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=pairRow href="ver.jsp?id=120" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=oddRow>
+    <td align="center">
+        <a class=oddRow href="ver.jsp?id=119" title="Ver">
+            23
+        </a>
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=119" title=" Ver ">
+            Los españoles ante la Constitución y las instituciones democráticas: 11 años de Constitución
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=119" title="Ver">
+            Ollero, Fernando
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=oddRow href="ver.jsp?id=119" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=pairRow>
+    <td align="center">
+        <a class=pairRow href="ver.jsp?id=118" title="Ver">
+            22
+        </a>
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=118" title=" Ver ">
+            Estructura social y salud
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=118" title="Ver">
+            Guillén, Mauro F.
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=pairRow href="ver.jsp?id=118" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=oddRow>
+    <td align="center">
+        <a class=oddRow href="ver.jsp?id=117" title="Ver">
+            21
+        </a>
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=117" title=" Ver ">
+            Situación social de los viejos en España
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=117" title="Ver">
+            Cruz Cantero, Pepa; Cobo, Rosa
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=oddRow href="ver.jsp?id=117" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=pairRow>
+    <td align="center">
+        <a class=pairRow href="ver.jsp?id=116" title="Ver">
+            20
+        </a>
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=116" title=" Ver ">
+            Los lugares sociales de la religión: la secularización de la vida en el País Vasco
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=116" title="Ver">
+            Pérez-Agote, Alfonso
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=pairRow href="ver.jsp?id=116" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=oddRow>
+    <td align="center">
+        <a class=oddRow href="ver.jsp?id=121" title="Ver">
+            19
+        </a>
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=121" title=" Ver ">
+            Nuevas tecnologías y oferta de empleo
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=121" title="Ver">
+            Montoro Romero, Ricardo
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=oddRow href="ver.jsp?id=121" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=pairRow>
+    <td align="center">
+        <a class=pairRow href="ver.jsp?id=108" title="Ver">
+            18
+        </a>
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=108" title=" Ver ">
+            Permanencia y cambio en la familia española
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=108" title="Ver">
+            Flaquer, Lluis; Soler, Joan
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=pairRow href="ver.jsp?id=108" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=oddRow>
+    <td align="center">
+        <a class=oddRow href="ver.jsp?id=107" title="Ver">
+            17
+        </a>
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=107" title=" Ver ">
+            La opinión pública española ante Europa y los europeos
+
+            <span class="agotadotxt">Agotado</span>
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=107" title="Ver">
+            Moral, Félix
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=oddRow href="ver.jsp?id=107" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=pairRow>
+    <td align="center">
+        <a class=pairRow href="ver.jsp?id=236" title="Ver">
+            16
+        </a>
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=236" title=" Ver ">
+            Problemas sociales: Actitudes y opiniones de los españoles ante la natalidad, el aborto y la eutanasia
+
+            <span class="agotadotxt">Agotado</span>
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=236" title="Ver">
+            Morán, Mª Luz; Cruz Cantero, Pepa
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=pairRow href="ver.jsp?id=236" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=oddRow>
+    <td align="center">
+        <a class=oddRow href="ver.jsp?id=235" title="Ver">
+            15
+        </a>
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=235" title=" Ver ">
+            Estudio sociológico sobre las orientaciones, actitudes y demandas sindicales de los trabajadores españoles
+
+            <span class="agotadotxt">Agotado</span>
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=235" title="Ver">
+            Instituto IDES
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=oddRow href="ver.jsp?id=235" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=pairRow>
+    <td align="center">
+        <a class=pairRow href="ver.jsp?id=112" title="Ver">
+            14
+        </a>
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=112" title=" Ver ">
+            Actitudes y comportamiento de los españoles ante el consumo
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=112" title="Ver">
+            Cruz Cantero, Pepa
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=pairRow href="ver.jsp?id=112" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=oddRow>
+    <td align="center">
+        <a class=oddRow href="ver.jsp?id=115" title="Ver">
+            13
+        </a>
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=115" title=" Ver ">
+            Los españoles ante la administración de Justicia
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=115" title="Ver">
+            Toharia Cortés, José Juan
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=oddRow href="ver.jsp?id=115" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=pairRow>
+    <td align="center">
+        <a class=pairRow href="ver.jsp?id=111" title="Ver">
+            12
+        </a>
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=111" title=" Ver ">
+            Actitudes y opiniones sociopolíticas en la Comunidad Autónoma de Galicia: Evolución y expectativas
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=111" title="Ver">
+            Blanco, Roberto
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=pairRow href="ver.jsp?id=111" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=oddRow>
+    <td align="center">
+        <a class=oddRow href="ver.jsp?id=114" title="Ver">
+            11
+        </a>
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=114" title=" Ver ">
+            Relaciones interpersonales: Actitudes y valores en la España de los ochenta
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=114" title="Ver">
+            Requena, Miguel; Benedicto, Jorge
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=oddRow href="ver.jsp?id=114" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=pairRow>
+    <td align="center">
+        <a class=pairRow href="ver.jsp?id=109" title="Ver">
+            10
+        </a>
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=109" title=" Ver ">
+            Los trabajadores industriales ante las nuevas tecnologías
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=109" title="Ver">
+            Tezanos, José Félix; Santos, Antonio
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=pairRow href="ver.jsp?id=109" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=oddRow>
+    <td align="center">
+        <a class=oddRow href="ver.jsp?id=113" title="Ver">
+            9
+        </a>
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=113" title=" Ver ">
+            Los españoles ante el segundo aniversario de la firma del tratado de adhesión de España a la Comunidad
+            Europea
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=113" title="Ver">
+            Metra-seis
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=oddRow href="ver.jsp?id=113" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=pairRow>
+    <td align="center">
+        <a class=pairRow href="ver.jsp?id=110" title="Ver">
+            8
+        </a>
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=110" title=" Ver ">
+            La cohabitación en España. Un estudio en Madrid y Barcelona
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=110" title="Ver">
+            Alabart, Anna; Cabré, Anna; Domingo, Andreu; Fabré, Assumpta; Stolcke, Verena
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=pairRow href="ver.jsp?id=110" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=oddRow>
+    <td align="center">
+        <a class=oddRow href="ver.jsp?id=224" title="Ver">
+            7
+        </a>
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=224" title=" Ver ">
+            Actitudes y opiniones de los españoles ante las relaciones internacionales
+
+            <span class="agotadotxt">Agotado</span>
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=224" title="Ver">
+            Ramos Torre, Ramón
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=oddRow href="ver.jsp?id=224" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=pairRow>
+    <td align="center">
+        <a class=pairRow href="ver.jsp?id=223" title="Ver">
+            6
+        </a>
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=223" title=" Ver ">
+            Actitudes de los españoles ante la OTAN
+
+            <span class="agotadotxt">Agotado</span>
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=223" title="Ver">
+            Santamaría, Julián; Alcover, Mercedes
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=pairRow href="ver.jsp?id=223" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=oddRow>
+    <td align="center">
+        <a class=oddRow href="ver.jsp?id=222" title="Ver">
+            5
+        </a>
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=222" title=" Ver ">
+            Los españoles y el sistema fiscal
+
+            <span class="agotadotxt">Agotado</span>
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=222" title="Ver">
+            VV.AA.
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=oddRow href="ver.jsp?id=222" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=pairRow>
+    <td align="center">
+        <a class=pairRow href="ver.jsp?id=221" title="Ver">
+            4
+        </a>
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=221" title=" Ver ">
+            Economía y sociedad. Evolución y expectativas a corto y medio plazo
+
+            <span class="agotadotxt">Agotado</span>
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=221" title="Ver">
+            VV.AA.
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=pairRow href="ver.jsp?id=221" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=oddRow>
+    <td align="center">
+        <a class=oddRow href="ver.jsp?id=220" title="Ver">
+            3
+        </a>
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=220" title=" Ver ">
+            Actitudes y opiniones de los españoles ante la Constitución y las instituciones democráticas
+
+            <span class="agotadotxt">Agotado</span>
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=220" title="Ver">
+            VV.AA.
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=oddRow href="ver.jsp?id=220" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=pairRow>
+    <td align="center">
+        <a class=pairRow href="ver.jsp?id=219" title="Ver">
+            2
+        </a>
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=219" title=" Ver ">
+            Actitudes y comportamiento de los españoles ante el tabaco, el alcohol y las drogas
+
+            <span class="agotadotxt">Agotado</span>
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=pairRow href="ver.jsp?id=219" title="Ver">
+            VV.AA.
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=pairRow href="ver.jsp?id=219" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+<tr class=oddRow>
+    <td align="center">
+        <a class=oddRow href="ver.jsp?id=218" title="Ver">
+            1
+        </a>
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=218" title=" Ver ">
+            Actitudes y opiniones de los españoles ante la natalidad
+
+            <span class="agotadotxt">Agotado</span>
+
+        </a>
+        <!--
+                        -->
+
+
+    </td>
+    <td>
+        <a class=oddRow href="ver.jsp?id=218" title="Ver">
+            VV.AA.
+
+        </a>
+    </td>
+
+    <td nowrap align=right class="tdprecio">
+        <a class=oddRow href="ver.jsp?id=218" title="Ver">
+            3.91 &euro;
+        </a>
+    </td>
+    <td class="fipub">
+        <!--SE UTILIZAN LAS COLUMNAS NOMBREFICHERO Y URLFICHERO PARA AÃADIR UN MATERIAL A LA PUBLICACION-->
+
+        <!--SE UTILIZAN LAS COLUMNAS MISCELANEA1 Y MISCELANEA2 PARA AÃADIR UN SEGUNDO MATERIAL A LA PUBLICACION-->
+
+    </td>
+
+</tr>
+
+
+</table>
+<!-- Fin de Tabla con los resultados -->
+</td>
+</tr>
+<!-- Paginacion -->
+
+<!-- Fin de paginacion -->
+
+
+</td>
+</tr>
+</table>
+
+<!-- Fin de Tabla para el body -->
+
+
+<!-- FIN INCLUSION BODY -->
+
+
+</div>
+</td>
+</tr>
+</table>
+<!-- Fin de Tabla para el body -->
+</td>
+</tr>
+</table>
+<!-- Fin de Tabla central que contiene el menï¿½ de navegaciï¿½n izquierdo y el body -->
+<!-- Tabla para el pie de pagina -->
+
+<TABLE class=background id=tablaAbajo cellSpacing=0 cellPadding=4 width="98%" align=center border=0
+       style="position:absolute; bottom: 10px; margin-left: 1% ;margin-right: 1%; top: auto;">
+
+    <tr>
+        <td class="line" colspan="2"></td>
+    </tr>
+    <tr>
+        <td class="txtBottom" colspan="2">
+            CIS · Montalbán, 8 · 28014 Madrid · España | e-mail:
+            <a class="txtBottom" title="cis@cis.es" href="mailto:cis@cis.es">cis@cis.es</a>
+        </td>
+    </tr>
+    <tr>
+        <td class="line" colspan="2"></td>
+    </tr>
+    <!--
+        <tr bgcolor="FFFFFF">
+            <td align="right">
+                <a href="http://www.w3.org/WAI/WCAG1A-Conformance"	title="Explicación del Nivel A de Conformidad">
+                <img border="0" height="32" width="88" src="http://www.w3.org/WAI/wcag1A" alt="Icono de conformidad con el Nivel A, de las Directrices de Accesibilidad para el Contenido Web 1.0 del W3C-WAI">
+                </a>
+            </td>
+            <td align="left">
+                <A href="http://www.tawdis.net">
+                    <IMG src="/cis/opencms/system/modules/es.cis.www/recursos/taw1.gif" border=0 height=31 width=88 alt="Validado por TAW" title="Validado por TAW">
+                </a>
+            </td>
+        </tr>
+    -->
+</table>
+<!-- Fin de Tabla para el pie de pagina -->
+</body>
+</html>
+
+
+
+
+

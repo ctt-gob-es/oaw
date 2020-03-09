@@ -1,0 +1,497 @@
+<!--
+Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+This program is licensed and may be used, modified and redistributed under the terms
+of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+version as soon as they are approved by the European Commission.
+Unless required by applicable law or agreed to in writing, software distributed under the 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+ANY KIND, either express or implied. See the License for the specific language governing 
+permissions and more details.
+You should have received a copy of the EUPL1.2 license along with this program; if not, 
+you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
+Email: observ.accesibilidad@correo.gob.es
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+
+
+<head>
+    <title>F&aacute;brica Nacional de Moneda y Timbre</title>
+    <link rel="shortcut icon" href="images/logos/IFNMT.ico"/>
+    <link rel='stylesheet' href='layout/screen.css' type='text/css' media='screen'/>
+    <link rel='stylesheet' href='layout/confirm.css' type='text/css' media='screen'/>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+
+    <style type="text/css">
+        #banners_left1
+        {
+        width: 235px;
+        height: 150px;
+        border: #c0c0c0 1px solid;
+        background-color:#ffffff;
+        }
+
+
+    </style>
+
+    <script type="text/javascript" language="javascript">
+        /*******************************************/
+        /*CARGA INICIAL DE LAS VARIABLES JAVASCRIPT*/
+        /*******************************************/
+        var dia =3;
+        var mes =1;
+        var anio =2011;
+        var horas =16;
+        var minutos=25;
+        var segundos=3;
+        var milisegundos=661;
+        var serverdate = new Date(anio,mes,dia,horas,minutos,segundos,milisegundos);
+        /*****************************************/
+        /*******************************************/
+
+        function mostrarContenido(valor) {
+
+        if (valor==1)
+        {
+        div = document.getElementById("servicios");
+        div.style.display="block";
+
+        div = document.getElementById("sede");
+        div.style.display="none";
+        }
+        if(valor == 2)
+        {
+        div = document.getElementById("servicios");
+        div.style.display="none";
+
+        div = document.getElementById("sede");
+        div.style.display="block";
+        }
+
+        }
+
+        function padlength(what){
+        var output=(what.toString().length==1)? "0"+what : what
+        return output
+        }
+
+        function displaytime(){
+
+        serverdate.setSeconds(serverdate.getSeconds()+1)
+        var
+        datestring=padlength(serverdate.getDate())+"/"+padlength(serverdate.getMonth()+1)+"/"+serverdate.getFullYear()
+        var
+        timestring=padlength(serverdate.getHours())+":"+padlength(serverdate.getMinutes())+":"+padlength(serverdate.getSeconds())
+        document.getElementById("lbfecha").innerHTML="Fecha y Hora Oficial";
+        document.getElementById("lbfecha1").innerHTML=datestring;
+        document.getElementById("lbfecha2").innerHTML=timestring;
+        //document.getElementById("servertime").innerHTML=datestring+" "+timestring;
+        }
+        function MostrarFecha(){
+        setInterval('displaytime()', 1000)
+        }
+
+
+    </script>
+
+</head>
+
+<body onload="MostrarFecha()">
+<div id="global">
+<div id="header">
+    <ul id="language_options">
+        <li class="first"><a href="Sede.jsp">Bienvenido</a></li>
+        <li><a href="SedeCatalan.jsp">Benvingut</a></li>
+        <li><a href="SedeGallego.jsp">Benvido</a></li>
+        <li><a href="SedeEuskera.jsp">Ongi etorri</a></li>
+        <li><a href="SedeIngles.jsp">Welcome</a></li>
+    </ul>
+</div>
+<div id="content" class="clearfix">
+<div id="column_a" class="">
+    <div id="banners_left1">
+        <a> <img src="images/logos/logo_fnmt.jpg"
+                 alt="F&aacute;brica Nacional de Moneda y Timbre" width="235px" height="150px"/> </a>
+    </div>
+    <div style="background-color: #FFFFFF; height: 5px"></div>
+    <div id="fecha1" style="font-size:small; height:30px; width: 227px; background-color: #EEEEEE; "
+         align="left">
+        <h1 id="lbfecha" style="font-size: small"></h1>
+    </div>
+    <div id="fecha2" style="font-size:small; height: 30px; width: 227px; background-color: #EEEEEE;"
+         align="left">
+        <h1 id="lbfecha1" style="font-size: small"></h1>
+    </div>
+    <div id="fecha3" style="font-size:small; height: 30px; width: 227px; background-color: #EEEEEE;"
+         align="left">
+        <h1 id="lbfecha2" style="font-size: small"></h1>
+    </div>
+    <div style="background-color: #FFFFFF; height: 5px"></div>
+    <div class="clearfix" id="at">
+        <ul id="menu_channels" class="menu_channels_2 clearfix">
+            <li><a href="#" onclick="javascript:mostrarContenido(1);return false;"
+                   style="background-color: #EEEEEE; color: #333333;">Relación de servicios disponibles</a></li>
+            <li><a href="#" onclick="javascript:mostrarContenido(2);return false;"
+                   style="background-color: #EEEEEE; color: #333333;">Sobre la Sede</a></li>
+        </ul>
+
+    </div>
+</div>
+
+<div id="column_b" class="">
+<div id="presentacion">
+    <h1 id="welcome" style="font-size: medium; padding:1px 1px 1px 1px;" align="center">
+        Bienvenido a la Sede Electrónica de la Fábrica Nacional de Moneda y Timbre-Real Casa de la Moneda.
+    </h1>
+</div>
+
+<div style="height: 10px"></div>
+<div id='servicios' style='text-align:left; background-color: #FFFFFF; height: 800px; padding-top: 5px;'>
+    <h1 style='font-size: 13px; font-weight: bold; '>Relación de servicios disponibles</h1>
+
+    <div id='serv1'
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px; height:62px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a href='#' class='serv1' style='font-size: 12px'
+               title="Comprobaci&oacute;n del estado de los certificados para saber si es un certificado v&aacute;lido y si ha sido revocado o no.">
+                Comprobación del estado del certificado</a>
+        </h1>
+
+        <div id='serv1des' style='padding-left: 20px'>
+            <div id='serv1des1' style="padding-top: 5px">
+                <a style='font-weight: bold; font-size: 11px;'>Documentación / Requisitos:</a>
+                <a style='font-size: 11px'>Certificado electrónico en vigor</a>
+            </div>
+            <div id='serv1des2' style="padding-top: 5px">
+                <p style='font-size: 11px; line-height:120%; height:5px;'>
+                    <a style='font-weight: bold; font-size: 11px; '>Fases del procedimiento:</a>
+                    De manera electrónica, conectándose a la web a tal efecto e identificándose mediante un certificado.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div id="serv2"
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px; height:50px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a href='#' class='serv2' style='font-size: 12px'
+               title="Comprobaci&oacute;n del estado de la solicitud de un certificado.">
+                Comprobación de petición de certificados</a>
+        </h1>
+
+        <div id='serv2des' style='padding-left: 10px'>
+            <div id='serv2des2' style="padding-top: 5px">
+                <p style='font-size: 11px; line-height:120%; height:5px;'>
+                    <a style='font-weight: bold; font-size: 11px;'>Fases del procedimiento:</a>
+                    De manera electrónica, conectándose a la web a tal efecto e identificándose mediante un certificado.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div id='serv3'
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a href='#' class='serv3' style='font-size: 12px'
+               title="Solicitud de certificados para personas f&iacute;sicas.">
+                Emisión de certificados</a>
+        </h1>
+
+        <div id='serv3des' style='padding-left: 10px'>
+            <div id='serv3des1' style="padding-top: 5px">
+                <a style='font-weight: bold; font-size: 11px;'>Documentación / Requisitos:</a>
+                <a style='font-size: 11px'>DNI ó tarjeta de residencia (NIE)</a>
+            </div>
+            <div id='serv3des2' style="padding-top: 5px">
+                <a style='font-weight: bold; font-size: 11px;'>Fases del procedimiento:</a>
+                <a style='font-size: 11px'>Solicitud de un certificado de clave pública utilizando un navegador web.</a>
+            </div>
+        </div>
+    </div>
+    <div id='serv4'
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px; height:60px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a href='#' class='serv4' style='font-size: 12px'
+               title="Solicitud de certificados de persona jur&iacute;ica.">
+                Emisión de certificados de persona jurídica</a>
+        </h1>
+
+        <div id='serv4des' style='padding-left: 10px'>
+            <div id='serv4des1' style="padding-top: 5px">
+                <p style='font-size: 11px; line-height:120%; height:5px;'>
+                    <a style='font-weight: bold; font-size: 11px;'>Documentación / Requisitos:</a>
+                    DNI ó tarjeta de residencia (NIE) Certificado del registro correspondiente relativo a su
+                    nombramiento y vigencia de su cargo. Poder notarial
+                </p>
+            </div>
+            <div id='serv4des2' style="padding-top: 25px">
+                <a style='font-weight: bold; font-size: 11px;'>Fases del procedimiento:</a>
+                <a style='font-size: 11px'>Solicitud de un certificado de clave pública utilizando un navegador web.</a>
+            </div>
+        </div>
+    </div>
+    <div id='serv5'
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a href='#' class='serv5' style='font-size: 12px'
+               title="Solicitud de certificados para entidades sin personalidad jur&iacute;dica.">
+                Emisión de certificados para entidades sin personalidad jurídica</a>
+        </h1>
+
+        <div id='serv5des' style='padding-left: 10px'>
+            <div id='serv5des1' style="padding-top: 5px">
+                <a style='font-weight: bold; font-size: 11px;'>Documentación / Requisitos:</a>
+                <a style='font-size: 11px'>DNI ó tarjeta de residencia (NIE)</a>
+            </div>
+            <div id='serv5des2' style="padding-top: 5px">
+                <a style='font-weight: bold; font-size: 11px;'>Fases del procedimiento:</a>
+                <a style='font-size: 11px'>Solicitud de un certificado de clave pública utilizando un navegador web.</a>
+            </div>
+        </div>
+    </div>
+    <div id='serv6'
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px; height:60px">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a href='#' class='serv6' style='font-size: 12px'
+               title="Comprobaci&oacute;n  de los datos personales y modificaci&oacute;n de forma inmediata aquellos datos que no forman parte del certificado de usuario(direcci&oacute;n, tel&eacute;fono....) .">
+                Modificación de datos personales</a>
+        </h1>
+
+        <div id='serv6des' style='padding-left: 10px'>
+            <div id='serv6des1' style="padding-top: 5px">
+                <a style='font-weight: bold; font-size: 11px;'>Documentación / Requisitos:</a>
+                <a style='font-size: 11px'>Certificado electrónico en vigor</a>
+            </div>
+            <div id='serv6des2' style="padding-top: 5px">
+                <p style='font-size: 11px; line-height:120%; height:5px;'>
+                    <a style='font-weight: bold; font-size: 11px;'>Fases del procedimiento:</a>
+                    De manera electrónica, conectándose a la web a tal efecto e identificándose mediante un certificado.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div id='serv7'
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px; height:60px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a href='#' class='serv7' style='font-size: 12px'
+               title="Renovaci&oacute;n  de los certificados antes de los dos meses de la fecha de caducidad del certificado, sin necesidad de personarse en una oficina de registro.">
+                Renovación de certificados</a>
+        </h1>
+
+        <div id='serv7des' style='padding-left: 10px'>
+            <div id='serv7des1' style="padding-top: 5px">
+                <a style='font-weight: bold; font-size: 11px;'>Documentación / Requisitos:</a>
+                <a style='font-size: 11px'>Certificado electrónico en vigor</a>
+            </div>
+            <div id='serv7de2' style="padding-top: 5px">
+                <p style='font-size: 11px; line-height:120%; height:5px;'>
+                    <a style='font-weight: bold; font-size: 11px;'>Fases del procedimiento:</a>
+                    De manera electrónica, conectándose a la web a tal efecto e identificándose mediante un certificado.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div id='serv8'
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px; height:60px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a href='#' class='serv8' style='font-size: 12px'
+               title="Revocaci&oacute;n de certificados de persona f&iacute;sica o persona jur&iacute;dica.">
+                Revocación de certificados</a>
+        </h1>
+
+        <div id='serv8des' style='padding-left: 10px'>
+            <div id='serv8des1' style="padding-top: 5px">
+                <a style='font-weight: bold; font-size: 11px;'>Documentación / Requisitos:</a>
+                <a style='font-size: 11px'>Certificado electrónico en vigor</a>
+            </div>
+            <div id='serv8des2' style="padding-top: 5px">
+                <p style='font-size: 11px; line-height:120%; height:5px;'>
+                    <a style='font-weight: bold; font-size: 11px;'>Fases del procedimiento:</a>
+                    De manera electrónica, conectándose a la web a tal efecto e identificándose mediante un certificado.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div id='serv9'
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a href='#' class='serv9' style='font-size: 12px'
+               title="Servicio para generar una firma referente a un texto.">
+                Utilidad de firma</a>
+        </h1>
+
+        <div id='serv9des' style='padding-left: 10px'>
+            <div id='serv9des1' style="padding-top: 5px">
+                <a style='font-weight: bold; font-size: 11px;'>Documentación / Requisitos:</a>
+                <a style='font-size: 11px'>Certificado electrónico en vigor</a>
+            </div>
+            <div id='serv9des2' style="padding-top: 5px">
+                <a style='font-weight: bold; font-size: 11px;'>Fases del procedimiento:</a>
+                <a style='font-size: 11px'>Electrónicamente.</a>
+            </div>
+        </div>
+    </div>
+    <div id='serv10'
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a href='#' class='serv10' style='font-size: 12px'
+               title="Verficaci&oacute;n de una firma asociada a unos datos.">
+                Verificación de firmas</a>
+        </h1>
+
+        <div id='serv10des' style='padding-left: 10px'>
+            <div id='serv10des2' style="padding-top: 5px">
+                <a style='font-weight: bold; font-size: 11px;'>Fases del procedimiento:</a>
+                <a style='font-size: 11px'>Electrónicamente.</a>
+            </div>
+        </div>
+    </div>
+    <div id='serv11'
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a href='#' class='serv11' style='font-size: 11px'
+               title="Publicaci&oacute;n de diferentes convocatorias de proceso de selecci&oacute;n libre que se ofertan desde la FNMT-RCM.">
+                Ofertas de Empleo</a>
+        </h1>
+    </div>
+    <div id='serv12'
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a href='#' class='serv12' style='font-size: 11px'
+               title="Publicaci&oacute;n de normativa de contrataci&oacute;n, as&iacute; como licitaciones en curso y adjudicaciones ya aprobadas.">
+
+                Perfil de contratante</a>
+        </h1>
+    </div>
+</div>
+<div id="sede" style="display: none;  background-color: #FFFFFF; height: 740px; padding-top: 5px;">
+    <h1 style="font-size: 13px; font-weight: bold;">Sobre la Sede</h1>
+
+    <div id="sede1"
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a style='font-size: 12px'>Administración Electrónica</a>
+        </h1>
+
+        <div id="sed1link" style="padding-left: 10px; padding-top: 5px;">
+            <a href="normas/LAECSP.pdf" class='sede1' style='font-size: 11px'>- Ley 11/2007, de 22 de junio, de acceso
+                electrónico de los ciudadanos a los Servicios Públicos.</a>
+        </div>
+    </div>
+    <div id="sede2"
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px; height:65px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a style='font-size: 12px'>Firma Electrónica</a>
+        </h1>
+
+        <div id="sed2link1" style="padding-left: 10px; padding-top: 5px;">
+            <a href="normas/Ley_F_E-59-2003.pdf" style='font-size: 11px'>- Ley 59/2003, de 19 de Diciembre, de Firma
+                Electrónica</a>
+        </div>
+        <div id="sed2link2" style="padding-left: 10px; padding-top: 5px;">
+            <a href="normas/Ley_M_I_S_I-56-2007.pdf" style='font-size: 11px'>- Ley 56/2007, de 28 de Diciembre, de
+                Medidas de Impulso de la Sociedad de la Información</a>
+        </div>
+        <div id="sed2link3" style="padding-left: 10px; padding-top: 5px;">
+            <p style='font-size: 11px; line-height:120%; height:5px;'>
+                <a href="normas/Directiva-199-93-CE.pdf" style='font-size: 11px'>- Directiva 199/93/CE del parlamento
+                    europeo por la que se establece un marco comunitario para la firma electrónica</a>
+            </p>
+        </div>
+    </div>
+    <div id="sede3"
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px; height:95px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a style='font-size: 12px'>Protección de Datos de Carácter Personal</a>
+        </h1>
+
+        <div id="sede3link1" style="padding-left: 10px; padding-top: 5px;">
+            <a href="normas/Ley_P_D_C_P-15-1999.pdf" style='font-size: 11px'>- Ley Orgánica 15/1999, de 13 de diciembre,
+                de Protección de Datos de Carácter Personal</a>
+        </div>
+        <div id="sede3link2" style="padding-left: 10px; padding-top: 5px; height:24px;">
+            <p style='font-size: 11px; line-height:120%; height:5px;'>
+                <a href="normas/Real_Decreto-1720-2007.pdf" style='font-size: 11px'>- Real Decreto 1720/2007 de 21 de
+                    diciembre de 2007 por el que se aprueba el reglamento de desarrollo de la Ley Orgánica 15/1999 de
+                    Protección de Datos de Carácter Personal</a>
+            </p>
+        </div>
+        <div id="sede3link3" style="padding-left: 10px; padding-top: 5px;">
+            <p style='font-size: 11px; line-height:120%; height:5px;'>
+                <a href="normas/Directiva-95-46-CE.pdf" style='font-size: 11px'>- Directiva 95/46/CE del parlamento
+                    europeo y del consejo de 24 de octubre de 1995 relativa a la protección de las personas físicas en
+                    lo que respecta al tratamiento de datos personales y a la libre circulación de estos datos</a>
+            </p>
+        </div>
+    </div>
+    <div id="sede4"
+         style="border-top-style: solid; border-width: 1px; border-color: #C0C0C0; padding-left: 5px; padding-top: 10px; padding-bottom: 10px;">
+        <h1>
+            <img src="layout/li_14.gif" alt=''/>
+            <a style='font-size: 12px'>FNMT-RCM</a>
+        </h1>
+
+        <div id="sede4link1" style="padding-left: 10px; padding-top: 5px;">
+            <a href='#' class='sede4' style='font-size: 11px'>- Resolución de creación de la sede</a>
+        </div>
+        <div id="sede4link2" style="padding-left: 10px; padding-top: 5px;">
+            <a href='#' class='sede41' style='font-size: 11px'>- Corrección de errores en Resolución</a>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+<div id="footer_logos"><a href='#' class='MEH'><img style="width:100px; height:32px; text-align:left;"
+                                                    alt="Ministerio de Economía y Hacienda"
+                                                    src="images/logos/00001_0426832238.jpg"/></a>
+</div>
+<div id="footer" style="background-color:#DDDDDD;">
+    <div id="wai" style="text-align:left; margin:5px; background-color:#DDDDDD; border-style:none;"><a href="#"
+                                                                                                       class='AA'/>
+        <img alt="Nivel AA de Conformidad con las Directrices de Accesibilidad para el Contenido Web 1.0"
+             src="layout/wcag1AA.gif" height="20px"/>
+
+    </div>
+    <div>
+        <ul id="footer_menu" style="text-align:right;">
+            <li class="first"><a href='#' class='contact'>Contáctenos</a></li>
+        </ul>
+    </div>
+</div>
+</div>
+<div id='confirm'>
+    <div class='header'><span> F&aacute;brica Nacional de Moneda y Timbre</span></div>
+    <p class='message' style="height:30px;"></p>
+
+    <div class='buttons'>
+        <div class='no simplemodal-close'>Cancelar</div>
+        <div class='yes'>Continuar</div>
+    </div>
+
+</div>
+
+<!--CARGAR LOS JAVASCRIPTS-->
+<script type='text/javascript' src='layout/jquery.js'></script>
+<script type='text/javascript' src='layout/jquery.simplemodal.js'></script>
+<script type='text/javascript' src='layout/confirm.js'></script>
+
+</body>
+</html>

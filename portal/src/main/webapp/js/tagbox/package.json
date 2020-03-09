@@ -1,0 +1,22 @@
+{
+  "name": "tagbox",
+  "version": "0.0.1",
+  "description": "Select items from lists with autocomplete",
+  "main": "tagbox.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jbt/tagbox.git"
+  },
+  "author": "JT <jt@gosquared.com>",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "c32b5aad5a1859ccdb8911639cfd456b1a91d556",
+  "dependencies": {
+    "clean-css": "~2.1.7",
+    "less": "~1.7.0",
+    "autoprefixer": "~1.1.20140327"
+  }
+}

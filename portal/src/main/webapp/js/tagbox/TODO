@@ -1,0 +1,19 @@
+# TODO list
+
+ * Don't intercept keystrokes with ctrl/alt/meta
+ * Make it clearer when you're at the tag limit
+ * viewport boundary checking
+ * Honour required attribute if possible
+ * Demos/examples
+ * Readme
+ * Allow different trigger characters
+ * Prompt text
+ * Passthrough of events?
+ * Extra methods? Update/destroy/etc
+ * AJAX loading
+ * esc to cancel
+ * Highlight terms
+ * Option of substring vs fuzzy matching
+ * cross-browser testing
+ * add width to tags + transitions, animations
+ * Use nicer closure compiler version

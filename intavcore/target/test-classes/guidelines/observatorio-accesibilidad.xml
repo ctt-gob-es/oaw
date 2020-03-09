@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2019 MPTFP, Ministerio de Política Territorial y Función Pública, This program is licensed and may be 
+	used, modified and redistributed under the terms of the European Public License (EUPL), either version 1.2 or (at your option) 
+	any later version as soon as they are approved by the European Commission. Unless required by applicable law or agreed to 
+	in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+	ANY KIND, either express or implied. See the License for the specific language governing permissions and more details. You 
+	should have received a copy of the EUPL1.2 license along with this program; if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 -->
+<guideline>
+	<type>observatory</type>
+	<title abbr="observatorio-une-en2019" long-name="Pautas de verificación del Observatorio v5.0">Observatorio
+		MINHAP 5.0
+	</title>
+	<date>2019-10-03</date>
+	<status>Observatorio MINHAP v5.0</status>
+	<earlid>URL donde están definidas las pautas</earlid>
+	<preamble>Validaciones de las verificaciones de accesibilidad
+	</preamble>
+
+	<!-- Accesibilidad del contenido -->
+	<!-- Nivel A (Prioridad 1) -->
+	<group>
+		<name>Priority 1</name>
+		<suitability>
+			<name>A</name>
+			<subgroup aspect="observatory.aspect.general">
+				<!-- Sección de accesibilidad -->
+				<name>minhap.observatory.5_0.subgroup.3.1</name>
+				<checks>
+					<check id="126" />
+					<!-- <check id="148" onlyWarning="true" relatedWith="126" /> -->
+					<!-- <check id="149" onlyWarning="true" relatedWith="126" /> -->
+					<!-- <check id="463" onlyWarning="true" relatedWith="126" /> -->
+				</checks>
+			</subgroup>
+			<subgroup aspect="observatory.aspect.general" >
+				<!-- Situación de cumplimiento y contenido no accesible -->
+				<name>minhap.observatory.5_0.subgroup.3.2</name>
+				<checks>
+					<check id="482" relatedWith="126" />
+					<check id="483" relatedWith="482" />
+					<check id="484" relatedWith="482" />
+
+				</checks>
+			</subgroup>
+			<subgroup aspect="observatory.aspect.general" >
+				<!-- Comunicaciones sobre requisitos de accesibilidad -->
+				<name>minhap.observatory.5_0.subgroup.3.3</name>
+				<checks>
+					<check id="485" relatedWith="126" />
+					<check id="486" relatedWith="485" />
+					<check id="487" relatedWith="485" />
+				</checks>
+			</subgroup>
+			<subgroup aspect="observatory.aspect.general">
+				<!-- Preparación de la declaración de accesibilidad -->
+				<name>minhap.observatory.5_0.subgroup.3.4</name>
+				<checks>
+					<check id="488" relatedWith="126" />
+					<check id="489" relatedWith="489" />
+					<check id="490" relatedWith="489" />
+				</checks>
+			</subgroup>
+		</suitability>
+	</group>
+
+</guideline>

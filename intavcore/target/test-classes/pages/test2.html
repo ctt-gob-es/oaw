@@ -1,0 +1,161 @@
+<!--
+Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+This program is licensed and may be used, modified and redistributed under the terms
+of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+version as soon as they are approved by the European Commission.
+Unless required by applicable law or agreed to in writing, software distributed under the 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+ANY KIND, either express or implied. See the License for the specific language governing 
+permissions and more details.
+You should have received a copy of the EUPL1.2 license along with this program; if not, 
+you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
+Email: observ.accesibilidad@correo.gob.es
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="es" lang="es" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+</head>
+<body>
+<!-- Imagen sin alternativa -->
+<img src="image.jpg"/>
+
+<!-- Más de seis elementos BR -->
+<br/><br/><br/><br/><br/><br/><br/><br/>
+
+<!-- Más de seis elementos HR -->
+<hr/>
+<hr/>
+<hr/>
+<hr/>
+<hr/>
+<hr/>
+<hr/>
+<hr/>
+
+<!-- Párrafo con más de 150 caracteres y más de dos BR -->
+<p>
+    1234567890 1234567890 1234567890 1234567890 1234567890
+    <br/>
+    1234567890 1234567890 1234567890 1234567890 1234567890
+    <br/>
+    1234567890 1234567890 1234567890 1234567890 1234567890
+</p>
+
+<!-- Elemento de formulario fuera de formulario -->
+<input type="text" value="Fuera de formulario">
+
+<!-- DIV con más de 150 caracteres -->
+<p>
+    1234567890 1234567890 1234567890 1234567890 1234567890
+    1234567890 1234567890 1234567890 1234567890 1234567890
+    1234567890 1234567890 1234567890 1234567890 1234567890
+</p>
+
+<!-- Documento mal estructurado -->
+<h2>Empezamos con H2</h2>
+
+<!-- Lenguaje del documento poco claro -->
+<p>
+    larguísimo larguísimo larguísimo larguísimo larguísimo larguísimo larguísimo larguísimo
+    larguísimo larguísimo larguísimo larguísimo larguísimo larguísimo larguísimo larguísimo
+</p>
+
+<!-- Enlaces con el mismo texto y destino distinto, también son enlaces rotos -->
+<a href="http://www.google.com/1" title="Enlace1">Enlace1</a>
+<a href="http://www.google.com/2" title="Enlace1">Enlace1</a>
+
+<!-- Más de dos tablas de maquetación -->
+<table>
+    <tr>
+        <td>
+            <table>
+                <tr>
+                    <th>Tabla de maquetación</th>
+                </tr>
+                <tr>
+                    <td>Celda</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <td>Solo una fila</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <td>Muchas celdas sin texto</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Muchas celdas sin texto</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+
+<!-- Más de cinco errores de validación HTML -->
+
+<!-- Enlace a nueva ventana -->
+<a href="/enlace_interno" target="_blank">Enlace interno que no avisa</a>
+
+<!-- Enlace de cambio de idioma sin atributo lang -->
+<a href="/enlace">Galego</a>
+
+<!-- Alternativa de la imagen el nombre del archivo -->
+<img alt="image.jpg" src="image.jpg"/>
+
+<!-- Lista simulada -->
+<p>-Uno</p>
+
+<p>-Dos</p>
+
+<p>-Tres</p>
+
+
+<!-- Enlace sin texto -->
+<a href="/enlace_sin_texto"></a>
+
+<!-- Dos párrafos vacíos -->
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<!-- Algunos atributos de presentación -->
+<p align="center">Centrado</p>
+
+<p align="center">Centrado</p>
+
+<p align="center">Centrado</p>
+
+<p align="center">Centrado</p>
+
+<!-- Algunos elementos de presentación -->
+<b>Presentación</b>
+<b>Presentación</b>
+<b>Presentación</b>
+<b>Presentación</b>
+
+<!-- Lista de definición mal construida -->
+<dt>Elemento definición</dt>
+
+<!-- Enlaces con javascript -->
+<a onclick="funcion_compleja()">Volver</a>
+
+<!-- Formulario dependiente de javascript -->
+<form action="javascript:funcion_compleja()"/>
+
+</body>
+</html>

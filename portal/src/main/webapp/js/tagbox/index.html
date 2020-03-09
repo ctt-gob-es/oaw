@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf8">
+		<title>jQuery.tagBox example</title>
+		<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+		<script src="tagbox.min.js"></script>
+
+		<style>
+			/* Make sure you reset e'erything beforehand. */
+			* {
+				margin: 0;
+				padding: 0;
+			}
+
+			/* Although you can't see the box here, so add some padding. */
+			body {
+				padding: 100px;
+			}
+
+
+			.tagbox-item .name, .tagbox-item .email { /* The name and email within the dropdown */
+				display: block;
+				float: left;
+				width: 35%;
+
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+				.tagbox-item .email {
+					float: right;
+					width: 65%;
+				}
+		</style>
+		<link rel="stylesheet" href="tagbox.css">
+	</head>
+
+	<body>
+
+	<form>
+		<input autocapitalize="off" autofocus id="tags" type="text" value="1" />
+	</form>
+
+	<script>
+		$(function() {
+			var items = [
+				{
+					id: 1,
+					email: 'hello@lionelrichie.net',
+					name: 'Lionel Richie'
+				},
+				{
+					id: 2,
+					email: 'bob-the-builder@builders.com',
+					name: 'Bob D. Builder'
+				},
+				{
+					id: 4,
+					email: 'einstein@localhost',
+					name: 'Älbert ÉinStëiñ'
+				}
+			];
+
+			$('#tags').tagbox({
+				items: items,
+				searchIn: ['email', 'name'],
+				rowFormat: '<span class="name">{{name}}</span><span class="email">{{email}}</span>',
+				tokenFormat: '{{name}}',
+				valueField: 'id',
+				itemClass: 'user'
+			});
+		});
+	</script>
+	</body>
+</html>

@@ -1,0 +1,769 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, This program is licensed and may be 
+	used, modified and redistributed under the terms of the European Public License (EUPL), either version 1.2 or (at your option) 
+	any later version as soon as they are approved by the European Commission. Unless required by applicable law or agreed to 
+	in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+	ANY KIND, either express or implied. See the License for the specific language governing permissions and more details. You 
+	should have received a copy of the EUPL1.2 license along with this program; if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Modificaciones: MINHAFP (Ministerio 
+	de Hacienda y Función Pública) Email: observ.accesibilidad@correo.gob.es -->
+
+<!DOCTYPE form-validation PUBLIC
+        "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1.3//EN"
+        "http://jakarta.apache.org/commons/dtds/validator_1_1_3.dtd">
+
+<form-validation>
+
+	<formset>
+		<form name="ModificarUsuarioPassForm">
+			<field property="username" depends="required">
+				<arg0 key="error.username" />
+			</field>
+			<field property="password" depends="required, minlength">
+				<arg0 key="error.password" />
+				<arg1 name="minlength" key="${var:minlength}" resource="false" />
+				<var>
+					<var-name>minlength</var-name>
+					<var-value>8</var-value>
+				</var>
+			</field>
+			<field property="password2" depends="required, minlength">
+				<arg0 key="error.confirmacion.password" />
+				<arg1 name="minlength" key="${var:minlength}" resource="false" />
+				<var>
+					<var-name>minlength</var-name>
+					<var-value>8</var-value>
+				</var>
+			</field>
+			<field property="passwold" depends="required">
+				<arg0 key="error.password.antiguo" />
+			</field>
+		</form>
+
+		<form name="ModificarUsuarioPassFormAdmin">
+			<field property="username" depends="required">
+				<arg0 key="error.username" />
+			</field>
+			<field property="password" depends="required, minlength">
+				<arg0 key="error.password" />
+				<arg1 name="minlength" key="${var:minlength}" resource="false" />
+				<var>
+					<var-name>minlength</var-name>
+					<var-value>8</var-value>
+				</var>
+			</field>
+			<field property="password2" depends="required, minlength">
+				<arg0 key="error.confirmacion.password" />
+				<arg1 name="minlength" key="${var:minlength}" resource="false" />
+				<var>
+					<var-name>minlength</var-name>
+					<var-value>8</var-value>
+				</var>
+			</field>
+		</form>
+
+		<form name="ModificarUsuarioSistemaForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombre" />
+			</field>
+			<field property="selectedCartuchos" depends="required">
+				<arg0 key="error.cartuchoo" />
+			</field>
+			<field property="selectedRoles" depends="required">
+				<arg0 key="error.tipo.usuario" />
+			</field>
+			<field property="email" depends="required,email">
+				<arg0 key="error.email" />
+			</field>
+		</form>
+
+		<form name="ModificarUsuarioClienteForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombre" />
+			</field>
+			<field property="selectedCuentaCliente" depends="required">
+				<arg0 key="error.cuenta.usuario" />
+			</field>
+			<field property="selectedRoles" depends="required">
+				<arg0 key="error.tipo.usuario" />
+			</field>
+			<field property="email" depends="required,email">
+				<arg0 key="error.email" />
+			</field>
+		</form>
+
+		<form name="ModificarUsuarioObservatorioForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombre" />
+			</field>
+			<field property="selectedObservatorio" depends="required">
+				<arg0 key="error.observatorio" />
+			</field>
+			<field property="email" depends="required,email">
+				<arg0 key="error.email" />
+			</field>
+		</form>
+
+		<form name="VerCategoriaForm">
+			<field property="categoria" depends="required">
+				<arg0 key="error.nombre.categoria" />
+			</field>
+			<field property="umbral" depends="required, float">
+				<arg0 key="error.umbral" />
+			</field>
+		</form>
+
+		<form name="NuevoUsuarioSistemaForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombre" />
+			</field>
+			<field property="selectedCartuchos" depends="required">
+				<arg0 key="error.cartuchoo" />
+			</field>
+			<field property="selectedRoles" depends="required">
+				<arg0 key="error.tipo.usuario" />
+			</field>
+			<field property="email" depends="required,email">
+				<arg0 key="error.email" />
+			</field>
+			<field property="password" depends="required, minlength">
+				<arg0 key="error.password" />
+				<arg1 name="minlength" key="${var:minlength}" resource="false" />
+				<var>
+					<var-name>minlength</var-name>
+					<var-value>8</var-value>
+				</var>
+			</field>
+			<field property="confirmar_password" depends="required, minlength">
+				<arg0 key="error.confirmacion.password" />
+				<arg1 name="minlength" key="${var:minlength}" resource="false" />
+				<var>
+					<var-name>minlength</var-name>
+					<var-value>8</var-value>
+				</var>
+			</field>
+		</form>
+
+		<form name="NuevoUsuarioClienteForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombre" />
+			</field>
+			<field property="selectedRoles" depends="required">
+				<arg0 key="error.tipo.usuario" />
+			</field>
+			<field property="email" depends="required,email">
+				<arg0 key="error.email" />
+			</field>
+			<field property="password" depends="required, minlength">
+				<arg0 key="error.password" />
+				<arg1 name="minlength" key="${var:minlength}" resource="false" />
+				<var>
+					<var-name>minlength</var-name>
+					<var-value>8</var-value>
+				</var>
+			</field>
+			<field property="confirmar_password" depends="required, minlength">
+				<arg0 key="error.confirmacion.password" />
+				<arg1 name="minlength" key="${var:minlength}" resource="false" />
+				<var>
+					<var-name>minlength</var-name>
+					<var-value>8</var-value>
+				</var>
+			</field>
+			<field property="cuenta_cliente" depends="required">
+				<arg0 key="error.cuenta.usuario" />
+			</field>
+		</form>
+
+		<form name="SubirConclusionesForm">
+			<field property="file" depends="required">
+				<arg0 key="error.file" />
+			</field>
+		</form>
+
+		<form name="NuevoUsuarioObservatorioForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.usuario" />
+			</field>
+			<field property="email" depends="required,email">
+				<arg0 key="error.email" />
+			</field>
+			<field property="password" depends="required, minlength">
+				<arg0 key="error.password" />
+				<arg1 name="minlength" key="${var:minlength}" resource="false" />
+				<var>
+					<var-name>minlength</var-name>
+					<var-value>8</var-value>
+				</var>
+			</field>
+			<field property="confirmar_password" depends="required, minlength">
+				<arg0 key="error.confirmacion.password" />
+				<arg1 name="minlength" key="${var:minlength}" resource="false" />
+				<var>
+					<var-name>minlength</var-name>
+					<var-value>8</var-value>
+				</var>
+			</field>
+			<field property="observatorio" depends="required">
+				<arg0 key="error.observatorio" />
+			</field>
+		</form>
+
+
+		<form name="NuevoTerminoCatForm">
+			<field property="porcentaje" depends="required, float, floatRange">
+				<arg0 key="error.peso" />
+				<arg1 name="floatRange" key="${var:min}" />
+				<arg2 name="floatRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0.0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>1.0</var-value>
+				</var>
+			</field>
+		</form>
+
+		<form name="NuevaCategoriaForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombre" />
+			</field>
+			<field property="umbral" depends="required, float">
+				<arg0 key="error.umbral" />
+			</field>
+			<field property="peso1" depends="float, floatRange">
+				<arg0 key="error.peso" />
+				<arg1 name="floatRange" key="${var:min}" />
+				<arg2 name="floatRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0.0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>1.0</var-value>
+				</var>
+			</field>
+			<field property="peso2" depends="float, floatRange">
+				<arg0 key="error.peso" />
+				<arg1 name="floatRange" key="${var:min}" />
+				<arg2 name="floatRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0.0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>1.0</var-value>
+				</var>
+			</field>
+			<field property="peso3" depends="float, floatRange">
+				<arg0 key="error.peso" />
+				<arg1 name="floatRange" key="${var:min}" />
+				<arg2 name="floatRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0.0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>1.0</var-value>
+				</var>
+			</field>
+			<field property="peso4" depends="float, floatRange">
+				<arg0 key="error.peso" />
+				<arg1 name="floatRange" key="${var:min}" />
+				<arg2 name="floatRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0.0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>1.0</var-value>
+				</var>
+			</field>
+		</form>
+
+		<form name="InsertarRastreoForm">
+			<field property="codigo" depends="required">
+				<arg0 key="error.nombre" />
+			</field>
+			<field property="cartucho" depends="required">
+				<arg0 key="error.cartuchoo" />
+			</field>
+			<field property="semilla" depends="required">
+				<arg0 key="error.url.semilla" />
+			</field>
+			<field property="profundidad" depends="required">
+				<arg0 key="error.profundidad" />
+			</field>
+			<field property="topN" depends="required, integer">
+				<arg0 key="error.paginas.nivel" />
+			</field>
+		</form>
+
+		<form name="TestRastreoForm">
+			<field property="semilla" depends="required">
+				<arg0 key="error.url.semilla" />
+			</field>
+			<field property="profundidad" depends="required">
+				<arg0 key="error.profundidad" />
+			</field>
+			<field property="topN" depends="required, integer">
+				<arg0 key="error.paginas.nivel" />
+			</field>
+		</form>
+
+		<form name="RastreoClienteForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombre" />
+			</field>
+			<field property="idCuenta" depends="required">
+				<arg0 key="error.cuenta.usuario" />
+			</field>
+			<field property="cartucho" depends="required">
+				<arg0 key="error.cartuchoo" />
+			</field>
+		</form>
+
+		<form name="NuevaSemillaGoogleForm">
+			<field property="nombreSemilla" depends="required">
+				<arg0 key="error.nombreSemilla" />
+			</field>
+			<field property="query" depends="required">
+				<arg0 key="error.query" />
+			</field>
+			<field property="paginas" depends="required, intRange, integer">
+				<arg0 key="error.paginas" />
+				<arg1 name="intRange" key="${var:min}" />
+				<arg2 name="intRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>1</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>50</var-value>
+				</var>
+			</field>
+		</form>
+
+		<form name="NuevaSemillaIpForm">
+			<field property="nombreSemilla" depends="required">
+				<arg0 key="error.nombreSemilla" />
+			</field>
+			<field property="puerto1" depends="required,integer,intRange">
+				<arg0 key="error.puerto1" />
+				<arg1 name="intRange" key="${var:min}" />
+				<arg2 name="intRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>65535</var-value>
+				</var>
+			</field>
+			<field property="puerto2" depends="integer,intRange">
+				<arg0 key="error.puerto2" />
+				<arg1 name="intRange" key="${var:min}" />
+				<arg2 name="intRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>65535</var-value>
+				</var>
+			</field>
+			<field property="puerto3" depends="integer,intRange">
+				<arg0 key="error.puerto3" />
+				<arg1 name="intRange" key="${var:min}" />
+				<arg2 name="intRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>65535</var-value>
+				</var>
+			</field>
+			<field property="ipInicial1" depends="required,integer,intRange">
+				<arg0 key="error.ipInicial1" />
+				<arg1 name="intRange" key="${var:min}" />
+				<arg2 name="intRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>255</var-value>
+				</var>
+			</field>
+			<field property="ipInicial2" depends="required,integer,intRange">
+				<arg0 key="error.ipInicial2" />
+				<arg1 name="intRange" key="${var:min}" />
+				<arg2 name="intRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>255</var-value>
+				</var>
+			</field>
+			<field property="ipInicial3" depends="required,integer,intRange">
+				<arg0 key="error.ipInicial3" />
+				<arg1 name="intRange" key="${var:min}" />
+				<arg2 name="intRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>255</var-value>
+				</var>
+			</field>
+			<field property="ipInicial4" depends="required,integer,intRange">
+				<arg0 key="error.ipInicial4" />
+				<arg1 name="intRange" key="${var:min}" />
+				<arg2 name="intRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>255</var-value>
+				</var>
+			</field>
+			<field property="ipFinal1" depends="required,integer,intRange">
+				<arg0 key="error.ipFinal1" />
+				<arg1 name="intRange" key="${var:min}" />
+				<arg2 name="intRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>255</var-value>
+				</var>
+			</field>
+			<field property="ipFinal2" depends="required,integer,intRange">
+				<arg0 key="error.ipFinal2" />
+				<arg1 name="intRange" key="${var:min}" />
+				<arg2 name="intRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>255</var-value>
+				</var>
+			</field>
+			<field property="ipFinal3" depends="required, intRange">
+				<arg0 key="error.ipFinal3" />
+				<arg1 name="intRange" key="${var:min}" />
+				<arg2 name="intRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>255</var-value>
+				</var>
+			</field>
+			<field property="ipFinal4" depends="required, intRange">
+				<arg0 key="error.ipFinal4" />
+				<arg1 name="intRange" key="${var:min}" />
+				<arg2 name="intRange" key="${var:max}" />
+				<var>
+					<var-name>min</var-name>
+					<var-value>0</var-value>
+				</var>
+				<var>
+					<var-name>max</var-name>
+					<var-value>255</var-value>
+				</var>
+			</field>
+		</form>
+
+		<form name="NuevaSemillaWebsForm">
+			<field property="ta1" depends="required">
+				<arg0 key="nueva.semilla.webs.lista.url" />
+			</field>
+			<field property="nombreSemilla" depends="required">
+				<arg0 key="error.nombreSemilla" />
+			</field>
+		</form>
+
+		<form name="CategoriaForm">
+			<field property="name" depends="required">
+				<arg0 key="categoria.semillas.nombre" />
+			</field>
+		</form>
+
+		<form name="SemillaForm">
+			<field property="listaUrlsString" depends="required">
+				<arg0 key="error.semilla" />
+			</field>
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombreSemilla" />
+			</field>
+		</form>
+
+
+		<form name="AmbitoForm">
+			<field property="name" depends="required">
+				<arg0 key="error.dependendencia" />
+			</field>
+		</form>
+
+		<form name="ComplejidadForm">
+			<field property="name" depends="required">
+				<arg0 key="error.dependendencia" />
+			</field>
+		</form>
+
+		<form name="DependenciaForm">
+			<field property="name" depends="required">
+				<arg0 key="error.dependendencia" />
+			</field>
+		</form>
+
+
+		<form name="EtiquetaForm">
+			<field property="name" depends="required">
+				<arg0 key="error.etiqueta" />
+			</field>
+		</form>
+
+		<form name="PlantillaForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.etiqueta" />
+			</field>
+		</form>
+
+
+
+		<form name="ClasificacionForm">
+			<field property="name" depends="required">
+				<arg0 key="error.etiqueta" />
+			</field>
+		</form>
+
+		<form name="JsonSemillaObservatorioForm">
+			<field property="listaUrlsString" depends="required">
+				<arg0 key="error.semilla" />
+			</field>
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombreSemilla" />
+			</field>
+		</form>
+
+		<form name="SemillaObservatorioForm">
+			<field property="listaUrlsString" depends="required">
+				<arg0 key="error.semilla" />
+			</field>
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombreSemilla" />
+			</field>
+		</form>
+
+		<form name="ValidarLoginSistemaForm">
+			<field property="loginUser" depends="required">
+				<arg0 key="error.usuario" />
+			</field>
+			<field property="loginPass" depends="required">
+				<arg0 key="error.password" />
+			</field>
+		</form>
+
+		<form name="NuevaCuentaUsuarioForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombre" />
+			</field>
+			<field property="dominio" depends="required">
+				<arg0 key="error.dominio" />
+			</field>
+			<field property="cartuchosSelected" depends="required">
+				<arg0 key="error.cartuchos" />
+			</field>
+			<field property="periodicidad" depends="required">
+				<arg0 key="error.periodicidad" />
+			</field>
+			<field property="amplitud" depends="required">
+				<arg0 key="error.amplitud" />
+			</field>
+			<field property="profundidad" depends="required">
+				<arg0 key="error.profundidad" />
+			</field>
+			<field property="fechaInicio" depends="required, date">
+				<arg0 key="error.fecha.inicio" />
+				<var>
+					<var-name>datePatternStrict</var-name>
+					<var-value>dd/MM/yyyy</var-value>
+				</var>
+			</field>
+		</form>
+
+		<form name="ModificarCuentaUsuarioForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombre" />
+			</field>
+			<field property="dominio" depends="required">
+				<arg0 key="error.dominio" />
+			</field>
+			<field property="cartuchosSelected" depends="required">
+				<arg0 key="error.cartuchos" />
+			</field>
+			<field property="periodicidad" depends="required">
+				<arg0 key="error.periodicidad" />
+			</field>
+			<field property="amplitud" depends="required">
+				<arg0 key="error.amplitud" />
+			</field>
+			<field property="profundidad" depends="required">
+				<arg0 key="error.profundidad" />
+			</field>
+			<field property="fechaInicio" depends="required, date">
+				<arg0 key="error.fecha.inicio" />
+				<var>
+					<var-name>datePatternStrict</var-name>
+					<var-value>dd/MM/yyyy</var-value>
+				</var>
+			</field>
+		</form>
+
+		<form name="ModificarMiCuentaUsuarioForm">
+			<field property="periodicidad" depends="required">
+				<arg0 key="error.periodicidad" />
+			</field>
+			<field property="amplitud" depends="required">
+				<arg0 key="error.amplitud" />
+			</field>
+			<field property="profundidad" depends="required">
+				<arg0 key="error.profundidad" />
+			</field>
+		</form>
+
+		<form name="NuevoObservatorioForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombre" />
+			</field>
+			<field property="cartucho.id" depends="required">
+				<arg0 key="error.cartucho" />
+			</field>
+			<field property="periodicidad" depends="required">
+				<arg0 key="error.periodicidad" />
+			</field>
+			<field property="amplitud" depends="required">
+				<arg0 key="error.amplitud" />
+			</field>
+			<field property="profundidad" depends="required">
+				<arg0 key="error.profundidad" />
+			</field>
+			<field property="fechaInicio" depends="required, date">
+				<arg0 key="error.fecha.inicio" />
+				<var>
+					<var-name>datePatternStrict</var-name>
+					<var-value>dd/MM/yyyy</var-value>
+				</var>
+			</field>
+		</form>
+
+		<form name="ModificarObservatorioForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.nombre" />
+			</field>
+			<field property="cartucho.id" depends="required">
+				<arg0 key="error.cartucho" />
+			</field>
+			<field property="periodicidad" depends="required">
+				<arg0 key="error.periodicidad" />
+			</field>
+			<field property="amplitud" depends="required">
+				<arg0 key="error.amplitud" />
+			</field>
+			<field property="profundidad" depends="required">
+				<arg0 key="error.profundidad" />
+			</field>
+			<field property="fechaInicio" depends="required, date">
+				<arg0 key="error.fecha.inicio" />
+				<var>
+					<var-name>datePatternStrict</var-name>
+					<var-value>dd/MM/yyyy</var-value>
+				</var>
+			</field>
+		</form>
+
+		<form name="CertificateForm">
+			<field property="host" depends="required">
+				<arg0 key="formulario.certificados.host" />
+			</field>
+			<field property="port" depends="required">
+				<arg0 key="formulario.certificados.port" />
+			</field>
+		</form>
+	</formset>
+
+	<formset>
+		<form name="BasicServiceForm">
+			<!-- <field property="domain" depends="url"> <arg0 key="basic.service.domain"/> </field> -->
+			<field property="content" depends="maxlength">
+				<arg0 key="basic.service.content" />
+				<arg1 name="maxlength" key="${var:minlength}" resource="false" />
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>4194304</var-value>
+				</var>
+			</field>
+			<field property="email" depends="required,email">
+				<arg0 key="basic.service.email" />
+			</field>
+			<field property="user" depends="required">
+				<arg0 key="basic.service.user" />
+			</field>
+			<field property="report" depends="required">
+				<arg0 key="basic.service.report" />
+			</field>
+		</form>
+	</formset>
+	<formset>
+		<form name="EliminarRastreosRealizadosForm">
+			<field property="select" depends="required">
+				<arg0 key="eliminar.rastreo.select" />
+			</field>
+		</form>
+	</formset>
+	<formset>
+		<form name="ServicioDiagnosticoForm">
+			<field property="startDate" depends="required, date">
+				<arg0 key="error.fecha.inicio" />
+				<var>
+					<var-name>datePatternStrict</var-name>
+					<var-value>dd/MM/yyyy</var-value>
+				</var>
+			</field>
+			<field property="endDate" depends="required, date">
+				<arg0 key="error.fecha.inicio" />
+				<var>
+					<var-name>datePatternStrict</var-name>
+					<var-value>dd/MM/yyyy</var-value>
+				</var>
+			</field>
+		</form>
+	</formset>
+</form-validation>

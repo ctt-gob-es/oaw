@@ -1,0 +1,11 @@
+@media(orientation:landscape) { 
+	body { 
+		transform: rotate(90deg);
+	}
+}
+
+@media(orientation:portrait) { 
+	body { 
+		transform: rotate(270deg);
+	}
+}

@@ -1,0 +1,273 @@
+/*
+Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+This program is licensed and may be used, modified and redistributed under the terms
+of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+version as soon as they are approved by the European Commission.
+Unless required by applicable law or agreed to in writing, software distributed under the 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+ANY KIND, either express or implied. See the License for the specific language governing 
+permissions and more details.
+You should have received a copy of the EUPL1.2 license along with this program; if not, 
+you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+*/
+/*
+ * Colores:
+ *  - Rojo: #E1120D;
+ *	- Verde claro: #7E9A40;
+ *	- Verde oscuro: #6A8236;
+ */
+
+* {
+	margin:0;
+	padding:0;
+}
+html {
+	font-family:Arial,Verdana,sans-serif;
+	text-align:left;
+	color:#000;
+	background:#FFF;
+	line-height:1.1em;
+}
+body {
+	padding:30px;
+}
+
+.withoutTopo {
+	list-style-position:outside;
+	margin-left:0;
+	list-style: none;
+}
+
+ul {
+	list-style-position:outside;
+	margin-left:2.8em;
+	list-style-image:url('../img/li.gif');
+}
+li {
+	margin:0.5em 0;
+}
+ul li ul {
+	list-style-image:url('../img/lili.gif');
+}
+
+a:hover {
+	text-decoration:none;
+}
+.underline {
+	text-decoration:underline;
+}
+
+
+#header {
+	margin-bottom:30px;
+}
+#header img {
+	border:0;
+}
+#content {
+
+}
+#migas {
+	margin:20px 0;
+	padding:7px;
+	font-size:1em;
+	background:url('../img/patron.gif') top left no-repeat;
+}
+#menu {
+	float:left;
+	width:23%;
+	margin-bottom:15px;
+	font-size:0.9em;
+}
+#menu ul {
+	list-style-type:none;
+	list-style-image:none;
+	margin-left:0;
+}
+#menu ul li {
+	margin-bottom:5px;
+}
+#menu ul li ul {
+	margin:3px 0 0 20px;
+}
+#menu ul li ul li {
+	margin-bottom:3px;
+}
+#menu a {
+	text-decoration:none;
+	display:block;
+	background:#e7f5d5;
+	padding:7px;
+	color:#496708;
+}
+#menu a:hover {
+	background:#d0e9ad;
+}
+#menu ul a.current {
+	color:#FFF;
+	background:#496708;
+	font-weight:bold;
+}
+#menu ul li ul a.current {
+	background:#6b8e21;
+	color:#FFF;
+}
+#contenido {
+	margin-left:26%;
+	font-size:0.9em;
+}
+#footer {
+	clear:both;
+	border-top:2px solid #7E9A40;
+	color:#6A8236;
+	text-align:center;
+	margin-top:15px;
+	padding-top:5px;
+}
+
+h1, h2 {
+	color:#6A8236;
+}
+h1 {
+	font-size:1.7em;
+}
+h2 {
+	font-size:1.4em;
+	margin:1em 0;
+}
+
+#contenido p {
+	margin:0.8em 0;
+}
+
+p.imagen {
+	text-align:center;
+}
+
+div.tabla {
+	text-align:center;
+}
+table {
+	border-collapse:collapse;
+	border:1px solid #000;
+	font-size:0.8em;
+	text-align:center;
+	margin:0 auto;
+}
+td, th {
+	border:1px solid #000;
+	padding:5px 10px;
+}
+th.izda, td.izda {
+	text-align:left;
+}
+table caption span{
+	display:block;
+	border:2px solid #E1120D;
+	border-width:2px 0;
+	color:#E1120D;
+	padding:5px 0;
+	margin:10px 0;
+}
+table th {
+	color:#FFF;
+	background:#7E9A40;
+}
+
+.gray{
+	background:#969696;	
+}
+
+table.evolucion {
+	min-width: 40em;
+}
+
+table.metodologia {
+	margin:0;
+	border-spacing:0;
+	border-collapse:separate;
+	border-width:1px 0 0 1px;
+	width:100%;
+}
+table.metodologia caption {
+	color:#FFF;
+	background:#7E9A40;
+	border:1px solid #000;
+	border-bottom:0;
+	text-align:left;
+	font-weight:bold;
+	font-size:1.1em;
+	padding:2px 5px;
+}
+table.metodologia th {
+	background:#969696;
+	color:#FFF;
+	border-width:0 1px 1px 0;
+}
+table.metodologia td {
+	border-width:0 1px 1px 0;
+	padding:4px;
+}
+table.metodologia td.pregunta, table.metodologia td.respuesta {
+	text-align:left;
+}
+table.metodologia td.identificador {
+	width:9%;
+}
+table.metodologia td.requisito331 {
+	width:40%;
+}
+table.metodologia td.UNE331 {
+	width:30%;
+}
+table.metodologia td.WCAG331 {
+	width:30%;
+}
+table.metodologia td.nombre {
+	font-weight:bold;
+	width:18%;
+}
+table.metodologia td.pregunta {
+	font-style:italic;
+	width:40%;
+}
+table.metodologia td.respuesta {
+	width:12%;
+}
+table.metodologia td.valor {
+	width:10%;
+}
+table.metodologia td.modalidad {
+
+}
+table.metodologia ol {
+	list-style-type:none;
+}
+div.formula {
+	padding-left:20%;
+	margin:1.2em 0;
+}
+div.formula dt {
+	float:left;
+	font-weight:bold;
+	margin-right:0.5em;
+}
+div.formula dd {
+	margin:5px 0;
+}
+
+div.listInline {
+	margin-left:2.8em;
+}	
+
+div.listInline dt {
+	float:left;
+	font-weight:bold;
+	margin-right:0.5em;
+	display: list-item;
+	list-style-image:url('../img/li.gif');
+}
+
+div.listInline dd {
+	margin:5px 0;
+}
