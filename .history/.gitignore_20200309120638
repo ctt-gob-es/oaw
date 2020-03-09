@@ -1,0 +1,11 @@
+**/*.iml
+**/sonar-project.properties
+**/target
+**/.idea
+**/.sonar
+**/.classpath
+**/.project
+**/.settings
+**/.metadata
+**/.sts4-cache
+**/motor-js
