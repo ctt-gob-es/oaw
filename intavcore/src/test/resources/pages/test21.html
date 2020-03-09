@@ -1,0 +1,966 @@
+<!--
+Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+This program is licensed and may be used, modified and redistributed under the terms
+of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+version as soon as they are approved by the European Commission.
+Unless required by applicable law or agreed to in writing, software distributed under the 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+ANY KIND, either express or implied. See the License for the specific language governing 
+permissions and more details.
+You should have received a copy of the EUPL1.2 license along with this program; if not, 
+you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
+Email: observ.accesibilidad@correo.gob.es
+-->
+<html>
+<head>
+    <title>&middot;&middot;&middot; Hispagua &middot;&middot;&middot;</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+          content="Agua, Acuicultura, Regadío, Aguas envasadas, Aguas subterráneas, Calidad del agua, Contaminación del agua, Datos sobre el agua, Desalación, Abastecimiento, Distribución de agua, Economía del agua, Precio del agua, Hidroelectricidad, Hidrografía, Hidráulica, Hidrología, Humedales, Meteorología, Desastres naturales, Obras hidráulicas, Pesca, Plan Hidrológico Nacional, Salud ambiental, Saneamiento, Depuración, Aguas residuales, Uso racional del agua, Cultura del agua">
+    <meta name="description"
+          content="El Sistema Español de Información sobre el Agua, Hispagua, una iniciativa del Ministerio de Medio Ambiente, es el encargado de estructurar la información en materia de agua continental en España.">
+    <meta name="Autor" content="Ministerio de Medio Ambiente, CEDEX, CINDOC-CSIC">
+    <link href="/hispagua.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        <!--
+        .Estilo1 {
+            color: #0066CC;
+            font-weight: bold;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+        }
+        -->
+    </style>
+</head>
+
+<body bgcolor="#FFFFFF" background="/img/fnd_px.gif" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<body>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" background="/img/fnd_px.jpg">
+    <tr>
+        <td width="430"><img src="/img/cabecera_menor.jpg"
+                             alt="Hispagua. Sistema Espa&ntilde;ol de Informaci&oacute;n sobre el Agua" border="0"></td>
+        <td width="340">
+            <div align="right"></div>
+        </td>
+    </tr>
+</table>
+
+<body>
+<tr valign="top">
+    <td background="/img/fnd_pest.gif"><a href="/index.php"><img src="/img/portada.jpg" alt="Ir a portada" width="104"
+                                                                 border="0"></a></td>
+    <td background="/img/fnd_pest.gif"><a
+            href="/instituciones/distribucion/instituciones.php?localizacion=Instituciones"><img
+            src="/img/instituciones.jpg" alt="Ir a instituciones" width="116" border="0"></a></td>
+    <td background="/img/fnd_pest.gif"><a href="/documentacion.php?c=noticias&pg=0&localizacion=Noticias%20de%20prensa"><img
+            src="/img/documentacion.jpg" alt="Ir a documentaci&oacute;n" width="131" border="0"></a></td>
+    <td background="/img/fnd_pest.gif"><a href="/formacion.php?c=cursos&pg=0&localizacion=Cursos"><img
+            src="/img/formacion.jpg" alt="Ir a formaci&oacute;n" width="100" border="0"></a></td>
+    <td background="/img/fnd_pest.gif"><a
+            href="/investigacion/sistema_espanol_cte/sistema_espanol_cte.php?localizacion=Sistema%20Espa%F1ol%20CTE"><img
+            src="/img/investigacion.jpg" alt="Ir a investigaci&oacute;n" width="120" border="0"></a></td>
+    <td background="/img/fnd_pest.gif"><a
+            href="/datos/agua_espana/agua_espana.php?&localizacion=El%20agua%20en%20Espa%F1a"><img
+            src="/img/datos_agua.jpg" alt="Ir a datos sobre el agua" border="0"></a></td>
+    <td width="100%" background="/img/fnd_pest.gif"><img src="/img/fnd_pest.gif" width="2" height="30" alt="  "></td>
+</tr>
+<table width="100%" border="0" cellpadding="2" cellspacing="0" bgcolor="#FFFFFF">
+
+<tr>
+<td width="66" rowspan="3" valign="top">
+    <SCRIPT language=JavaScript>
+        <!--
+        function fecha()
+        {       hoy = new Date();
+                dia_semana = hoy.getDay();
+                dia = hoy.getDate();
+                mes = hoy.getMonth();
+                anyo = hoy.getFullYear();
+
+                if (dia_semana == 0) { dia_semanaa = 'Domingo' }
+                if (dia_semana == 1) { dia_semanaa = 'Lunes' }
+                if (dia_semana == 2) { dia_semanaa = 'Martes' }
+                if (dia_semana == 3) { dia_semanaa = 'Mi&eacute\;rcoles' }
+                if (dia_semana == 4) { dia_semanaa = 'Jueves' }
+                if (dia_semana == 5) { dia_semanaa = 'Viernes' }
+                if (dia_semana == 6) { dia_semanaa = 'S&acute\;bado' }
+                if (mes == 0) { mess = '01' }
+                if (mes == 1) { mess = '02' }
+                if (mes == 2) { mess = '03' }
+                if (mes == 3) { mess = '04' }
+                if (mes == 4) { mess = '05' }
+                if (mes == 5) { mess = '06' }
+                if (mes == 6) { mess = '07' }
+                if (mes == 7) { mess = '08' }
+                if (mes == 8) { mess = '09' }
+                if (mes == 9) { mess = '10' }
+                if (mes == 10) { mess = '11' }
+                if (mes == 11) { mess = '12' }
+
+                document.write ( dia + "/" + mess + "/" + anyo + "\<br>");
+
+        }
+        //-->
+    </SCRIPT>
+    <table width="1%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td><img src="/img/sup_menu_der.gif" alt=" " width="143" height="9"></td>
+        </tr>
+        <tr>
+            <td background="/img/fnd_menu_der.gif">
+                <table width="85%" border="0" align="center" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td><span class="hoy">
+            <div align="center">
+                <SCRIPT>fecha()</SCRIPT>
+            </div>
+            </span></td>
+                    </tr>
+                    <tr>
+                        <td><img src="/img/p.gif" alt=" "><a href="/buscar/buscar.php?c=enviar" class="azul">Buscar</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td background="/img/fnd_continua.gif"></td>
+                    </tr>
+                    <tr>
+                        <td><img src="/img/p.gif" alt=" "><a
+                                href="/documentacion.php?c=noticias&pg=0&localizacion=Noticias%20de%20prensa"
+                                class="gris">Noticias</a></td>
+                    </tr>
+                    <tr>
+                        <td background="/img/fnd_continua.gif"></td>
+                    </tr>
+                    <tr>
+                        <td><img src="/img/p.gif" alt=" "><a href="/boletin/boletin.php?mes=1&amp;anio=2011"
+                                                             class="gris">Bolet&iacute;n</a></td>
+                    </tr>
+                    <tr>
+                        <td background="/img/fnd_continua.gif"></td>
+                    </tr>
+                    <tr>
+                        <td><img src="/img/p.gif" alt=" "><a
+                                href="/documentacion.php?c=documentos&pg=0&localizacion=Documentos" class="gris">Documentos</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td background="/img/fnd_continua.gif"></td>
+                    </tr>
+                    <tr>
+                        <td><img src="/img/p.gif" alt=" "><a
+                                href="/documentacion.php?c=estatal&pg=0&localizacion=Legislaci%F3n%20Estatal"
+                                class="gris">Legislación</a></td>
+                    </tr>
+                    <tr>
+                        <td background="/img/fnd_continua.gif"></td>
+                    </tr>
+                    <tr>
+                        <td><img src="/img/p.gif" alt=" "><a
+                                href="/documentacion.php?c=fuentes&pg=0&localizacion=Fuentes%20de%20Informaci%F3n%20en%20la%20Red"
+                                class="gris">El
+                            agua en internet</a></td>
+                    </tr>
+                    <tr>
+                        <td background="/img/fnd_continua.gif"></td>
+                    </tr>
+                    <tr>
+                        <td><img src="/img/p.gif" alt=" "><a href="/quien/quien.php?c=insercion" class="gris">Qui&eacute;n
+                            es qui&eacute;n</a></td>
+                    </tr>
+                    <tr>
+                        <td background="/img/fnd_continua.gif"></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#F8F8F8"><img src="/img/p.gif" alt=" "><a href="/cultura_agua/cultura_agua.php"
+                                                                               target="_blank" class="naranja">Cultura
+                            del agua</a></td>
+                    </tr>
+                    <tr>
+                        <td background="/img/fnd_continua.gif"></td>
+                    </tr>
+                    <tr>
+                        <td><img src="/img/p.gif" alt=" "><a href="/videos.php" class="gris">Videos</a></td>
+                    </tr>
+                    <tr>
+                        <td background="/img/fnd_continua.gif"></td>
+                    </tr>
+                    <tr>
+                        <td><img src="/img/p.gif" alt=" "><a href="/basesdatos.php" class="gris">Bases
+                            de datos</a></td>
+                    </tr>
+                    <tr>
+                        <td background="/img/fnd_continua.gif"></td>
+                    </tr>
+                    <tr>
+                        <td><img src="/img/p.gif" alt=" "><a href="/foro.php" class="gris">Foro</a></td>
+                    </tr>
+                    <tr>
+                        <td background="/img/fnd_continua.gif"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div align="center"><a href="/embalses.php"><img src="/img/novedades/AguaEmbalsada.jpg"
+                                                                             width="115" height="55" vspace="2"
+                                                                             border="0"></a>
+                            </div>
+                            <img src="/img/novedades/linea2.gif"></td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td><img src="/img/inf_menu_der.gif" alt=" " width="143" height="9"></td>
+        </tr>
+    </table>
+    <br>
+    <table width="1%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td><img src="/img/nov_sup_menu_der.gif" alt=" " width="143" height="45"></td>
+        </tr>
+        <td background="/img/nov_fnd_menu_der.gif">
+            <table width="100%" border="0" cellspacing="0" cellpadding="5">
+                <tr>
+                    <td colspan="2"><img src="/img/logo_doue.gif" alt=" " width="128" height="64"></td>
+                </tr>
+                <tr>
+                    <td width="14%" valign="top"><img src="/img/f_nov_leg.gif"></td>
+                    <td width="86%">
+                        <div align="left"><a href="http://hispagua.cedex.es/documentacion/legislacion/DOUE20100709.pdf"
+                                             target="_blank" class="masAzul">Medidas de urgencia aplicables a partidas
+                            de productos de la acuicultura importados de la India y destinados al consumo humano
+                            (09/07/2010) </a></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" colspan="2" style="border-bottom:1px solid #335218"><a href="/novedades_doue.php"
+                                                                                              target="_blank"
+                                                                                              class="masNegro">M&aacute;s
+                        novedades </a></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><img src="/img/logo_boe_leg.gif" alt=" " width="128" height="64"></td>
+                </tr>
+                <tr>
+                    <td width="14%" valign="top"><img src="/img/f_nov_leg.gif"></td>
+                    <td width="86%">
+                        <div align="left"><a
+                                href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&amp;id=16914"
+                                target="_blank" class="masAzul">Protocolo de colaboraci&oacute;n entre la Direcci&oacute;n
+                            General del Agua y la Junta de Castilla y Le&oacute;n, por el que se fija el marco de
+                            colaboraci&oacute;n: Saneamiento y Depuraci&oacute;n 2007-2015. (2011/01/28) </a></div>
+                    </td>
+                </tr>
+                <td align="center" colspan="2" style="border-bottom:1px solid #335218"><a href="/novedades_boe.php"
+                                                                                          target="_blank"
+                                                                                          class="masNegro">M&aacute;s
+                    novedades </a></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><img src="/img/logo_boe_ccaa.gif" alt=" " width="128" height="64"></td>
+                </tr>
+                <tr>
+                    <td width="14%" valign="top"><img src="/img/f_nov_leg.gif"></td>
+                    <td width="86%">
+                        <div align="left"><a
+                                href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&amp;id=17177"
+                                target="_blank" class="masAzul">Orden de 28 de enero de 2011 por la que se establecen
+                            las normas de pesca en las aguas continentales de la Comunidad de Galicia en la temporada
+                            2011. (02/02/2011) </a></div>
+                    </td>
+                </tr>
+                <td align="center" colspan="2"><a href="/novedades_boes_ccaa.php" target="_blank" class="masNegro">M&aacute;s
+                    novedades </a></td>
+                </tr>
+            </table>
+        </td>
+        </tr>
+        <tr>
+            <td><img src="/img/nov_inf_menu_der.gif" alt=" " width="143" height="9"></td>
+        </tr>
+    </table>
+</td>
+<td width="130" height="37" valign="top">&nbsp;</td>
+<td width="786" rowspan="3" valign="top">
+<table width="642" border="0" align="left" cellpadding="3" cellspacing="0">
+<tr>
+    <td width="100%"><img src="img/logo_novedades_boes_ccaa.gif" alt="Videos" width="108" height="47"> <span
+            class="Estilo1">Novedades legislativas de los Boletines y Diarios Oficiales de las Comunidades Aut&oacute;nomas </span>
+    </td>
+</tr>
+<tr>
+    <td height="5" colspan="2" background="/img/fnd_linea.gif"></td>
+</tr>
+<tr>
+<td>
+<ul>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=17177">Orden de
+    28 de enero de 2011 por la que se establecen las normas de pesca en las aguas continentales de la Comunidad Autónoma
+    de Galicia durante la temporada 2011. (Galicia, 02/02/2011)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=16759">Corrección
+    de errores de la Orden 1/2011, de 11 de enero, de la Consejería de Turismo, Medio Ambiente y Política Territorial,
+    por la que se fijan los períodos hábiles de pesca y normas relacionadas con la misma en aguas de la Comunidad
+    Autónoma de La Rioja, durante el año 2011. (La Rioja, 26/01/2011)</a></strong></li>
+<br><br>
+
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=16481">Resolución
+    de 14 de enero de 2011, de la Dirección General de Conservación de la Naturaleza, por la que se somete a información
+    pública el proyecto de decreto por el que se regula la pesca profesional de la anguila en las aguas continentales
+    competencia de la Comunidad Autónoma de Galicia, la aprobación de los planes de aprovechamiento, y la expedición de
+    las licencias de pesca profesional. (Galicia, 20/01/2011)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=16399">Orden
+    1/2011, de 11 de enero, de la Consejería de Turismo, Medio Ambiente y Política Territorial, por la que se fijan los
+    períodos hábiles de pesca y normas relacionadas con la misma en aguas de la Comunidad Autónoma de La Rioja, durante
+    el año 2011. (La Rioja, 19/01/2011)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=16394">Resolución
+    de 13 de enero de 2011 por la que se aprueba el Plan de gestión de recursos piscícolas de un tramo del río Madanela,
+    en el término municipal de Vilalba. (Galicia, 19/01/2011) </a></strong></li>
+<br><br>
+
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=16395">Orden de
+    13 de enero de 2011 por la que se establecen las bases reguladoras para la concesión, en régimen de concurrencia
+    competitiva, de subvenciones a inversiones en el ámbito de la acuicultura, cofinanciadas con el Fondo Europeo de la
+    Pesca en un 61%, y se convoca para el ejercicio 2011 dicho procedimiento, tramitado como expediente anticipado de
+    gasto. (Galicia, 19/01/2011)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=16178">Resolución
+    de 13 de diciembre de 2010, de la Confederación Hidrográfica del Guadalquivir, por la que se someten a consulta
+    pública la propuesta de proyecto de plan hidrológico de la demarcación hidrográfica del Guadalquivir y el informe de
+    sostenibilidad ambiental. (PP. 3184/2010). (Andaluc&iacute;a, 14/01/2011) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=16184">Medio
+    Ambiente. Resolución de 13/12/2010, de la Confederación Hidrográfica del Guadalquivir, por la que se someten a
+    consulta pública la propuesta de proyecto de Plan Hidrológico de la Demarcación Hidrográfica del Guadalquivir y el
+    Informe de Sostenibilidad Ambiental. [NID 2011/444]. (Castilla La-Mancha, 14/01/2011) </a></strong></li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15938">Orden
+    DES/77/2010, de 22 de diciembre, por la que se dictan las normas para el ejercicio de la pesca en aguas
+    continentales de la Comunidad Autónoma de Cantabria durante el año 2011. (10/01/2011) </a></strong></li>
+<br><br>
+
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15898">Resolución
+    de 13 de diciembre de 2010, del Presidente, por la que se someten a consulta pública la propuesta de proyecto del
+    Plan Hidrológico de la Demarcación Hidrográfica del Guadalquivir y el informe de sostenibilidad ambiental.
+    (07/01/2011) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15844">Resolución
+    de la Presidencia de la Confederación Hidrográfica del Guadalquivir por la que se someten a consulta pública la
+    Propuesta de Proyecto de Plan Hidrológico de la Demarcación Hidrográfica del Guadalquivir y el Informe de
+    Sostenibilidad Ambiental. (Murcia, 05/01/2011) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15757">LEY
+    10/2010, de 27 de diciembre, de modificación de la Ley 12/1990, de 26 de julio, de Aguas. (Canarias, 04/01/2011)</a></strong>
+</li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15536">Resoluci&oacute;n
+    de 30 de diciembre de 2010, de la Agencia Andaluza del Agua, por la que se aprueban los c&aacute;nones de regulaci&oacute;n
+    y tarifas de utilizaci&oacute;n del agua de los Distritos Hidrogr&aacute;ficos Guadalquivir, Guadalete-Barbate,
+    Tinto-Odiel-Piedras y Mediterr&aacute;neo. A&ntilde;o 2011.(Andaluc&iacute;a, 30/12/2010) </a></strong></li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15459">Ayudas y
+    Subvenciones. Orden de 20/12/2010, de la Consejer&iacute;a de Agricultura y Medio Ambiente, por la que se modifica
+    la Orden de 15/12/2009, de la Consejer&iacute;a de Agricultura y Desarrollo Rural, por la que se establecen las
+    bases reguladoras para la concesi&oacute;n de ayudas para el fomento de la acuicultura en la Comunidad Aut&oacute;noma
+    de Castilla-La Mancha. [NID 2010/21403](Murcia, 27/12/2010) </a></strong></li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15457">Resoluci&oacute;n
+    de 16 de diciembre de 2010, de la Agencia Andaluza del Agua, por la que se concede una subvenci&oacute;n de car&aacute;cter
+    excepcional y para supuestos especiales para el desarrollo de proyectos y actuaciones de cooperaci&oacute;n
+    internacional al desarrollo en materia de aguas.(Andalucia, 29/12/2010) </a></strong></li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15264"
+               target="_blank">Orden de 15 de diciembre de 2010, por la que se autorizan nuevas tarifas del servicio de
+    agua potable en &Aacute;guilas.(Murcia, 27/12/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15260">Orden de
+    15 de diciembre DE 2010, por la que se autorizan nuevas tarifas del servicio de agua potable en Ulea.(Murcia,
+    27/12/2010) </a></strong></li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15256">Medio
+    Ambiente. Resoluci&oacute;n de 16/12/2010, de la Direcci&oacute;n General de Calidad y Sostenibilidad Ambiental, por
+    la que se somete a informaci&oacute;n p&uacute;blica el programa de actuaci&oacute;n aplicable a las zonas
+    vulnerables a la contaminaci&oacute;n producida por nitratos de origen agrario designadas en la Comunidad Aut&oacute;noma
+    de Castilla-La Mancha. [NID 2010/21159] (Castilla La Mancha, 27/12/2010)</a></strong></li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15254"
+               target="_blank">Aguas. Resoluci&oacute;n de 14/12/2010, de la Entidad P&uacute;blica Infraestructuras del
+    Agua de Castilla-La Mancha, por la que se aprueba el proyecto modificado n&ordm; 1 de las obras de construcci&oacute;n
+    de las estaciones depuradoras de aguas residuales (EDARs) en Alborea, Corral-Rubio y Casas de Ves (Albacete). Expte:
+    AD/AB/09/003/M. [NID 2010/21141](Castilla La Mancha, 27/12/2010) </a></strong></li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15265">Orden de
+    15 de diciembre de 2010, por la que se autorizan nuevas tarifas del servicio de agua potable en Beniel. (Murcia,
+    27/12/2010) </a></strong></li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15262">Orden de
+    15 de diciembre de 2010, por la que se autorizan nuevas tarifas del servicio de agua potable en Murcia.</a><a
+        href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15262" target="_blank">
+    (Murcia, 27/12/2010) </a></strong></li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15263">Orden de
+    15 de diciembre de 2010, por la que se autorizan nuevas tarifas del servicio de agua potable en Lorca. (Murcia,
+    27/12/2010) </a></strong></li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15261">Orden de
+    15 de diciembre de 2010, por la que se autorizan nuevas tarifas del servicio de agua potable en Alhama de
+    Murcia.(Murcia, 27/12/2010) </a></strong></li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15161"
+               target="_blank">Decreto 59/2010, de 16 de diciembre, por el que se modifica el Decreto 79/2009, de 18 de
+    diciembre, por el que se modifica la designación de Zonas Vulnerables incluyendo como nueva zona vulnerable el
+    aluvial bajo del Najerilla y se aprueba el nuevo Programa de Actuación, Medidas Agronómicas y Muestreo de las Zonas
+    Vulnerables a la contaminación procedentes de origen agrario. (La Rioja, 24/12/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15085"
+               target="_blank">Espacios Naturales. Decreto 243/2010, de 21/12/2010, por el que se modifica la
+    denominación del Plan de Ordenación de los Recursos Naturales del Complejo Lagunar de Arcas y de la Reserva Natural
+    Complejo Lagunar de Arcas, que pasan a denominarse Plan de Ordenación de los Recursos Naturales del Complejo Lagunar
+    de Ballesteros y Reserva Natural Complejo Lagunar de Ballesteros. [NID 2010/21343]. (Castilla La-Mancha,
+    23/12/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15091"
+               target="_blank">ORDEN 22/2010, de 10 de diciembre de 2010, de la Conselleria de Medio Ambiente, Agua,
+    Urbanismo y Vivienda, por la que se convocan para los ejercicios 2011-2012, las ayudas a entes locales para la
+    ejecución de obras en materia de abastecimiento de agua, saneamiento y defensa contra avenidas, asÃ­ como otras
+    actuaciones relacionadas con estas obras. [2010/13824]. (Valencia, 23/12/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=15086"
+               target="_blank">ORDEN AAR/592/2010, de 15 de diciembre, por la que se establecen los periodos de veda
+    para la pesca de la modalidad de arrastre en aguas interiores de determinadas zonas del litoral en Cataluña durante
+    el año 2011. (Catalu&ntilde;a, 23/12/2010) </a></strong></li>
+<br><br>
+
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=14997"
+               target="_blank">Resolución nº 1427, de 10 de diciembre de 2010, del Consejero de Agricultura, Ganadería y
+    Desarrollo Rural, por la que se realiza la convocatoria pública para la concesión de ayudas económicas, con carácter
+    de subvención, para la mejora de infraestructuras de riego. (La Rioja, 22/12/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=14980"
+               target="_blank">RESOLUCIÓN AAR/4017/2010, de 14 de diciembre, por la que se hace público el Convenio
+    regulador entre el Departamento de Agricultura, Alimentación y Acción Rural, SEIASA del Nordeste, SA, y la comunidad
+    de regantes de Raimat, para la construcción y explotación de las obras de modernización y consolidación de los
+    regadíos de la comunidad de regantes de Raimat. (Catalu&ntilde;a, 22/12/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=14840"
+               target="_blank">RESOLUCIÓN de 22 de noviembre de 2010, del Director General de la Agencia Vasca del Agua,
+    por la que se anuncia la apertura del periodo de consulta pública de la documentación relativa al «Proyecto de Plan
+    Hidrológico de las Cuencas Internas del País Vasco» y al «Programa de Medidas de la CAPV » correspondiente al citado
+    ámbito. (Pa&iacute;s Vasco, 20/12/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=14753"
+               target="_blank">RESOLUCIÓN de 12 de noviembre de 2010, del Director General de la Agencia Vasca del Agua,
+    por la que se resuelve la convocatoria de subvenciones para las actividades de formación y sensibilización ambiental
+    en materia de aguas, al amparo de la Resolución de 25 de febrero de 2010. (Pa&iacute;s Vasco,
+    17/12/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=14589"
+               target="_blank">Orden de 13 de diciembre de 2010 por la que se establecen las bases reguladoras para la
+    concesión de ayudas a entidades colaboradoras de pesca fluvial para el fomento de la riqueza piscícola, y se
+    convocan para el año 2011. (Galicia, 15/12/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=14667"
+               target="_blank">Resolución de 30 de noviembre de 2010, por la que se hace público el Acuerdo relativo al
+    Plan Especial de Infraestructuras del Plan Director de “Suministro de Agua de Riego con Agua Reutilizable”, en el
+    término municipal de Parla, promovido por el Canal de Isabel II (Ac. 205/10). (Madrid, 15/12/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=14419"
+               target="_blank">DECRETO 218/2010, de 30 de noviembre, del Gobierno de Aragón, por el que se aprueba el
+    Reglamento de la Comisión del Agua y del Procedimiento para la formación de las Bases de la Política del Agua en
+    Aragón. (Arag&oacute;n, 13/12/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=14315"
+               target="_blank">Decreto 432/2010, de 23 de noviembre, por el que se deroga el Decreto 182/1989, de 1 de
+    agosto, por el que se declara de interés general para la Comunidad Autónoma Andaluza la transformación en regadío de
+    la zona del río Corbones (Sevilla). (Andaluc&iacute;a, 10/12/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=14317"
+               target="_blank">Resolución de 9 de diciembre de 2010, de la Dirección Gerencia de la Agencia Andaluza del
+    Agua, por la que se someten al trámite de información pública las propuestas de los cánones de regulación y las
+    tarifas de utilización del agua de los Distritos Hidrográficos Mediterráneo, Guadalete-Barbate y
+    Tinto-Odiel-Piedras. año 2011. (Andaluc&iacute;a, 10/12/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13948"
+               target="_blank">Delegación de competencias de entes consorciados en materia de control de vertidos.
+    Artículo 6º.4 de la Ley 5/2000 de Saneamiento y Depuración de aguas residuales de La Rioja. (La Rioja,
+    03/12/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13948"
+               target="_blank">Delegación de competencias de entes consorciados en materia de control de vertidos.
+    Artículo 6º.4 de la Ley 5/2000 de Saneamiento y Depuración de aguas residuales de La Rioja. (La Rioja,
+    03/12/2010)</a></strong></li>
+<br><br>
+
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13931"
+               target="_blank">ANUNCIO por el que se publica la Resolución de declaración de la condición de termal del
+    agua minero-medicinal de la captación denominada "Pou Palmera", del balneario Platja de Coma-ruga, situada en el
+    término municipal de El Vendrell. (Catalu&ntilde;a, 03/12/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13863"
+               target="_blank">RESOLUCIÓN AAR/3829/2010, de 26 de noviembre, por la que se hace público el Convenio
+    regulador entre el DAR, SEIASA del Nordeste, SA, y la Comunidad de Regantes de Sant Jaume de La Torre de l'Espanyol
+    para la construcción y explotación de las obras de modernización y consolidación de los regadíos de la Comunidad de
+    Regantes de Sant Jaume de La Torre de l'Espanyol. (Catalu&ntilde;a, 02/12/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13752"
+               target="_blank">Orden de 23 de noviembre de 2010, de la Consejeria de Agricultura y Agua, por la que se
+    modifica la Orden de 29 de julio de 2010 de la Consejería de Agricultura y Agua, por la que se establecen, en la
+    Región de Murcia, las bases reguladoras de las lineas de ayuda a la conservación de suelos agrícolas (lucha contra
+    la erosión), extensificación de la producción de cultivos herbáceos de secano, agricultura ecológica, integración
+    medioambiental del cultivo del viñedo, protección agroambiental en arrozales, conservación de variedades vegetales
+    en peligro de extinción y producción integrada, y se aprueba la convocatoria correspondiente al año 2010 de esta
+    última línea de ayudas. (Murcia, 30/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13750"
+               target="_blank">RESOLUCIÓN AAR/3804/2010, de 24 de noviembre, por la que se hace público el Convenio
+    regulador entre el Departamento de Agricultura, Alimentación y Acción Rural, SEIASA del Nordeste, SA, y la comunidad
+    de regantes de la Presa de Colomers, para la construcción y explotación de las obras de modernización y
+    consolidación de los regadíos de la comunidad de regantes de la Presa de Colomers. Mejora del Rec de Albons. (Catalu&ntilde;a,
+    30/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13748"
+               target="_blank">ORDEN AAR/553/2010, de 24 de noviembre, por la que se modifica la Orden AAR/399/2010, de
+    20 de julio, por la que se prohíbe temporalmente la pesca de rodeo en aguas interiores del litoral de Cataluña.
+    (30/11/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13749"
+               target="_blank">RESOLUCIÓN AAR/3803/2010, de 24 de noviembre, por la que se hace público el Convenio
+    regulador firmado por el Departamento de Agricultura, Alimentación y Acción Rural, SEIASA del Nordeste, SA, y la
+    comunidad de regantes de la Muga, margen derecho, para la construcción y explotación de las obras de modernización y
+    consolidación de los regadíos de la Comunidad de regantes de la Muga, margen derecho. (Catalu&ntilde;a,
+    30/11/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13653"
+               target="_blank">Resolución de 25 de noviembre de 2010, de la Consejería de Medio Ambiente, Ordenación del
+    Territorio e Infraestructuras, por la que se convocan subvenciones destinadas a Asociaciones de Pesca Fluvial para
+    el fomento, mantenimiento y ordenado aprovechamiento de especies piscícolas en el Principado de Asturias. (Asturias,
+    29/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13652"
+               target="_blank">Resolución de 23 de noviembre de 2010, de la Consejería de Medio Ambiente, Ordenación del
+    Territorio e Infraestructuras, por la que se aprueban las bases que han de regir las convocatorias de subvenciones a
+    las Asociaciones de Pesca Fluvial para el fomento, mantenimiento y ordenado aprovechamiento de especies piscícolas
+    en el Principado de Asturias. (Asturias, 29/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13587"
+               target="_blank">DECRETO 188/2010, de 23 de noviembre, de aprobación del Plan de gestión del distrito de
+    cuenca fluvial de Cataluña. (26/11/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13509"
+               target="_blank">Resolución del consejero de Medio Ambiente y Movilidad de 15 de noviembre de 2010 por la
+    que se somete a información pública el Proyecto de decreto del Consejo de Gobierno por el que se regula el
+    otorgamiento de concesiones de aguas subterráneas para usos agrarios. (Islas Baleares, 25/11/2010) </a></strong>
+</li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13512"
+               target="_blank">RESOLUCIÓN de 12 de noviembre de 2010, de la Dirección General del Medio Natural, por la
+    que se abre un período de información pública, audiencia y consulta durante un mes, de la Propuesta del Plan de
+    Gestión de las Zonas Húmedas de las Lagunas del Canal de Castilla. (Castilla y Le&oacute;n, 25/11/2010)</a></strong>
+</li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13452"
+               target="_blank">Resolución de la Confederación Hidrográfica del Ebro aprobatoria del canon de regulación
+    del embalse del Ebro. Año 2010. (Navarra, 24/11/2010)</a></strong></li>
+<br><br>
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13451"
+               target="_blank">Publicación de Resolución de la Confederación Hidrográfica del Ebro aprobatoria del canon
+    de regulación del embalse de Itoiz. Año 2010. (Navarra, 24/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13453"
+               target="_blank">Resolución de la Confederacion Hidrografica del Ebro aprobatoria de la tarifa de
+    utilización del agua del Canal Imperial de Aragón. Año 2010. (Navarra, 24/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13444"
+               target="_blank">RESOLUCIÓN AAR/3715/2010, de 19 de noviembre, por la que se hace público el Convenio
+    regulador firmado por el Departamento de Agricultura, Alimentación y Acción Rural, SEIASA del Nordeste, SA, y la
+    comunidad de regantes de Bassanova para la construcción y explotación de las obras de modernización y consolidación
+    de los regadíos de la comunidad de regantes de Bassanova del Canal de Aragón y Cataluña. (Catalu&ntilde;a,
+    24/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13348"
+               target="_blank">Decreto 116/2010, de 19 de noviembre, de determinación y delimitación de zonas
+    vulnerables por la contaminación de nitratos procedentes de fuentes agrarias y su programa de seguimiento y control
+    del dominio público hidráulico. (Islas Baleares, 23/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13359"
+               target="_blank">RESOLUCIÓN MAH/3699/2010, de 15 de noviembre, de delegación de competencias del director
+    de la Agencia Catalana del Agua en el gerente, en los directores de las áreas de la Agencia y en los jefes de las
+    demarcaciones territoriales de la Agencia. (Catalu&ntilde;a, 23/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13360"
+               target="_blank">EDICTO de 19 de noviembre de 2010, de notificación de la resolución de aprobación del
+    Proyecto constructivo de corrección hidrológica de la riera de La Baorada-Boella, tramo III, en el término municipal
+    de Vila-seca (clave LME.00013/01.P3). (Catalu&ntilde;a, 23/11/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13151"
+               target="_blank">Ley 11/2010, de 16 de noviembre, de Pesca y Acuicultura de Extremadura. (19/11/2010) </a></strong>
+</li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13150"
+               target="_blank">RESOLUCIÓN MAH/3644/2010, de 22 de octubre, por la que se hace público el Acuerdo de
+    declaración de impacto ambiental del Proyecto de regadío y concentración parcelaria del Segarra-Garrigues.
+    Transformación en regadío, obras de distribución y concentración parcelaria en varios términos municipales. (Catalu&ntilde;a,
+    19/11/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=13070"
+               target="_blank">Ley 9/2010, de 4 de noviembre, de aguas de Galicia. (18/11/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12990"
+               target="_blank">Resolución de la Confederación Hidrográfica del Ebro aprobatoria del canon de regulación
+    del embalse del Ebro, año 2010. (La Rioja, 17/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12991"
+               target="_blank">Resolución de la Confederación Hidrográfica del Ebro aprobatoria de la tarifa de
+    utilización del agua del Canal Margen Izquierda del río Najerilla, año 2010. (La Rioja, 17/11/2010) </a></strong>
+</li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12992"
+               target="_blank">Publicación de resolución de la Confederación Hidrográfica del Ebro aprobatoria del canon
+    de regulación del embalse de Mansilla, año 2010. (La Rioja, 17/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12870"
+               target="_blank">Resolución de 18 de octubre de 2010, de la Dirección General de Desarrollo Sostenible e
+    Información Ambiental, por la que se emplaza para información pública a todos aquellos interesados en el Proyecto de
+    Decreto por el que se amplía el ámbito territorial de los Parajes Naturales Marismas del río Palmones y estuario del
+    río Guadiaro, se declaran las Zonas Especiales de Conservación Marismas del río Palmones y Estuario del río Guadiaro
+    y se aprueba el Plan de Ordenación de los Recursos Naturales de los citados espacios naturales. (Andaluc&iacute;a,
+    16/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12900"
+               target="_blank">Decreto n.º 288/2010, de 12 de noviembre por el que se modifica el Decreto n.º 420/2008,
+    de 31 de octubre, por el que se establecen las normas especiales reguladoras de la concesión directa de una
+    subvención a la Fundación Instituto Euromediterráneo del Agua para la realización del proyecto de investigación
+    titulado Modelación Hidrológica en Zonas Semiáridas en el marco del Plan de Ciencia y Tecnología de la Región de
+    Murcia 2007-2010. (Murcia, 16/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12775"
+               target="_blank">ORDEN MAM/1536/2010, de 5 de noviembre, por la que se modifica la Orden MAM/2348/2009, de
+    30 de diciembre, por la que se aprueba el programa de actuación de las zonas vulnerables a la contaminación por
+    nitratos procedentes de fuentes de origen agrícola y ganadero designadas de Castilla y León por el Decreto 40/2009,
+    de 25 de junio. (Castilla y Le&oacute;n, 15/11/2010)</a></strong></li>
+<br><br>
+
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12781"
+               target="_blank">RESOLUCIÓN AAR/3618/2010, de 20 de octubre, por la que se hace público el Convenio
+    regulador firmado por el DAR, SEIASA del Nordeste, SA, y las colectividades 5 y 20 de los Canales de Urgell para la
+    construcción y explotación de las obras de modernización y consolidación de los regadíos de estas colectividades en
+    los términos municipales de Bellvís, Linyola y Vallfogona de Balaguer. (Catalu&ntilde;a, 15/11/2010)</a></strong>
+</li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12793"
+               target="_blank">Resolución de la Secretaría General Técnica de la Consejería de Presidencia, de 9 de
+    noviembre de 2010, por la que se dispone la publicación del resumen de la adenda al convenio suscrito entre el
+    Gobierno de La Rioja, a través de la Consejería de Administraciones Públicas y Política Local y el Ayuntamiento de
+    Tricio, para financiar la obra de depósito regulador y suministro de agua potable para los municipios de Tricio y
+    Arenzana de Abajo. (La Rioja, 15/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12791"
+               target="_blank">Resolución de la Secretaría General Técnica de la Consejería de Presidencia, de 9 de
+    noviembre de 2010, por la que se dispone la publicación del resumen de la adenda al convenio suscrito entre el
+    Gobierno de La Rioja, a través de la Consejería de Administraciones Públicas y Política Local y el Ayuntamiento de
+    Villalba de Rioja, para financiar la obra de pavimentación de agua potable en las calles Rollo y Camino Viejo. (La
+    Rioja, 15/11/2010) </a></strong></li>
+<br><br>
+
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12768"
+               target="_blank">ORDEN de 3 de noviembre de 2010, del Consejero de Agricultura y Alimentación, por la que
+    se convocan subvenciones para las obras de mejora y modernización de infraestructuras de regadío en el marco del
+    Programa de Desarrollo Rural para Aragón 2007-2013, para el año 2011. (Arag&oacute;n, 15/11/2010) </a></strong></li>
+<br><br>
+
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12780"
+               target="_blank">ACUERDO GOV/184/2010, de 11 de octubre, por el que se declara que concurren razones
+    imperiosas de interés público de primer orden para la realización del proyecto de regadío y concentración parcelaria
+    del canal Segarra-Garrigues y se aprueban medidas compensatorias. (Catalu&ntilde;a, 15/11/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12766"
+               target="_blank">ORDEN de 3 de noviembre de 2010, del Consejero de Agricultura y Alimentación, por la que
+    se convocan subvenciones a las organizaciones profesionales agrarias, para el año 2011. (Arag&oacute;n,
+    15/11/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12723"
+               target="_blank">Resolución de la Confederación Hidrográfica del Ebro de aprobación del Canon de
+    Regulación del embalse de Urdalur año 2010. (Navarra, 12/11/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12724"
+               target="_blank">Resolución de la Confederación Hidrográfica del Ebro de aprobación del Canon de
+    Regulación del embalse de Eugi año 2010. (Navarra, 12/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12722"
+               target="_blank">Resolución de la Confederación Hidrográfica del Ebro de aprobación del Canon de
+    Regulación del embalse de Yesa año 2010. (Navarra, 12/11/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12720"
+               target="_blank">Resolución de la Confederación Hidrográfica del Ebro de aprobación del Canon de
+    Regulación del embalse de Alloz año 2010. (Navarra, 12/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12725"
+               target="_blank">Resolución de aprobación de la tarifa de utilización del agua del Canal de Lodosa, año
+    2010. (Navarra, 12/11/2010) </a></strong></li>
+<br><br>
+
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12721"
+               target="_blank">Resolución de aprobación de la tarifa de utilización del agua del Canal de las Bardenas,
+    año 2010. (Navarra, 12/11/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12703"
+               target="_blank">Resolución por la que se autoriza la actualización de la Carta de Servicios
+    correspondiente a la Dirección General de Obras Hidráulicas y Ciclo Integral del Agua. (12/11/2010)</a></strong>
+</li>
+<br><br>
+
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12687"
+               target="_blank">Resolución de 11 de octubre de 2010, de la Dirección General de Pesca y Acuicultura, por
+    la que se anuncia la publicación de las subvenciones concedidas en el marco del Programa Operativo que se cita.
+    (Andaluc&iacute;a, 12/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12623"
+               target="_blank">DECRETO 204/2010, de 2 de noviembre, del Gobierno de Aragón, por el que se crea el
+    Inventario de Humedales Singulares de Aragón y se establece su régimen de protección. (Arag&oacute;n,
+    11/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12618"
+               target="_blank">Edicto de 25 de octubre de 2010, de la Dirección General de Dominio Público Hidráulico de
+    la Agencia Andaluza del Agua, de ampliación del plazo establecido para la tramitación y resolución del expediente de
+    apeo y deslinde del dominio público hidráulico en ambas márgenes de la rambla de Vícar, en el término municipal de
+    Vícar (Almería, 11/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12622"
+               target="_blank">Edicto de 25 de octubre de 2010, de la Dirección General de Dominio Público Hidráulico de
+    la Agencia Andaluza del Agua, de ampliación del plazo establecido para la tramitación y resolución del expediente de
+    apeo y deslinde del dominio público hidráulico en ambas márgenes de la rambla de Mojácar o de Campos, en el término
+    municipal de Mojácar (Almería, 11/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12621"
+               target="_blank">Edicto de 25 de octubre de 2010, de la Dirección General de Dominio Público Hidráulico de
+    la Agencia Andaluza del Agua, de ampliación del plazo establecido para la tramitación y resolución del expediente de
+    apeo y deslinde del dominio público hidráulico en ambas márgenes de la rambla de Las Adelfas o Alfarada, en el
+    término municipal de Abla (Almería, 11/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12620"
+               target="_blank">Edicto de 25 de octubre de 2010, de la Dirección General de Dominio Público Hidráulico de
+    la Agencia Andaluza del Agua, de ampliación del plazo establecido para la tramitación y resolución del expediente de
+    apeo y deslinde del dominio público hidráulico en ambas márgenes de la rambla de Morales-Artal, en los términos
+    municipales de Níjar y Almería (Almería, 11/11/2010).</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12619"
+               target="_blank">Edicto de 25 de octubre de 2010, de la Dirección General de Dominio Público Hidráulico de
+    la Agencia Andaluza del Agua, de ampliación del plazo establecido para la tramitación y resolución del expediente de
+    apeo y deslinde del dominio público hidráulico en ambas márgenes del río Chico, en el término municipal de Berja
+    (Almería, 11/11/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12615"
+               target="_blank">Resolución de 25 de octubre de 2010, de la Dirección General de Relaciones
+    Institucionales y Acción Exterior, por la que se ordena la publicación íntegra en el «Boletín Oficial de Castilla y
+    León» de: «Protocolo entre la Confederación Hidrográfica del Duero y la Consejería de Medio Ambiente de la Junta de
+    Castilla y León por el que se fijan los principios básicos de colaboración entre ambas administraciones para el
+    desarrollo de actuaciones de restauración de Riberas de la Cuenca del Duero en Castilla y León en el período
+    2009-2015». (Castilla y Le&oacute;n, 10/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12547"
+               target="_blank">Resolución de 3 de noviembre de 2010, de la Dirección General de Regadíos y Estructuras
+    Agrarias, por la que se declara transcurrido el plazo del trámite de audiencia de la propuesta de resolución
+    provisional de la convocatoria del año 2010 de las ayudas a las infraestructuras agrarias y prevención de
+    catástrofes climatológicas, en el marco del Programa de Desarrollo Rural de Andalucía 2007-2013, y la publicación de
+    la misma. (Andaluc&iacute;a, 10/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12545"
+               target="_blank">Resolución de 25 de octubre de 2010, de la Delegación Provincial de Cádiz, por la que se
+    dispone la publicación de la Resolución de la CPOTU de Cádiz, de 4 de mayo de 2010, por la que se aprueba
+    definitivamente la modificación puntual núm. 11 de las NN.SS., de Vejer de la Frontera, referente a su art. 5.2.13
+    «Cauces y márgenes de ríos y arroyos y zonas húmedas». (Andaluc&iacute;a, 10/11/2010) </a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12555"
+               target="_blank">Resolución del Presidente del Fondo de Garantía Agraria y Pesquera de las Illes Balears
+    (FOGAIBA), de 26 de octubre de 2010, por la que se incrementa el crédito destinado a la convocatoria, para el año
+    2009, de las ayudas para la lucha contra la erosión en medios frágiles de cultivos leñosos en terrazas y pendientes
+    y el mantenimiento del paisaje rural. (Islas Baleares, 09/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12461"
+               target="_blank">Orden de 20 de octubre de 2010, por la que se establecen las bases reguladoras para la
+    concesión de subvenciones para el fomento de la acuicultura continental en Andalucía y por la que se efectúa la
+    convocatoria correspondiente a 2010. (Andaluc&iacute;a, 05/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12462"
+               target="_blank">Resolución de 25 de octubre de 2010, de la Dirección Gerencia de la Agencia Andaluza del
+    Agua, por la que se someten al trámite de información pública los cánones de regulación y tarifas de utilización del
+    agua del Distrito Hidrográfico Guadalquivir. Año 2011. (Andaluc&iacute;a, 05/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12475"
+               target="_blank">ORDEN AAR/503/2010, de 29 de octubre, por la que se modifica la Orden de 2 de mayo de
+    2000, por la que se establecen fondos mínimos para el arrastre en aguas interiores del litoral catalán. (Catalu&ntilde;a,
+    05/11/2010)</a></strong></li>
+<br><br>
+
+<li><strong><a href="http://hispagua.cedex.es/documentacion/descarga_novedades.php?tipo=legislacion&id=12300"
+               target="_blank">Resolución de 27 de septiembre de 2010, de la Consejería de Medio Ambiente, Ordenación
+    del Territorio e Infraestructuras, por la que se determina el alcance del estudio de impacto ambiental del proyecto
+    de aprovechamiento del manantial de Comillera como agua mineral natural, en el concejo de Sobrescobio. Expte.
+    IA-IA-0499/10. (Asturias, 03/11/2010) </a></strong></li>
+<br><br>
+
+
+<br>
+</li>
+</ul>
+</td>
+</tr>
+</table>
+
+</div>      </td>
+</tr>
+<tr>
+    <td height="362" valign="top">&nbsp;</td>
+</tr>
+<tr>
+    <td valign="top">&nbsp;</td>
+</tr>
+</table>
+<table width="100%" height="5" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+    <tr>
+        <td></td>
+    </tr>
+</table>
+<table width="100%" height="2" border="0" cellpadding="0" cellspacing="0" bgcolor="#a8c9d5">
+    <tr>
+        <td></td>
+    </tr>
+</table>
+<table width="100%" border="0" cellpadding="3" cellspacing="0">
+    <tr>
+
+        <td width="138">
+            <div align="center"><a href="http://www.semide.net" target="_blank" class="naranja">SEMIDE/EMWIS</a></div>
+        </td>
+        <td width="100"><span class="texto">&copy; Hispagua</span></td>
+        <td width="478">
+            <div align="right"><a href="/presentacion.php?localizacion=Presentacion"
+                                  class="negro">Presentaci&oacute;n</a><img src="/img/div_pie.gif" alt=" " width="8"
+                                                                            height="10"><a href="/mapa.php"
+                                                                                           class="negro">Mapa
+                del web</a><img src="/img/div_pie.gif" alt=" " width="8" height="10"><a
+                    href="/sugerencias/sugerencias.php?c=insercion" class="negro">Sugiera
+                un recurso</a><img src="/img/div_pie.gif" alt=" " width="8" height="10"><a
+                    href="/consultas/consultas.php?c=insercion" class="negro">Consultas</a><img src="/img/div_pie.gif"
+                                                                                                alt=" " width="8"
+                                                                                                height="10"><a
+                    href="http://www.inm.es/" target="_blank" class="negro">El
+                Tiempo</a><img src="/img/div_pie.gif" alt=" " width="8" height="10"><a href="/aviso_legal.php"
+                                                                                       class="negro">Aviso
+                legal</a></div>
+        </td>
+    </tr>
+</table>
+
+<br>
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js'
+    type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+    var pageTracker = _gat._getTracker("UA-12071927-1");
+    pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+<!-- Start of StatCounter Code -->
+<script type="text/javascript">
+    var sc_project=6219679;
+    var sc_invisible=1;
+    var sc_security="21866304";
+</script>
+
+<script type="text/javascript"
+        src="http://www.statcounter.com/counter/counter.js"></script>
+<noscript>
+    <div
+            class="statcounter"><a title="tumblr hit counter"
+                                   href="http://statcounter.com/tumblr/" target="_blank"><img
+            class="statcounter"
+            src="http://c.statcounter.com/6219679/0/21866304/1/"
+            alt="tumblr hit counter"></a></div>
+</noscript>
+<!-- End of StatCounter Code -->
+</body>
+</html>

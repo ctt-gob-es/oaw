@@ -1,0 +1,844 @@
+<!--
+Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+This program is licensed and may be used, modified and redistributed under the terms
+of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+version as soon as they are approved by the European Commission.
+Unless required by applicable law or agreed to in writing, software distributed under the 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+ANY KIND, either express or implied. See the License for the specific language governing 
+permissions and more details.
+You should have received a copy of the EUPL1.2 license along with this program; if not, 
+you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
+Email: observ.accesibilidad@correo.gob.es
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+
+<html lang='es-ES'>
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="Robots" content="all">
+    <meta name="Language" content="Spanish">
+    <meta name="Author" content="Agencia Tributaria">
+    <meta name="CopyRight" content="">
+    <meta name="Revisit" content="8 Days">
+    <meta name="DC.Language" content="Spanish">
+    <meta name="Classification" content="Agencia Tributaria">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <meta name="Description" content="Pagina Resultados Buscador de la web de Agencia Tributaria.">
+    <meta name="Keywords" content="Agencia Tributaria,Resultados,Buscador">
+    <title>Agencia Tributaria - Castellano - Resultados Buscador</title>
+    <link href="/css/institucional.css" rel="stylesheet" type="text/css">
+
+
+    <!--[if IE]>
+    <link rel="stylesheet" href="/css/ie.css" type="text/css"/>
+    <![endif]-->
+
+
+    <link rel="alternate" title="Todas las Novedades"
+          href="/aeat/jsp/RSS.jsp?categoryId=55814e84f5f00210VgnVCM1000004ef01e0aTAXC&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;channel=43f7d889b046a010VgnVCM1000004ef01e0a____&amp;lang=es_ES"
+          type="application/rss+xml">
+    <link rel="alternate" title="Aduanas"
+          href="/aeat/jsp/RSS.jsp?categoryId=d3096991b8fef110VgnVCM1000004ef01e0aTAXC&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;channel=43f7d889b046a010VgnVCM1000004ef01e0a____&amp;lang=es_ES"
+          type="application/rss+xml">
+    <link rel="alternate" title="Contrataci&oacute;n"
+          href="/aeat/jsp/RSS.jsp?categoryId=2f496991b8fef110VgnVCM1000004ef01e0aTAXC&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;channel=43f7d889b046a010VgnVCM1000004ef01e0a____&amp;lang=es_ES"
+          type="application/rss+xml">
+    <link rel="alternate" title="Desarrollo de Software"
+          href="/aeat/jsp/RSS.jsp?categoryId=3b08a964fae00210VgnVCM1000004ef01e0aTAXC&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;channel=43f7d889b046a010VgnVCM1000004ef01e0a____&amp;lang=es_ES"
+          type="application/rss+xml">
+    <link rel="alternate" title="Empleo P&uacute;blico"
+          href="/aeat/jsp/RSS.jsp?categoryId=29496991b8fef110VgnVCM1000004ef01e0aTAXC&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;channel=43f7d889b046a010VgnVCM1000004ef01e0a____&amp;lang=es_ES"
+          type="application/rss+xml">
+    <link rel="alternate" title="Novedades en Impuestos"
+          href="/aeat/jsp/RSS.jsp?categoryId=f6296991b8fef110VgnVCM1000004ef01e0aTAXC&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;channel=43f7d889b046a010VgnVCM1000004ef01e0a____&amp;lang=es_ES"
+          type="application/rss+xml">
+    <link rel="alternate" title="Sala de Prensa"
+          href="/aeat/jsp/RSS.jsp?categoryId=b4e864cc0aace110VgnVCM1000004ef01e0aTAXC&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;channel=43f7d889b046a010VgnVCM1000004ef01e0a____&amp;lang=es_ES"
+          type="application/rss+xml">
+    <link rel="alternate" title="Subastas"
+          href="/aeat/jsp/RSS.jsp?categoryId=9ef7669db8e00210VgnVCM1000004ef01e0aTAXC&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;channel=43f7d889b046a010VgnVCM1000004ef01e0a____&amp;lang=es_ES"
+          type="application/rss+xml">
+
+
+</head>
+
+<body>
+<div id="contenedor">
+<div id="sombraIzq">
+<div id="sombraDer">
+<div id="sombraDerSub">
+<div id="contenido">
+
+<!-- titulo de accesibilidad -->
+
+
+<div id="encabezado"><h1>Agencia Tributaria - Resultados Buscador</h1></div>
+
+
+<!-- titulo de accesibilidad -->
+
+<!-- tabla de la cabecera -->
+
+
+<div id="cabecera">
+    <div id="topIzquierda">
+        <img src="/img/escudo_gobierno.gif" alt="Logo del Gobierno de Espa&ntilde;a" id="logoGobierno"><a
+            href="/wps/portal/Home?channel=1af861cd949a1010VgnVCM100000d7005a80____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES&amp;menu=0&amp;img=0"
+            title="Agencia Tributaria, ir a la p&aacute;gina principal" accesskey="c"><img src="/img/Logo.gif"
+                                                                                           alt="Logo Agencia Tributaria. Ir a la p&aacute;gina principal"></a>
+    </div>
+    <div id="topDerecha">
+        <div id="topIdiomas">
+            <ul>
+                <li class="nob">
+
+                    <a href="/wps/portal/Home?channel=1af861cd949a1010VgnVCM100000d7005a80____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES&amp;menu=0&amp;img=0"
+                       title="Castellano" lang="es-ES" hreflang="es-ES">Bienvenido<span
+                            class="oculto">, (Castellano)</span></a>
+                </li>
+                <li>
+                    <a href="/wps/portal/Home?channel=b520efe78964b010VgnVCM1000004ef01e0a____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=ca_ES&amp;menu=0&amp;img=0"
+                       title="Catal&agrave;" lang="ca-ES" hreflang="ca-ES">Benvingut<span class="oculto">, (Catal&agrave;)</span></a>
+                </li>
+                <li>
+                    <a href="/wps/portal/Home?channel=58b47dd2ccc5b010VgnVCM1000004ef01e0a____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=gl_ES&amp;menu=0&amp;img=0"
+                       title="Galego" lang="gl-ES" hreflang="gl-ES">Benvido<span class="oculto">, (Galego)</span></a>
+                </li>
+                <li>
+                    <a href="/wps/portal/Home?channel=72e31ad13274b010VgnVCM1000004ef01e0a____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=va_ES&amp;menu=0&amp;img=0"
+                       title="Valenci&agrave;" lang="ca-ES" hreflang="ca-ES">Benvingut<span class="oculto">, (Valenci&agrave;)</span></a>
+
+                </li>
+                <li>
+                    <a class="grals" href="/aeat/aeat.jsp?pg=euskera/listado/eu_ES" title="Euskera" lang="eu"
+                       hreflang="eu">Ongi etorri</a>
+                </li>
+            </ul>
+            <span class="salto"><a
+                    href="/wps/portal/Ayuda?channel=4977291ed3301110VgnVCM1000004ef01e0a____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES&amp;menu=0&amp;img=0">Pol&iacute;tica
+                ling&uuml;&iacute;stica</a></span>
+        </div>
+        <div id="topVarios">
+            <ul>
+                <li class="nob"><a href="/aeat/aeat.jsp?pg=Sindicacion/es_ES" accesskey="i"><img
+                        src="/AEAT/Contenidos_Comunes/Diversos/Sindicacion/rss.gif" alt="" height="10">&nbsp;
+                    RSS</a></li>
+                <li><a href="/aeat/aeat.jsp?pg=mapaweb/es_ES" accesskey="j">Mapa Web</a></li>
+                <li><a href="/aeat/aeat.jsp?pg=accesibilidad/es_ES" accesskey="k">Accesibilidad</a></li>
+                <li><a href="/aeat/aeat.jsp?pg=ayuda/es_ES" accesskey="l"><strong>Ayuda</strong></a></li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- fin tabla cabecera -->
+
+<!-- tabla del menu de navegacion -->
+
+
+<div id="menuNavegacion">
+    <ul class="menu">
+        <li class="centroinfoag">
+            <span class="centroinfoagizq"></span><a
+                href="/wps/portal/Navegacion?channel=55fa237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES&amp;menu=1&amp;img=8"
+                class="negro" accesskey="1">La Agencia Tributaria</a>
+
+        </li>
+        <li class="centroinfoci">
+            <span class="centroinfociizq"></span><a
+                href="/wps/portal/Navegacion?channel=a58b237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES&amp;menu=2&amp;img=7"
+                accesskey="2">Ciudadanos</a>
+        </li>
+        <li class="centroinfoem">
+            <span class="centroinfoemizq"></span><a
+                href="/wps/portal/Navegacion?channel=1f8b237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES&amp;menu=4&amp;img=5"
+                accesskey="3">Empresas y profesionales</a>
+        </li>
+        <li class="centroinfoen">
+            <span class="centroinfoenizq"></span><a
+                href="/wps/portal/Navegacion?channel=d89b237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES&amp;menu=3&amp;img=6"
+                accesskey="4">Colaboradores</a>
+        </li>
+    </ul>
+</div>
+
+
+<!-- fin tabla menu de navegacion -->
+
+<!-- tabla de la imagen con el buscador -->
+
+
+<div id="busqueda">
+    <div id="buscadorImg">
+        <img src="/AEAT/Contenidos_Comunes/Ficheros/foto_homenew2.jpg"
+             alt="La Agencia Tributaria. As&iacute; mejoramos todos." height="155px" width="514px"></div>
+    <div id="buscadorForm">
+        <form name="formbuscador"
+              action="/wps/portal/ResultadosBuscador?channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES&amp;menu=0&amp;img=0"
+              method="get">
+            <p>
+                <input name="channel" type="hidden" value="2ed8a4e784ac2010VgnVCM100000d7005a80____"><input name="site"
+                                                                                                            type="hidden"
+                                                                                                            value="56d8237c0bc1ff00VgnVCM100000d7005a80____"><input
+                    name="ver" type="hidden" value="L"><input name="idioma" type="hidden" value="es_ES"><input
+                    name="menu" type="hidden" value="0"><input name="img" type="hidden" value="0"><label for="buscador">Buscar:</label><input
+                    type="text" id="buscador" name="searchText" class="buscadorInput"><input name="buscador"
+                                                                                             type="submit"
+                                                                                             class="btnBuscar"
+                                                                                             title="Buscar"
+                                                                                             value="Buscar"><span
+                    class="salto"><a href="/aeat/aeat.jsp?pg=buscadorAvanzado/es_ES">B&uacute;squeda avanzada</a></span>
+
+            </p>
+        </form>
+        <form name="formportales" action="/aeat/jsp/ProcessPortales.jsp" method="get">
+            <p>
+                <label for="portales">Portales:</label><select name="portales" class="buscadorSelect" id="portales"
+                                                               size="1">
+                <option value="" selected>--seleccione portal--</option>
+                <option value="Estad&iacute;sticas Tributarias">Estad&iacute;sticas Tributarias</option>
+                <option value="Educaci&oacute;n C&iacute;vico-Tributaria">Educaci&oacute;n C&iacute;vico-Tributaria
+                </option>
+                <option value="No residentes">No residentes</option>
+                <option value="Campa&ntilde;as">Campa&ntilde;as</option>
+                <option value="EN: Non-residents">EN: Non-residents</option>
+                <option value="The Spanish Economy">The Spanish Economy</option>
+                <option value="Aduanas e Impuestos Especiales">Aduanas e Impuestos Especiales</option>
+                <option value="Fiscalidad Auton&oacute;mica">Fiscalidad Auton&oacute;mica</option>
+            </select><input name="idioma" type="hidden" value="es_ES"><input name="submitportales" type="submit"
+                                                                             class="btnBuscar" title="Ir al portal"
+                                                                             value="Ir al portal">
+
+            </p>
+        </form>
+        <p class="botonOV">
+            <a href="http://www.agenciatributaria.es/esede/eSede.html" title="Oficina Virtual - Sede" accesskey="q"><img
+                    alt="Oficina Virtual - Sede" src="/img/OV_sede_es.gif"></a>
+        </p>
+    </div>
+</div>
+
+
+<!-- fin tabla imagen con el buscador -->
+
+<!-- tabla de la brujula -->
+
+
+<div id="brujula">
+
+    <ul>
+        <li class="primero">
+            <a href="/wps/portal/Home?channel=1af861cd949a1010VgnVCM100000d7005a80____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES&amp;menu=0&amp;img=0">Inicio</a>
+        </li>
+        <li class="ultimo">Resultados Buscador</li>
+    </ul>
+</div>
+
+
+<!-- fin tabla brujula -->
+
+
+<div id="home">
+
+
+<div class="contenidoPrincipal">
+    <h2>Resultados de la b�squeda:&nbsp;<span class="textorojo">impuestos personas f�sicas</span>&nbsp;(1-10) de 19548
+    </h2>
+
+
+    <div class="paginacion">P�gina&nbsp;1&nbsp;de&nbsp;9
+
+
+        ...
+        <ul>
+
+            <li><img src="/img/volver.gif" alt="Ir a la p�gina anterior" class="flechaanterior"></li>
+
+            <li><strong class="textorojo">1</strong></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=2"
+                   title="P�gina 2">2</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=3"
+                   title="P�gina 3">3</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=4"
+                   title="P�gina 4">4</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=5"
+                   title="P�gina 5">5</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=6"
+                   title="P�gina 6">6</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=7"
+                   title="P�gina 7">7</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=8"
+                   title="P�gina 8">8</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=9"
+                   title="P�gina 9">9</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=2"
+                   title="Ir a la p�gina siguiente"><img src="/img/ir.gif" alt="Ir a la p�gina siguiente"
+                                                         class="flechasiguiente"></a></li>
+
+        </ul>
+    </div>
+
+    <div class="linea"></div>
+
+
+    <div class="resultado">
+        <h3 class="flecha"><a
+                href="/AEAT/Aduanas/Contenidos_Privados/Procedimientos_aduaneros/Num_Reg_EORI/resolucion_28_enero_2010.pdf"
+                title="Pulse aqu� para descargar">resolucion_28_enero_2010</a></h3>
+
+        N .
+        <span class="rojo">Personas</span> <span class="rojo">f�sicas</span> de nacionalidad extranjera, cuyo n�mero de
+        identificaci�n fiscal comience por M .
+        <span class="rojo">Personas</span> <span class="rojo">f�sicas</span> que carezcan de la nacionalidad espa�ola,
+        cuyo n�mero de identificaci�n fiscal sea el n�mero de identidad de extranjero que se les asigne o se les .
+        facilite de acuerdo con [...]
+
+    </div>
+
+    <div class="resultado">
+        <h3 class="flecha"><a
+                href="/AEAT/DOPRI/Fisterritorial/Autonomica/Comun/ContRelacionados/Norm_gral_finaciacion_auton/ley_21_2001.pdf"
+                title="Pulse aqu� para descargar">ley_21_2001</a></h3>
+
+        del Impuesto sobre la Renta de las <span class="rojo">Personas</span> <span class="rojo">F�sicas</span> .
+        2 . En el Impuesto sobre el Patrimonio, la residencia de las <span class="rojo">personas</span> <span
+            class="rojo">f�sicas</span> ser� la misma que corresponda para el Impuesto sobre la Renta de las <span
+            class="rojo">Personas</span> <span class="rojo">F�sicas</span> a la fecha de devengarse .
+
+        aqu�l .
+        3 . Las <span class="rojo">personas</span> <span class="rojo">f�sicas</span> residentes en [...]
+
+    </div>
+
+
+    <div class="resultado"><h3 class="flecha"><a
+            href="DetalleBuscador?url=Resultados+Buscador/Tributaci�n de los inmuebles urbanos propiedad de no residentes personas f�sicas&amp;content=1efc70e2d4119010VgnVCM10000050f01e0aRCRD&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES"
+            title="Tributaci�n de los inmuebles urbanos propiedad de no residentes personas f�sicas">Tributaci�n de los
+        inmuebles urbanos propiedad de no residentes personas f�sicas</a></h3>
+
+
+        que dirija a la Administraci�n Tributaria .
+
+        En general, trat�ndose de <span class="rojo">personas</span> de nacionalidad espa�ola, el NIF es el n�mero de su
+        Documento Nacional de Identidad (DNI) y, trat�ndose de <span class="rojo">personas</span> de nacionalidad
+        extranjera, el NIF es el N�mero personal de Identificaci�n de Extranjero (NIE) . La [...]
+        <!--  <p class="small"></p>-->
+
+    </div>
+
+
+    <div class="resultado"><h3 class="flecha"><a
+            href="DetalleBuscador?url=Resultados+Buscador/Instrumentos de Ratificaci�n del Convenio entre Espa�a y B�lgica&amp;content=25ffac81e44b8010VgnVCM10000050f01e0aRCRD&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES"
+            title="Instrumentos de Ratificaci�n del Convenio entre Espa�a y B�lgica">Instrumentos de Ratificaci�n del
+        Convenio entre Espa�a y B�lgica</a></h3>
+
+
+        el Impuesto de las <span class="rojo">personas</span> <span class="rojo">f�sicas</span>; 2) El Impuesto de
+        sociedades, 3) El Impuesto de <span class="rojo">personas</span> jur�dicas, 4) El Impuesto de no-residentes, 5)
+        La cotizaci�n especial asimilada al Impuesto de las <span class="rojo">personas</span> <span class="rojo">f�sicas</span>,
+
+        comprendiendo las retenciones, los recargos adicionales a dichos <span class="rojo">impuestos</span> y
+        descuentos [...]
+        <!--  <p class="small"></p>-->
+
+
+    </div>
+
+
+    <div class="resultado">
+        <h3 class="flecha"><a href="/AEAT/Contenidos_Comunes/Ficheros/Normativas/descarga/ord_Hac588.pdf"
+                              title="Pulse aqu� para descargar">ord_Hac588</a></h3>
+        sobre el Patrimonio y los documentos de ingreso o .
+        devoluci�n, consistentes en .
+        a Declaraciones de los <span class="rojo">Impuestos</span> sobre la Renta de las <span
+            class="rojo">Personas</span> <span class="rojo">F�sicas</span> y sobre el Patrimonio .
+
+        Modelo D 101 . Declaraci�n simplificada del Impuesto sobre la Renta de las <span class="rojo">Personas</span>
+        <span class="rojo">F�sicas</span> que se reproduce en el Anexo [...]
+
+    </div>
+
+    <div class="resultado">
+        <h3 class="flecha"><a href="/AEAT/Contenidos_Comunes/Ficheros/Normativas/normlegi/otros/rdleg2_2004.pdf"
+                              title="Pulse aqu� para descargar">rdleg2_2004</a></h3>
+        aut�nomas del Impuesto sobre la .
+        Renta de las <span class="rojo">Personas</span> <span class="rojo">F�sicas</span> producido en su territorio,
+        definido en el apartado 1 del art�culo 113 anterior .
+
+        58 .
+        2 . Se considera producido en el territorio de un municipio el rendimiento cedido del Impuesto sobre la Renta de
+        las <span class="rojo">Personas</span> <span class="rojo">F�sicas</span> que corresponda [...]
+
+    </div>
+
+    <div class="resultado">
+        <h3 class="flecha"><a
+                href="/AEAT/Contenidos_Comunes/La_Agencia_Tributaria/Normativas/Ficheros_Asociados_a_Las_Normativas/A2009/Ley_22_2009.pdf"
+                title="Pulse aqu� para descargar">Ley_22_2009</a></h3>
+        cambio, en relaci�n con el rendimiento cedido de los <span class="rojo">Impuestos</span> sobre la Renta de las
+        <span class="rojo">Personas</span> <span class="rojo">F�sicas</span> y sobre el Patrimonio,
+        cuando concurran las siguientes circunstancias .
+        a Que en el a�o en el cual se produce el cambio de residencia o en el siguiente, su base imponible del Impuesto
+        sobre la Renta [...]
+
+    </div>
+
+    <div class="resultado">
+        <h3 class="flecha"><a
+                href="/AEAT/DOPRI/Fisterritorial/Autonomica/Comun/ContRelacionados/Norm_gral_finaciacion_auton/LEY_22_2009_SISTEMA_FINANCIACIN.pdf"
+                title="Pulse aqu� para descargar">LEY_22_2009_SISTEMA_FINANCIACIN</a></h3>
+        cambio, en relaci�n con el rendimiento cedido de los <span class="rojo">Impuestos</span> sobre la Renta de las
+        <span class="rojo">Personas</span> <span class="rojo">F�sicas</span> y sobre el Patrimonio,
+        cuando concurran las siguientes circunstancias .
+        a Que en el a�o en el cual se produce el cambio de residencia o en el siguiente, su base imponible del Impuesto
+        sobre la Renta [...]
+
+    </div>
+
+    <div class="resultado">
+        <h3 class="flecha"><a
+                href="/AEAT/Contenidos_Comunes/La_Agencia_Tributaria/Normativas/Ficheros_Asociados_a_Las_Normativas/IRPF/orden_eha784.pdf"
+                title="Pulse aqu� para descargar">orden_eha784</a></h3>
+        1 . Se aprueban los modelos de declaraci�n simplificada y ordinaria del Impuesto sobre la Renta de las <span
+            class="rojo">Personas</span> <span class="rojo">F�sicas</span>, y del Impuesto sobre el Patrimonio y los
+        documentos de ingreso o devoluci�n, consistentes en .
+        a Declaraciones de los <span class="rojo">Impuestos</span> sobre la Renta de las <span
+            class="rojo">Personas</span> <span class="rojo">F�sicas</span> y sobre el [...]
+
+    </div>
+
+
+    <div class="resultado"><h3 class="flecha"><a
+            href="DetalleBuscador?url=Resultados+Buscador/Convenio entre el Reino de Espa�a y la Rep�blica de Eslovenia&amp;content=ea9e2452315b8010VgnVCM10000050f01e0aRCRD&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES"
+            title="Convenio entre el Reino de Espa�a y la Rep�blica de Eslovenia">Convenio entre el Reino de Espa�a y la
+        Rep�blica de Eslovenia</a></h3>
+
+
+        por las empresas, as� como los <span class="rojo">impuestos</span> sobre las plusval�as .
+
+        3 .-
+
+        Los <span class="rojo">impuestos</span> actuales a los que se aplica este Convenio son, en particular:
+
+        a .-
+
+        En Espa�a:
+
+        (i)
+
+        El Impuesto sobre la Renta de las <span class="rojo">Personas</span> <span class="rojo">F�sicas</span>;
+
+        (ii)
+
+        el Impuesto sobre Sociedades;
+
+        (iii)
+
+        el Impuesto sobre la Renta de [...]
+        <!--  <p class="small"></p>-->
+
+
+    </div>
+
+
+    <div class="linea"></div>
+
+
+    <div class="paginacion">P�gina&nbsp;1&nbsp;de&nbsp;9
+
+
+        ...
+        <ul>
+
+            <li><img src="/img/volver.gif" alt="Ir a la p�gina anterior" class="flechaanterior"></li>
+
+            <li><strong class="textorojo">1</strong></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=2"
+                   title="P�gina 2">2</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=3"
+                   title="P�gina 3">3</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=4"
+                   title="P�gina 4">4</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=5"
+                   title="P�gina 5">5</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=6"
+                   title="P�gina 6">6</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=7"
+                   title="P�gina 7">7</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=8"
+                   title="P�gina 8">8</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=9"
+                   title="P�gina 9">9</a></li>
+
+            <li>
+                <a href="/wps/portal/ResultadosBuscador?idioma=es_ES&amp;menu=0&amp;img=0&amp;channel=2ed8a4e784ac2010VgnVCM100000d7005a80____&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;ver=L&amp;searchText=impuestos personas f�sicas&amp;numPag=2"
+                   title="Ir a la p�gina siguiente"><img src="/img/ir.gif" alt="Ir a la p�gina siguiente"
+                                                         class="flechasiguiente"></a></li>
+
+        </ul>
+    </div>
+
+
+    <div id="mensajeRefinado" class="mensajeRefinado">- &nbsp;<a class="link"
+                                                                 href="/aeat/aeat.jsp?pg=buscadorAvanzado/es_ES&amp;refinar=impuestos personas f�sicas">Ayuda
+        para refinar su b�squeda.</a></div>
+</div>
+
+
+<div class="menuV">
+    <div class="top">
+        <span class="izq"></span>
+
+        <h2>Acceda directamente</h2>
+
+    </div>
+    <div class="txt">
+        <div class="fondo">
+            <img src="/img/ico_click.jpg" alt="" class="grupo">
+
+            <h3>A un clic</h3>
+            <ul>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=calendario/es_ES">Calendario del contribuyente</a>
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=agencia/cartaServ/es_ES">Carta de Servicios</a>
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=ayuda/certificado/es_ES">Certificados Electr&oacute;nicos</a>
+
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=descarga/es_ES">Descarga de programas de ayuda</a>
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=ayuda/BV/folletos/es_ES">Folletos informativos</a>
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=modFormul/es_ES">Modelos y formularios</a>
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=norm/es_ES">Normativas y criterios interpretativos</a>
+                </li>
+
+                <li>
+                    <a href="https://www2.agenciatributaria.gob.es/ES13/S/IAFRIAFRIINF"
+                       title="Preguntas Frecuentes (INFORMA). Nueva ventana" rel="Nueva ventana" target="_blank">Preguntas
+                        Frecuentes (INFORMA)<img src="/img/popup.gif" alt="Nueva ventana" class="ico_accesible"></a>
+                </li>
+            </ul>
+            <img src="/img/ico_enlaces.jpg" alt="" class="grupo">
+
+            <h3>Enlaces relacionados</h3>
+            <ul>
+                <li>
+                    <a href="http://www.meh.es" title="Ministerio de Econom&iacute;a y Hacienda. Nueva ventana"
+                       rel="Nueva ventana" target="_blank">Ministerio de Econom&iacute;a y Hacienda<img
+                            src="/img/popup.gif" alt="Nueva ventana" class="ico_accesible"></a>
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=enlcsInteres/otrosEnlcs/es_ES">Otros Enlaces de Inter&eacute;s</a>
+
+                </li>
+            </ul>
+            <img src="/img/ico_tramites.jpg" alt="" class="grupo">
+
+            <h3>A destacar</h3>
+            <ul>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=camp/contratistas/es_ES">Certificaciones de Contratistas y
+                        Subcontratistas</a>
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=camp/domicilioFiscal/es_ES">Domicilio Fiscal (Modelo 030)</a>
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=estad/es_ES">Estad&iacute;sticas Tributarias</a>
+
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=aduanas/iiee/es_ES">Gas&oacute;leo Agr&iacute;cola/Profesional</a>
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=camp/IEDMT/es_ES">Impuesto de Matriculaci&oacute;n</a>
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=camp/efactura/es_ES">La e-factura</a>
+                </li>
+                <li>
+
+                    <a href="https://www.agenciatributaria.gob.es/AEAT.sede/tramitacion/ZN01.shtml"
+                       title="Notificaciones. Nueva ventana" rel="Nueva ventana" target="_blank">Notificaciones<img
+                            src="/img/popup.gif" alt="Nueva ventana" class="ico_accesible"></a>
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=Agencia/Plan_Prevencion_Fraude_Fiscal/es_ES">Plan de Prevenci&oacute;n
+                        del Fraude Fiscal</a>
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=colaboradores/pagoimpuestos/apoderamientos/es_ES">Registro de
+                        apoderamientos</a>
+                </li>
+                <li>
+                    <a href="/aeat/aeat.jsp?pg=subastas/es_ES">Subastas</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+    <div class="pie">
+        <span class="izq"></span>
+    </div>
+</div>
+
+
+<div class="menuV">
+    <div class="top">
+        <span class="izq"></span>
+
+        <h2>Contacte con nosotros</h2>
+    </div>
+    <div class="txt">
+        <div class="fondoBotonera">
+
+            <ul>
+                <li>
+                    <img src="/AEAT/Contenidos_Comunes/Enlaces/Botonera/ico_delegaciones.gif" alt=""><a
+                        href="https://www.agenciatributaria.gob.es/AEAT.sede/Inicio/_otros_/_Direcciones_y_telefonos_/_Direcciones_y_telefonos_.shtml"
+                        title="Direcciones y tel&eacute;fonos. Nueva ventana" target="_blank">Direcciones y tel&eacute;fonos<img
+                        src="/img/popup.gif" alt="Nueva ventana" class="ico_accesible"></a>
+                </li>
+                <li>
+                    <img src="/AEAT/Contenidos_Comunes/Enlaces/Botonera/icono_defensa.gif" alt=""><a
+                        href="https://www2.agenciatributaria.gob.es/es13/d/rhqcwp01.htm"
+                        title="Defensa del Contribuyente. Nueva ventana" target="_blank">Defensa del Contribuyente<img
+                        src="/img/popup.gif" alt="Nueva ventana" class="ico_accesible"></a>
+                </li>
+                <li>
+                    <img src="/AEAT/Contenidos_Comunes/Enlaces/Botonera/ico_susc_off.gif" alt=""><a
+                        href="https://www.agenciatributaria.gob.es/AEAT.sede/Inicio/Procedimientos_y_Servicios/Otros_servicios/Denuncia_tributaria/Denuncia_tributaria.shtml"
+                        title="Denuncia tributaria. Nueva ventana" target="_blank">Denuncia tributaria<img
+                        src="/img/popup.gif" alt="Nueva ventana" class="ico_accesible"></a>
+                </li>
+                <li>
+                    <img src="/AEAT/Contenidos_Comunes/Enlaces/Botonera/ico_webcall_off.gif" alt=""><a
+                        href="/aeat/aeat.jsp?pg=ayuda/piesoporte/es_ES">Consultas Inform&aacute;ticas</a>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="pie">
+        <span class="izq"></span>
+    </div>
+</div>
+<div class="menuV">
+    <div class="top">
+        <span class="izq"></span>
+
+        <h2>Opine</h2>
+    </div>
+    <div class="txt">
+        <div class="fondoBotonera">
+            <ul>
+                <li>
+
+                    <img src="/AEAT/Contenidos_Comunes/Enlaces/Botonera/ico_webcall_off.gif" alt=""><a
+                        href="/aeat/aeat.jsp?pg=OpineBuzSuger/es_ES">Buzones de sugerencias</a>
+                </li>
+                <li>
+                    <img src="/AEAT/Contenidos_Comunes/Diversos/Botonera/encuesta.gif" alt=""><a
+                        href="/aeat/aeat.jsp?pg=opine/Encuestas/es_ES">Encuestas</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="pie">
+        <span class="izq"></span>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    /************ INICIALIZACION DE LAS VARIABLES ***********/
+
+    var contentPeso=new Array();
+    var numC = -1;
+
+    numC++;
+
+    contentPeso[eval(numC)]='100';
+
+    numC++;
+
+    contentPeso[eval(numC)]='100';
+
+    numC++;
+
+    contentPeso[eval(numC)]='100';
+
+
+    /************ INICIALIZACION DE LAS VARIABLES ***********/
+    function obtenerPesoTotal(cp) {
+    suma = 0;
+    for (i = 0; i < cp.length;i++) {
+    suma = eval(suma) + eval(cp[i]);
+    }
+    return suma;
+    }
+
+</script>
+<div id="miniBanners"><a href="/aeat/aeat.jsp?pg=camp/NEO/es_ES" title="Notificaciones electr&oacute;nicas obligatorias"
+                         class="imgbanner" id="id1"><img
+        src="/AEAT/Contenidos_Comunes/Diversos/Banners/BannerNotificacionesElectronicas_es.jpg"
+        alt="Notificaciones electr&oacute;nicas obligatorias"></a><a href="http://www.thespanisheconomy.gob.es/"
+                                                                     title="The Spanish Economy.&nbsp;Nueva ventana"
+                                                                     class="imgbanner" id="id2" rel="Nueva ventana"
+                                                                     target="_blank"><img
+        src="/AEAT/Contenidos_Comunes/Diversos/Banners/Banner-TheSpanishEconomy.jpg" alt="The Spanish Economy"></a><a
+        href="/aeat/aeat.jsp?pg=camp/declarInformativas/2010/es_ES" title="Declaraci&oacute;ns Informativas 2010"
+        class="imgbanner" id="id3"><img
+        src="/AEAT/Contenidos_Comunes/La_Agencia_Tributaria/Informacion_institucional/Campanias/Declaraciones_informativas_e_IVA/2010/BannerInformativas2010_es.jpg"
+        alt="Declaraci&oacute;ns Informativas 2010"></a></div>
+<script type="text/javascript">
+    for (i=0; i < contentPeso.length; i++) {
+    imagen = document.getElementById('id'+eval(eval(i)+1));
+    if (imagen!=null) {
+    imagen.className="oculto";
+    }
+    }
+    var sumaPesos = 0;
+    var numBanners = 3;
+
+    if (numBanners < 0) numBanners =0;
+    if (eval(numBanners) > eval(contentPeso.length)) numBanners = contentPeso.length;
+    for (nB = 0; eval(nB) < eval(numBanners); nB++){
+    sumaPesos = obtenerPesoTotal(contentPeso);
+    do {
+    numRandom=Math.round(Math.random()*eval(sumaPesos));
+    } while (eval(numRandom) < eval(1) || eval(numRandom) > eval(sumaPesos));
+    var pesoCont = 0;
+    var pos = 0;
+    while (eval(numRandom) > eval(pesoCont)){
+    pesoCont = eval(pesoCont) + eval(contentPeso[eval(pos)]);
+    pos = eval(pos) + 1;
+    }
+    imagen = document.getElementById('id'+pos);
+    if (imagen!=null) {
+    imagen.className="imgbanner";
+    }
+    pos = eval(pos) -1;
+    contentPeso[eval(pos)] = 0;
+    }
+    for (i=0; i < contentPeso.length; i++) {
+    imagen = document.getElementById('id'+eval(eval(i)+1));
+    if (imagen!=null) {
+    if (imagen.className=="oculto") {
+    imagen.parentNode.removeChild(imagen);
+    }
+    }
+    }
+</script>
+
+
+</div>
+<!-- fin home -->
+
+
+<!--tabla del pie-->
+
+
+<div id="pie">
+    <ul class="enlaces">
+        <li class="inicial">
+            <a href="/wps/portal/DetalleContenido?url=Condiciones+generales+de+uso/Condiciones+generales+de+uso&amp;content=c5dad89c26199010VgnVCM1000004ef01e0aRCRD&amp;channel=12ea65851b29ff00VgnVCM100000d7005a80____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES&amp;menu=0&amp;img=0">Condiciones
+                generales de uso</a>
+
+        </li>
+        <li>
+            <a href="/wps/portal/DetalleContenido?url=Pol%C3%ADtica+de+privacidad/Pol%C3%ADtica+de+privacidad&amp;content=ca6265adeb0b9010VgnVCM1000004ef01e0aRCRD&amp;channel=4aea65851b29ff00VgnVCM100000d7005a80____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES&amp;menu=0&amp;img=0">Pol&iacute;tica
+                de privacidad</a>
+        </li>
+        <li>
+            <a href="/wps/portal/DetalleContenido?url=Aviso+de+seguridad/Aviso+de+seguridad&amp;content=166dcee309b34110VgnVCM1000004ef01e0aRCRD&amp;channel=c20dcee309b34110VgnVCM1000004ef01e0a____&amp;ver=L&amp;site=56d8237c0bc1ff00VgnVCM100000d7005a80____&amp;idioma=es_ES&amp;menu=0&amp;img=0">Aviso
+                de seguridad</a>
+        </li>
+    </ul>
+    <ul class="logos">
+        <li>
+            <a href="http://certiaccesibilidad.technosite.es/Recursos/Certificado.aspx?codigo=kgpmruerocowlrdclnqi458091628KGPMRUEROCOWLRDCLNQII"
+               target="_blank" title="Ir a la certificaci&oacute;n Euracert de Accesibilidad AA. Nueva ventana"
+               rel="popup"><img src="/img/cert_euracert.png"
+                                alt="Logo de la certificaci&oacute;n Euracert de accesibilidad AA"></a>
+        </li>
+        <li>
+            <a href="http://certiaccesibilidad.technosite.es/Recursos/Certificado.aspx?codigo=kgpmruerocowlrdclnqi458091628KGPMRUEROCOWLRDCLNQII"
+               target="_blank" title="Ir a la certificaci&oacute;n Technosite de Accesibilidad AA. Nueva ventana"
+               rel="popup"><img src="/img/cert_technosite.png"
+                                alt="Logo de la certificaci&oacute;n Technosite de accesibilidad AA"></a>
+
+        </li>
+    </ul>
+</div>
+
+
+<!-- fin tabla del pie-->
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="pieContenedor">
+				  <span class="sombraInfDer">
+				  </span>
+
+				  <span class="sombraInfIzq">
+				  </span>
+</div>
+<!-- fin pieContenedor -->
+</body>
+</html>  

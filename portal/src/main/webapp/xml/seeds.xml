@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+This program is licensed and may be used, modified and redistributed under the terms
+of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+version as soon as they are approved by the European Commission.
+Unless required by applicable law or agreed to in writing, software distributed under the 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+ANY KIND, either express or implied. See the License for the specific language governing 
+permissions and more details.
+You should have received a copy of the EUPL1.2 license along with this program; if not, 
+you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
+Email: observ.accesibilidad@correo.gob.es
+-->
+<lista>
+	<semilla>
+		<nombre>semilla1</nombre>
+		<url>
+			http://www.semilla1.com
+		</url>
+		<activa>true</activa>
+		<acronimo>S1</acronimo>
+		<en_directorio>false</en_directorio>
+	</semilla>
+	<semilla>
+		<nombre>semilla2</nombre>
+		<url>http://www.semilla2.com/directory/</url>
+		<activa>false</activa>
+		<dependencias>Órgano 1</dependencias>
+		<en_directorio>true</en_directorio>
+	</semilla>
+	<semilla>
+		<nombre>semilla3</nombre>
+		<activa>true</activa>
+		<!-- Una URL en cada línea -->
+		<url>http://www.semilla3-1.com 
+			http://www.semilla3-2.com
+			http://www.semilla3-3.com/index.html&amp;param=value</url>
+		<!-- Una dependencia por línea -->
+		<dependencias>Órgano 1
+			Órgano 2</dependencias>
+		<en_directorio>false</en_directorio>
+	</semilla>
+</lista>

@@ -1,0 +1,74 @@
+/*
+Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
+This program is licensed and may be used, modified and redistributed under the terms
+of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+version as soon as they are approved by the European Commission.
+Unless required by applicable law or agreed to in writing, software distributed under the 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+ANY KIND, either express or implied. See the License for the specific language governing 
+permissions and more details.
+You should have received a copy of the EUPL1.2 license along with this program; if not, 
+you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+*/
+#gbox_grid table#grid, #gbox_grid table.gridTable {
+	border-collapse: inherit;
+}
+
+.ui-jqgrid-htable, #grid, .gridTable {
+	border: none !Important;
+	margin: 0 !Important;
+	font-size: 14px !Important;
+}
+
+.ui-jqgrid .ui-jqgrid-bdiv {
+	overflow-x: auto !Important;
+	overflow-y: auto !Important;;
+}
+
+.ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr {
+	padding: 1%;
+	font-weight: bold;
+}
+
+.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr>td {
+	padding: 5px;
+}
+
+.ui-jqgrid {
+	clear: both;
+}
+
+/* Para evitar el parpadeo al recargar */
+.ui-jqgrid-bdiv {
+	/*min-height: 500px !Important;*/
+	
+}
+
+.ui-widget-content a, .ui-jqgrid-jquery-ui .glyphicon {
+	color: #e21430 !important;
+}
+
+.pagination {
+	padding: 5px 10px;
+}
+
+/** Para ocultar la primera fila que mete vacía **/
+.ui-jqgrid tr.jqgfirstrow>td {
+	padding: 0 !important;
+}
+
+.ui-jqgrid tr.jqgrow td, .ui-jqgrid-cell-wrapper {
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+}
+
+.ui-jqgrid-cell-wrapper a {
+	overflow:hidden;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+}
+
+.listado-grid {
+	text-overflow: ellipsis;
+	overflow: hidden;
+}

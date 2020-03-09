@@ -1,0 +1,54 @@
+5.0.3
+------------------------------------------------------------------------------------------------------------------------------------
+- Correcciones informe oficial UNE-EN301549:2019
+- Correcciones varias validaciones
+- Nueva forma de generar los informes individuales (enlaces por email)
+- Corregidos contadores de ranking de portales, complejidad y segmento
+- Corregida paginación de etiquetas
+- Corregida paginación de semillas
+- Corregido el cálculo del cumplimiento estimado de un sitio web
+- Corregido acceso al motor de JS cuando un sitio web repospondia un código http 30x
+- Corregido un error que provocaba que en la edición de un observatorio no se actualziar la normativa para las nuevas semillas
+
+5.0.2
+------------------------------------------------------------------------------------------------------------------------------------
+- Correcciones informe oficial UNE-EN301549:2019
+- Correcciones informe servicio diagnótico cartucho accesibilidad
+- Corregida validación 1.11 de títulos iguales que se reportaba erróneamente como error cuando había menos de 10 páginas
+- Corregida valdiación 2.3 de etiquetas resposive en el CSS que se reportaba erróneamente si algún CSS no contenía ninguna
+- Corregida validación 2.5 de autocomplete que tenía mal el patrón de en el fichero check.patterns.properties
+- Modificada la deteción de CSS mediante el tag <link> para tener encuenta los que tenga atributos rel="stylesheet" o type="tex/css" y no ambos como hasta ahora
+- Correcciones en el listado de semillas que listaba varias veces la misma semillas tantas como etiquetas asociadas
+- Registro en base de datos de las URLs de accesibilidad utilizadas en las validaciones (cartucho accesibilidad)
+- Implementada opción para añadir una semilla a un observatorio ya creado.
+- Correcciones varias en textos de la interfaz
+
+5.0.1
+------------------------------------------------------------------------------------------------------------------------------------
+- Correcciones en los informes individuales
+- Eliminadas las palabras en inglés "us" y "on" del listado para detectar idioma inglés en el texto
+- Adjuntado código analizado en el servicio de diagnóstico
+- Modificado el contenido del mensaje de correo electrónico para incluir información adicional de la complejidad 
+- Corregidas las descripciones de los nuevos checks para el cartucho UNE-EN301549:2019
+- Añadida información adicional a los correos de inacabados
+- Mejorada el formulario de búsquedas de la sección de Semillas para incluir más campos de filtrado
+- La exportación de semillas ahora sólo exporta el resultado de la búsqueda realizada
+
+5.0.0
+------------------------------------------------------------------------------------------------------------------------------------
+
+- Implementación de cartuchos UNE-EN301549:2019 y Accesibilidad. 
+- Mejora en la clasificación de semillas. 
+- Informes agregados dinámicos. 
+- Consolas de control del observatorio y servicio diagnóstico.
+- Guardado de puntuaciones en base de datos.
+
+4.4.1
+------------------------------------------------------------------------------------------------------------------------------------
+- Mejoras en la redirección y control de redirecciones continuas en páginas de accesibilidad
+
+
+4.4.0
+------------------------------------------------------------------------------------------------------------------------------------
+- Mejorada la exportación/importación de semillas para incluir el id de las mismas y poder importar las existentes automáticamente
+
