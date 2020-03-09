@@ -143,9 +143,9 @@ public class TestCrawl {
 //				",https://www.euskadi.eus/hasiera/", "https://www.aragon.es", "https://www.gobiernodecanarias.org/principal/", "https://www.cantabria.es/", "https://www.navarra.es/home_es/",
 //				"https://web.larioja.org", "http://www.caib.es/govern/index.do?lang=ca", "https://www.asturias.es/", "https://www.juntadeandalucia.es/institucional/index.html", "https://www.jcyl.es/",
 //				"http://www.juntaex.es/web/", "https://www.castillalamancha.es/", "http://www.carm.es", "https://www.xunta.gal/portada" };
-		String[] urls = new String[] {};
-		String[] urlsD = new String[] { "https://web.larioja.org/bor-portada/", "https://www.larioja.org/larioja-client/cm/oficina-electronica/", "https://www.larioja.org/educacion/es",
-				"https://www.larioja.org/empleo-formacion/es", "https://web.larioja.org/portal-transparencia", "https://www.asturias.es/transparencia" };
+		String[] urls = new String[] {
+				"https://www.asturias.es/portal/site/webasturias/menuitem.aed5112dda5fb391f7be5f37ec12b2a0/?vgnextoid=308ba7408a21a510VgnVCM100000ce212b0aRCRD&i18n.http.lang=es" };
+		String[] urlsD = new String[] {};
 		for (String url : urls) {
 			this.crawl(url, false);
 		}
