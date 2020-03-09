@@ -30,7 +30,7 @@ Create a context configuration like this in *server.xml*:
     timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"                                         
     defaultTransactionIsolation="READ_UNCOMMITTED" username="<username>" password="<password>"/>
 </Context>
-``
+```
 Note to chenge *url*, *user* and *password* values
 
 # Application
