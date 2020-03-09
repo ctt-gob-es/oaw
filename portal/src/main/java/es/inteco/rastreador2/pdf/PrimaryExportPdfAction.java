@@ -77,8 +77,9 @@ public class PrimaryExportPdfAction extends Action {
 			if ("downloadFile".equals(action)) {
 				return downloadFile(mapping, request, response);
 			} else if (Constants.EXPORT_ALL_PDFS.equals(action)) {
+				return exportAllPdfs(mapping, request, response);
+			} else if (Constants.EXPORT_ALL_PDFS_EMAIL.equals(action)) {
 				// TODO Alternative PDF mass generation
-				// return exportAllPdfs(mapping, request, response);
 				return exportAllPdfsAndSendEmail(mapping, request, response);
 			} else {
 				return exportSinglePdf(mapping, request, response);

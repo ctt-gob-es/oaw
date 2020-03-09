@@ -278,6 +278,7 @@ public interface Constants {
 	String XML_ACRONIMO = "acronimo";
 	/** The xml activa. */
 	String XML_ACTIVA = "activa";
+	/** The xml eliminada. */
 	String XML_ELIMINADA = "eliminada";
 	/** The xml in directory. */
 	String XML_IN_DIRECTORY = "en_directorio";
@@ -635,6 +636,8 @@ public interface Constants {
 	String EXPORT_PDF_REGENERATE = "regeneratePDF";
 	/** The export all pdfs. */
 	String EXPORT_ALL_PDFS = "exportAllPdfs";
+	/** The export all pdfs email. */
+	String EXPORT_ALL_PDFS_EMAIL = "exportAllPdfsMail";
 	/** The pdf error forward. */
 	String PDF_ERROR_FORWARD = "verRastreosRealizados";
 	/** The rojo inteco. */
@@ -736,6 +739,8 @@ public interface Constants {
 	String EXPORT_ALL_PDF_FORWARD = "exportAllPdfs";
 	/** The export all pdf forward multilanguage. */
 	String EXPORT_ALL_PDF_FORWARD_MULTILANGUAGE = "exportAllPdfsM";
+	/** The export all pdf forward mail. */
+	String EXPORT_ALL_PDF_FORWARD_MAIL = "exportAllPdfsMail";
 	/** The accion add seed. */
 	String ACCION_ADD_SEED = "addSeed";
 	/** The seed detail. */
@@ -1134,6 +1139,7 @@ public interface Constants {
 	String SUBMENU_OBS_COMPLEJIDADES = "submenuComplejidadesObs";
 	/** The submenu obs plantillas. */
 	String SUBMENU_OBS_PLANTILLAS = "submenuPlantillassObs";
+	/** The submenu obs reducirtablas. */
 	String SUBMENU_OBS_REDUCIRTABLAS = "submenuReducirTablasObs";
 	/** The submenu obs etiquetas. */
 	String SUBMENU_OBS_ETIQUETAS = "submenuEtiquetasObs";
@@ -1395,6 +1401,7 @@ public interface Constants {
 	String OBS_PRIORITY_2 = "Priority 2";
 	/** The obs priority none. */
 	String OBS_PRIORITY_NONE = "none";
+	/** The obs compilance. */
 	String OBS_COMPILANCE = "Conforme";
 	/** The obs compilance none. */
 	String OBS_COMPILANCE_NONE = "No conforme";

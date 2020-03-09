@@ -201,7 +201,20 @@ Email: observ.accesibilidad@correo.gob.es
 												title="Exportar todos los informes indidividuales de todos los portales" />
 											<span class="sr-only">Generar los informes individuales</span>
 										</html:link>
-										</li></td>
+										</li>
+										
+										<jsp:useBean id="paramsExportPDFMail" class="java.util.HashMap" /> <c:set target="${paramsExportPDFMail}"
+											property="id_observatorio" value="${id_observatorio}" /> <c:set target="${paramsExportPDFMail}"
+											property="${id_ex_obs}" value="${fulfilledObservatory.id}" /> <html:link
+											forward="<%=Constants.EXPORT_ALL_PDF_FORWARD_MAIL%>" name="paramsExportPDFMail">
+											<span class="glyphicon glyphicon-send" aria-hidden="true" data-toggle="tooltip"
+												title="Exportar todos los informes indidividuales de todos los portales y enviar por email los enlaces" />
+											<span class="sr-only">Generar los informes individuales (evío por email)</span>
+										</html:link>
+										
+										
+										
+										</td>
 									<td><jsp:useBean id="paramsGraphic" class="java.util.HashMap" /> <c:set target="${paramsGraphic}"
 											property="id" value="${fulfilledObservatory.id}" /> <c:set target="${paramsGraphic}"
 											property="id_observatorio" value="${id_observatorio}" /> <c:set target="${paramsGraphic}" property="graphic"
