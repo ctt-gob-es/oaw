@@ -1,15 +1,16 @@
-<!-- Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, This program is licensed and may be used, modified and redistributed under the terms of 
-	the European Public License (EUPL), either version 1.2 or (at your option) any later version as soon as they are approved by the European Commission. Unless required 
-	by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
-	either express or implied. See the License for the specific language governing permissions and more details. You should have received a copy of the EUPL1.2 license 
-	along with this program; if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 -->
+<!-- Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, This program is licensed and may be used, modified 
+	and redistributed under the terms of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+	version as soon as they are approved by the European Commission. Unless required by applicable law or agreed to in writing, 
+	software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+	either express or implied. See the License for the specific language governing permissions and more details. You should have 
+	received a copy of the EUPL1.2 license along with this program; if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>es.minhap.oaw</groupId>
 	<artifactId>oaw</artifactId>
-	<version>5.0.2</version>
+	<version>5.0.3</version>
 	<packaging>pom</packaging>
 
 	<name>oaw</name>
@@ -32,6 +33,11 @@
 			<artifactId>junit</artifactId>
 			<version>4.7</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.graylog2</groupId>
+			<artifactId>gelfj</artifactId>
+			<version>1.1.16</version>
 		</dependency>
 	</dependencies>
 
@@ -93,7 +99,7 @@
 	</build>
 
 	<profiles>
-			<profile>
+		<profile>
 			<id>desarrollo-windows</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
@@ -104,7 +110,7 @@
 				<files.path>/tmp/oaw/files</files.path>
 			</properties>
 		</profile>
-		
+
 		<profile>
 			<id>desarrollo</id>
 			<activation>
@@ -116,6 +122,19 @@
 				<files.path>/tmp/oaw/files</files.path>
 			</properties>
 		</profile>
+
+		<profile>
+			<id>desarrollo2</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<profile.name>desarrollo2</profile.name>
+				<deploy.path>/media/alvaro/01D4C9B8E7267650/oaw/databasepro_27022020/tomcat/webapps/oaw</deploy.path>
+				<files.path>/media/alvaro/01D4C9B8E7267650/oaw/databasepro_27022020/tmp/oaw/files</files.path>
+			</properties>
+		</profile>
+
 		<profile>
 			<id>integracion</id>
 			<properties>

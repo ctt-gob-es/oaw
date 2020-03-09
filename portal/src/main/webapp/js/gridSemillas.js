@@ -205,8 +205,94 @@ function dialogoErrorEdit(mensaje) {
 			}
 		}
 	});
-
 }
+
+function eliminarSemillaFormater(cellvalue, options, rowObject) {
+
+	return "<span style='cursor:pointer' onclick='eliminarSemilla("
+			+ options.rowId
+			+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>Eliminar definitivamente</span></span>";
+}
+
+function eliminarSemilla(rowId) {
+
+	var semilla = $('#grid').jqGrid('getRowData', rowId);
+
+	var idSemilla = semilla.id;
+	var dialogoEliminar = $('<div id="dialogoEliminarContent"></div>');
+
+	dialogoEliminar.append('<p>&#191;Desea eliminar la semilla "'
+			+ semilla.nombre + '"? Esta será borrada definitivamente de la base de datos</p>');
+	
+	$
+			.ajax(
+					{
+						url : '/oaw/secure/JsonSemillasObservatorio.do?action=listObservatoriosSemillaDelete&semilla='
+								+ idSemilla,
+						method : 'POST',
+						cache : false
+					})
+			.success(
+					function(data) {
+
+						if (data != null) {
+
+							if (JSON.parse(data).length > 0) {
+
+								dialogoEliminar
+										.append('<p>La semilla est&#225; o ha estado asociada a los siguientes observatorios: </p></ul>');
+
+								$.each(JSON.parse(data),
+										function(index, value) {
+											dialogoEliminar.append('<li>'
+													+ value.nombre + '</li>')
+										});
+
+								dialogoEliminar.append("</ul>");
+							}
+
+						}
+
+					});
+
+	dialogoEliminar
+			.dialog({
+				autoOpen : false,
+				minHeight : $(window).height() * 0.25,
+				minWidth : $(window).width() * 0.25,
+				modal : true,
+				title : 'RASTREADOR WEB - Eliminar semilla',
+				buttons : {
+					"Aceptar" : {
+						click: function() {
+							$
+							.ajax(
+									{
+										url : '/oaw/secure/JsonSemillasObservatorio.do?action=delete&idSemilla='
+												+ idSemilla,
+										method : 'POST',
+										cache : false
+									}).success(function(response) {
+								reloadGrid(lastUrl);
+								dialogoEliminar.dialog("close");
+							});
+						},
+						text: 'Aceptar',
+						class: 'jdialog-btn-save'
+					},
+					"Cancelar" : {
+						click: function() {
+							dialogoEliminar.dialog("close");
+						},
+						text: 'Cancelar',
+						class: 'jdialog-btn-cancel'
+					}
+				}
+			});
+
+	dialogoEliminar.dialog("open");
+}
+
 
 // Recarga el grid. Recibe como parámetro la url de la acción con la información
 // de paginación. Si no le llega nada usa la url por defecto
@@ -247,7 +333,7 @@ function reloadGrid(path) {
 													"Complejidad", "Etiquetas",
 													"Dependencia", "URLs",
 													"Activa", "Directorio",
-													"Ir", "Eliminar" ],
+													"Ir", "Eliminar", "Eliminar definitivamente" ],
 											colModel : [
 													{
 														name : "id",
@@ -565,6 +651,13 @@ function reloadGrid(path) {
 															value : "true:false"
 														},
 														sortable : false
+													},
+													{
+														name : 'eliminarSemilla',
+														formatter : eliminarSemillaFormater,
+														align : "center",
+														width : 10,
+														editable : false
 													}
 
 											],
@@ -703,7 +796,7 @@ function reloadGrid(path) {
 						if (total == 0) {
 							$('#grid')
 									.append(
-											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="9" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
+											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="12" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
 						}
 
 						// Paginador

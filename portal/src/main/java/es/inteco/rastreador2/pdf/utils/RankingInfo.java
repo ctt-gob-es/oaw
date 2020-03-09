@@ -15,51 +15,44 @@
 ******************************************************************************/
 package es.inteco.rastreador2.pdf.utils;
 
+import java.math.BigDecimal;
+
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
-
-import java.math.BigDecimal;
 
 /**
  * The Class RankingInfo.
  */
 public class RankingInfo {
+	/** The score. */
+	private BigDecimal score;
+	/** The global rank. */
+	private int globalRank;
+	/** The global seeds number. */
+	private int globalSeedsNumber;
+	/** The category rank. */
+	private int categoryRank;
+	/** The complexity rank. */
+	private int complexityRank;
+	/** The category seeds number. */
+	private int categorySeedsNumber;
+	/** The category seeds number. */
+	private int complexitySeedsNumber;
+	/** The categoria. */
+	private CategoriaForm categoria;
+	/** The complejidad. */
+	private ComplejidadForm complejidad;
+	/** The ambito. */
+	private AmbitoForm ambito;
+	/** The date. */
+	private String date;
+	/** The compliance. */
+	private String compliance;
 
-    /** The score. */
-    private BigDecimal score;
-    
-    /** The global rank. */
-    private int globalRank;
-    
-    /** The global seeds number. */
-    private int globalSeedsNumber;
-    
-    /** The category rank. */
-    private int categoryRank;
-    
-    /** The complexity rank. */
-    private int complexityRank;
-    
-    /** The category seeds number. */
-    private int categorySeedsNumber;
-    
-    /** The categoria. */
-    private CategoriaForm categoria;
-    
-    private ComplejidadForm complejidad;
-    
-    /** The ambito. */
-    private AmbitoForm ambito;
-    
-    /** The date. */
-    private String date;
-    
-    /** The compliance. */
-    private String compliance;
-    
-    
-    /**
+	/**
+	 * Gets the complejidad.
+	 *
 	 * @return the complejidad
 	 */
 	public ComplejidadForm getComplejidad() {
@@ -67,6 +60,8 @@ public class RankingInfo {
 	}
 
 	/**
+	 * Sets the complejidad.
+	 *
 	 * @param complejidad the complejidad to set
 	 */
 	public void setComplejidad(ComplejidadForm complejidad) {
@@ -96,7 +91,7 @@ public class RankingInfo {
 	 *
 	 * @return the complexity rank
 	 */
-    public int getComplexityRank() {
+	public int getComplexityRank() {
 		return complexityRank;
 	}
 
@@ -115,165 +110,180 @@ public class RankingInfo {
 	 * @return the date
 	 */
 	public String getDate() {
-        return date;
-    }
+		return date;
+	}
 
-    /**
+	/**
 	 * Sets the date.
 	 *
 	 * @param date the new date
 	 */
-    public void setDate(String date) {
-        this.date = date;
-    }
+	public void setDate(String date) {
+		this.date = date;
+	}
 
-    
-
-    /**
+	/**
 	 * Gets the global rank.
 	 *
 	 * @return the global rank
 	 */
-    public int getGlobalRank() {
-        return globalRank;
-    }
+	public int getGlobalRank() {
+		return globalRank;
+	}
 
-    /**
+	/**
 	 * Sets the global rank.
 	 *
 	 * @param globalRank the new global rank
 	 */
-    public void setGlobalRank(int globalRank) {
-        this.globalRank = globalRank;
-    }
+	public void setGlobalRank(int globalRank) {
+		this.globalRank = globalRank;
+	}
 
-    /**
+	/**
 	 * Increment global rank.
 	 */
-    public void incrementGlobalRank() {
-        this.globalRank++;
-    }
+	public void incrementGlobalRank() {
+		this.globalRank++;
+	}
 
-    /**
+	/**
 	 * Gets the global seeds number.
 	 *
 	 * @return the global seeds number
 	 */
-    public int getGlobalSeedsNumber() {
-        return globalSeedsNumber;
-    }
+	public int getGlobalSeedsNumber() {
+		return globalSeedsNumber;
+	}
 
-    /**
+	/**
 	 * Sets the global seeds number.
 	 *
 	 * @param globalSeedsNumber the new global seeds number
 	 */
-    public void setGlobalSeedsNumber(int globalSeedsNumber) {
-        this.globalSeedsNumber = globalSeedsNumber;
-    }
+	public void setGlobalSeedsNumber(int globalSeedsNumber) {
+		this.globalSeedsNumber = globalSeedsNumber;
+	}
 
-    /**
+	/**
 	 * Gets the category rank.
 	 *
 	 * @return the category rank
 	 */
-    public int getCategoryRank() {
-        return categoryRank;
-    }
+	public int getCategoryRank() {
+		return categoryRank;
+	}
 
-    /**
+	/**
 	 * Sets the category rank.
 	 *
 	 * @param categoryRank the new category rank
 	 */
-    public void setCategoryRank(int categoryRank) {
-        this.categoryRank = categoryRank;
-    }
+	public void setCategoryRank(int categoryRank) {
+		this.categoryRank = categoryRank;
+	}
 
-    /**
+	/**
 	 * Increment category rank.
 	 */
-    public void incrementCategoryRank() {
-        this.categoryRank++;
-    }
-    
-    /**
+	public void incrementCategoryRank() {
+		this.categoryRank++;
+	}
+
+	/**
 	 * Increment complexity rank.
 	 */
-    public void incrementComplexityRank() {
-        this.complexityRank++;
-    }
+	public void incrementComplexityRank() {
+		this.complexityRank++;
+	}
 
-
-    /**
+	/**
 	 * Gets the category seeds number.
 	 *
 	 * @return the category seeds number
 	 */
-    public int getCategorySeedsNumber() {
-        return categorySeedsNumber;
-    }
+	public int getCategorySeedsNumber() {
+		return categorySeedsNumber;
+	}
 
-    /**
+	/**
 	 * Sets the category seeds number.
 	 *
 	 * @param categorySeedsNumber the new category seeds number
 	 */
-    public void setCategorySeedsNumber(int categorySeedsNumber) {
-        this.categorySeedsNumber = categorySeedsNumber;
-    }
+	public void setCategorySeedsNumber(int categorySeedsNumber) {
+		this.categorySeedsNumber = categorySeedsNumber;
+	}
 
-    /**
+	/**
 	 * Gets the categoria.
 	 *
 	 * @return the categoria
 	 */
-    public CategoriaForm getCategoria() {
-        return categoria;
-    }
+	public CategoriaForm getCategoria() {
+		return categoria;
+	}
 
-    /**
+	/**
 	 * Sets the categoria.
 	 *
 	 * @param categoria the new categoria
 	 */
-    public void setCategoria(CategoriaForm categoria) {
-        this.categoria = categoria;
-    }
+	public void setCategoria(CategoriaForm categoria) {
+		this.categoria = categoria;
+	}
 
-    /**
+	/**
 	 * Gets the ambito.
 	 *
 	 * @return the ambito
 	 */
-    public AmbitoForm getAmbito() {
-        return ambito;
-    }
+	public AmbitoForm getAmbito() {
+		return ambito;
+	}
 
-    /**
+	/**
 	 * Sets the ambito.
 	 *
 	 * @param ambito the new ambito
 	 */
-    public void setAmbito(AmbitoForm ambito) {
-        this.ambito = ambito;
-    }
-    
-    /**
+	public void setAmbito(AmbitoForm ambito) {
+		this.ambito = ambito;
+	}
+
+	/**
 	 * Gets the score.
 	 *
 	 * @return the score
 	 */
-    public BigDecimal getScore() {
-        return score;
-    }
+	public BigDecimal getScore() {
+		return score;
+	}
 
-    /**
+	/**
 	 * Sets the score.
 	 *
 	 * @param score the new score
 	 */
-    public void setScore(BigDecimal score) {
-        this.score = score;
-    }
+	public void setScore(BigDecimal score) {
+		this.score = score;
+	}
+
+	/**
+	 * Gets the complexity seeds number.
+	 *
+	 * @return the complexity seeds number
+	 */
+	public int getComplexitySeedsNumber() {
+		return complexitySeedsNumber;
+	}
+
+	/**
+	 * Sets the complexity seeds number.
+	 *
+	 * @param complexitySeedsNumber the new complexity seeds number
+	 */
+	public void setComplexitySeedsNumber(int complexitySeedsNumber) {
+		this.complexitySeedsNumber = complexitySeedsNumber;
+	}
 }

@@ -48,8 +48,11 @@ import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
+import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
+import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
+import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.SpecialChunk;
@@ -222,7 +225,7 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 		final com.lowagie.text.List listaConfiguracionRastreo = new com.lowagie.text.List();
 		listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
 		PDFUtils.addListItem("Tipo: Código fuente", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
-		PDFUtils.addListItem("Normativa: " + getBasicServiceForm().reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+		PDFUtils.addListItem("Metodología: " + getBasicServiceForm().reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 		chapter.add(listaConfiguracionRastreo);
 		d.add(chapter);
 	}
@@ -250,11 +253,27 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 			listaConfiguracionRastreo.add(createOrigen(getBasicServiceForm().getDomain()));
 			if (getBasicServiceForm().getAnalysisType() == BasicServiceAnalysisType.URL) {
 				PDFUtils.addListItem("Forma de selección de páginas: aleatoria", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
-				PDFUtils.addListItem("Profundidad: " + getBasicServiceForm().getProfundidad(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
-				PDFUtils.addListItem("Amplitud: " + getBasicServiceForm().getAmplitud(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+//				PDFUtils.addListItem("Profundidad: " + getBasicServiceForm().getProfundidad(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+//				PDFUtils.addListItem("Amplitud: " + getBasicServiceForm().getAmplitud(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+				if ("0".equals(getBasicServiceForm().getComplexity())) {
+					PDFUtils.addListItem("Complejidad: " + "Única", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+					PDFUtils.addListItem(" · Profundidad: " + "-", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, false);
+					PDFUtils.addListItem(" · Amplitud: " + "-", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, false);
+				} else {
+					try {
+						ComplejidadForm complex = ComplejidadDAO.getById(DataBaseManager.getConnection(), getBasicServiceForm().getComplexity());
+						PDFUtils.addListItem("Complejidad: " + complex.getName(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+						PDFUtils.addListItem(" · Profundidad: " + complex.getProfundidad(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, false);
+						PDFUtils.addListItem(" · Amplitud: " + complex.getAmplitud(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, false);
+					} catch (Exception e) {
+						PDFUtils.addListItem("Complejidad: " + "-", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+						PDFUtils.addListItem(" · Profundidad: " + "-", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, false);
+						PDFUtils.addListItem(" · Amplitud: " + "-", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, false);
+					}
+				}
 				PDFUtils.addListItem("Selección restringida a directorio: " + (getBasicServiceForm().isInDirectory() ? "Sí" : "No"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			}
-			PDFUtils.addListItem("Normativa: " + getBasicServiceForm().reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+			PDFUtils.addListItem("Metodología: " + getBasicServiceForm().reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			chapter.add(listaConfiguracionRastreo);
 		}
 		document.add(chapter);

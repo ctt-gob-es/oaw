@@ -424,7 +424,8 @@ public final class ObservatoryUtils {
 		final List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE,
 				null);
 		// IdExecutedCrawl and verifications
-		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(observatories, Constants.OBS_PRIORITY_NONE);
+		// final Map<String, BigDecimal> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPoint(observatories, Constants.OBS_PRIORITY_NONE);
+		final Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(observatories, Constants.OBS_PRIORITY_NONE);
 		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
 		for (ResultadoSemillaForm seedResult : seedsResults) {
 			seedResult.setCompliance(calculatedCompliance.get(Long.parseLong(seedResult.getIdFulfilledCrawling())));

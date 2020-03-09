@@ -92,11 +92,19 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 				if (!StringUtils.isEmpty(request.getParameter("complejidad"))) {
 					searchForm.setComplejidad((request.getParameterValues("complejidad")));
 				}
-				searchForm.setUrl(request.getParameter("url"));
-				searchForm.setinDirectorio(request.getParameter("directorio"));
-				searchForm.setisActiva(request.getParameter("activa"));
-				searchForm.setEliminada(request.getParameter("eliminada"));
-				if (request.getParameter("etiquetas") != "") {
+				if (!StringUtils.isEmpty(request.getParameter("url"))) {
+					searchForm.setUrl(request.getParameter("url"));
+				}
+				if (!StringUtils.isEmpty(request.getParameter("directorio"))) {
+					searchForm.setinDirectorio(request.getParameter("directorio"));
+				}
+				if (!StringUtils.isEmpty(request.getParameter("activa"))) {
+					searchForm.setisActiva(request.getParameter("activa"));
+				}
+				if (!StringUtils.isEmpty(request.getParameter("eliminada"))) {
+					searchForm.setEliminada(request.getParameter("eliminada"));
+				}
+				if (!StringUtils.isEmpty(request.getParameter("etiquetas"))) {
 					String[] tagArr = request.getParameter("etiquetas").split(",");
 					searchForm.setEtiquetas(tagArr);
 				}

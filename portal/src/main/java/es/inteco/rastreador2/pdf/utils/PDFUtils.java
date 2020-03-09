@@ -126,7 +126,7 @@ public final class PDFUtils {
 		title.setSpacingBefore(ConstantsFont.TITLE_LINE_SPACE);
 		title.setAlignment(Paragraph.ALIGN_CENTER);
 		document.add(title);
-		final Paragraph title2 = new Paragraph(titleText2, ConstantsFont.DOCUMENT_TITLE_MP_FONT);
+		final Paragraph title2 = new Paragraph(titleText2, ConstantsFont.DOCUMENT_SUBTITLE_2_MP_FONT);
 		title2.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE / 2);
 		title2.setAlignment(Paragraph.ALIGN_CENTER);
 		document.add(title2);

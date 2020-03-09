@@ -135,7 +135,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 			// Info
 			final PdfPTable notice = new PdfPTable(new float[] { 100f });
 			notice.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
-			notice.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.intro.info"), Constants.GRIS_MUY_CLARO, ConstantsFont.paragraphBoldFont, Element.ALIGN_JUSTIFIED,
+			notice.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.summary.info"), Constants.GRIS_MUY_CLARO, ConstantsFont.paragraphBoldFont, Element.ALIGN_JUSTIFIED,
 					ConstantsFont.DEFAULT_PADDING, 50));
 			section31.add(notice);
 			currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
@@ -182,7 +182,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 				// Cumplimiento
 				tablaRankings.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatorio.nivel.cumplimiento"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_LEFT,
 						DEFAULT_PADDING, -1));
-				// TODO Cumplimiento
+				// Cumplimiento
 				tablaRankings.addCell(PDFUtils.createTableCell(currentScore.getCompliance(), Color.WHITE, ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
 				if (previousScore != null) {
 					tablaRankings.addCell(PDFUtils.createTableCell(previousScore.getCompliance(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));

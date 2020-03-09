@@ -103,10 +103,16 @@ public class BasicServiceCrawlingManager {
 		crawlerData.setDomains(es.inteco.utils.CrawlerUtils.addDomainsToList(basicServiceForm.getDomain(), true, Constants.ID_LISTA_SEMILLA));
 		crawlerData.setInDirectory(basicServiceForm.isInDirectory());
 		// Calculate complex
-		ComplejidadForm comp = ComplejidadDAO.getById(DataBaseManager.getConnection(), basicServiceForm.getComplexity());
-		if (comp != null) {
-			crawlerData.setTopN(comp.getAmplitud());
-			crawlerData.setProfundidad(comp.getProfundidad());
+		final String complexity = basicServiceForm.getComplexity();
+		if (!org.apache.commons.lang3.StringUtils.isEmpty(complexity)) {
+			ComplejidadForm comp = ComplejidadDAO.getById(DataBaseManager.getConnection(), complexity);
+			if (comp != null) {
+				crawlerData.setTopN(comp.getAmplitud());
+				crawlerData.setProfundidad(comp.getProfundidad());
+			} else {
+				crawlerData.setTopN(0);
+				crawlerData.setProfundidad(0);
+			}
 		} else {
 			crawlerData.setTopN(0);
 			crawlerData.setProfundidad(0);

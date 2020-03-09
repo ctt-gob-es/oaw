@@ -15,8 +15,10 @@ package es.inteco.rastreador2.openOffice.export;
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.xpath.XPath;
@@ -29,6 +31,7 @@ import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
 import com.sun.org.apache.xml.internal.dtm.ref.DTMNodeList;
 
+import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
@@ -149,6 +152,100 @@ public abstract class OpenOfficeDocumentBuilder {
 	}
 
 	/**
+	 * Replace evolution compliance text cell tables.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param rowId          the row id
+	 * @param resultData     the result data
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	protected void replaceEvolutionComplianceTextCellTables(final OdfTextDocument odt, final OdfFileDom odfFileContent, final String rowId, final Map<String, Map<String, BigDecimal>> resultData)
+			throws XPathExpressionException {
+		replaceEvolutionComplianceTextCellTables(odt, odfFileContent, rowId, resultData, true);
+	}
+
+	/**
+	 * Replace evolution compliance text cell tables.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param rowId          the row id
+	 * @param resultData     the result data
+	 * @param isPercentValue the is percent value
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	protected void replaceEvolutionComplianceTextCellTables(final OdfTextDocument odt, final OdfFileDom odfFileContent, final String rowId, final Map<String, Map<String, BigDecimal>> resultData,
+			final boolean isPercentValue) throws XPathExpressionException {
+		int index = 2;
+		for (Map.Entry<String, Map<String, BigDecimal>> entry : resultData.entrySet()) {
+			// Necesitamos reordenar los resputados para que el valor 1.10
+			// vaya después de 1.9 y no de 1.1
+			Map<String, BigDecimal> results = new TreeMap<>(new Comparator<String>() {
+				@Override
+				public int compare(String version1, String version2) {
+					String[] v1 = version1.split("\\.");
+					String[] v2 = version2.split("\\.");
+					int major1 = major(v1);
+					int major2 = major(v2);
+					if (major1 == major2) {
+						if (minor(v1) == minor(v2)) { // Devolvemos 1
+														// aunque sean iguales
+														// porque las claves lleva
+														// asociado un subfijo que
+														// aqui no tenemos en cuenta
+							return 1;
+						}
+						return minor(v1).compareTo(minor(v2));
+					}
+					return major1 > major2 ? 1 : -1;
+				}
+
+				private int major(String[] version) {
+					return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "")
+							.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""));
+				}
+
+				private Integer minor(String[] version) {
+					return version.length > 1 ? Integer.parseInt(version[1].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "")
+							.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "")) : 0;
+				}
+			});
+			for (Map.Entry<String, BigDecimal> entryU : entry.getValue().entrySet()) {
+				results.put(entryU.getKey(), entryU.getValue());
+			}
+			for (Map.Entry<String, BigDecimal> resultC : results.entrySet()) {
+				// Cabecera
+				replaceText(odt, odfFileContent, "-" + rowId + ".a" + index + "-", entry.getKey());
+				String vCount = resultC.getKey().substring(resultC.getKey().lastIndexOf(".") + 1, resultC.getKey().indexOf("_"));
+				final String oldTextC = "-" + rowId + vCount + ".b" + index + ".c-";
+				final String oldTextNC = "-" + rowId + vCount + ".b" + index + ".nc-";
+				// final String oldTextNA = "-" + rowId + vCount + ".b" + index + ".na-";
+				if (resultC.getKey().endsWith(Constants.OBS_VALUE_COMPILANCE_SUFFIX)) {
+					replaceText(odt, odfFileContent, oldTextC, getCellValue(resultC.getValue(), isPercentValue));
+				} else if (resultC.getKey().endsWith(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX)) {
+					replaceText(odt, odfFileContent, oldTextNC, getCellValue(resultC.getValue(), isPercentValue));
+				}
+				/*
+				 * else if (resultC.getKey().endsWith(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX)) { replaceText(odt, odfFileContent, oldTextNA, getCellValue(resultC.getValue(), isPercentValue));
+				 * }
+				 */
+			}
+			index++;
+		}
+		// Para el resto de la tabla borramos los placeholders para que al menos las celdas salgan vacías
+		while (index <= 7) {
+			for (int i = 0; i < 14; i++) {
+				replaceText(odt, odfFileContent, "-" + rowId + i + ".a" + index + "-", "");
+				replaceText(odt, odfFileContent, "-" + rowId + i + ".b" + index + ".c-", "");
+				replaceText(odt, odfFileContent, "-" + rowId + i + ".b" + index + ".nc-", "");
+				// replaceText(odt, odfFileContent, "-" + rowId + i + ".b" + index + ".na-", "");
+			}
+			index++;
+		}
+	}
+
+	/**
 	 * Gets the cell value.
 	 *
 	 * @param value          the value
@@ -216,19 +313,23 @@ public abstract class OpenOfficeDocumentBuilder {
 	/**
 	 * Builds the document filtered.
 	 *
-	 * @param request           the request
-	 * @param graphicPath       the graphic path
-	 * @param date              the date
-	 * @param evolution         the evolution
-	 * @param pageExecutionList the page execution list
-	 * @param categories        the categories
-	 * @param exObsIds 
-	 * @param grpahicConditional 
-	 * @param tagsToFilter 
+	 * @param request              the request
+	 * @param graphicPath          the graphic path
+	 * @param date                 the date
+	 * @param evolution            the evolution
+	 * @param pageExecutionList    the page execution list
+	 * @param categories           the categories
+	 * @param tagsToFilter         the tags to filter
+	 * @param grpahicConditional   the grpahic conditional
+	 * @param exObsIds             the ex obs ids
+	 * @param idBaseTemplate       the id base template
+	 * @param idSegmentTemplate    the id segment template
+	 * @param idComplexityTemplate the id complexity template
+	 * @param reportTitle          the report title
 	 * @return the odf text document odf text document
 	 * @throws Exception the exception
 	 */
 	public abstract OdfTextDocument buildDocumentFiltered(HttpServletRequest request, String graphicPath, String date, boolean evolution, List<ObservatoryEvaluationForm> pageExecutionList,
-			List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate, String reportTitle) throws Exception;
-
+			List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate,
+			String reportTitle) throws Exception;
 }

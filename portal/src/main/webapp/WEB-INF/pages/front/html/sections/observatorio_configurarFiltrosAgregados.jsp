@@ -108,21 +108,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</legend>
 						<div class="formItem">
 
-							<label for="url" class="control-label"><strong class="labelVisu"><bean:message key="report.config.title.label" /> </strong></label> <input style="width: 50%;"name="reportTitle" id="reportTitle" type="text"
-								value="<bean:message key="report.config.title.default" />" />
-
-
+							<label for="url" class="control-label"><strong class="labelVisu"><bean:message
+										key="report.config.title.label" /> </strong></label> <input style="width: 50%;" name="reportTitle" id="reportTitle"
+								type="text" value="<bean:message key="report.config.title.default" /> <c:out value="${ambito}" />" />
 						</div>
-
-						<p class="alert alert-info">
-							<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
-							</em>:
-							<bean:message key="report.config.etiquetas.filter.info" />
-						</p>
-
-
-
-
 					</fieldset>
 
 

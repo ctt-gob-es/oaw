@@ -305,13 +305,13 @@ public final class SemillaDAO {
 			}
 			query = query + ")";
 		}
-		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+		if (searchForm.getinDirectorio() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
 			query += " AND l.in_directory = ? ";
 		}
-		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+		if (searchForm.getisActiva() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
 			query += " AND l.activa = ? ";
 		}
-		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+		if (searchForm.getEliminada() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
 			query += " AND l.eliminar = ? ";
 		}
 		if (searchForm.getEtiquetas() != null && searchForm.getEtiquetas().length > 0) {
@@ -351,13 +351,13 @@ public final class SemillaDAO {
 					ps.setLong(count++, Long.parseLong(searchForm.getComplejidad()[i]));
 				}
 			}
-			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+			if (searchForm.getinDirectorio() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
 				ps.setString(count++, String.valueOf(searchForm.getinDirectorio()));
 			}
-			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+			if (searchForm.getisActiva() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
 				ps.setString(count++, String.valueOf(searchForm.getisActiva()));
 			}
-			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+			if (searchForm.getEliminada() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
 				ps.setString(count++, String.valueOf(searchForm.getEliminada()));
 			}
 			if (searchForm.getEtiquetas() != null && searchForm.getEtiquetas().length > 0) {
@@ -669,7 +669,9 @@ public final class SemillaDAO {
 	public static int countObservatorySeeds(Connection c, SemillaSearchForm searchForm) throws SQLException {
 		int count = 1;
 		// String query = "SELECT COUNT(*) FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? ";
-		String query = "SELECT COUNT(*) FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN semilla_dependencia sd ON(l.id_lista = sd.id_lista) LEFT JOIN semilla_etiqueta se ON(l.id_lista = se.id_lista) WHERE id_tipo_lista = ? ";
+		// String query = "SELECT COUNT(*) FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN semilla_dependencia sd ON(l.id_lista = sd.id_lista) LEFT JOIN
+		// semilla_etiqueta se ON(l.id_lista = se.id_lista) WHERE id_tipo_lista = ? ";
+		String query = "SELECT distinct l.* FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) LEFT JOIN complejidades_lista cxl ON (cxl.id_complejidad = l.id_complejidad) LEFT JOIN semilla_dependencia sd ON(l.id_lista = sd.id_lista) LEFT JOIN semilla_etiqueta se ON(l.id_lista = se.id_lista) WHERE id_tipo_lista = ? ";
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 			query += " AND UPPER(l.nombre) like UPPER(?) ";
 		}
@@ -705,13 +707,13 @@ public final class SemillaDAO {
 			}
 			query = query + ")";
 		}
-		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+		if (searchForm.getinDirectorio() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
 			query += " AND l.in_directory = ? ";
 		}
-		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+		if (searchForm.getisActiva() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
 			query += " AND l.activa = ? ";
 		}
-		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+		if (searchForm.getEliminada() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
 			query += " AND l.eliminar = ? ";
 		}
 		if (searchForm.getEtiquetas() != null && searchForm.getEtiquetas().length > 0) {
@@ -721,6 +723,7 @@ public final class SemillaDAO {
 			}
 			query = query + ")";
 		}
+		query = "SELECT COUNT(*) FROM ( " + query + ") AS R";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(count++, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 			if (StringUtils.isNotEmpty(searchForm.getNombre())) {
@@ -752,15 +755,15 @@ public final class SemillaDAO {
 					ps.setLong(count++, Long.parseLong(searchForm.getComplejidad()[i]));
 				}
 			}
-			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+			if (searchForm.getinDirectorio() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
 				String str = String.valueOf(searchForm.getinDirectorio());
 				ps.setString(count++, str);
 			}
-			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+			if (searchForm.getisActiva() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
 				String str = String.valueOf(searchForm.getisActiva());
 				ps.setString(count++, str);
 			}
-			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+			if (searchForm.getEliminada() != null && StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
 				String str = String.valueOf(searchForm.getEliminada());
 				ps.setString(count++, str);
 			}
@@ -2031,9 +2034,9 @@ public final class SemillaDAO {
 	 */
 	public static List<SemillaForm> getSeedsObservatory(Connection c, long idCategory, int page, String[] tags) throws SQLException {
 		final List<SemillaForm> results = new ArrayList<>();
-		String query = "SELECT l.* FROM lista l LEFT JOIN semilla_etiqueta el ON l.id_lista=el.id_lista WHERE l.id_categoria=? ";
+		String query = "SELECT DISTINCT l.* FROM lista l LEFT JOIN semilla_etiqueta el ON l.id_lista=el.id_lista WHERE l.id_categoria=? ";
 		if (tags != null && tags.length > 0) {
-			query = query + " AND ( 1=1 ";
+			query = query + " AND ( 1=0 ";
 			for (int i = 0; i < tags.length; i++) {
 				if (!org.apache.commons.lang3.StringUtils.isEmpty(tags[i])) {
 					query = query + " OR el.id_etiqueta= ?";
@@ -3420,10 +3423,10 @@ public final class SemillaDAO {
 					} else {
 						ps.setBoolean(9, true);
 					}
-					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr()) && semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
-						ps.setBoolean(10, false);
-					} else {
+					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr()) && semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.TRUE.toString())) {
 						ps.setBoolean(10, true);
+					} else {
+						ps.setBoolean(10, false);
 					}
 				}
 				int affectedRows = ps.executeUpdate();

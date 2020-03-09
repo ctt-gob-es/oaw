@@ -284,6 +284,10 @@
 		<forward name="getAnnexes" path="/secure/ResultadosObservatorio.do?action=getAnnexes" />
 		<forward name="editMyUserAccount" path="/secure/ModificarMiCuentaUsuario.do?deMenu=true" />
 		<forward name="exportAllPdfs" path="/secure/primaryExportPdfAction.do?action=exportAllPdfs" />
+		
+		<forward name="exportAllPdfsMail" path="/secure/primaryExportPdfAction.do?action=exportAllPdfsMail" />
+		
+		
 		<forward name="generateAllReports" path=".generateAllReports" />
 
 
