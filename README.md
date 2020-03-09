@@ -22,15 +22,15 @@ To fresh install execute the scripts locates in folder /portal/scrpts from versi
 ## Tomcat
 
 Create a context configuration like this in *server.xml*:
-
-><Context path="/oaw" reloadable="true">
->    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" type="javax.sql.DataSource" name="jdbc/oaw" url="jdbc:mysql://<server>:<port>/<schema>"
->    maxActive="100"  maxIdle="10"  maxWait="-1" validationQuery="SELECT 1 as dbcp_connection_test"
->    removeAbandoned="true" testOnBorrow="true"
->    timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"                                         
->    defaultTransactionIsolation="READ_UNCOMMITTED" username="<username>" password="<password>"/>
-></Context>
-
+```xml
+<Context path="/oaw" reloadable="true">
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" type="javax.sql.DataSource" name="jdbc/oaw" url="jdbc:mysql://<server>:<port>/<schema>"
+    maxActive="100"  maxIdle="10"  maxWait="-1" validationQuery="SELECT 1 as dbcp_connection_test"
+    removeAbandoned="true" testOnBorrow="true"
+    timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"                                         
+    defaultTransactionIsolation="READ_UNCOMMITTED" username="<username>" password="<password>"/>
+</Context>
+``
 Note to chenge *url*, *user* and *password* values
 
 # Application
