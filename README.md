@@ -7,8 +7,8 @@ Rastreador Observatorio de Accesibilidad Web
 Currently OAW is deployment under this configuration:
 
 * Java 1.8.0_202 
-* Apache Tomcat 7
-* MySQL 5
+* Apache Tomcat 7.0.54
+* MySQL 5.6.19
 
 This is a Maven projet that requieres version 3.0.0 or high
 
@@ -41,7 +41,9 @@ The application code is distributed in several maven projects:
 * intavcore: analyzer core code
 * oaw: "father" project to generate all the libraries and dependencies
 * portal: web project of the accessibility observatory
+
 To compile the application, we will use maven (version 3.0.0 or higher). It will be necessary to download a number of dependencies from the central repositories so it needs to be properly frozen. It may be necessary to configure the proxy or a mirror:
+
 * https://maven.apache.org/guides/mini/guide-proxies.html
 * https://maven.apache.org/guides/mini/guide-mirror-settings.html
 To do this, inside the oaw directory we will execute the following command so that it builds us the complete project:
@@ -70,7 +72,7 @@ In the file /portal/profiles/<profile>/propertiesmanager.properties a series of 
 
 Some of the links are not available in Maven's central repository. They can be downloaded at the following links:1
 
-javax.jms:jms:jar:1.1: http://www.java2s.com/Code/Jar/j/Downloadjavaxjms11jar.htm
-javax.transaction:jta:jar:1.0.1B: http://www.java2s.com/Code/Jar/j/Downloadjta101bjar.htm
+* javax.jms:jms:jar:1.1: http://www.java2s.com/Code/Jar/j/Downloadjavaxjms11jar.htm
+* javax.transaction:jta:jar:1.0.1B: http://www.java2s.com/Code/Jar/j/Downloadjta101bjar.htm
 
 They need to be installed manually: https://maven.apache.org/guides/mini/guide-3rd-party-jars-local.html 
