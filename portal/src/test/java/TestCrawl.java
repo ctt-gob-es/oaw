@@ -143,9 +143,16 @@ public class TestCrawl {
 //				",https://www.euskadi.eus/hasiera/", "https://www.aragon.es", "https://www.gobiernodecanarias.org/principal/", "https://www.cantabria.es/", "https://www.navarra.es/home_es/",
 //				"https://web.larioja.org", "http://www.caib.es/govern/index.do?lang=ca", "https://www.asturias.es/", "https://www.juntadeandalucia.es/institucional/index.html", "https://www.jcyl.es/",
 //				"http://www.juntaex.es/web/", "https://www.castillalamancha.es/", "http://www.carm.es", "https://www.xunta.gal/portada" };
-		String[] urls = new String[] { "https://www.gva.es/es" };
+		String[] urls = new String[] { "http://www.boa.aragon.es/#/", "https://www.borm.es", "https://sedeelectronica.navarra.gob.es/",
+				"https://sede.asturias.es/portal/site/Asturias/menuitem.1003733838db7342ebc4e191100000f7/?vgnextoid=d7d79d16b61ee010VgnVCM1000000100007fRCRD&i18n.http.lang=es&fecha=09/03/2020&FechaHidden1=FECHA&FechaCompHidden1=1&origen=calendario" };
+		String[] urlsD = new String[] { "http://www.boa.aragon.es/#/", "https://boc.cantabria.es/boces/", "https://web.larioja.org/bor-portada/", "https://www.euskadi.eus/sede-electronica/",
+				"https://www.larioja.org/larioja-client/cm/oficina-electronica/", "https://www.larioja.org/educacion/es", "https://www.larioja.org/empleo-formacion/es",
+				"https://web.larioja.org/portal-transparencia", "https://www.asturias.es/transparencia" };
 		for (String url : urls) {
-			this.test(url, false);
+			this.crawl(url, false);
+		}
+		for (String url : urlsD) {
+			this.crawl(url, true);
 		}
 	}
 
@@ -156,7 +163,7 @@ public class TestCrawl {
 	 * @param enDirectorio the en directorio
 	 * @throws Exception the exception
 	 */
-	public void test(String url, boolean enDirectorio) throws Exception {
+	public void crawl(String url, boolean enDirectorio) throws Exception {
 		System.out.println(url);
 		System.out.println("-------------------------------------------------------------------------------------------\n\n");
 		final CrawlerData crawlerData = new CrawlerData();
@@ -174,7 +181,6 @@ public class TestCrawl {
 		System.out.println("-------------------------------------------------------------------------------------------\n\n");
 		System.out.println(crawlingDomains.size() + "\n\n");
 		crawlingDomains.clear();
-		// Assert.assertEquals(33, crawlingDomains.size());
 	}
 
 	/**
@@ -184,7 +190,6 @@ public class TestCrawl {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
-		final PropertiesManager pmgr = new PropertiesManager();
 		final int maxNumRetries = 3;
 		final int maxNumRedirections = 15;
 		final long timeRetry = 20000;
