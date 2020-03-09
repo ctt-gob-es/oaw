@@ -10,3 +10,6 @@
 **/.sts4-cache
 **/motor-js
 **/.history
+motor-js/*
+motor-js/instalacion/imagenes.tar.gz
+motor-js/instalacion/imagenes/*
