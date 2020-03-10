@@ -40,7 +40,7 @@ public class ListadoObservatorio {
 	/** The estado. */
 	private boolean estado;
 	/** The etiquetas. */
-	private String[] etiquetas;
+	private List<String> etiquetas;
 
 	/**
 	 * Gets the cartucho.
@@ -191,7 +191,7 @@ public class ListadoObservatorio {
 	 *
 	 * @return the etiquetas
 	 */
-	public String[] getEtiquetas() {
+	public List<String> getEtiquetas() {
 		return etiquetas;
 	}
 
@@ -200,7 +200,7 @@ public class ListadoObservatorio {
 	 *
 	 * @param etiquetas the new etiquetas
 	 */
-	public void setEtiquetas(String[] etiquetas) {
+	public void setEtiquetas(List<String> etiquetas) {
 		this.etiquetas = etiquetas;
 	}
 }

@@ -558,9 +558,29 @@ public final class ObservatorioDAO {
 					ls.setCartucho(rs.getString("aplicacion"));
 					ls.setTipo(rs.getString("name"));
 					ls.setAmbito(rs.getString("ambito"));
+					String etiquetasAux = rs.getString("etiquetas");
+					List<String> tagList  = new ArrayList<String>();
 					if (rs.getString("etiquetas") != null && rs.getString("etiquetas").length() > 0) {
-						String[] tagArr = rs.getString("etiquetas").split(",");
-						ls.setEtiquetas(tagArr);
+						String statement = "SELECT nombre FROM etiqueta WHERE id_etiqueta = ";
+						etiquetasAux = etiquetasAux.replace('[',' ');
+						etiquetasAux = etiquetasAux.replace(']',' ');
+						etiquetasAux = etiquetasAux.replace(",", " OR id_etiqueta = ");
+						statement = statement + etiquetasAux;
+						try (PreparedStatement ps2 = c.prepareStatement(statement)){
+							try (ResultSet rs2 = ps2.executeQuery()) {
+								while (rs2.next()) {
+									tagList.add(rs2.getString("nombre"));
+								}
+							}catch (SQLException e) {
+							Logger.putLog("Error ", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+							throw e;
+							}
+						}catch (SQLException e) {
+							Logger.putLog("Error ", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+							throw e;
+						}
+					}
+					ls.setEtiquetas(tagList);
 						/*String etiquetaString = "";
 						for(int i=0; i<tagArr.length; i++) {
 							try (PreparedStatement psAux = c.prepareStatement("SELECT nombre FROM etiqueta WHERE id_etiqueta = ?")){
@@ -577,14 +597,14 @@ public final class ObservatorioDAO {
 							}
 						}		
 						ls.setEtiquetas(etiquetaString);*/
-					}
+
 					ls.setEstado(rs.getBoolean("activo"));
 					observatoryList.add(ls);
 				}
 				cargarObservatorioForm.setListadoObservatorio(observatoryList);
 				cargarObservatorioForm.setNumObservatorios(observatoryList.size());
-			}
-		} catch (SQLException e) {
+				}
+			} catch (SQLException e) {
 			Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}

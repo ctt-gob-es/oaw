@@ -19,7 +19,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 <style>
-
 /* Make sure you reset e'erything beforehand. */
 * {
 	margin: 0;
@@ -61,6 +60,10 @@ display: block;
     border:none !important;
 }
 
+.tagbox-wrapper {
+    width: 100% !important;
+
+}
 
 }
 </style>
@@ -177,15 +180,31 @@ display: block;
 										</logic:notEmpty> <logic:empty name="elemento" property="ambito">
 										-
 									</logic:empty></td>
-									 <td><logic:notEmpty name="elemento" property="etiquetas">
+<%-- 									 <td><logic:notEmpty name="elemento" property="etiquetas">
 											<bean:write name="elemento" property="etiquetas" />
 										</logic:notEmpty> 
 									<logic:empty name="elemento" property="etiquetas">
 										-
-									</logic:empty></td>
-									
+									</logic:empty></td> --%>
+																 
+<%-- 							<td><logic:iterate name="elemento" property="etiquetas" id="etiqueta">
+									<bean:write name="elemento" property="etiquetas"/> (Actual)</label>
+							</logic:iterate>></td> --%>
 
-									
+
+							<td>
+								<div class='tagbox-wrapper'>
+								<logic:iterate name="elemento" property="etiquetas" id="etiqueta">
+									<c:if test="${etiqueta!= null}">
+										<div class='tagbox-token'><span><bean:write name="etiqueta" /></span></div>
+									</c:if>
+									<c:if test="${etiqueta == null}">
+										-
+									</c:if>
+ 								</logic:iterate>
+								</div>
+							</td>
+					
 									<td><bean:write name="elemento" property="cartucho" /></td>
 									<td><html:link forward="resultadosPrimariosObservatorio" paramId="<%=Constants.ID_OBSERVATORIO%>"
 											paramName="elemento" paramProperty="id_observatorio">
