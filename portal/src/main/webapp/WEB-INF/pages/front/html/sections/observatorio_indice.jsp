@@ -39,32 +39,33 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	float: right;
 	width: 65%;
 }
-.tagbox-wrapper input {
 
-display: block;
-    width: 100% !important;
-    height: 34px;
-    padding: 6px 12px;
-    font-size: 14px;
-    line-height: 1.42857143;
-    color: #555;
-    background-color: #fff;
-    background-image: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-    border:none !important;
+.tagbox-wrapper input {
+	display: block;
+	width: 100% !important;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	border: none !important;
 }
 
 .tagbox-wrapper {
-    width: 100% !important;
-
+	width: 100% !important;
+	border: none !important;
+	text-align: left !important;
+	box-shadow: none !important;
 }
-
 }
 </style>
 
@@ -180,31 +181,33 @@ display: block;
 										</logic:notEmpty> <logic:empty name="elemento" property="ambito">
 										-
 									</logic:empty></td>
-<%-- 									 <td><logic:notEmpty name="elemento" property="etiquetas">
+									<%-- 									 <td><logic:notEmpty name="elemento" property="etiquetas">
 											<bean:write name="elemento" property="etiquetas" />
 										</logic:notEmpty> 
 									<logic:empty name="elemento" property="etiquetas">
 										-
 									</logic:empty></td> --%>
-																 
-<%-- 							<td><logic:iterate name="elemento" property="etiquetas" id="etiqueta">
+
+									<%-- 							<td><logic:iterate name="elemento" property="etiquetas" id="etiqueta">
 									<bean:write name="elemento" property="etiquetas"/> (Actual)</label>
 							</logic:iterate>></td> --%>
 
 
-							<td>
-								<div class='tagbox-wrapper'>
-								<logic:iterate name="elemento" property="etiquetas" id="etiqueta">
-									<c:if test="${etiqueta!= null}">
-										<div class='tagbox-token'><span><bean:write name="etiqueta" /></span></div>
-									</c:if>
-									<c:if test="${etiqueta == null}">
+									<td>
+										<div class='tagbox-wrapper'>
+											<logic:iterate name="elemento" property="etiquetas" id="etiqueta">
+												<c:if test="${etiqueta!= null}">
+													<div class='tagbox-token'>
+														<span><bean:write name="etiqueta" /></span>
+													</div>
+												</c:if>
+												<c:if test="${etiqueta == null}">
 										-
 									</c:if>
- 								</logic:iterate>
-								</div>
-							</td>
-					
+											</logic:iterate>
+										</div>
+									</td>
+
 									<td><bean:write name="elemento" property="cartucho" /></td>
 									<td><html:link forward="resultadosPrimariosObservatorio" paramId="<%=Constants.ID_OBSERVATORIO%>"
 											paramName="elemento" paramProperty="id_observatorio">
