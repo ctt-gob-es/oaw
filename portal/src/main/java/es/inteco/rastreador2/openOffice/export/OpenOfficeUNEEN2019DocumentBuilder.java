@@ -570,8 +570,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		sb.append("</text:p>");
 		Element paragrphaCompliance = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, paragrphaCompliance, SEGMENT_EVOLUTION_BOOKMARK);
+		String title = "Evolución de la Situación de cumplimiento estimada: Segmento " + category.getName();
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId,
-				graphicPath + "EvolucionSituacionCumplimientoCombinadaSegmento" + graphicSuffix + ".jpg", pageObservatoryMap, exObsIds);
+				graphicPath + "EvolucionSituacionCumplimientoCombinadaSegmento" + graphicSuffix + ".jpg", pageObservatoryMap, exObsIds, title);
 		final File fC = new File(graphicPath + "EvolucionSituacionCumplimientoCombinadaSegmento" + graphicSuffix + ".jpg");
 		String imageComplianceDom = "<text:p text:style-name=\"P33\"><draw:frame draw:style-name='fr4' draw:name='" + "EvolucionSituacionCumplimientoCombinadaSegmento" + graphicSuffix
 				+ "' text:anchor-type='as-char' svg:y='0mm' svg:width='149.45mm' style:rel-width='scale' svg:height='120.21mm' style:rel-height='scale' draw:z-index='118'>"
@@ -796,8 +797,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA + JPG_EXTENSION, EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA, MIME_TYPE_JPG);
 		// Section compliance
+		title = messageResources.getMessage("report.evolution.compliance.graphic.title.global");
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA + JPG_EXTENSION,
-				pageObservatoryMap, exObsIds);
+				pageObservatoryMap, exObsIds, title);
 		replaceSectionEvolutionComplianceLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA + JPG_EXTENSION, EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA, MIME_TYPE_JPG);
 		replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
@@ -857,8 +859,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED, MIME_TYPE_JPG);
 		// Section compliance
+		title = messageResources.getMessage("report.evolution.allocation.graphic.title.fixed");
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA_FIXED + JPG_EXTENSION,
-				pageObservatoryMap, exObsIds);
+				pageObservatoryMap, exObsIds, title);
 		replaceSectionEvolutionComplianceLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA_FIXED, MIME_TYPE_JPG);
 		// Puntuation
