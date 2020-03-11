@@ -270,7 +270,7 @@ public final class PrimaryExportPdfUtils {
 								messageResourcesAccesibility.getMessage("pdf.accessibility.info.estimated"));
 					}
 					// Introduction chapter
-					pdfBuilder.createIntroductionChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+					pdfBuilder.createIntroductionChapter(messageResourcesAccesibility, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 					pdfTocManager.addChapterCount();
 					// Resumen de resultados
 					final RankingInfo rankingActual = crawling != null ? observatoryManager.calculateRankingWithCompliance(idObservatoryExecution, crawling.getSeed()) : null;
