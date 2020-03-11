@@ -17,6 +17,8 @@ package es.inteco.rastreador2.actionform.observatorio;
 
 import java.util.List;
 
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
+
 /**
  * The Class ListadoObservatorio.
  */
@@ -37,6 +39,8 @@ public class ListadoObservatorio {
 	private String ambito;
 	/** The estado. */
 	private boolean estado;
+	/** The etiquetas. */
+	private List<String> etiquetas;
 
 	/**
 	 * Gets the cartucho.
@@ -180,5 +184,23 @@ public class ListadoObservatorio {
 	 */
 	public void setEstado(boolean estado) {
 		this.estado = estado;
+	}
+	
+	/**
+	 * Gets the etiquetas.
+	 *
+	 * @return the etiquetas
+	 */
+	public List<String> getEtiquetas() {
+		return etiquetas;
+	}
+
+	/**
+	 * Sets the etiquetas.
+	 *
+	 * @param etiquetas the new etiquetas
+	 */
+	public void setEtiquetas(List<String> etiquetas) {
+		this.etiquetas = etiquetas;
 	}
 }
