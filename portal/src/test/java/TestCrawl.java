@@ -144,7 +144,7 @@ public class TestCrawl {
 //				"https://web.larioja.org", "http://www.caib.es/govern/index.do?lang=ca", "https://www.asturias.es/", "https://www.juntadeandalucia.es/institucional/index.html", "https://www.jcyl.es/",
 //				"http://www.juntaex.es/web/", "https://www.castillalamancha.es/", "http://www.carm.es", "https://www.xunta.gal/portada" };
 		String[] urls = new String[] {};
-		String[] urlsD = new String[] { "https://www.aragon.es/-/sucesiones-y-donaciones", "https://web.larioja.org/portal-transparencia" };
+		String[] urlsD = new String[] { "https://www.aragon.es/organismos/departamento-de-hacienda-y-administracion-publica/direccion-general-de-tributos" };
 		for (String url : urls) {
 			this.crawl(url, false);
 		}

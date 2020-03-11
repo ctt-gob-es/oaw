@@ -1299,13 +1299,13 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p3"), boldWords, ConstantsFont.paragraphBoldFont,
 				ConstantsFont.PARAGRAPH, true));
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p4.bold"));
-		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p4"), boldWords, ConstantsFont.paragraphBoldFont,
-				ConstantsFont.PARAGRAPH, true));
-		boldWords.clear();
-		boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p5.bold"));
-		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p5"), boldWords, ConstantsFont.paragraphBoldFont,
-				ConstantsFont.PARAGRAPH, true));
+//		boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p4.bold"));
+//		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p4"), boldWords, ConstantsFont.paragraphBoldFont,
+//				ConstantsFont.PARAGRAPH, true));
+//		boldWords.clear();
+//		boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p5.bold"));
+//		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p5"), boldWords, ConstantsFont.paragraphBoldFont,
+//				ConstantsFont.PARAGRAPH, true));
 		// Info
 		final PdfPTable notice = new PdfPTable(new float[] { 100f });
 		notice.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
