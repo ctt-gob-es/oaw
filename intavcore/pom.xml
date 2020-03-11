@@ -71,7 +71,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		<dependency>
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-core</artifactId>
-			<version>1.6</version>
+			<version>1.22</version>
 		</dependency>
 
 		<dependency>
