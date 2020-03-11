@@ -4170,7 +4170,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionComplianceChart(final String observatoryId, final String executionId, final String filePath,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String[] exObsIds) throws IOException {
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String[] exObsIds, String title) throws IOException {
 		final Map<String, Map<String, BigDecimal>> evolutionSuitabilityDatePercentMap = new LinkedHashMap<>();
 		final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByCompliance(observatoryId, executionId, pageObservatoryMap, exObsIds);
 		evolutionSuitabilityDatePercentMap.put(Constants.OBS_COMPILANCE_NONE, calculatePercentageApprovalSiteCompliance(result, Constants.OBS_COMPILANCE_NONE));
@@ -4185,6 +4185,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		final String noDataMess = "noData";
 		final PropertiesManager pmgr = new PropertiesManager();
 		final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+		chartForm.setTitle(title);
 		GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
 	}
 
