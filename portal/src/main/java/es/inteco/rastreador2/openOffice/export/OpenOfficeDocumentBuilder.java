@@ -216,8 +216,9 @@ public abstract class OpenOfficeDocumentBuilder {
 			}
 			for (Map.Entry<String, BigDecimal> resultC : results.entrySet()) {
 				// Cabecera
-				replaceText(odt, odfFileContent, "-" + rowId + ".a" + index + "-", entry.getKey());
 				String vCount = resultC.getKey().substring(resultC.getKey().lastIndexOf(".") + 1, resultC.getKey().indexOf("_"));
+				replaceText(odt, odfFileContent, "-" + rowId + vCount + ".a" + index + "-", entry.getKey());
+//				String vCount = resultC.getKey().substring(resultC.getKey().lastIndexOf(".") + 1, resultC.getKey().indexOf("_"));
 				final String oldTextC = "-" + rowId + vCount + ".b" + index + ".c-";
 				final String oldTextNC = "-" + rowId + vCount + ".b" + index + ".nc-";
 				// final String oldTextNA = "-" + rowId + vCount + ".b" + index + ".na-";
@@ -235,7 +236,7 @@ public abstract class OpenOfficeDocumentBuilder {
 		}
 		// Para el resto de la tabla borramos los placeholders para que al menos las celdas salgan vacías
 		while (index <= 7) {
-			for (int i = 0; i < 14; i++) {
+			for (int i = 0; i <= 14; i++) {
 				replaceText(odt, odfFileContent, "-" + rowId + i + ".a" + index + "-", "");
 				replaceText(odt, odfFileContent, "-" + rowId + i + ".b" + index + ".c-", "");
 				replaceText(odt, odfFileContent, "-" + rowId + i + ".b" + index + ".nc-", "");
