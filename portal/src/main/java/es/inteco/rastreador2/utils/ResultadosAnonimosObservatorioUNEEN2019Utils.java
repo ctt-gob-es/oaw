@@ -2374,13 +2374,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				} else {
 					resultC.put(verification.concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX), BigDecimal.ZERO);
 				}
-				// NA
-//				value = generatePercentajesCompilanceVerification(results).get(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX));
-//				if (value != null) {
-//					resultC.put(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX), value);
-//				} else {
-//					resultC.put(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX), BigDecimal.ZERO);
-//				}
+				// TODO NA
+				value = generatePercentajesCompilanceVerification(results).get(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX));
+				if (value != null) {
+					resultC.put(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX), value);
+				} else {
+					resultC.put(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX), BigDecimal.ZERO);
+				}
 				resultData.put(df.format(entry.getKey()), resultC);
 			}
 		}

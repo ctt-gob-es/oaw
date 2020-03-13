@@ -343,12 +343,32 @@ public final class GraphicsUtils {
 						// PENDING Checks this strings
 //						verificationText = Constants.OBS_COMPILANCE_PARTIAL;
 						verificationText = Constants.OBS_COMPILANCE_NONE;
-						dataSet.addValue(valueC, date + " " + verificationText, verificacionPoint);
+//						dataSet.addValue(valueC, date + " " + verificationText, verificacionPoint);
+						// TODO Check if dataset contains value to add
+						try {
+							if (dataSet.getValue(date + " " + verificationText, verificacionPoint) != null) {
+								dataSet.addValue(((BigDecimal) dataSet.getValue(date + " " + verificationText, verificacionPoint)).add(valueC), date + " " + verificationText, verificacionPoint);
+							} else {
+								dataSet.addValue(valueC, date + " " + verificationText, verificacionPoint);
+							}
+						} catch (Exception e) {
+							dataSet.addValue(valueC, date + " " + verificationText, verificacionPoint);
+						}
 					} else if (verficationC.endsWith(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX)) {
 						verificacionPoint = verficationC.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "");
 						// PENDING Checks this strings
 						verificationText = Constants.OBS_COMPILANCE_NONE;
-						dataSet.addValue(valueC, date + " " + verificationText, verificacionPoint);
+//						dataSet.addValue(valueC, date + " " + verificationText, verificacionPoint);
+						// TODO Check if dataset contains value to add
+						try {
+							if (dataSet.getValue(date + " " + verificationText, verificacionPoint) != null) {
+								dataSet.addValue(((BigDecimal) dataSet.getValue(date + " " + verificationText, verificacionPoint)).add(valueC), date + " " + verificationText, verificacionPoint);
+							} else {
+								dataSet.addValue(valueC, date + " " + verificationText, verificacionPoint);
+							}
+						} catch (Exception e) {
+							dataSet.addValue(valueC, date + " " + verificationText, verificacionPoint);
+						}
 					}
 				}
 			}
@@ -1121,7 +1141,7 @@ public final class GraphicsUtils {
 	 */
 	private static LegendItemCollection generateLegendG(List<Paint> colors, CategoryPlot plot) {
 		LegendItemCollection newLegend = new LegendItemCollection();
-		final String[] legendLabels = new String[] { "No conforme", "Parcialmente conforme", "Totalmente conforme" };
+		final String[] legendLabels = new String[] { "No conforme", "Conforme" };
 		Shape shape = new Rectangle(15, 15);
 		BasicStroke stroke = new BasicStroke();
 		for (int i = 0; i < legendLabels.length; i++) {
