@@ -170,8 +170,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</tr>
 
 						<tr>
-							<td><bean:write name="analisis" property="totalUrl" /> <span
-								class="glyphicon glyphicon glyphicon-info-sign" style="color: #e21430"></span></td>
+							<td><bean:write name="analisis" property="totalUrl" /></td>
 							<td><bean:write name="analisis" property="totalUrlAnalizadas" /> (<bean:write name="analisis"
 									property="porcentajeCompletado" format="###.##" />% completado)</td>
 							<td><bean:write name="analisis" property="ultimaUrl" /></td>
