@@ -32,75 +32,54 @@ import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
  * The Class SemillaForm.
  */
 public class SemillaForm extends ValidatorForm implements Serializable {
-
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
 	/** The id. */
 	private Long id;
-
 	/** The nombre. */
-	private String nombre; 
-
+	private String nombre;
 	/** The nombre antiguo. */
 	private String nombre_antiguo;
-
 	/** The lista urls. */
 	private List<String> listaUrls;
-
 	/** The lista urls string. */
 	private String listaUrlsString;
-
 	/** The acronimo. */
 	private String acronimo;
-
 	/** The asociada. */
 	private boolean asociada;
-
 	/** The activa. */
 	private boolean activa;
-
 	/** The activa str. */
 	private String activaStr;
-
 	/** The rastreo asociado. */
 	private long rastreoAsociado;
-
 	/** The categoria. */
 	private CategoriaForm categoria;
-
 	/** The ambito. */
 	private AmbitoForm ambito;
-	
 	/** The complejidad. */
 	private ComplejidadForm complejidad;
-	
 	/** The etiquetas. */
 	private List<EtiquetaForm> etiquetas;
-	
 	/** The in directory. */
 	private boolean inDirectory;
-
 	/** The in directory str. */
 	private String inDirectoryStr;
-	
 	/** The eliminar. */
 	private boolean eliminar;
-
 	/** The eliminar str. */
 	private String eliminarStr;
-
 	/** The dependencias. */
 	private List<DependenciaForm> dependencias;
-			
-	//private List<EtiquetaForm> etiquetas;
+	// private List<EtiquetaForm> etiquetas;
 
 	/**
 	 * Instantiates a new semilla form.
 	 */
 	public SemillaForm() {
 		this.activa = true;
-		this.eliminar = false; 
+		this.eliminar = false;
 	}
 
 	/**
@@ -184,14 +163,12 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		if (this.listaUrls == null) {
 			this.listaUrls = new ArrayList<>();
 		}
-
-		this.setListaUrlsString(url.replace("\n", ";"));
-
+		// escape ";" thats used to sit
+		this.setListaUrlsString(url.replace(";", "%3B").replace("\n", ";"));
 		List<String> tmp = Arrays.asList(this.listaUrlsString.split(";"));
 		for (int i = 0; i < tmp.size(); i++) {
 			this.listaUrls.add(tmp.get(i).trim());
 		}
-
 	}
 
 	/**
@@ -266,7 +243,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		this.categoria = categoria;
 	}
 
-
 	/**
 	 * Gets the ambito.
 	 *
@@ -285,7 +261,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		this.ambito = ambito;
 	}
 
-	
 	/**
 	 * Gets the complejidad.
 	 *
@@ -303,8 +278,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	public void setComplejidad(ComplejidadForm complejidad) {
 		this.complejidad = complejidad;
 	}
-	
-	
+
 	/**
 	 * Reset.
 	 *
@@ -336,9 +310,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-
 		SemillaForm that = (SemillaForm) o;
-
 		return id == that.id;
 	}
 
@@ -351,7 +323,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	public int hashCode() {
 		return (int) (id ^ (id >>> 32));
 	}
-
 	// public String getDependencia() {
 	// return dependencia;
 	// }
@@ -416,7 +387,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		} else {
 			this.setActiva(false);
 		}
-
 		this.activaStr = activaStr;
 	}
 
@@ -458,10 +428,9 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		} else {
 			this.setInDirectory(false);
 		}
-
 		this.inDirectoryStr = inDirectoryStr;
 	}
-	
+
 	/**
 	 * Checks if is eliminar.
 	 *
@@ -500,11 +469,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		} else {
 			this.setEliminar(false);
 		}
-
 		this.eliminarStr = eliminarStr;
 	}
-
-	
 
 	/**
 	 * Gets the etiquetas.
@@ -545,22 +511,18 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		if (this.etiquetas == null) {
 			this.etiquetas = new ArrayList<EtiquetaForm>();
 		}
-
 		if (!StringUtils.isEmpty(nombre)) {
 			String[] nombres = nombre.split("\r\n");
-
 			// Try split without \r
 			if (nombres.length == 1) {
 				nombres = nombre.split("\n");
 			}
-
 			for (String currentNombre : nombres) {
 				EtiquetaForm etiqueta = new EtiquetaForm();
 				etiqueta.setName(currentNombre.trim());
 				this.etiquetas.add(etiqueta);
 			}
 		}
-
 	}
 
 	/**
@@ -604,9 +566,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		} else {
 			this.setId(null);
 		}
-
 	}
-	
 
 	/**
 	 * Gets the dependencias.
@@ -650,25 +610,20 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		// DependenciaForm dependencia = new DependenciaForm();
 		// dependencia.setName(nombre);
 		// this.dependencias.add(dependencia);
-
 		if (!StringUtils.isEmpty(nombre)) {
 			String[] nombres = nombre.split("\r\n");
-
 			// Try split without \r
 			if (nombres.length == 1) {
 				nombres = nombre.split("\n");
 			}
-
 			for (String currentNombre : nombres) {
 				DependenciaForm dependencia = new DependenciaForm();
 				dependencia.setName(currentNombre.trim());
 				this.dependencias.add(dependencia);
 			}
 		}
-
 	}
-	
-	
+
 	/**
 	 * To string.
 	 *
@@ -676,12 +631,9 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "SemillaForm [id=" + id + ", nombre=" + nombre + ", nombre_antiguo=" + nombre_antiguo + ", listaUrls="
-				+ listaUrls + ", listaUrlsString=" + listaUrlsString
-				+ /* ", dependencia=" + dependencia + */ ", acronimo=" + acronimo + ", asociada=" + asociada
-				+ ", activa=" + activa + ", activaStr=" + activaStr + ", rastreoAsociado=" + rastreoAsociado
-				+ ", categoria=" + categoria + ", ambito=" + ambito + ",complejidad=" + complejidad + ",inDirectory=" + inDirectory + ", inDirectoryStr=" + inDirectoryStr
-				+ ", eliminar=" + eliminar + ", eliminarStr=" + eliminarStr +", dependencias=" + dependencias + ", etiquetas=" + etiquetas + "]";
+		return "SemillaForm [id=" + id + ", nombre=" + nombre + ", nombre_antiguo=" + nombre_antiguo + ", listaUrls=" + listaUrls + ", listaUrlsString=" + listaUrlsString
+				+ /* ", dependencia=" + dependencia + */ ", acronimo=" + acronimo + ", asociada=" + asociada + ", activa=" + activa + ", activaStr=" + activaStr + ", rastreoAsociado="
+				+ rastreoAsociado + ", categoria=" + categoria + ", ambito=" + ambito + ",complejidad=" + complejidad + ",inDirectory=" + inDirectory + ", inDirectoryStr=" + inDirectoryStr
+				+ ", eliminar=" + eliminar + ", eliminarStr=" + eliminarStr + ", dependencias=" + dependencias + ", etiquetas=" + etiquetas + "]";
 	}
-
 }
