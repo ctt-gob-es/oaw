@@ -76,7 +76,7 @@ public class EstadoObservatorioDAO {
 	public static Integer updateEstado(final Connection connection, ObservatoryStatus estado) throws SQLException {
 		if (estado.getId() != null) {
 			try (PreparedStatement ps = connection.prepareStatement(
-					"UPDATE observatorio_estado SET nombre = ? , url =?, ultima_url = ?, actual_url = ?, fecha_ultima_url = ?, tiempo_medio = ?,  total_url_analizadas= ? , tiempo_acumulado = ? WHERE id = ?")) {
+					"UPDATE observatorio_estado SET nombre = ? , url =?, ultima_url = ?, actual_url = ?, fecha_ultima_url = ?, tiempo_medio = ?,  total_url_analizadas= ? , tiempo_acumulado = ?, total_url WHERE id = ?")) {
 				ps.setString(1, estado.getNombre());
 				ps.setString(2, estado.getUrl());
 				ps.setString(3, estado.getUltimaUrl());
@@ -89,7 +89,8 @@ public class EstadoObservatorioDAO {
 				ps.setFloat(6, estado.getTiempoMedio());
 				ps.setInt(7, estado.getTotalUrlAnalizadas());
 				ps.setFloat(8, estado.getTiempoAcumulado());
-				ps.setInt(9, estado.getId());
+				ps.setInt(9, estado.getTotalUrl());
+				ps.setInt(10, estado.getId());
 				ps.executeUpdate();
 			} catch (SQLException e) {
 				Logger.putLog("No se ha podido registrar el estado del análisis actual", EstadoObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);

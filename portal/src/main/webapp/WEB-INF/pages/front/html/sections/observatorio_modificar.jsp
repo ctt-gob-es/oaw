@@ -42,34 +42,65 @@ Email: observ.accesibilidad@correo.gob.es
 	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 	border: none !important;
 }
+
+.hiddenOnComplex {
+	display: none;
 }
 </style>
 
 <script>
-	$(window).on('load', function() {
+	$(window)
+			.on(
+					'load',
+					function() {
 
-		var $jq = $.noConflict();
-		$jq(document).ready(function() {
-			$.ajax({
-				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
-				method : 'POST',
-				cache : false
-			}).success(function(response) {
+						var $jq = $.noConflict();
+						$jq(document)
+								.ready(
+										function() {
+											$
+													.ajax(
+															{
+																url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+																method : 'POST',
+																cache : false
+															})
+													.success(
+															function(response) {
 
-				$('#tagsFilter').tagbox({
-					items : response.etiquetas,
-					searchIn : [ 'name' ],
-					rowFormat : '<span class="name">{{name}}</span>',
-					tokenFormat : '{{name}}',
-					valueField : 'id',
-					itemClass : 'user'
-				});
+																$('#tagsFilter')
+																		.tagbox(
+																				{
+																					items : response.etiquetas,
+																					searchIn : [ 'name' ],
+																					rowFormat : '<span class="name">{{name}}</span>',
+																					tokenFormat : '{{name}}',
+																					valueField : 'id',
+																					itemClass : 'user'
+																				});
 
-			})
+															})
 
-		});
+										});
 
-	});
+						if ($('select[name="cartucho.id"]').find(":selected")
+								.val() == "9"
+								|| $('select[name="cartucho.id"]').find(
+										":selected").val() == "10") {
+							$(".hiddenOnComplex").hide();
+						} else {
+							$(".hiddenOnComplex").show();
+						}
+
+						$("select#cartucho").change(function() {
+							if ($(this).val() == "9" || $(this).val() == "10") {
+								$(".hiddenOnComplex").hide();
+							} else {
+								$(".hiddenOnComplex").show();
+							}
+						});
+
+					});
 </script>
 
 
@@ -119,13 +150,15 @@ Email: observ.accesibilidad@correo.gob.es
 						<label for="nombre"><strong class="labelVisu"><acronym
 								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="modificar.observatorio.nombre" />:
 						</strong></label>
-						<html:text styleClass="texto form-control" name="ModificarObservatorioForm" property="nombre" styleId="nombre" maxlength="100" />
+						<html:text styleClass="texto form-control" name="ModificarObservatorioForm" property="nombre" styleId="nombre"
+							maxlength="100" />
 					</div>
 
 					<div class="formItem">
 						<label for="tipo"><strong class="labelVisu"><acronym
 								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="modificar.observatorio.tipo" /></strong></label>
-						<html:select name="ModificarObservatorioForm" styleClass="textoSelect form-control" styleId="cartucho" property="tipo.id">
+						<html:select name="ModificarObservatorioForm" styleClass="textoSelect form-control" styleId="cartucho"
+							property="tipo.id">
 							<logic:iterate name="<%=Constants.TIPOS_VECTOR%>" id="tipo">
 								<bean:define id="idType">
 									<bean:write name="tipo" property="id" />
@@ -171,7 +204,8 @@ Email: observ.accesibilidad@correo.gob.es
 						<label for="cartucho"><strong class="labelVisu"><acronym
 								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 									key="modificar.observatorio.cartucho" /></strong></label>
-						<html:select name="ModificarObservatorioForm" styleClass="textoSelect form-control" styleId="cartucho" property="cartucho.id">
+						<html:select name="ModificarObservatorioForm" styleClass="textoSelect form-control" styleId="cartucho"
+							property="cartucho.id">
 							<logic:iterate name="<%=Constants.CARTUCHOS_VECTOR %>" id="cartucho">
 								<bean:define id="idCartucho">
 									<bean:write name="cartucho" property="id" />
@@ -234,7 +268,7 @@ Email: observ.accesibilidad@correo.gob.es
 						</html:select>
 					</div>
 
-					<div class="formItem">
+					<div class="formItem hiddenOnComplex">
 						<label for="profundidad"><strong class="labelVisu"><acronym
 								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 									key="modificar.observatorio.profundidad" />: </strong></label>
@@ -258,7 +292,7 @@ Email: observ.accesibilidad@correo.gob.es
 
 					</div>
 
-					<div class="formItem">
+					<div class="formItem hiddenOnComplex">
 						<label for="amplitud"><strong class="labelVisu"><acronym
 								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 									key="modificar.observatorio.amplitud" />: </strong></label>
@@ -306,7 +340,8 @@ Email: observ.accesibilidad@correo.gob.es
 							<label for="fechaInicio" class="control-label"><strong class="labelVisu"><acronym
 									title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 										key="modificar.observatorio.fechaInicio" />: </strong></label>
-							<html:text styleClass="textoCorto form-control" name="ModificarObservatorioForm" property="fechaInicio" styleId="fechaInicio"
+							<html:text styleClass="textoCorto form-control" name="ModificarObservatorioForm" property="fechaInicio"
+								styleId="fechaInicio"
 								onkeyup="escBarra(event, document.forms['ModificarCuentaUsuarioForm'].elements['fechaInicio'], 1)"
 								maxlength="10" />
 							<span id="calendar"> <img src="../images/boton-calendario.gif"
