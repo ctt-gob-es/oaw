@@ -10,9 +10,9 @@
 <%--
     Necesita las librerias commons-fileupload-1.2.1.jar y commons-io-1.3.2.jar
 --%>
-<%@page import= "org.apache.tomcat.util.http.fileupload.*" %>
-<%@page import= "org.apache.tomcat.util.http.fileupload.disk.*" %>
-<%@page import= "org.apache.tomcat.util.http.fileupload.servlet.*" %>
+<%@page import= "org.apache.commons.fileupload.*" %>
+<%@page import= "org.apache.commons.fileupload.disk.*" %>
+<%@page import= "org.apache.commons.fileupload.servlet.*" %>
 <%@page import= "org.apache.commons.codec.net.URLCodec" %>
 <%!
     // URL donde se encuentra ubicado el servidor OAW (dependerá del entorno donde estemos)

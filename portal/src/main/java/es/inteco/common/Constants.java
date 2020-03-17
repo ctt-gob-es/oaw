@@ -1677,6 +1677,10 @@ public interface Constants {
 	String OBSERVATORY_SEGMENTS = "obsSeg";
 	/** The observatory t. */
 	String OBSERVATORY_T = "obsType";
+	
+	/** bread crumbs symbol **/
+	String BREAD_CRUMBS_SEPARATOR = "&qt;";
+	
 	/** The html menu. */
 	String HTML_MENU = "menu";
 	/** The html submenu. */

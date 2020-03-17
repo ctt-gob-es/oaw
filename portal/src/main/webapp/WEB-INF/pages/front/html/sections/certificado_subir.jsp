@@ -22,7 +22,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		<p class="oculto"><bean:message key="ubicacion.usuario" /> </p>
 		<p><html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link> / 
 		<bean:message key="migas.certificados" /></p>
-	</div
+	</div>
 	
 	<jsp:useBean id="paramsNC" class="java.util.HashMap" />
 	<c:set target="${paramsNC}" property="esPrimera" value="si" />
