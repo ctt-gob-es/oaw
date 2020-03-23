@@ -1,5 +1,12 @@
 5.0.3
 ------------------------------------------------------------------------------------------------------------------------------------
+- Corregida la visualización de las estadísticas del servicio de diagnóstico en Internet Explorer
+- Añadido campo observaciones a las semillas
+- Añadido campo clave a los segmentos para ser usado en la ordenación
+- Modificada la exportación/importación de semillas para separar las etiquetas en tags diferentes en el XML según la clasificación
+- Corregido el cálculo de la puntuación media por verificación para sacar la media de las verificaciones redondeada
+5.0.3
+------------------------------------------------------------------------------------------------------------------------------------
 - Correcciones en el informe oficial del cartucho UNE-EN301549:2019.
 - Correcciones en el informe oficial del cartucho de Accesibilidad.
 - Correcciones en varias validaciones (1.11, 2.3).
