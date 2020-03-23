@@ -7,8 +7,8 @@ Rastreador Observatorio de Accesibilidad Web
 Currently OAW is deployment under this configuration:
 
 * Java 1.8.0_202 
-* Apache Tomcat 7.0.54
-* MySQL 5.6.19
+* Apache Tomcat 7
+* MySQL 5
 
 This is a Maven projet that requieres version 3.0.0 or high
 
@@ -30,7 +30,7 @@ Create a context configuration like this in *server.xml*:
     timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"                                         
     defaultTransactionIsolation="READ_UNCOMMITTED" username="<username>" password="<password>"/>
 </Context>
-```
+``
 Note to chenge *url*, *user* and *password* values
 
 # Application

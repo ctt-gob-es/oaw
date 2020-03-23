@@ -40,8 +40,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	private Long id;
 
 	/** The nombre. */
-	private String nombre; 
-
+	private String nombre;
 	/** The nombre antiguo. */
 	private String nombre_antiguo;
 
@@ -184,9 +183,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		if (this.listaUrls == null) {
 			this.listaUrls = new ArrayList<>();
 		}
-
-		this.setListaUrlsString(url.replace("\n", ";"));
-
+		// escape ";" thats used to sit
+		this.setListaUrlsString(url.replace(";", "%3B").replace("\n", ";"));
 		List<String> tmp = Arrays.asList(this.listaUrlsString.split(";"));
 		for (int i = 0; i < tmp.size(); i++) {
 			this.listaUrls.add(tmp.get(i).trim());
@@ -303,8 +301,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	public void setComplejidad(ComplejidadForm complejidad) {
 		this.complejidad = complejidad;
 	}
-	
-	
+
 	/**
 	 * Reset.
 	 *

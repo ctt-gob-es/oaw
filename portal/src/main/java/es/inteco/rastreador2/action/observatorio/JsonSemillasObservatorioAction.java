@@ -555,7 +555,8 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	 * @return the string Valor normalizado
 	 */
 	private String normalizarUrl(String urlsSemilla) {
-		return urlsSemilla.replace("\r\n", ";").replace("\n", ";").replaceAll("\\s+", "");
+		// escape ";" thats used as split in several places
+		return urlsSemilla.replace(";", "%3B").replace("\r\n", ";").replace("\n", ";").replaceAll("\\s+", "");
 	}
 
 	/**
