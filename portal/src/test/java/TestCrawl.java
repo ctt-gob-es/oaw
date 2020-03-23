@@ -143,8 +143,8 @@ public class TestCrawl {
 //				",https://www.euskadi.eus/hasiera/", "https://www.aragon.es", "https://www.gobiernodecanarias.org/principal/", "https://www.cantabria.es/", "https://www.navarra.es/home_es/",
 //				"https://web.larioja.org", "http://www.caib.es/govern/index.do?lang=ca", "https://www.asturias.es/", "https://www.juntadeandalucia.es/institucional/index.html", "https://www.jcyl.es/",
 //				"http://www.juntaex.es/web/", "https://www.castillalamancha.es/", "http://www.carm.es", "https://www.xunta.gal/portada" };
-		String[] urls = new String[] {};
-		String[] urlsD = new String[] { "https://www.aragon.es/organismos/departamento-de-hacienda-y-administracion-publica/direccion-general-de-tributos" };
+		String[] urls = new String[] { "http://www.melilla.es/melillaPortal/index.jsp" };
+		String[] urlsD = new String[] {};
 		for (String url : urls) {
 			this.crawl(url, false);
 		}

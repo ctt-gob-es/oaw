@@ -240,13 +240,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</logic:iterate></td>
 
 
-									<td><logic:equal name="semilla" property="inDirectory" value="true">
-											<bean:message key="si" />
-										</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
-											<bean:message key="no" />
-										</logic:equal></td>
-
-
 									<td><logic:equal name="semilla" property="activa" value="true">
 											<bean:message key="si" />
 										</logic:equal> <logic:equal name="semilla" property="activa" value="false">
@@ -257,6 +250,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<td><logic:equal name="semilla" property="eliminar" value="true">
 											<bean:message key="si" />
 										</logic:equal> <logic:equal name="semilla" property="eliminar" value="false">
+											<bean:message key="no" />
+										</logic:equal></td>
+									<td><logic:equal name="semilla" property="inDirectory" value="true">
+											<bean:message key="si" />
+										</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
 											<bean:message key="no" />
 										</logic:equal></td>
 								</tr>

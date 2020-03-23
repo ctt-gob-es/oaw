@@ -544,9 +544,10 @@ public final class ObservatorioDAO {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 		final int resultFrom = pagSize * page;
-		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(o.nombre), o.id_observatorio, c.id_cartucho, c.aplicacion, ot.name, al.nombre as ambito,  o.tags as etiquetas, o.activo as activo"
-				+ " FROM observatorio o JOIN cartucho c ON (o.id_cartucho = c.id_cartucho) JOIN observatorio_tipo ot ON (o.id_tipo=ot.id_tipo) LEFT JOIN ambitos_lista al ON al.id_ambito=o.id_ambito "
-				+ " ORDER BY o.id_observatorio LIMIT ? OFFSET ?")) {
+		try (PreparedStatement ps = c
+				.prepareStatement("SELECT DISTINCT(o.nombre), o.id_observatorio, c.id_cartucho, c.aplicacion, ot.name, al.nombre as ambito,  o.tags as etiquetas, o.activo as activo"
+						+ " FROM observatorio o JOIN cartucho c ON (o.id_cartucho = c.id_cartucho) JOIN observatorio_tipo ot ON (o.id_tipo=ot.id_tipo) LEFT JOIN ambitos_lista al ON al.id_ambito=o.id_ambito "
+						+ " ORDER BY o.id_observatorio LIMIT ? OFFSET ?")) {
 			ps.setInt(1, pagSize);
 			ps.setInt(2, resultFrom);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -559,52 +560,41 @@ public final class ObservatorioDAO {
 					ls.setTipo(rs.getString("name"));
 					ls.setAmbito(rs.getString("ambito"));
 					String etiquetasAux = rs.getString("etiquetas");
-					List<String> tagList  = new ArrayList<String>();
+					List<String> tagList = new ArrayList<String>();
 					if (rs.getString("etiquetas") != null && rs.getString("etiquetas").length() > 0) {
 						String statement = "SELECT nombre FROM etiqueta WHERE id_etiqueta = ";
-						etiquetasAux = etiquetasAux.replace('[',' ');
-						etiquetasAux = etiquetasAux.replace(']',' ');
+						etiquetasAux = etiquetasAux.replace('[', ' ');
+						etiquetasAux = etiquetasAux.replace(']', ' ');
 						etiquetasAux = etiquetasAux.replace(",", " OR id_etiqueta = ");
 						statement = statement + etiquetasAux;
-						try (PreparedStatement ps2 = c.prepareStatement(statement)){
+						try (PreparedStatement ps2 = c.prepareStatement(statement)) {
 							try (ResultSet rs2 = ps2.executeQuery()) {
 								while (rs2.next()) {
 									tagList.add(rs2.getString("nombre"));
 								}
-							}catch (SQLException e) {
-							Logger.putLog("Error ", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
-							throw e;
+							} catch (SQLException e) {
+								Logger.putLog("Error ", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+								throw e;
 							}
-						}catch (SQLException e) {
+						} catch (SQLException e) {
 							Logger.putLog("Error ", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
 							throw e;
 						}
 					}
 					ls.setEtiquetas(tagList);
-						/*String etiquetaString = "";
-						for(int i=0; i<tagArr.length; i++) {
-							try (PreparedStatement psAux = c.prepareStatement("SELECT nombre FROM etiqueta WHERE id_etiqueta = ?")){
-								psAux.setInt(1, Integer.parseInt(tagArr[i]));
-								try (ResultSet rsAux = psAux.executeQuery()) {
-									while (rsAux.next()) {
-										//etiquetaString = etiquetaString +  "<div class='tagbox-token'><span>"  + rsAux.getString("nombre") + "</span></div>";
-										etiquetaString = etiquetaString + rsAux.getString("nombre") + ",";
-									}
-								}		
-							}catch (SQLException e) {
-								Logger.putLog("Error", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
-								throw e;
-							}
-						}		
-						ls.setEtiquetas(etiquetaString);*/
-
+					/*
+					 * String etiquetaString = ""; for(int i=0; i<tagArr.length; i++) { try (PreparedStatement psAux = c.prepareStatement("SELECT nombre FROM etiqueta WHERE id_etiqueta = ?")){
+					 * psAux.setInt(1, Integer.parseInt(tagArr[i])); try (ResultSet rsAux = psAux.executeQuery()) { while (rsAux.next()) { //etiquetaString = etiquetaString +
+					 * "<div class='tagbox-token'><span>" + rsAux.getString("nombre") + "</span></div>"; etiquetaString = etiquetaString + rsAux.getString("nombre") + ","; } } }catch (SQLException e)
+					 * { Logger.putLog("Error", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e); throw e; } } ls.setEtiquetas(etiquetaString);
+					 */
 					ls.setEstado(rs.getBoolean("activo"));
 					observatoryList.add(ls);
 				}
 				cargarObservatorioForm.setListadoObservatorio(observatoryList);
 				cargarObservatorioForm.setNumObservatorios(observatoryList.size());
-				}
-			} catch (SQLException e) {
+			}
+		} catch (SQLException e) {
 			Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
@@ -1195,6 +1185,25 @@ public final class ObservatorioDAO {
 					resultadoSemillaForm.setNivel(rs.getString("rr.level"));
 					resultadoSemillaForm.setIdComplexity(rs.getLong("l.id_complejidad"));
 					semillasFormList.add(resultadoSemillaForm);
+					// Count URL crawled
+					String numCrawlQuery = "SELECT count(ta.cod_url) as numCrawls  "
+							+ "FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l WHERE ta.cod_rastreo = rr.id  and rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista  "
+							+ "and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado=?) and rr.id = ?";
+					PreparedStatement psCrawls = c.prepareStatement(numCrawlQuery);
+					psCrawls.setLong(1, idObservatorio);
+					psCrawls.setString(2, resultadoSemillaForm.getIdFulfilledCrawling());
+					ResultSet rsCrawls = null;
+					try {
+						rsCrawls = psCrawls.executeQuery();
+						if (rsCrawls.next()) {
+							resultadoSemillaForm.setNumCrawls(rsCrawls.getInt("numCrawls"));
+						}
+					} catch (SQLException e) {
+						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+						throw e;
+					} finally {
+						DAOUtils.closeQueries(psCrawls, rsCrawls);
+					}
 				}
 			}
 		} catch (SQLException e) {
@@ -2375,7 +2384,8 @@ public final class ObservatorioDAO {
 					// Insert into rastreos_realizados
 					Long id = rs.getLong(1);
 					// Insert into cartucho_rastreo id_cartucho
-					try (PreparedStatement psCR = c.prepareStatement("INSERT INTO cartucho_rastreo(id_cartucho, id_rastreo) VALUES(?,?)")) {
+					try (PreparedStatement psCR = c
+							.prepareStatement("INSERT INTO cartucho_rastreo(id_cartucho, id_rastreo) VALUES(?,?) ON DUPLICATE KEY UPDATE id_cartucho=id_cartucho, id_rastreo = id_rastreo")) {
 						psCR.setLong(1, idCartucho);
 						psCR.setLong(2, id);
 						psCR.executeUpdate();

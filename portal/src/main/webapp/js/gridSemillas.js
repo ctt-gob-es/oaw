@@ -796,7 +796,7 @@ function reloadGrid(path) {
 						if (total == 0) {
 							$('#grid')
 									.append(
-											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="12" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
+											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="13" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
 						}
 
 						// Paginador

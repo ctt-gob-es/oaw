@@ -19,47 +19,37 @@ package es.inteco.rastreador2.actionform.observatorio;
  * The Class ResultadoSemillaForm.
  */
 public class ResultadoSemillaForm {
-    
-    /** The id. */
-    private String id;
-    
-    /** The name. */
-    private String name;
-    
-    /** The id crawling. */
-    private String idCrawling;
-    
-    /** The id fulfilled crawling. */
-    private String idFulfilledCrawling;
-    
-    /** The active. */
-    private boolean active;
-    
-    /** The score. */
-    private String score;
-    
-    /** The nivel. */
-    private String nivel;
-    
-    /** The id category. */
-    private long idCategory;
-    
-    /** The id ambit. */
-    private long idAmbit;
-    
-    /** The id complexity. */
-    private long idComplexity;
-    
-    /** The compliance. */
-    private String compliance;
+	/** The id. */
+	private String id;
+	/** The name. */
+	private String name;
+	/** The id crawling. */
+	private String idCrawling;
+	/** The id fulfilled crawling. */
+	private String idFulfilledCrawling;
+	/** The active. */
+	private boolean active;
+	/** The score. */
+	private String score;
+	/** The nivel. */
+	private String nivel;
+	/** The id category. */
+	private long idCategory;
+	/** The id ambit. */
+	private long idAmbit;
+	/** The id complexity. */
+	private long idComplexity;
+	/** The compliance. */
+	private String compliance;
+	/** The num crawls. */
+	private int numCrawls;
 
-
-    /**
+	/**
 	 * Gets the compliance.
 	 *
 	 * @return the compliance
 	 */
-    public String getCompliance() {
+	public String getCompliance() {
 		return compliance;
 	}
 
@@ -78,177 +68,195 @@ public class ResultadoSemillaForm {
 	 * @return the id category
 	 */
 	public long getIdCategory() {
-        return idCategory;
-    }
+		return idCategory;
+	}
 
-    /**
+	/**
 	 * Sets the id category.
 	 *
 	 * @param idCategory the new id category
 	 */
-    public void setIdCategory(long idCategory) {
-        this.idCategory = idCategory;
-    }
+	public void setIdCategory(long idCategory) {
+		this.idCategory = idCategory;
+	}
 
-    /**
+	/**
 	 * Gets the id ambit.
 	 *
 	 * @return the id ambit
 	 */
-    public long getIdAmbit() {
-        return idAmbit;
-    }
+	public long getIdAmbit() {
+		return idAmbit;
+	}
 
-    /**
+	/**
 	 * Sets the id ambit.
 	 *
 	 * @param idAmbit the new id ambit
 	 */
-    public void setIdAmbit(long idAmbit) {
-        this.idAmbit = idAmbit;
-    }
-    
-    /**
+	public void setIdAmbit(long idAmbit) {
+		this.idAmbit = idAmbit;
+	}
+
+	/**
 	 * Gets the id complexity.
 	 *
 	 * @return the id complexity
 	 */
-    public long getIdComplexity() {
-        return idComplexity;
-    }
+	public long getIdComplexity() {
+		return idComplexity;
+	}
 
-    /**
+	/**
 	 * Sets the id complexity.
 	 *
 	 * @param idComplexity the new id complexity
 	 */
-    public void setIdComplexity(long idComplexity) {
-        this.idComplexity = idComplexity;
-    }
-    
-    /**
+	public void setIdComplexity(long idComplexity) {
+		this.idComplexity = idComplexity;
+	}
+
+	/**
 	 * Gets the id.
 	 *
 	 * @return the id
 	 */
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    /**
+	/**
 	 * Sets the id.
 	 *
 	 * @param id the new id
 	 */
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    /**
+	/**
 	 * Gets the name.
 	 *
 	 * @return the name
 	 */
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    /**
+	/**
 	 * Sets the name.
 	 *
 	 * @param name the new name
 	 */
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    /**
+	/**
 	 * Gets the id crawling.
 	 *
 	 * @return the id crawling
 	 */
-    public String getIdCrawling() {
-        return idCrawling;
-    }
+	public String getIdCrawling() {
+		return idCrawling;
+	}
 
-    /**
+	/**
 	 * Sets the id crawling.
 	 *
 	 * @param idCrawling the new id crawling
 	 */
-    public void setIdCrawling(String idCrawling) {
-        this.idCrawling = idCrawling;
-    }
+	public void setIdCrawling(String idCrawling) {
+		this.idCrawling = idCrawling;
+	}
 
-    /**
+	/**
 	 * Checks if is active.
 	 *
 	 * @return true, if is active
 	 */
-    public boolean isActive() {
-        return active;
-    }
+	public boolean isActive() {
+		return active;
+	}
 
-    /**
+	/**
 	 * Sets the active.
 	 *
 	 * @param active the new active
 	 */
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
-    /**
+	/**
 	 * Gets the score.
 	 *
 	 * @return the score
 	 */
-    public String getScore() {
-        return score;
-    }
+	public String getScore() {
+		return score;
+	}
 
-    /**
+	/**
 	 * Sets the score.
 	 *
 	 * @param score the new score
 	 */
-    public void setScore(String score) {
-        this.score = score;
-    }
+	public void setScore(String score) {
+		this.score = score;
+	}
 
-    /**
+	/**
 	 * Gets the id fulfilled crawling.
 	 *
 	 * @return the id fulfilled crawling
 	 */
-    public String getIdFulfilledCrawling() {
-        return idFulfilledCrawling;
-    }
+	public String getIdFulfilledCrawling() {
+		return idFulfilledCrawling;
+	}
 
-    /**
+	/**
 	 * Sets the id fulfilled crawling.
 	 *
 	 * @param idFulfilledCrawling the new id fulfilled crawling
 	 */
-    public void setIdFulfilledCrawling(String idFulfilledCrawling) {
-        this.idFulfilledCrawling = idFulfilledCrawling;
-    }
+	public void setIdFulfilledCrawling(String idFulfilledCrawling) {
+		this.idFulfilledCrawling = idFulfilledCrawling;
+	}
 
-    /**
+	/**
 	 * Gets the nivel.
 	 *
 	 * @return the nivel
 	 */
-    public String getNivel() {
-        return nivel;
-    }
+	public String getNivel() {
+		return nivel;
+	}
 
-    /**
+	/**
 	 * Sets the nivel.
 	 *
 	 * @param nivel the new nivel
 	 */
-    public void setNivel(String nivel) {
-        this.nivel = nivel;
-    }
+	public void setNivel(String nivel) {
+		this.nivel = nivel;
+	}
+
+	/**
+	 * Gets the num crawls.
+	 *
+	 * @return the num crawls
+	 */
+	public int getNumCrawls() {
+		return numCrawls;
+	}
+
+	/**
+	 * Sets the num crawls.
+	 *
+	 * @param numCrawls the new num crawls
+	 */
+	public void setNumCrawls(int numCrawls) {
+		this.numCrawls = numCrawls;
+	}
 }

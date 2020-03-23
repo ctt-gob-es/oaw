@@ -11,6 +11,7 @@
 - Corregido acceso al motor de JS cuando un sitio web repospondia un código http 30x.
 - Corregido un error que provocaba que en la edición de un observatorio no se actualizar la normativa para las nuevas semillas.
 - Mostradas las etiquetas seleccionadas en el listado de observatorios.
+- Se ocultan las opciones de profundidad y amplitud cuando se seleccionan cartuchos UNE-EN301549:2019 o Accesibilidad 
 
 5.0.2
 ------------------------------------------------------------------------------------------------------------------------------------

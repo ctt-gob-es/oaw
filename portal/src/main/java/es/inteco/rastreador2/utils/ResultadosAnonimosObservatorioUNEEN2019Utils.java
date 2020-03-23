@@ -2354,8 +2354,9 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		});
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
-		TreeMap<String, BigDecimal> resultC = new TreeMap<>();
+//		TreeMap<String, BigDecimal> resultC = new TreeMap<>();
 		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : result.entrySet()) {
+			TreeMap<String, BigDecimal> resultC = new TreeMap<>();
 			for (String verification : verifications) {
 				// Para un observatorio en concreto recuperamos la puntuación de una
 				// verificación

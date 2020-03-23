@@ -45,7 +45,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		var $jq = $.noConflict();
 		$jq(document).ready(function() {
 			$.ajax({
-				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
 				method : 'POST',
 				cache : false
 			}).success(function(response) {
