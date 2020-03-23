@@ -230,7 +230,7 @@ function reloadGrid(path) {
 													"Puntuac\u00F3n", 
 													"Nivel Accesibilidad","URLs analizadas",
 													"Resultados", "Informe",
-													"Relanzar", "Eliminar" ],
+													"Relanzar", "Eliminar", "Observaciones" ],
 											colModel : [
 													{
 														name : "id",
@@ -763,7 +763,22 @@ function reloadGrid(path) {
 														align : "center",
 														width : 10,
 														editable : false
-													}
+													},
+													{
+														name : "observaciones",
+														width : 50,
+														edittype : 'custom',
+														editoptions : {
+															custom_element : textareaEdit,
+															custom_value : textareaEditValue
+														},
+														editrules : {
+															required : false
+														},
+														sortable : false,
+														align : "left",
+														hidden : true
+													},
 
 											],
 											inlineEditing : {

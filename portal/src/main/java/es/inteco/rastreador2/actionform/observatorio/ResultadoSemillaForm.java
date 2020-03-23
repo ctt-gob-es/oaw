@@ -43,6 +43,8 @@ public class ResultadoSemillaForm {
 	private String compliance;
 	/** The num crawls. */
 	private int numCrawls;
+	/** The observaciones. */
+	private String observaciones;
 
 	/**
 	 * Gets the compliance.
@@ -249,6 +251,24 @@ public class ResultadoSemillaForm {
 	 */
 	public int getNumCrawls() {
 		return numCrawls;
+	}
+
+	/**
+	 * Gets the observaciones.
+	 *
+	 * @return the observaciones
+	 */
+	public String getObservaciones() {
+		return observaciones;
+	}
+
+	/**
+	 * Sets the observaciones.
+	 *
+	 * @param observaciones the observaciones to set
+	 */
+	public void setObservaciones(String observaciones) {
+		this.observaciones = observaciones;
 	}
 
 	/**

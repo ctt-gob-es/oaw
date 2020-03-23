@@ -331,8 +331,8 @@ function reloadGrid(path) {
 													"Nombre", "Acr\u00F3nimo",
 													"Segmento", "\u00C1mbito",
 													"Complejidad", "Etiquetas",
-													"Dependencia", "URLs",
-													"Activa", "Directorio",
+													"Dependencia", "URLs","Observaciones",
+													"Activa", "Directorio", 
 													"Ir", "Eliminar", "Eliminar definitivamente" ],
 											colModel : [
 													{
@@ -610,6 +610,20 @@ function reloadGrid(path) {
 														editrules : {
 															required : true
 														},
+													},
+													{
+														name : "observaciones",
+														width : 50,
+														edittype : 'custom',
+														editoptions : {
+															custom_element : textareaEdit,
+															custom_value : textareaEditValue
+														},
+														editrules : {
+															required : false
+														},
+														sortable : false,
+														align : "left"
 													},
 													{
 														name : "activa",

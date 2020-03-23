@@ -47,25 +47,25 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 	$(window).on('load', function() {
 
-// 		$jn(document).ready(function() {
-// 			$.ajax({
-// 				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
-// 				method : 'POST',
-// 				cache : false
-// 			}).success(function(response) {
+		// 		$jn(document).ready(function() {
+		// 			$.ajax({
+		// 				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+		// 				method : 'POST',
+		// 				cache : false
+		// 			}).success(function(response) {
 
-// 				$('#tagsFilter').tagbox({
-// 					items : response.etiquetas,
-// 					searchIn : [ 'name' ],
-// 					rowFormat : '<span class="name">{{name}}</span>',
-// 					tokenFormat : '{{name}}',
-// 					valueField : 'id',
-// 					itemClass : 'user',
-// 				});
+		// 				$('#tagsFilter').tagbox({
+		// 					items : response.etiquetas,
+		// 					searchIn : [ 'name' ],
+		// 					rowFormat : '<span class="name">{{name}}</span>',
+		// 					tokenFormat : '{{name}}',
+		// 					valueField : 'id',
+		// 					itemClass : 'user',
+		// 				});
 
-// 			})
+		// 			})
 
-// 		});
+		// 		});
 
 	});
 
@@ -152,20 +152,20 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							if (response && response.length) {
 								for (var i = 0, l = response.length; i < l; i++) {
 									var ri = response[i];
-									if(ri.name == "Media"){
-									$jn('#selectComplejidadesNuevaSemilla')
-											.append(
+									if (ri.name == "Media") {
+										$jn('#selectComplejidadesNuevaSemilla')
+												.append(
 														'<option selected value="'+ri.id+'">'
-														+ ri.name
-														+ '</option>');
-								}else{
-									$jn('#selectComplejidadesNuevaSemilla')
-									.append(
-												'<option  value="'+ri.id+'">'
-												+ ri.name
-												+ '</option>');
+																+ ri.name
+																+ '</option>');
+									} else {
+										$jn('#selectComplejidadesNuevaSemilla')
+												.append(
+														'<option  value="'+ri.id+'">'
+																+ ri.name
+																+ '</option>');
+									}
 								}
-							}
 							}
 
 							if (rowObject != null) {
@@ -245,30 +245,25 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 	<div id="erroresNuevaSemillaMD" style="display: none"></div>
 
-	<html:form styleId="nuevaSemillaMultidependencia"
-		action="/secure/JsonSemillasObservatorio.do?action=save">
+	<html:form styleId="nuevaSemillaMultidependencia" action="/secure/JsonSemillasObservatorio.do?action=save">
 		<fieldset>
 
-			<input type="hidden" name="id" /> <input type="hidden"
-				name="nombreAntiguo" />
+			<input type="hidden" name="id" /> <input type="hidden" name="nombreAntiguo" />
 
 			<!-- Nombre -->
 			<div class="row formItem">
-				<label for="nombre" class="control-label"><strong
-					class="labelVisu"><acronym
+				<label for="nombre" class="control-label"><strong class="labelVisu"><acronym
 						title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 							key="nueva.semilla.observatorio.nombre" /></strong></label>
 				<div class="col-xs-6">
-					<input type="text" id="nombre" name="nombre"
-						class="texto form-control" />
+					<input type="text" id="nombre" name="nombre" class="texto form-control" />
 				</div>
 			</div>
 
 
 			<!-- Activa -->
 			<div class="row formItem">
-				<label for="nombre" class="control-label"><strong
-					class="labelVisu"><acronym
+				<label for="nombre" class="control-label"><strong class="labelVisu"><acronym
 						title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 							key="nueva.semilla.observatorio.activa" /></strong></label>
 
@@ -283,12 +278,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 			<!-- Dependencias -->
 			<div class="row formItem">
-				<label for="dependencia" class="control-label"><strong
-					class="labelVisu"><bean:message
+				<label for="dependencia" class="control-label"><strong class="labelVisu"><bean:message
 							key="nueva.semilla.observatorio.dependencia" /></strong></label>
 				<div class="col-xs-4">
-					<select multiple class="form-control"
-						id="selectDependenciasNuevaSemilla"></select>
+					<select multiple class="form-control" id="selectDependenciasNuevaSemilla"></select>
 				</div>
 				<div class="col-xs-1">
 					<input type='button' id="addDependencia" value="&gt;&gt;"
@@ -298,8 +291,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						onclick="$('#selectDependenciasNuevaSemillaSeleccionadas').find('option:selected').remove().appendTo('#selectDependenciasNuevaSemilla');">
 				</div>
 				<div class="col-xs-4">
-					<select multiple class="form-control"
-						id="selectDependenciasNuevaSemillaSeleccionadas"
+					<select multiple class="form-control" id="selectDependenciasNuevaSemillaSeleccionadas"
 						name="dependenciasSeleccionadas"></select>
 				</div>
 			</div>
@@ -307,8 +299,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 			<!-- Acronimo -->
 			<div class="row formItem">
-				<label for="acronimo" class="control-label"><strong
-					class="labelVisu"><bean:message
+				<label for="acronimo" class="control-label"><strong class="labelVisu"><bean:message
 							key="nueva.semilla.observatorio.acronimo" /></strong></label>
 				<div class="col-xs-4">
 					<input type="text" name="acronimo" class="texto form-control" />
@@ -317,53 +308,44 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 			<logic:present parameter="<%=Constants.ID_CATEGORIA%>">
-				<input type="hidden" name="segmento"
-					value="<c:out value="${CategoriaForm.id }" />" />
+				<input type="hidden" name="segmento" value="<c:out value="${CategoriaForm.id }" />" />
 			</logic:present>
 			<logic:notPresent parameter="<%=Constants.ID_CATEGORIA%>">
 				<!-- Categoria/Segmento -->
 				<div class="row formItem">
-					<label for="categoria" class="control-label"><strong
-						class="labelVisu"><bean:message
+					<label for="categoria" class="control-label"><strong class="labelVisu"><bean:message
 								key="nueva.semilla.webs.categoria" /></strong></label>
 					<div class="col-xs-4">
-						<select name="segmento" id="selectCategoriasNuevaSemilla"
-							class="textoSelect form-control"></select>
+						<select name="segmento" id="selectCategoriasNuevaSemilla" class="textoSelect form-control"></select>
 					</div>
 				</div>
 			</logic:notPresent>
 
 
 			<logic:present parameter="<%=Constants.ID_AMBITO%>">
-				<input type="hidden" name="ambitoaux"
-					value="<c:out value="${AmbitoForm.id }" />" />
+				<input type="hidden" name="ambitoaux" value="<c:out value="${AmbitoForm.id }" />" />
 			</logic:present>
 			<logic:notPresent parameter="<%=Constants.ID_AMBITO%>">
 				<!-- Ambito/Ambitoaux -->
 				<div class="row formItem">
-					<label for="ambito" class="control-label"><strong
-						class="labelVisu"><bean:message
+					<label for="ambito" class="control-label"><strong class="labelVisu"><bean:message
 								key="nueva.semilla.webs.ambito" /></strong></label>
 					<div class="col-xs-4">
-						<select name="ambitoaux" id="selectAmbitosNuevaSemilla"
-							class="textoSelect form-control"></select>
+						<select name="ambitoaux" id="selectAmbitosNuevaSemilla" class="textoSelect form-control"></select>
 					</div>
 				</div>
 			</logic:notPresent>
 
 			<logic:present parameter="<%=Constants.ID_COMPLEJIDAD%>">
-				<input type="hidden" name="complejidadaux"
-					value="<c:out value="${ComplejidadForm.id }" />" />
+				<input type="hidden" name="complejidadaux" value="<c:out value="${ComplejidadForm.id }" />" />
 			</logic:present>
 			<logic:notPresent parameter="<%=Constants.ID_COMPLEJIDAD%>">
 				<!-- Complejidad/Complejidadaux -->
 				<div class="row formItem">
-					<label for="complejidad" class="control-label"><strong
-						class="labelVisu"><bean:message
+					<label for="complejidad" class="control-label"><strong class="labelVisu"><bean:message
 								key="nueva.semilla.webs.complejidad" /></strong></label>
 					<div class="col-xs-4">
-						<select name="complejidadaux" id="selectComplejidadesNuevaSemilla"
-							class="textoSelect form-control"></select>
+						<select name="complejidadaux" id="selectComplejidadesNuevaSemilla" class="textoSelect form-control"></select>
 					</div>
 				</div>
 			</logic:notPresent>
@@ -371,38 +353,32 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 			<!-- Etiquetas -->
 			<div class="row formItem">
-				<label for="etiqueta" class="control-label"><strong
-					class="labelVisu"> <bean:message
+				<label for="etiqueta" class="control-label"><strong class="labelVisu"> <bean:message
 							key="nueva.semilla.observatorio.etiqueta" /></strong></label>
 				<div class="col-xs-6">
-					<input name="etiquetasSeleccionadas" autocapitalize="off" 
-						placeholder="Escriba para buscar..." autofocus id="tagsFilter"
-						type="text" value="" />
+					<input name="etiquetasSeleccionadas" autocapitalize="off" placeholder="Escriba para buscar..." autofocus
+						id="tagsFilter" type="text" value="" />
 				</div>
 			</div>
 
 			<!-- Urls -->
 			<div class="row formItem">
 				<p class="alert alert-info" style="margin-left: 23%;">
-					<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message
-							key="nueva.semilla.webs.informacion" /> </em>:
+					<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
+					</em>:
 					<bean:message key="nueva.semilla.webs.info" />
 				</p>
-				<label for="listaUrlsString" class="control-label"><strong
-					class="labelVisu"><acronym
-						title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
-							key="nueva.semilla.observatorio.url" /></strong></label>
+				<label for="listaUrlsString" class="control-label"><strong class="labelVisu"><acronym
+						title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="nueva.semilla.observatorio.url" /></strong></label>
 				<div class="col-xs-8">
-					<textarea rows="5" cols="50" name="listaUrlsString"
-						class="form-control"></textarea>
+					<textarea rows="5" cols="50" name="listaUrlsString" class="form-control"></textarea>
 				</div>
 			</div>
 
 			<!-- Directorio -->
 			<div class="row formItem ">
 
-				<label for="inDirectory" class="control-label"><strong
-					class="labelVisu"><bean:message
+				<label for="inDirectory" class="control-label"><strong class="labelVisu"><bean:message
 							key="nueva.semilla.observatorio.in.directory" /></strong></label>
 				<div class="col-xs-2">
 					<select name="inDirectory" class="textoSelect form-control">
@@ -413,6 +389,16 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<bean:message key="select.yes" />
 						</option>
 					</select>
+				</div>
+			</div>
+
+			<!-- Observaciones -->
+			<div class="row formItem">
+				<label for="observaciones" class="control-label"><strong class="labelVisu"><bean:message
+							key="nueva.semilla.observatorio.observaciones" /></strong></label>
+				<div class="col-xs-8">
+					<textarea rows="5" cols="50" name="observaciones" class="form-control"></textarea>
+					<!-- 					<input type="text" id="observaciones" name="observaciones" class="texto form-control" /> -->
 				</div>
 			</div>
 
