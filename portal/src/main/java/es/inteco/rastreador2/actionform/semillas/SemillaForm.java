@@ -26,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.ValidatorForm;
 
+import es.inteco.rastreador2.actionform.etiquetas.ClasificacionForm;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 
 /**
@@ -72,7 +73,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	private String eliminarStr;
 	/** The dependencias. */
 	private List<DependenciaForm> dependencias;
-	// private List<EtiquetaForm> etiquetas;
+	/** The observaciones. */
+	private String observaciones;
 
 	/**
 	 * Instantiates a new semilla form.
@@ -323,13 +325,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	public int hashCode() {
 		return (int) (id ^ (id >>> 32));
 	}
-	// public String getDependencia() {
-	// return dependencia;
-	// }
-	//
-	// public void setDependencia(String dependencia) {
-	// this.dependencia = dependencia;
-	// }
 
 	/**
 	 * Gets the acronimo.
@@ -493,7 +488,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	/**
 	 * Adds the etiqueta.
 	 *
-	 * @param dependencia the etiqueta
+	 * @param etiqueta the etiqueta
 	 */
 	public void addEtiqueta(EtiquetaForm etiqueta) {
 		if (this.etiquetas == null) {
@@ -520,6 +515,114 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 			for (String currentNombre : nombres) {
 				EtiquetaForm etiqueta = new EtiquetaForm();
 				etiqueta.setName(currentNombre.trim());
+				this.etiquetas.add(etiqueta);
+			}
+		}
+	}
+
+	/**
+	 * Adds the etiqueta por nombre.
+	 *
+	 * @param nombre the nombre
+	 */
+	public void addEtiquetaTematica(String nombre) {
+		if (this.etiquetas == null) {
+			this.etiquetas = new ArrayList<EtiquetaForm>();
+		}
+		if (!StringUtils.isEmpty(nombre)) {
+			String[] nombres = nombre.split("\r\n");
+			// Try split without \r
+			if (nombres.length == 1) {
+				nombres = nombre.split("\n");
+			}
+			for (String currentNombre : nombres) {
+				EtiquetaForm etiqueta = new EtiquetaForm();
+				etiqueta.setName(currentNombre.trim());
+				// TODO Clasificacion
+				ClasificacionForm cls = new ClasificacionForm();
+				cls.setId("1");
+				etiqueta.setClasificacion(cls);
+				this.etiquetas.add(etiqueta);
+			}
+		}
+	}
+
+	/**
+	 * Adds the etiqueta por nombre.
+	 *
+	 * @param nombre the nombre
+	 */
+	public void addEtiquetaDistribucion(String nombre) {
+		if (this.etiquetas == null) {
+			this.etiquetas = new ArrayList<EtiquetaForm>();
+		}
+		if (!StringUtils.isEmpty(nombre)) {
+			String[] nombres = nombre.split("\r\n");
+			// Try split without \r
+			if (nombres.length == 1) {
+				nombres = nombre.split("\n");
+			}
+			for (String currentNombre : nombres) {
+				EtiquetaForm etiqueta = new EtiquetaForm();
+				etiqueta.setName(currentNombre.trim());
+				// TODO Clasificacion
+				ClasificacionForm cls = new ClasificacionForm();
+				cls.setId("2");
+				etiqueta.setClasificacion(cls);
+				this.etiquetas.add(etiqueta);
+			}
+		}
+	}
+
+	/**
+	 * Adds the etiqueta por nombre.
+	 *
+	 * @param nombre the nombre
+	 */
+	public void addEtiquetaRecurrencia(String nombre) {
+		if (this.etiquetas == null) {
+			this.etiquetas = new ArrayList<EtiquetaForm>();
+		}
+		if (!StringUtils.isEmpty(nombre)) {
+			String[] nombres = nombre.split("\r\n");
+			// Try split without \r
+			if (nombres.length == 1) {
+				nombres = nombre.split("\n");
+			}
+			for (String currentNombre : nombres) {
+				EtiquetaForm etiqueta = new EtiquetaForm();
+				etiqueta.setName(currentNombre.trim());
+				// TODO Clasificacion
+				ClasificacionForm cls = new ClasificacionForm();
+				cls.setId("3");
+				etiqueta.setClasificacion(cls);
+				this.etiquetas.add(etiqueta);
+			}
+		}
+	}
+
+	/**
+	 * Adds the etiqueta por nombre.
+	 *
+	 * @param nombre the nombre
+	 */
+	public void addEtiquetaOtros(String nombre) {
+		if (this.etiquetas == null) {
+			this.etiquetas = new ArrayList<EtiquetaForm>();
+		}
+		if (!StringUtils.isEmpty(nombre)) {
+			String[] nombres = nombre.split("\r\n");
+			// Try split without \r
+			if (nombres.length == 1) {
+				nombres = nombre.split("\n");
+			}
+			for (String currentNombre : nombres) {
+				EtiquetaForm etiqueta = new EtiquetaForm();
+				etiqueta.setName(currentNombre.trim());
+				// TODO Clasificacion
+				ClasificacionForm cls = new ClasificacionForm();
+				cls.setId("4");
+				etiqueta.setClasificacion(cls);
 				this.etiquetas.add(etiqueta);
 			}
 		}
@@ -625,15 +728,37 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	}
 
 	/**
+	 * Gets the observaciones.
+	 *
+	 * @return the observaciones
+	 */
+	public String getObservaciones() {
+		return observaciones;
+	}
+
+	/**
+	 * Sets the observaciones.
+	 *
+	 * @param observaciones the new observaciones
+	 */
+	public void setObservaciones(String observaciones) {
+		this.observaciones = observaciones;
+	}
+
+	/**
 	 * To string.
 	 *
 	 * @return the string
 	 */
 	@Override
 	public String toString() {
-		return "SemillaForm [id=" + id + ", nombre=" + nombre + ", nombre_antiguo=" + nombre_antiguo + ", listaUrls=" + listaUrls + ", listaUrlsString=" + listaUrlsString
-				+ /* ", dependencia=" + dependencia + */ ", acronimo=" + acronimo + ", asociada=" + asociada + ", activa=" + activa + ", activaStr=" + activaStr + ", rastreoAsociado="
-				+ rastreoAsociado + ", categoria=" + categoria + ", ambito=" + ambito + ",complejidad=" + complejidad + ",inDirectory=" + inDirectory + ", inDirectoryStr=" + inDirectoryStr
-				+ ", eliminar=" + eliminar + ", eliminarStr=" + eliminarStr + ", dependencias=" + dependencias + ", etiquetas=" + etiquetas + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("SemillaForm [id=").append(id).append(", nombre=").append(nombre).append(", nombre_antiguo=").append(nombre_antiguo).append(", listaUrls=").append(listaUrls)
+				.append(", listaUrlsString=").append(listaUrlsString).append(", acronimo=").append(acronimo).append(", asociada=").append(asociada).append(", activa=").append(activa)
+				.append(", activaStr=").append(activaStr).append(", rastreoAsociado=").append(rastreoAsociado).append(", categoria=").append(categoria).append(", ambito=").append(ambito)
+				.append(", complejidad=").append(complejidad).append(", etiquetas=").append(etiquetas).append(", inDirectory=").append(inDirectory).append(", inDirectoryStr=").append(inDirectoryStr)
+				.append(", eliminar=").append(eliminar).append(", eliminarStr=").append(eliminarStr).append(", dependencias=").append(dependencias).append(", observaciones=").append(observaciones)
+				.append("]");
+		return builder.toString();
 	}
 }

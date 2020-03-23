@@ -290,6 +290,14 @@ public interface Constants {
 	String XML_COMPLEJIDAD = "complejidad";
 	/** The xml etiquetas. */
 	String XML_ETIQUETAS = "etiquetas";
+	/** The xml etiquetas tematica. */
+	String XML_ETIQUETAS_TEMATICA = "tematica";
+	/** The xml etiquetas distribuccion. */
+	String XML_ETIQUETAS_DISTRIBUCCION = "distribuccion";
+	/** The xml etiquetas recurrencia. */
+	String XML_ETIQUETAS_RECURRENCIA = "recurrencia";
+	/** The xml etiquetas otros. */
+	String XML_ETIQUETAS_OTROS = "otros";
 	/** The error. */
 	String ERROR = "error";
 	/** The error1. */

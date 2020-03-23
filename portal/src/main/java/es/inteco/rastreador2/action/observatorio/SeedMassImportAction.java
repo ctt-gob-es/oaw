@@ -241,7 +241,6 @@ public class SeedMassImportAction extends Action {
 					searchForm.setNombre(es.inteco.common.utils.StringUtils.corregirEncoding(searchForm.getNombre()));
 				}
 				if (!StringUtils.isEmpty(request.getParameter("categoria"))) {
-					// searchForm.setCategoria((request.getParameter("categoria")).split(","));
 					searchForm.setCategoria((request.getParameterValues("categoria")));
 				}
 				if (!StringUtils.isEmpty(request.getParameter("ambito"))) {

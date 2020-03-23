@@ -129,7 +129,11 @@ public final class SeedUtils {
 			// complejidad
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_COMPLEJIDAD, "setComplexityName", 0);
 			// Lista de etiquetas
-			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ETIQUETAS + "/", "addEtiquetaPorNombre", 0);
+//			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ETIQUETAS + "/", "addEtiquetaPorNombre", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ETIQUETAS_TEMATICA + "/", "addEtiquetaTematica", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ETIQUETAS_DISTRIBUCCION + "/", "addEtiquetaDistribucion", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ETIQUETAS_RECURRENCIA + "/", "addEtiquetaRecurrencia", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ETIQUETAS_OTROS + "/", "addEtiquetaOtros", 0);
 			digester.addSetNext(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA, "add");
 			return (List<SemillaForm>) digester.parse(inputStream);
 		} catch (Exception e) {
@@ -234,17 +238,84 @@ public final class SeedUtils {
 			}
 			hd.endElement("", "", Constants.XML_COMPLEJIDAD);
 			// etiquetas
-			hd.startElement("", "", Constants.XML_ETIQUETAS, null);
+			// TODO Generate separated tags
+			// distribucion
+			// tematica
+			// recurrencia
+			// otros
+//			hd.startElement("", "", Constants.XML_ETIQUETAS, null);
 			List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+			List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+			List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+			List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+			List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
 			if (etiquetas != null && !etiquetas.isEmpty()) {
 				for (int i = 0; i < etiquetas.size(); i++) {
-					hd.characters(etiquetas.get(i).getName().toCharArray(), 0, etiquetas.get(i).getName().length());
-					if (i < etiquetas.size() - 1) {
+					EtiquetaForm tmp = etiquetas.get(i);
+					if (tmp.getClasificacion() != null) {
+						switch (tmp.getClasificacion().getId()) {
+						case "1":
+							tagsTematica.add(tmp);
+							break;
+						case "2":
+							tagsDistribucion.add(tmp);
+							break;
+						case "3":
+							tagsRecurrencia.add(tmp);
+							break;
+						case "4":
+							tagsOtros.add(tmp);
+							break;
+						default:
+							break;
+						}
+					}
+				}
+			}
+			// 1
+			hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
+			if (tagsTematica != null && !tagsTematica.isEmpty()) {
+				for (int i = 0; i < tagsTematica.size(); i++) {
+					hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
+					if (i < tagsTematica.size() - 1) {
 						hd.characters("\n".toCharArray(), 0, "\n".length());
 					}
 				}
 			}
-			hd.endElement("", "", Constants.XML_ETIQUETAS);
+			hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
+			// 2
+			hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
+			if (tagsDistribucion != null && !tagsDistribucion.isEmpty()) {
+				for (int i = 0; i < tagsDistribucion.size(); i++) {
+					hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
+					if (i < tagsDistribucion.size() - 1) {
+						hd.characters("\n".toCharArray(), 0, "\n".length());
+					}
+				}
+			}
+			hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
+			// 3
+			hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
+			if (tagsRecurrencia != null && !tagsRecurrencia.isEmpty()) {
+				for (int i = 0; i < tagsRecurrencia.size(); i++) {
+					hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
+					if (i < tagsRecurrencia.size() - 1) {
+						hd.characters("\n".toCharArray(), 0, "\n".length());
+					}
+				}
+			}
+			hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
+			// 4
+			hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
+			if (tagsOtros != null && !tagsOtros.isEmpty()) {
+				for (int i = 0; i < tagsOtros.size(); i++) {
+					hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
+					if (i < tagsOtros.size() - 1) {
+						hd.characters("\n".toCharArray(), 0, "\n".length());
+					}
+				}
+			}
+			hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
 			hd.endElement("", "", Constants.XML_SEMILLA);
 		}
 		hd.endElement("", "", Constants.XML_LISTA);

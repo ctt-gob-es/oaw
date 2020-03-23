@@ -99,6 +99,9 @@ Email: observ.accesibilidad@correo.gob.es
 
 	function dialogoEditarSemilla(rowid) {
 
+		//Preventive reset
+		$('#nuevaSemillaMultidependencia')[0].reset();		
+		
 		window.scrollTo(0, 0);
 		
 		windowWidth = $(window).width() * 0.8;
@@ -171,7 +174,8 @@ Email: observ.accesibilidad@correo.gob.es
 		$('#nuevaSemillaMultidependencia #tagsFilter').val(
 				$('#grid').getLocalRow(rowid).tagsString);
 		
-		
+		$('#nuevaSemillaMultidependencia textarea[name=observaciones]').val(
+				$('#grid').getLocalRow(rowid).observaciones);		
 		
 			$.ajax({
 				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
