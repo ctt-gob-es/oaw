@@ -89,27 +89,24 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			},
 			open : function() {
 				cargarSelect();
-				
-				
-// 					$.ajax({
-// 						url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
-// 						method : 'POST',
-// 						cache : false
-// 					}).success(function(response) {
 
-// 						$('#tagsFilter').tagbox({
-// 							items : response.etiquetas,
-// 							searchIn : [ 'name' ],
-// 							rowFormat : '<span class="name">{{name}}</span>',
-// 							tokenFormat : '{{name}}',
-// 							valueField : 'id',
-// 							itemClass : 'user',
-// 						});
+				// 					$.ajax({
+				// 						url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+				// 						method : 'POST',
+				// 						cache : false
+				// 					}).success(function(response) {
 
-// 					});
+				// 						$('#tagsFilter').tagbox({
+				// 							items : response.etiquetas,
+				// 							searchIn : [ 'name' ],
+				// 							rowFormat : '<span class="name">{{name}}</span>',
+				// 							tokenFormat : '{{name}}',
+				// 							valueField : 'id',
+				// 							itemClass : 'user',
+				// 						});
 
-				
-				
+				// 					});
+
 			},
 			close : function() {
 				$('#nuevaSemillaMultidependencia')[0].reset();
@@ -118,7 +115,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				$('.tagbox-token a').click();
 				$('.tagbox-wrapper').remove();
 				$('#tagsFilter').show();
-				
+
 			}
 		});
 
@@ -260,6 +257,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<input type="hidden" name="<%=Constants.ACTION%>" value="<bean:write name="<%=Constants.ACTION%>"/>" />
 				<fieldset>
 					<jsp:include page="/common/crawler_messages.jsp" />
+
+					<div class="formItem">
+						<label for="name" class="control-label"><strong class="labelVisu"><acronym
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="modificar.categoria.clave" />:
+						</strong></label>
+						<html:text styleClass="texto form-control" property="key" styleId="name" maxlength="256" />
+					</div>
+
 					<div class="formItem">
 						<label for="name" class="control-label"><strong class="labelVisu"><acronym
 								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="migas.categoria" />: </strong></label>

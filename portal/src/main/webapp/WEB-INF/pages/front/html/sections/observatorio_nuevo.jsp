@@ -58,7 +58,7 @@ Email: observ.accesibilidad@correo.gob.es
 		var $jq = $.noConflict();
 		$jq(document).ready(function() {
 			$.ajax({
-				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
 				method : 'POST',
 				cache : false
 			}).success(function(response) {

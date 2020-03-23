@@ -174,7 +174,7 @@ Email: observ.accesibilidad@correo.gob.es
 		
 		
 			$.ajax({
-				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
 				method : 'POST',
 				cache : false
 			}).success(function(response) {

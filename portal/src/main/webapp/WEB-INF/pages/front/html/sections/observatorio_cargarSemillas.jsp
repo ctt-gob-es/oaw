@@ -33,7 +33,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <script src="/oaw/js/jqgrid/i18n/grid.locale-es.js" type="text/javascript"></script>
 
 <script src="/oaw/js/gridSemillas.js" type="text/javascript"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
 
 <script src="/oaw/js/tagbox/tagbox.js" type="text/javascript"></script>
 <link rel="stylesheet" href="/oaw/js/tagbox/tagbox.css">
@@ -151,7 +151,7 @@ display: block;
 				
 				$(document).ready(function() {
 					$.ajax({
-						url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+						url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
 						method : 'POST',
 						cache : false
 					}).success(function(response) {
@@ -271,7 +271,7 @@ display: block;
 						
 						$jq(document).ready(function() {
 							$.ajax({
-								url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+								url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
 								method : 'POST',
 								cache : false
 							}).success(function(response) {
