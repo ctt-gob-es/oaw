@@ -49,7 +49,7 @@ Email: observ.accesibilidad@correo.gob.es
 	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 	border: none !important;
 }
-}
+
 </style>
 
 <script>
@@ -74,6 +74,14 @@ Email: observ.accesibilidad@correo.gob.es
 
 			})
 
+		});
+		
+		$( "select#cartucho" ).change(function() {
+			if($(this).val() == "9" || $(this).val() == "10"){
+				$(".hiddenOnComplex").hide();
+			} else {
+				$(".hiddenOnComplex").show();
+			}
 		});
 
 	});
@@ -245,7 +253,7 @@ Email: observ.accesibilidad@correo.gob.es
 						</html:select>
 					</div>
 
-					<div class="formItem">
+					<div class="formItem hiddenOnComplex">
 						<label for="profundidad" class="control-label"><strong class="labelVisu"><acronym
 								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 									key="nuevo.observatorio.profundidad" />: </strong></label>
@@ -268,7 +276,7 @@ Email: observ.accesibilidad@correo.gob.es
 						<p style="margin-left: 22%;">(Para las semillas que no tienen Complejidad asignada)</p>
 					</div>
 
-					<div class="formItem">
+					<div class="formItem hiddenOnComplex">
 						<label for="amplitud" class="control-label"><strong class="labelVisu"><acronym
 								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="nuevo.observatorio.amplitud" />:
 						</strong></label>

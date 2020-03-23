@@ -674,12 +674,12 @@ public class CrawlerJob implements InterruptableJob {
 		String urlRastreo = (crawlerData.getUrls() != null && !crawlerData.getUrls().isEmpty()) ? crawlerData.getUrls().get(0) : "";
 		Logger.putLog("[A] Iniciando los análisis del rastreo id: " + crawlerData.getIdCrawling() + " (" + urlRastreo + ")", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 		try (Connection connection = DataBaseManager.getConnection()) {
-			// Si viene del sevicio de diganóstico el ID del rastreo es negativo
+			// If it comes from the diagnostic service the trace ID is negative
 			ObservatoryStatus estado = null;
 			if (crawlerData.getIdCrawling() > 0) {
 				// Recupera la información que falta
 				ExtraInfo extra = RastreoDAO.getExtraInfo(DataBaseManager.getConnection(), crawlerData.getIdFulfilledCrawling());
-				// Meter en base de datos la información del rastreo
+				// Putting the tracking information into a database
 				estado = EstadoObservatorioDAO.findEstadoObservatorio(connection, (int) crawlerData.getIdObservatory(), extra.getIdEjecucionObservatorio());
 				estado.setIdObservatorio((int) crawlerData.getIdObservatory());
 				estado.setIdEjecucionObservatorio(extra.getIdEjecucionObservatorio());
@@ -698,13 +698,13 @@ public class CrawlerJob implements InterruptableJob {
 			}
 			DataBaseManager.closeConnection(connection);
 			for (CrawledLink crawledLink : analyzeDomains) {
-				// Logs de inicio y fin de análisis
-				// Puntos para guardar datos de fecha, resumen de estado del observatorio
+				// Logs of start and end of analysis
+				// Points to save date data, summary of the status of the observatory
 				Date initDate = new Date();
 				Logger.putLog("[I] Iniciando análisis del enlace número " + (cont + 1) + "/" + analyzeDomains.size() + " (" + crawledLink.getUrl() + ")", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 				// Actualizamos el estado
 				try (Connection connection2 = DataBaseManager.getConnection()) {
-					// Si viene del sevicio de diganóstico el ID del rastreo es negativo
+					// If it comes from the diagnostic service the trace ID is negative
 					if (crawlerData.getIdCrawling() > 0) {
 						estado.setActualUrl(crawledLink.getUrl());
 						EstadoObservatorioDAO.updateEstado(connection2, estado);
@@ -717,7 +717,7 @@ public class CrawlerJob implements InterruptableJob {
 					final boolean isLast = (cont >= analyzeDomains.size() - 1);
 					webAnalyzer.runCartuchos(crawledLink, df.format(initDate), crawlerData, cookie, isLast);
 				} else {
-					// Si se pide interrupción, se abandonan los análisis
+					// If an interruption is requested, the analyses are abandoned
 					break;
 				}
 				Date endDate = new Date();
@@ -726,10 +726,12 @@ public class CrawlerJob implements InterruptableJob {
 						"Tiempo empleado:  " + (endDate.getTime() - initDate.getTime()) / 1000 + " segundos. Tiempo acumulado: " + (endDate.getTime() - initFullDate.getTime()) / 1000 + " segundos",
 						CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 				cont++;
-				// Actualizamos el estado
+				// We update the status
 				try (Connection connection2 = DataBaseManager.getConnection()) {
-					// Si viene del sevicio de diganóstico el ID del rastreo es negativo
+					// If it comes from the diagnostic service the trace ID is negative
 					if (crawlerData.getIdCrawling() > 0) {
+						// To prevent that sometimes you don't keep the right number, we also update it
+						estado.setTotalUrl(analyzeDomains.size());
 						estado.setUltimaUrl(crawledLink.getUrl());
 						estado.setFechaUltimaUrl(endDate);
 						estado.setTiempoMedio(((endDate.getTime() - initFullDate.getTime()) / cont) / 1000);
