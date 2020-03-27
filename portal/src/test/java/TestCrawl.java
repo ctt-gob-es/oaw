@@ -88,7 +88,7 @@ public class TestCrawl {
 		mysqlDataSource.setUser("root");
 		mysqlDataSource.setPassword("root");
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.OFF);
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.DEBUG);
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class TestCrawl {
 //				",https://www.euskadi.eus/hasiera/", "https://www.aragon.es", "https://www.gobiernodecanarias.org/principal/", "https://www.cantabria.es/", "https://www.navarra.es/home_es/",
 //				"https://web.larioja.org", "http://www.caib.es/govern/index.do?lang=ca", "https://www.asturias.es/", "https://www.juntadeandalucia.es/institucional/index.html", "https://www.jcyl.es/",
 //				"http://www.juntaex.es/web/", "https://www.castillalamancha.es/", "http://www.carm.es", "https://www.xunta.gal/portada" };
-		String[] urls = new String[] { "http://www.melilla.es/melillaPortal/index.jsp" };
+		String[] urls = new String[] { "http://www.carm.es/web/pagina?IDCONTENIDO=1&IDTIPO=180" };
 		String[] urlsD = new String[] {};
 		for (String url : urls) {
 			this.crawl(url, false);

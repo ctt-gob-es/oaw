@@ -11,7 +11,7 @@ const regexFontsGoogle = /fonts.googleapis.com/i;
 const server = http.createServer((req, res) => {
   
   //var requestURL = req.url;
-  var requestURL = encodeURI(req.url);
+  var requestURL = encodeURIComponent(req.url);
   
   console.log("[proxy - http] : " + requestURL);
       
@@ -41,7 +41,7 @@ const server = http.createServer((req, res) => {
 
 server.on('connect', function(req, socket, head) {
   
-  var requestURL = encodeURI(req.url);
+  var requestURL = encodeURIComponent(req.url);
 
   console.log("[proxy - https] : " + requestURL); 
 
