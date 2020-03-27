@@ -1624,7 +1624,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		tablaRankings.addCell(PDFUtils.createTableCell(rankingActual.getCompliance(), Color.WHITE, ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
 		if (rankingPrevio != null) {
 			tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getCompliance(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-			tablaRankings.addCell(createEvolutionLevelCell(messageResources, rankingActual.getCompliance(), rankingPrevio.getCompliance()));
+			tablaRankings.addCell(createEvolutionComplianceCell(messageResources, rankingActual.getCompliance(), rankingPrevio.getCompliance()));
 		}
 		tablaRankings.completeRow();
 		if (rankingActual != null) {
@@ -1733,6 +1733,43 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 					return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"), "Empeora"), "empeora", Color.WHITE,
 							ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
 				}
+			}
+		}
+	}
+
+	/**
+	 * Crea una celda PdfPCell para una tabla del informa PDF con la evolución del nivel de accesibilidad.
+	 *
+	 * @param messageResources the message resources
+	 * @param currentLevel     String nivel de accesibilidad actual.
+	 * @param previousLevel    String nivel de accesibilidad de la iteración anterior.
+	 * @return una celda PdfPCell con una imagen que indica la evolución y una cadena con la misma información complementando la imagen.
+	 */
+	private static PdfPCell createEvolutionComplianceCell(final MessageResources messageResources, final String currentLevel, final String previousLevel) {
+		// resultados.anonimos.porc.portales.nc = No conforme
+		// resultados.anonimos.porc.portales.pc = Parcialmente conforme
+		// resultados.anonimos.porc.portales.tc
+		final PropertiesManager pmgr = new PropertiesManager();
+		if (currentLevel.equalsIgnoreCase(previousLevel)) {
+			return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.same"), "Se mantiene"), "se mantiene", Color.WHITE, ConstantsFont.noteCellFont,
+					Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+		} else {
+			if (messageResources.getMessage("resultados.anonimos.porc.portales.tc").equalsIgnoreCase(currentLevel)
+					&& (messageResources.getMessage("resultados.anonimos.porc.portales.pc").equalsIgnoreCase(previousLevel)
+							|| messageResources.getMessage("resultados.anonimos.porc.portales.nc").equalsIgnoreCase(previousLevel))) {
+				return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"), "Mejora"), "mejora", Color.WHITE, ConstantsFont.noteCellFont,
+						Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+			} else if (messageResources.getMessage("resultados.anonimos.porc.portales.pc").equalsIgnoreCase(currentLevel)) {
+				if (messageResources.getMessage("resultados.anonimos.porc.portales.tc").equalsIgnoreCase(previousLevel)) {
+					return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"), "Empeora"), "empeora", Color.WHITE,
+							ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+				} else {
+					return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"), "Mejora"), "mejora", Color.WHITE,
+							ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+				}
+			} else {
+				return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"), "Empeora"), "empeora", Color.WHITE, ConstantsFont.noteCellFont,
+						Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
 			}
 		}
 	}

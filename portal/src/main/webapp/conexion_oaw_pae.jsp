@@ -41,6 +41,7 @@
         String type = "url";
         String confirm = "false";
         String complexity ="";
+        String fileName;
 
 
         private final List<String> errores;
@@ -92,6 +93,7 @@
                     } else {
                         // Si no es campo de formulario es el fichero
                         codigo = new String(item.get());
+                        fileName = item.getName();
                     }
                 }
             } catch (FileUploadException fue) {
@@ -110,6 +112,8 @@
                 this.urls = item.getString();
             } else if (paramName.equalsIgnoreCase("content")) {
                 this.codigo = item.getString();
+                //Save filename
+                this.fileName = item.getName();
             } else if (paramName.equalsIgnoreCase("correo")) {
                 this.correo = item.getString();
             } else if (paramName.equalsIgnoreCase("profundidad")) {
