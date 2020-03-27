@@ -5,6 +5,8 @@
 - Añadido campo clave a los segmentos para ser usado en la ordenación
 - Modificada la exportación/importación de semillas para separar las etiquetas en tags diferentes en el XML según la clasificación
 - Corregido el cálculo de la puntuación media por verificación para sacar la media de las verificaciones redondeada
+- Corregida edición de semillas en las que las etiquetas seguían paginadas y desaparecían en la edición-
+- Corregido el cáculo de la evolución del nivel de cumplimiento
 
 5.0.3
 ------------------------------------------------------------------------------------------------------------------------------------

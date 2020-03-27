@@ -144,29 +144,32 @@ function complexityEdit(value, options, rowObject) {
 	var seed = $('#grid').jqGrid('getRowData', options.rowId);
 
 	var data = $("#grid").jqGrid('getGridParam', 'data');
-	$.each(data, function(index, item) {
-		if (item.id == options.rowId) {
 
-			var data = "";
-
-			$.each(item.etiquetas, function(index, value) {
-				data = data + value.id + ",";
-			});
-
-			if (data) {
-				data = data.slice(0, -1);
-			}
-
-			element.setAttribute('value', data);
-
-		}
-	});
 
 	$.ajax({
-		url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+		url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
 		method : 'POST',
 		cache : false
 	}).success(function(response) {
+		
+		
+		$.each(data, function(index, item) {
+			if (item.id == options.rowId) {
+
+				var data = "";
+
+				$.each(item.etiquetas, function(index, value) {
+					data = data + value.id + ",";
+				});
+
+				if (data) {
+					data = data.slice(0, -1);
+				}
+
+				element.setAttribute('value', data);
+
+			}
+		});
 
 		$(element).tagbox({
 			items : response.etiquetas,
