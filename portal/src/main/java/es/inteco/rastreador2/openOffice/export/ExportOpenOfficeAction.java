@@ -72,29 +72,34 @@ public class ExportOpenOfficeAction extends Action {
 			idCartucho = Long.parseLong(request.getParameter(Constants.ID_CARTUCHO));
 		}
 		String application;
-		try {
-			Connection connection = DataBaseManager.getConnection();
-			application = CartuchoDAO.getApplication(connection, idCartucho);
-			// GET AMBIT BY ID
-			if (Constants.NORMATIVA_UNE_EN2019.equals(application)) {
-				AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryId(connection, idObservatory);
-				if (ambito != null) {
-					request.setAttribute("ambito", ambito.getDescripcion());
+		final String action = request.getParameter(Constants.ACTION);
+		if ("downloadFile".equals(action)) {
+			return downloadFile(mapping, request, response);
+		} else {
+			try {
+				Connection connection = DataBaseManager.getConnection();
+				application = CartuchoDAO.getApplication(connection, idCartucho);
+				// GET AMBIT BY ID
+				if (Constants.NORMATIVA_UNE_EN2019.equals(application)) {
+					AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryId(connection, idObservatory);
+					if (ambito != null) {
+						request.setAttribute("ambito", ambito.getDescripcion());
+					} else {
+						request.setAttribute("ambito", "");
+					}
+					request.setAttribute("plantillas", PlantillaDAO.findAll(connection, -1));
+					request.setAttribute(Constants.ID_OBSERVATORIO, request.getParameter(Constants.ID_OBSERVATORIO));
+					request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null));
+					request.setAttribute(Constants.ID_CARTUCHO, idCartucho);
+					return mapping.findForward(Constants.CONFIGURAR_FILTROS_AGREGADOS);
 				} else {
-					request.setAttribute("ambito", "");
+					return generateReportWithoutFilters(mapping, request, response, idExecution, idObservatory);
 				}
-				request.setAttribute("plantillas", PlantillaDAO.findAll(connection, -1));
-				request.setAttribute(Constants.ID_OBSERVATORIO, request.getParameter(Constants.ID_OBSERVATORIO));
-				request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null));
-				request.setAttribute(Constants.ID_CARTUCHO, idCartucho);
-				return mapping.findForward(Constants.CONFIGURAR_FILTROS_AGREGADOS);
-			} else {
+			} catch (SQLException e1) {
+				return generateReportWithoutFilters(mapping, request, response, idExecution, idObservatory);
+			} catch (Exception e1) {
 				return generateReportWithoutFilters(mapping, request, response, idExecution, idObservatory);
 			}
-		} catch (SQLException e1) {
-			return generateReportWithoutFilters(mapping, request, response, idExecution, idObservatory);
-		} catch (Exception e1) {
-			return generateReportWithoutFilters(mapping, request, response, idExecution, idObservatory);
 		}
 	}
 
@@ -130,6 +135,31 @@ public class ExportOpenOfficeAction extends Action {
 			CrawlerUtils.returnFile(response, filePath, "application/vnd.oasis.opendocument.text", false);
 		} catch (Exception e) {
 			Logger.putLog("Exception al devolver el PDF", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return null;
+	}
+
+	/**
+	 * Download file.
+	 *
+	 * @param mapping  the mapping
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
+	private ActionForward downloadFile(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response) {
+		// Url de invocacion:
+		// http://localhost:8080/oaw/secure/primaryExportPdfAction.do?id_observatorio=8&idExObs=33&action=exportAllPdfs
+		final long idExecutionOb = request.getParameter(Constants.ID_EX_OBS) != null ? Long.parseLong(request.getParameter(Constants.ID_EX_OBS)) : 0;
+		final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null ? Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)) : 0;
+		final String filename = request.getParameter("file");
+		try (Connection c = DataBaseManager.getConnection()) {
+			final PropertiesManager pmgr = new PropertiesManager();
+			String filePath = pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office") + idObservatory + File.separator + idExecutionOb + File.separator + filename;
+			CrawlerUtils.returnFile(response, filePath, "application/vnd.oasis.opendocument.text", false);
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+			return mapping.findForward(Constants.ERROR);
 		}
 		return null;
 	}
