@@ -330,7 +330,7 @@ public abstract class OpenOfficeDocumentBuilder {
 	 * @return the odf text document odf text document
 	 * @throws Exception the exception
 	 */
-	public abstract OdfTextDocument buildDocumentFiltered(HttpServletRequest request, String graphicPath, String date, boolean evolution, List<ObservatoryEvaluationForm> pageExecutionList,
-			List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate,
-			String reportTitle) throws Exception;
+	public abstract OdfTextDocument buildDocumentFiltered(final HttpServletRequest request, final String filePath, final String graphicPath, final String date, final boolean evolution,
+			final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final String[] tagsToFilter, final Map<String, Boolean> grpahicConditional,
+			final String[] exObsIds, final Long idBaseTemplate, final Long idSegmentTemplate, final Long idComplexityTemplate, final String reportTitle) throws Exception;
 }

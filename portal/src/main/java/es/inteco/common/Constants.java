@@ -225,6 +225,7 @@ public interface Constants {
 	String SECTION_FORM = "sectionForm";
 	/** The generate all reports. */
 	String GENERATE_ALL_REPORTS = "generateAllReports";
+	String GENERATE_REPORT_ASYNC = "generateReportAsync";
 	/** The get seed clasifications. */
 	String GET_SEED_CLASIFICATIONS = "getSeedTags";
 	/** The seed tag. */
@@ -293,7 +294,7 @@ public interface Constants {
 	/** The xml etiquetas tematica. */
 	String XML_ETIQUETAS_TEMATICA = "tematica";
 	/** The xml etiquetas distribuccion. */
-	String XML_ETIQUETAS_DISTRIBUCCION = "distribuccion";
+	String XML_ETIQUETAS_DISTRIBUCCION = "distribucion";
 	/** The xml etiquetas recurrencia. */
 	String XML_ETIQUETAS_RECURRENCIA = "recurrencia";
 	/** The xml etiquetas otros. */

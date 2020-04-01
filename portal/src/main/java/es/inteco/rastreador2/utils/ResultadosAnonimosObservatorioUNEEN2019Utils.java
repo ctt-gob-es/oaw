@@ -158,8 +158,10 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (ComplejidadForm complejidad : complejidades) {
 				generateComplexityGraphics(messageResources, executionId, complejidad, filePath, color, regenerate, tagsFilter);
 			}
-			generateEvolutionGraphics(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, exObsIds);
-			generateEvolutionGraphicsFixed(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, exObsIds);
+			if (exObsIds != null && exObsIds.length > 1) {
+				generateEvolutionGraphics(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, exObsIds);
+				generateEvolutionGraphicsFixed(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, exObsIds);
+			}
 		} catch (Exception e) {
 			Logger.putLog("No se han generado las gráficas correctamente.", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
