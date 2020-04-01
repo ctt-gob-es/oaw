@@ -1891,9 +1891,9 @@ public final class SemillaDAO {
 		final List<CategoriaForm> categories = new ArrayList<>();
 		final String query;
 		if (page == Constants.NO_PAGINACION) {
-			query = "SELECT * FROM categorias_lista ORDER BY clave,orden ASC";
+			query = "SELECT * FROM categorias_lista ORDER BY clave IS NULL, clave ASC,  nombre, orden ASC ";
 		} else {
-			query = "SELECT * FROM categorias_lista ORDER BY clave,orden ASC LIMIT ? OFFSET ?";
+			query = "SELECT * FROM categorias_lista ORDER BY clave IS NULL, clave ASC,  nombre, orden ASC LIMIT ? OFFSET ?";
 		}
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			if (page != Constants.NO_PAGINACION) {
@@ -2276,7 +2276,7 @@ public final class SemillaDAO {
 		try (PreparedStatement ps = c.prepareStatement("INSERT INTO categorias_lista (nombre, orden, clave) VALUES (?,?, ?)", Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, categoriaForm.getName());
 			ps.setInt(2, categoriaForm.getOrden());
-			ps.setString(3, categoriaForm.getKey());
+			ps.setString(3, !org.apache.commons.lang3.StringUtils.isEmpty(categoriaForm.getKey()) ? categoriaForm.getKey() : null);
 			ps.executeUpdate();
 			try (ResultSet rs = ps.getGeneratedKeys()) {
 				if (rs.next()) {
@@ -2301,7 +2301,7 @@ public final class SemillaDAO {
 		try (PreparedStatement ps = c.prepareStatement("UPDATE categorias_lista SET nombre = ?, orden=?, clave = ? WHERE id_categoria = ?")) {
 			ps.setString(1, categoriaForm.getName());
 			ps.setInt(2, categoriaForm.getOrden());
-			ps.setString(3, categoriaForm.getKey());
+			ps.setString(3, !org.apache.commons.lang3.StringUtils.isEmpty(categoriaForm.getKey()) ? categoriaForm.getKey() : null);
 			ps.setString(4, categoriaForm.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {

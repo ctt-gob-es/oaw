@@ -58,27 +58,30 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<bean:message key="categoria.semillas.lista" />
 						</caption>
 						<colgroup>
-							<col style="width: 20%">
+							
 							<col style="width: 70%">
+							<col style="width: 20%">
 							<col style="width: 5%">
 							<col style="width: 5%">
 						</colgroup>
 						<tbody>
 							<tr>
-								<th><bean:message key="cargar.semilla.observatorio.clave" /></th>
+
 								<th><bean:message key="cargar.semilla.observatorio.categoria" /></th>
+								<th><bean:message key="cargar.semilla.observatorio.clave" /></th>
 								<th class="accion">Fichero semillas</th>
 								<th class="accion">Eliminar</th>
 							</tr>
 							<logic:iterate name="<%=Constants.SEED_CATEGORIES %>" id="category">
 								<tr>
-									<td style="text-align: left;"><span data-toggle="tooltip" title="Clave de orden"><bean:write
-												name="category" property="key" /></span></td>
+
 									<td style="text-align: left;"><html:link forward="editSeedCategory" paramId="<%=Constants.ID_CATEGORIA%>"
 											paramName="category" paramProperty="id">
 											<span data-toggle="tooltip" title="Editar la configuraci&oacute;n de este segmento"><bean:write
 													name="category" property="name" /></span>
 										</html:link> <span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true" /></td>
+									<td style="text-align: left;"><span data-toggle="tooltip" title="Agrupado por"><bean:write
+												name="category" property="key" /></span></td>
 									<td><html:link forward="getCategorySeedsFile" paramId="<%=Constants.ID_CATEGORIA%>" paramName="category"
 											paramProperty="id">
 											<span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip"

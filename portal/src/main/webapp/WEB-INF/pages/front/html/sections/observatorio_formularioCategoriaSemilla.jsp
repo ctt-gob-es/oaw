@@ -258,12 +258,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<fieldset>
 					<jsp:include page="/common/crawler_messages.jsp" />
 
-					<div class="formItem">
-						<label for="name" class="control-label"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="modificar.categoria.clave" />:
-						</strong></label>
-						<html:text styleClass="texto form-control" property="key" styleId="name" maxlength="256" />
-					</div>
 
 					<div class="formItem">
 						<label for="name" class="control-label"><strong class="labelVisu"><acronym
@@ -286,6 +280,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<option value="10" <c:if test="${CategoriaForm.orden==10}">selected="selected"</c:if>>10</option>
 						</html:select>
 					</div>
+					
+										<div class="formItem">
+						<label for="name" class="control-label"><strong class="labelVisu"> <bean:message key="modificar.categoria.clave" />:
+						</strong></label>
+						<html:text styleClass="texto form-control" property="key" styleId="name" maxlength="256" />
+					</div>
+					
 					<div class="formItem">
 						<label for="fileSeeds" class="control-label"><strong class="labelVisu"><bean:message
 									key="categoria.semillas.fichero" />: </strong></label>
