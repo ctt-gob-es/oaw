@@ -30,8 +30,6 @@
         String url = "";
         String urls = "";
         String correo;
-        String profundidad;
-        String amplitud;
         String informe;
         String nobroken;
         String username;
@@ -112,14 +110,12 @@
                 this.urls = item.getString();
             } else if (paramName.equalsIgnoreCase("content")) {
                 this.codigo = item.getString();
-                //Save filename
+                
+              //Save filename
                 this.fileName = item.getName();
+                
             } else if (paramName.equalsIgnoreCase("correo")) {
                 this.correo = item.getString();
-            } else if (paramName.equalsIgnoreCase("profundidad")) {
-                this.profundidad = item.getString();
-            } else if (paramName.equalsIgnoreCase("amplitud")) {
-                this.amplitud = item.getString();
             } else if (paramName.equalsIgnoreCase("informe")) {
                 this.informe = item.getString();
             } else if (paramName.equalsIgnoreCase("informe-nobroken")) {
@@ -204,7 +200,7 @@
             final URLCodec codec = new URLCodec();
             try {
                 final String encodedCodigo = codec.encode(codigo);
-                final String postRequest = String.format("content=%s&url=%s&correo=%s&complexity=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s&type=%s",
+                final String postRequest = String.format("content=%s&url=%s&correo=%s&complexity=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s&type=%s&filename=%s",
                         encodedCodigo != null ? encodedCodigo : "",
                         url != null ? url : "",
                         correo,
@@ -216,7 +212,8 @@
                         analysisToDelete,
                         nobroken,
                         urls,
-                        type
+                        type,
+                        fileName
                 );
                 return postRequest;
             } catch (Exception e) {
@@ -308,14 +305,7 @@
                         }
                     }
                 }
-                final int depth = Integer.parseInt(profundidad);
-                final int width = Integer.parseInt(amplitud);
-                if (depth < 0 || depth > 4) {
-                    errores.add("La profundidad de rastreo es incorrecta");
-                }
-                if (width < 0 || width > 8) {
-                    errores.add("La amplitud de rastreo es incorrecta");
-                }
+               
             } else if (isListaUrlsRequest()) {
                 if (urls.isEmpty()) {
                   errores.add("Indique al menos una URL para an&aacutelisis de tipo 'Conjunto de URLs'");
@@ -329,8 +319,8 @@
                     String[] domains = urls.split("\r\n");
                     if("observatorio-3".equals(informe) && domains.length > 33){                    	
                    		 errores.add("El n&uacute;mero m&aacute;ximo de URLs a analizar para esta metodolog&iacute;a (versi&oacute;n 2) es de 33");
-                    } else if(("observatorio-2".equals(informe) || "observatorio-1".equals(informe)) && domains.length > 17){
-                    	errores.add("El n&uacute;mero m&aacute;ximo de URLs a analizar para esta metodolog&iacute;a  es de 17");
+                    } else if("observatorio-4".equals(informe) && domains.length > 51){
+                    	errores.add("El n&uacute;mero m&aacute;ximo de URLs a analizar para esta metodolog&iacute;a  es de 51");
                     }
                 }
                 
@@ -471,9 +461,8 @@
             <input type="hidden" name="confirm"             value="true">
             <input type="hidden" name="url"                 value="<%=requestManager.url %>">
             <input type="hidden" name="urls"                value="<%=requestManager.urls %>">
-            <input type="hidden" name="profundidad"         value="<%=requestManager.profundidad %>">
-            <input type="hidden" name="amplitud"            value="<%=requestManager.amplitud %>">
             <input type="hidden" name="correo"              value="<%=requestManager.correo %>">
+			<input type="hidden" name="complexity"          value="<%=requestManager.complexity %>">
             <input type="hidden" name="informe"             value="<%=requestManager.informe %>">
             <input type="hidden" name="informe-nobroken"    value="<%=requestManager.nobroken!=null?requestManager.nobroken:"" %>">
             <input type="hidden" name="registerAnalysis"    value="<%=requestManager.registerAnalysis %>">

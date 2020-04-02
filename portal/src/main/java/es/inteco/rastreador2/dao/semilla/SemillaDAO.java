@@ -119,6 +119,40 @@ public final class SemillaDAO {
 	}
 
 	/**
+	 * Exist seed.
+	 *
+	 * @param c             the c
+	 * @param nombreSemilla the nombre semilla
+	 * @param type          the type
+	 * @return true, if successful
+	 * @throws SQLException the SQL exception
+	 */
+	public static Long existOtherSeed(Connection c, String nombreSemilla, int type) throws SQLException {
+		final String query;
+		Long id = null;
+		if (type == -1) {
+			query = "SELECT id_lista FROM lista WHERE nombre = ?";
+		} else {
+			query = "SELECT id_lista FROM lista WHERE nombre = ? AND id_tipo_lista = ?";
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setString(1, nombreSemilla);
+			if (type != -1) {
+				ps.setLong(2, type);
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					id = rs.getLong(1);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			return null;
+		}
+		return id;
+	}
+
+	/**
 	 * Insert list.
 	 *
 	 * @param c             the c
