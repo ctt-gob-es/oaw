@@ -257,10 +257,10 @@ td {
 }
 
 .innerFieldset .formItem {
-	margin-top:1%;
-	    height: 35px;
-	
+	margin-top: 1%;
+	height: 35px;
 }
+
 .eliminateLink {
 	float: right
 }
@@ -1313,13 +1313,32 @@ to {
 }
 
 #loading_cover_div {
-     background: url(/oaw/images/loading.gif) no-repeat scroll center center #000;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    display: none;
-    z-index: 10000;
-    opacity: 0.5;
+	background: url(/oaw/images/loading.gif) no-repeat scroll center center #000;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	display: none;
+	z-index: 10000;
+	opacity: 0.5;
+}
+
+.seedImportErrorList {
+	width: 100% !important;
+	text-align: left !important;
+	list-style-type: square  !important;
+	 list-style-position: inside;
+}
+
+.seedImportErrorList>li {
+	    width: 100% !important;
+    text-align: left !important;
+    list-style-type: square !important;
+    display: list-item !important;
+	 list-style-position: inside;
+}
+
+.seedImportErrorList > li+li::before{
+	    content: "" !important;
 }

@@ -17,13 +17,16 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -31,6 +34,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+import org.apache.struts.util.MessageResources;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -126,6 +130,7 @@ public class SeedMassImportAction extends Action {
 								List<SemillaForm> inalterableSeeds = new ArrayList<>();
 								List<SeedComparision> updatedSeeds = new ArrayList<>();
 								List<SemillaForm> newSeed = new ArrayList<>();
+								List<SeedError> errorSeeds = new ArrayList<>();
 								List<SemillaForm> updateAndNewSeeds = new ArrayList<>();
 								List<SemillaForm> seeds = SeedUtils.getSeedsFromFile(semillaSearchForm.getFileSeeds().getInputStream(), true);
 								// List<>
@@ -164,7 +169,40 @@ public class SeedMassImportAction extends Action {
 												seed.getComplejidad().setId(idComplejidad.toString());
 											}
 										}
-										if (seed.getId() != null) {
+										// TODO Check errors
+										List<String> errorsSeed = new ArrayList<>();
+										MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+										// TODO Duplicate name error
+										Long id = SemillaDAO.existOtherSeed(c, seed.getNombre(), Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+										if ((id != null && seed.getId() == null) || (id != null && id != null && seed.getId() != null && !id.equals(seed.getId()))) {
+											errorsSeed.add(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado"));
+										}
+										// TODO Max url error
+										List<String> xmlUrls = Arrays.asList(seed.getListaUrlsString().split(";"));
+										if (!StringUtils.isEmpty(seed.getListaUrlsString()) && seed.getComplejidad() != null) {
+											ComplejidadForm complexAux = ComplejidadDAO.getComplexityById(DataBaseManager.getConnection(), seed.getComplejidad().getId());
+											int maxUrls = complexAux.getAmplitud() * complexAux.getProfundidad() + 1;
+											if (xmlUrls != null && xmlUrls.size() > maxUrls) {
+												errorsSeed.add(messageResources.getMessage("semilla.nueva.url.max.superado", new String[] { String.valueOf(maxUrls) }));
+											}
+										}
+										// TODO Duplicate url
+										// Comprobar duplicados
+										Set<String> testDuplicates = this.findDuplicates(xmlUrls);
+										if (!testDuplicates.isEmpty()) {
+											String duplicadosStr = "";
+											for (String duplicado : testDuplicates) {
+												duplicadosStr += duplicado + "\n";
+											}
+											errorsSeed.add(messageResources.getMessage("semilla.nueva.url.duplicados") + duplicadosStr);
+										}
+										// TODO Has errores
+										if (errorsSeed.size() > 0) {
+											SeedError seedError = new SeedError();
+											BeanUtils.copyProperties(seedError, seed);
+											seedError.setErrors(errorsSeed);
+											errorSeeds.add(seedError);
+										} else if (seed.getId() != null) {
 											SemillaForm seedOld = SemillaDAO.getSeedById(c, seed.getId());
 											if (seedOld != null && seedOld.getId() != null) {
 												SeedComparision seedComparision = generateComparisionSeed(seedOld, seed);
@@ -184,6 +222,7 @@ public class SeedMassImportAction extends Action {
 											updateAndNewSeeds.add(seed);
 										}
 									}
+									request.setAttribute("errorSeeds", errorSeeds);
 									request.setAttribute("inalterableSeeds", inalterableSeeds);
 									request.setAttribute("updatedSeeds", updatedSeeds);
 									request.setAttribute("newSeedList", newSeed);
@@ -319,6 +358,36 @@ public class SeedMassImportAction extends Action {
 	}
 
 	/**
+	 * Normalizar url.
+	 *
+	 * Elimina los espacios y los saltos de línea para generar una cadena que pueda ser convertida en un array con el método split de {@link String}
+	 *
+	 * @param urlsSemilla the urls semilla Valor original
+	 * @return the string Valor normalizado
+	 */
+	private String normalizarUrl(String urlsSemilla) {
+		// escape ";" thats used as split in several places
+		return urlsSemilla.replace(";", "%3B").replace("\r\n", ";").replace("\n", ";").replaceAll("\\s+", "");
+	}
+
+	/**
+	 * Comprueba duplicados.
+	 *
+	 * @param urls the urls
+	 * @return the sets the
+	 */
+	private Set<String> findDuplicates(List<String> urls) {
+		final Set<String> setDuplicados = new HashSet<>();
+		final Set<String> setUnicos = new HashSet<>();
+		for (String url : urls) {
+			if (!setUnicos.add(url)) {
+				setDuplicados.add(url);
+			}
+		}
+		return setDuplicados;
+	}
+
+	/**
 	 * Compare seed fileds.
 	 *
 	 * @param seed1 the seed 1
@@ -353,6 +422,34 @@ public class SeedMassImportAction extends Action {
 		seedComparision.setEliminada(seed1.isEliminar());
 		seedComparision.setEliminadaNuevo(seed2.isEliminar());
 		return seedComparision;
+	}
+
+	/**
+	 * The Class SeedError.
+	 */
+	public class SeedError extends SemillaForm {
+		/** The Constant serialVersionUID. */
+		private static final long serialVersionUID = 3659271546896392454L;
+		/** The errors. */
+		private List<String> errors = new ArrayList<>();
+
+		/**
+		 * Gets the errors.
+		 *
+		 * @return the error
+		 */
+		public List<String> getErrors() {
+			return errors;
+		}
+
+		/**
+		 * Sets the errors.
+		 *
+		 * @param errors the new errors
+		 */
+		public void setErrors(List<String> errors) {
+			this.errors = errors;
+		}
 	}
 
 	/**
