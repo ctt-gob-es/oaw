@@ -1,3 +1,5 @@
+CREATE SCHEMA `oaw` DEFAULT CHARACTER SET utf8 ;
+use oaw;
 
 CREATE TABLE IF NOT EXISTS `basic_service` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
