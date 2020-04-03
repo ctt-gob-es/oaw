@@ -26,7 +26,7 @@ function nombreAntiguoFormatter(cellvalue, options, rowObject) {
 function eliminarFormatter(cellvalue, options, rowObject) {
 	return "<span style='cursor:pointer' onclick='eliminarEtiqueta("
 			+ options.rowId
-			+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>Eliminar</span></span>";
+			+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>"+colNameRemove+"</span></span>";
 }
 
 
@@ -34,12 +34,16 @@ function eliminarFormatter(cellvalue, options, rowObject) {
 
 function eliminarEtiqueta(rowId) {
 
+	
+	
+	
+	
 	var etiqueta = $('#grid').jqGrid('getRowData', rowId);
 
 	var idEtiqueta = etiqueta.id;
 	var dialogoEliminar = $('<div id="dialogoEliminarContent"></div>');
 
-	dialogoEliminar.append('<p>&#191;Desea eliminar la etiqueta "'
+	dialogoEliminar.append('<p>'+ confirmRemoveMessage +' "'
 			+ etiqueta.name + '"?</p>');
 
 	dialogoEliminar
@@ -48,7 +52,7 @@ function eliminarEtiqueta(rowId) {
 				minHeight : $(window).height() * 0.25,
 				minWidth : $(window).width() * 0.25,
 				modal : true,
-				title : 'RASTREADOR WEB - Eliminar etiqueta',
+				title : windowTitleRemove,
 				buttons : {
 					"Aceptar" : {
 						click: function() {
@@ -64,14 +68,14 @@ function eliminarEtiqueta(rowId) {
 								dialogoEliminar.dialog("close");
 							});
 				},
-				text: 'Aceptar',
+				text: saveButton,
 				class: 'jdialog-btn-save'
 					},
 					"Cancelar" : {
 						click:function() {
 							dialogoEliminar.dialog("close");
 						},
-						text: 'Cancelar',
+						text: cancelButton,
 						class: 'jdialog-btn-cancel'
 					}
 				}
@@ -130,9 +134,9 @@ function reloadGrid(path) {
 								.jqGrid(
 										{
 											editUrl : '/oaw/secure/ViewEtiquetasObservatorio.do?action=update',
-											colNames : [ "Id", "NombreAntiguo","Nombre",
-													"Clasificacion",
-													"Eliminar" ],
+											colNames : [ colNameId, colNameOldName,colNameName,
+												colNameClassification,
+												colNameRemove ],
 											colModel : [
 													{
 														name : "id",

@@ -102,15 +102,15 @@ Email: observ.accesibilidad@correo.gob.es
 
 											<html:link forward="estadoObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
-													title="Estado de esta iteraci&oacute;n del observatorio" />
-												<span class="sr-only">Estado esta iteraci&oacute;n del observatorio</span>
+													title="<bean:message key='tooltip.status.obs'/>" />
+												<span class="sr-only"><bean:message key='tooltip.status.obs'/></span>
 											</html:link>
 
 
 											<html:link forward="relanzarObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-													title="Relanzar esta iteraci&oacute;n del observatorio" />
-												<span class="sr-only">Relanzar esta iteraci&oacute;n del observatorio</span>
+													title="<bean:message key='tooltip.status.relaunch'/>" />
+												<span class="sr-only"><bean:message key='tooltip.status.relaunch'/></span>
 											</html:link>
 
 
@@ -125,14 +125,14 @@ Email: observ.accesibilidad@correo.gob.es
 
 											<html:link forward="estadoObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
-													title="Estado de esta iteraci&oacute;n del observatorio" />
-												<span class="sr-only">Estado esta iteraci&oacute;n del observatorio</span>
+													title="<bean:message key='tooltip.status.obs'/>" />
+												<span class="sr-only"><bean:message key='tooltip.status.obs'/></span>
 											</html:link>
 
 											<html:link forward="relanzarObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-													title="Relanzar esta iteraci&oacute;n del observatorio" />
-												<span class="sr-only">Relanzar esta iteraci&oacute;n del observatorio</span>
+													title="<bean:message key='tooltip.status.relaunch'/>" />
+												<span class="sr-only"><bean:message key='tooltip.status.relaunch'/></span>
 											</html:link>
 
 
@@ -146,8 +146,8 @@ Email: observ.accesibilidad@correo.gob.es
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.terminado" />
 											<html:link forward="estadoObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
-													title="Estado de esta iteraci&oacute;n del observatorio" />
-												<span class="sr-only">Estado esta iteraci&oacute;n del observatorio</span>
+													title="<bean:message key='tooltip.status.obs'/>" />
+												<span class="sr-only"><bean:message key='tooltip.status.obs'/></span>
 											</html:link>
 										</logic:equal> <logic:equal name="fulfilledObservatory" property="observatorio.estado" value="2">
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.error" />
@@ -155,7 +155,7 @@ Email: observ.accesibilidad@correo.gob.es
 											<html:link forward="estadoObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
 													title="Estado de  esta iteraci&oacute;n del observatorio" />
-												<span class="sr-only">Estado esta iteraci&oacute;n del observatorio</span>
+												<span class="sr-only"><bean:message key='tooltip.status.obs'/></span>
 											</html:link>
 
 											<html:link forward="stopObservatorio" name="params">
@@ -166,16 +166,16 @@ Email: observ.accesibilidad@correo.gob.es
 
 											<html:link forward="relanzarObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-													title="Relanzar esta iteraci&oacute;n del observatorio" />
-												<span class="sr-only">Relanzar esta iteraci&oacute;n del observatorio</span>
+													title="<bean:message key='tooltip.status.relaunch'/>" />
+												<span class="sr-only"><bean:message key='tooltip.status.relaunch'/></span>
 											</html:link>
 
 
 										</logic:equal></td>
 									<td><html:link forward="resultadosObservatorioSemillas" name="params">
 											<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
-												title="Ver resultados de este observatorio" />
-											<span class="sr-only">Resultados</span>
+												title="<bean:message key='tooltip.status.results'/>" />
+											<span class="sr-only"><bean:message key='results'/></span>
 										</html:link></td>
 									<td><jsp:useBean id="paramsInformeAgregado" class="java.util.HashMap" /> <c:set
 											target="${paramsInformeAgregado}" property="idCartucho" value="${fulfilledObservatory.cartucho.id}" /> <c:set
@@ -189,8 +189,8 @@ Email: observ.accesibilidad@correo.gob.es
 
 											<html:link forward="anonymousExportOpenOfficeAction" name="paramsInformeAgregado">
 												<span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip"
-													title="Descargar informe de resultados agregados en formato odt (LibreOffice)" />
-												<span class="sr-only">Generar informe de resultados agregados</span>
+													title="<bean:message key='tooltip.status.report.odt'/>" />
+												<span class="sr-only"><bean:message key='tooltip.status.report.odt'/></span>
 											</html:link>
 										</logic:notEqual></td>
 									<td><jsp:useBean id="paramsExportPDF" class="java.util.HashMap" /> <c:set target="${paramsExportPDF}"
@@ -198,8 +198,8 @@ Email: observ.accesibilidad@correo.gob.es
 											property="${id_ex_obs}" value="${fulfilledObservatory.id}" /> <html:link
 											forward="<%=Constants.EXPORT_ALL_PDF_FORWARD%>" name="paramsExportPDF">
 											<span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip"
-												title="Exportar todos los informes indidividuales de todos los portales" />
-											<span class="sr-only">Generar los informes individuales</span>
+												title="<bean:message key='tooltip.status.report.pdf'/>" />
+											<span class="sr-only"><bean:message key='tooltip.status.report.pdf'/></span>
 										</html:link>
 										</li>
 										
@@ -208,8 +208,8 @@ Email: observ.accesibilidad@correo.gob.es
 											property="${id_ex_obs}" value="${fulfilledObservatory.id}" /> <html:link
 											forward="<%=Constants.EXPORT_ALL_PDF_FORWARD_MAIL%>" name="paramsExportPDFMail">
 											<span class="glyphicon glyphicon-send" aria-hidden="true" data-toggle="tooltip"
-												title="Exportar todos los informes indidividuales de todos los portales y enviar por email los enlaces" />
-											<span class="sr-only">Generar los informes individuales (evío por email)</span>
+												title="<bean:message key='tooltip.status.report.pdf.email'/>" />
+											<span class="sr-only"><bean:message key='tooltip.status.report.pdf.email'/></span>
 										</html:link>
 										
 										
@@ -222,12 +222,12 @@ Email: observ.accesibilidad@correo.gob.es
 											value="${fulfilledObservatory.cartucho.id}" /> <html:link forward="getObservatoryGraphic"
 											name="paramsGraphic">
 											<span class="glyphicon glyphicon-stats" aria-hidden="true" data-toggle="tooltip"
-												title="Acceder a las gr&aacute;ficas agregadas de esta iteraci&oacute;n" />
+												title="<bean:message key='tooltip.status.obs.graphics'/>" />
 											<span class="sr-only"><bean:message key="migas.indice.observatorios.menu.graficas" /></span>
 										</html:link></td>
 									<td><html:link forward="databaseExportActionConfirm" name="paramsInformeAgregado">
 											<span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip"
-												title="Actualizar la exportaci&oacute;n de resultados de esta iteraci&oacute;n" />
+												title="<bean:message key="indice.rastreo.exportar.database" />" />
 											<span class="sr-only"><bean:message key="indice.rastreo.exportar.database" /></span>
 										</html:link></td>
 									<td><jsp:useBean id="paramsDeleteExecution" class="java.util.HashMap" /> <c:set
@@ -238,8 +238,8 @@ Email: observ.accesibilidad@correo.gob.es
 											target="${paramsDeleteExecution}" property="idExObs" value="${fulfilledObservatory.id}" /> <html:link
 											forward="deleteFulfilledObservatory" name="paramsDeleteExecution">
 											<span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip"
-												title="Eliminar esta iteraci&oacute;n del observatorio" />
-											<span class="sr-only">Eliminar esta iteraci&oacute;n del observatorio</span>
+												title="<bean:message key='tooltip.status.obs.remove'/>" />
+											<span class="sr-only"><bean:message key='tooltip.status.obs.remove'/></span>
 										</html:link></td>
 								</tr>
 							</logic:iterate>

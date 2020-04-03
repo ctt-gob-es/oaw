@@ -6,19 +6,19 @@ function estadoFormatter(cellvalue, options, rowObject) {
 
 	switch (cellvalue) {
 	case "finished":
-		value = "Finalizado";
+		value = statusFinished;
 		break;
 	case "error":
-		value = "Error";
+		value = statusError;
 		break;
 	case "not_crawled":
-		value = "No analizado";
+		value = statusNotCrawled;
 		break;
 	case "launched":
-		value = "Lanzado";
+		value = statusLaunched;
 		break;
 	case "missing_params":
-		value = "Par&#225;metros incorrectos";
+		value = statusWrongParams;
 		break;
 
 	default:
@@ -59,10 +59,10 @@ function tipoAnalisisFormatter(cellvalue, options, rowObject) {
 		value = "URL";
 		break;
 	case "lista_urls":
-		value = "Lista de URLs";
+		value = analysisTypeList;
 		break;
 	case "c\u00F3digo_fuente":
-		value = "C&#243;digo fuente";
+		value = analysisTypeSource;
 		break;
 
 	default:
@@ -75,7 +75,7 @@ function tipoAnalisisFormatter(cellvalue, options, rowObject) {
 function tipoFormatter(cellvalue, options, rowObject) {
 
 	if (!cellvalue) {
-		return "Otros";
+		return others;
 	}
 
 	return cellvalue;
@@ -133,14 +133,15 @@ function reloadGrid(path, gridId, paginadorId) {
 
 						$('#' + gridId).jqGrid(
 								{
-									colNames : [ "URL", "Tipo de portal *",
-											"Usuario", "Email", "Profundidad",
-											"Amplitud", "Complejidad",
-											"Tipo de informe",
-											"Tipo de an&#225;lisis",
-											"En directorio", "Hist&#243;rico",
-											"Estado", "Fecha de solicitud",
-											"Fecha de env&#237;o" ],
+//									colNames : [ "URL", "Tipo de portal *",
+//											"Usuario", "Email", "Profundidad",
+//											"Amplitud", "Complejidad",
+//											"Tipo de informe",
+//											"Tipo de an&#225;lisis",
+//											"En directorio", "Hist&#243;rico",
+//											"Estado", "Fecha de solicitud",
+//											"Fecha de env&#237;o" ],
+									colNames: translatedColNames,
 									colModel : [ {
 										name : "domain",
 										width : 50,
@@ -236,7 +237,7 @@ function reloadGrid(path, gridId, paginadorId) {
 						if (total == 0) {
 							$('#' + gridId)
 									.append(
-											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="14" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
+											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="14" style="padding: 15px !important;" role="gridcell">'+noResults+'</td></tr>');
 						}
 
 						// Paginador

@@ -69,8 +69,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 								<th><bean:message key="cargar.semilla.observatorio.categoria" /></th>
 								<th><bean:message key="cargar.semilla.observatorio.clave" /></th>
-								<th class="accion">Fichero semillas</th>
-								<th class="accion">Eliminar</th>
+								<th class="accion"><bean:message key="cargar.semilla.observatorio.file"/> </th>
+								<th class="accion"><bean:message key="cargar.semilla.observatorio.eliminar"/> </th>
 							</tr>
 							<logic:iterate name="<%=Constants.SEED_CATEGORIES %>" id="category">
 								<tr>

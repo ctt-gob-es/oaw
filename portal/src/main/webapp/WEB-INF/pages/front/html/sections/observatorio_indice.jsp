@@ -146,13 +146,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							</caption>
 							<tr>
 								<th><bean:message key="indice.observatorio.nombre" /></th>
-								<th>Activo</th>
+								<th><bean:message key="indice.observatorio.activo"/> </th>
 								<th><bean:message key="nuevo.observatorio.tipo" /></th>
 								<th><bean:message key="nuevo.observatorio.ambito" /></th>
 								<th><bean:message key="indice.observatorio.etiquetas" /></th>
 								<th><bean:message key="indice.observatorio.cartucho" /></th>
 								<th class="accion"><bean:message key="indice.observatorio.acciones" /></th>
-								<th class="accion">Eliminar</th>
+								<th class="accion"><bean:message key="indice.observatorio.eliminar"/> </th>
 							</tr>
 							<logic:iterate name="<%=Constants.CARGAR_OBSERVATORIO_FORM%>" property="listadoObservatorio" id="elemento">
 								<jsp:useBean id="params" class="java.util.HashMap" />
@@ -168,7 +168,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									</bean:define>
 									<td style="text-align: left"><inteco:menu roles="<%=rolAdmin%>">
 											<html:link forward="editObservatory" name="params">
-												<span data-toggle="tooltip" title="Editar la configuraci&oacute;n de este observatorio"><bean:write
+												<span data-toggle="tooltip" title='<bean:message key="tooltip.edit.obs"/>'><bean:write
 														name="elemento" property="nombreObservatorio" /></span>
 											</html:link>
 											<span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true" />
@@ -212,8 +212,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<td><html:link forward="resultadosPrimariosObservatorio" paramId="<%=Constants.ID_OBSERVATORIO%>"
 											paramName="elemento" paramProperty="id_observatorio">
 											<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
-												title="Ver iteraciones de este observatorio" />
-											<span class="sr-only">Resultados</span>
+												title="<bean:message key="tooltip.show.iter.obs"/>" />
+											<span class="sr-only"><bean:message key="results"/></span>
 										</html:link></td>
 									<td><jsp:useBean id="paramsEsPrim" class="java.util.HashMap" /> <bean:define id="actionEsPrim"
 											value="<%=Constants.ES_PRIMERA%>" /> <bean:define id="observatoryId" name="elemento"
@@ -222,8 +222,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											target="${paramsEsPrim}" property="${actionEsPrim}" value="si" /> <html:link forward="deleteObservatory"
 											name="paramsEsPrim">
 											<span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip"
-												title="Eliminar este observatorio" />
-											<span class="sr-only">Eliminar</span>
+												title="<bean:message key="tooltip.obs.remove"/>" />
+											<span class="sr-only"><bean:message key="remove"/></span>
 										</html:link></td>
 								</tr>
 							</logic:iterate>
