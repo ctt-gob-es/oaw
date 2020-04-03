@@ -34,6 +34,67 @@ Email: observ.accesibilidad@correo.gob.es
 
 <!--  JQ GRID   -->
 <script>
+
+
+var colNameId = '<bean:message key="colname.id"/>';
+
+var colNameAcronym = '<bean:message key="colname.acronym"/>';
+var colNameActive = '<bean:message key="colname.active"/>';
+var colNameComplex = '<bean:message key="colname.complex"/>';
+var colNameDependencies = '<bean:message key="colname.dependecies"/>';
+var colNameDirectory = '<bean:message key="colname.directory"/>';
+var colNameTags = '<bean:message key="colname.etiqeutas"/>';
+var colNameGo = '<bean:message key="colname.go"/>';
+var colNameName = '<bean:message key="colname.name"/>';
+var colNameObs = '<bean:message key="colname.observations"/>';
+var colNameOldName = '<bean:message key="colname.oldname"/>';
+var colNameRemove = '<bean:message key="colname.remove"/>';
+var colNameRemovePerm = '<bean:message key="colname.remove.permanently"/>';
+var colNameScope = '<bean:message key="colname.scope"/>';
+var colNameSegment = '<bean:message key="colname.segment"/>';
+var colNameScore = '<bean:message key="colname.puntuaction"/>';
+var colNameTotalUrl = '<bean:message key="colname.total.url"/>';
+var colNameLevel = '<bean:message key="colname.level"/>';
+var colNameRelaunch = '<bean:message key="colname.relaunch"/>';
+var colNameReport = '<bean:message key="colname.report"/>';
+var colNameResults = '<bean:message key="colname.results"/>';
+
+
+
+
+
+
+// colNames : [ "Id", "NombreAntiguo",
+// 	"Nombre", "Acr\u00F3nimo",
+// 	"Segmento","Ambito", 
+// 	"Complejidad", "Dependencia", 
+// 	"Etiqueta",
+// 	"URLs", "Activa",
+// 	"Directorio","Complejidad",
+// 	"Puntuac\u00F3n", 
+// 	"Nivel Accesibilidad","URLs analizadas",
+// 	"Resultados", "Informe",
+// 	"Relanzar", "Eliminar", "Observaciones" ],
+
+
+var translatedColNames = [ colNameId, colNameOldName,
+	colNameName, colNameAcronym,
+	colNameSegment, colNameScope,
+	colNameComplex, colNameDependencies, 
+	colNameTags,
+	 "URLs",colNameActive, 
+	 colNameDirectory, colNameComplex, 
+	 colNameScore, 
+	 colNameLevel, colNameTotalUrl, 
+	 colNameResults  ,colNameReport,
+	 colNameRelaunch,
+	colNameRemove, colNameObs];
+
+
+
+
+
+
 	//Buscador
 	function buscar() {
 		reloadGrid('JsonResultadoObservatorio.do?action=resultados&id_observatorio='
@@ -475,7 +536,7 @@ Email: observ.accesibilidad@correo.gob.es
 				<input type="hidden" name="<%=Constants.ID_EX_OBS%>" value="<bean:write name="idExObs"/>" />
 				<input type="hidden" name="<%=Constants.ID_CARTUCHO%>" value="<bean:write name="<%=Constants.ID_CARTUCHO%>"/>" />
 				<fieldset>
-					<legend>Buscador</legend>
+					<legend><bean:message key="buscador"/></legend>
 					<jsp:include page="/common/crawler_messages.jsp" />
 					<div class="formItem">
 						<label for="nombre" class="control-label"><strong class="labelVisu"><bean:message
@@ -508,18 +569,18 @@ Email: observ.accesibilidad@correo.gob.es
 
 				<a onclick="dialogAddSeed()"> <span class="btn btn-default btn-lg"><span
 						class="glyphicon glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip"
-						title="Regenerar las puntuaciones" /> </span> <span>Añadir semilla</span>
+						title="<bean:message key="tooltip.obs.add.seed" />" /> </span> <span><bean:message key="tooltip.obs.add.seed" /></span>
 				</a>
 
 				<html:link forward="regenerarResultadosObservatorioSemillas" name="params">
 					<span class="btn btn-default btn-lg"><span class="glyphicon glyphicon 	glyphicon glyphicon-repeat"
-						aria-hidden="true" data-toggle="tooltip" title="Regenerar las puntuaciones" /> </span>
-					<span>Regenerar puntuaciones</span>
+						aria-hidden="true" data-toggle="tooltip" title="<bean:message key="tooltip.obs.regenerate.scores" />" /> </span>
+					<span><bean:message key="tooltip.obs.regenerate.scores" /></span>
 				</html:link>
 
 				<a onclick="reduceSize()"> <span class="btn btn-default btn-lg"><span
-						class="glyphicon glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="Liberar espacio en base de datos eliminando el código fuente almacenado" />
-				</span> <span>Liberar espacio</span>
+						class="glyphicon glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip"
+						title="<bean:message key="tooltip.obs.clean" />" /> </span> <span><bean:message key="tooltip.obs.clean" /></span>
 				</a>
 			</p>
 

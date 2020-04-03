@@ -22,6 +22,53 @@
 
 <!--  JQ GRID   -->
 <script>
+	var colNameId = '<bean:message key="colname.id"/>';
+	var colNameAcronym = '<bean:message key="colname.acronym"/>';
+	var colNameActive = '<bean:message key="colname.active"/>';
+	var colNameComplex = '<bean:message key="colname.complex"/>';
+	var colNameDependencies = '<bean:message key="colname.dependecies"/>';
+	var colNameDirectory = '<bean:message key="colname.directory"/>';
+	var colNameTags = '<bean:message key="colname.etiqeutas"/>';
+	var colNameGo = '<bean:message key="colname.go"/>';
+	var colNameName = '<bean:message key="colname.name"/>';
+	var colNameObs = '<bean:message key="colname.observations"/>';
+	var colNameOldName = '<bean:message key="colname.oldname"/>';
+	var colNameRemove = '<bean:message key="colname.remove"/>';
+	var colNameRemovePerm = '<bean:message key="colname.remove.permanently"/>';
+	var colNameScope = '<bean:message key="colname.scope"/>';
+	var colNameSegment = '<bean:message key="colname.segment"/>';
+	var colNameWebsiteType = '<bean:message key="colname.website.type"/>';
+	var colNameUser = '<bean:message key="colname.user"/>';
+	var colNameEmail = '<bean:message key="colname.email"/>';
+	var colNameDepth = '<bean:message key="colname.depth"/>';
+	var colNameWidth = '<bean:message key="colname.width"/>';
+	var colNameReportType = '<bean:message key="colname.report.type"/>';
+	var colNameAnalysisType = '<bean:message key="colname.analysis.type"/>';
+	var colNameHistoric = '<bean:message key="colname.historic"/>';
+	var colNameRequestDate = '<bean:message key="colname.request.date"/>';
+	var colNameSendDate = '<bean:message key="colname.send.date"/>';
+	var colNameStatus = '<bean:message key="colname.status"/>';
+	
+
+	var statusFinished  = '<bean:message key="status.finished"/>';
+	var statusError  = '<bean:message key="status.error"/>';
+	var statusNotCrawled  = '<bean:message key="status.not.crawled"/>';
+	var statusLaunched  = '<bean:message key="status.launched"/>';
+	var statusWrongParams  = '<bean:message key="status.wrong.params"/>';
+	
+	var analysisTypeList  = '<bean:message key="analysis.type.list"/>';
+	var analysisTypeSource  = '<bean:message key="analysis.type.source"/>';
+	
+	var others = '<bean:message key="other"/>';
+	
+
+	var translatedColNames = [ "URL", colNameWebsiteType, colNameUser,
+			colNameEmail, colNameDepth, colNameWidth, colNameComplex,
+			colNameReportType, colNameAnalysisType, colNameDirectory,
+			colNameHistoric, colNameStatus, colNameRequestDate, colNameSendDate
+
+	];
+
 	//Buscador
 	function buscar() {
 		reloadGrid('/oaw/secure/JsonServicioDiagnostico.do?action=search&'
@@ -48,7 +95,7 @@
 					function() {
 
 						//Internet Explorer not supports startsWith and endsWith -->  polyfill
-						
+
 						if (!String.prototype.startsWith) {
 							String.prototype.startsWith = function(
 									searchString, position) {
@@ -56,19 +103,24 @@
 								return this.indexOf(searchString, position) === position;
 							};
 						}
-						
+
 						if (!String.prototype.endsWith) {
-							  String.prototype.endsWith = function(searchString, position) {
-							      var subjectString = this.toString();
-							      if (typeof position !== 'number' || !isFinite(position) 
-							          || Math.floor(position) !== position || position > subjectString.length) {
-							        position = subjectString.length;
-							      }
-							      position -= searchString.length;
-							      var lastIndex = subjectString.indexOf(searchString, position);
-							      return lastIndex !== -1 && lastIndex === position;
-							  };
-							}
+							String.prototype.endsWith = function(searchString,
+									position) {
+								var subjectString = this.toString();
+								if (typeof position !== 'number'
+										|| !isFinite(position)
+										|| Math.floor(position) !== position
+										|| position > subjectString.length) {
+									position = subjectString.length;
+								}
+								position -= searchString.length;
+								var lastIndex = subjectString.indexOf(
+										searchString, position);
+								return lastIndex !== -1
+										&& lastIndex === position;
+							};
+						}
 						var $jq = $.noConflict();
 
 						//Primera carga del grid el grid

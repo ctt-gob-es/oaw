@@ -227,12 +227,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</legend>
 					<div class="formItem">
 
-						<div id="simcheck-error-message" class="alert alert-danger hidden">Debe
-							introducir un email válido</div>
+						<div id="simcheck-error-message" class="alert alert-danger hidden"><bean:message key="conectividad.sim.error.valido"/> </div>
 
-						<p>Comprobar la conectividad con el Sistema Integral de
-							Mensajer&#237;a (SIM). Se intentará enviar un correo
-							electr&#243;nico a la direcci&#243;n indicada.</p>
+						<p><bean:message key="conectividad.sim.info"/> </p>
 
 
 						<p>
@@ -242,11 +239,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									Email:</strong></label> <input type="text" id="checksimemail" />
 
 							<button id="checksim" onclick="checksim()"
-								class="btn btn-default btn-sm">Comprobar</button>
+								class="btn btn-default btn-sm"><bean:message key="conectividad.url.comprobar"/></button>
 
 							<button id="checkingsim" class="btn btn-default btn-sm hidden">
 								<span
-									class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>&nbsp;Comprobando
+									class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>&nbsp;<bean:message key="conectividad.url.comprobando"/>
 							</button>
 						</p>
 
@@ -262,7 +259,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 							<p id="checksimresult-ok" class="hidden">
-								<span class="bold">Estado: </span> <img src="../img/up.png"
+								<span class="bold"><bean:message key="conectividad.url.comprobada.estado" />: </span> <img src="../img/up.png"
 									alt="Imagen flecha verde hacia arriba"
 									title="Comporbación del servicio correcta" />
 							</p>
@@ -270,7 +267,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 							<p id="checksimresult-ko" class="hidden">
-								<span class="bold">Estado: </span> <img src="../img/down.png"
+								<span class="bold"><bean:message key="conectividad.url.comprobada.estado" />: </span> <img src="../img/down.png"
 									alt="Imagen flecha roja hacia abajo"
 									title="Comporbación del servicio incorrecta" />
 							</p>
@@ -293,13 +290,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<bean:message key="conectividad.form.title" />
 						</legend>
 
-						<div id="urlcheck-error-message" class="alert alert-danger hidden">Debe
-							introducir una URL v&#225;lida</div>
+						<div id="urlcheck-error-message" class="alert alert-danger hidden">
+							<bean:message key="conectividad.url.error.valida" /></div>
 
-						<p>Comprobar la conectividad con la URL indicada.</p>
+						<p><bean:message key="conectividad.url.comprobada.title"/></p>
 						
-						<p>Se comprobar&#225; tanto desde la máquina de OAW como desde
-							la máquina del motor de Javascript</p>
+						<p><bean:message key="conectividad.url.comprobada.subititle"/></p>
 
 
 						<div class="formItem">
@@ -309,9 +305,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<bean:message key="conectividad.form.url" />: </strong></label> <input
 								id="urlcheck" type="text" class="textoCorto" name="url"
 								required="required" /> <span id="checkurl" onclick="checkurl()"
-								class="btn btn-default btn-sm">Comprobar</span> <span
+								class="btn btn-default btn-sm"><bean:message key="conectividad.url.comprobar"/> </span> <span
 								id="checkingurl" class="btn btn-default btn-sm hidden"> <span
-								class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>&nbsp;Comprobando
+								class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>&nbsp;<bean:message key="conectividad.url.comprobando"/>
 							</span>
 						</div>
 
@@ -333,12 +329,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 								<li>
 									<p id="checkurlresult-ok" class="hidden">
-										<span class="bold">Conectividad OAW:</span>&nbsp;<img
+										<span class="bold"><bean:message key="conectividad.url.oaw"/> :</span>&nbsp;<img
 											src="../img/up.png" alt="Imagen flecha verde hacia arriba"
 											title="Comporbación del servicio correcta" />
 									</p>
 									<p id="checkurlresult-ko" class="hidden">
-										<span class="bold">Conectividad OAW::</span>&nbsp; <img
+										<span class="bold"><bean:message key="conectividad.url.oaw"/>:</span>&nbsp; <img
 											src="../img/down.png" alt="Imagen flecha roja hacia abajo"
 											title="Comporbación del servicio incorrecta" /> <span
 											id="checkurlresult-error" class="hidden">&nbsp;<span
@@ -353,13 +349,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								<li>
 
 									<p id="checkurlresult-ok-proxy" class="hidden">
-										<span class="bold">Conectividad Motor Javascript:</span>&nbsp;<img
+										<span class="bold"><bean:message key="conectividad.url.js"/>:</span>&nbsp;<img
 											src="../img/up.png" alt="Imagen flecha verde hacia arriba"
 											title="Comporbación del servicio correcta" />
 									</p>
 
 									<p id="checkurlresult-ko-proxy" class="hidden">
-										<span class="bold">Conectividad Motor Javascript:</span>&nbsp;
+										<span class="bold"><bean:message key="conectividad.url.js"/>:</span>&nbsp;
 										<img src="../img/down.png"
 											alt="Imagen flecha roja hacia abajo"
 											title="Comporbación del servicio incorrecta" /><span
@@ -396,18 +392,15 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</legend>
 
 						<div id="proxy-url-error-message"
-							class="alert alert-danger hidden">Debe introducir una URL
-							v&#225;lida</div>
+							class="alert alert-danger hidden"><bean:message key="conectividad.proxy.config.error.url"/> </div>
 
 
 
 						<div id="proxy-port-error-message"
-							class="alert alert-danger hidden">Debe introducir un puerto
-							v&#225;lido</div>
+							class="alert alert-danger hidden"><bean:message key="conectividad.proxy.config.error.port"/></div>
 
 
-						<p>Par&#225;metros de configuraci&#243;n de motor de
-							Javascript.</p>
+						<p><bean:message key="conectividad.proxy.config.title"/> </p>
 
 
 						<div class="formItem">
@@ -440,7 +433,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								id="proxyUrl" type="text" class="textoCorto" name="proxyUrl"
 								required="required"
 								value="<bean:write name="proxyconfig" property="url" />" />
-							(p.e.: localhost, 127.0.0.1)
+							<bean:message key="conectividad.proxy.config.url.tip"/>
 
 						</div>
 						<div class="formItem">
@@ -458,7 +451,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 						</div>
 						<span id="modifyProxy" onclick="modifyProxy()"
-							class="btn btn-default btn-sm">Actualizar</span> <span
+							class="btn btn-default btn-sm"><bean:message key="conectividad.proxy.config.update"/> </span> <span
 							id="checkingurl" class="btn btn-default btn-sm hidden"> <span
 							class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
 						</span>

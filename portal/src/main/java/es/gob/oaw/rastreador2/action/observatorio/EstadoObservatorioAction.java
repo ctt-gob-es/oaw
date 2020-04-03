@@ -65,8 +65,10 @@ public class EstadoObservatorioAction extends Action {
 			ObservatorySummary estado = EstadoObservatorioDAO.getObservatorySummary(c, idObservatory, idEjecucionObservatorio);
 			// Estado del último análisis hecho/análisis en curso
 			ObservatoryStatus estadoObservatorio = EstadoObservatorioDAO.findEstadoObservatorio(c, idObservatory, idEjecucionObservatorio);
-			// Semillas sin analizar
+			// Semillas sin analizar aún
 			List<SemillaForm> notCrawledSeedsYet = RastreoDAO.getFinishCrawlerFromSeedAndObservatoryNotCrawledYet(c, idObservatory.longValue(), idEjecucionObservatorio.longValue());
+			// Semillas sin analizar aún
+			List<SemillaForm> notCrawledSeeds = RastreoDAO.getFinishCrawlerFromSeedAndObservatoryNotCrawled(c, idObservatory.longValue(), idEjecucionObservatorio.longValue());
 			// List<SemillaForm> finishWithoutResults = RastreoDAO.getFinishCrawlerFromSeedAndObservatoryWithoutAnalisis(c, idObservatory.longValue(), idEjecucionObservatorio.longValue());
 			List<Long> finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis(c, idObservatory.longValue(),
 					idEjecucionObservatorio.longValue());
@@ -82,6 +84,7 @@ public class EstadoObservatorioAction extends Action {
 			request.setAttribute("estado", estado);
 			request.setAttribute("analisis", estadoObservatorio);
 			request.setAttribute("notCrawledSeedsYet", notCrawledSeedsYet);
+			request.setAttribute("notCrawledSeeds", notCrawledSeeds);
 			request.setAttribute("finishWithoutResults", finishWithoutResults);
 		}
 		return mapping.findForward(Constants.EXITO);
