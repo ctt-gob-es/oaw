@@ -20,6 +20,7 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import com.sun.management.OperatingSystemMXBean;
@@ -123,7 +124,7 @@ public class ManagementThread extends Thread {
 		BigDecimal systemTime = new BigDecimal(System.nanoTime());
 		BigDecimal processCpuTime = new BigDecimal(osMXBean.getProcessCpuTime());
 		BigDecimal cpuUsage = (processCpuTime.subtract(lastProcessCpuTime)).divide(systemTime.subtract(lastSystemTime), 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).setScale(2)
-				.divide(new BigDecimal(osMXBean.getAvailableProcessors()));
+				.divide(new BigDecimal(osMXBean.getAvailableProcessors()), 4, RoundingMode.HALF_UP);
 		lastSystemTime = systemTime;
 		lastProcessCpuTime = processCpuTime;
 		return cpuUsage;
