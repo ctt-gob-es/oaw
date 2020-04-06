@@ -30,7 +30,7 @@ Create a context configuration like this in *server.xml*:
     timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"                                         
     defaultTransactionIsolation="READ_UNCOMMITTED" username="<username>" password="<password>"/>
 </Context>
-``
+```
 Note to chenge *url*, *user* and *password* values
 
 # Application
@@ -66,13 +66,3 @@ In the file /portal/profiles/<profile>/propertiesmanager.properties a series of 
 * basic.service.properties: Parameters of the mail sent by the diagnostic service
 * check.descriptions.properties: Explanatory texts for problem solving included in the reports
 * check.patterns.properties: Regural expressions and validation patterns
-
-
-### Unsatisfied dependencies  in Maven Central
-
-Some of the links are not available in Maven's central repository. They can be downloaded at the following links:1
-
-* javax.jms:jms:jar:1.1: http://www.java2s.com/Code/Jar/j/Downloadjavaxjms11jar.htm
-* javax.transaction:jta:jar:1.0.1B: http://www.java2s.com/Code/Jar/j/Downloadjta101bjar.htm
-
-They need to be installed manually: https://maven.apache.org/guides/mini/guide-3rd-party-jars-local.html 
