@@ -1,0 +1,35 @@
+version: '3'
+services:
+  oaw:
+    build:
+      context: ../..
+      dockerfile: ./deployment/docker/Dockerfile
+    depends_on:
+      - mysql
+    restart: on-failure:5
+    ports:
+      - "8080:8080"
+    expose:
+      - '8080'
+    links:
+      - mysql
+    environment:
+      DBCONN_RETRY_COUNT: '12'
+      DBCONN_RETRY_DELAY: '5'
+    
+  
+  mysql:
+    build:
+      context: ./database
+      dockerfile: testdb-dockerfile
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'oaw'
+      #MYSQL_USER: 'root'
+      #MYSQL_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    
