@@ -61,6 +61,10 @@
 	
 	var others = '<bean:message key="other"/>';
 	
+	var minutos = '<bean:message key="minutos"/>';
+	var segundos = '<bean:message key="segundos"/>';
+	
+	
 
 	var translatedColNames = [ "URL", colNameWebsiteType, colNameUser,
 			colNameEmail, colNameDepth, colNameWidth, colNameComplex,
@@ -209,7 +213,7 @@ td {
 
 			<form id="ServicioDiagnosticoForm" class="formulario form-horizontal" onsubmit="buscar()">
 				<fieldset>
-					<legend>Buscador</legend>
+					<legend><bean:message key="buscador"/></legend>
 					<jsp:include page="/common/crawler_messages.jsp" />
 
 

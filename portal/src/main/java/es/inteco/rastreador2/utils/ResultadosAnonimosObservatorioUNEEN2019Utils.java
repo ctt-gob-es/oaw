@@ -3356,7 +3356,24 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				results.put(aspect, results.get(aspect).divide(new BigDecimal(verificationsMap.size()), 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN));
 			}
 		}
-		return results;
+		// TODO Reordenamos los aspectos
+//		labelValueList.add(createLabelValueScore(messageResources, messageResources.getMessage("resultados.anonimos.general"), result.get(messageResources.getMessage("observatory.aspect.general"))));
+//		labelValueList.add(
+//				createLabelValueScore(messageResources, messageResources.getMessage("resultados.anonimos.presentacion"), result.get(messageResources.getMessage("observatory.aspect.presentation"))));
+//		labelValueList
+//				.add(createLabelValueScore(messageResources, messageResources.getMessage("resultados.anonimos.estructura"), result.get(messageResources.getMessage("observatory.aspect.structure"))));
+//		labelValueList
+//				.add(createLabelValueScore(messageResources, messageResources.getMessage("resultados.anonimos.navegacion"), result.get(messageResources.getMessage("observatory.aspect.navigation"))));
+//		labelValueList.add(
+//				createLabelValueScore(messageResources, messageResources.getMessage("resultados.anonimos.alternativa"), result.get(messageResources.getMessage("observatory.aspect.alternatives"))));
+//		
+		final Map<String, BigDecimal> resultsSorted = new LinkedHashMap<String, BigDecimal>();
+		resultsSorted.put(messageResources.getMessage("resultados.anonimos.general"), results.get(messageResources.getMessage("resultados.anonimos.general")));
+		resultsSorted.put(messageResources.getMessage("resultados.anonimos.presentacion"), results.get(messageResources.getMessage("resultados.anonimos.presentacion")));
+		resultsSorted.put(messageResources.getMessage("resultados.anonimos.estructura"), results.get(messageResources.getMessage("resultados.anonimos.estructura")));
+		resultsSorted.put(messageResources.getMessage("resultados.anonimos.navegacion"), results.get(messageResources.getMessage("resultados.anonimos.navegacion")));
+		resultsSorted.put(messageResources.getMessage("resultados.anonimos.alternativa"), results.get(messageResources.getMessage("resultados.anonimos.alternativa")));
+		return resultsSorted;
 	}
 
 	/**

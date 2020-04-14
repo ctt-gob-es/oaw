@@ -195,6 +195,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
 									<th><bean:message key="cargar.semilla.observatorio.eliminada" /></th>
 									<th><bean:message key="cargar.semilla.observatorio.directorio" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.observaciones" /></th>
 
 								</tr>
 
@@ -235,9 +236,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
 											<bean:message key="no" />
 										</logic:equal></td>
+
+									<td><bean:write name="semilla" property="observaciones" /></td>
 								</tr>
 								<tr>
-									<td>Valor nuevo</td>
+									<td><bean:message key="cargar.semilla.observatorio.new.value" /></td>
 
 									<td class="<c:if test="${semilla.sameNombre!=true}">warning-import</c:if>"><bean:write name="semilla"
 											property="nombreNuevo" /></td>
@@ -291,6 +294,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</logic:equal> <logic:equal name="semilla" property="inDirectoryNuevo" value="false">
 											<bean:message key="no" />
 										</logic:equal></td>
+
+									<td class="<c:if test="${semilla.sameObservaciones!=true}">warning-import</c:if>"><bean:write
+											name="semilla" property="observacionesNuevo" /></td>
 								</tr>
 							</table>
 						</logic:iterate>
@@ -329,6 +335,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
 								<th><bean:message key="cargar.semilla.observatorio.eliminada" /></th>
 								<th><bean:message key="cargar.semilla.observatorio.directorio" /></th>
+								<th><bean:message key="cargar.semilla.observatorio.observaciones" /></th>
 
 							</tr>
 							<logic:iterate name="newSeedList" id="semilla">
@@ -369,6 +376,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
 											<bean:message key="no" />
 										</logic:equal></td>
+
+									<td><bean:write name="semilla" property="observaciones" /></td>
 								</tr>
 							</logic:iterate>
 						</table>
@@ -410,6 +419,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
 									<th><bean:message key="cargar.semilla.observatorio.eliminada" /></th>
 									<th><bean:message key="cargar.semilla.observatorio.directorio" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.observaciones" /></th>
 
 								</tr>
 							</thead>
@@ -453,6 +463,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
 												<bean:message key="no" />
 											</logic:equal></td>
+										<td><bean:write name="semilla" property="observaciones" /></td>
 									</tr>
 								</logic:iterate>
 							</tbody>

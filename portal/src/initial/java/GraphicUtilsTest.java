@@ -310,7 +310,7 @@ public class GraphicUtilsTest {
 		dataSet = new DefaultPieDataset();
 		dataSet.setValue("No conforme", Integer.valueOf(rojo));
 		dataSet.setValue("Parcial", Integer.valueOf(amarillo));
-		dataSet.setValue("Totalmente conforme", Integer.valueOf(verde));
+		dataSet.setValue("Plenamente conforme", Integer.valueOf(verde));
 		GraphicsUtils.createPieChart(dataSet, "", sectionLabel, total, "/home/alvaro/Downloads/oaw-graficas-2020/tarta-conformidad.jpg", "",
 				pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
 	}

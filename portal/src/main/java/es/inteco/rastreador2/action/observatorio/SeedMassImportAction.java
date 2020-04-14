@@ -421,6 +421,8 @@ public class SeedMassImportAction extends Action {
 		seedComparision.setEtiquetasNuevo(seed2.getEtiquetas());
 		seedComparision.setEliminada(seed1.isEliminar());
 		seedComparision.setEliminadaNuevo(seed2.isEliminar());
+		seedComparision.setObservaciones(seed1.getObservaciones());
+		seedComparision.setObservacionesNuevo(seed2.getObservaciones());
 		return seedComparision;
 	}
 
@@ -496,6 +498,46 @@ public class SeedMassImportAction extends Action {
 		private ComplejidadForm complejidad;
 		/** The ambito nuevo. */
 		private ComplejidadForm complejidadNuevo;
+		/** The observaciones. */
+		private String observaciones;
+		/** The observaciones nuevo. */
+		private String observacionesNuevo;
+
+		/**
+		 * Gets the observaciones.
+		 *
+		 * @return the observaciones
+		 */
+		public String getObservaciones() {
+			return observaciones;
+		}
+
+		/**
+		 * Sets the observaciones.
+		 *
+		 * @param observaciones the observaciones to set
+		 */
+		public void setObservaciones(String observaciones) {
+			this.observaciones = observaciones;
+		}
+
+		/**
+		 * Gets the observaciones nuevo.
+		 *
+		 * @return the observacionesNuevo
+		 */
+		public String getObservacionesNuevo() {
+			return observacionesNuevo;
+		}
+
+		/**
+		 * Sets the observaciones nuevo.
+		 *
+		 * @param observacionesNuevo the observacionesNuevo to set
+		 */
+		public void setObservacionesNuevo(String observacionesNuevo) {
+			this.observacionesNuevo = observacionesNuevo;
+		}
 
 		/**
 		 * Gets the complejidad.
@@ -846,6 +888,8 @@ public class SeedMassImportAction extends Action {
 		private boolean sameEtiquetas;
 		/** The same complejidad. */
 		private boolean sameComplejidad;
+		/** The same observaciones. */
+		private boolean sameObservaciones;
 
 		/**
 		 * Checks if is eliminada.
@@ -983,6 +1027,18 @@ public class SeedMassImportAction extends Action {
 				return true;
 			}
 			return org.apache.commons.lang3.StringUtils.equalsIgnoreCase(nombre, nombreNuevo);
+		}
+
+		/**
+		 * Checks if is same observaciones.
+		 *
+		 * @return true, if is same observaciones
+		 */
+		public boolean isSameObservaciones() {
+			if (org.apache.commons.lang3.StringUtils.isEmpty(observaciones) && org.apache.commons.lang3.StringUtils.isEmpty(observacionesNuevo)) {
+				return true;
+			}
+			return org.apache.commons.lang3.StringUtils.equalsIgnoreCase(observaciones, observacionesNuevo);
 		}
 
 		/**
@@ -1145,7 +1201,7 @@ public class SeedMassImportAction extends Action {
 		 */
 		public boolean isSame() {
 			return this.isSameAcronimo() && this.isSameActiva() && this.isSameCategoria() && this.isSameDependencias() && this.isSameInDirectory() && this.isSameListaURLs() && this.isSameNombre()
-					&& this.isSameAmbito() && this.isSameEtiquetas() && this.isSameComplejidad() && this.isSameEliminada();
+					&& this.isSameAmbito() && this.isSameEtiquetas() && this.isSameComplejidad() && this.isSameEliminada() && this.isSameObservaciones();
 		}
 	}
 }

@@ -391,6 +391,15 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 	function dialogoNuevaComplejidad() {
 
+		
+		var windowTitle = '<bean:message key="complex.new.modal.title"/>';
+		
+		var saveButton = '<bean:message key="boton.guardar"/>';
+		
+		var cancelButton = '<bean:message key="boton.cancelar"/>';
+		
+		
+		
 		window.scrollTo(0, 0);
 
 		$('#exitosNuevaSemillaMD').hide();
@@ -400,20 +409,20 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			height : windowHeight,
 			width : windowWidth,
 			modal : true,
-			title : 'RASTREADOR WEB - Nueva complejidad',
+			title : windowTitle,
 			buttons : {
 				"Guardar" : {
 					click: function() {
 						guardarNuevaComplejidad();
 					},
-					text : "Guardar",
+					text : saveButton,
 					class: 'jdialog-btn-save'
 				},
 				"Cancelar" : {
 					click: function() {
 						dialog.dialog("close");
 					},
-					text: "Cancelar",
+					text: cancelButton,
 					class: 'jdialog-btn-cancel'
 				}
 			},

@@ -606,16 +606,19 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
 			int countC = 0;
 			int countNC = 0;
+			int countNA = 0;
 			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
 				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
 					countC++;
 				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
 					countNC++;
+				} else {
+					countNA++;
 				}
 			}
-			if (countC == result.getValue().size()) {
+			if ((countC + countNA) == result.getValue().size()) {
 				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_FULL);
-			} else if (countC > countNC) {
+			} else if ((countC + countNA) > countNC) {
 				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_PARTIAL);
 			} else {
 				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_NONE);

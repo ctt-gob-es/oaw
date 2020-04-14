@@ -14,6 +14,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml />
 
+
+
 <!-- observatorio_categoriasSemilla.jsp -->
 <div id="main">
 
@@ -77,7 +79,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 									<td style="text-align: left;"><html:link forward="editSeedCategory" paramId="<%=Constants.ID_CATEGORIA%>"
 											paramName="category" paramProperty="id">
-											<span data-toggle="tooltip" title="Editar la configuraci&oacute;n de este segmento"><bean:write
+											<span data-toggle="tooltip" title="<bean:message key="indice.categorias.edit"/>"><bean:write
 													name="category" property="name" /></span>
 										</html:link> <span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true" /></td>
 									<td style="text-align: left;"><span data-toggle="tooltip" title="Agrupado por"><bean:write
@@ -85,13 +87,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<td><html:link forward="getCategorySeedsFile" paramId="<%=Constants.ID_CATEGORIA%>" paramName="category"
 											paramProperty="id">
 											<span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip"
-												title="Descargar las semillas de este segmento en formato XML" />
+												title='<bean:message key="indice.categorias.download"/>' />
 											<span class="sr-only">Descargar</span>
 										</html:link></td>
 									<td><html:link forward="deleteSeedCategoryConfirmation" paramId="<%=Constants.ID_CATEGORIA%>"
 											paramName="category" paramProperty="id">
 											<span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip"
-												title="Eliminar este segmento" />
+												title="<bean:message key="indice.categorias.remove"/>" />
 											<span class="sr-only"><bean:message key="indice.rastreo.img.eliminar.rastreo.alt" /></span>
 										</html:link></td>
 								</tr>

@@ -47,14 +47,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 
-			<h2>Estdo de la ejecución</h2>
+			<h2><bean:message key="observatory.status.title"/> </h2>
 
 			<table class="table table-stripped table-bordered table-hover">
-				<caption>Estado de la ejecución del observatorio</caption>
+				<caption><bean:message key="observatory.status.caption"/></caption>
 				<tbody>
 					<tr>
-						<th>Estado</th>
-						<th>Acciones</th>
+						<th><bean:message key="observatory.status.status"/></th>
+						<th><bean:message key="observatory.status.actions"/></th>
 					</tr>
 					<tr>
 
@@ -73,8 +73,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							</td>
 							<td><html:link forward="relanzarObservatorio" name="paramsRelanzar">
 									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-										title="Relanzar esta iteraci&oacute;n del observatorio" />
-									<span class="sr-only">Relanzar esta iteraci&oacute;n del observatorio</span>
+										title="<bean:message key="observatory.status.relaunh"/>" />
+									<span class="sr-only"><bean:message key="observatory.status.relaunh"/></span>
 								</html:link></td>
 
 						</logic:equal>
@@ -83,8 +83,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 							<td><html:link forward="relanzarObservatorio" name="paramsRelanzar">
 									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-										title="Relanzar esta iteraci&oacute;n del observatorio" />
-									<span class="sr-only">Relanzar esta iteraci&oacute;n del observatorio</span>
+										title="<bean:message key="observatory.status.relaunh"/>" />
+									<span class="sr-only"><bean:message key="observatory.status.relaunh"/></span>
 								</html:link></td>
 
 						</logic:equal>
@@ -92,8 +92,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<td><bean:message key="resultado.observatorio.rastreo.realizado.estado.terminado" /></td>
 							<td><html:link forward="resultadosObservatorioSemillas" name="paramsRelanzar">
 									<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
-										title="Ver resultados de este observatorio" />
-									<span class="sr-only">Resultados</span>
+										title="<bean:message key="observatory.status.results"/>" />
+									<span class="sr-only"><bean:message key="observatory.status.results"/></span>
 								</html:link></td>
 						</logic:equal>
 						<logic:equal name="estado" property="idEstado" value="2">
@@ -101,8 +101,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 							<td><html:link forward="relanzarObservatorio" name="paramsRelanzar">
 									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-										title="Relanzar esta iteraci&oacute;n del observatorio" />
-									<span class="sr-only">Relanzar esta iteraci&oacute;n del observatorio</span>
+										title="<bean:message key="observatory.status.relaunh"/>" />
+									<span class="sr-only"><bean:message key="observatory.status.relaunh"/></span>
 								</html:link></td>
 
 						</logic:equal>
@@ -110,45 +110,45 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				</tbody>
 			</table>
 
-			<h2>Resumen de la ejecución del observatorio</h2>
+			<h2><bean:message key="observatory.status.summary"/></h2>
 
 			<table class="table table-stripped table-bordered table-hover">
-				<caption>Información del análisis en curso</caption>
+				<caption><bean:message key="observatory.status.summary.caption"/></caption>
 				<tbody>
 					<tr>
-						<th>Total de semillas</th>
-						<th>Total de semillas procesadas</th>
-						<th>Total de semillas procesada con resultados</th>
-						<th>Tiempo total</th>
-						<th>Tiempo medio</th>
-						<th>Tiempo estimado fin</th>
+						<th><bean:message key="observatory.status.summary.seed.total"/></th>
+						<th><bean:message key="observatory.status.summary.seed.processed"/></th>
+						<th><bean:message key="observatory.status.summary.seed.results"/></th>
+						<th><bean:message key="observatory.status.summary.time.total"/></th>
+						<th><bean:message key="observatory.status.summary.time.avg"/></th>
+						<th><bean:message key="observatory.status.summary.time.end"/></th>
 					</tr>
 
 					<tr>
 						<td style="text-align: center"><bean:write name="estado" property="totalSemillas" /></td>
 						<td><bean:write name="estado" property="semillasAnalizadas" /> (<bean:write name="estado"
-								property="porcentajeCompletado" format="###.##" />% completado)</td>
+								property="porcentajeCompletado" format="###.##" />% <bean:message key="completado"/>)</td>
 						<td><bean:write name="estado" property="semillasAnalizadasOk" /> (<bean:write name="estado"
-								property="porcentajeCompletadoOk" format="###.##" />% completado)</td>
-						<td><bean:write name="estado" property="tiempoTotal" /> minutos (<bean:write name="estado"
-								property="tiempoTotalHoras" /> horas)</td>
-						<td><bean:write name="estado" property="tiempoMedio" /> minutos</td>
-						<td><bean:write name="estado" property="tiempoEstimado" /> minutos (<bean:write name="estado"
-								property="tiempoEstimadoHoras" /> Horas)</td>
+								property="porcentajeCompletadoOk" format="###.##" />% <bean:message key="completado"/>)</td>
+						<td><bean:write name="estado" property="tiempoTotal" /> <bean:message key="minutos"/> (<bean:write name="estado"
+								property="tiempoTotalHoras" /> <bean:message key="horas"/>)</td>
+						<td><bean:write name="estado" property="tiempoMedio" /> <bean:message key="minutos"/></td>
+						<td><bean:write name="estado" property="tiempoEstimado" /> <bean:message key="minutos"/> (<bean:write name="estado"
+								property="tiempoEstimadoHoras" /> <bean:message key="horas"/>)</td>
 					</tr>
 
 				</tbody>
 			</table>
 
 			<logic:notEqual name="estado" property="idEstado" value="0">
-				<h2>Análisis en curso/útlimo análisis</h2>
+				<h2><bean:message key="observatory.status.last.title"/></h2>
 
 				<table class="table table-stripped table-bordered table-hover">
-					<caption>Información del análisis en curso</caption>
+					<caption><bean:message key="observatory.status.last.caption"/></caption>
 					<tbody>
 
 						<tr>
-							<th>Semilla</th>
+							<th><bean:message key="observatory.status.last.seed"/></th>
 						</tr>
 						<tr>
 							<td style="text-align: center"><bean:write name="analisis" property="nombre" />&nbsp;(<bean:write
@@ -157,27 +157,27 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tbody>
 				</table>
 				<table class="table table-stripped table-bordered table-hover">
-					<caption>Información del análisis en curso</caption>
+					<caption><bean:message key="observatory.status.last.caption"/></caption>
 					<tbody>
 						<tr>
-							<th>Total URL recogidas</th>
-							<th>Total URL analizadas</th>
-							<th>Última URL analizada</th>
-							<th>Fin última URl analizada</th>
-							<th>Tiempo medio</th>
-							<th>Tiempo total</th>
-							<th>Tiempo estimado fin</th>
+							<th><bean:message key="observatory.status.last.total.url"/></th>
+							<th><bean:message key="observatory.status.last.total.url.analized"/></th>
+							<th><bean:message key="observatory.status.last.total.url.last"/></th>
+							<th><bean:message key="observatory.status.last.total.url.last.end"/></th>
+							<th><bean:message key="observatory.status.last.time.avg"/></th>
+							<th><bean:message key="observatory.status.last.time.total"/></th>
+							<th><bean:message key="observatory.status.last.time.end"/></th>
 						</tr>
 
 						<tr>
 							<td><bean:write name="analisis" property="totalUrl" /></td>
 							<td><bean:write name="analisis" property="totalUrlAnalizadas" /> (<bean:write name="analisis"
-									property="porcentajeCompletado" format="###.##" />% completado)</td>
+									property="porcentajeCompletado" format="###.##" />% <bean:message key="completado"/>)</td>
 							<td><bean:write name="analisis" property="ultimaUrl" /></td>
 							<td><fmt:formatDate value="${analisis.fechaUltimaUrl}" pattern="dd-MM-yyyy HH:mm" /></td>
-							<td><bean:write name="analisis" property="tiempoMedio" /> segundos</td>
-							<td><bean:write name="analisis" property="tiempoAcumulado" /> segundos</td>
-							<td><bean:write name="analisis" property="tiempoEstimado" /> segundos</td>
+							<td><bean:write name="analisis" property="tiempoMedio" /> <bean:message key="segundos"/></td>
+							<td><bean:write name="analisis" property="tiempoAcumulado" /> <bean:message key="segundos"/></td>
+							<td><bean:write name="analisis" property="tiempoEstimado" /> <bean:message key="segundos"/></td>
 						</tr>
 
 					</tbody>
@@ -187,9 +187,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 
-				<h2>Portales sin analizar aún</h2>
+				<h2><bean:message key="observatory.status.pending.title"/></h2>
 				<table class="table table-stripped table-bordered table-hover table-console">
-					<caption>Información de portales sin analizar aún</caption>
+					<caption><bean:message key="observatory.status.pending.caption"/></caption>
 					<colgroup>
 						<col style="width: 5%">
 						<col style="width: 30%">
@@ -198,13 +198,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					<tbody>
 						<tr>
 							<th>#</th>
-							<th>Nombre</th>
+							<th><bean:message key="observatory.status.pending.name"/></th>
 							<th>URL</th>
 						</tr>
 
 						<logic:empty name="notCrawledSeedsYet">
 							<tr>
-								<td colspan="3">Sin resultados</td>
+								<td colspan="3"><bean:message key="no.results"/></td>
 							</tr>
 						</logic:empty>
 
@@ -224,9 +224,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				</table>
 			</logic:notEqual>
 
-			<h2>Portales sin resultados</h2>
+			<h2><bean:message key="observatory.status.no.results.title"/></h2>
 			<table class="table table-stripped table-bordered table-hover table-console">
-				<caption>Información de análisis pendientes</caption>
+				<caption><bean:message key="observatory.status.no.results.caption"/></caption>
 				<colgroup>
 					<col style="width: 5%">
 					<col style="width: 30%">
@@ -236,14 +236,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<tbody>
 					<tr>
 						<th>#</th>
-						<th>Nombre</th>
+						<th><bean:message key="observatory.status.no.results.name"/></th>
 						<th>URL</th>
-						<th>Relanzar</th>
+						<th><bean:message key="observatory.status.no.results.relaunch"/></th>
 					</tr>
 
 					<logic:empty name="finishWithoutResults">
 						<tr>
-							<td colspan="4">Sin resultados</td>
+							<td colspan="4"><bean:message key="no.results"/></td>
 						</tr>
 					</logic:empty>
 
@@ -271,8 +271,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									target="${paramsRelanzarCrawl}" property="idSemilla" value="${crawlWithoutAnalisis.id}" /> <html:link
 									forward="resultadosObservatorioLanzarEjecucion" name="paramsRelanzarCrawl">
 									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-										title="Relanzar esta iteraci&oacute;n del observatorio" />
-									<span class="sr-only">Relanzar análisis</span>
+										title="<bean:message key="observatory.status.no.results.relaunch"/>" />
+									<span class="sr-only"><bean:message key="observatory.status.no.results.relaunch"/></span>
 								</html:link></td>
 						</tr>
 					</logic:iterate>

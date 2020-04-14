@@ -250,7 +250,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	/** The Constant HEADER_PARCIALMENTE_CONFORME. */
 	private static final String HEADER_PARCIALMENTE_CONFORME = "Parcialmente conforme";
 	/** The Constant HEADER_TOTALMENTE_CONFORME. */
-	private static final String HEADER_TOTALMENTE_CONFORME = "Totalmente conforme";
+	private static final String HEADER_TOTALMENTE_CONFORME = "Plenamente conforme";
 	/** The Constant HEADER_NIVEL_DE_CONFORMIDAD. */
 	private static final String HEADER_NIVEL_DE_CONFORMIDAD = "Nivel de conformidad";
 	/** The Constant HEADER_NO_VALIDO. */
@@ -699,7 +699,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		// AA row
 		sb.append("<table:table-row>");
 		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
-		sb.append("<text:p text:style-name='GraphicTableHeader'>Totalmente conforme</text:p>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>Plenamente conforme</text:p>");
 		sb.append("</table:table-cell>");
 		for (Map.Entry<String, BigDecimal> entry : resultDataAA.entrySet()) {
 			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
@@ -2302,7 +2302,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceText(odt, odfFileContent, "-451c.t1.d14-", res.get(12).getGrayPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.b15-", res.get(13).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c15-", res.get(13).getRedPercentage());
-		replaceText(odt, odfFileContent, "-451c.t1.d15-", res.get(13).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d15-", res.get(13).getGrayPercentage());
 	}
 
 	/**
@@ -3183,7 +3183,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		final File f = new File(filePath);
 		final XPath xpath = odt.getXPath();
 		final OdfFileDom odfFileContent = odt.getContentDom();
-		final NodeList nodeList = (NodeList) xpath.evaluate(String.format("//draw:frame[@draw:name = '%s']/draw:image", prevImageName), odfFileContent, XPathConstants.NODESET);
+		final NodeList nodeList = (NodeList) xpath.evaluate(String.format("//draw:frame[@draw:name = '%s']/draw:image", prevImageName + JPG_EXTENSION), odfFileContent, XPathConstants.NODESET);
 		String newImageDOm = "<draw:frame draw:style-name='fr4' draw:name='" + imageNameOdt
 				+ "' text:anchor-type='as-char' svg:y='0mm' svg:width='149.45mm' style:rel-width='scale' svg:height='120.21mm' style:rel-height='scale' draw:z-index='118'>"
 				+ "<draw:image xlink:href='Pictures/" + f.getName() + "' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/>" + "<svg:desc> </svg:desc>" + "</draw:frame>";
