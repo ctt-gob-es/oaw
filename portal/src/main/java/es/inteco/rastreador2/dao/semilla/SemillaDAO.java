@@ -613,6 +613,7 @@ public final class SemillaDAO {
 					// búsqueda
 					// Multidependencia
 					semillaForm.setAcronimo(rs.getString("l.acronimo"));
+					semillaForm.setObservaciones(rs.getString("l.observaciones"));
 					final CategoriaForm categoriaForm = new CategoriaForm();
 					categoriaForm.setId(rs.getString(ID_CATEGORIA));
 					categoriaForm.setName(rs.getString("cl.nombre"));
@@ -1031,6 +1032,7 @@ public final class SemillaDAO {
 					semillaForm.setListaUrls(convertStringToList(rs.getString(LISTA)));
 					semillaForm.setListaUrlsString(rs.getString(LISTA));
 					semillaForm.setNombre(rs.getString(NOMBRE));
+					semillaForm.setObservaciones(rs.getString("l.observaciones"));
 					CategoriaForm categoriaForm = new CategoriaForm();
 					categoriaForm.setId(rs.getString(ID_CATEGORIA));
 					categoriaForm.setName(rs.getString("cl.nombre"));

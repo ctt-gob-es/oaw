@@ -225,6 +225,7 @@ public interface Constants {
 	String SECTION_FORM = "sectionForm";
 	/** The generate all reports. */
 	String GENERATE_ALL_REPORTS = "generateAllReports";
+	/** The generate report async. */
 	String GENERATE_REPORT_ASYNC = "generateReportAsync";
 	/** The get seed clasifications. */
 	String GET_SEED_CLASIFICATIONS = "getSeedTags";
@@ -289,6 +290,8 @@ public interface Constants {
 	String XML_AMBITO = "ambito";
 	/** The xml complejidad. */
 	String XML_COMPLEJIDAD = "complejidad";
+	/** The xml observaciones. */
+	String XML_OBSERVACIONES = "observaciones";
 	/** The xml etiquetas. */
 	String XML_ETIQUETAS = "etiquetas";
 	/** The xml etiquetas tematica. */
@@ -1417,7 +1420,7 @@ public interface Constants {
 	/** The obs compilance partial. */
 	String OBS_COMPILANCE_PARTIAL = "Parcialmente conforme";
 	/** The obs compilance full. */
-	String OBS_COMPILANCE_FULL = "Totalmente conforme";
+	String OBS_COMPILANCE_FULL = "Plenamente conforme";
 	/** The obs accesibility full. */
 	String OBS_ACCESIBILITY_FULL = "Completo";
 	/** The obs accesibility partial. */

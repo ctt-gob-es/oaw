@@ -273,7 +273,7 @@ Email: observ.accesibilidad@correo.gob.es
 							</c:forEach>
 						</html:select>
 
-						<p style="margin-left: 22%;">(Para las semillas que no tienen Complejidad asignada)</p>
+						<p style="margin-left: 22%;"><bean:message key="nuevo.obaservatorio.depth.with.tip"/></p>
 					</div>
 
 					<div class="formItem hiddenOnComplex">

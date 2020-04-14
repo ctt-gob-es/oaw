@@ -158,7 +158,8 @@ Email: observ.accesibilidad@correo.gob.es
 	</li>
 	<li>
 		<ul role="presentation" class="nav nav-pills nav-stacked">
-			<li><a href="/oaw/diagnostico.html">Acceso al servicio</a></li>
+			<li><a href="/oaw/diagnostico.html">
+			<bean:message key="menuadmin.servicio_diagnostico" /></a></li>
 			<logic:equal name="<%=Constants.MENU%>" value="<%=Constants.MENU_SERVICIO_DIAGNOSTICO%>">
 				<li class="active"><html:link forward="servicioDiagnostico"
 						titleKey="menuadmin.exportar_servicio_diagnostico.title">
@@ -180,8 +181,7 @@ Email: observ.accesibilidad@correo.gob.es
 <logic:notEqual name="<%=Constants.MENU%>" value="<%=Constants.MENU_OTHER_OPTIONS%>">
 	<li role="presentation" class="dropdown">
 </logic:notEqual>
-<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Otras
-	opciones <span style="margin-top: 8px;" class="caret pull-right"></span>
+<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><bean:message key="other.options"/> <span style="margin-top: 8px;" class="caret pull-right"></span>
 </a>
 <ul class="dropdown-menu nav nav-stacked nav-pills">
 	<li><logic:equal name="<%=Constants.MENU%>" value="<%=Constants.MENU_PASSWORD%>">

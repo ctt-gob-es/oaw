@@ -208,7 +208,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			</p>
 			<ol class="breadcrumb">
 				<li><span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-					Otras opciones</li>
+					<bean:message key="other.options"/></li>
 				<li class="active"></span> <bean:message key="migas.conectividad" /></li>
 
 			</ol>

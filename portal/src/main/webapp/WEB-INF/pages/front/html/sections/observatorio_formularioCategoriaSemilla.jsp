@@ -63,6 +63,51 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 <script type="text/javascript">
+
+
+var colNameId = '<bean:message key="colname.id"/>';
+var colNameAcronym = '<bean:message key="colname.acronym"/>';
+var colNameActive = '<bean:message key="colname.active"/>';
+var colNameComplex = '<bean:message key="colname.complex"/>';
+var colNameDependencies = '<bean:message key="colname.dependecies"/>';
+var colNameDirectory = '<bean:message key="colname.directory"/>';
+var colNameTags = '<bean:message key="colname.etiqeutas"/>';
+var colNameGo = '<bean:message key="colname.go"/>';
+var colNameName = '<bean:message key="colname.name"/>';
+var colNameObs = '<bean:message key="colname.observations"/>';
+var colNameOldName = '<bean:message key="colname.oldname"/>';
+var colNameRemove = '<bean:message key="colname.remove"/>';
+var colNameRemovePerm = '<bean:message key="colname.remove.permanently"/>';
+var colNameScope = '<bean:message key="colname.scope"/>';
+var colNameSegment = '<bean:message key="colname.segment"/>';
+
+
+var windowTitleRemoveSeed = '<bean:message key="eliminar.semilla.modal.titulo"/>';
+
+var saveButton = '<bean:message key="boton.aceptar"/>';
+
+var cancelButton = '<bean:message key="boton.cancelar"/>';
+
+var confirmRemoveMessage1 = '<bean:message key="eliminar.semilla.modal.confirmacion.1"/>';
+var confirmRemoveMessage2 = '<bean:message key="eliminar.semilla.modal.confirmacion.2"/>';
+var confirmRemoveMessage3 = '<bean:message key="eliminar.semilla.modal.confirmacion.3"/>';
+
+var semillaIrAlt ='<bean:message key="semilla.ir"/>';
+
+var semillaEliminarDefinitiva ='<bean:message key="seed.remove.permanently.alt"/>';
+
+
+
+var translatedColNames = [ colNameId, colNameOldName,
+	colNameName, colNameAcronym,
+	colNameSegment, colNameScope,
+	colNameComplex, colNameTags,
+	colNameDependencies, "URLs",colNameObs,
+	colNameActive, colNameDirectory, 
+	colNameGo, colNameRemove, colNameRemovePerm ];
+
+
+
 	var dialog;
 
 	var windowWidth = $(window).width() * 0.8;

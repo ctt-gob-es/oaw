@@ -134,6 +134,7 @@ public final class SeedUtils {
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ETIQUETAS_DISTRIBUCCION + "/", "addEtiquetaDistribucion", 0);
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ETIQUETAS_RECURRENCIA + "/", "addEtiquetaRecurrencia", 0);
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ETIQUETAS_OTROS + "/", "addEtiquetaOtros", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_OBSERVACIONES + "/", "setObservaciones", 0);
 			digester.addSetNext(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA, "add");
 			return (List<SemillaForm>) digester.parse(inputStream);
 		} catch (Exception e) {
@@ -316,6 +317,12 @@ public final class SeedUtils {
 				}
 			}
 			hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
+			// observaciones
+			hd.startElement("", "", Constants.XML_OBSERVACIONES, null);
+			if (semillaForm.getObservaciones() != null) {
+				hd.characters(semillaForm.getObservaciones().toCharArray(), 0, semillaForm.getObservaciones().length());
+			}
+			hd.endElement("", "", Constants.XML_OBSERVACIONES);
 			hd.endElement("", "", Constants.XML_SEMILLA);
 		}
 		hd.endElement("", "", Constants.XML_LISTA);

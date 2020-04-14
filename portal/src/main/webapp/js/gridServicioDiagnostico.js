@@ -126,7 +126,7 @@ function reloadGrid(path, gridId, paginadorId) {
 
 						ajaxJson = JSON.stringify(data.diagnosticos);
 
-						$('#avg').text(data.avg.toFixed(2) + " segundos ("+(data.avg/60).toFixed(2)+" minutos)");
+						$('#avg').text(data.avg.toFixed(2) + " "+segundos + "  ("+(data.avg/60).toFixed(2)+" "+minutos+")");
 					
 
 						total = data.paginador.total;
