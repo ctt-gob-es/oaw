@@ -527,3 +527,45 @@ CREATE TABLE IF NOT EXISTS `usuario_rol` (
 DROP TABLE IF EXISTS `oaw_dashboard`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `oaw_dashboard` AS select `basic_service`.`id` AS `id`,`basic_service`.`usr` AS `usr`,`basic_service`.`domain` AS `url`,`basic_service`.`email` AS `email`,`basic_service`.`depth` AS `depth`,`basic_service`.`width` AS `width`,`basic_service`.`report` AS `report`,`basic_service`.`date` AS `date`,`basic_service`.`status` AS `status`,`basic_service`.`analysis_type` AS `analysis_type`,`basic_service`.`in_directory` AS `in_directory` from `basic_service`;
+
+INSERT INTO `tguidelines` (`cod_guideline`, `des_guideline`) VALUES(1, 'observatorio-inteco-1-0.xml');
+INSERT INTO `tguidelines` (`cod_guideline`, `des_guideline`) VALUES(2, 'observatorio-une-2012.xml');
+
+INSERT INTO `cartucho` (`id_cartucho`, `nombre`, `instalado`, `aplicacion`, `numrastreos`, `numhilos`, `id_guideline`) VALUES(1, 'es.inteco.accesibilidad.CartuchoAccesibilidad', 1, 'UNE-2004', 15, 50, 1);
+INSERT INTO `cartucho` (`id_cartucho`, `nombre`, `instalado`, `aplicacion`, `numrastreos`, `numhilos`, `id_guideline`) VALUES(2, 'es.inteco.accesibilidad.CartuchoAccesibilidad', 1, 'UNE-2012', 15, 50, 2);
+
+INSERT INTO `languages` (`id_language`, `key_name`, `codice`) VALUES(1, 'idioma.espanol', 'es');
+INSERT INTO `languages` (`id_language`, `key_name`, `codice`) VALUES(2, 'idioma.ingles', 'en');
+
+INSERT INTO `observatorio_tipo` (`id_tipo`, `name`) VALUES(1, 'AGE');
+INSERT INTO `observatorio_tipo` (`id_tipo`, `name`) VALUES(2, 'CCAA');
+INSERT INTO `observatorio_tipo` (`id_tipo`, `name`) VALUES(3, 'EELL');
+
+
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(1, 'Diario', 1, NULL);
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(2, 'Semanal', 7, NULL);
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(3, 'Quincenal', 15, NULL);
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(4, 'Mensual', NULL, '0 min hour daymonth month/1 ? year/1');
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(5, 'Trimestral', NULL, '0 min hour daymonth month/3 ? year/1');
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(6, 'Semestral', NULL, '0 min hour daymonth month/6 ? year/1');
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(7, 'Anual', NULL, '0 min hour daymonth month ? year/1');
+
+INSERT INTO `tipo_rol` (`id_tipo`, `nombre`) VALUES(1, 'Normal');
+INSERT INTO `tipo_rol` (`id_tipo`, `nombre`) VALUES(2, 'Cliente');
+INSERT INTO `tipo_rol` (`id_tipo`, `nombre`) VALUES(3, 'Observatorio');
+
+
+INSERT INTO `roles` (`id_rol`, `rol`, `id_tipo`) VALUES(1, 'Administrador', 1);
+INSERT INTO `roles` (`id_rol`, `rol`, `id_tipo`) VALUES(2, 'Configurador', 1);
+INSERT INTO `roles` (`id_rol`, `rol`, `id_tipo`) VALUES(3, 'Visualizador', 1);
+INSERT INTO `roles` (`id_rol`, `rol`, `id_tipo`) VALUES(4, 'Responsable cliente', 2);
+INSERT INTO `roles` (`id_rol`, `rol`, `id_tipo`) VALUES(5, 'Visualizador cliente', 2);
+INSERT INTO `roles` (`id_rol`, `rol`, `id_tipo`) VALUES(6, 'Observatorio', 3);
+
+INSERT INTO `usuario` (`id_usuario`, `usuario`, `password`, `nombre`, `apellidos`, `departamento`, `email`) VALUES(1, 'username', 'password-md5', 'Nombre', 'Apellidos', 'Departamento', 'email@mail.com');
+
+INSERT INTO `usuario_cartucho` (`id_usuario`, `id_cartucho`) VALUES(1, 1);
+INSERT INTO `usuario_cartucho` (`id_usuario`, `id_cartucho`) VALUES(1, 2);
+
+INSERT INTO `usuario_rol` (`usuario`, `id_rol`) VALUES(1, 1);
+
