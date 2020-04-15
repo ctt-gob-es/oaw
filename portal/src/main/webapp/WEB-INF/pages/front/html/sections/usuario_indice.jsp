@@ -87,7 +87,7 @@ Email: observ.accesibilidad@correo.gob.es
                                     <th><bean:message key="indice.usuarios.sistema.usuario" /></th>
                                     <th><bean:message key="indice.usuarios.sistema.cartucho" /></th>
                                     <th><bean:message key="indice.usuarios.sistema.tipo" /></th>
-                                    <th>Eliminar</th>
+                                    <th><bean:message key="indice.usuarios.sistema.eliminar" /></th>
                                 </tr>
                                 <logic:iterate name="CargarUsuariosSistemaForm" type="es.inteco.rastreador2.utils.ListadoUsuario" property="listadoUsuarios" id="elemento">
                                     <tr>
@@ -127,7 +127,7 @@ Email: observ.accesibilidad@correo.gob.es
                                         </td>
                                         <td>
                                             <html:link forward="deleteSystemUser" paramId="<%= Constants.USER %>" paramName="elemento" paramProperty="id_usuario">
-                                                <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="Eliminar este usuario"/><span class="sr-only">Eliminar este usuario</span>
+                                                <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="<bean:message key="indice.usuarios.sistema.eliminar" />"/><span class="sr-only">Eliminar este usuario</span>
                                             </html:link>
                                         </td>
                                     </tr>

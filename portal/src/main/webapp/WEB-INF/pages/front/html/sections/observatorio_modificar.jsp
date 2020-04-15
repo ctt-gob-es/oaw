@@ -61,7 +61,7 @@ Email: observ.accesibilidad@correo.gob.es
 											$
 													.ajax(
 															{
-																url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+																url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
 																method : 'POST',
 																cache : false
 															})
@@ -288,7 +288,7 @@ Email: observ.accesibilidad@correo.gob.es
 							</c:forEach>
 						</html:select>
 
-						<p style="margin-left: 22%;">(Para las semillas que no tienen Complejidad asignada)</p>
+						<p style="margin-left: 22%;"><bean:message key="nuevo.obaservatorio.depth.with.tip"/></p>
 
 					</div>
 
@@ -313,7 +313,8 @@ Email: observ.accesibilidad@correo.gob.es
 							<option value="<inteco:properties key="amplitud.ilimitada.value" file="crawler.core.properties" />"><bean:message
 									key="nuevo.rastreo.amplitud.ilimitada" /></option>
 						</html:select>
-						<p style="margin-left: 22%;">(Para las semillas que no tienen Complejidad asignada)</p>
+						<p style="margin-left: 22%;"><bean:message key="nuevo.obaservatorio.depth.with.tip"/></p>
+						
 
 					</div>
 

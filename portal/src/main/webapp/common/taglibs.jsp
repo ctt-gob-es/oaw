@@ -16,3 +16,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
 <%@ taglib uri="/WEB-INF/tld/inteco.tld" prefix="inteco"%>
 <%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt"%>
+
+<script>
+
+var noResults = '<bean:message key="no.results"/>';
+
+</script>

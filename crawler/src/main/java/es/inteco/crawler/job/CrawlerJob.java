@@ -677,7 +677,6 @@ public class CrawlerJob implements InterruptableJob {
 			// If it comes from the diagnostic service the trace ID is negative
 			ObservatoryStatus estado = null;
 			if (crawlerData.getIdCrawling() > 0) {
-				// Recupera la información que falta
 				ExtraInfo extra = RastreoDAO.getExtraInfo(DataBaseManager.getConnection(), crawlerData.getIdFulfilledCrawling());
 				// Putting the tracking information into a database
 				estado = EstadoObservatorioDAO.findEstadoObservatorio(connection, (int) crawlerData.getIdObservatory(), extra.getIdEjecucionObservatorio());
@@ -693,7 +692,6 @@ public class CrawlerJob implements InterruptableJob {
 				estado.setTiempoAcumulado(0);
 				estado.setTotalUrlAnalizadas(0);
 				estado.setTiempoEstimado(0);
-				// Registramos en base de datos el estado
 				estado.setId(EstadoObservatorioDAO.updateEstado(connection, estado));
 			}
 			DataBaseManager.closeConnection(connection);
@@ -702,7 +700,6 @@ public class CrawlerJob implements InterruptableJob {
 				// Points to save date data, summary of the status of the observatory
 				Date initDate = new Date();
 				Logger.putLog("[I] Iniciando análisis del enlace número " + (cont + 1) + "/" + analyzeDomains.size() + " (" + crawledLink.getUrl() + ")", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-				// Actualizamos el estado
 				try (Connection connection2 = DataBaseManager.getConnection()) {
 					// If it comes from the diagnostic service the trace ID is negative
 					if (crawlerData.getIdCrawling() > 0) {

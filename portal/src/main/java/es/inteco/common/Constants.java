@@ -225,6 +225,8 @@ public interface Constants {
 	String SECTION_FORM = "sectionForm";
 	/** The generate all reports. */
 	String GENERATE_ALL_REPORTS = "generateAllReports";
+	/** The generate report async. */
+	String GENERATE_REPORT_ASYNC = "generateReportAsync";
 	/** The get seed clasifications. */
 	String GET_SEED_CLASIFICATIONS = "getSeedTags";
 	/** The seed tag. */
@@ -288,8 +290,18 @@ public interface Constants {
 	String XML_AMBITO = "ambito";
 	/** The xml complejidad. */
 	String XML_COMPLEJIDAD = "complejidad";
+	/** The xml observaciones. */
+	String XML_OBSERVACIONES = "observaciones";
 	/** The xml etiquetas. */
 	String XML_ETIQUETAS = "etiquetas";
+	/** The xml etiquetas tematica. */
+	String XML_ETIQUETAS_TEMATICA = "tematica";
+	/** The xml etiquetas distribuccion. */
+	String XML_ETIQUETAS_DISTRIBUCCION = "distribucion";
+	/** The xml etiquetas recurrencia. */
+	String XML_ETIQUETAS_RECURRENCIA = "recurrencia";
+	/** The xml etiquetas otros. */
+	String XML_ETIQUETAS_OTROS = "otros";
 	/** The error. */
 	String ERROR = "error";
 	/** The error1. */
@@ -1408,7 +1420,7 @@ public interface Constants {
 	/** The obs compilance partial. */
 	String OBS_COMPILANCE_PARTIAL = "Parcialmente conforme";
 	/** The obs compilance full. */
-	String OBS_COMPILANCE_FULL = "Totalmente conforme";
+	String OBS_COMPILANCE_FULL = "Plenamente conforme";
 	/** The obs accesibility full. */
 	String OBS_ACCESIBILITY_FULL = "Completo";
 	/** The obs accesibility partial. */
@@ -1816,7 +1828,7 @@ public interface Constants {
 	/** The message resources une en2019. */
 	String MESSAGE_RESOURCES_UNE_EN2019 = "ApplicationResources-UNEEN2019";
 	/** The message resources accesibilidad. */
-	String MESSAGE_RESOURCES_ACCESIBILIDAD = "ApplicationResources-Accesibilidad";
+	String MESSAGE_RESOURCES_ACCESIBILIDAD = "ApplicationResources_es_AC";
 	/** The check global modality grpahics. */
 	String CHECK_GLOBAL_MODALITY_GRPAHICS = "checkGlobalModalityGrpahics";
 	/** The check global aspects grpahics. */

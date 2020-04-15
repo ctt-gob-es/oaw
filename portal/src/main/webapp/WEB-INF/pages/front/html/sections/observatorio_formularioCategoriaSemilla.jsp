@@ -63,6 +63,51 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 <script type="text/javascript">
+
+
+var colNameId = '<bean:message key="colname.id"/>';
+var colNameAcronym = '<bean:message key="colname.acronym"/>';
+var colNameActive = '<bean:message key="colname.active"/>';
+var colNameComplex = '<bean:message key="colname.complex"/>';
+var colNameDependencies = '<bean:message key="colname.dependecies"/>';
+var colNameDirectory = '<bean:message key="colname.directory"/>';
+var colNameTags = '<bean:message key="colname.etiqeutas"/>';
+var colNameGo = '<bean:message key="colname.go"/>';
+var colNameName = '<bean:message key="colname.name"/>';
+var colNameObs = '<bean:message key="colname.observations"/>';
+var colNameOldName = '<bean:message key="colname.oldname"/>';
+var colNameRemove = '<bean:message key="colname.remove"/>';
+var colNameRemovePerm = '<bean:message key="colname.remove.permanently"/>';
+var colNameScope = '<bean:message key="colname.scope"/>';
+var colNameSegment = '<bean:message key="colname.segment"/>';
+
+
+var windowTitleRemoveSeed = '<bean:message key="eliminar.semilla.modal.titulo"/>';
+
+var saveButton = '<bean:message key="boton.aceptar"/>';
+
+var cancelButton = '<bean:message key="boton.cancelar"/>';
+
+var confirmRemoveMessage1 = '<bean:message key="eliminar.semilla.modal.confirmacion.1"/>';
+var confirmRemoveMessage2 = '<bean:message key="eliminar.semilla.modal.confirmacion.2"/>';
+var confirmRemoveMessage3 = '<bean:message key="eliminar.semilla.modal.confirmacion.3"/>';
+
+var semillaIrAlt ='<bean:message key="semilla.ir"/>';
+
+var semillaEliminarDefinitiva ='<bean:message key="seed.remove.permanently.alt"/>';
+
+
+
+var translatedColNames = [ colNameId, colNameOldName,
+	colNameName, colNameAcronym,
+	colNameSegment, colNameScope,
+	colNameComplex, colNameTags,
+	colNameDependencies, "URLs",colNameObs,
+	colNameActive, colNameDirectory, 
+	colNameGo, colNameRemove, colNameRemovePerm ];
+
+
+
 	var dialog;
 
 	var windowWidth = $(window).width() * 0.8;
@@ -89,27 +134,24 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			},
 			open : function() {
 				cargarSelect();
-				
-				
-// 					$.ajax({
-// 						url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
-// 						method : 'POST',
-// 						cache : false
-// 					}).success(function(response) {
 
-// 						$('#tagsFilter').tagbox({
-// 							items : response.etiquetas,
-// 							searchIn : [ 'name' ],
-// 							rowFormat : '<span class="name">{{name}}</span>',
-// 							tokenFormat : '{{name}}',
-// 							valueField : 'id',
-// 							itemClass : 'user',
-// 						});
+				// 					$.ajax({
+				// 						url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+				// 						method : 'POST',
+				// 						cache : false
+				// 					}).success(function(response) {
 
-// 					});
+				// 						$('#tagsFilter').tagbox({
+				// 							items : response.etiquetas,
+				// 							searchIn : [ 'name' ],
+				// 							rowFormat : '<span class="name">{{name}}</span>',
+				// 							tokenFormat : '{{name}}',
+				// 							valueField : 'id',
+				// 							itemClass : 'user',
+				// 						});
 
-				
-				
+				// 					});
+
 			},
 			close : function() {
 				$('#nuevaSemillaMultidependencia')[0].reset();
@@ -118,7 +160,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				$('.tagbox-token a').click();
 				$('.tagbox-wrapper').remove();
 				$('#tagsFilter').show();
-				
+
 			}
 		});
 
@@ -260,6 +302,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<input type="hidden" name="<%=Constants.ACTION%>" value="<bean:write name="<%=Constants.ACTION%>"/>" />
 				<fieldset>
 					<jsp:include page="/common/crawler_messages.jsp" />
+
+
 					<div class="formItem">
 						<label for="name" class="control-label"><strong class="labelVisu"><acronym
 								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="migas.categoria" />: </strong></label>
@@ -281,6 +325,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<option value="10" <c:if test="${CategoriaForm.orden==10}">selected="selected"</c:if>>10</option>
 						</html:select>
 					</div>
+					
+										<div class="formItem">
+						<label for="name" class="control-label"><strong class="labelVisu"> <bean:message key="modificar.categoria.clave" />:
+						</strong></label>
+						<html:text styleClass="texto form-control" property="key" styleId="name" maxlength="256" />
+					</div>
+					
 					<div class="formItem">
 						<label for="fileSeeds" class="control-label"><strong class="labelVisu"><bean:message
 									key="categoria.semillas.fichero" />: </strong></label>

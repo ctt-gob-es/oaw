@@ -36,6 +36,24 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 var $jn = jQuery.noConflict();
 
 
+var colNameOldName = '<bean:message key="colname.oldname"/>';
+var colNameId = '<bean:message key="colname.id"/>';
+
+var colNameName = '<bean:message key="colname.name"/>';
+var colNameRemove = '<bean:message key="colname.remove"/>';
+
+var colNameClassification = '<bean:message key="colname.classification"/>';
+
+
+var windowTitleRemove = '<bean:message key="nueva.etiqueta.observatorio.modal.eliminar.title"/>';
+
+var saveButton = '<bean:message key="boton.aceptar"/>';
+
+var cancelButton = '<bean:message key="boton.cancelar"/>';
+
+var confirmRemoveMessage = '<bean:message key="nueva.etiqueta.observatorio.modal.eliminar.confirm"/>';
+
+
 //Cargar las clasificaciones
 	function cargarSelect(rowObject) {
 
@@ -85,24 +103,33 @@ function dialogoNuevaEtiqueta() {
 	$('#exitosNuevaSemillaMD').hide();
 	$('#erroresNuevaSemillaMD').hide();
 
+	
+	var windowTitle = '<bean:message key="nueva.etiqueta.observatorio.modal.title"/>';
+	
+	var saveButton = '<bean:message key="boton.guardar"/>';
+	
+	var cancelButton = '<bean:message key="boton.cancelar"/>';
+	
+	
+	
 	dialog = $("#dialogoNuevaEtiqueta").dialog({
 		height : windowHeight,
 		width : windowWidth,
 		modal : true,
-		title : 'RASTREADOR WEB - Nueva etiqueta',
+		title : windowTitle,
 		buttons : {
 			"Guardar" : {
 				click: function() {
 					guardarNuevaEtiqueta();
 				},
-				text : "Guardar",
+				text : saveButton,
 				class: 'jdialog-btn-save'
 			},
 			"Cancelar" : {
 				click: function() {
 					dialog.dialog("close");
 				},
-				text: "Cancelar",
+				text: cancelButton,
 				class: 'jdialog-btn-cancel'
 			}
 		},

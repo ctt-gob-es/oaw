@@ -181,7 +181,8 @@ public class ObservatoryManager {
 			}
 			final RankingInfo rankingInfo = new RankingInfo();
 			// Global
-			rankingInfo.setGlobalSeedsNumber(seedsResults.size());
+			// rankingInfo.setGlobalSeedsNumber(seedsResults.size());
+			rankingInfo.setGlobalSeedsNumber(0);
 			rankingInfo.setCategorySeedsNumber(0);
 			rankingInfo.setComplexitySeedsNumber(0);
 			rankingInfo.setGlobalRank(1);
@@ -206,6 +207,9 @@ public class ObservatoryManager {
 			// Miramos el ranking comparando con el resto de semillas
 			for (ResultadoSemillaForm seedForm : seedsResults) {
 				if (seedForm.getScore() != null) {
+					if (seedForm.getNumCrawls() > 0) {
+						rankingInfo.setGlobalSeedsNumber(rankingInfo.getGlobalSeedsNumber() + 1);
+					}
 					final BigDecimal seedFormScore = new BigDecimal(seedForm.getScore());
 					if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
 						rankingInfo.incrementGlobalRank();

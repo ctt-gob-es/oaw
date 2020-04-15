@@ -28,6 +28,7 @@ import com.lowagie.text.Anchor;
 import com.lowagie.text.Chapter;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
@@ -289,47 +290,63 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 	 * @param pdfTocManager    the pdf toc manager
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private void addCheckCodesWithoutLevels(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter, final PdfTocManager pdfTocManager)
+	public void addCheckCodesWithoutLevels(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter, final PdfTocManager pdfTocManager)
 			throws IOException {
 		for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
 			if (hasProblems(priority)) {
 				final Section prioritySection = PDFUtils.createSection(getPriorityName(messageResources, priority), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
 						pdfTocManager.addSection(), 1);
-				for (ObservatorySuitabilityForm level : priority.getSuitabilityGroups()) {
-					if (hasProblems(level)) {
-						for (ObservatorySubgroupForm verification : level.getSubgroups()) {
-							if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
-								for (ProblemForm problem : verification.getProblems()) {
-									final PdfPTable tablaVerificacionProblema = createTablaVerificacionProblema(messageResources, prioritySection, verification, problem);
-									final CheckDescriptionsManager checkDescriptionsManager = new CheckDescriptionsManager();
-									final String rationaleMessage = checkDescriptionsManager.getRationaleMessage(problem.getCheck());
-									if (rationaleMessage != null && StringUtils.isNotEmpty(rationaleMessage)) {
-										final Paragraph rationale = new Paragraph();
-										boolean isFirst = true;
-										for (String phraseText : Arrays.asList(rationaleMessage.split("<p>|</p>"))) {
-											if (isFirst) {
-												if (StringUtils.isNotEmpty(phraseText)) {
-													rationale.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.descriptionFont));
-												}
-												isFirst = false;
-											} else {
-												rationale.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.descriptionFont));
-											}
+				processLevels(messageResources, priority, prioritySection);
+			}
+		}
+	}
+
+	public void addCheckCodesWithoutLevelsWithoutSection(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Document document,
+			final PdfTocManager pdfTocManager) throws IOException, DocumentException {
+		for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
+			if (hasProblems(priority)) {
+				final Chapter chapterIn = PDFUtils.createChapterWithTitle(messageResources.getMessage("priority1.bs").toUpperCase(), pdfTocManager.getIndex(), pdfTocManager.addSection(),
+						pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_incidencias");
+				processLevels(messageResources, priority, chapterIn);
+				document.add(chapterIn);
+			}
+		}
+	}
+
+	private void processLevels(final MessageResources messageResources, ObservatoryLevelForm priority, final Section prioritySection) throws IOException {
+		for (ObservatorySuitabilityForm level : priority.getSuitabilityGroups()) {
+			if (hasProblems(level)) {
+				for (ObservatorySubgroupForm verification : level.getSubgroups()) {
+					if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
+						for (ProblemForm problem : verification.getProblems()) {
+							final PdfPTable tablaVerificacionProblema = createTablaVerificacionProblema(messageResources, prioritySection, verification, problem);
+							final CheckDescriptionsManager checkDescriptionsManager = new CheckDescriptionsManager();
+							final String rationaleMessage = checkDescriptionsManager.getRationaleMessage(problem.getCheck());
+							if (rationaleMessage != null && StringUtils.isNotEmpty(rationaleMessage)) {
+								final Paragraph rationale = new Paragraph();
+								boolean isFirst = true;
+								for (String phraseText : Arrays.asList(rationaleMessage.split("<p>|</p>"))) {
+									if (isFirst) {
+										if (StringUtils.isNotEmpty(phraseText)) {
+											rationale.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.descriptionFont));
 										}
-										tablaVerificacionProblema.addCell(PDFUtils.createEmptyTableCell());
-										final PdfPCell celdaRationale = new PdfPCell(rationale);
-										celdaRationale.setBorder(0);
-										celdaRationale.setBackgroundColor(Color.WHITE);
-										celdaRationale.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
-										celdaRationale.setVerticalAlignment(Element.ALIGN_MIDDLE);
-										celdaRationale.setPadding(DEFAULT_PADDING);
-										tablaVerificacionProblema.addCell(celdaRationale);
-									}
-									addSpecificProblems(messageResources, prioritySection, problem.getSpecificProblems());
-									if ("232".equals(problem.getCheck()) || EvaluatorUtils.isCssValidationCheck(Integer.parseInt(problem.getCheck()))) {
-										addW3CCopyright(prioritySection, problem.getCheck());
+										isFirst = false;
+									} else {
+										rationale.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.descriptionFont));
 									}
 								}
+								tablaVerificacionProblema.addCell(PDFUtils.createEmptyTableCell());
+								final PdfPCell celdaRationale = new PdfPCell(rationale);
+								celdaRationale.setBorder(0);
+								celdaRationale.setBackgroundColor(Color.WHITE);
+								celdaRationale.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
+								celdaRationale.setVerticalAlignment(Element.ALIGN_MIDDLE);
+								celdaRationale.setPadding(DEFAULT_PADDING);
+								tablaVerificacionProblema.addCell(celdaRationale);
+							}
+							addSpecificProblems(messageResources, prioritySection, problem.getSpecificProblems());
+							if ("232".equals(problem.getCheck()) || EvaluatorUtils.isCssValidationCheck(Integer.parseInt(problem.getCheck()))) {
+								addW3CCopyright(prioritySection, problem.getCheck());
 							}
 						}
 					}

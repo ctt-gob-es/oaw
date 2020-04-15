@@ -15,6 +15,11 @@
 ******************************************************************************/
 package es.inteco.rastreador2.export.database.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.beanutils.BeanUtils;
+
 import es.inteco.rastreador2.dao.export.database.Category;
 import es.inteco.rastreador2.dao.export.database.Observatory;
 import es.inteco.rastreador2.dao.export.database.Page;
@@ -23,53 +28,72 @@ import es.inteco.rastreador2.export.database.form.CategoryForm;
 import es.inteco.rastreador2.export.database.form.ObservatoryForm;
 import es.inteco.rastreador2.export.database.form.PageForm;
 import es.inteco.rastreador2.export.database.form.SiteForm;
-import org.apache.commons.beanutils.BeanUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * The Class ExportDataBaseUtils.
+ */
 public final class ExportDataBaseUtils {
+	/**
+	 * Instantiates a new export data base utils.
+	 */
+	private ExportDataBaseUtils() {
+	}
 
-    private ExportDataBaseUtils() {
-    }
+	/**
+	 * Gets the observatory form.
+	 *
+	 * @param observatory the observatory
+	 * @return the observatory form
+	 * @throws Exception the exception
+	 */
+	public static ObservatoryForm getObservatoryForm(Observatory observatory) throws Exception {
+		ObservatoryForm observatoryForm = new ObservatoryForm();
+		BeanUtils.copyProperties(observatoryForm, observatory);
+		List<CategoryForm> categoryFormList = new ArrayList<>();
+		if (observatory.getCategoryList() != null) {
+			for (Category category : observatory.getCategoryList()) {
+				categoryFormList.add(getCategoryForm(category));
+			}
+		}
+		observatoryForm.setCategoryFormList(categoryFormList);
+		return observatoryForm;
+	}
 
-    public static ObservatoryForm getObservatoryForm(Observatory observatory) throws Exception {
-        ObservatoryForm observatoryForm = new ObservatoryForm();
-        BeanUtils.copyProperties(observatoryForm, observatory);
-        List<CategoryForm> categoryFormList = new ArrayList<>();
-        if (observatory.getCategoryList() != null) {
-            for (Category category : observatory.getCategoryList()) {
-                categoryFormList.add(getCategoryForm(category));
-            }
-        }
-        observatoryForm.setCategoryFormList(categoryFormList);
-        return observatoryForm;
-    }
+	/**
+	 * Gets the category form.
+	 *
+	 * @param category the category
+	 * @return the category form
+	 * @throws Exception the exception
+	 */
+	public static CategoryForm getCategoryForm(Category category) throws Exception {
+		CategoryForm categoryForm = new CategoryForm();
+		BeanUtils.copyProperties(categoryForm, category);
+		List<SiteForm> siteFormList = new ArrayList<>();
+		for (Site site : category.getSiteList()) {
+			siteFormList.add(getSiteForm(site));
+		}
+		categoryForm.setSiteFormList(siteFormList);
+		return categoryForm;
+	}
 
-    public static CategoryForm getCategoryForm(Category category) throws Exception {
-        CategoryForm categoryForm = new CategoryForm();
-
-        BeanUtils.copyProperties(categoryForm, category);
-        List<SiteForm> siteFormList = new ArrayList<>();
-        for (Site site : category.getSiteList()) {
-            siteFormList.add(getSiteForm(site));
-        }
-        categoryForm.setSiteFormList(siteFormList);
-        return categoryForm;
-    }
-
-    public static SiteForm getSiteForm(Site site) throws Exception {
-        SiteForm siteForm = new SiteForm();
-
-        BeanUtils.copyProperties(siteForm, site);
-        List<PageForm> pageFormList = new ArrayList<>();
-        for (Page page : site.getPageList()) {
-            PageForm pageForm = new PageForm();
-            BeanUtils.copyProperties(pageForm, page);
-            pageFormList.add(pageForm);
-        }
-        siteForm.setPageList(pageFormList);
-        return siteForm;
-    }
-
+	/**
+	 * Gets the site form.
+	 *
+	 * @param site the site
+	 * @return the site form
+	 * @throws Exception the exception
+	 */
+	public static SiteForm getSiteForm(Site site) throws Exception {
+		SiteForm siteForm = new SiteForm();
+		BeanUtils.copyProperties(siteForm, site);
+		List<PageForm> pageFormList = new ArrayList<>();
+		for (Page page : site.getPageList()) {
+			PageForm pageForm = new PageForm();
+			BeanUtils.copyProperties(pageForm, page);
+			pageFormList.add(pageForm);
+		}
+		siteForm.setPageList(pageFormList);
+		return siteForm;
+	}
 }

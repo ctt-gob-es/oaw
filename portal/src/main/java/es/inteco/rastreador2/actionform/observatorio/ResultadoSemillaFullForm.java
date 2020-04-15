@@ -48,8 +48,6 @@ public class ResultadoSemillaFullForm extends ResultadoSemillaForm {
 	private boolean inDirectory;
 	/** The in directory str. */
 	private String inDirectoryStr;
-	/** The num crawls. */
-	private int numCrawls;
 	/** The dependencias. */
 	private List<DependenciaForm> dependencias;
 	/** The etiquetas. */
@@ -307,24 +305,6 @@ public class ResultadoSemillaFullForm extends ResultadoSemillaForm {
 	 */
 	public void setEtiquetas(List<EtiquetaForm> etiquetas) {
 		this.etiquetas = etiquetas;
-	}
-
-	/**
-	 * Gets the num crawls.
-	 *
-	 * @return the num crawls
-	 */
-	public int getNumCrawls() {
-		return numCrawls;
-	}
-
-	/**
-	 * Sets the num crawls.
-	 *
-	 * @param numCrawls the new num crawls
-	 */
-	public void setNumCrawls(int numCrawls) {
-		this.numCrawls = numCrawls;
 	}
 
 	/**

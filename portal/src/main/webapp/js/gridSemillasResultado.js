@@ -105,7 +105,7 @@ function nombreSemillaFormatter(cellvalue, options, rowObject) {
 	
 	return "<a onclick=dialogoEditarSemilla("
 			+ options.rowId
-			+ ") class='pull-left col-lg-12'><span class='glyphicon glyphicon-edit pull-right edit-mark'></span><span class='sr-only'>Resultados</span>"
+			+ ") class='pull-left col-lg-12'><span class='glyphicon glyphicon-edit pull-right edit-mark'></span><span class='sr-only'>"+colNameResults+"</span>"
 			+ rowObject.nombre + "</a>";
 }
 
@@ -121,7 +121,7 @@ function resultadosFormatter(cellvalue, options, rowObject) {
 			+ rowObject.idFulfilledCrawling
 			+ "&idrastreo="
 			+ rowObject.idCrawling
-			+ "><span class='glyphicon glyphicon-list-alt'></span><span class='sr-only'>Resultados</span></a>";
+			+ "><span class='glyphicon glyphicon-list-alt'></span><span class='sr-only'>"+colNameResults+"</span></a>";
 }
 
 function informesFormatter(cellvalue, options, rowObject) {
@@ -135,7 +135,7 @@ function informesFormatter(cellvalue, options, rowObject) {
 			+ rowObject.idFulfilledCrawling
 			+ "&idrastreo="
 			+ rowObject.idCrawling
-			+ "><span class='glyphicon glyphicon-cloud-download' aria-hidden='true' data-toggle='tooltip' title='' data-original-title='Descargar el informe individual de esta semilla' ></span><span class='sr-only'>Informe individual</span></a>";
+			+ "><span class='glyphicon glyphicon-cloud-download' aria-hidden='true' data-toggle='tooltip' title='' data-original-title='Descargar el informe individual de esta semilla' ></span><span class='sr-only'>"+colNameReport+"</span></a>";
 
 }
 
@@ -149,7 +149,7 @@ function relanzarFormatter(cellvalue, options, rowObject) {
 			+ $('[name=idCartucho]').val()
 			+ "&idSemilla="
 			+ rowObject.id
-			+ "><span class='glyphicon glyphicon-refresh'></span><span class='sr-only'>Relanzar</span></a>";
+			+ "><span class='glyphicon glyphicon-refresh'></span><span class='sr-only'>"+colNameRelaunch+"</span></a>";
 }
 
 function eliminarResultadoFormater(cellvalue, options, rowObject) {
@@ -164,7 +164,7 @@ function eliminarResultadoFormater(cellvalue, options, rowObject) {
 			+ rowObject.id
 			+ "&id="
 			+ rowObject.idFulfilledCrawling
-			+ "><span class='glyphicon glyphicon-remove'></span><span class='sr-only'>Relanzar</span></a>";
+			+ "><span class='glyphicon glyphicon-remove'></span><span class='sr-only'>"+colNameRemove+"</span></a>";
 }
 
 // Edicion de las urls en linea formatea el texto para colocar una por línea
@@ -222,15 +222,16 @@ function reloadGrid(path) {
 								.jqGrid(
 										{
 											editUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
-											colNames : [ "Id", "NombreAntiguo",
-													"Nombre", "Acr\u00F3nimo",
-													"Segmento","Ambito", "Complejidad", "Dependencia", "Etiqueta",
-													"URLs", "Activa",
-													"Directorio","Complejidad",
-													"Puntuac\u00F3n", 
-													"Nivel Accesibilidad","URLs analizadas",
-													"Resultados", "Informe",
-													"Relanzar", "Eliminar" ],
+//											colNames : [ "Id", "NombreAntiguo",
+//													"Nombre", "Acr\u00F3nimo",
+//													"Segmento","Ambito", "Complejidad", "Dependencia", "Etiqueta",
+//													"URLs", "Activa",
+//													"Directorio","Complejidad",
+//													"Puntuac\u00F3n", 
+//													"Nivel Accesibilidad","URLs analizadas",
+//													"Resultados", "Informe",
+//													"Relanzar", "Eliminar", "Observaciones" ],
+											colNames : translatedColNames,
 											colModel : [
 													{
 														name : "id",
@@ -763,7 +764,22 @@ function reloadGrid(path) {
 														align : "center",
 														width : 10,
 														editable : false
-													}
+													},
+													{
+														name : "observaciones",
+														width : 50,
+														edittype : 'custom',
+														editoptions : {
+															custom_element : textareaEdit,
+															custom_value : textareaEditValue
+														},
+														editrules : {
+															required : false
+														},
+														sortable : false,
+														align : "left",
+														hidden : true
+													},
 
 											],
 											inlineEditing : {
@@ -819,7 +835,7 @@ function reloadGrid(path) {
 						if (data.resultados.length == 0) {
 							$('#grid')
 									.append(
-											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="9" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
+											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="9" style="padding: 15px !important;" role="gridcell">'+noResults+'</td></tr>');
 						}
 
 						// Paginador
