@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
@@ -86,6 +87,8 @@ import es.inteco.rastreador2.utils.ResultadosPrimariosObservatorioIntavUtils;
 public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf {
 	/** The message resources. */
 	private MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
+	private Map<String, BigDecimal> resultL1;
+	private Map<String, BigDecimal> resultL2;
 
 	/**
 	 * Instantiates a new anonymous result export pdf UNE 2012b.
@@ -603,16 +606,19 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
 			int countC = 0;
 			int countNC = 0;
+			int countNA = 0;
 			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
 				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
 					countC++;
 				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
 					countNC++;
+				} else {
+					countNA++;
 				}
 			}
-			if (countC == result.getValue().size()) {
+			if ((countC + countNA) == result.getValue().size()) {
 				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_FULL);
-			} else if (countC > countNC) {
+			} else if ((countC + countNA) > countNC) {
 				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_PARTIAL);
 			} else {
 				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_NONE);
@@ -1375,8 +1381,8 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 	 */
 	@Override
 	protected void generateScoresVerificacion(MessageResources messageResources, ScoreForm scoreForm, java.util.List<ObservatoryEvaluationForm> evaList) {
-		final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_1);
-		final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_2);
+		resultL1 = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_1);
+		resultL2 = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_2);
 		final java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioUNEEN2019Utils.infoLevelIVerificationMidsComparison(this.messageResources, resultL1);
 		final java.util.List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioUNEEN2019Utils.infoLevelIIVerificationMidsComparison(this.messageResources, resultL2);
 		scoreForm.setVerifications1(labelsL1);
@@ -1621,7 +1627,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		tablaRankings.addCell(PDFUtils.createTableCell(rankingActual.getCompliance(), Color.WHITE, ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
 		if (rankingPrevio != null) {
 			tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getCompliance(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-			tablaRankings.addCell(createEvolutionLevelCell(messageResources, rankingActual.getCompliance(), rankingPrevio.getCompliance()));
+			tablaRankings.addCell(createEvolutionComplianceCell(messageResources, rankingActual.getCompliance(), rankingPrevio.getCompliance()));
 		}
 		tablaRankings.completeRow();
 		if (rankingActual != null) {
@@ -1730,6 +1736,43 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 					return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"), "Empeora"), "empeora", Color.WHITE,
 							ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
 				}
+			}
+		}
+	}
+
+	/**
+	 * Crea una celda PdfPCell para una tabla del informa PDF con la evolución del nivel de accesibilidad.
+	 *
+	 * @param messageResources the message resources
+	 * @param currentLevel     String nivel de accesibilidad actual.
+	 * @param previousLevel    String nivel de accesibilidad de la iteración anterior.
+	 * @return una celda PdfPCell con una imagen que indica la evolución y una cadena con la misma información complementando la imagen.
+	 */
+	private static PdfPCell createEvolutionComplianceCell(final MessageResources messageResources, final String currentLevel, final String previousLevel) {
+		// resultados.anonimos.porc.portales.nc = No conforme
+		// resultados.anonimos.porc.portales.pc = Parcialmente conforme
+		// resultados.anonimos.porc.portales.tc
+		final PropertiesManager pmgr = new PropertiesManager();
+		if (currentLevel.equalsIgnoreCase(previousLevel)) {
+			return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.same"), "Se mantiene"), "se mantiene", Color.WHITE, ConstantsFont.noteCellFont,
+					Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+		} else {
+			if (messageResources.getMessage("resultados.anonimos.porc.portales.tc").equalsIgnoreCase(currentLevel)
+					&& (messageResources.getMessage("resultados.anonimos.porc.portales.pc").equalsIgnoreCase(previousLevel)
+							|| messageResources.getMessage("resultados.anonimos.porc.portales.nc").equalsIgnoreCase(previousLevel))) {
+				return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"), "Mejora"), "mejora", Color.WHITE, ConstantsFont.noteCellFont,
+						Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+			} else if (messageResources.getMessage("resultados.anonimos.porc.portales.pc").equalsIgnoreCase(currentLevel)) {
+				if (messageResources.getMessage("resultados.anonimos.porc.portales.tc").equalsIgnoreCase(previousLevel)) {
+					return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"), "Empeora"), "empeora", Color.WHITE,
+							ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+				} else {
+					return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"), "Mejora"), "mejora", Color.WHITE,
+							ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+				}
+			} else {
+				return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"), "Empeora"), "empeora", Color.WHITE, ConstantsFont.noteCellFont,
+						Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
 			}
 		}
 	}
@@ -2116,6 +2159,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				}
 			}
 		}
+		scoreForm.setTotalScore(scoreForm.getScoreLevelA().add(scoreForm.getScoreLevelAA()).divide(new BigDecimal(2)));
 		generateScoresVerificacion(messageResources, scoreForm, evaList);
 		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(evaList, Constants.OBS_PRIORITY_NONE);
 		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
@@ -2124,10 +2168,24 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		 */
 		if (!evaList.isEmpty()) {
 			scoreForm.setTotalScore(scoreForm.getTotalScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+//			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+//			scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			// TODO Calculate mid from score verificatrion
+			BigDecimal sumL1 = new BigDecimal(0);
+			for (Entry<String, BigDecimal> entry : resultL1.entrySet()) {
+				sumL1 = sumL1.add(entry.getValue());
+			}
+			scoreForm.setScoreLevelA(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
-			scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
-			scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
-			scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
+			// scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
+			// TODO Calculate mid from score verificatrion
+			BigDecimal sumL2 = new BigDecimal(0);
+			for (Entry<String, BigDecimal> entry : resultL2.entrySet()) {
+				sumL2 = sumL2.add(entry.getValue());
+			}
+			scoreForm.setScoreLevel2(sumL2.divide(new BigDecimal(resultL2.size()), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevelAA(sumL2.divide(new BigDecimal(resultL2.size()), 2, BigDecimal.ROUND_HALF_UP));
+			// scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
 			// REVIEW Calculated compliance
 			scoreForm.setCompliance(calculatedCompliance.get(evaList.get(0).getCrawlerExecutionId()));

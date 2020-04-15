@@ -80,7 +80,6 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 					searchForm.setNombre(es.inteco.common.utils.StringUtils.corregirEncoding(searchForm.getNombre()));
 				}
 				if (!StringUtils.isEmpty(request.getParameter("categoria"))) {
-					// searchForm.setCategoria((request.getParameter("categoria")).split(","));
 					searchForm.setCategoria((request.getParameterValues("categoria")));
 				}
 				if (!StringUtils.isEmpty(request.getParameter("ambito"))) {
@@ -251,12 +250,10 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 				boolean existSeed = SemillaDAO.existSeed(c, semilla.getNombre(), Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 				if (existSeed && !semilla.getNombre().equals(request.getParameter(Constants.NOMBRE_ANTIGUO))) {
 					response.setStatus(400);
-					// response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado"));
 					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado")));
 					response.getWriter().write(new Gson().toJson(errores));
 				} else {
 					SemillaDAO.editSeed(c, semilla);
-					// response.getWriter().write(messageResources.getMessage("mensaje.exito.semilla.editada"));
 					errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.semilla.editada")));
 					response.getWriter().write(new Gson().toJson(errores));
 				}

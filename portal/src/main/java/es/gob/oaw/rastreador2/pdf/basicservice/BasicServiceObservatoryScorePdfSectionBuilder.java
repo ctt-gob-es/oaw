@@ -45,6 +45,7 @@ import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
+import es.inteco.intav.form.ObservatoryLevelForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfAccesibilidad;
@@ -107,17 +108,17 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad || pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 			chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager.getIndex(), pdfTocManager.addSection(),
 					pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resumen_resultados");
-			Section section31 = PDFUtils.createSection(messageResources.getMessage("pdf.accessibility.global.summary.globals"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L,
-					chapter, pdfTocManager.addSection(), 1);
 			final ArrayList<String> boldWords = new ArrayList<>();
-			boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p1.bold"));
-			section31.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p1"), boldWords, ConstantsFont.paragraphBoldFont,
-					ConstantsFont.PARAGRAPH, true));
-			boldWords.clear();
-			boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p2.bold"));
-			section31.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p2"), boldWords, ConstantsFont.paragraphBoldFont,
-					ConstantsFont.PARAGRAPH, true));
 			if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
+				Section section31 = PDFUtils.createSection(messageResources.getMessage("pdf.accessibility.global.summary.globals"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L,
+						chapter, pdfTocManager.addSection(), 1);
+				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p1.bold"));
+				section31.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p1"), boldWords, ConstantsFont.paragraphBoldFont,
+						ConstantsFont.PARAGRAPH, true));
+				boldWords.clear();
+				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p2.bold"));
+				section31.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p2"), boldWords, ConstantsFont.paragraphBoldFont,
+						ConstantsFont.PARAGRAPH, true));
 				boldWords.clear();
 				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p3.bold"));
 				section31.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p3"), boldWords, ConstantsFont.paragraphBoldFont,
@@ -126,25 +127,89 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p4.bold"));
 				section31.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p4"), boldWords, ConstantsFont.paragraphBoldFont,
 						ConstantsFont.PARAGRAPH, true));
+				// Info
+				final PdfPTable notice = new PdfPTable(new float[] { 100f });
+				notice.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
+				notice.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.summary.info"), Constants.GRIS_MUY_CLARO, ConstantsFont.paragraphBoldFont,
+						Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, 50));
+				section31.add(notice);
+				currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
+				if (evolution) {
+					previousScore = pdfBuilder.generateScores(messageResources, previousEvaluationPageList);
+				} else {
+					previousScore = null;
+				}
+				section31.add(Chunk.NEWLINE);
 			} else if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad) {
-				Paragraph p = new Paragraph(messageResources.getMessage("pdf.accessibility.global.summary.p3"), ConstantsFont.PARAGRAPH);
-				p.setSpacingBefore(ConstantsFont.LINE_SPACE);
-				p.setAlignment(Paragraph.ALIGN_JUSTIFIED);
-				section31.add(p);
-			}
-			// Info
-			final PdfPTable notice = new PdfPTable(new float[] { 100f });
-			notice.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
-			notice.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.summary.info"), Constants.GRIS_MUY_CLARO, ConstantsFont.paragraphBoldFont, Element.ALIGN_JUSTIFIED,
-					ConstantsFont.DEFAULT_PADDING, 50));
-			section31.add(notice);
-			currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
-			if (evolution) {
-				previousScore = pdfBuilder.generateScores(messageResources, previousEvaluationPageList);
+				chapter.add(Chunk.NEWLINE);
+				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p1.bold"));
+				chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p1"), boldWords, ConstantsFont.paragraphBoldFont,
+						ConstantsFont.PARAGRAPH, true));
+				boldWords.clear();
+				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p2.bold"));
+				chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p2"), boldWords, ConstantsFont.paragraphBoldFont,
+						ConstantsFont.PARAGRAPH, true));
+				boldWords.clear();
+				boldWords.clear();
+				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p3.bold"));
+				chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p3"), boldWords, ConstantsFont.paragraphBoldFont,
+						ConstantsFont.PARAGRAPH, true));
+				// Info
+				final PdfPTable notice = new PdfPTable(new float[] { 100f });
+				notice.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
+				notice.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.summary.info"), Constants.GRIS_MUY_CLARO, ConstantsFont.paragraphBoldFont,
+						Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, 50));
+				chapter.add(notice);
+				currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
+				if (evolution) {
+					previousScore = pdfBuilder.generateScores(messageResources, previousEvaluationPageList);
+				} else {
+					previousScore = null;
+				}
+				chapter.add(Chunk.NEWLINE);
+				final BasicServicePageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new BasicServicePageResultsPdfSectionBuilder(currentEvaluationPageList);
+				boldWords.clear();
+				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p4.bold"));
+				chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p4"), boldWords, ConstantsFont.paragraphBoldFont,
+						ConstantsFont.PARAGRAPH, true));
+				chapter.add(Chunk.NEWLINE);
+				for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
+					chapter.add(observatoryPageResultsSectionBuilder.createPaginaTableInfoAccesibility(messageResources, evaluationForm));
+					for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
+						chapter.add(observatoryPageResultsSectionBuilder.createPaginaTableVerificationSummary(messageResources, observatoryLevelForm, ""));
+					}
+					document.add(chapter);
+					pdfTocManager.addChapterCount();
+					observatoryPageResultsSectionBuilder.addCheckCodesWithoutLevelsWithoutSection(messageResources, evaluationForm, document, pdfTocManager);
+				}
 			} else {
-				previousScore = null;
+				chapter.add(Chunk.NEWLINE);
+				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p1.bold"));
+				chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p1"), boldWords, ConstantsFont.paragraphBoldFont,
+						ConstantsFont.PARAGRAPH, true));
+				boldWords.clear();
+				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p2.bold"));
+				chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p2"), boldWords, ConstantsFont.paragraphBoldFont,
+						ConstantsFont.PARAGRAPH, true));
+				boldWords.clear();
+				boldWords.clear();
+				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p3.bold"));
+				chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p3"), boldWords, ConstantsFont.paragraphBoldFont,
+						ConstantsFont.PARAGRAPH, true));
+				// Info
+				final PdfPTable notice = new PdfPTable(new float[] { 100f });
+				notice.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
+				notice.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.summary.info"), Constants.GRIS_MUY_CLARO, ConstantsFont.paragraphBoldFont,
+						Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, 50));
+				chapter.add(notice);
+				currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
+				if (evolution) {
+					previousScore = pdfBuilder.generateScores(messageResources, previousEvaluationPageList);
+				} else {
+					previousScore = null;
+				}
+				chapter.add(Chunk.NEWLINE);
 			}
-			section31.add(Chunk.NEWLINE);
 			//// TABLA PUNTUCAION OBSERVATORIO
 			final float[] columnWidths;
 			if (previousScore != null) {
@@ -219,7 +284,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 					addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section2, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_2);
 					section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, previousScore, Constants.OBS_PRIORITY_2));
 				}
-			} else {
+			} else if (!(pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad)) {
 				final PdfPTable tablaRankings = new PdfPTable(columnWidths);
 				tablaRankings.setSpacingBefore(LINE_SPACE);
 				tablaRankings.setSpacingAfter(HALF_LINE_SPACE);
@@ -238,7 +303,10 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 				chapter.add(tablaRankings);
 				chapter.add(Chunk.NEWLINE);
 			}
-			document.add(chapter);
+			// This chapter was added previously in this type of report
+			if (!(pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad)) {
+				document.add(chapter);
+			}
 			pdfTocManager.addChapterCount();
 		} else {
 			chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("observatorio.puntuacion.resultados.resumen").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);

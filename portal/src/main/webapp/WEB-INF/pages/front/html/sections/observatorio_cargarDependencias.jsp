@@ -32,6 +32,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 <!--  JQ GRID   -->
 <script>
+
+var colNameOldName = '<bean:message key="colname.oldname"/>';
+var colNameId = '<bean:message key="colname.id"/>';
+
+var colNameName = '<bean:message key="colname.name"/>';
+var colNameRemove = '<bean:message key="colname.remove"/>';
+
+
 	var scroll;
 	//Recarga el grid. Recibe como parámetro la url de la acción con la información
 	//de paginación.
@@ -62,9 +70,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									.jqGrid(
 											{
 												editUrl : '/oaw/secure/ViewDependenciasObservatorio.do?action=update',
-												colNames : [ "Id", "Nombre",
-														"NombreAntiguo",
-														"Eliminar" ],
+												colNames : [ colNameId, colNameName,
+													colNameOldName,
+													colNameRemove ],
 												colModel : [
 														{
 															name : "id",
@@ -260,18 +268,28 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	function eliminarFormatter(cellvalue, options, rowObject) {
 		return "<span style='cursor:pointer' onclick='eliminarDependencia("
 				+ options.rowId
-				+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>Eliminar</span></span>";
+				+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>"+ colNameRemove +"</span></span>";
 	}
 
 	function eliminarDependencia(rowId) {
+		
+		
+		
+		var windowTitle = '<bean:message key="eliminar.dependencia.modal.title"/>';
+		
+		var saveButton = '<bean:message key="boton.aceptar"/>';
+		
+		var cancelButton = '<bean:message key="boton.cancelar"/>';
+		
+		var confirmRemoveMessage = '<bean:message key="eliminar.dependencia.modal.confirm"/>';
+		
 
 		var dependencia = $('#grid').jqGrid('getRowData', rowId);
 
 		var idDependencia = dependencia.id;
 		var dialogoEliminar = $('<div id="dialogoEliminarContent"></div>');
 
-		dialogoEliminar.append('<p>&#191;Desea eliminar la dependencia "'
-				+ dependencia.name + '"?</p>');
+		dialogoEliminar.append('<p>'+ confirmRemoveMessage +' ""'+ dependencia.name + '"?</p>');
 
 		dialogoEliminar
 				.dialog({
@@ -279,7 +297,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					minHeight : $(window).height() * 0.25,
 					minWidth : $(window).width() * 0.25,
 					modal : true,
-					title : 'RASTREADOR WEB - Eliminar dependencia',
+					title : windowTitle,
 					buttons : {
 						"Aceptar" : {
 							click: function() {
@@ -295,14 +313,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									dialogoEliminar.dialog("close");
 								});
 					},
-					text: 'Aceptar',
+					text: saveButton,
 					class: 'jdialog-btn-save'
 						},
 						"Cancelar" : {
 							click:function() {
 								dialogoEliminar.dialog("close");
 							},
-							text: 'Cancelar',
+							text: cancelButton,
 							class: 'jdialog-btn-cancel'
 						}
 					}
@@ -361,6 +379,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	function dialogoNuevaDependencia() {
 
 		window.scrollTo(0, 0);
+		
+		var windowTitle = '<bean:message key="nueva.dependencia.modal.title"/>';
+		
+		var saveButton = '<bean:message key="boton.guardar"/>';
+		
+		var cancelButton = '<bean:message key="boton.cancelar"/>';
+		
+		var confirmRemoveMessage = '<bean:message key="eliminar.dependencia.modal.confirm"/>';
 
 		$('#exitosNuevaSemillaMD').hide();
 		$('#erroresNuevaSemillaMD').hide();
@@ -369,20 +395,20 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			height : windowHeight,
 			width : windowWidth,
 			modal : true,
-			title : 'RASTREADOR WEB - Nueva dependencia',
+			title : windowTitle,
 			buttons : {
 				"Guardar" : {
 					click: function() {
 						guardarNuevaDependencia();
 					},
-					text : "Guardar",
+					text : saveButton,
 					class: 'jdialog-btn-save'
 				},
 				"Cancelar" : {
 					click: function() {
 						dialog.dialog("close");
 					},
-					text: "Cancelar",
+					text: cancelButton,
 					class: 'jdialog-btn-cancel'
 				}
 			},
@@ -497,7 +523,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			<form id="buscadorDependencias" class="formulario form-horizontal"
 				onsubmit="buscar()">
 				<fieldset>
-					<legend>Buscador</legend>
+					<legend><bean:message key="buscador"/></legend>
 					<jsp:include page="/common/crawler_messages.jsp" />
 					<div class="formItem">
 						<label for="nombre" class="control-label"><strong

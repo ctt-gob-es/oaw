@@ -16,12 +16,63 @@
 <script src="/oaw/js/jqgrid/i18n/grid.locale-es.js" type="text/javascript"></script>
 
 <script src="/oaw/js/gridServicioDiagnostico.js" type="text/javascript"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
 
 
 
 <!--  JQ GRID   -->
 <script>
+	var colNameId = '<bean:message key="colname.id"/>';
+	var colNameAcronym = '<bean:message key="colname.acronym"/>';
+	var colNameActive = '<bean:message key="colname.active"/>';
+	var colNameComplex = '<bean:message key="colname.complex"/>';
+	var colNameDependencies = '<bean:message key="colname.dependecies"/>';
+	var colNameDirectory = '<bean:message key="colname.directory"/>';
+	var colNameTags = '<bean:message key="colname.etiqeutas"/>';
+	var colNameGo = '<bean:message key="colname.go"/>';
+	var colNameName = '<bean:message key="colname.name"/>';
+	var colNameObs = '<bean:message key="colname.observations"/>';
+	var colNameOldName = '<bean:message key="colname.oldname"/>';
+	var colNameRemove = '<bean:message key="colname.remove"/>';
+	var colNameRemovePerm = '<bean:message key="colname.remove.permanently"/>';
+	var colNameScope = '<bean:message key="colname.scope"/>';
+	var colNameSegment = '<bean:message key="colname.segment"/>';
+	var colNameWebsiteType = '<bean:message key="colname.website.type"/>';
+	var colNameUser = '<bean:message key="colname.user"/>';
+	var colNameEmail = '<bean:message key="colname.email"/>';
+	var colNameDepth = '<bean:message key="colname.depth"/>';
+	var colNameWidth = '<bean:message key="colname.width"/>';
+	var colNameReportType = '<bean:message key="colname.report.type"/>';
+	var colNameAnalysisType = '<bean:message key="colname.analysis.type"/>';
+	var colNameHistoric = '<bean:message key="colname.historic"/>';
+	var colNameRequestDate = '<bean:message key="colname.request.date"/>';
+	var colNameSendDate = '<bean:message key="colname.send.date"/>';
+	var colNameStatus = '<bean:message key="colname.status"/>';
+	
+
+	var statusFinished  = '<bean:message key="status.finished"/>';
+	var statusError  = '<bean:message key="status.error"/>';
+	var statusNotCrawled  = '<bean:message key="status.not.crawled"/>';
+	var statusLaunched  = '<bean:message key="status.launched"/>';
+	var statusWrongParams  = '<bean:message key="status.wrong.params"/>';
+	
+	var analysisTypeList  = '<bean:message key="analysis.type.list"/>';
+	var analysisTypeSource  = '<bean:message key="analysis.type.source"/>';
+	
+	var others = '<bean:message key="other"/>';
+	
+	var minutos = '<bean:message key="minutos"/>';
+	var segundos = '<bean:message key="segundos"/>';
+	
+	
+
+	var translatedColNames = [ "URL", colNameWebsiteType, colNameUser,
+			colNameEmail, colNameDepth, colNameWidth, colNameComplex,
+			colNameReportType, colNameAnalysisType, colNameDirectory,
+			colNameHistoric, colNameStatus, colNameRequestDate, colNameSendDate
+
+	];
+
 	//Buscador
 	function buscar() {
 		reloadGrid('/oaw/secure/JsonServicioDiagnostico.do?action=search&'
@@ -47,6 +98,33 @@
 					'load',
 					function() {
 
+						//Internet Explorer not supports startsWith and endsWith -->  polyfill
+
+						if (!String.prototype.startsWith) {
+							String.prototype.startsWith = function(
+									searchString, position) {
+								position = position || 0;
+								return this.indexOf(searchString, position) === position;
+							};
+						}
+
+						if (!String.prototype.endsWith) {
+							String.prototype.endsWith = function(searchString,
+									position) {
+								var subjectString = this.toString();
+								if (typeof position !== 'number'
+										|| !isFinite(position)
+										|| Math.floor(position) !== position
+										|| position > subjectString.length) {
+									position = subjectString.length;
+								}
+								position -= searchString.length;
+								var lastIndex = subjectString.indexOf(
+										searchString, position);
+								return lastIndex !== -1
+										&& lastIndex === position;
+							};
+						}
 						var $jq = $.noConflict();
 
 						//Primera carga del grid el grid
@@ -135,33 +213,33 @@ td {
 
 			<form id="ServicioDiagnosticoForm" class="formulario form-horizontal" onsubmit="buscar()">
 				<fieldset>
-					<legend>Buscador</legend>
+					<legend><bean:message key="buscador"/></legend>
 					<jsp:include page="/common/crawler_messages.jsp" />
 
 
 					<div class="formItem">
 						<label for="usuario" class="control-label"><strong class="labelVisu"><bean:message
-									key="servicio.diagnostirco.estadisticas.usuario" /></strong></label> <input type="text" class="texto form-control" id="usuario"
+									key="servicio.diagnostico.estadisticas.usuario" /></strong></label> <input type="text" class="texto form-control" id="usuario"
 							name="usuario" />
 					</div>
 
 					<div class="formItem">
 						<label for="url" class="control-label"><strong class="labelVisu"><bean:message
-									key="servicio.diagnostirco.estadisticas.url" /></strong></label> <input type="text" class="texto form-control" id="url"
+									key="servicio.diagnostico.estadisticas.url" /></strong></label> <input type="text" class="texto form-control" id="url"
 							name="url" />
 					</div>
 
 
 					<div class="formItem">
 						<label for="email" class="control-label"><strong class="labelVisu"><bean:message
-									key="servicio.diagnostirco.estadisticas.email" /></strong></label> <input type="text" class="texto form-control" id="email"
+									key="servicio.diagnostico.estadisticas.email" /></strong></label> <input type="text" class="texto form-control" id="email"
 							name="email" />
 					</div>
 
 
 					<div class="formItem">
 						<label for="profundidad"><strong class="labelVisu"> <bean:message
-									key="servicio.diagnostirco.estadisticas.profundidad" /></strong></label> <select id="profundidad" name="profundidad"
+									key="servicio.diagnostico.estadisticas.profundidad" /></strong></label> <select id="profundidad" name="profundidad"
 							class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="1">1</option>
@@ -179,7 +257,7 @@ td {
 
 					<div class="formItem">
 						<label for="amplitud"><strong class="labelVisu"> <bean:message
-									key="servicio.diagnostirco.estadisticas.amplitud" /></strong></label> <select id="amplitud" name="amplitud"
+									key="servicio.diagnostico.estadisticas.amplitud" /></strong></label> <select id="amplitud" name="amplitud"
 							class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="1">1</option>
@@ -197,7 +275,7 @@ td {
 
 					<div class="formItem">
 						<label for="informe"><strong class="labelVisu"><bean:message
-									key="servicio.diagnostirco.estadisticas.informe" /></strong></label> <select id="informe" name="informe"
+									key="servicio.diagnostico.estadisticas.informe" /></strong></label> <select id="informe" name="informe"
 							class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="observatorio-5">Accesibilidad</option>
@@ -210,7 +288,7 @@ td {
 
 					<div class="formItem">
 						<label for="amplitud"><strong class="labelVisu"><bean:message
-									key="servicio.diagnostirco.estadisticas.tipo" /></strong></label> <select id="tipo" name="tipo" class="texto form-control">
+									key="servicio.diagnostico.estadisticas.tipo" /></strong></label> <select id="tipo" name="tipo" class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="url">URL</option>
 							<option value="lista_urls">Lista de URLs</option>
@@ -221,8 +299,7 @@ td {
 
 					<div class="formItem">
 						<label for="amplitud"><strong class="labelVisu"><bean:message
-									key="servicio.diagnostirco.estadisticas.estado" /></strong></label> <select id="estado" name="estado"
-							class="texto form-control">
+									key="servicio.diagnostico.estadisticas.estado" /></strong></label> <select id="estado" name="estado" class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="launched">Lanzado</option>
 							<option value="finished">Finalizado</option>
@@ -234,7 +311,7 @@ td {
 
 					<div class="formItem">
 						<label for="amplitud"><strong class="labelVisu"><bean:message
-									key="servicio.diagnostirco.estadisticas.directorio" /></strong></label> <select id="informe" name="informe"
+									key="servicio.diagnostico.estadisticas.directorio" /></strong></label> <select id="informe" name="informe"
 							class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="0">No</option>
@@ -283,14 +360,14 @@ td {
 
 			<div class="col-md-12">
 				<h2>
-					<bean:message key="servicio.diagnostirco.estadisticas.encurso.title" />
+					<bean:message key="servicio.diagnostico.estadisticas.encurso.title" />
 				</h2>
 				<table id="gridActuales" class="gridTable"></table>
 
 				<p class="alert alert-info pull-left">
 					<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
 					</em>:
-					<bean:message key="servicio.diagnostirco.estadisticas.encurso.info" />
+					<bean:message key="servicio.diagnostico.estadisticas.encurso.info" />
 				</p>
 
 				<p id="paginadorActuales"></p>
@@ -300,7 +377,7 @@ td {
 
 				<!-- Grid -->
 				<h2>
-					<bean:message key="servicio.diagnostirco.estadisticas.resultados.title" />
+					<bean:message key="servicio.diagnostico.estadisticas.resultados.title" />
 				</h2>
 				<table id="grid"></table>
 				<p id="paginador"></p>
@@ -310,21 +387,21 @@ td {
 				<p class="alert alert-info pull-left">
 					<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
 					</em>:
-					<bean:message key="servicio.diagnostirco.estadisticas.resultados.info" />
+					<bean:message key="servicio.diagnostico.estadisticas.resultados.info" />
 				</p>
 
 			</div>
-			
-			
-			
+
+
+
 			<div class="col-md-12">
 
 				<p class="pull-left">
-					<strong><bean:message key="servicio.diagnostirco.estadisticas.avg" /> </strong> <span id="avg" >0</span>
+					<strong><bean:message key="servicio.diagnostico.estadisticas.avg" /> </strong> <span id="avg">0</span>
 				</p>
 
 			</div>
-			
+
 			<p id="pCenter">
 				<html:link forward="observatoryMenu" styleClass="btn btn-default btn-lg">
 					<bean:message key="boton.volver" />
