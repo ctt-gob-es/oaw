@@ -377,7 +377,7 @@ CREATE TABLE IF NOT EXISTS `periodicidad` (
   `dias` int(11) DEFAULT NULL,
   `cronExpression` varchar(40) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id_periodicidad`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=8 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
 CREATE TABLE IF NOT EXISTS `rastreo` (
@@ -513,7 +513,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `departamento` varchar(100) COLLATE utf8_bin NOT NULL,
   `email` varchar(100) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id_usuario`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
 CREATE TABLE IF NOT EXISTS `usuario_cartucho` (
@@ -534,6 +534,46 @@ CREATE TABLE IF NOT EXISTS `usuario_rol` (
 DROP TABLE IF EXISTS `oaw_dashboard`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `oaw_dashboard` AS select `basic_service`.`id` AS `id`,`basic_service`.`usr` AS `usr`,`basic_service`.`domain` AS `url`,`basic_service`.`email` AS `email`,`basic_service`.`depth` AS `depth`,`basic_service`.`width` AS `width`,`basic_service`.`report` AS `report`,`basic_service`.`date` AS `date`,`basic_service`.`status` AS `status`,`basic_service`.`analysis_type` AS `analysis_type`,`basic_service`.`in_directory` AS `in_directory` from `basic_service`;
+
+INSERT INTO `tguidelines` (`cod_guideline`, `des_guideline`) VALUES(1, 'observatorio-inteco-1-0.xml');
+INSERT INTO `tguidelines` (`cod_guideline`, `des_guideline`) VALUES(2, 'observatorio-une-2012.xml');
+
+INSERT INTO `cartucho` (`id_cartucho`, `nombre`, `instalado`, `aplicacion`, `numrastreos`, `numhilos`, `id_guideline`) VALUES(1, 'es.inteco.accesibilidad.CartuchoAccesibilidad', 1, 'UNE-2004', 15, 50, 1);
+INSERT INTO `cartucho` (`id_cartucho`, `nombre`, `instalado`, `aplicacion`, `numrastreos`, `numhilos`, `id_guideline`) VALUES(2, 'es.inteco.accesibilidad.CartuchoAccesibilidad', 1, 'UNE-2012', 15, 50, 2);
+
+INSERT INTO `languages` (`id_language`, `key_name`, `codice`) VALUES(1, 'idioma.espanol', 'es');
+INSERT INTO `languages` (`id_language`, `key_name`, `codice`) VALUES(2, 'idioma.ingles', 'en');
+
+INSERT INTO `observatorio_tipo` (`id_tipo`, `name`) VALUES(1, 'AGE');
+INSERT INTO `observatorio_tipo` (`id_tipo`, `name`) VALUES(2, 'CCAA');
+INSERT INTO `observatorio_tipo` (`id_tipo`, `name`) VALUES(3, 'EELL');
+
+
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(1, 'Daily', 1, NULL);
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(2, 'Weekly', 7, NULL);
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(3, 'Every 15 days', 15, NULL);
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(4, 'Monthly', NULL, '0 min hour daymonth month/1 ? year/1');
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(5, 'Quarterly', NULL, '0 min hour daymonth month/3 ? year/1');
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(6, '6 Months', NULL, '0 min hour daymonth month/6 ? year/1');
+INSERT INTO `periodicidad` (`id_periodicidad`, `nombre`, `dias`, `cronExpression`) VALUES(7, 'Yearly', NULL, '0 min hour daymonth month ? year/1');
+
+INSERT INTO `tipo_rol` (`id_tipo`, `nombre`) VALUES(1, 'Normal');
+INSERT INTO `tipo_rol` (`id_tipo`, `nombre`) VALUES(2, 'Cliente');
+INSERT INTO `tipo_rol` (`id_tipo`, `nombre`) VALUES(3, 'Observatorio');
+
+INSERT INTO `roles` (`id_rol`, `rol`, `id_tipo`) VALUES(1, 'Administrador', 1);
+INSERT INTO `roles` (`id_rol`, `rol`, `id_tipo`) VALUES(2, 'Configurador', 1);
+INSERT INTO `roles` (`id_rol`, `rol`, `id_tipo`) VALUES(3, 'Visualizador', 1);
+INSERT INTO `roles` (`id_rol`, `rol`, `id_tipo`) VALUES(4, 'Responsable cliente', 2);
+INSERT INTO `roles` (`id_rol`, `rol`, `id_tipo`) VALUES(5, 'Visualizador cliente', 2);
+INSERT INTO `roles` (`id_rol`, `rol`, `id_tipo`) VALUES(6, 'Observatorio', 3);
+
+INSERT INTO `usuario` (`usuario`, `password`, `nombre`, `apellidos`, `departamento`, `email`) VALUES('username', md5('password'), 'Nombre', 'Apellidos', 'Departamento', 'email@mail.com');
+
+INSERT INTO `usuario_cartucho` (`id_usuario`, `id_cartucho`) VALUES(1, 1);
+INSERT INTO `usuario_cartucho` (`id_usuario`, `id_cartucho`) VALUES(1, 2);
+
+INSERT INTO `usuario_rol` (`usuario`, `id_rol`) VALUES(1, 1);
 
 
 --
@@ -850,17 +890,21 @@ ALTER TABLE usuario_rol ROW_FORMAT=COMPRESSED;
 
 
 --
+-- ALTER_OAW_5.0.4.sql 
+--
+
+ALTER TABLE categorias_lista ADD clave VARCHAR(1024) NULL;
+ALTER TABLE lista ADD observaciones VARCHAR(1024) NULL;
+ALTER table export_site ADD COLUMN compliance VARCHAR(32) NULL;
+
+
+--
 -- Seed required data into the database to be able to start and use the application
 --
 
 -- Create an admin:admin user for test purposes
 
-INSERT INTO usuario(Usuario, Password,  Nombre, Apellidos, Departamento, Email) VALUES ('admin', md5('admin'), 'Test', 'User', 'Test Department', 'test.user@email.net');
-INSERT INTO usuario_rol(Usuario, id_rol) VALUES (LAST_INSERT_ID(), 1);
-INSERT INTO roles(id_rol, rol, id_tipo) VALUES (1, 'Admin', 1);
+INSERT INTO usuario(usuario, password, nombre, apellidos, departamento, email) VALUES ('admin', md5('admin'), 'Test', 'User', 'Test Department', 'test.user@email.net');
+INSERT INTO usuario_rol(usuario, id_rol) VALUES (LAST_INSERT_ID(), 1);
 
--- Create test values for periodicity
-
-INSERT INTO periodicidad(nombre, dias, cronExpression) VALUES ('Every Minute', 0, '0 * * * * ?');
-INSERT INTO periodicidad(nombre, dias, cronExpression) VALUES ('Hourly', 0, '0 0 * * * ?');
-INSERT INTO periodicidad(nombre, dias, cronExpression) VALUES ('Daily', 1, '0 0 0 * * ?');
+INSERT INTO `periodicidad` (`nombre`, `dias`, `cronExpression`) VALUES('Every 5 Minutes', NULL, '0 0/5 * * * ?');
