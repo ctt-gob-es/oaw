@@ -1,4 +1,6 @@
-target
+**/bin
+**/target
+
 *.class
 .git
 .odt

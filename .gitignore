@@ -1,5 +1,6 @@
 **/*.iml
 **/sonar-project.properties
+**/bin
 **/target
 **/.idea
 **/.sonar
