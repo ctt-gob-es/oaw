@@ -264,6 +264,12 @@
 		<put name="title" value="application.title" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_generarAllReports.jsp" />
 	</definition>
+	
+	<definition name=".generateReportAsync" extends="mainLayout">
+		<put name="title" value="application.title" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_generateReportAsync.jsp" />
+	</definition>	
+	
 
 	<!-- Página cargar semillas observatorio -->
 	<definition name=".cargarSemillasObservatorio" extends="mainLayout">

@@ -24,7 +24,7 @@ public class TAnalisisAccesibilidadDAO {
 	 */
 	public static void insert(Connection c, final Long idAnalisis, final List<Element> accessibilityLinks) throws SQLException {
 		// INSERT INTO t1 (a,b,c) VALUES (1,2,3) ON DUPLICATE KEY UPDATE c=c+1;
-		final String query = "INSERT INTO tanalisis_accesibilidad(id_rastreo, urls) VALUES (?,?) ON DUPLICATE KEY UPDATE  urls = ?";
+		final String query = "INSERT INTO tanalisis_accesibilidad(id_analisis, urls) VALUES (?,?) ON DUPLICATE KEY UPDATE  urls = ?";
 		StringBuilder urls = new StringBuilder("");
 		for (Element link : accessibilityLinks) {
 			urls.append(link.getAttribute("href"));
@@ -51,7 +51,7 @@ public class TAnalisisAccesibilidadDAO {
 	 */
 	public static String getUrls(Connection c, final Long idAnalisis) throws SQLException {
 		String urls = "";
-		final String query = "SELECT urls FROM tanalisis_accesibilidad WHERE id_rastreo = (SELECT cod_rastreo FROM tanalisis WHERE cod_analisis = ?)";
+		final String query = "SELECT urls FROM tanalisis_accesibilidad WHERE id_analisis = (SELECT cod_rastreo FROM tanalisis WHERE cod_analisis = ?)";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idAnalisis);
 			try (ResultSet rs = ps.executeQuery()) {

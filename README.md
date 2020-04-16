@@ -17,7 +17,7 @@ This is a Maven projet that requieres version 3.0.0 or high
 
 ## MySQL Database
 
-To fresh install execute the scripts locates in folder /portal/scrpts from version 4.0.0 to higher version
+To fresh install execute the scripts locates in folder /portal/scripts from version 4.0.0 to higher version
 
 ## Tomcat
 

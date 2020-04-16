@@ -1,5 +1,16 @@
 var lastUrl;
 var scroll;
+
+
+
+// colNames : [ "Id", "NombreAntiguo",
+// "Nombre", "Acr\u00F3nimo",
+// "Segmento", "\u00C1mbito",
+// "Complejidad", "Etiquetas",
+// "Dependencia", "URLs","Observaciones",
+// "Activa", "Directorio",
+// "Ir", "Eliminar", "Eliminar definitivamente" ],
+
 function cambiaTitulo() {
 	$("option").hover(function(e) {
 		var $target = $(e.target);
@@ -109,7 +120,7 @@ function urlsFormatter(cellvalue, options, rowObject) {
 function irDependenciaFormatter(cellvalue, options, rowObject) {
 	return "<a target='blank' href="
 			+ rowObject.listaUrls[0]
-			+ "><span class='glyphicon glyphicon-new-window'></span><span class='sr-only'>Ir a la p&aacute;gina web de esta semilla</span></a>";
+			+ "><span class='glyphicon glyphicon-new-window'></span><span class='sr-only'>"+ semillaIrAlt +"</span></a>";
 }
 
 // Edicion de las urls en linea formatea el texto para colocar una por línea
@@ -144,29 +155,32 @@ function complexityEdit(value, options, rowObject) {
 	var seed = $('#grid').jqGrid('getRowData', options.rowId);
 
 	var data = $("#grid").jqGrid('getGridParam', 'data');
-	$.each(data, function(index, item) {
-		if (item.id == options.rowId) {
 
-			var data = "";
-
-			$.each(item.etiquetas, function(index, value) {
-				data = data + value.id + ",";
-			});
-
-			if (data) {
-				data = data.slice(0, -1);
-			}
-
-			element.setAttribute('value', data);
-
-		}
-	});
 
 	$.ajax({
-		url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+		url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
 		method : 'POST',
 		cache : false
 	}).success(function(response) {
+		
+		
+		$.each(data, function(index, item) {
+			if (item.id == options.rowId) {
+
+				var data = "";
+
+				$.each(item.etiquetas, function(index, value) {
+					data = data + value.id + ",";
+				});
+
+				if (data) {
+					data = data.slice(0, -1);
+				}
+
+				element.setAttribute('value', data);
+
+			}
+		});
 
 		$(element).tagbox({
 			items : response.etiquetas,
@@ -211,7 +225,7 @@ function eliminarSemillaFormater(cellvalue, options, rowObject) {
 
 	return "<span style='cursor:pointer' onclick='eliminarSemilla("
 			+ options.rowId
-			+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>Eliminar definitivamente</span></span>";
+			+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>"+semillaEliminarDefinitiva+"</span></span>";
 }
 
 function eliminarSemilla(rowId) {
@@ -221,8 +235,8 @@ function eliminarSemilla(rowId) {
 	var idSemilla = semilla.id;
 	var dialogoEliminar = $('<div id="dialogoEliminarContent"></div>');
 
-	dialogoEliminar.append('<p>&#191;Desea eliminar la semilla "'
-			+ semilla.nombre + '"? Esta será borrada definitivamente de la base de datos</p>');
+	dialogoEliminar.append('<p>'+confirmRemoveMessage1+' "'
+			+ semilla.nombre + '"? '+ confirmRemoveMessage1 +'</p>');
 	
 	$
 			.ajax(
@@ -240,7 +254,7 @@ function eliminarSemilla(rowId) {
 							if (JSON.parse(data).length > 0) {
 
 								dialogoEliminar
-										.append('<p>La semilla est&#225; o ha estado asociada a los siguientes observatorios: </p></ul>');
+										.append('<p>'+ confirmRemoveMessage3+ ' </p></ul>');
 
 								$.each(JSON.parse(data),
 										function(index, value) {
@@ -261,7 +275,7 @@ function eliminarSemilla(rowId) {
 				minHeight : $(window).height() * 0.25,
 				minWidth : $(window).width() * 0.25,
 				modal : true,
-				title : 'RASTREADOR WEB - Eliminar semilla',
+				title : windowTitleRemoveSeed,
 				buttons : {
 					"Aceptar" : {
 						click: function() {
@@ -277,14 +291,14 @@ function eliminarSemilla(rowId) {
 								dialogoEliminar.dialog("close");
 							});
 						},
-						text: 'Aceptar',
+						text: saveButton,
 						class: 'jdialog-btn-save'
 					},
 					"Cancelar" : {
 						click: function() {
 							dialogoEliminar.dialog("close");
 						},
-						text: 'Cancelar',
+						text: cancelButton,
 						class: 'jdialog-btn-cancel'
 					}
 				}
@@ -308,6 +322,7 @@ function reloadGrid(path) {
 	}
 
 	$('#grid').jqGrid('clearGridData');
+		
 
 	$
 			.ajax({
@@ -327,13 +342,7 @@ function reloadGrid(path) {
 								.jqGrid(
 										{
 											editUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
-											colNames : [ "Id", "NombreAntiguo",
-													"Nombre", "Acr\u00F3nimo",
-													"Segmento", "\u00C1mbito",
-													"Complejidad", "Etiquetas",
-													"Dependencia", "URLs",
-													"Activa", "Directorio",
-													"Ir", "Eliminar", "Eliminar definitivamente" ],
+											colNames: translatedColNames, //note this is definesd in parent JSP in order to work
 											colModel : [
 													{
 														name : "id",
@@ -612,6 +621,20 @@ function reloadGrid(path) {
 														},
 													},
 													{
+														name : "observaciones",
+														width : 50,
+														edittype : 'custom',
+														editoptions : {
+															custom_element : textareaEdit,
+															custom_value : textareaEditValue
+														},
+														editrules : {
+															required : false
+														},
+														sortable : false,
+														align : "left"
+													},
+													{
 														name : "activa",
 														align : "center",
 														width : 10,
@@ -796,7 +819,7 @@ function reloadGrid(path) {
 						if (total == 0) {
 							$('#grid')
 									.append(
-											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="12" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
+											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="14" style="padding: 15px !important;" role="gridcell">'+noResults+'</td></tr>');
 						}
 
 						// Paginador

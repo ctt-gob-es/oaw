@@ -119,11 +119,11 @@ public final class ExportOpenOfficeUtils {
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, Long.valueOf(request.getParameter(Constants.ID)));
 			final OpenOfficeDocumentBuilder openOfficeDocumentBuilder = getDocumentBuilder(request.getParameter(Constants.ID), request.getParameter(Constants.ID_OBSERVATORIO), tipoObservatorio,
 					CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId()));
-			final OdfTextDocument odt = openOfficeDocumentBuilder.buildDocumentFiltered(request, graphicPath, date, includeEvolution(numberObservatoryExecutions), pageExecutionList, categories,
-					tagsToFilter, grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, reportTitle);
-			odt.save(filePath);
-			removeAttributeFromFile(filePath, "META-INF/manifest.xml", "manifest:file-entry", "manifest:size", "text/xml");
-			odt.close();
+			final OdfTextDocument odt = openOfficeDocumentBuilder.buildDocumentFiltered(request, filePath, graphicPath, date, includeEvolution(numberObservatoryExecutions), pageExecutionList,
+					categories, tagsToFilter, grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, reportTitle);
+//			odt.save(filePath);
+//			removeAttributeFromFile(filePath, "META-INF/manifest.xml", "manifest:file-entry", "manifest:size", "text/xml");
+//			odt.close();
 		} catch (Exception e) {
 			Logger.putLog("Error al exportar los resultados a OpenOffice", ExportOpenOfficeAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}

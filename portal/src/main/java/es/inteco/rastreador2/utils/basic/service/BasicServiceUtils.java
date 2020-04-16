@@ -161,7 +161,24 @@ public final class BasicServiceUtils {
 			basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE);
 		}
 		if (StringUtils.isNotEmpty(request.getParameter("urls"))) {
-			basicServiceForm.setDomain(request.getParameter("urls"));
+			String url = "";
+			urlParameter = request.getParameter("urls");
+			try {
+				url = URLDecoder.decode(urlParameter, "ISO-8859-1");
+			} catch (UnsupportedEncodingException e) {
+				Logger.putLog("No se puede decodificar la url como ISO-8859-1", CheckHistoricoAction.class, Logger.LOG_LEVEL_WARNING, e);
+				try {
+					url = URLDecoder.decode(urlParameter, "UTF-8");
+				} catch (UnsupportedEncodingException e1) {
+					url = "";
+					Logger.putLog("No se puede decodificar la url como UTF-8", CheckHistoricoAction.class, Logger.LOG_LEVEL_WARNING, e);
+				}
+			}
+			basicServiceForm.setDomain(url);
+			if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
+				basicServiceForm.setDomain(es.inteco.utils.CrawlerUtils.encodeUrl(basicServiceForm.getDomain()));
+			}
+			// basicServiceForm.setDomain(request.getParameter("urls"));
 			basicServiceForm.setAnalysisType(BasicServiceAnalysisType.LISTA_URLS);
 		}
 		basicServiceForm.setInDirectory(Boolean.parseBoolean(request.getParameter(Constants.PARAM_IN_DIRECTORY)));

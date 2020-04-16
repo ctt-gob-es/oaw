@@ -32,19 +32,26 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <script>
 	var scroll;
 	
+	var colNameId = '<bean:message key="colname.id"/>';
+	var colNameName = '<bean:message key="colname.name"/>';
+	var colNameUpload = '<bean:message key="colname.upload"/>';
+	var colNameDownload = '<bean:message key="colname.download"/>';
+	var colNameRemove = '<bean:message key="colname.remove"/>';
+
+	
 	
 	function uploadFormatter(cellvalue, options, rowObject){
 		//return "up";
 		
 		return "<span style='cursor:pointer' onclick='uploadPlantilla("
 		+ options.rowId
-		+ ")'class='glyphicon glyphicon-cloud-upload'></span><span class='sr-only'>Cargar</span></span>";
+		+ ")'class='glyphicon glyphicon-cloud-upload'></span><span class='sr-only'>"+colNameUpload+"</span></span>";
 	}
 	
 	function downloadFormatter(cellvalue, options, rowObject){
 		return "<span style='cursor:pointer' onclick='downloadPlantilla("
 		+ options.rowId
-		+ ")'class='glyphicon glyphicon-cloud-download'></span><span class='sr-only'>Descargar</span></span>";
+		+ ")'class='glyphicon glyphicon-cloud-download'></span><span class='sr-only'>"+colNameDownload+"</span></span>";
 	}
 
 	function downloadPlantilla(rowId){
@@ -58,6 +65,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		$("#nuevaPlantillaForm #nombre").val(plantilla.nombre);
 		$('#nuevaPlantillaForm #templateId').val(rowId);
 		
+
 		
 		window.scrollTo(0, 0);
 
@@ -97,7 +105,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	function eliminarFormatter(cellvalue, options, rowObject) {
 		return "<span style='cursor:pointer' onclick='eliminarPlantilla("
 				+ options.rowId
-				+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>Eliminar</span></span>";
+				+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>"+colNameRemove+"</span></span>";
 	}
 	
 	function eliminarPlantilla(rowId) {
@@ -105,10 +113,26 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		var plantilla = $('#grid').jqGrid('getRowData', rowId);
 
 		var idPlantilla = plantilla.id;
+		
+		
+		
+		
+	var windowTitle = '<bean:message key="plantilla.eliminar.modal.title"/>';
+		
+		var saveButton = '<bean:message key="boton.aceptar"/>';
+		
+		var cancelButton = '<bean:message key="boton.cancelar"/>';
+		
+		var confirmRemoveMessage = '<bean:message key="eliminar.dependencia.modal.confirm"/>';
+		
 		var dialogoEliminar = $('<div id="dialogoEliminarContent"></div>');
 
-		dialogoEliminar.append('<p>&#191;Desea eliminar la plantilla "'
+		dialogoEliminar.append('<p>'+confirmRemoveMessage+' "'
 				+ plantilla.nombre + '"?</p>');
+		
+		
+		
+		
 
 		dialogoEliminar
 				.dialog({
@@ -116,7 +140,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					minHeight : $(window).height() * 0.25,
 					minWidth : $(window).width() * 0.25,
 					modal : true,
-					title : 'RASTREADOR WEB - Eliminar plantilla',
+					title : windowTitle,
 					buttons : {
 						"Aceptar" : {
 							click: function() {
@@ -132,14 +156,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									dialogoEliminar.dialog("close");
 								});
 					},
-					text: 'Aceptar',
+					text: saveButton,
 					class: 'jdialog-btn-save'
 						},
 						"Cancelar" : {
 							click:function() {
 								dialogoEliminar.dialog("close");
 							},
-							text: 'Cancelar',
+							text: cancelButton,
 							class: 'jdialog-btn-cancel'
 						}
 					}
@@ -178,10 +202,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									.jqGrid(
 											{
 												editUrl : '/oaw/secure/Plantilla.do?action=update',
-												colNames : [ "Id", "Nombre",
-														"Cargar",
-														"Descargar",
-														"Eliminar" ],
+												colNames : [ colNameId, colNameName,
+													colNameUpload,
+													colNameDownload,
+													colNameRemove ],
 												colModel : [
 														{
 															name : "id",
@@ -407,6 +431,17 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	function dialogoNuevaPlantilla() {
 
 		window.scrollTo(0, 0);
+		
+		
+		
+		var windowTitle = '<bean:message key="plantilla.nueva.modal.title"/>';
+		
+		var saveButton = '<bean:message key="boton.guardar"/>';
+		
+		var cancelButton = '<bean:message key="boton.cancelar"/>';
+		
+		
+		
 
 		$('#existosPlantilla').hide();
 		$('#erroresPlantilla').hide();
@@ -415,20 +450,20 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			height : windowHeight,
 			width : windowWidth,
 			modal : true,
-			title : 'RASTREADOR WEB - Nueva Plantilla',
+			title : windowTitle,
 			buttons : {
 				"Guardar" : {
 					click: function() {
 						guardarNuevaPlantilla();
 					},
-					text : "Guardar",
+					text : saveButton,
 					class: 'jdialog-btn-save'
 				},
 				"Cancelar" : {
 					click: function() {
 						dialog.dialog("close");
 					},
-					text: "Cancelar",
+					text: cancelButton,
 					class: 'jdialog-btn-cancel'
 				}
 			},

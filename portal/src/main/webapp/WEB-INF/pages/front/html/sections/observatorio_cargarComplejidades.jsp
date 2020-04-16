@@ -33,6 +33,17 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <!--  JQ GRID   -->
 <script>
 	var scroll;
+	
+	var colNameOldName = '<bean:message key="colname.oldname"/>';
+	var colNameId = '<bean:message key="colname.id"/>';
+	var colNameName = '<bean:message key="colname.name"/>';
+	var colNameRemove = '<bean:message key="colname.remove"/>';
+	
+	var colNameDepth = '<bean:message key="colname.depth"/>';
+	var colNameWidth = '<bean:message key="colname.width"/>';
+	
+	
+	
 	//Recarga el grid. Recibe como parámetro la url de la acción con la información
 	//de paginación.
 	function reloadGrid(path) {
@@ -62,9 +73,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									.jqGrid(
 											{
 												editUrl : '/oaw/secure/ViewComplejidadesObservatorio.do?action=update',
-												colNames : [ "Id", "Nombre", "NombreAntiguo",
-														"Profundidad", "Amplitud",
-														"Eliminar" ],
+												colNames : [ colNameId, colNameName, colNameOldName,
+													colNameDepth, colNameWidth,
+													colNameRemove ],
 												colModel : [
 														{
 															name : "id",
@@ -272,7 +283,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	function eliminarFormatter(cellvalue, options, rowObject) {
 		return "<span style='cursor:pointer' onclick='eliminarComplejidad("
 				+ options.rowId
-				+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>Eliminar</span></span>";
+				+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>" + colNameRemove + "</span></span>";
 	}
 	
 	function profundidadFormatter(cellvalue, options, rowObject) {
@@ -298,11 +309,21 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	function eliminarComplejidad(rowId) {
 
 		var complejidad = $('#grid').jqGrid('getRowData', rowId);
+		
+		
+		
+	var windowTitle = '<bean:message key="complex.delete.modal.title"/>';
+		
+		var saveButton = '<bean:message key="boton.aceptar"/>';
+		
+		var cancelButton = '<bean:message key="boton.cancelar"/>';
+		
+		var confirmRemoveMessage = '<bean:message key="complex.delete.modal.confirm"/>';
 
 		var idComplejidad = complejidad.id;
 		var dialogoEliminar = $('<div id="dialogoEliminarContent"></div>');
 
-		dialogoEliminar.append('<p>&#191;Desea eliminar la complejidad "'
+		dialogoEliminar.append('<p>'+confirmRemoveMessage+' "'
 				+ complejidad.name + '"?</p>');
 
 		dialogoEliminar
@@ -311,7 +332,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					minHeight : $(window).height() * 0.25,
 					minWidth : $(window).width() * 0.25,
 					modal : true,
-					title : 'RASTREADOR WEB - Eliminar complejidad',
+					title : windowTitle,
 					buttons : {
 						"Aceptar" : {
 							click: function() {
@@ -327,14 +348,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									dialogoEliminar.dialog("close");
 								});
 					},
-					text: 'Aceptar',
+					text: saveButton,
 					class: 'jdialog-btn-save'
 						},
 						"Cancelar" : {
 							click:function() {
 								dialogoEliminar.dialog("close");
 							},
-							text: 'Cancelar',
+							text: cancelButton,
 							class: 'jdialog-btn-cancel'
 						}
 					}
@@ -370,6 +391,15 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 	function dialogoNuevaComplejidad() {
 
+		
+		var windowTitle = '<bean:message key="complex.new.modal.title"/>';
+		
+		var saveButton = '<bean:message key="boton.guardar"/>';
+		
+		var cancelButton = '<bean:message key="boton.cancelar"/>';
+		
+		
+		
 		window.scrollTo(0, 0);
 
 		$('#exitosNuevaSemillaMD').hide();
@@ -379,20 +409,20 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			height : windowHeight,
 			width : windowWidth,
 			modal : true,
-			title : 'RASTREADOR WEB - Nueva complejidad',
+			title : windowTitle,
 			buttons : {
 				"Guardar" : {
 					click: function() {
 						guardarNuevaComplejidad();
 					},
-					text : "Guardar",
+					text : saveButton,
 					class: 'jdialog-btn-save'
 				},
 				"Cancelar" : {
 					click: function() {
 						dialog.dialog("close");
 					},
-					text: "Cancelar",
+					text: cancelButton,
 					class: 'jdialog-btn-cancel'
 				}
 			},

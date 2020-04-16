@@ -33,7 +33,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <script src="/oaw/js/jqgrid/i18n/grid.locale-es.js" type="text/javascript"></script>
 
 <script src="/oaw/js/gridSemillas.js" type="text/javascript"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
 
 <script src="/oaw/js/tagbox/tagbox.js" type="text/javascript"></script>
 <link rel="stylesheet" href="/oaw/js/tagbox/tagbox.css">
@@ -88,6 +88,48 @@ display: block;
 <script>
 
 
+var colNameId = '<bean:message key="colname.id"/>';
+var colNameAcronym = '<bean:message key="colname.acronym"/>';
+var colNameActive = '<bean:message key="colname.active"/>';
+var colNameComplex = '<bean:message key="colname.complex"/>';
+var colNameDependencies = '<bean:message key="colname.dependecies"/>';
+var colNameDirectory = '<bean:message key="colname.directory"/>';
+var colNameTags = '<bean:message key="colname.etiqeutas"/>';
+var colNameGo = '<bean:message key="colname.go"/>';
+var colNameName = '<bean:message key="colname.name"/>';
+var colNameObs = '<bean:message key="colname.observations"/>';
+var colNameOldName = '<bean:message key="colname.oldname"/>';
+var colNameRemove = '<bean:message key="colname.remove"/>';
+var colNameRemovePerm = '<bean:message key="colname.remove.permanently"/>';
+var colNameScope = '<bean:message key="colname.scope"/>';
+var colNameSegment = '<bean:message key="colname.segment"/>';
+
+
+var windowTitleRemoveSeed = '<bean:message key="eliminar.semilla.modal.titulo"/>';
+
+var saveButton = '<bean:message key="boton.aceptar"/>';
+
+var cancelButton = '<bean:message key="boton.cancelar"/>';
+
+var confirmRemoveMessage1 = '<bean:message key="eliminar.semilla.modal.confirmacion.1"/>';
+var confirmRemoveMessage2 = '<bean:message key="eliminar.semilla.modal.confirmacion.2"/>';
+var confirmRemoveMessage3 = '<bean:message key="eliminar.semilla.modal.confirmacion.3"/>';
+
+var semillaIrAlt ='<bean:message key="semilla.ir"/>';
+
+var semillaEliminarDefinitiva ='<bean:message key="seed.remove.permanently.alt"/>';
+
+
+
+var translatedColNames = [ colNameId, colNameOldName,
+	colNameName, colNameAcronym,
+	colNameSegment, colNameScope,
+	colNameComplex, colNameTags,
+	colNameDependencies, "URLs",colNameObs,
+	colNameActive, colNameDirectory, 
+	colNameGo, colNameRemove, colNameRemovePerm ];
+
+
 	$(function() {
 	   $("#importFile").change(function (){
 	     var fileName = $(this).val();
@@ -116,6 +158,11 @@ display: block;
 	var windowWidth = $(window).width() * 0.8;
 	var windowHeight = $(window).height() * 0.85;
 	
+	var windowTitle = '<bean:message key="nueva.semilla.modal.title"/>';
+	
+	var saveButton = '<bean:message key="boton.guardar"/>';
+	
+	var cancelButton = '<bean:message key="boton.cancelar"/>';
 	
 	function dialogoNuevaSemilla() {
 
@@ -127,21 +174,23 @@ display: block;
 		dialog = $("#dialogoNuevaSemilla").dialog({
 			minHeight : windowHeight,
 			minWidth : windowWidth,
-			title: 'RASTREADOR WEB - Nueva semilla',
+			//title: 'RASTREADOR WEB - Nueva semilla',
+			
+			title: windowTitle,
 			modal : true,
 			buttons : {
 				"Guardar" : {
 					click: function() {
 						guardarNuevaSemilla();
 					},
-					text: 'Guardar',
+					text: saveButton,
 					class: 'jdialog-btn-save'
 				},
 				"Cancelar" : {
 					click: function() {
 						dialog.dialog("close");
 					},
-					text: "Cancelar", 
+					text: cancelButton, 
 					class :'jdialog-btn-cancel'
 				}
 			},
@@ -151,7 +200,7 @@ display: block;
 				
 				$(document).ready(function() {
 					$.ajax({
-						url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+						url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
 						method : 'POST',
 						cache : false
 					}).success(function(response) {
@@ -271,7 +320,7 @@ display: block;
 						
 						$jq(document).ready(function() {
 							$.ajax({
-								url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+								url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
 								method : 'POST',
 								cache : false
 							}).success(function(response) {
@@ -336,7 +385,7 @@ display: block;
 			<html:form action="/secure/ViewSemillasObservatorio.do" method="get" styleClass="formulario form-horizontal">
 				<input type="hidden" name="<%=Constants.ACTION%>" value="<%=Constants.LOAD%>" />
 				<fieldset>
-					<legend>Buscador</legend>
+					<legend><bean:message key="buscador"/></legend>
 					<div class="formItem">
 						<label for="nombre" class="control-label"><strong class="labelVisu"><bean:message
 									key="nueva.semilla.observatorio.nombre" /></strong></label>

@@ -51,6 +51,8 @@ import es.inteco.rastreador2.utils.DAOUtils;
  * The Class SemillaDAO.
  */
 public final class SemillaDAO {
+	/** The Constant CLAVE. */
+	private static final String CLAVE = "clave";
 	/** The Constant ID_LISTA. */
 	private static final String ID_LISTA = "id_lista";
 	/** The Constant ORDEN. */
@@ -114,6 +116,40 @@ public final class SemillaDAO {
 			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+	}
+
+	/**
+	 * Exist seed.
+	 *
+	 * @param c             the c
+	 * @param nombreSemilla the nombre semilla
+	 * @param type          the type
+	 * @return true, if successful
+	 * @throws SQLException the SQL exception
+	 */
+	public static Long existOtherSeed(Connection c, String nombreSemilla, int type) throws SQLException {
+		final String query;
+		Long id = null;
+		if (type == -1) {
+			query = "SELECT id_lista FROM lista WHERE nombre = ?";
+		} else {
+			query = "SELECT id_lista FROM lista WHERE nombre = ? AND id_tipo_lista = ?";
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setString(1, nombreSemilla);
+			if (type != -1) {
+				ps.setLong(2, type);
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					id = rs.getLong(1);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			return null;
+		}
+		return id;
 	}
 
 	/**
@@ -373,6 +409,7 @@ public final class SemillaDAO {
 					semillaForm.setId(rs.getLong(L_ID_LISTA));
 					semillaForm.setNombre(rs.getString("l.nombre"));
 					semillaForm.setListaUrls(convertStringToList(rs.getString(LISTA)));
+					semillaForm.setObservaciones(rs.getString("l.observaciones"));
 					// Rellenamos campos adicionales para el nuevo grid de
 					// búsqueda
 					// Multidependencia
@@ -576,6 +613,7 @@ public final class SemillaDAO {
 					// búsqueda
 					// Multidependencia
 					semillaForm.setAcronimo(rs.getString("l.acronimo"));
+					semillaForm.setObservaciones(rs.getString("l.observaciones"));
 					final CategoriaForm categoriaForm = new CategoriaForm();
 					categoriaForm.setId(rs.getString(ID_CATEGORIA));
 					categoriaForm.setName(rs.getString("cl.nombre"));
@@ -629,7 +667,7 @@ public final class SemillaDAO {
 					}
 					// Cargar las etiquetas de la semilla
 					PreparedStatement psEtiquetas = c.prepareStatement(
-							"SELECT e.id_etiqueta, e.nombre FROM etiqueta e WHERE id_etiqueta in (SELECT id_etiqueta FROM semilla_etiqueta WHERE id_lista = ?) ORDER BY UPPER(e.nombre)");
+							"SELECT e.id_etiqueta, e.nombre, e.id_clasificacion FROM etiqueta e WHERE id_etiqueta in (SELECT id_etiqueta FROM semilla_etiqueta WHERE id_lista = ?) ORDER BY UPPER(e.nombre)");
 					psEtiquetas.setLong(1, semillaForm.getId());
 					List<EtiquetaForm> listEtiquetas = new ArrayList<>();
 					ResultSet rsEtiquetas = null;
@@ -639,6 +677,9 @@ public final class SemillaDAO {
 							EtiquetaForm etiqueta = new EtiquetaForm();
 							etiqueta.setId(rsEtiquetas.getLong("id_etiqueta"));
 							etiqueta.setName(rsEtiquetas.getString(NOMBRE));
+							ClasificacionForm cls = new ClasificacionForm();
+							cls.setId(rsEtiquetas.getString("id_clasificacion"));
+							etiqueta.setClasificacion(cls);
 							listEtiquetas.add(etiqueta);
 						}
 						semillaForm.setEtiquetas(listEtiquetas);
@@ -991,6 +1032,7 @@ public final class SemillaDAO {
 					semillaForm.setListaUrls(convertStringToList(rs.getString(LISTA)));
 					semillaForm.setListaUrlsString(rs.getString(LISTA));
 					semillaForm.setNombre(rs.getString(NOMBRE));
+					semillaForm.setObservaciones(rs.getString("l.observaciones"));
 					CategoriaForm categoriaForm = new CategoriaForm();
 					categoriaForm.setId(rs.getString(ID_CATEGORIA));
 					categoriaForm.setName(rs.getString("cl.nombre"));
@@ -1225,7 +1267,7 @@ public final class SemillaDAO {
 	public static void editSeed(Connection c, SemillaForm semillaForm) throws SQLException {
 		// Multidependencia
 		try (PreparedStatement ps = c.prepareStatement(
-				"UPDATE lista SET lista = ?, nombre = ?, id_categoria = ?, id_ambito = ?, id_complejidad = ?, acronimo = ?, activa = ?, in_directory = ?, eliminar = ? WHERE id_lista = ? ")) {
+				"UPDATE lista SET lista = ?, nombre = ?, id_categoria = ?, id_ambito = ?, id_complejidad = ?, acronimo = ?, activa = ?, in_directory = ?, eliminar = ?, observaciones = ? WHERE id_lista = ? ")) {
 			ps.setString(1, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
 			ps.setString(2, semillaForm.getNombre());
 			if (semillaForm.getCategoria().getId() != null && !StringUtils.isEmpty(semillaForm.getCategoria().getId())) {
@@ -1252,7 +1294,13 @@ public final class SemillaDAO {
 			ps.setBoolean(7, semillaForm.isActiva());
 			ps.setBoolean(8, semillaForm.isInDirectory());
 			ps.setBoolean(9, semillaForm.isEliminar());
-			ps.setLong(10, semillaForm.getId());
+			if (semillaForm.getObservaciones() != null && !StringUtils.isEmpty(semillaForm.getObservaciones())) {
+				ps.setString(10, semillaForm.getObservaciones());
+			} else {
+				ps.setString(10, null);
+			}
+			// WHERE
+			ps.setLong(11, semillaForm.getId());
 			ps.executeUpdate();
 			// Soporte para múltiples dependencias
 			// Borramos las dependencias que pudiera tener antes asociadas
@@ -1879,9 +1927,9 @@ public final class SemillaDAO {
 		final List<CategoriaForm> categories = new ArrayList<>();
 		final String query;
 		if (page == Constants.NO_PAGINACION) {
-			query = "SELECT * FROM categorias_lista ORDER BY id_categoria ASC";
+			query = "SELECT * FROM categorias_lista ORDER BY clave IS NULL, clave ASC,  nombre, orden ASC ";
 		} else {
-			query = "SELECT * FROM categorias_lista ORDER BY id_categoria ASC LIMIT ? OFFSET ?";
+			query = "SELECT * FROM categorias_lista ORDER BY clave IS NULL, clave ASC,  nombre, orden ASC LIMIT ? OFFSET ?";
 		}
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			if (page != Constants.NO_PAGINACION) {
@@ -1897,6 +1945,7 @@ public final class SemillaDAO {
 					categoriaForm.setId(rs.getString(ID_CATEGORIA));
 					categoriaForm.setName(rs.getString(NOMBRE));
 					categoriaForm.setOrden(rs.getInt(ORDEN));
+					categoriaForm.setKey(rs.getString(CLAVE));
 					categories.add(categoriaForm);
 				}
 			}
@@ -1924,6 +1973,7 @@ public final class SemillaDAO {
 					categoriaForm.setId(rs.getString(ID_CATEGORIA));
 					categoriaForm.setName(rs.getString(NOMBRE));
 					categoriaForm.setOrden(rs.getInt(ORDEN));
+					categoriaForm.setKey(rs.getString(CLAVE));
 					return categoriaForm;
 				}
 			}
@@ -2259,9 +2309,10 @@ public final class SemillaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static long createSeedCategory(final Connection c, final CategoriaForm categoriaForm) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("INSERT INTO categorias_lista (nombre, orden) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement ps = c.prepareStatement("INSERT INTO categorias_lista (nombre, orden, clave) VALUES (?,?, ?)", Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, categoriaForm.getName());
 			ps.setInt(2, categoriaForm.getOrden());
+			ps.setString(3, !org.apache.commons.lang3.StringUtils.isEmpty(categoriaForm.getKey()) ? categoriaForm.getKey() : null);
 			ps.executeUpdate();
 			try (ResultSet rs = ps.getGeneratedKeys()) {
 				if (rs.next()) {
@@ -2283,10 +2334,11 @@ public final class SemillaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static void updateSeedCategory(Connection c, CategoriaForm categoriaForm) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("UPDATE categorias_lista SET nombre = ?, orden=? WHERE id_categoria = ?")) {
+		try (PreparedStatement ps = c.prepareStatement("UPDATE categorias_lista SET nombre = ?, orden=?, clave = ? WHERE id_categoria = ?")) {
 			ps.setString(1, categoriaForm.getName());
 			ps.setInt(2, categoriaForm.getOrden());
-			ps.setString(3, categoriaForm.getId());
+			ps.setString(3, !org.apache.commons.lang3.StringUtils.isEmpty(categoriaForm.getKey()) ? categoriaForm.getKey() : null);
+			ps.setString(4, categoriaForm.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -2977,7 +3029,8 @@ public final class SemillaDAO {
 		try {
 			c.setAutoCommit(false);
 			// Multidependencia
-			ps = c.prepareStatement("INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, id_ambito, id_complejidad, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?,?,?)",
+			ps = c.prepareStatement(
+					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, id_ambito, id_complejidad, acronimo, activa, in_directory, eliminar, observaciones) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
 					Statement.RETURN_GENERATED_KEYS);
 			ps.setInt(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 			ps.setString(2, semillaForm.getNombre());
@@ -3006,6 +3059,11 @@ public final class SemillaDAO {
 			ps.setBoolean(8, semillaForm.isActiva());
 			ps.setBoolean(9, semillaForm.isInDirectory());
 			ps.setBoolean(10, semillaForm.isEliminar());
+			if (semillaForm.getObservaciones() != null && !StringUtils.isEmpty(semillaForm.getObservaciones())) {
+				ps.setString(11, semillaForm.getObservaciones());
+			} else {
+				ps.setString(11, null);
+			}
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 0) {
 				throw new SQLException("Creating user failed, no rows affected.");
@@ -3500,13 +3558,15 @@ public final class SemillaDAO {
 								// Etiqueta
 								// es
 								// para que se cree nueva. Si el nombre ya existe,
-								// se devuelve el id de la Etiqueta existente
+								// se devuelve el id de la Etiqueta existente pero se actualiza la calsificación por si cambia
 								if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentEtiqueta.getName())) {
 									PreparedStatement psCreateEtiqueta = c.prepareStatement(
-											"INSERT INTO etiqueta(nombre,id_clasificacion) VALUES (?, 1) ON DUPLICATE KEY UPDATE id_etiqueta=LAST_INSERT_ID(id_etiqueta), nombre = ?, id_clasificacion = 1",
+											"INSERT INTO etiqueta(nombre,id_clasificacion) VALUES (?, ?) ON DUPLICATE KEY UPDATE id_etiqueta=LAST_INSERT_ID(id_etiqueta), nombre = ?, id_clasificacion = ?",
 											Statement.RETURN_GENERATED_KEYS);
 									psCreateEtiqueta.setString(1, currentEtiqueta.getName());
-									psCreateEtiqueta.setString(2, currentEtiqueta.getName());
+									psCreateEtiqueta.setString(2, currentEtiqueta.getClasificacion().getId());
+									psCreateEtiqueta.setString(3, currentEtiqueta.getName());
+									psCreateEtiqueta.setString(4, currentEtiqueta.getClasificacion().getId());
 									int affectedRowsD = psCreateEtiqueta.executeUpdate();
 									if (affectedRowsD == 0) {
 										throw new SQLException("Creating user failed, no rows affected.");

@@ -45,7 +45,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		var $jq = $.noConflict();
 		$jq(document).ready(function() {
 			$.ajax({
-				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
 				method : 'POST',
 				cache : false
 			}).success(function(response) {
@@ -121,8 +121,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</legend>
 						<div class="formItem">
 
-							<label for="url" class="control-label"><strong class="labelVisu">Etiquetas</strong></label> <input name="tags"
-								autocapitalize="off" placeholder="Escriba para buscar..." autofocus id="tagsFilter" type="text" value="" />
+							<label for="url" class="control-label"><strong class="labelVisu"><bean:message
+										key="report.config.tags.title" /> </strong></label> <input name="tags" autocapitalize="off"
+								placeholder="<bean:message key="placeholder.tags" />" autofocus id="tagsFilter" type="text" value="" />
 
 
 						</div>
@@ -151,7 +152,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								<c:if test="${fulfilledObservatory.id == param.idExObs}">
 									<label class="label100"><input type="checkbox" checked
 										value="<c:out value="${fulfilledObservatory.id}" />" name="evol"> <bean:write
-											name="fulfilledObservatory" property="fechaStr" /> (Actual)</label>
+											name="fulfilledObservatory" property="fechaStr" /> (<bean:message key="current" />)</label>
 								</c:if>
 
 								<c:if test="${fulfilledObservatory.id != param.idExObs}">
@@ -171,40 +172,41 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<bean:message key="report.config.graficas.filter.info" />
 
 						<div class="formItem">
-							<label class="label100"><input type="checkbox" value="true" name="checkGlobalModalityGrpahics">
-								Incluir gráfico global de modalidad por verificación</label><br>
+							<label class="label100"><input type="checkbox" value="true" name="checkGlobalModalityGrpahics"> <bean:message
+									key="report.config.optional.1" /></label><br>
 						</div>
 
 						<div class="formItem">
-							<label class="label100"><input type="checkbox" value="true" name="checkGlobalAspectsGrpahics">
-								Incluir gráfico global de aspectos </label><br>
+							<label class="label100"><input type="checkbox" value="true" name="checkGlobalAspectsGrpahics"> <bean:message
+									key="report.config.optional.2" /></label><br>
+						</div>
+						<div class="formItem">
+							<label class="label100"><input type="checkbox" value="true" name="checkSegmentPMVGrpahics"> <bean:message
+									key="report.config.optional.3" /></label><br>
 						</div>
 
 						<div class="formItem">
 							<label class="label100"><input type="checkbox" value="true" name="checkSegmentModalityGrpahics">
-								Incluir gráfico segmentos de modalidad por verificación </label><br>
+								<bean:message key="report.config.optional.4" /></label><br>
+						</div>
+
+
+
+						<div class="formItem">
+							<label class="label100"><input type="checkbox" value="true" name="checkSegmentAspectsGrpahics"> <bean:message
+									key="report.config.optional.5" /> </label><br>
 						</div>
 
 						<div class="formItem">
-							<label class="label100"><input type="checkbox" value="true" name="checkSegmentPMVGrpahics">
-								Incluir gráfico segmentos puntuación media por verificación </label><br>
+							<label class="label100"><input type="checkbox" value="true" name="checkEvoAspectsGrpahics"> <bean:message
+									key="report.config.optional.6" /> </label><br>
 						</div>
-
-						<div class="formItem">
-							<label class="label100"><input type="checkbox" value="true" name="checkSegmentAspectsGrpahics">
-								Incluir gráfico segmentos de aspectos </label><br>
-						</div>
-
-
 						<div class="formItem">
 							<label class="label100"><input type="checkbox" value="true" name="checkEvoComplianceVerificationGrpahics">
-								Incluir gráfico evolutivo de cumplimiento por verificación </label><br>
+								<bean:message key="report.config.optional.7" /> </label><br>
 						</div>
 
-						<div class="formItem">
-							<label class="label100"><input type="checkbox" value="true" name="checkEvoAspectsGrpahics">
-								Incluir gráfico evolutivo de aspectos </label><br>
-						</div>
+
 
 
 
@@ -282,7 +284,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						type="hidden" name="idCartucho" value="<c:out value="${param.idCartucho}"/>" /> <input type="hidden"
 						name="id_observatorio" value="<c:out value="${param.id_observatorio}"/>" /> <input type="hidden" name="idExObs"
 						value="<c:out value="${param.idExObs}"/>" /><input type="hidden" name="id" value="<c:out value="${param.id}"/>" />
-					<input type="submit" class="btn btn-primary btn-lg" value="Enviar">
+					<input type="submit" class="btn btn-primary btn-lg" value=<bean:message key="boton.enviar" />>
 				</form>
 			</div>
 

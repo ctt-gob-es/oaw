@@ -45,6 +45,118 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					<bean:message key="importar.semillas.info" />
 				</p>
 
+
+				<logic:present name="errorSeeds">
+
+					<logic:notEmpty name="errorSeeds">
+
+						<h3>
+							<bean:message key="cargar.semilla.errors.title" />
+						</h3>
+
+						<bean:size id="errorSeedsSize" name="errorSeeds" />
+
+
+
+
+						<bean:message key="cargar.semilla.observatorio.total.errores">
+							<jsp:attribute name="arg0">
+                            <bean:write name="errorSeedsSize" />
+                        </jsp:attribute>
+						</bean:message>
+
+
+						<table class="table table-stripped table-bordered table-hover" style="width: 100%; overflow-wrap: break-word;">
+							<caption>
+								<bean:message key="lista.semillas.observatorio" />
+							</caption>
+
+							<thead>
+								<tr>
+									<th><bean:message key="cargar.semilla.observatorio.nombre" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.acronimo" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.categoria" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.ambito" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.complejidad" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.dependencia" /></th>
+									<th style="max-width: 20%"><bean:message key="cargar.semilla.observatorio.urls" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.eliminada" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.directorio" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.errores" /></th>
+
+								</tr>
+							</thead>
+							<tbody>
+								<logic:iterate name="errorSeeds" id="semilla">
+
+									<tr>
+										<td><bean:write name="semilla" property="nombre" /></td>
+										<td><bean:write name="semilla" property="acronimo" /></td>
+										<td><bean:write name="semilla" property="categoria.name" /></td>
+										<td><bean:write name="semilla" property="ambito.name" /></td>
+										<td><bean:write name="semilla" property="complejidad.name" /></td>
+
+										<td><logic:iterate name="semilla" property="dependencias" id="dependencia">
+												<bean:write name="dependencia" property="name" />
+											</logic:iterate></td>
+
+										<td style="max-width: 20%; text-align: left !important;"><logic:iterate name="semilla"
+												property="listaUrls" id="url">
+												<bean:write name="url" />
+												<br />
+											</logic:iterate></td>
+
+
+
+
+										<td><logic:equal name="semilla" property="activa" value="true">
+												<bean:message key="si" />
+											</logic:equal> <logic:equal name="semilla" property="activa" value="false">
+												<bean:message key="no" />
+											</logic:equal></td>
+
+
+										<td><logic:equal name="semilla" property="eliminar" value="true">
+												<bean:message key="si" />
+											</logic:equal> <logic:equal name="semilla" property="eliminar" value="false">
+												<bean:message key="no" />
+											</logic:equal></td>
+
+
+										<td><logic:equal name="semilla" property="inDirectory" value="true">
+												<bean:message key="si" />
+											</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
+												<bean:message key="no" />
+											</logic:equal></td>
+
+
+										<td><ul class="seedImportErrorList">
+												<logic:iterate name="semilla" property="errors" id="error">
+													<li><bean:write name="error" /></li>
+												</logic:iterate>
+											</ul></td>
+									</tr>
+								</logic:iterate>
+							</tbody>
+						</table>
+					</logic:notEmpty>
+				</logic:present>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 				<logic:present name="updatedSeeds">
 
 
@@ -83,6 +195,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
 									<th><bean:message key="cargar.semilla.observatorio.eliminada" /></th>
 									<th><bean:message key="cargar.semilla.observatorio.directorio" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.observaciones" /></th>
 
 								</tr>
 
@@ -123,9 +236,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
 											<bean:message key="no" />
 										</logic:equal></td>
+
+									<td><bean:write name="semilla" property="observaciones" /></td>
 								</tr>
 								<tr>
-									<td>Valor nuevo</td>
+									<td><bean:message key="cargar.semilla.observatorio.new.value" /></td>
 
 									<td class="<c:if test="${semilla.sameNombre!=true}">warning-import</c:if>"><bean:write name="semilla"
 											property="nombreNuevo" /></td>
@@ -179,6 +294,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</logic:equal> <logic:equal name="semilla" property="inDirectoryNuevo" value="false">
 											<bean:message key="no" />
 										</logic:equal></td>
+
+									<td class="<c:if test="${semilla.sameObservaciones!=true}">warning-import</c:if>"><bean:write
+											name="semilla" property="observacionesNuevo" /></td>
 								</tr>
 							</table>
 						</logic:iterate>
@@ -217,6 +335,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
 								<th><bean:message key="cargar.semilla.observatorio.eliminada" /></th>
 								<th><bean:message key="cargar.semilla.observatorio.directorio" /></th>
+								<th><bean:message key="cargar.semilla.observatorio.observaciones" /></th>
 
 							</tr>
 							<logic:iterate name="newSeedList" id="semilla">
@@ -240,13 +359,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</logic:iterate></td>
 
 
-									<td><logic:equal name="semilla" property="inDirectory" value="true">
-											<bean:message key="si" />
-										</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
-											<bean:message key="no" />
-										</logic:equal></td>
-
-
 									<td><logic:equal name="semilla" property="activa" value="true">
 											<bean:message key="si" />
 										</logic:equal> <logic:equal name="semilla" property="activa" value="false">
@@ -259,6 +371,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</logic:equal> <logic:equal name="semilla" property="eliminar" value="false">
 											<bean:message key="no" />
 										</logic:equal></td>
+									<td><logic:equal name="semilla" property="inDirectory" value="true">
+											<bean:message key="si" />
+										</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
+											<bean:message key="no" />
+										</logic:equal></td>
+
+									<td><bean:write name="semilla" property="observaciones" /></td>
 								</tr>
 							</logic:iterate>
 						</table>
@@ -300,6 +419,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
 									<th><bean:message key="cargar.semilla.observatorio.eliminada" /></th>
 									<th><bean:message key="cargar.semilla.observatorio.directorio" /></th>
+									<th><bean:message key="cargar.semilla.observatorio.observaciones" /></th>
 
 								</tr>
 							</thead>
@@ -343,6 +463,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</logic:equal> <logic:equal name="semilla" property="inDirectory" value="false">
 												<bean:message key="no" />
 											</logic:equal></td>
+										<td><bean:write name="semilla" property="observaciones" /></td>
 									</tr>
 								</logic:iterate>
 							</tbody>

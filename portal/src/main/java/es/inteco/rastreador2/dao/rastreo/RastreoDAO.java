@@ -2171,4 +2171,41 @@ public final class RastreoDAO {
 			throw e;
 		}
 	}
+
+	/**
+	 * Gets the finish crawler from seed and observatory not crawled yet.
+	 *
+	 * @param c              the c
+	 * @param idObservatory  the id observatory
+	 * @param idObsRealizado the id obs realizado
+	 * @return the finish crawler from seed and observatory not crawled yet
+	 * @throws Exception the exception
+	 */
+	public static List<SemillaForm> getFinishCrawlerFromSeedAndObservatoryNotCrawled(Connection c, Long idObservatory, Long idObsRealizado) throws Exception {
+		final List<Long> crawlerIds = new ArrayList<>();
+		// Union de rastreos no realizados y rastreos empezados pero no
+		// terminados (<> estado 4)
+		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT u.semillas  FROM (" + "	(SELECT r.semillas FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo NOT IN ("
+				+ "		SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ?) AND r.activo = 1 )" + "	UNION ALL"
+				+ "	(SELECT r.semillas FROM rastreo r WHERE r.id_observatorio = ? AND r.estado = 4 AND r.activo = 1)" + "	) u ORDER BY u.semillas ASC")) {
+			ps.setLong(1, idObservatory);
+			ps.setLong(2, idObsRealizado);
+			ps.setLong(3, idObservatory);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					crawlerIds.add(rs.getLong("semillas"));
+				}
+				if (crawlerIds.size() > 0) {
+					return SemillaDAO.getSeedByIds(c, crawlerIds);
+				} else {
+					return new ArrayList<>();
+				}
+			}
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", EstadoObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+	// (SELECT count(*) FROM rastreo r WHERE r.id_observatorio = 46 AND r.activo = 1 AND r.estado = 4 and r.id_rastreo not in (select id_rastreo from rastreos_realizados rr where rr.id_obs_realizado =
+	// 244 AND rr.id IN (select ta.cod_rastreo as id_rastreo from tanalisis ta)));
 }
