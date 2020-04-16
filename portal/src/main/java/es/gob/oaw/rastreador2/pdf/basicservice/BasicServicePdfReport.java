@@ -154,7 +154,12 @@ public class BasicServicePdfReport {
 				final PdfTocManager pdfTocManager = createPdfTocManager(writer);
 				document.open();
 				// Preserve "old" cover and add new cover for new cartidges
-				if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
+				if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad) {
+					PDFUtils.addNewCoverPage(document, messageResourcesAccesibility.getMessage("pdf.accessibility.title.basic.service"),
+							messageResourcesAccesibility.getMessage("pdf.accessibility.title.basic.service.2"),
+							pdfBuilder.getBasicServiceForm().getAnalysisType() == BasicServiceAnalysisType.URL ? pdfBuilder.getBasicServiceForm().getDomain() : "",
+							messageResourcesAccesibility.getMessage("pdf.accessibility.on.demand"), "");
+				} else if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 					String subtitle = "";
 					switch (pdfBuilder.getBasicServiceForm().getAnalysisType()) {
 					case URL:
@@ -187,10 +192,12 @@ public class BasicServicePdfReport {
 				// Resumen de resultados
 				final List<ObservatoryEvaluationForm> previousEvaluation = getPreviousEvaluation(historicoEvaluationPageList);
 				final BasicServiceObservatoryScorePdfSectionBuilder observatoryScoreSectionBuilder = new BasicServiceObservatoryScorePdfSectionBuilder(currentEvaluationPageList, previousEvaluation);
+				final BasicServicePageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new BasicServicePageResultsPdfSectionBuilder(currentEvaluationPageList);
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 					observatoryScoreSectionBuilder.addObservatoryScoreSummary(pdfBuilder, messageResources2019, document, pdfTocManager, file);
 				} else if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad) {
 					observatoryScoreSectionBuilder.addObservatoryScoreSummary(pdfBuilder, messageResourcesAccesibility, document, pdfTocManager, file);
+					// observatoryPageResultsSectionBuilder.addPageResultsAccesibility(messageResourcesAccesibility, document, pdfTocManager, true);
 				} else {
 					observatoryScoreSectionBuilder.addObservatoryScoreSummary(pdfBuilder, messageResources, document, pdfTocManager, file);
 				}
@@ -200,9 +207,7 @@ public class BasicServicePdfReport {
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryWithCompliance(messageResources, document, pdfTocManager,
 							pdfBuilder.generateScores(messageResources, currentEvaluationPageList));
-				} else if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad) {
-					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryAccesibility(messageResources, document, pdfTocManager);
-				} else {
+				} else if (!(pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad)) {
 					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources, document, pdfTocManager);
 				}
 				// Evolución resultados servicio diagnóstico
@@ -213,16 +218,13 @@ public class BasicServicePdfReport {
 				observatoryEvolutionResultsSectionBuilder.addEvolutionResults(pdfBuilder, messageResources, document, pdfTocManager, file);
 				// Desdoblamiento para la nueva versión de la metodología
 				// UNE-2012 ya que cambian los niveles
-				final BasicServicePageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new BasicServicePageResultsPdfSectionBuilder(currentEvaluationPageList);
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 					observatoryPageResultsSectionBuilder.addPageResults(messageResources2019, document, pdfTocManager, true);
 					pdfBuilder.createMethodologyChapter(messageResources2019, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0, pdfBuilder.isBasicService());
-				} else if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad) {
-					observatoryPageResultsSectionBuilder.addPageResultsAccesibility(messageResourcesAccesibility, document, pdfTocManager, true);
 				} else if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
 					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, true);
 					pdfBuilder.createMethodologyChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0, pdfBuilder.isBasicService());
-				} else {
+				} else if (!(pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad)) {
 					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, false);
 					pdfBuilder.createMethodologyChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0, pdfBuilder.isBasicService());
 				}

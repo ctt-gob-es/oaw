@@ -9,6 +9,7 @@ import java.util.List;
 import org.w3c.dom.Element;
 
 import es.inteco.common.logging.Logger;
+import es.inteco.plugin.dao.DataBaseManager;
 
 /**
  * The Class TAnalisisAccesibilidadDAO.
@@ -23,21 +24,49 @@ public class TAnalisisAccesibilidadDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static void insert(Connection c, final Long idAnalisis, final List<Element> accessibilityLinks) throws SQLException {
-		// INSERT INTO t1 (a,b,c) VALUES (1,2,3) ON DUPLICATE KEY UPDATE c=c+1;
-		final String query = "INSERT INTO tanalisis_accesibilidad(id_rastreo, urls) VALUES (?,?) ON DUPLICATE KEY UPDATE  urls = ?";
-		StringBuilder urls = new StringBuilder("");
+		final String query = "INSERT INTO tanalisis_accesibilidad(id_analisis, url) VALUES (?,?) ON DUPLICATE KEY UPDATE  url = ?";
 		for (Element link : accessibilityLinks) {
-			urls.append(link.getAttribute("href"));
-			urls.append(",");
+			// Max URL size
+			String url = link.getAttribute("href");
+			if (url.length() > 256) {
+				url = link.getAttribute("href").substring(0, 256);
+			}
+			try (PreparedStatement ps = c.prepareStatement(query)) {
+				ps.setLong(1, idAnalisis);
+				ps.setString(2, url);
+				ps.setString(3, url);
+				ps.executeUpdate();
+			} catch (SQLException e) {
+				Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+				throw e;
+			}
+		}
+		DataBaseManager.closeConnection(c);
+	}
+
+	/**
+	 * Increment check ok.
+	 *
+	 * @param c                 the c
+	 * @param idAnalisis        the id analisis
+	 * @param accessibilityLink the accessibility link
+	 * @throws SQLException the SQL exception
+	 */
+	public static void incrementCheckOk(Connection c, final Long idAnalisis, final Element accessibilityLink) throws SQLException {
+		final String query = "UPDATE tanalisis_accesibilidad SET checks_ok = checks_ok +1 WHERE id_analisis = ? AND url = ?";
+		String url = accessibilityLink.getAttribute("href");
+		if (url.length() > 256) {
+			url = accessibilityLink.getAttribute("href").substring(0, 256);
 		}
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idAnalisis);
-			ps.setString(2, urls.toString());
-			ps.setString(3, urls.toString());
+			ps.setString(2, url);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
+		} finally {
+			DataBaseManager.closeConnection(c);
 		}
 	}
 
@@ -51,17 +80,20 @@ public class TAnalisisAccesibilidadDAO {
 	 */
 	public static String getUrls(Connection c, final Long idAnalisis) throws SQLException {
 		String urls = "";
-		final String query = "SELECT urls FROM tanalisis_accesibilidad WHERE id_rastreo = (SELECT cod_rastreo FROM tanalisis WHERE cod_analisis = ?)";
+		// Max ok
+		final String query = "SELECT url FROM tanalisis_accesibilidad WHERE id_analisis = (SELECT cod_rastreo FROM tanalisis WHERE cod_analisis = ?) ORDER BY checks_ok DESC limit 1";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idAnalisis);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
-					urls = rs.getString("urls");
+					urls = rs.getString("url");
 				}
 			}
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
+		} finally {
+			DataBaseManager.closeConnection(c);
 		}
 		return urls;
 	}

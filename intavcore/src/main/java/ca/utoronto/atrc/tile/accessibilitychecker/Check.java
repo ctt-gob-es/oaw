@@ -5945,7 +5945,11 @@ public class Check {
 				try {
 					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
 					if (document != null) {
-						hasSection |= AccesibilityDeclarationCheckUtils.hasSection(document, pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+						final boolean hasSection2 = AccesibilityDeclarationCheckUtils.hasSection(document, pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+						if (hasSection2) {
+							TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
+						}
+						hasSection |= hasSection2;
 					}
 				} catch (Exception e) {
 					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
@@ -6015,6 +6019,8 @@ public class Check {
 							try {
 								Pattern patterAutocomplete = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 								if (patterAutocomplete.matcher(textSection).find()) {
+									// TODO INCREMENT CHECK OK IN DB
+									TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 									return true;
 								}
 							} catch (Exception e) {
@@ -6087,6 +6093,8 @@ public class Check {
 						try {
 							Pattern patterAutocomplete = Pattern.compile(pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2()), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 							if (patterAutocomplete.matcher(textSection).find()) {
+								// TODO INCREMENT CHECK OK IN DB
+								TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 								return true;
 							}
 						} catch (Exception e) {
@@ -6162,6 +6170,8 @@ public class Check {
 								try {
 									Element link = (Element) linksC.item(i);
 									if (link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("mailto")) {
+										// TODO INCREMENT CHECK OK IN DB
+										TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 										return true;
 									}
 								} catch (Exception e) {
@@ -6227,6 +6237,8 @@ public class Check {
 							Element section = (Element) elements.get(j); // Get links ins section
 							final NodeList linksC = section.getElementsByTagName(checkCode.getFunctionAttribute2());
 							if (linksC.getLength() > 0) {
+								// TODO INCREMENT CHECK OK IN DB
+								TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 								return true;
 							}
 						}
@@ -6306,7 +6318,12 @@ public class Check {
 								String preparedYear = printMatches(preparedDate, "\\d{4}");
 								String reviewYear = printMatches(reviewDate, "\\d{4}");
 								SimpleDateFormat sdf = new SimpleDateFormat("YYYY");
-								return sdf.parse(reviewYear).compareTo(sdf.parse(preparedYear)) > 2;
+								final boolean dateComparision = sdf.parse(reviewYear).compareTo(sdf.parse(preparedYear)) > 2;
+								// TODO INCREMENT CHECK OK IN DB
+								if (dateComparision) {
+									TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
+								}
+								return dateComparision;
 							}
 						}
 						return false;
