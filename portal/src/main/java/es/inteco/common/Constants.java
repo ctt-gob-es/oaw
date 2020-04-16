@@ -1828,7 +1828,7 @@ public interface Constants {
 	/** The message resources une en2019. */
 	String MESSAGE_RESOURCES_UNE_EN2019 = "ApplicationResources-UNEEN2019";
 	/** The message resources accesibilidad. */
-	String MESSAGE_RESOURCES_ACCESIBILIDAD = "ApplicationResources-Accesibilidad";
+	String MESSAGE_RESOURCES_ACCESIBILIDAD = "ApplicationResources_es_AC";
 	/** The check global modality grpahics. */
 	String CHECK_GLOBAL_MODALITY_GRPAHICS = "checkGlobalModalityGrpahics";
 	/** The check global aspects grpahics. */

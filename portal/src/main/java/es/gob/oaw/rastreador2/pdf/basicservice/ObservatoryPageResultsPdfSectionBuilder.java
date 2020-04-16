@@ -19,7 +19,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -288,15 +287,18 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 				Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
 		String urls = "";
 		try {
+			// Only returns one value
 			urls = TAnalisisAccesibilidadDAO.getUrls(DataBaseManager.getConnection(), evaluationForm.getIdAnalysis());
-			if (urls != null && !org.apache.commons.lang3.StringUtils.isEmpty(urls)) {
-				java.util.List<String> list = Arrays.asList(urls.split(","));
-				com.lowagie.text.List PDFlist = new com.lowagie.text.List();
-				for (String str : list) {
-					PDFUtils.addListItem(str, PDFlist, ConstantsFont.noteCellFont, false, true, Element.ALIGN_LEFT);
-				}
-				table.addCell(PDFUtils.createListTableCell(PDFlist, Color.WHITE, Element.ALIGN_LEFT, DEFAULT_PADDING));
-			}
+			table.addCell(PDFUtils.createTableCell(urls, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));// if (urls != null &&
+																																				// !org.apache.commons.lang3.StringUtils.isEmpty(urls))
+																																				// {
+//				java.util.List<String> list = Arrays.asList(urls.split(","));
+//				com.lowagie.text.List PDFlist = new com.lowagie.text.List();
+//				for (String str : list) {
+//					PDFUtils.addListItem(str, PDFlist, ConstantsFont.noteCellFont, false, true, Element.ALIGN_LEFT);
+//				}
+//				table.addCell(PDFUtils.createListTableCell(PDFlist, Color.WHITE, Element.ALIGN_LEFT, DEFAULT_PADDING));
+//			}
 		} catch (Exception e) {
 			Logger.putLog("Error al obtener las urls de accesibilidad analizadas", ObservatoryPageResultsPdfSectionBuilder.class, Logger.LOG_LEVEL_ERROR);
 		}
@@ -550,7 +552,7 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 	 * @param pdfTocManager    the pdf toc manager
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private void addCheckCodesWithoutLevels(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter, final PdfTocManager pdfTocManager)
+	public void addCheckCodesWithoutLevels(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter, final PdfTocManager pdfTocManager)
 			throws IOException {
 		for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
 			if (hasProblems(priority)) {

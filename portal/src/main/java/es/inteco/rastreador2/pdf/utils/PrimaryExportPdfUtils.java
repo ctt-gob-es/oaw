@@ -262,7 +262,7 @@ public final class PrimaryExportPdfUtils {
 				if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad) {
 					if (pdfBuilder.isBasicService()) {
 						PDFUtils.addCoverPage(document, messageResourcesAccesibility.getMessage("pdf.accessibility.title", new String[] { seed.toUpperCase(), pdfBuilder.getTitle() }),
-								pdfBuilder.getBasicServiceForm().getName(), "Informe emitido bajo demanda.");
+								pdfBuilder.getBasicServiceForm().getName(), messageResources.getMessage("pdf.accessibility.on.demand"));
 					} else {
 						AnonymousResultExportPdfAccesibilidad.addCoverPage(document, messageResourcesAccesibility.getMessage("pdf.accessibility.title"),
 								messageResourcesAccesibility.getMessage("pdf.accessibility.subtitle"),
@@ -293,7 +293,7 @@ public final class PrimaryExportPdfUtils {
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 					if (pdfBuilder.isBasicService()) {
 						PDFUtils.addCoverPage(document, messageResources2019.getMessage("pdf.accessibility.title.basic.service", new String[] { seed.toUpperCase(), pdfBuilder.getTitle() }),
-								pdfBuilder.getBasicServiceForm().getName(), "Informe emitido bajo demanda.");
+								pdfBuilder.getBasicServiceForm().getName(), messageResources2019.getMessage("pdf.accessibility.on.demand"));
 					} else {
 						AnonymousResultExportPdfUNEEN2019.addCoverPage(document, messageResources2019.getMessage("pdf.accessibility.title"),
 								messageResources2019.getMessage("pdf.accessibility.subtitle"),
