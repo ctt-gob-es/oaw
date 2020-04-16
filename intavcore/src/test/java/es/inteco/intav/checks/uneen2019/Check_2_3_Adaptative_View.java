@@ -1,13 +1,13 @@
 /*******************************************************************************
-* Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
+* Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública,
 * This program is licensed and may be used, modified and redistributed under the terms
-* of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+* of the European Public License (EUPL), either version 1.2 or (at your option) any later
 * version as soon as they are approved by the European Commission.
-* Unless required by applicable law or agreed to in writing, software distributed under the 
-* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
-* ANY KIND, either express or implied. See the License for the specific language governing 
+* Unless required by applicable law or agreed to in writing, software distributed under the
+* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+* ANY KIND, either express or implied. See the License for the specific language governing
 * permissions and more details.
-* You should have received a copy of the EUPL1.2 license along with this program; if not, 
+* You should have received a copy of the EUPL1.2 license along with this program; if not,
 * you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
 ******************************************************************************/
 package es.inteco.intav.checks.uneen2019;
@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
@@ -107,19 +107,19 @@ public final class Check_2_3_Adaptative_View extends EvaluateCheck {
 	 */
 	@Test
 	public void evaluateResponsiveTags() throws Exception {
-		
-		Evaluation evaluation;		
+
+		Evaluation evaluation;
 
 		checkAccessibility.setContent(
 				"<html><head><style> body { line-height: 1em !important; letter-spacing:1em !important; word-spacing:1em !important; }</style><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
 		evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 		Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 479));
-		
+
 		checkAccessibility.setContent(
 				"<html><head><style> body { flex-grow: 2; line-height: 1em !important; letter-spacing:1em !important; word-spacing:1em !important; }</style><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
 		evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 		Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 479));
-		
+
 		checkAccessibility.setContent(
 				"<html><head><link href=\"http://tawmonitorurl.local/check22.css\" rel=\"stylesheet\" type=\"text/css\"/><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
 		evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");

@@ -71,7 +71,7 @@ public class ExportObservatoryDDBB {
 
     private static Connection conectarSistemaDDBB() throws SQLException, ClassNotFoundException {
         //Obtenemos el Driver de la BBDD
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");
         //Obtenemos conexion a la BBDD
         Connection conn = DriverManager.getConnection("jdbc:mysql://172.23.52.30:3306/produccion_sistema", "root", "admin");
 
@@ -80,7 +80,7 @@ public class ExportObservatoryDDBB {
 
     private static Connection conectarIntavDDBB() throws SQLException, ClassNotFoundException {
         //Obtenemos el Driver de la BBDD
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");
         //Obtenemos conexion a la BBDD
         Connection conn = DriverManager.getConnection("jdbc:mysql://172.23.52.30:3306/produccion_intav", "root", "admin");
 
@@ -89,7 +89,7 @@ public class ExportObservatoryDDBB {
 
     private static Connection conectarMultilanguageDDBB() throws SQLException, ClassNotFoundException {
         //Obtenemos el Driver de la BBDD
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");
         //Obtenemos conexion a la BBDD
         Connection conn = DriverManager.getConnection("jdbc:mysql://172.23.52.30:3306/produccion_multilanguage", "root", "admin");
 

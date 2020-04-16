@@ -1,6 +1,6 @@
 package es.gob.oaw.basicservice.historico;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 import es.gob.oaw.basicservice.historico.BasicServiceResultado;
 import es.gob.oaw.basicservice.historico.CheckHistoricoService;

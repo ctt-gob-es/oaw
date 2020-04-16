@@ -1,14 +1,14 @@
 
 /*******************************************************************************
-* Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
+* Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública,
 * This program is licensed and may be used, modified and redistributed under the terms
-* of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+* of the European Public License (EUPL), either version 1.2 or (at your option) any later
 * version as soon as they are approved by the European Commission.
-* Unless required by applicable law or agreed to in writing, software distributed under the 
-* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
-* ANY KIND, either express or implied. See the License for the specific language governing 
+* Unless required by applicable law or agreed to in writing, software distributed under the
+* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+* ANY KIND, either express or implied. See the License for the specific language governing
 * permissions and more details.
-* You should have received a copy of the EUPL1.2 license along with this program; if not, 
+* You should have received a copy of the EUPL1.2 license along with this program; if not,
 * you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
 ******************************************************************************/
 import java.io.ByteArrayInputStream;
@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.CheckerParser;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
@@ -586,7 +586,7 @@ public class TestCrawl {
 
 	/**
 	 * Comprueba si en los dominios registrados por el crawler existe una URL del mismo directorio que la URL dada.
-	 * 
+	 *
 	 * Se excluye la comprobación si el directorio de la URL es el raiz de la página.
 	 *
 	 * @param domain  Dominio de la página.
@@ -745,7 +745,7 @@ public class TestCrawl {
 
 	/**
 	 * Check if content is not an HTML
-	 * 
+	 *
 	 * This is mandatory if this page is passed by JS renderer that sometimes returns XML or other content no HTML as HTML header.
 	 *
 	 * @param textContent the text content

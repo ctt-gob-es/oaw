@@ -1,4 +1,5 @@
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
+
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
 import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
