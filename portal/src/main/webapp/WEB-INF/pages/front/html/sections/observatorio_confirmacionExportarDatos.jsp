@@ -23,6 +23,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
         </div>
 
         <div id="container_der">
+        
+        flksdbfkljsdbklfjb
 
             <div id="migas">
                 <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
@@ -47,8 +49,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
                     <jsp:useBean id="params" class="java.util.HashMap" />
                     <bean:parameter id="id_observatorio" name="<%=Constants.ID_OBSERVATORIO %>"/>
                     <bean:parameter id="idExObs" name="<%= Constants.ID_EX_OBS %>" />
+                    <bean:parameter id="idCartucho" name="<%= Constants.ID_CARTUCHO %>" />
                     <c:set target="${params}" property="id_observatorio" value="${id_observatorio}" />
                     <c:set target="${params}" property="idExObs" value="${idExObs}" />
+                    <c:set target="${params}" property="idCartucho" value="${idCartucho}" />
                     <html:link styleClass="btn btn-primary btn-lg" forward="databaseExportActionExport" name="params"><bean:message key="boton.aceptar"/></html:link>
                     <html:link styleClass="btn btn-default btn-lg" forward="observatoryMenu" ><bean:message key="boton.cancelar"/></html:link>
                 </div>
