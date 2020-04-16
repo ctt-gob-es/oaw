@@ -117,7 +117,7 @@ public class ExportObservatoryDDBB {
         bw.write("CREATE TABLE lista (id_lista bigint(20) NOT NULL auto_increment," +
                 "nombre varchar(255) NOT NULL,lista text NOT NULL," +
                 "id_categoria bigint(20) default NULL, acronimo varchar(25) default NULL," +
-                "dependencia varchar(255) default NULL, PRIMARY KEY (id_lista), " +
+                " PRIMARY KEY (id_lista), " +
                 "KEY id_categoria (id_categoria)," +
                 "FOREIGN KEY (id_categoria) REFERENCES categorias_lista (id_categoria) ON DELETE CASCADE) " +
                 "ENGINE=InnoDB;");
@@ -214,15 +214,9 @@ public class ExportObservatoryDDBB {
             String query = "INSERT INTO lista VALUES(" + rs.getString("id_lista") + ",'" + replaceSpecialChars(rs.getString("nombre")) + "','"
                     + rs.getString("lista") + "'," + rs.getString("id_categoria");
             if (rs.getString("acronimo") != null) {
-                query += ",'" + rs.getString("acronimo") + "',";
+                query += ",'" + rs.getString("acronimo") + "');";
             } else {
-                query += "," + rs.getString("acronimo") + ",";
-            }
-
-            if (rs.getString("dependencia") != null) {
-                query += " '" + rs.getString("dependencia") + "');";
-            } else {
-                query += rs.getString("dependencia") + ");";
+                query += "," + rs.getString("acronimo") + ");";
             }
 
             bw.write(query + "\n");

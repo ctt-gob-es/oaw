@@ -532,7 +532,7 @@ public class SeedCategoriesAction extends Action {
 			try (Connection c = DataBaseManager.getConnection()) {
 				semillaForm.setListaUrlsString(semillaForm.getListaUrlsString().replace("\r\n", ";"));
 				final Long idSeed = SemillaDAO.insertList(c, 4, semillaForm.getNombre(), semillaForm.getListaUrlsString(), semillaForm.getCategoria().getId(), null, null, null,
-						semillaForm.getAcronimo(), null);
+						semillaForm.getAcronimo());
 				final List<ObservatorioForm> observatoryIds = ObservatorioDAO.getObservatoriesFromCategory(c, semillaForm.getCategoria().getId());
 				for (ObservatorioForm observatorioForm : observatoryIds) {
 					if (observatorioForm.getCategoria() != null && Arrays.asList(observatorioForm.getCategoria()).contains(semillaForm.getCategoria().getId())) {
