@@ -2391,6 +2391,13 @@ public final class ObservatorioDAO {
 						psCR.setLong(2, id);
 						psCR.executeUpdate();
 						addFullfilledCrawl(c, idExObs, id);
+					} catch (Exception e) {
+						// Remove prevoius insert
+						try (PreparedStatement psCR = c.prepareStatement("DELETE FROM cartucho_rastreo WHERE id_cartucho=? AND id_rastreo = ?")) {
+							psCR.setLong(1, idCartucho);
+							psCR.setLong(2, id);
+							psCR.executeUpdate();
+						}
 					}
 				} else {
 					// Insert into RASTREO
@@ -2426,6 +2433,13 @@ public final class ObservatorioDAO {
 								psCR.setLong(2, id);
 								psCR.executeUpdate();
 								addFullfilledCrawl(c, idExObs, id);
+							} catch (Exception e) {
+								// Remove prevoius insert
+								try (PreparedStatement psCR = c.prepareStatement("DELETE FROM cartucho_rastreo WHERE id_cartucho=? AND id_rastreo = ?")) {
+									psCR.setLong(1, idCartucho);
+									psCR.setLong(2, id);
+									psCR.executeUpdate();
+								}
 							}
 						} else {
 							// error??

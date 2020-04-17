@@ -2832,14 +2832,17 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
 			int countC = 0;
 			int countNC = 0;
+			int countNA = 0;
 			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
 				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
 					countC++;
 				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
 					countNC++;
+				} else {
+					countNA++;
 				}
 			}
-			if (countC == result.getValue().size()) {
+			if ((countC + countNA) == result.getValue().size()) {
 				totalC++;
 			} else if (countC > countNC) {
 				totalPC++;
@@ -2996,14 +2999,17 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
 			int countC = 0;
 			int countNC = 0;
+			int countNA = 0;
 			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
 				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
 					countC++;
 				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
 					countNC++;
+				} else {
+					countNA++;
 				}
 			}
-			if (countC == result.getValue().size()) {
+			if ((countC + countNA) == result.getValue().size()) {
 				totalC++;
 			} else if (countC > countNC) {
 				totalPC++;
@@ -3045,16 +3051,19 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
 				int countC = 0;
 				int countNC = 0;
+				int countNA = 0;
 				for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
 					if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
 						countC++;
 					} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
 						countNC++;
+					} else {
+						countNA++;
 					}
 				}
-				if (countC == result.getValue().size()) {
+				if ((countC + countNA) == result.getValue().size()) {
 					totalC++;
-				} else if (countC > countNC) {
+				} else if ((countC + countNA) > countNC) {
 					totalPC++;
 				} else {
 					totalNC++;
@@ -3974,7 +3983,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		final Map<CategoriaForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<>(new Comparator<CategoriaForm>() {
 			@Override
 			public int compare(CategoriaForm o1, CategoriaForm o2) {
-				return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
+				return (Long.valueOf(o1.getOrden()).compareTo(Long.valueOf(o2.getOrden())));
+//				return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
 			}
 		});
 		for (CategoriaForm category : categories) {
@@ -4024,7 +4034,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		final Map<CategoriaForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<>(new Comparator<CategoriaForm>() {
 			@Override
 			public int compare(CategoriaForm o1, CategoriaForm o2) {
-				return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
+				return (Long.valueOf(o1.getOrden()).compareTo(Long.valueOf(o2.getOrden())));
+//				return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
 			}
 		});
 		for (CategoriaForm category : categories) {
@@ -4075,7 +4086,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			final Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = new TreeMap<>(new Comparator<CategoriaForm>() {
 				@Override
 				public int compare(CategoriaForm o1, CategoriaForm o2) {
-					return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
+					return (Long.valueOf(o1.getOrden()).compareTo(Long.valueOf(o2.getOrden())));
+//					return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
 				}
 			});
 			for (CategoriaForm category : categories) {
