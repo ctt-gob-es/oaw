@@ -88,7 +88,7 @@ public class TestCrawl {
 		mysqlDataSource.setUser("root");
 		mysqlDataSource.setPassword("root");
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.DEBUG);
+		//org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.DEBUG);
 	}
 
 	/**
