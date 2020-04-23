@@ -20,8 +20,8 @@ services:
   
   mysql:
     build:
-      context: ./database
-      dockerfile: testdb-dockerfile
+      context: ..
+      dockerfile: ./docker/database/testdb-dockerfile
     restart: always
     environment:
       #MYSQL_DATABASE: 'oaw'

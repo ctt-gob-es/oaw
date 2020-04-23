@@ -71,13 +71,13 @@ RUN { \
 
 
 # Copy bootstrap data into image to preseed the database at startup
-COPY testdb-bootstrap.sql /docker-entrypoint-initdb.d/init.sql
+COPY database/migrations/V5.0.4__create_and_seed_all_tables.sql /docker-entrypoint-initdb.d/init.sql
 RUN chmod 444 /docker-entrypoint-initdb.d/init.sql
 
 # Config files
-COPY config/ /etc/mysql/
+COPY docker/database/config/ /etc/mysql/
 
-COPY testdb-docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY docker/database/testdb-docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod 555 /usr/local/bin/docker-entrypoint.sh
 RUN ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat
 
