@@ -52,19 +52,39 @@ import es.inteco.rastreador2.export.database.form.SiteForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
 
+/**
+ * The Class AnnexUtils.
+ */
 public final class AnnexUtils {
+	/** The Constant EMPTY_STRING. */
 	private static final String EMPTY_STRING = "";
+	/** The Constant RESULTADOS_ELEMENT. */
 	private static final String RESULTADOS_ELEMENT = "resultados";
+	/** The Constant NOMBRE_ELEMENT. */
 	private static final String NOMBRE_ELEMENT = "nombre";
+	/** The Constant CATEGORIA_ELEMENT. */
 	private static final String CATEGORIA_ELEMENT = "categoria";
+	/** The Constant DEPENDE_DE_ELEMENT. */
 	private static final String DEPENDE_DE_ELEMENT = "depende_de";
+	/** The Constant PORTAL_ELEMENT. */
 	private static final String PORTAL_ELEMENT = "portal";
 
+	/**
+	 * Instantiates a new annex utils.
+	 */
 	private AnnexUtils() {
 	}
 	// Anexos sin iteraciones
 	// *************************************************************************************
 
+	/**
+	 * Creates the annex paginas.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @throws Exception the exception
+	 */
 	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_paginas.xml")) {
 			final ContentHandler hd = getContentHandler(writer);
@@ -114,6 +134,14 @@ public final class AnnexUtils {
 		}
 	}
 
+	/**
+	 * Creates the annex portales.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @throws Exception the exception
+	 */
 	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_portales.xml")) {
 			final ContentHandler hd = getContentHandler(writer);
@@ -155,6 +183,14 @@ public final class AnnexUtils {
 		}
 	}
 
+	/**
+	 * Gets the file writer.
+	 *
+	 * @param idOperation the id operation
+	 * @param filename    the filename
+	 * @return the file writer
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static FileWriter getFileWriter(final Long idOperation, final String filename) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + filename);
@@ -164,11 +200,26 @@ public final class AnnexUtils {
 		return new FileWriter(file);
 	}
 
+	/**
+	 * Gets the content handler.
+	 *
+	 * @param writer the writer
+	 * @return the content handler
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static ContentHandler getContentHandler(final FileWriter writer) throws IOException {
 		final XMLSerializer serializer = new XMLSerializer(writer, new OutputFormat("XML", "UTF-8", true));
 		return serializer.asContentHandler();
 	}
 
+	/**
+	 * Write tag.
+	 *
+	 * @param contentHandler the content handler
+	 * @param tagName        the tag name
+	 * @param text           the text
+	 * @throws SAXException the SAX exception
+	 */
 	private static void writeTag(final ContentHandler contentHandler, final String tagName, final String text) throws SAXException {
 		contentHandler.startElement(EMPTY_STRING, EMPTY_STRING, tagName, null);
 		if (text != null) {
@@ -177,6 +228,12 @@ public final class AnnexUtils {
 		contentHandler.endElement(EMPTY_STRING, EMPTY_STRING, tagName);
 	}
 
+	/**
+	 * Creates the annex map.
+	 *
+	 * @param idObsExecution the id obs execution
+	 * @return the map
+	 */
 	private static Map<Long, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution) {
 		final Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
 		try (Connection c = DataBaseManager.getConnection()) {
@@ -214,6 +271,13 @@ public final class AnnexUtils {
 		return seedMap;
 	}
 
+	/**
+	 * Change level name.
+	 *
+	 * @param name             the name
+	 * @param messageResources the message resources
+	 * @return the string
+	 */
 	private static String changeLevelName(final String name, final MessageResources messageResources) {
 		if (name.equalsIgnoreCase(messageResources.getMessage("resultados.anonimos.num.portales.aa.old"))) {
 			return messageResources.getMessage("resultados.anonimos.num.portales.aa");

@@ -15,7 +15,24 @@
 ******************************************************************************/
 package es.inteco.rastreador2.intav.utils;
 
-import ca.utoronto.atrc.tile.accessibilitychecker.*;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
+
+import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
+import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
+import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import ca.utoronto.atrc.tile.accessibilitychecker.Guideline;
+import ca.utoronto.atrc.tile.accessibilitychecker.GuidelineGroup;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.intav.datos.AnalisisDatos;
@@ -32,21 +49,17 @@ import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
-import org.apache.struts.util.LabelValueBean;
-import org.apache.struts.util.MessageResources;
-
-import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 
 /**
  * The Class IntavUtils.
  */
 public final class IntavUtils {
+	/** The result L 1. */
+	private static Map<String, BigDecimal> resultL1;
+	/** The result L 2. */
+	private static Map<String, BigDecimal> resultL2;
+
 	/**
 	 * Instantiates a new intav utils.
 	 */
@@ -56,8 +69,9 @@ public final class IntavUtils {
 	/**
 	 * Calculate score.
 	 *
-	 * @param request     the request
-	 * @param idExecution the id execution
+	 * @param request         the request
+	 * @param idExecution     the id execution
+	 * @param messageReources the message reources
 	 * @return the score form
 	 */
 	public static ScoreForm calculateScore(HttpServletRequest request, long idExecution, MessageResources messageReources) {
@@ -81,9 +95,10 @@ public final class IntavUtils {
 	/**
 	 * Generate scores.
 	 *
-	 * @param request      the request
-	 * @param conn         the conn
-	 * @param listAnalysis the list analysis
+	 * @param request         the request
+	 * @param conn            the conn
+	 * @param listAnalysis    the list analysis
+	 * @param messageReources the message reources
 	 * @return the score form
 	 * @throws Exception the exception
 	 */
@@ -139,10 +154,8 @@ public final class IntavUtils {
 			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(listAnalysis.size()), 2, BigDecimal.ROUND_HALF_UP));
 		}
 		// El nivel de validación del portal
-		//scoreForm.setLevel(getValidationLevel(scoreForm, CrawlerUtils.getResources(request)));
-		
+		// scoreForm.setLevel(getValidationLevel(scoreForm, CrawlerUtils.getResources(request)));
 		scoreForm.setLevel(getValidationLevel(scoreForm, messageReources));
-
 		return scoreForm;
 	}
 
@@ -273,5 +286,134 @@ public final class IntavUtils {
 		} else {
 			return messageResources.getMessage("resultados.anonimos.num.portales.a");
 		}
+	}
+
+	/**
+	 * Generate scores 2.
+	 *
+	 * @param messageResources the message resources
+	 * @param evaList          the eva list
+	 * @return the score form
+	 */
+	public static ScoreForm generateScores2(final MessageResources messageResources, final java.util.List<ObservatoryEvaluationForm> evaList) {
+		final ScoreForm scoreForm = new ScoreForm();
+		int suitabilityGroups = 0;
+		BigDecimal totalScore = new BigDecimal(0);
+		for (ObservatoryEvaluationForm evaluationForm : evaList) {
+			scoreForm.setTotalScore(scoreForm.getTotalScore().add(evaluationForm.getScore()));
+			// Codigo duplicado en IntavUtils
+			final String pageSuitabilityLevel = ObservatoryUtils.pageSuitabilityLevel(evaluationForm);
+			if (pageSuitabilityLevel.equals(Constants.OBS_AA)) {
+				scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().add(BigDecimal.TEN));
+			} else if (pageSuitabilityLevel.equals(Constants.OBS_A)) {
+				scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().add(new BigDecimal(5)));
+			}
+			for (ObservatoryLevelForm levelForm : evaluationForm.getGroups()) {
+				suitabilityGroups = levelForm.getSuitabilityGroups().size();
+				if (levelForm.getName().equalsIgnoreCase("priority 1")) {
+					scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().add(levelForm.getScore()));
+				} else if (levelForm.getName().equalsIgnoreCase("priority 2")) {
+					scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().add(levelForm.getScore()));
+				}
+				for (ObservatorySuitabilityForm suitabilityForm : levelForm.getSuitabilityGroups()) {
+					if (suitabilityForm.getName().equalsIgnoreCase("A")) {
+						scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().add(suitabilityForm.getScore()));
+					} else if (suitabilityForm.getName().equalsIgnoreCase("AA")) {
+						scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().add(suitabilityForm.getScore()));
+					}
+				}
+			}
+		}
+		// scoreForm.setTotalScore(scoreForm.getScoreLevelA().add(scoreForm.getScoreLevelAA()).divide(new BigDecimal(2)));
+		generateScoresVerificacion(messageResources, scoreForm, evaList);
+		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(evaList, Constants.OBS_PRIORITY_NONE);
+		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
+		/**
+		 * for (ResultadoSemillaForm seedResult : seedsResults) { seedResult.setCompliance(calculatedCompliance.get(Long.parseLong(seedResult.getIdFulfilledCrawling()))); }
+		 */
+		if (!evaList.isEmpty()) {
+			scoreForm.setTotalScore(scoreForm.getTotalScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+//			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+//			scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			// TODO Calculate mid from score verificatrion
+			BigDecimal sumL1 = new BigDecimal(0);
+			int countNA = 0;
+			for (Entry<String, BigDecimal> entry : resultL1.entrySet()) {
+				if (entry.getValue().compareTo(new BigDecimal(0)) < 0) {
+					countNA++;
+				}
+				sumL1 = sumL1.add(entry.getValue());
+			}
+			scoreForm.setScoreLevelA(sumL1.divide(new BigDecimal(resultL1.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevel1(sumL1.divide(new BigDecimal(resultL1.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
+			// scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
+			// TODO Calculate mid from score verificatrion
+			BigDecimal sumL2 = new BigDecimal(0);
+			countNA = 0;
+			for (Entry<String, BigDecimal> entry : resultL2.entrySet()) {
+				if (entry.getValue().compareTo(new BigDecimal(0)) < 0) {
+					countNA++;
+				}
+				sumL2 = sumL2.add(entry.getValue());
+			}
+			scoreForm.setScoreLevel2(sumL2.divide(new BigDecimal(resultL2.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevelAA(sumL2.divide(new BigDecimal(resultL2.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
+			// scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			// REVIEW Calculated compliance
+			scoreForm.setCompliance(calculatedCompliance.get(evaList.get(0).getCrawlerExecutionId()));
+		}
+		// El nivel de validación del portal
+		scoreForm.setLevel(getValidationLevel(scoreForm, messageResources));
+		return scoreForm;
+	}
+
+	/**
+	 * Generate scores verificacion.
+	 *
+	 * @param messageResources the message resources
+	 * @param scoreForm        the score form
+	 * @param evaList          the eva list
+	 */
+	protected static void generateScoresVerificacion(MessageResources messageResources, ScoreForm scoreForm, java.util.List<ObservatoryEvaluationForm> evaList) {
+		resultL1 = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_1);
+		resultL2 = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_2);
+		final java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioUNEEN2019Utils.infoLevelIVerificationMidsComparison(messageResources, resultL1);
+		final java.util.List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioUNEEN2019Utils.infoLevelIIVerificationMidsComparison(messageResources, resultL2);
+		scoreForm.setVerifications1(labelsL1);
+		scoreForm.setVerifications2(labelsL2);
+	}
+
+	/**
+	 * Calculate crawling compliance.
+	 *
+	 * @param results the results
+	 * @return the map
+	 */
+	private static Map<Long, String> calculateCrawlingCompliance(Map<Long, Map<String, BigDecimal>> results) {
+		final Map<Long, String> resultCompilance = new TreeMap<>();
+		// Process results
+		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
+			int countC = 0;
+			int countNC = 0;
+			int countNA = 0;
+			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
+				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
+					countC++;
+				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
+					countNC++;
+				} else {
+					countNA++;
+				}
+			}
+			if ((countC + countNA) == result.getValue().size()) {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_FULL);
+			} else if ((countC + countNA) > countNC) {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_PARTIAL);
+			} else {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_NONE);
+			}
+		}
+		return resultCompilance;
 	}
 }

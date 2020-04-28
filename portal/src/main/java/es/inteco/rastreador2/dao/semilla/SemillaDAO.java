@@ -3401,7 +3401,7 @@ public final class SemillaDAO {
 			for (SemillaForm semillaForm : semillas) {
 				if (semillaForm.getId() != null) {
 					ps = c.prepareStatement(
-							"INSERT INTO lista (id_lista,id_tipo_lista, nombre, lista, id_categoria, id_ambito, id_complejidad, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE id_lista=LAST_INSERT_ID(id_lista), id_tipo_lista = ?, nombre = ?, lista = ?, id_categoria = ?, id_ambito=?, id_complejidad= ?, acronimo = ?, activa = ?, in_directory= ?, eliminar=?",
+							"INSERT INTO lista (id_lista,id_tipo_lista, nombre, lista, id_categoria, id_ambito, id_complejidad, acronimo, activa, in_directory, eliminar, observaciones) VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE id_lista=LAST_INSERT_ID(id_lista), id_tipo_lista = ?, nombre = ?, lista = ?, id_categoria = ?, id_ambito=?, id_complejidad= ?, acronimo = ?, activa = ?, in_directory= ?, eliminar=?, observaciones=?",
 							Statement.RETURN_GENERATED_KEYS);
 					ps.setLong(1, semillaForm.getId());
 					ps.setInt(2, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
@@ -3430,35 +3430,37 @@ public final class SemillaDAO {
 					} else {
 						ps.setBoolean(11, true);
 					}
-					ps.setInt(12, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
-					ps.setString(13, semillaForm.getNombre());
-					ps.setString(14, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
-					ps.setString(15, semillaForm.getCategoria().getId());
-					ps.setString(16, semillaForm.getAmbito().getId());
-					ps.setString(17, semillaForm.getComplejidad().getId());
+					ps.setString(12, semillaForm.getObservaciones());
+					ps.setInt(13, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+					ps.setString(14, semillaForm.getNombre());
+					ps.setString(15, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
+					ps.setString(16, semillaForm.getCategoria().getId());
+					ps.setString(17, semillaForm.getAmbito().getId());
+					ps.setString(18, semillaForm.getComplejidad().getId());
 					if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
-						ps.setString(18, semillaForm.getAcronimo());
+						ps.setString(19, semillaForm.getAcronimo());
 					} else {
-						ps.setString(18, null);
+						ps.setString(19, null);
 					}
 					if (StringUtils.isNotEmpty(semillaForm.getActivaStr()) && semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
-						ps.setBoolean(19, false);
-					} else {
-						ps.setBoolean(19, true);
-					}
-					if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr()) && semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
 						ps.setBoolean(20, false);
 					} else {
 						ps.setBoolean(20, true);
 					}
-					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr()) && semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+					if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr()) && semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
 						ps.setBoolean(21, false);
 					} else {
 						ps.setBoolean(21, true);
 					}
+					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr()) && semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(22, false);
+					} else {
+						ps.setBoolean(22, true);
+					}
+					ps.setString(23, semillaForm.getObservaciones());
 				} else {
 					ps = c.prepareStatement(
-							"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, id_ambito, id_complejidad, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?,?,?)",
+							"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, id_ambito, id_complejidad, acronimo, activa, in_directory, eliminar,observaciones) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
 							Statement.RETURN_GENERATED_KEYS);
 					ps.setInt(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 					ps.setString(2, semillaForm.getNombre());
@@ -3486,6 +3488,7 @@ public final class SemillaDAO {
 					} else {
 						ps.setBoolean(10, false);
 					}
+					ps.setString(11, semillaForm.getObservaciones());
 				}
 				int affectedRows = ps.executeUpdate();
 				if (affectedRows == 0) {

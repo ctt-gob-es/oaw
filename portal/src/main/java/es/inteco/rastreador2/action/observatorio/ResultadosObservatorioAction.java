@@ -31,6 +31,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
+import org.apache.struts.util.MessageResources;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -377,9 +378,15 @@ public class ResultadosObservatorioAction extends Action {
 	private ActionForward getAnnexes(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		try {
 			final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+			final Long idCartucho = Long.valueOf(request.getParameter(Constants.ID_CARTUCHO));
 			final Long idOperation = System.currentTimeMillis();
-			AnnexUtils.createAnnexPaginas(CrawlerUtils.getResources(request), idObsExecution, idOperation);
-			AnnexUtils.createAnnexPortales(CrawlerUtils.getResources(request), idObsExecution, idOperation);
+			MessageResources resources = CrawlerUtils.getResources(request);
+			final String application = CartuchoDAO.getApplication(DataBaseManager.getConnection(), idCartucho);
+			if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
+				resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
+			}
+			AnnexUtils.createAnnexPaginas(resources, idObsExecution, idOperation);
+			AnnexUtils.createAnnexPortales(resources, idObsExecution, idOperation);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
 			final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";
