@@ -397,7 +397,7 @@ public final class ObservatoryUtils {
 					if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
 						seedResult.setNivel(IntavUtils.generateScores(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), paginas).getLevel());
 					} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
-						seedResult.setNivel(IntavUtils.generateScores(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019), paginas).getLevel());
+						seedResult.setNivel(IntavUtils.generateScores2(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019), paginas).getLevel());
 					} else if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
 						seedResult.setNivel(IntavUtils.generateScores(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B), paginas).getLevel());
 					} else {

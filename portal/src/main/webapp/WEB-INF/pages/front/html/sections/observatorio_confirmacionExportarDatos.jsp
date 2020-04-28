@@ -24,8 +24,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
         <div id="container_der">
         
-        flksdbfkljsdbklfjb
-
             <div id="migas">
                 <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
                 <ol class="breadcrumb">

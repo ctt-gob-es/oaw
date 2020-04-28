@@ -865,6 +865,8 @@ public final class EvaluatorUtility {
 				cssUrl = new URL(styleSheet.getAttribute("href"));
 			}
 			final HttpURLConnection connection = EvaluatorUtils.getConnection(cssUrl.toString(), "GET", true);
+			// TODO Add accept text/css to prevent some cases that text/html accpet produces 406 on server
+			connection.setRequestProperty("Accept", "text/css;text/html");
 			connection.connect();
 			int responseCode = connection.getResponseCode();
 			if (responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
