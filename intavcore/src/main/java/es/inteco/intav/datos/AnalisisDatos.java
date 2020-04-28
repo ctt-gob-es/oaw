@@ -59,7 +59,7 @@ public final class AnalisisDatos {
 			// Encode BASE64 code
 			String codigoFuente = analisis.getSource();
 			if (!StringUtils.isEmpty(codigoFuente)) {
-				codigoFuente = new String(Base64.encodeBase64(codigoFuente.getBytes()));
+				codigoFuente = new String(Base64.encodeBase64(codigoFuente.getBytes("UTF-8")));
 			}
 			pstmt.setString(7, codigoFuente);
 			pstmt.executeUpdate();
@@ -168,8 +168,11 @@ public final class AnalisisDatos {
 	public static Analysis getAnalisisFromId(Connection conn, long id) {
 		final Analysis analisis = new Analysis();
 		// Decode base 64 cod_fuente
+//		try (PreparedStatement pstmt = conn.prepareStatement(
+//				"SELECT COD_ANALISIS,FEC_ANALISIS,COD_URL,NOM_ENTIDAD,COD_RASTREO,DES_GUIDELINE,CHECKS_EJECUTADOS, FROM_BASE64(COD_FUENTE) as COD_FUENTE FROM tanalisis A INNER JOIN tguidelines G ON A.cod_guideline = G.cod_guideline "
+//						+ "WHERE cod_analisis = ?;")) {
 		try (PreparedStatement pstmt = conn.prepareStatement(
-				"SELECT COD_ANALISIS,FEC_ANALISIS,COD_URL,NOM_ENTIDAD,COD_RASTREO,DES_GUIDELINE,CHECKS_EJECUTADOS, FROM_BASE64(COD_FUENTE) as COD_FUENTE FROM tanalisis A INNER JOIN tguidelines G ON A.cod_guideline = G.cod_guideline "
+				"SELECT COD_ANALISIS,FEC_ANALISIS,COD_URL,NOM_ENTIDAD,COD_RASTREO,DES_GUIDELINE,CHECKS_EJECUTADOS, COD_FUENTE as COD_FUENTE FROM tanalisis A INNER JOIN tguidelines G ON A.cod_guideline = G.cod_guideline "
 						+ "WHERE cod_analisis = ?;")) {
 			pstmt.setLong(1, id);
 			try (ResultSet rs = pstmt.executeQuery()) {
@@ -181,7 +184,9 @@ public final class AnalisisDatos {
 					analisis.setTracker(rs.getLong("COD_RASTREO"));
 					analisis.setGuideline(rs.getString("DES_GUIDELINE"));
 					analisis.setChecksExecutedStr(rs.getString("CHECKS_EJECUTADOS"));
-					analisis.setSource(rs.getString("COD_FUENTE"));
+					// DECODE JAVA
+					analisis.setSource(new String(Base64.decodeBase64(rs.getString("COD_FUENTE").getBytes())));
+					// analisis.setSource(rs.getString("COD_FUENTE"));
 				} else {
 					return null;
 				}
@@ -302,11 +307,11 @@ public final class AnalisisDatos {
 		final List<CSSDTO> evaluationIds = new ArrayList<>();
 		try (Connection conn = DataBaseManager.getConnection();
 				// Decode codigo BASE64
-				PreparedStatement pstmt = conn.prepareStatement("SELECT url, FROM_BASE64(codigo) AS codigo FROM tanalisis_css t WHERE cod_analisis = ?")) {
+				PreparedStatement pstmt = conn.prepareStatement("SELECT url, codigo AS codigo FROM tanalisis_css t WHERE cod_analisis = ?")) {
 			pstmt.setLong(1, idCodAnalisis);
 			try (ResultSet rs = pstmt.executeQuery()) {
 				while (rs.next()) {
-					evaluationIds.add(new CSSDTO(rs.getString(1), rs.getString(2)));
+					evaluationIds.add(new CSSDTO(rs.getString(1), new String(Base64.decodeBase64(rs.getString(2).getBytes()))));
 				}
 			}
 		} catch (Exception ex) {

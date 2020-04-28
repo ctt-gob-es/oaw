@@ -1,3 +1,8 @@
+5.0.5
+------------------------------------------------------------------------------------------------------------------------------------
+- Modificada la decodificación del los códigos fuentes almacenados que se hacía en el servidor MySQL para hacerlo en la codigo Java
+- Añadida a las cabeceras de las peticiones de CSS en el "Accept" el valor "text/css" para evitar 406 en algunas páginas por sólo aceptar "text/html"
+
 5.0.4
 ------------------------------------------------------------------------------------------------------------------------------------
 - Corregida la visualización de las estadísticas del servicio de diagnóstico en Internet Explorer
@@ -7,13 +12,15 @@
 - Modificada la exportación/importación de semillas para incluir las observaciones de semillas
 - Corregido el cálculo de la puntuación media por verificación para sacar la media de las verificaciones redondeada
 - Corregida edición de semillas en las que las etiquetas seguían paginadas y desaparecían en la edición
-- Corregido el cĺculo del cumplimiento estimado que no tenía en cuenta los "No aplica" a la hora de comprobar si todas las verificacione estaban conformes
+- Corregido el cáĺculo del cumplimiento estimado que no tenía en cuenta los "No aplica" a la hora de comprobar si todas las verificacione estaban conformes
 - Corregido el cáculo de la evolución del nivel de cumplimiento
 - Corregido el informe agregado que insertaba gráficos de segmentos cuando eran más de 4 (ya que se hacen varios gráficos y sólo incluía el primero)
 - Corregido el informe agregado que se reemplazaban mal un valor en la tabla "Conformidad de verificación. Nivel de adecuación A"
 - Modificados literales de los gráficos opcionales a incluir en el informe agregado
 - Modificados los literales "Totalmente conforme" por "Parcialmente conforme"
 - Modificados los gráficos de puntaciones por aspecto para hacer coincidir el orden de la tabla con el de la gráfica
+- Modificado el informe individual del cartucho de accesibilidad
+- Modificada la generación de informes agregados en el cartucho UNE-EN301549:2019 dado que tardaba demasiado en generarse y finalizaba la conexión antes se envía enlace al fichero por email al terminar el proceso.
 
 5.0.3
 ------------------------------------------------------------------------------------------------------------------------------------
