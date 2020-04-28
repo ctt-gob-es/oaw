@@ -87,7 +87,9 @@ import es.inteco.rastreador2.utils.ResultadosPrimariosObservatorioIntavUtils;
 public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf {
 	/** The message resources. */
 	private MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
+	/** The result L 1. */
 	private Map<String, BigDecimal> resultL1;
+	/** The result L 2. */
 	private Map<String, BigDecimal> resultL2;
 
 	/**
@@ -2134,6 +2136,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 	public ScoreForm generateScores(final MessageResources messageResources, final java.util.List<ObservatoryEvaluationForm> evaList) {
 		final ScoreForm scoreForm = new ScoreForm();
 		int suitabilityGroups = 0;
+		BigDecimal totalScore = new BigDecimal(0);
 		for (ObservatoryEvaluationForm evaluationForm : evaList) {
 			scoreForm.setTotalScore(scoreForm.getTotalScore().add(evaluationForm.getScore()));
 			// Codigo duplicado en IntavUtils
@@ -2159,7 +2162,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				}
 			}
 		}
-		scoreForm.setTotalScore(scoreForm.getScoreLevelA().add(scoreForm.getScoreLevelAA()).divide(new BigDecimal(2)));
+		// scoreForm.setTotalScore(scoreForm.getScoreLevelA().add(scoreForm.getScoreLevelAA()).divide(new BigDecimal(2)));
 		generateScoresVerificacion(messageResources, scoreForm, evaList);
 		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(evaList, Constants.OBS_PRIORITY_NONE);
 		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
@@ -2172,19 +2175,27 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 //			scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
 			// TODO Calculate mid from score verificatrion
 			BigDecimal sumL1 = new BigDecimal(0);
+			int countNA = 0;
 			for (Entry<String, BigDecimal> entry : resultL1.entrySet()) {
+				if (entry.getValue().compareTo(new BigDecimal(0)) < 0) {
+					countNA++;
+				}
 				sumL1 = sumL1.add(entry.getValue());
 			}
-			scoreForm.setScoreLevelA(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
-			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevelA(sumL1.divide(new BigDecimal(resultL1.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevel1(sumL1.divide(new BigDecimal(resultL1.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
 			// scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
 			// TODO Calculate mid from score verificatrion
 			BigDecimal sumL2 = new BigDecimal(0);
+			countNA = 0;
 			for (Entry<String, BigDecimal> entry : resultL2.entrySet()) {
+				if (entry.getValue().compareTo(new BigDecimal(0)) < 0) {
+					countNA++;
+				}
 				sumL2 = sumL2.add(entry.getValue());
 			}
-			scoreForm.setScoreLevel2(sumL2.divide(new BigDecimal(resultL2.size()), 2, BigDecimal.ROUND_HALF_UP));
-			scoreForm.setScoreLevelAA(sumL2.divide(new BigDecimal(resultL2.size()), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevel2(sumL2.divide(new BigDecimal(resultL2.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevelAA(sumL2.divide(new BigDecimal(resultL2.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
 			// scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
 			// REVIEW Calculated compliance
@@ -2193,5 +2204,23 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		// El nivel de validación del portal
 		scoreForm.setLevel(getValidationLevel(scoreForm, messageResources));
 		return scoreForm;
+	}
+
+	/**
+	 * Round.
+	 *
+	 * @param value        the value
+	 * @param increment    the increment
+	 * @param roundingMode the rounding mode
+	 * @return the big decimal
+	 */
+	private BigDecimal round(BigDecimal value, BigDecimal increment, RoundingMode roundingMode) {
+		if (increment.signum() == 0) {
+			return value;
+		} else {
+			BigDecimal divided = value.divide(increment, 0, roundingMode);
+			BigDecimal result = divided.multiply(increment);
+			return result;
+		}
 	}
 }
