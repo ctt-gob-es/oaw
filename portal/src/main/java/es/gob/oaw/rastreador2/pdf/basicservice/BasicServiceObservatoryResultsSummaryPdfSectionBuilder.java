@@ -226,7 +226,9 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 				contadorPagina++;
 			}
 			section.add(table);
-			section.add(createTablaResumenResultadosPorNivelLeyendaWithCompliance(messageResources, observatoryLevelForm));
+			// TODO
+			section.add(createTablaResumenResultadosPorNivelLeyenda(messageResources, observatoryLevelForm));
+//			section.add(createTablaResumenResultadosPorNivelLeyendaWithCompliance(messageResources, observatoryLevelForm));
 		}
 	}
 
@@ -470,7 +472,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		table.addCell(leyendaValoresResultadosTableCell);
 		final com.lowagie.text.List leyendaValoresConformidad = new com.lowagie.text.List(false, false);
 		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItemBold("Conformidad de verificación en el sitio web", ""));
-		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("Conforme", "C"));
+		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("Conforme", "C:"));
 		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("No conforme", "NC:"));
 		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("No aplica", "NA:"));
 		final PdfPCell leyendaValoresConformidadTableCell = PDFUtils.createListTableCell(leyendaValoresConformidad, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
