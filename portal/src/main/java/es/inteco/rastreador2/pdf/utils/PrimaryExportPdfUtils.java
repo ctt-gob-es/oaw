@@ -358,7 +358,10 @@ public final class PrimaryExportPdfUtils {
 						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryAccesibility(MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), document,
 								pdfTocManager);
 					} else if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
-						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources2019, document, pdfTocManager);
+						// TODO Call same method that basic service
+						// observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources2019, document, pdfTocManager);
+						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryWithCompliance(messageResources, document, pdfTocManager,
+								pdfBuilder.generateScores(messageResources, currentEvaluationPageList));
 					} else if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
 						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B), document, pdfTocManager);
 					} else {
