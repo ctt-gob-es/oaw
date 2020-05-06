@@ -510,7 +510,8 @@ public final class CrawlerUtils {
 			httpsConnection.setHostnameVerifier(new HostnameVerifier() {
 				@Override
 				public boolean verify(String s, SSLSession sslSession) {
-					return true;
+					// return true;
+					return s.equalsIgnoreCase(sslSession.getPeerHost()); // TODO
 				}
 			});
 		}

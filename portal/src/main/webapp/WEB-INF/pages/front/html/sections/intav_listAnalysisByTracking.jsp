@@ -148,14 +148,45 @@ Email: observ.accesibilidad@correo.gob.es
 
 							<logic:present name="aplicacion">
 
-								<p>
-									<strong><bean:message key="observatorio.puntuacion.prioridad.1" />: </strong>
-									<bean:write name="<%=Constants.SCORE%>" property="scoreLevel1" />
-								</p>
-								<p>
-									<strong><bean:message key="observatorio.puntuacion.prioridad.2" />: </strong>
-									<bean:write name="<%=Constants.SCORE%>" property="scoreLevel2" />
-								</p>
+								<logic:equal value="<%=String.valueOf(Constants.NORMATIVA_ACCESIBILIDAD)%>" name="aplicacion">
+									<p>
+										<strong><bean:message key="observatorio.puntuacion.prioridad.1" bundle="resources2019" />: </strong>
+										<bean:write name="<%=Constants.SCORE%>" property="scoreLevel1" />
+									</p>
+									<p>
+										<strong><bean:message key="observatorio.puntuacion.prioridad.2" bundle="resources2019" />: </strong>
+										<bean:write name="<%=Constants.SCORE%>" property="scoreLevel2" />
+									</p>
+								</logic:equal>
+
+
+								<logic:equal value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
+
+
+									<p>
+										<strong><bean:message key="observatorio.puntuacion.prioridad.1" bundle="resources2019" />: </strong>
+										<bean:write name="<%=Constants.SCORE%>" property="scoreLevel1" />
+									</p>
+									<p>
+										<strong><bean:message key="observatorio.puntuacion.prioridad.2" bundle="resources2019" />: </strong>
+										<bean:write name="<%=Constants.SCORE%>" property="scoreLevel2" />
+									</p>
+								</logic:equal>
+
+								<logic:notEqual value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
+									<logic:notEqual value="<%=String.valueOf(Constants.NORMATIVA_ACCESIBILIDAD)%>" name="aplicacion">
+										<p>
+											<strong><bean:message key="observatorio.puntuacion.prioridad.1" />: </strong>
+											<bean:write name="<%=Constants.SCORE%>" property="scoreLevel1" />
+										</p>
+										<p>
+											<strong><bean:message key="observatorio.puntuacion.prioridad.2" />: </strong>
+											<bean:write name="<%=Constants.SCORE%>" property="scoreLevel2" />
+										</p>
+									</logic:notEqual>
+								</logic:notEqual>
+
+
 
 
 							</logic:present>
@@ -171,6 +202,11 @@ Email: observ.accesibilidad@correo.gob.es
 									<bean:write name="<%=Constants.SCORE%>" property="scoreLevel2" />
 								</p>
 							</logic:notPresent>
+							<p>
+								<strong><bean:message key="search.results.by.tracking.pages" />: </strong>
+								<bean:write name="numResult" />
+							</p>
+
 						</div>
 					</logic:present>
 
