@@ -2,6 +2,10 @@
 ------------------------------------------------------------------------------------------------------------------------------------
 - Modificada la decodificación del los códigos fuentes almacenados que se hacía en el servidor MySQL para hacerlo en la codigo Java
 - Añadida a las cabeceras de las peticiones de CSS en el "Accept" el valor "text/css" para evitar 406 en algunas páginas por sólo aceptar "text/html"
+- Modificada la comprobación de generación de código mediante CSS para comprobar si las cadenas de más de 2 caracteres no soun un código unicode u otro elemento sin caracteres alfanuméricos como por ejemplo Option+0 generados por frameworks de forma automática
+- Ajustada la comprobación de enlaces en el mismo directorio para que no sea sensible a mayúsculas y minúsculas
+- Ajustados patrones de validaciones
+- Añadido el total de URLs analizadas al detalle de una análisis en los observatorios
 
 5.0.4
 ------------------------------------------------------------------------------------------------------------------------------------
