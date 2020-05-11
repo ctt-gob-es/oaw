@@ -22,6 +22,8 @@ public enum WcagEmPointKey {
 	WCAG_2_1_1("2.1.1", "WCAG2:keyboard"),
 	/** The wcag 2 2 1. */
 	WCAG_2_2_1("2.2.1", "WCAG2:timing-adjustable"),
+	/** The wcag 2 2 2. */
+	WCAG_2_2_2("2.2.2", "WCAG2:tpause-stop-hide"),
 	/** The wcag 2 3 1. */
 	WCAG_2_3_1("2.3.1", "WCAG2:three-flashes-or-below-threshold"),
 	/** The wcag 2 4 1. */
@@ -34,6 +36,8 @@ public enum WcagEmPointKey {
 	WCAG_2_4_4("2.4.4", "WCAG2:link-purpose-in-context"),
 	/** The wcag 2 4 5. */
 	WCAG_2_4_5("2.4.5", "WCAG2:multiple-ways"),
+	/** The wcag 2 4 5. */
+	WCAG_2_4_7("2.4.7", "WCAG2:focus-visible"),
 	/** The wcag 2 5 3. */
 	WCAG_2_5_3("2.5.3", "WCAG2:label-in-name"),
 	/** The wcag 3 1 1. */
