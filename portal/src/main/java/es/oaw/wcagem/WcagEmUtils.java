@@ -307,7 +307,7 @@ public final class WcagEmUtils {
 			RandomSample randomSample = new RandomSample();
 			List<Webpage_> webpages = new ArrayList<>();
 			int randCounter = 0;
-			// PENDING Iterate currentEvaluationPageList to preserve order
+			// Iterate currentEvaluationPageList to preserve order
 			for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
 				Webpage_ webpage = new Webpage_();
 				webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
@@ -385,7 +385,9 @@ public final class WcagEmUtils {
 			}
 			Map<String, ValidationDetails> tmpWcag = new TreeMap<>();
 			// Match oaw validations with wcag (this url)
-			// This directy fails wcag point
+			/*
+			 * This OAW verification points only matchs with a single WCAG verfication
+			 */
 			// Check 1.1.1
 			processSimpleVerification(tmpWcag, tmp.get(_1_1), WcagEmPointKey.WCAG_1_1_1.getWcagEmId(), false);
 			processSimpleVerification(tmpWcag, tmp.get(_2_3), WcagEmPointKey.WCAG_1_4_10.getWcagEmId(), false);
@@ -402,11 +404,7 @@ public final class WcagEmUtils {
 			// Check 3.2.3
 			processSimpleVerification(tmpWcag, tmp.get(_2_6), WcagEmPointKey.WCAG_3_2_3.getWcagEmId(), false);
 			/*
-			 * 
-			 * 
-			 * 
-			 * 
-			 * 
+			 * This OAW verification points only matchs partial WCAG verfication
 			 */
 			// This verifications cannot assign directy to wcag, depends on check failed
 			// Check 2.1.1
@@ -437,9 +435,7 @@ public final class WcagEmUtils {
 			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_1_3_5.getWcagEmId(), true);
 			// Check 1.4.10
 			/*
-			 * 
-			 * 
-			 * 
+			 * This OAW verification points only matchs with multiple WCAG verfication
 			 */
 			/**
 			 * Multiple verifications involved
@@ -451,8 +447,7 @@ public final class WcagEmUtils {
 			verifications.add(tmp.get(_1_4));
 			verifications.add(tmp.get(_1_5));
 			verifications.add(tmp.get(_1_6));
-			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_1_3_1.getWcagEmId(), false);
-			// TODO CAN SKIP??
+			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_1_3_1.getWcagEmId(), true);
 			verifications.add(tmp.get(_1_9));
 			verifications.add(tmp.get(_1_10));
 			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_1_3_1.getWcagEmId(), true);
@@ -468,113 +463,24 @@ public final class WcagEmUtils {
 		}
 		return wcagCompliance;
 	}
-//	private static Map<String, Map<String, ValidationDetails>> generateEquivalenceMap(final List<ObservatoryEvaluationForm> currentEvaluationPageList) {
-//		Map<String, Map<String, ValidationDetails>> wcagCompliance = new TreeMap<>();
-//		for (ObservatoryEvaluationForm observatoryEvaluationForm : currentEvaluationPageList) {
-//			String url = observatoryEvaluationForm.getUrl();
-//			Map<String, ObservatorySubgroupForm> tmp = new TreeMap<>();
-//			// Process groups
-//			for (ObservatorySuitabilityForm suitabilityForm : observatoryEvaluationForm.getGroups().get(0).getSuitabilityGroups()) {
-//				for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
-//					final String name = subgroupForm.getDescription()
-//							.substring(subgroupForm.getDescription().indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length());
-//					tmp.put(name, subgroupForm);
-//				}
-//			}
-//			for (ObservatorySuitabilityForm suitabilityForm : observatoryEvaluationForm.getGroups().get(1).getSuitabilityGroups()) {
-//				for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
-//					final String name = subgroupForm.getDescription()
-//							.substring(subgroupForm.getDescription().indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length());
-//					tmp.put(name, subgroupForm);
-//				}
-//			}
-//			Map<String, ValidationDetails> tmpWcag = new TreeMap<>();
-//			// Match oaw validations with wcag (this url)
-//			// Check 1.1.1
-//			processSimpleVerification(tmpWcag, tmp.get(_1_1), WcagEmPointKey.WCAG_1_1_1.getWcagEmId());
-//			// Check 1.3.4
-//			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_1_3_4.getWcagEmId());
-//			// Check 1.3.5
-//			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_1_3_5.getWcagEmId());
-//			// Check 1.4.10
-//			processSimpleVerification(tmpWcag, tmp.get(_2_3), WcagEmPointKey.WCAG_1_4_10.getWcagEmId());
-//			// Check 1.4.12
-//			processSimpleVerification(tmpWcag, tmp.get(_2_2), WcagEmPointKey.WCAG_1_4_12.getWcagEmId());
-//			// Check 1.4.3
-//			processSimpleVerification(tmpWcag, tmp.get(_2_2), WcagEmPointKey.WCAG_1_4_3.getWcagEmId());
-//			// Check 2.1.1
-//			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_1_1.getWcagEmId());
-//			// Check 2.2.1
-//			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_2_1.getWcagEmId());
-//			// Check 2.3.1
-//			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_3_1.getWcagEmId());
-//			// Check 2.4.1
-//			processSimpleVerification(tmpWcag, tmp.get(_1_11), WcagEmPointKey.WCAG_2_4_1.getWcagEmId());
-//			// Check 2.4.2
-//			processSimpleVerification(tmpWcag, tmp.get(_1_11), WcagEmPointKey.WCAG_2_4_2.getWcagEmId());
-//			// Check 2.4.3
-//			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_2_4_3.getWcagEmId());
-//			// Check 2.4.4
-//			processSimpleVerification(tmpWcag, tmp.get(_1_12), WcagEmPointKey.WCAG_2_4_4.getWcagEmId());
-//			// Check 2.4.5
-//			processSimpleVerification(tmpWcag, tmp.get(_2_4), WcagEmPointKey.WCAG_2_4_5.getWcagEmId());
-//			// Check 2.5.3
-//			processSimpleVerification(tmpWcag, tmp.get(_1_9), WcagEmPointKey.WCAG_2_5_3.getWcagEmId());
-//			// Check 3.1.1
-//			processSimpleVerification(tmpWcag, tmp.get(_1_7), WcagEmPointKey.WCAG_3_1_1.getWcagEmId());
-//			// Check 3.1.2
-//			processSimpleVerification(tmpWcag, tmp.get(_2_1), WcagEmPointKey.WCAG_3_1_2.getWcagEmId());
-//			// Check 3.2.1
-//			processSimpleVerification(tmpWcag, tmp.get(_1_13), WcagEmPointKey.WCAG_3_2_1.getWcagEmId());
-//			// Check 3.2.2
-//			processSimpleVerification(tmpWcag, tmp.get(_1_13), WcagEmPointKey.WCAG_3_2_2.getWcagEmId());
-//			// Check 3.2.3
-//			processSimpleVerification(tmpWcag, tmp.get(_2_6), WcagEmPointKey.WCAG_3_2_3.getWcagEmId());
-//			// Check 3.3.2
-//			processSimpleVerification(tmpWcag, tmp.get(_1_9), WcagEmPointKey.WCAG_3_3_2.getWcagEmId());
-//			/**
-//			 * Multiple verifications involved
-//			 */
-//			// Check 1.1.1
-//			List<ObservatorySubgroupForm> verifications = new ArrayList<ObservatorySubgroupForm>();
-//			verifications.add(tmp.get(_1_2));
-//			verifications.add(tmp.get(_1_3));
-//			verifications.add(tmp.get(_1_4));
-//			verifications.add(tmp.get(_1_5));
-//			verifications.add(tmp.get(_1_6));
-//			verifications.add(tmp.get(_1_9));
-//			verifications.add(tmp.get(_1_10));
-//			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_1_3_1.getWcagEmId());
-//			// Check 4.1.2
-//			verifications = new ArrayList<ObservatorySubgroupForm>();
-//			verifications.add(tmp.get(_1_8));
-//			verifications.add(tmp.get(_1_9));
-//			verifications.add(tmp.get(_1_10));
-//			verifications.add(tmp.get(_1_11));
-//			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_4_1_2.getWcagEmId());
-//			// Add to globall
-//			wcagCompliance.put(url, tmpWcag);
-//		}
-//		return wcagCompliance;
-//	}
 
 	/**
 	 * Process simple verification.
 	 *
-	 * @param tmpWcag                 the tmp wcag
-	 * @param observatorySubgroupForm the observatory subgroup form
-	 * @param wcagEmId                the wcag em id
-	 * @param checkChecks             the check checks
+	 * @param tmpWcag                 Map of verification details to add result
+	 * @param observatorySubgroupForm Verification result
+	 * @param wcagEmId                Id of WCAG verification point on WCAG EM Tool
+	 * @param filterChecks            If true, is mandatory to filter checks and onlu process that are related with WCAG Point
 	 */
-	private static void processSimpleVerification(Map<String, ValidationDetails> tmpWcag, final ObservatorySubgroupForm observatorySubgroupForm, final String wcagEmId, boolean checkChecks) {
+	private static void processSimpleVerification(Map<String, ValidationDetails> tmpWcag, final ObservatorySubgroupForm observatorySubgroupForm, final String wcagEmId, boolean filterChecks) {
 		ValidationDetails validationDetailes = new ValidationDetails();
 		List<ValidationResult> results = new ArrayList<>();
 		Map<String, List<String>> checkWcagRelationMap = checkWcagRelationMap();
-		// TODO Check if problems coitains any check that relationates wcag
+		// Check if problems coitains any check that relationates wcag
 		switch (observatorySubgroupForm.getValue()) {
 		case Constants.OBS_VALUE_GREEN_ZERO:
 			// We can asegurte automatic PASS
-			if (checkChecks) {
+			if (filterChecks) {
 				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_CANNOT_TELL);
 			} else {
 				validationDetailes.setResult(EARL_CANNOT_TELL);
@@ -582,7 +488,7 @@ public final class WcagEmUtils {
 				break;
 			}
 		case Constants.OBS_VALUE_RED_ZERO:
-			if (checkChecks) {
+			if (filterChecks) {
 				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_FAILED);
 			} else {
 				validationDetailes.setResult(EARL_FAILED);
@@ -591,7 +497,7 @@ public final class WcagEmUtils {
 			}
 			break;
 		case Constants.OBS_VALUE_GREEN_ONE:
-			if (checkChecks) {
+			if (filterChecks) {
 				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_PASSED);
 			} else {
 				validationDetailes.setResult(EARL_PASSED);
@@ -601,7 +507,7 @@ public final class WcagEmUtils {
 				break;
 			}
 		case Constants.OBS_VALUE_NOT_SCORE:
-			if (checkChecks) {
+			if (filterChecks) {
 				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_INAPPLICABLE);
 			} else {
 				validationDetailes.setResult(EARL_INAPPLICABLE);
@@ -612,6 +518,17 @@ public final class WcagEmUtils {
 		}
 	}
 
+	/**
+	 * Filter observatory subgroup form. Removes checks nat not related with WCAG point passed as param
+	 *
+	 * @param tmpWcag                 Map of verification details to add result
+	 * @param observatorySubgroupForm Verification result
+	 * @param wcagEmId                Id of WCAG verification point on WCAG EM Tool
+	 * @param validationDetailes      the validation detailes
+	 * @param results                 the results
+	 * @param checkWcagRelationMap    Map that link OAW checks with WCAG verification points
+	 * @param result                  the result
+	 */
 	private static void filterObservatorySubgroupForm(Map<String, ValidationDetails> tmpWcag, final ObservatorySubgroupForm observatorySubgroupForm, final String wcagEmId,
 			ValidationDetails validationDetailes, List<ValidationResult> results, Map<String, List<String>> checkWcagRelationMap, final String result) {
 		List<Integer> successChecks = observatorySubgroupForm.getSuccessChecks();
@@ -773,7 +690,6 @@ public final class WcagEmUtils {
 			tableBuilder.append(checkDescriptionsManager.getString(result.getOawDescription()));
 			tableBuilder.append("</td>");
 			tableBuilder.append("<td>");
-//			tableBuilder.append(result.getResult());
 			final String spanClass = result.getResult().toLowerCase().replace(":", "_");
 			final String spanText = result.getResult().toUpperCase().replace("EARL:", "");
 			tableBuilder.append("<span class='" + spanClass + "'>{{ 'EARL." + spanText + "' | translate}}</span>");
@@ -786,7 +702,7 @@ public final class WcagEmUtils {
 	}
 
 	/**
-	 * Check wcag relation map.
+	 * Check wcag relation map. Generates a map with WCAG-Checks relation
 	 *
 	 * @return the map
 	 */
