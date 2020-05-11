@@ -319,13 +319,7 @@ public final class DatabaseExportUtils {
 			Page page = getPageInfo(messagesResources, observatoryEvaluationForm, site);
 			site.getPageList().add(page);
 		}
-		// TODO Compliance to export
-//		final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), observatorySiteEvaluationForm.getId());
-//		final ObservatoryManager observatoryManager = new ObservatoryManager();
-//		final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
-//		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(currentEvaluationPageList, Constants.OBS_PRIORITY_NONE);
-//		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
-//		site.setCompliance(calculatedCompliance.get(currentEvaluationPageList.get(0).getCrawlerExecutionId()));
+		// Compliance to export
 		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(observatorySiteEvaluationForm.getPages(),
 				Constants.OBS_PRIORITY_NONE);
 		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
