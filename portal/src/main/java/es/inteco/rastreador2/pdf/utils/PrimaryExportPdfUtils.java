@@ -40,7 +40,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lowagie.text.Chapter;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -83,9 +82,6 @@ import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.rastreador2.utils.ResultadosPrimariosObservatorioIntavUtils;
-import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
-import es.oaw.wcagem.WcagEmReport;
-import es.oaw.wcagem.WcagEmUtils;
 
 /**
  * The Class PrimaryExportPdfUtils.
@@ -391,11 +387,11 @@ public final class PrimaryExportPdfUtils {
 				IndexUtils.createIndex(writer, document, messageResources.getMessage("pdf.accessibility.index.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 				ExportPageEventsObservatoryMP.setPrintFooter(true);
 				// PENDING (Disable) Generar JSON compatible con WCAG-EM
-				WcagEmReport report = WcagEmUtils.generateReport(messageResources, pdfBuilder, BasicServiceUtils.getTitleDocFromContent(currentEvaluationPageList.get(0).getSource(), false),
-						Long.parseLong(crawling.getId()));
-				ObjectMapper mapper = new ObjectMapper();
-				String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);
-				org.apache.commons.io.FileUtils.writeStringToFile(new File(new File(file.getPath()).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
+//				WcagEmReport report = WcagEmUtils.generateReport(messageResources, pdfBuilder, BasicServiceUtils.getTitleDocFromContent(currentEvaluationPageList.get(0).getSource(), false),
+//						Long.parseLong(crawling.getId()));
+//				ObjectMapper mapper = new ObjectMapper();
+//				String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);
+//				org.apache.commons.io.FileUtils.writeStringToFile(new File(new File(file.getPath()).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
 			} catch (DocumentException e) {
 				Logger.putLog("Error al exportar a pdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
