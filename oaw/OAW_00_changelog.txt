@@ -6,6 +6,7 @@
 - Ajustada la comprobación de enlaces en el mismo directorio para que no sea sensible a mayúsculas y minúsculas
 - Ajustados patrones de validaciones
 - Añadido el total de URLs analizadas al detalle de una análisis en los observatorios
+- Eliminado cálculo duplicado en anexos que provocaba tiempos de ejecución excesivamente largos
 
 5.0.4
 ------------------------------------------------------------------------------------------------------------------------------------
