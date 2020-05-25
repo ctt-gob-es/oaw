@@ -15,44 +15,61 @@
 ******************************************************************************/
 package es.inteco.rastreador2.dao.export.database;
 
-import es.inteco.rastreador2.dao.BaseDAO;
+import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-import java.util.List;
+import es.inteco.rastreador2.dao.BaseDAO;
 
+/**
+ * The Class DatabaseExportDAO.
+ */
 public class DatabaseExportDAO extends BaseDAO {
+	/**
+	 * Gets the observatory.
+	 *
+	 * @param session     the session
+	 * @param idExecution the id execution
+	 * @return the observatory
+	 */
+	public static Observatory getObservatory(Session session, Long idExecution) {
+		Criteria criteria = session.createCriteria(Observatory.class);
+		criteria.add(Restrictions.eq("idExecution", idExecution));
+		List<Observatory> observatories = criteria.list();
+		if (observatories != null && !observatories.isEmpty()) {
+			return observatories.get(0);
+		} else {
+			return null;
+		}
+	}
 
-    public static Observatory getObservatory(Session session, Long idExecution) {
-        Criteria criteria = session.createCriteria(Observatory.class);
-        criteria.add(Restrictions.eq("idExecution", idExecution));
+	/**
+	 * Gets the site information.
+	 *
+	 * @param session    the session
+	 * @param idCategory the id category
+	 * @return the site information
+	 */
+	public static List<Site> getSiteInformation(Session session, Long idCategory) {
+		Criteria criteria = session.createCriteria(Site.class);
+		criteria.add(Restrictions.eq("idCategory", idCategory));
+		List<Site> sites = criteria.list();
+		return sites;
+	}
 
-        List<Observatory> observatories = criteria.list();
-
-        if (observatories != null && !observatories.isEmpty()) {
-            return observatories.get(0);
-        } else {
-            return null;
-        }
-    }
-
-    public static List<Site> getSiteInformation(Session session, Long idCategory) {
-        Criteria criteria = session.createCriteria(Site.class);
-        criteria.add(Restrictions.eq("idCategory", idCategory));
-
-        List<Site> sites = criteria.list();
-
-        return sites;
-    }
-
-    public static List<Category> getCategoryInformation(Session session, Long idExecutionObs) {
-        Criteria criteria = session.createCriteria(Category.class);
-        criteria.add(Restrictions.eq("idExecution", idExecutionObs));
-
-        List<Category> categories = criteria.list();
-
-        return categories;
-    }
-
+	/**
+	 * Gets the category information.
+	 *
+	 * @param session        the session
+	 * @param idExecutionObs the id execution obs
+	 * @return the category information
+	 */
+	public static List<Category> getCategoryInformation(Session session, Long idExecutionObs) {
+		Criteria criteria = session.createCriteria(Category.class);
+		criteria.add(Restrictions.eq("idExecution", idExecutionObs));
+		List<Category> categories = criteria.list();
+		return categories;
+	}
 }

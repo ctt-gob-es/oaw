@@ -159,8 +159,9 @@ public class EstadoObservatorioDAO {
 				+ "(SELECT count(*) FROM rastreo r WHERE r.id_observatorio = ? AND r.activo = 1) AS TOTAL_SEMILLAS, "
 				+ "(SELECT count(*) FROM rastreo r WHERE r.id_observatorio = ? AND r.activo = 1 AND r.estado = 4  and r.id_rastreo in (select id_rastreo from rastreos_realizados rr where rr.id_obs_realizado = ? )) AS TOTAL_ANALIZADAS, "
 				+ "(SELECT count(*) FROM rastreo r WHERE r.id_observatorio = ? AND r.activo = 1 AND r.estado = 4  and r.id_rastreo in (select id_rastreo from rastreos_realizados rr where rr.id_obs_realizado = ? AND rr.id IN (select ta.cod_rastreo as id_rastreo from tanalisis ta))) AS TOTAL_ANALIZADAS_OK, "
-				+ "(SELECT TIMESTAMPDIFF(MINUTE," + "(SELECT MIN(fecha) FROM rastreos_realizados WHERE id_obs_realizado=?),"
-				+ "(SELECT MAX(fecha) FROM rastreos_realizados WHERE id_obs_realizado=?))) AS TIEMPO")) {
+//				+ "(SELECT TIMESTAMPDIFF(MINUTE," + "(SELECT MIN(fecha) FROM rastreos_realizados WHERE id_obs_realizado=?),"
+//				+ "(SELECT MAX(fecha) FROM rastreos_realizados WHERE id_obs_realizado=?))) AS TIEMPO")) {
+				+ "(SELECT sum(tiempo_rastreo) FROM (SELECT cod_rastreo, TIMESTAMPDIFF(MINUTE, min(fec_analisis),max(fec_analisis)) AS tiempo_rastreo FROM tanalisis WHERE cod_rastreo IN (SELECT id FROM rastreos_realizados WHERE id_obs_realizado = ?) group by cod_rastreo) AS SUMTIEMPOS) AS TIEMPO")) {
 			ps.setInt(1, idEjecucionObservatorio);
 			ps.setInt(2, idObservatorio);
 			ps.setInt(3, idObservatorio);
@@ -168,7 +169,7 @@ public class EstadoObservatorioDAO {
 			ps.setInt(5, idObservatorio);
 			ps.setInt(6, idEjecucionObservatorio);
 			ps.setInt(7, idEjecucionObservatorio);
-			ps.setInt(8, idEjecucionObservatorio);
+			// ps.setInt(8, idEjecucionObservatorio);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					summary.setIdEstado(rs.getLong("ESTADO_OBS"));
