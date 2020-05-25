@@ -943,7 +943,7 @@ public class Check {
 		case CheckFunctionConstants.FUNCTION_AUTOCOMPLETE_VALID:
 			return !functionAutocompleteValid(checkCode, nodeNode, elementGiven);
 		case CheckFunctionConstants.FUNCTION_HAS_SECTION:
-			return functionAccessibilityHasSection(checkCode, nodeNode, elementGiven);
+			return !functionAccessibilityHasSection(checkCode, nodeNode, elementGiven);
 		case CheckFunctionConstants.FUNCTION_SECTION_HAS_TEXT:
 			return !functionSectionHasText(checkCode, nodeNode, elementGiven);
 		case CheckFunctionConstants.FUNCTION_SECTION_HAS_MAILTO:
@@ -4941,7 +4941,8 @@ public class Check {
 	 * @throws SAXException          the SAX exception
 	 */
 	private Document getRelativeDocument(final Element elementRoot, final String href) throws MalformedURLException, IOException, SAXException {
-		final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
+		// final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
+		final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL(new URL((String) elementRoot.getUserData("url")), href);
 		final String remoteUrlStr = new URL(documentUrl, href).toString();
 		final Document document;
 		if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
@@ -5949,7 +5950,7 @@ public class Check {
 						if (hasSection2) {
 							TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 						}
-						hasSection |= hasSection2;
+						return true;
 					}
 				} catch (Exception e) {
 					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
