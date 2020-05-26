@@ -17,10 +17,13 @@ package es.inteco.common;
 
 import java.awt.Color;
 
+import org.apache.struts.util.MessageResources;
+
 /**
  * The Interface Constants.
  */
 public interface Constants {
+	MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 	/** The crawler properties. */
 	// ARCHIVOS DE PROPIEDADES
 	String CRAWLER_PROPERTIES = "crawler.properties";
@@ -1416,11 +1419,11 @@ public interface Constants {
 	/** The obs compilance. */
 	String OBS_COMPILANCE = "Conforme";
 	/** The obs compilance none. */
-	String OBS_COMPILANCE_NONE = "No conforme";
+	String OBS_COMPILANCE_NONE = messageResources.getMessage("resultados.anonimos.porc.portales.nc");
 	/** The obs compilance partial. */
-	String OBS_COMPILANCE_PARTIAL = "Parcialmente conforme";
+	String OBS_COMPILANCE_PARTIAL = messageResources.getMessage("resultados.anonimos.porc.portales.pc");;
 	/** The obs compilance full. */
-	String OBS_COMPILANCE_FULL = "Plenamente conforme";
+	String OBS_COMPILANCE_FULL = messageResources.getMessage("resultados.anonimos.porc.portales.tc");;
 	/** The obs accesibility full. */
 	String OBS_ACCESIBILITY_FULL = "Completo";
 	/** The obs accesibility partial. */

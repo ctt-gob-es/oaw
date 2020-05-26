@@ -461,25 +461,25 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		table.setWidthPercentage(90);
 		table.setKeepTogether(true);
 		final com.lowagie.text.List leyendaValoresResultados = new com.lowagie.text.List(false, false);
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItemBold("Modalidad de Verificación en una página", ""));
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Valor No Puntua", "-:"));
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Valor 1", "1:"));
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Valor 0", "0:"));
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Modalidad PASA", "P:"));
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Modalidad FALLA", "F:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItemBold(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.title"), ""));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.np"), "-:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.1"), "1:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.1"), "0:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.pass"), "P:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.nopass"), "F:"));
 		final PdfPCell leyendaValoresResultadosTableCell = PDFUtils.createListTableCell(leyendaValoresResultados, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
 		leyendaValoresResultadosTableCell.setBorder(0);
 		table.addCell(leyendaValoresResultadosTableCell);
 		final com.lowagie.text.List leyendaValoresConformidad = new com.lowagie.text.List(false, false);
-		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItemBold("Conformidad de verificación en el sitio web", ""));
-		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("Conforme", "C:"));
-		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("No conforme", "NC:"));
-		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("No aplica", "NA:"));
+		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItemBold(messageResources.getMessage("pdf.accessibility.page.result.legend.conformance.title"), ""));
+		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.conformance.conforming"), "C:"));
+		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.conformance.not.conforming"), "NC:"));
+		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.conformance.not.apply"), "NA:"));
 		final PdfPCell leyendaValoresConformidadTableCell = PDFUtils.createListTableCell(leyendaValoresConformidad, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
 		leyendaValoresConformidadTableCell.setBorder(0);
 		table.addCell(leyendaValoresConformidadTableCell);
 		final com.lowagie.text.List leyenda = new com.lowagie.text.List(false, false);
-		leyenda.add(PDFUtils.buildLeyendaListItemBold("Verificaciones", ""));
+		leyenda.add(PDFUtils.buildLeyendaListItemBold(messageResources.getMessage("pdf.accessibility.page.result.legend.verifications.title"), ""));
 		for (ObservatorySuitabilityForm suitabilityForm : evaList.getSuitabilityGroups()) {
 			for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
 				final String checkId = messageResources.getMessage(subgroupForm.getDescription()).substring(0, 6);
@@ -508,12 +508,12 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		table.setWidthPercentage(90);
 		table.setKeepTogether(true);
 		final com.lowagie.text.List leyendaValoresResultados = new com.lowagie.text.List(false, false);
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItemBold("Modalidad de Verificación en una página", ""));
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Valor No Puntua", "-:"));
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Valor 1", "1:"));
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Valor 0", "0:"));
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Modalidad PASA", "P:"));
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Modalidad FALLA", "F:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItemBold(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.title"), ""));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.np"), "-:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.1"), "1:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.1"), "0:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.pass"), "P:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.nopass"), "F:"));
 		final PdfPCell leyendaValoresResultadosTableCell = PDFUtils.createListTableCell(leyendaValoresResultados, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
 		leyendaValoresResultadosTableCell.setBorder(0);
 		table.addCell(leyendaValoresResultadosTableCell);
@@ -526,7 +526,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 //		leyendaValoresConformidadTableCell.setBorder(0);
 //		table.addCell(leyendaValoresConformidadTableCell);
 		final com.lowagie.text.List leyenda = new com.lowagie.text.List(false, false);
-		leyenda.add(PDFUtils.buildLeyendaListItemBold("Verificaciones", ""));
+		leyenda.add(PDFUtils.buildLeyendaListItemBold(messageResources.getMessage("pdf.accessibility.page.result.legend.verifications.title"), ""));
 		for (ObservatorySuitabilityForm suitabilityForm : evaList.getSuitabilityGroups()) {
 			for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
 				final String checkId = messageResources.getMessage(subgroupForm.getDescription()).substring(0, 6);
