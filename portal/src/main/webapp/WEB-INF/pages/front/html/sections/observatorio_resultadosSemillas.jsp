@@ -260,40 +260,52 @@ var translatedColNames = [ colNameId, colNameOldName,
 	function dialogAddSeed(){
 		
 		windowWidth = $(window).width() * 0.3;
-		windowHeight = $(window).height() * 0.2;
+		windowHeight = $(window).height() * 0.3;
 		
 		window.scrollTo(0, 0);
 
 		$('#erroresAddSeedObservatory').hide();
-
+		
+		
+		var windowTitle = '<bean:message key="application.title"/>';
+		
+		var windowTitle2 = '<bean:message key="tooltip.obs.add.seed"/>';
+			
+		
+		var saveButton = '<bean:message key="boton.aceptar"/>';
+		
+		var cancelButton = '<bean:message key="boton.cancelar"/>';
+		
+		
 		dialog = $("#dialogAddSeedObservatory").dialog({
 			height : windowHeight,
 			width : windowWidth,
 			modal : true,
-			title: 'RASTREADOR WEB - Añadir semilla al observatorio',
+			title: windowTitle + " - " + windowTitle2,
 			buttons : {
 				"Añadir" : {
 					click: function() {
 						addSeedObservatory($('#autocompleteAddSeedObservatoryHidden').val());
 					},
-					text : "Guardar",
+					text : saveButton,
 					class: 'jdialog-btn-save'
 				},
 				"Cancelar" : {
 					click: function() {
-						dialog.dialog("close");
+						dialog.dialog('destroy')
+						$('#autocompleteAddSeedObservatory').autocomplete( "destroy" );
+						$('#addSeedObservatoryForm')[0].reset();
 					},
-					text: "Cancelar", 
+					text: cancelButton, 
 					class :'jdialog-btn-cancel'
 				} 
 			},
-			open : function() {
+			open : function(event, ui) {
 					
 				
 				var allSeeds = [], cache = {};
 				
 				$('#autocompleteAddSeedObservatory').autocomplete({
-				    // serviceUrl: '/autosuggest/service/url',
 				    delay: 500,
 				    minLength: 3,
 				    autoFocus: true,
@@ -328,59 +340,12 @@ var translatedColNames = [ colNameId, colNameOldName,
 				        event.preventDefault();
 				        $(event.target).val(ui.item.label);
 				        $('#autocompleteAddSeedObservatoryHidden').val(ui.item.value);
-				        console.log( 'You selected: ' + ui.item.value + ', ' + ui.item.label);
 				    },
 				    focus: function(event, ui) {
 				      event.preventDefault();
 				      $(event.target).val(ui.item.label);
 				    }
 				});
-				
-				
-				
-				
-			
-				
-				
-				
-				
-				
-				
-				
-
-				
-				
-				//Load candidate seed
-// 				$.ajax({
-// 					url : '/oaw/secure/JsonSemillasObservatorio.do?action=candidates&idObservatorio='
-// 					+ $('[name=id_observatorio]').val()
-// 					+ '&idExObs='
-// 					+ $('[name=idExObs]').val(),
-// 					method : 'POST',
-// 					cache : false
-// 				}).success(function(response) {
-					
-// 					$('#selectAddSeedObservatory').find('option').remove();
-					
-					
-					
-// 					if (response && response.length) {
-// 						for (var i = 0, l = response.length; i < l; i++) {
-// 							var ri = response[i];
-// 							$jn('#selectAddSeedObservatory')
-// 									.append(
-// 											'<option value="'+ri.id+'">'
-// 													+ ri.nombre
-// 													+ '</option>');
-// 						}
-// 					} else {
-
-// 						$('#selectAddSeedObservatory').append("<option value=''>---No hay semillas que se puedan añadir---</option>");
-// 					}
-
-// 				});
-				
-
 			},
 			close : function() {
 				$('#addSeedObservatoryForm')[0].reset();				
@@ -550,8 +515,8 @@ var translatedColNames = [ colNameId, colNameOldName,
 							key="nuevo.observatorio.semillas.nombre" /></strong></label>
 				<div class="col-md-8">
 					<!-- 					<select name="segmento" id="selectAddSeedObservatory" class="form-control"></select> -->
-					<input id="autocompleteAddSeedObservatory" class="form-control" />
-					<input id="autocompleteAddSeedObservatoryHidden" type="hidden" />
+					<input id="autocompleteAddSeedObservatory" class="form-control" /> <input
+						id="autocompleteAddSeedObservatoryHidden" type="hidden" />
 				</div>
 			</div>
 		</form>
