@@ -2390,7 +2390,7 @@ public final class ObservatorioDAO {
 						psCR.setLong(1, idCartucho);
 						psCR.setLong(2, id);
 						psCR.executeUpdate();
-						addFullfilledCrawl(c, idExObs, id);
+						addFullfilledCrawl(c, idExObs, id, idSeed);
 					} catch (Exception e) {
 						// Remove prevoius insert
 						try (PreparedStatement psCR = c.prepareStatement("DELETE FROM cartucho_rastreo WHERE id_cartucho=? AND id_rastreo = ?")) {
@@ -2432,7 +2432,7 @@ public final class ObservatorioDAO {
 								psCR.setLong(1, idCartucho);
 								psCR.setLong(2, id);
 								psCR.executeUpdate();
-								addFullfilledCrawl(c, idExObs, id);
+								addFullfilledCrawl(c, idExObs, id, idSeed);
 							} catch (Exception e) {
 								// Remove prevoius insert
 								try (PreparedStatement psCR = c.prepareStatement("DELETE FROM cartucho_rastreo WHERE id_cartucho=? AND id_rastreo = ?")) {
@@ -2461,16 +2461,18 @@ public final class ObservatorioDAO {
 	 * @throws SQLException the SQL exception
 	 * @throws Exception    the exception
 	 */
-	private static void addFullfilledCrawl(final Connection c, final Long idExObs, Long id) throws SQLException, Exception {
+	private static void addFullfilledCrawl(final Connection c, final Long idExObs, Long id, final Long idSeed) throws SQLException, Exception {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DatosCartuchoRastreoForm dcrForm = RastreoDAO.cargarDatosCartuchoRastreo(c, String.valueOf(id));
+		dcrForm.setId_rastreo(id.intValue());
 		dcrForm.setCartuchos(CartuchoDAO.getNombreCartucho(dcrForm.getId_rastreo()));
+		dcrForm.setIdSemilla(idSeed);
 		final int typeDomains = dcrForm.getIdObservatory() == 0 ? Constants.ID_LISTA_SEMILLA : Constants.ID_LISTA_SEMILLA_OBSERVATORIO;
-		dcrForm.setUrls(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), typeDomains, false));
-		dcrForm.setDomains(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), typeDomains, true));
-		dcrForm.setExceptions(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), Constants.ID_LISTA_NO_RASTREABLE, false));
-		dcrForm.setCrawlingList(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), Constants.ID_LISTA_RASTREABLE, false));
-		dcrForm.setId_guideline(es.inteco.plugin.dao.RastreoDAO.recuperarIdNorma(c, (long) dcrForm.getId_rastreo()));
+		dcrForm.setUrls(es.inteco.utils.CrawlerUtils.getDomainsList(id, typeDomains, false));
+		dcrForm.setDomains(es.inteco.utils.CrawlerUtils.getDomainsList(id, typeDomains, true));
+		dcrForm.setExceptions(es.inteco.utils.CrawlerUtils.getDomainsList(id, Constants.ID_LISTA_NO_RASTREABLE, false));
+		dcrForm.setCrawlingList(es.inteco.utils.CrawlerUtils.getDomainsList(id, Constants.ID_LISTA_RASTREABLE, false));
+		dcrForm.setId_guideline(es.inteco.plugin.dao.RastreoDAO.recuperarIdNorma(c, id));
 		if (CartuchoDAO.isCartuchoAccesibilidad(c, dcrForm.getId_cartucho())) {
 			dcrForm.setFicheroNorma(CrawlerUtils.getFicheroNorma(dcrForm.getId_guideline()));
 		}

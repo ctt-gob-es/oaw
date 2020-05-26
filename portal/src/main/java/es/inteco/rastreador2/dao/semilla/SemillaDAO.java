@@ -2705,10 +2705,24 @@ public final class SemillaDAO {
 	 */
 	public static List<SemillaForm> getCandidateSeeds(Connection c, Long idObservatorio, Long idObservatorioRealizado) throws SQLException {
 		final List<SemillaForm> results = new ArrayList<>();
-		String query = "select * from lista where id_lista not in (select semillas from rastreo where id_observatorio = ?) or id_lista not in (select id_lista from rastreos_realizados where id_obs_realizado = ?)  and eliminar = 0 and activa = 1";
+//	    Activa = Verdadero
+//	    Eliminada = Falso
+//	    Ámbito = ámbito del observatorio al que se van a añadir.
+//	    Segmento = alguno de los segmentos del observatorio al que se van a añadir.
+//	    Recurrencia = alguno de las recurrencias del observatorio al que se van a añadir.
+		// String query = "select * from lista where id_lista not in (select semillas from rastreo where id_observatorio = ?) or id_lista not in (select id_lista from rastreos_realizados where
+		// id_obs_realizado = ?) and eliminar = 0 and activa = 1";
+		String query = "select * from lista where eliminar = 0 and activa = 1 and id_categoria in (select id_categoria from observatorio_categoria where id_observatorio= ?)"
+				+ "and id_ambito = (select id_ambito from  observatorio where id_observatorio = ?)" + "and id_lista in (select id_lista from semilla_etiqueta where id_etiqueta in"
+				+ "(select id_etiqueta from etiqueta where id_clasificacion = 3 and find_in_set(id_etiqueta, (select tags from observatorio where id_observatorio = ?))))"
+				+ "and (id_lista not in  (select semillas from rastreo where id_observatorio = ? and activo = 1)"
+				+ "or id_lista not in (select id_lista from rastreos_realizados where id_obs_realizado = ?) ) order by nombre";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idObservatorio);
-			ps.setLong(2, idObservatorioRealizado);
+			ps.setLong(2, idObservatorio);
+			ps.setLong(3, idObservatorio);
+			ps.setLong(4, idObservatorio);
+			ps.setLong(5, idObservatorioRealizado);
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					SemillaForm semillaForm = new SemillaForm();

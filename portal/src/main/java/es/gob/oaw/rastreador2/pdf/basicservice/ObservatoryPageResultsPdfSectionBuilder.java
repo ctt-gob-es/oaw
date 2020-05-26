@@ -116,7 +116,7 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 			// cada página
 			for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
 				chapter.add(createPaginaTableVerificationSummary(messageResources, observatoryLevelForm,
-						"Verificaciones. Nivel de adecuación " + getPriorityName(messageResources, observatoryLevelForm.getName())));
+						messageResources.getMessage("pdf.accessibility.page.result.graphict.title") + " " + getPriorityName(messageResources, observatoryLevelForm.getName())));
 			}
 			chapter.add(Chunk.NEXTPAGE);
 			if (withOutLevels) {
