@@ -11,13 +11,13 @@ public enum WcagEmPointKey {
 	/** The wcag 1 3 4. */
 	WCAG_1_3_4("1.3.4", "WCAG2:orientation"),
 	/** The wcag 1 3 5. */
-	WCAG_1_3_5("1.3.1", "WCAG2:identify-input-purpose"),
+	WCAG_1_3_5("1.3.5", "WCAG2:identify-input-purpose"),
 	/** The wcag 1 4 3. */
 	WCAG_1_4_3("1.4.3", "WCAG2:contrast-minimum"),
 	/** The wcag 1 4 10. */
 	WCAG_1_4_10("1.4.10", "WCAG2:reflow"),
 	/** The wcag 1 4 12. */
-	WCAG_1_4_12("1.4.10", "WCAG2:text-spacing"),
+	WCAG_1_4_12("1.4.12", "WCAG2:text-spacing"),
 	/** The wcag 2 1 1. */
 	WCAG_2_1_1("2.1.1", "WCAG2:keyboard"),
 	/** The wcag 2 2 1. */
