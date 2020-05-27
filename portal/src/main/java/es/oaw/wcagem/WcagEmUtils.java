@@ -354,6 +354,8 @@ public final class WcagEmUtils {
 		graph2.setName("Observatorio de Accesibilidad Web (OAW)");
 		graphs.add(graph2);
 		wcagEmReport.setGraph(graphs);
+		// TODO ODS
+		WcagOdsUtils.generateOds(wcagEmReport);
 		return wcagEmReport;
 	}
 
