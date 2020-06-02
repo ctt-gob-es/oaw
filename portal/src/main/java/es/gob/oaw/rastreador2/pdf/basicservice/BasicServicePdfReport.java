@@ -25,15 +25,15 @@ import java.util.TreeMap;
 
 import org.apache.struts.util.MessageResources;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfString;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.events.IndexEvents;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfName;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfString;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.events.IndexEvents;
 
 import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.common.Constants;
@@ -145,6 +145,7 @@ public class BasicServicePdfReport {
 				MessageResources messageResources2019 = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 				MessageResources messageResourcesAccesibility = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 				final PdfWriter writer = PdfWriter.getInstance(document, outputFileStream);
+				writer.setTagged(0);
 				writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
 				writer.getExtraCatalog().put(new PdfName("Lang"), new PdfString("es"));
 				final String crawlingDate = CrawlerUtils.formatDate(pdfBuilder.getBasicServiceForm().getDate());

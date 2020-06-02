@@ -42,23 +42,24 @@ import java.util.zip.ZipOutputStream;
 import org.apache.struts.util.MessageResources;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import com.lowagie.text.Anchor;
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Chapter;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.Image;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Section;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.events.IndexEvents;
+import com.itextpdf.text.Anchor;
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Section;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.events.IndexEvents;
 import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
@@ -227,8 +228,13 @@ public final class BasicServiceExport {
 			try {
 				File parentFile = new File(reportFile).getParentFile();
 				zipFile(new File(parentFile + "/codigo_fuente.zip"), "codigo_fuente.zip", zos);
-				// PENDING (disable) wcagem-report.json
-//				zipFile(new File(parentFile + "/wcagem-report.json"), "wcagem-report.json", zos);
+				// PENDING (Disable) JSON WCAG-EM and ODS
+				if (false) {
+					// JSON
+					zipFile(new File(parentFile + "/wcagem-report.json"), "wcagem-report.json", zos);
+					// ODS
+					zipFile(new File(parentFile + "/Informe_Revision_Profunidad_v1.ods"), "Informe_Revision_Profunidad_v1.ods", zos);
+				}
 			} catch (Exception e) {
 				Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
 			}
@@ -304,6 +310,7 @@ public final class BasicServiceExport {
 		try {
 			final FileOutputStream fileOut = new FileOutputStream(file);
 			final PdfWriter writer = PdfWriter.getInstance(document, fileOut);
+			writer.setTagged(0);
 			writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
 			writer.setPageEvent(new ExportPageEventsObservatoryMP(
 					messageResources.getMessage("pdf.accessibility.bs.foot.text") + basicServiceForm.getName().toUpperCase() + " (" + sdf.format(new Date()) + ")", sdf.format(new Date())));
@@ -356,7 +363,7 @@ public final class BasicServiceExport {
 					titleParagraph.add(p3);
 					chapter.add(titleParagraph);
 				}
-				com.lowagie.text.List summaryPriorities1 = addSummary(messageResources, evaluationForm.getPriorities());
+				com.itextpdf.text.List summaryPriorities1 = addSummary(messageResources, evaluationForm.getPriorities());
 				chapter.add(summaryPriorities1);
 				generateGraphic(messageResources, evaluationForm.getPriorities(), messageResources.getMessage("pdf.accessibility.bs.priority.incidence"), chartsTempPath);
 				Image imgGp = PDFUtils.createImage(chartsTempPath + messageResources.getMessage("pdf.accessibility.bs.priority.incidence") + ".jpg",
@@ -382,7 +389,7 @@ public final class BasicServiceExport {
 							for (ProblemForm problem : pautaForm.getProblems()) {
 								String description = "";
 								Image image = null;
-								com.lowagie.text.Font font = null;
+								com.itextpdf.text.Font font = null;
 								if (problem.getType().equals(PMGR.getValue(Constants.INTAV_PROPERTIES, "confidence.level.medium"))) {
 									description += messageResources.getMessage("pdf.accessibility.bs.warning") + ": ";
 									image = imgWarnings;
@@ -472,16 +479,16 @@ public final class BasicServiceExport {
 	 *
 	 * @param messageResources the message resources
 	 * @param priorityList     the priority list
-	 * @return the com.lowagie.text. list
+	 * @return the com.itextpdf.text. list
 	 * @throws BadElementException the bad element exception
 	 * @throws IOException         Signals that an I/O exception has occurred.
 	 */
-	private static com.lowagie.text.List createProblemsIndex(final MessageResources messageResources, List<PriorityForm> priorityList) throws BadElementException, IOException {
-		final com.lowagie.text.List priorityTextList = new com.lowagie.text.List(false, 10);
+	private static com.itextpdf.text.List createProblemsIndex(final MessageResources messageResources, List<PriorityForm> priorityList) throws BadElementException, IOException {
+		final com.itextpdf.text.List priorityTextList = new com.itextpdf.text.List(false, 10);
 		for (PriorityForm priority : priorityList) {
-			final com.lowagie.text.List problemList = new com.lowagie.text.List(false, 10);
-			final com.lowagie.text.List warningList = new com.lowagie.text.List(false, 10);
-			final com.lowagie.text.List infoList = new com.lowagie.text.List(false, 10);
+			final com.itextpdf.text.List problemList = new com.itextpdf.text.List(false, 10);
+			final com.itextpdf.text.List warningList = new com.itextpdf.text.List(false, 10);
+			final com.itextpdf.text.List infoList = new com.itextpdf.text.List(false, 10);
 			for (GuidelineForm guideline : priority.getGuidelines()) {
 				boolean hasProblem = false;
 				boolean hasWarning = false;
@@ -519,13 +526,13 @@ public final class BasicServiceExport {
 	 * @param warningList      the warning list
 	 * @param infoList         the info list
 	 * @param priority         the priority
-	 * @return the com.lowagie.text. list
+	 * @return the com.itextpdf.text. list
 	 * @throws BadElementException the bad element exception
 	 * @throws IOException         Signals that an I/O exception has occurred.
 	 */
-	private static com.lowagie.text.List createProblemList(final MessageResources messageResources, com.lowagie.text.List problemList, com.lowagie.text.List warningList,
-			com.lowagie.text.List infoList, PriorityForm priority) throws BadElementException, IOException {
-		com.lowagie.text.List pwiList = new com.lowagie.text.List();
+	private static com.itextpdf.text.List createProblemList(final MessageResources messageResources, com.itextpdf.text.List problemList, com.itextpdf.text.List warningList,
+			com.itextpdf.text.List infoList, PriorityForm priority) throws BadElementException, IOException {
+		com.itextpdf.text.List pwiList = new com.itextpdf.text.List();
 		Image imgProblemA = Image.getInstance(PMGR.getValue(Constants.PDF_PROPERTIES, "path.problem"));
 		Image imgWarnings = Image.getInstance(PMGR.getValue(Constants.PDF_PROPERTIES, "path.warnings"));
 		Image imgInfos = Image.getInstance(PMGR.getValue(Constants.PDF_PROPERTIES, "path.infos"));
@@ -633,7 +640,7 @@ public final class BasicServiceExport {
 		boldWords.add(messageResources.getMessage("pdf.accessibility.bs.date"));
 		chapter1.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + fechaInforme, boldWords, ConstantsFont.paragraphBoldTitleFont, ConstantsFont.paragraphTitleFont, false));
 		List<PriorityForm> prioList = createPriorityList(evaList);
-		com.lowagie.text.List summaryPriorities = addSummary(messageResources, prioList);
+		com.itextpdf.text.List summaryPriorities = addSummary(messageResources, prioList);
 		chapter1.add(summaryPriorities);
 		generateGraphic(messageResources, prioList, messageResources.getMessage("pdf.accessibility.bs.global.priority.incidence"), globalPath);
 		Image globalImgGp = PDFUtils.createImage(globalPath + messageResources.getMessage("pdf.accessibility.bs.global.priority.incidence") + ".jpg",
@@ -671,19 +678,19 @@ public final class BasicServiceExport {
 	 *
 	 * @param messageResources the message resources
 	 * @param prioList         the prio list
-	 * @return the com.lowagie.text. list
+	 * @return the com.itextpdf.text. list
 	 * @throws BadElementException the bad element exception
 	 * @throws IOException         Signals that an I/O exception has occurred.
 	 */
-	private static com.lowagie.text.List addSummary(final MessageResources messageResources, final List<PriorityForm> prioList) throws BadElementException, IOException {
-		com.lowagie.text.List summaryPriorities = new com.lowagie.text.List();
+	private static com.itextpdf.text.List addSummary(final MessageResources messageResources, final List<PriorityForm> prioList) throws BadElementException, IOException {
+		com.itextpdf.text.List summaryPriorities = new com.itextpdf.text.List();
 		int count = prioList.size();
 		for (PriorityForm priority : prioList) {
 			ListItem priorityList = new ListItem(getPriorityName(messageResources, priority), ConstantsFont.SUMMARY_TITLE_FONT);
 			priorityList.setSpacingBefore(8);
 			priorityList.setListSymbol(new Chunk());
 			summaryPriorities.add(priorityList);
-			com.lowagie.text.List summaryStatistics = new com.lowagie.text.List();
+			com.itextpdf.text.List summaryStatistics = new com.itextpdf.text.List();
 			summaryStatistics.setIndentationLeft(2 * ConstantsFont.IDENTATION_LEFT_SPACE);
 			ListItem problemList = new ListItem(messageResources.getMessage("pdf.accessibility.bs.problems") + ": " + priority.getNumProblems(), ConstantsFont.SUMMARY_FONT_PROBLEM);
 			ListItem warningsList = new ListItem(messageResources.getMessage("pdf.accessibility.bs.warnings") + ": " + priority.getNumWarnings(), ConstantsFont.SUMMARY_FONT_WARNING);
@@ -815,7 +822,7 @@ public final class BasicServiceExport {
 				}
 				final PdfPCell labelCell = new PdfPCell(PDFUtils.createParagraphWithDiferentFormatWord(text, boldWords, ConstantsFont.codeCellFont, ConstantsFont.codeCellFont, false));
 				labelCell.setPadding(0);
-				labelCell.setBackgroundColor(new Color(255, 244, 223));
+				labelCell.setBackgroundColor(new BaseColor(255, 244, 223));
 				labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				labelCell.setPadding(DEFAULT_PADDING);
 				table.addCell(labelCell);

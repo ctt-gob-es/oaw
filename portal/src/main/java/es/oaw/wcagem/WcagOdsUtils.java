@@ -1,11 +1,16 @@
 package es.oaw.wcagem;
 
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+
 import java.io.File;
+import java.util.List;
 
 import org.jopendocument.dom.ODValueType;
 import org.jopendocument.dom.spreadsheet.MutableCell;
 import org.jopendocument.dom.spreadsheet.Sheet;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
+
+import es.inteco.common.properties.PropertiesManager;
 
 /**
  * The Class WcagOdsUtils.
@@ -29,18 +34,21 @@ public final class WcagOdsUtils {
 	 * Generate ods.
 	 *
 	 * @param report the report
+	 * @return the spread sheet
 	 * @throws Exception the exception
 	 */
-	public static void generateOds(final WcagEmReport report) throws Exception {
-		// File inputFile = new File("/home/alvaro/Downloads/Borrador_Informe_Revision_Profunidad_v1.ods");
-		File inputFile = new File("/home/alvaro/Downloads/Borrador_Informe_Revision_Profunidad_v1_NF.ods");
-		File outputFile = new File("/home/alvaro/Downloads/Borrador_Informe_Revision_Profunidad_v1_M.ods");
+	public static SpreadSheet generateOds(final WcagEmReport report) throws Exception {
+		final PropertiesManager pmgr = new PropertiesManager();
+		File inputFile = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.ods.template"));
 		// Load template
 		final SpreadSheet workbook = SpreadSheet.createFromFile(inputFile);
 		final Sheet sheet = workbook.getSheet("03.Muestra");
 		int resultsProcessed = 0;
 		int initRow = 8; // Initial rowcount
-		for (Webpage_ webpage : report.getGraph().get(0).getRandomSample().getWebpage()) {
+		final List<Webpage_> webpageList = report.getGraph().get(0).getRandomSample().getWebpage();
+		final int totalPages = webpageList.size();
+		fillNotTell(workbook, totalPages < MAX_PAGES ? totalPages : MAX_PAGES);
+		for (Webpage_ webpage : webpageList) {
 			if (resultsProcessed < MAX_PAGES) {
 				resultsProcessed++;
 				sheet.getCellAt("C" + initRow).setValue(webpage.getTitle(), ODValueType.STRING, true, false);
@@ -60,82 +68,82 @@ public final class WcagOdsUtils {
 				switch (auditResult.getTest()) {
 				// P1
 				case "WCAG2:non-text-content":
-					extracted(sheetP1, auditResult, 19);
+					fillResult(sheetP1, auditResult, 19);
 					break;
 				case "WCAG2:info-and-relationships":
-					extracted(sheetP1, auditResult, 217);
+					fillResult(sheetP1, auditResult, 217);
 					break;
 				case "WCAG2:orientation":
-					extracted(sheetP1, auditResult, 316);
+					fillResult(sheetP1, auditResult, 316);
 					break;
 				case "WCAG2:identify-input-purpose":
-					extracted(sheetP1, auditResult, 349);
+					fillResult(sheetP1, auditResult, 349);
 					break;
 				case "WCAG2:contrast-minimum":
-					extracted(sheetP1, auditResult, 448);
+					fillResult(sheetP1, auditResult, 448);
 					break;
 				case "WCAG2:reflow":
-					extracted(sheetP1, auditResult, 548);
+					fillResult(sheetP1, auditResult, 548);
 					break;
 				case "WCAG2:text-spacing":
-					extracted(sheetP1, auditResult, 613);
+					fillResult(sheetP1, auditResult, 613);
 					break;
 				// P2
 				case "WCAG2:keyboard":
-					extracted(sheetP2, auditResult, 19);
+					fillResult(sheetP2, auditResult, 19);
 					break;
 				case "WCAG2:timing-adjustable":
-					extracted(sheetP2, auditResult, 119);
+					fillResult(sheetP2, auditResult, 119);
 					break;
 				case "WCAG2:tpause-stop-hide":
-					extracted(sheetP2, auditResult, 151);
+					fillResult(sheetP2, auditResult, 151);
 					break;
 				case "WCAG2:three-flashes-or-below-threshold":
-					extracted(sheetP2, auditResult, 184);
+					fillResult(sheetP2, auditResult, 184);
 					break;
 				case "WCAG2:bypass-blocks":
-					extracted(sheetP2, auditResult, 217);
+					fillResult(sheetP2, auditResult, 217);
 					break;
 				case "WCAG2:page-titled":
-					extracted(sheetP2, auditResult, 250);
+					fillResult(sheetP2, auditResult, 250);
 					break;
 				case "WCAG2:focus-order":
-					extracted(sheetP2, auditResult, 283);
+					fillResult(sheetP2, auditResult, 283);
 					break;
 				case "WCAG2:link-purpose-in-context":
-					extracted(sheetP2, auditResult, 316);
+					fillResult(sheetP2, auditResult, 316);
 					break;
 				case "WCAG2:multiple-ways":
-					extracted(sheetP2, auditResult, 349);
+					fillResult(sheetP2, auditResult, 349);
 					break;
 				case "WCAG2:focus-visible":
-					extracted(sheetP2, auditResult, 416);
+					fillResult(sheetP2, auditResult, 416);
 					break;
 				case "WCAG2:label-in-name":
-					extracted(sheetP2, auditResult, 514);
+					fillResult(sheetP2, auditResult, 514);
 					break;
 				// P3
 				case "WCAG2:language-of-page":
-					extracted(sheetP3, auditResult, 19);
+					fillResult(sheetP3, auditResult, 19);
 					break;
 				case "WCAG2:language-of-parts":
-					extracted(sheetP3, auditResult, 52);
+					fillResult(sheetP3, auditResult, 52);
 					break;
 				case "WCAG2:on-focus":
-					extracted(sheetP3, auditResult, 85);
+					fillResult(sheetP3, auditResult, 85);
 					break;
 				case "WCAG2:on-input":
-					extracted(sheetP3, auditResult, 119);
+					fillResult(sheetP3, auditResult, 119);
 					break;
 				case "WCAG2:consistent-navigation":
-					extracted(sheetP3, auditResult, 151);
+					fillResult(sheetP3, auditResult, 151);
 					break;
 				case "WCAG2:labels-or-instructions":
-					extracted(sheetP3, auditResult, 217);
+					fillResult(sheetP3, auditResult, 217);
 					break;
 				// p4
 				case "WCAG2:name-role-value":
-					extracted(sheetP4, auditResult, 52);
+					fillResult(sheetP4, auditResult, 52);
 					break;
 				default:
 					break;
@@ -143,7 +151,9 @@ public final class WcagOdsUtils {
 			}
 		}
 		// Save
-		workbook.saveAs(outputFile);
+		// File outputFile = new File("/home/alvaro/Downloads/Borrador_Informe_Revision_Profunidad_v1_M.ods");
+		// workbook.saveAs(outputFile);
+		return workbook;
 	}
 
 	/**
@@ -153,16 +163,58 @@ public final class WcagOdsUtils {
 	 * @param auditResult  the audit result
 	 * @param initRowValue the init row value
 	 */
-	private static void extracted(final Sheet sheet, AuditResult auditResult, final int initRowValue) {
+	private static void fillResult(final Sheet sheet, AuditResult auditResult, final int initRowValue) {
 		int initRow = initRowValue;
 		int resultsProcessed = 0;
 		for (HasPart hasPart : auditResult.getHasPart()) {
 			if (resultsProcessed < MAX_PAGES) {
 				final MutableCell<SpreadSheet> cellAt = sheet.getCellAt("D" + initRow);
+				cellAt.clearValue();
 				cellAt.setValue(odsOutcome(hasPart.getResult().getOutcome()));
 				resultsProcessed++;
 				initRow++;
 			}
+		}
+	}
+
+	/**
+	 * Fill not tell.
+	 *
+	 * @param workbook   the workbook
+	 * @param totalPages the total pages
+	 */
+	private static void fillNotTell(final SpreadSheet workbook, final int totalPages) {
+		final Sheet sheetP1 = workbook.getSheet("P1.Perceptible");
+		int tableRowIndex = 19;
+		while (tableRowIndex <= 613) {
+			for (int i = 0; i < totalPages; i++) {
+				sheetP1.getCellAt("D" + (i + tableRowIndex)).setValue("N/T");
+			}
+			tableRowIndex = tableRowIndex + 33;
+		}
+		final Sheet sheetP2 = workbook.getSheet("P2.Operable");
+		tableRowIndex = 19;
+		while (tableRowIndex <= 547) {
+			for (int i = 0; i < totalPages; i++) {
+				sheetP2.getCellAt("D" + (i + tableRowIndex)).setValue("N/T");
+			}
+			tableRowIndex = tableRowIndex + 33;
+		}
+		final Sheet sheetP3 = workbook.getSheet("P3.Comprensible");
+		tableRowIndex = 19;
+		while (tableRowIndex <= 316) {
+			for (int i = 0; i < totalPages; i++) {
+				sheetP3.getCellAt("D" + (i + tableRowIndex)).setValue("N/T");
+			}
+			tableRowIndex = tableRowIndex + 33;
+		}
+		final Sheet sheetP4 = workbook.getSheet("P4.Robusto");
+		tableRowIndex = 19;
+		while (tableRowIndex <= 85) {
+			for (int i = 0; i < totalPages; i++) {
+				sheetP4.getCellAt("D" + (i + tableRowIndex)).setValue("N/T");
+			}
+			tableRowIndex = tableRowIndex + 33;
 		}
 	}
 

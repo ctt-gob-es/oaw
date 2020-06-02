@@ -239,7 +239,7 @@ public final class WcagEmUtils {
 					result.setDescription("");
 					result.setType("TestResult");
 					// By default, we mark all as cannot tell because this an automatic analisys that not cover all WCAG verfification point
-					result.setOutcome("earl:cantTell");
+					result.setOutcome(EARL_CANNOT_TELL);
 					auditResult.setResult(result);
 				}
 				auditResult.setMode("earl:automatic");
@@ -272,6 +272,8 @@ public final class WcagEmUtils {
 									// if one of this has earl:failed, all result marked as failed
 									if (EARL_FAILED.equals(validationResult)) {
 										auditResult.getResult().setOutcome(EARL_FAILED);
+									} else {
+										auditResult.getResult().setOutcome(EARL_CANNOT_TELL);
 									}
 								}
 								hasPart.setMultiPage(false);
@@ -354,8 +356,6 @@ public final class WcagEmUtils {
 		graph2.setName("Observatorio de Accesibilidad Web (OAW)");
 		graphs.add(graph2);
 		wcagEmReport.setGraph(graphs);
-		// TODO ODS
-		WcagOdsUtils.generateOds(wcagEmReport);
 		return wcagEmReport;
 	}
 

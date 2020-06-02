@@ -19,24 +19,24 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Chapter;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.Image;
-import com.lowagie.text.List;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Section;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfString;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.events.IndexEvents;
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.List;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Section;
+import com.itextpdf.text.pdf.PdfName;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfString;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.events.IndexEvents;
 
 import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
@@ -93,6 +93,7 @@ public abstract class AnonymousResultPdfBuilder {
 		numChapter = 1;
 		document = new Document(PageSize.A4, 50, 50, 120, 72);
 		writer = PdfWriter.getInstance(document, new FileOutputStream(file));
+		writer.setTagged(0);
 		writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
 		writer.getExtraCatalog().put(new PdfName("Lang"), new PdfString("es"));
 		// Inicializamos el índice
@@ -1048,6 +1049,6 @@ public abstract class AnonymousResultPdfBuilder {
 	 * @param tagsFilter             the tags filter
 	 * @throws Exception the exception
 	 */
-	public abstract void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, String observatoryId, String filePath, String[] tagsFilter, String[] exObsIds)
-			throws Exception;
+	public abstract void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, String observatoryId, String filePath, String[] tagsFilter,
+			String[] exObsIds) throws Exception;
 }

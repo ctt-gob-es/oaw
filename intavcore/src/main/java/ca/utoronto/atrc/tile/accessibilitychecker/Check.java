@@ -5867,7 +5867,7 @@ public class Check {
 					final Element element = (Element) listLabels.item(x);
 					if (element.getAttribute("for").equalsIgnoreCase(stringId) && !StringUtils.normalizeWhiteSpaces(element.getTextContent()).trim().isEmpty()) {
 						// found an associated label
-						return (!StringUtils.isEmpty(element.getTextContent()) && !arialValue.equals(StringUtils.normalizeWhiteSpaces(element.getTextContent())));
+						return (!StringUtils.isEmpty(element.getTextContent()) && !arialValue.contains(StringUtils.normalizeWhiteSpaces(element.getTextContent())));
 					}
 				}
 				return false;

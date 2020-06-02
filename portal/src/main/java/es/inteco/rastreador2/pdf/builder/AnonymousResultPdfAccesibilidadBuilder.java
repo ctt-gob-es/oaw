@@ -17,8 +17,8 @@ import java.util.List;
 
 import org.apache.struts.util.MessageResources;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
 
 import es.inteco.common.Constants;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
@@ -71,7 +71,7 @@ public class AnonymousResultPdfAccesibilidadBuilder extends AnonymousResultPdfBu
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createIntroductionChapter(org.apache.struts.util.MessageResources, com.lowagie.text.Font)
+	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createIntroductionChapter(org.apache.struts.util.MessageResources, com.itextpdf.text.Font)
 	 */
 	@Override
 	protected void createIntroductionChapter(MessageResources resources, Font titleFont) throws Exception {
@@ -87,7 +87,7 @@ public class AnonymousResultPdfAccesibilidadBuilder extends AnonymousResultPdfBu
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createObjetiveChapter(org.apache.struts.util.MessageResources, com.lowagie.text.Font)
+	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createObjetiveChapter(org.apache.struts.util.MessageResources, com.itextpdf.text.Font)
 	 */
 	@Override
 	protected void createObjetiveChapter(MessageResources resources, Font titleFont) throws DocumentException {
@@ -105,7 +105,7 @@ public class AnonymousResultPdfAccesibilidadBuilder extends AnonymousResultPdfBu
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createMethodologyChapter(org.apache.struts.util.MessageResources, com.lowagie.text.Font, java.util.List, boolean)
+	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createMethodologyChapter(org.apache.struts.util.MessageResources, com.itextpdf.text.Font, java.util.List, boolean)
 	 */
 	@Override
 	protected void createMethodologyChapter(MessageResources resources, Font titleFont, List<ObservatoryEvaluationForm> primaryReportPageList, boolean isBasicService) throws Exception {
@@ -124,7 +124,7 @@ public class AnonymousResultPdfAccesibilidadBuilder extends AnonymousResultPdfBu
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createGlobalResultsChapter(org.apache.struts.util.MessageResources, com.lowagie.text.Font, java.lang.String, java.lang.String,
+	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createGlobalResultsChapter(org.apache.struts.util.MessageResources, com.itextpdf.text.Font, java.lang.String, java.lang.String,
 	 * java.util.List)
 	 */
 	@Override
@@ -144,7 +144,7 @@ public class AnonymousResultPdfAccesibilidadBuilder extends AnonymousResultPdfBu
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createCategoryResultsChapter(org.apache.struts.util.MessageResources, com.lowagie.text.Font, java.lang.String,
+	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createCategoryResultsChapter(org.apache.struts.util.MessageResources, com.itextpdf.text.Font, java.lang.String,
 	 * java.lang.String, es.inteco.rastreador2.actionform.semillas.CategoriaForm)
 	 */
 	@Override
@@ -164,7 +164,7 @@ public class AnonymousResultPdfAccesibilidadBuilder extends AnonymousResultPdfBu
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createEvolutionResultsChapter(org.apache.struts.util.MessageResources, com.lowagie.text.Font, java.lang.String,
+	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createEvolutionResultsChapter(org.apache.struts.util.MessageResources, com.itextpdf.text.Font, java.lang.String,
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -181,7 +181,7 @@ public class AnonymousResultPdfAccesibilidadBuilder extends AnonymousResultPdfBu
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createSummaryChapter(org.apache.struts.util.MessageResources, com.lowagie.text.Font)
+	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder# createSummaryChapter(org.apache.struts.util.MessageResources, com.itextpdf.text.Font)
 	 */
 	@Override
 	protected void createSummaryChapter(MessageResources resources, Font titleFont) throws Exception {
@@ -199,7 +199,8 @@ public class AnonymousResultPdfAccesibilidadBuilder extends AnonymousResultPdfBu
 	 * @throws Exception the exception
 	 */
 	@Override
-	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, String observatoryId, String filePath, String[] tagsFilter, String[] exObsIds) throws Exception {
+	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, String observatoryId, String filePath, String[] tagsFilter, String[] exObsIds)
+			throws Exception {
 		ResultadosAnonimosObservatorioAccesibilidadUtils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true);
 	}
 }

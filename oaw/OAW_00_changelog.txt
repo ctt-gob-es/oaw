@@ -7,6 +7,10 @@
 - Ajustados patrones de validaciones
 - Añadido el total de URLs analizadas al detalle de una análisis en los observatorios
 - Eliminado cálculo duplicado en anexos que provocaba tiempos de ejecución excesivamente largos
+- Corregida propagación de cookies en ciertos portales
+- Eliminada coletilla "beta" del cartucho UNE-EN301549:2019
+- Modificado la llamada al valdidador del W3C para forzar usar HTML5 como doctype de validación
+- Actualizada la librería de generación de PDF para incluir soporte a PDF/A
 
 5.0.4
 ------------------------------------------------------------------------------------------------------------------------------------

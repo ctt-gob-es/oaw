@@ -35,7 +35,7 @@ function observatorioFormatter(cellvalue, options, rowObject) {
 	if (cellvalue.startsWith("observatorio-5")) {
 		value = "Accesibilidad";
 	} else if (cellvalue.startsWith("observatorio-4")) {
-		value = "UNE-EN301549:2019 (beta)";
+		value = "UNE-EN301549:2019";
 	} else if (cellvalue.startsWith("observatorio-3")) {
 		value = "UNE-2012 (versi&#243; 2)";
 	} else if (cellvalue.startsWith("observatorio-2")) {
