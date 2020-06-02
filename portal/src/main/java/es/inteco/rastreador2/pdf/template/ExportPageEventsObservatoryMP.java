@@ -17,13 +17,14 @@ package es.inteco.rastreador2.pdf.template;
 
 import java.awt.Color;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Image;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPageEventHelper;
-import com.lowagie.text.pdf.PdfWriter;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfName;
+import com.itextpdf.text.pdf.PdfPageEventHelper;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -97,12 +98,14 @@ public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
 		int posY = Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.logo.posY"));
 		final Image logoMinisterio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.ministerio.logo"), 158, 45, "Ministerio de Hacienda y Función Públicas");
 		if (logoMinisterio != null) {
+			pdfContentByte.beginMarkedContentSequence(PdfName.IMAGE);
 			logoMinisterio.setAbsolutePosition(posX, posY);
 			pdfContentByte.addImage(logoMinisterio);
 			pdfContentByte.endMarkedContentSequence();
 		}
 		final Image logoObservatorio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.observatorio.logo"), 233, 45, "Observatorio de Accesibilidad Web");
 		if (logoObservatorio != null) {
+			pdfContentByte.beginMarkedContentSequence(PdfName.IMAGE);
 			logoObservatorio.setAbsolutePosition(document.getPageSize().getWidth() - logoObservatorio.getScaledWidth() - posX, posY);
 			pdfContentByte.addImage(logoObservatorio);
 			pdfContentByte.endMarkedContentSequence();

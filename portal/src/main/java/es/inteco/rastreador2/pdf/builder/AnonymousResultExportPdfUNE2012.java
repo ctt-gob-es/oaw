@@ -12,21 +12,21 @@ import java.util.Map;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Chapter;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.List;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Section;
-import com.lowagie.text.TextElementArray;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.events.IndexEvents;
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.List;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Section;
+import com.itextpdf.text.TextElementArray;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.events.IndexEvents;
 import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 
 import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
@@ -165,7 +165,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
 		PDFUtils.addParagraph(messageResources.getMessage("basic.service.content.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, true);
 		PDFUtils.addCode(HTMLEntities.unhtmlAngleBrackets(contents), chapter);
 		PDFUtils.addParagraph("El análisis se ha ejecutado con la siguiente configuración:", ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
-		final com.lowagie.text.List listaConfiguracionRastreo = new com.lowagie.text.List();
+		final com.itextpdf.text.List listaConfiguracionRastreo = new com.itextpdf.text.List();
 		listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
 		PDFUtils.addListItem("Tipo: Código fuente", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 		PDFUtils.addListItem("Metodología: " + getBasicServiceForm().reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
@@ -309,7 +309,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
 			PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p3.bs"), ConstantsFont.PARAGRAPH, section);
 		}
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p4"), ConstantsFont.PARAGRAPH, section);
-		com.lowagie.text.List list = new com.lowagie.text.List();
+		com.itextpdf.text.List list = new com.itextpdf.text.List();
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.32.p5.bold"));
 		list.add(PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
@@ -326,7 +326,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
 		PDFUtils.addImageToSection(section, pmgr.getValue(Constants.PDF_PROPERTIES, "path.grafico.rastreo"), messageResources.getMessage("ob.resAnon.intav.report.32.img.alt"), 60);
 		if (!isBasicService && observatoryType == Constants.OBSERVATORY_TYPE_AGE) {
 			PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p8"), ConstantsFont.PARAGRAPH, section);
-			com.lowagie.text.List listp8 = new com.lowagie.text.List();
+			com.itextpdf.text.List listp8 = new com.itextpdf.text.List();
 			PDFUtils.addListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p8.l1"), listp8, ConstantsFont.PARAGRAPH);
 			PDFUtils.addListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p8.l2"), listp8, ConstantsFont.PARAGRAPH);
 			PDFUtils.addListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p8.l3"), listp8, ConstantsFont.PARAGRAPH);
@@ -345,11 +345,11 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
 
 	protected Section createSection33(final MessageResources messageResources, Section section, long observatoryType) throws BadElementException, IOException {
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.33.p1"), ConstantsFont.PARAGRAPH, section);
-		com.lowagie.text.List list = new com.lowagie.text.List();
+		com.itextpdf.text.List list = new com.itextpdf.text.List();
 		final ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p2"));
 		ListItem item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
-		com.lowagie.text.List list2 = new com.lowagie.text.List();
+		com.itextpdf.text.List list2 = new com.itextpdf.text.List();
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p4"));
 		ListItem itemL2 = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
@@ -364,7 +364,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p8"));
 		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p9"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
-		list2 = new com.lowagie.text.List();
+		list2 = new com.itextpdf.text.List();
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p10"));
 		itemL2 = PDFUtils.addMixFormatListItem(messageResources.getMessage("une2012.resAnon.intav.report.33.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
@@ -379,7 +379,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
 		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
 		section.add(list);
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.33.p14"), ConstantsFont.PARAGRAPH, section);
-		list = new com.lowagie.text.List();
+		list = new com.itextpdf.text.List();
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p15"));
 		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p16"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
@@ -561,7 +561,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
 				PDFUtils.createTableCell(messageResources.getMessage("une2012.resAnon.intav.report.331.table.header2"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 	}
 
-	protected void create331TableRow(final MessageResources messageResources, PdfPTable table, String verification, com.lowagie.text.List verP) {
+	protected void create331TableRow(final MessageResources messageResources, PdfPTable table, String verification, com.itextpdf.text.List verP) {
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(verification), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, 10, -1));
 		table.addCell(PDFUtils.createListTableCell(verP, Color.WHITE, Element.ALIGN_CENTER, 0));
 	}

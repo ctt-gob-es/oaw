@@ -25,17 +25,18 @@ import java.util.Map;
 
 import org.apache.struts.util.MessageResources;
 
-import com.lowagie.text.Anchor;
-import com.lowagie.text.Chapter;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Section;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
+import com.itextpdf.text.Anchor;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Section;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 
 import es.gob.oaw.rastreador2.pdf.utils.CheckDescriptionsManager;
 import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
@@ -141,7 +142,7 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 				final PdfPTable notice = new PdfPTable(1);
 				notice.setSpacingBefore(25f);
 				PdfPCell cell = new PdfPCell();
-				cell.setBackgroundColor(Constants.GRIS_MUY_CLARO);
+				cell.setBackgroundColor(Constants.BC_GRIS_MUY_CLARO);
 				cell.addElement(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.errores.mas.info"), specialChunkMap, ConstantsFont.PARAGRAPH));
 				cell.setPadding(10f);
 				notice.addCell(cell);
@@ -338,7 +339,7 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		headerCell.setColspan(3);
 		headerCell.setPhrase(new Phrase(tableHeader, ConstantsFont.paragraphBoldFont));
 		headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-		headerCell.setBackgroundColor(Color.WHITE);
+		headerCell.setBackgroundColor(BaseColor.WHITE);
 		headerCell.setBorder(0);
 		table.addCell(headerCell);
 		table.setSpacingBefore(10);

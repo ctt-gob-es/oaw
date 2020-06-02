@@ -24,16 +24,16 @@ import java.util.Map;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 
-import com.lowagie.text.Chapter;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.Section;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
+import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.Section;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 
 import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.common.Constants;
@@ -460,7 +460,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		table.setSpacingBefore(1);
 		table.setWidthPercentage(90);
 		table.setKeepTogether(true);
-		final com.lowagie.text.List leyendaValoresResultados = new com.lowagie.text.List(false, false);
+		final com.itextpdf.text.List leyendaValoresResultados = new com.itextpdf.text.List(false, false);
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItemBold(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.title"), ""));
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.np"), "-:"));
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.1"), "1:"));
@@ -470,7 +470,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		final PdfPCell leyendaValoresResultadosTableCell = PDFUtils.createListTableCell(leyendaValoresResultados, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
 		leyendaValoresResultadosTableCell.setBorder(0);
 		table.addCell(leyendaValoresResultadosTableCell);
-		final com.lowagie.text.List leyendaValoresConformidad = new com.lowagie.text.List(false, false);
+		final com.itextpdf.text.List leyendaValoresConformidad = new com.itextpdf.text.List(false, false);
 		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItemBold(messageResources.getMessage("pdf.accessibility.page.result.legend.conformance.title"), ""));
 		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.conformance.conforming"), "C:"));
 		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.conformance.not.conforming"), "NC:"));
@@ -478,7 +478,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		final PdfPCell leyendaValoresConformidadTableCell = PDFUtils.createListTableCell(leyendaValoresConformidad, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
 		leyendaValoresConformidadTableCell.setBorder(0);
 		table.addCell(leyendaValoresConformidadTableCell);
-		final com.lowagie.text.List leyenda = new com.lowagie.text.List(false, false);
+		final com.itextpdf.text.List leyenda = new com.itextpdf.text.List(false, false);
 		leyenda.add(PDFUtils.buildLeyendaListItemBold(messageResources.getMessage("pdf.accessibility.page.result.legend.verifications.title"), ""));
 		for (ObservatorySuitabilityForm suitabilityForm : evaList.getSuitabilityGroups()) {
 			for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
@@ -507,7 +507,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		table.setSpacingBefore(1);
 		table.setWidthPercentage(90);
 		table.setKeepTogether(true);
-		final com.lowagie.text.List leyendaValoresResultados = new com.lowagie.text.List(false, false);
+		final com.itextpdf.text.List leyendaValoresResultados = new com.itextpdf.text.List(false, false);
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItemBold(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.title"), ""));
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.np"), "-:"));
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.1"), "1:"));
@@ -517,7 +517,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		final PdfPCell leyendaValoresResultadosTableCell = PDFUtils.createListTableCell(leyendaValoresResultados, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
 		leyendaValoresResultadosTableCell.setBorder(0);
 		table.addCell(leyendaValoresResultadosTableCell);
-//		final com.lowagie.text.List leyendaValoresConformidad = new com.lowagie.text.List(false, false);
+//		final com.itextpdf.text.List leyendaValoresConformidad = new com.itextpdf.text.List(false, false);
 //		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItemBold("Conformidad de verificación en el sitio web", ""));
 //		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("Conforme", "C"));
 //		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("No conforme", "NC:"));
@@ -525,7 +525,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 //		final PdfPCell leyendaValoresConformidadTableCell = PDFUtils.createListTableCell(leyendaValoresConformidad, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
 //		leyendaValoresConformidadTableCell.setBorder(0);
 //		table.addCell(leyendaValoresConformidadTableCell);
-		final com.lowagie.text.List leyenda = new com.lowagie.text.List(false, false);
+		final com.itextpdf.text.List leyenda = new com.itextpdf.text.List(false, false);
 		leyenda.add(PDFUtils.buildLeyendaListItemBold(messageResources.getMessage("pdf.accessibility.page.result.legend.verifications.title"), ""));
 		for (ObservatorySuitabilityForm suitabilityForm : evaList.getSuitabilityGroups()) {
 			for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {

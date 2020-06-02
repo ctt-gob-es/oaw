@@ -43,11 +43,11 @@ public class BasicServiceMailService {
 	/** The Constant OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS. */
 	private static final String OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS = "Comprobaciones Accesibilidad (beta)";
 	/** The Constant OBSERVATORIO_UNE_EN2019. */
-//	private static final String OBSERVATORIO_UNE_EN2019 = "Observatorio UNE EN2019 (beta)";
-	private static final String OBSERVATORIO_UNE_EN2019 = "Seguimiento simplificado Directiva (beta)";
+//	private static final String OBSERVATORIO_UNE_EN2019 = "Observatorio UNE EN2019";
+	private static final String OBSERVATORIO_UNE_EN2019 = "Seguimiento simplificado Directiva";
 	/** The Constant OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS. */
-//	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Observatorio UNE EN2019 (beta sin comprobar enlaces rotos)";
-	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Seguimiento simplificado Directiva (beta) (sin comprobar enlaces rotos)";
+//	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Observatorio UNE EN2019 (sin comprobar enlaces rotos)";
+	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Seguimiento simplificado Directiva (sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_UNE_2012_VERSION_2. */
 	private static final String OBSERVATORIO_UNE_2012_VERSION_2 = "Observatorio UNE 2012 (versión 2)";
 	/** The Constant OBSERVATORIO_UNE_2012_ANTIGUA. */
