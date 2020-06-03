@@ -588,6 +588,10 @@ public final class CheckTables {
 				// lo mismo si tiene colSpan pero las celdas que se marcan son en la horizontal
 				if (j < x && element < nodeElementList.size()) {
 					TableNode tableNode = new TableNode(nodeElementList.get(element));
+					// Mark as empty
+					if (isEmptyCell(nodeElementList.get(element))) {
+						tableNode.setEmptyCell(true);
+					}
 					// Si es un encabezado lo marcamos como tal
 					if (isHeaderCell(nodeElementList.get(element))) {
 						// Es un th con texto, estamos seguros de que es encabezado
@@ -696,7 +700,7 @@ public final class CheckTables {
 	private static boolean isHybridList(List<TableNode> nodeList) {
 		boolean isHeader = nodeList.get(0).isHeaderCell();
 		for (int i = 1; i < nodeList.size(); i++) {
-			if (nodeList.get(i).getNode() != null && isHeader != nodeList.get(i).isHeaderCell()) {
+			if (nodeList.get(i).getNode() != null && !nodeList.get(i).isEmptyCell() && isHeader != nodeList.get(i).isHeaderCell()) {
 				return true;
 			}
 		}
@@ -712,6 +716,10 @@ public final class CheckTables {
 	// Comprueba si una celda corresponde o no a un encabezado
 	private static boolean isHeaderCell(Node node) {
 		return node.getNodeName().equalsIgnoreCase("th") && StringUtils.isNotEmpty(node.getTextContent());
+	}
+
+	private static boolean isEmptyCell(Node node) {
+		return StringUtils.isEmpty(node.getTextContent());
 	}
 
 	// Comprueba si la columna "colum" de una tabla es una columna de encabezados
@@ -732,7 +740,7 @@ public final class CheckTables {
 		}
 		try {
 			for (int i = initialCounter; i < x; i++) {
-				if (!table[i][colum].isHeaderCell() && !table[i][colum].isSpanCell()) {
+				if (!table[i][colum].isEmptyCell() && !table[i][colum].isHeaderCell() && !table[i][colum].isSpanCell()) {
 					return false;
 				}
 			}
@@ -764,7 +772,7 @@ public final class CheckTables {
 			initialCounter = 1;
 		}
 		for (int j = initialCounter; j < y; j++) {
-			if (!table[row][j].isHeaderCell() && !table[row][j].isSpanCell()) {
+			if (!table[row][j].isEmptyCell() && !table[row][j].isHeaderCell() && !table[row][j].isSpanCell()) {
 				return false;
 			}
 		}

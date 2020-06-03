@@ -138,6 +138,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								title="Crear un nuevo observatorio"></span>
 							<bean:message key="indice.observatorio.nuevo.observatorio" />
 						</html:link>
+
+						<html:link forward="newMergeObservatoryReport" styleClass="btn btn-default btn-lg">
+							<span class="glyphicon glyphicon-globe" aria-hidden="true" data-toggle="tooltip"
+								title="<bean:message key="indice.observatorio.informe.global" />"></span>
+							<bean:message key="indice.observatorio.informe.global" />
+						</html:link>
 					</p>
 					<div class="pag">
 						<table class="table table-stripped table-bordered table-hover">
