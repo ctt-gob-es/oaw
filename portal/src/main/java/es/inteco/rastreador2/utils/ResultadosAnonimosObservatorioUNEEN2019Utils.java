@@ -1281,7 +1281,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param messageResources the message resources
 	 * @return the default category dataset
 	 */
-	private static DefaultCategoryDataset createDataSetComplexity(final Map<ComplejidadForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
+	public static DefaultCategoryDataset createDataSetComplexity(final Map<ComplejidadForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 		for (Map.Entry<ComplejidadForm, Map<String, BigDecimal>> entry : result.entrySet()) {
 			dataSet.addValue(entry.getValue().get(Constants.OBS_NV), parseLevelLabel(Constants.OBS_NV, messageResources), entry.getKey().getName());
@@ -1298,7 +1298,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param messageResources the message resources
 	 * @return the default category dataset
 	 */
-	private static DefaultCategoryDataset createDataSetComplexityCompilance(final Map<ComplejidadForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
+	public static DefaultCategoryDataset createDataSetComplexityCompilance(final Map<ComplejidadForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 		for (Map.Entry<ComplejidadForm, Map<String, BigDecimal>> entry : result.entrySet()) {
 			dataSet.addValue(entry.getValue().get(Constants.OBS_COMPILANCE_NONE), parseLevelLabel(Constants.OBS_COMPILANCE_NONE, messageResources), entry.getKey().getName());
@@ -2991,7 +2991,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param results the results
 	 * @return the complinace map
 	 */
-	private static Map<String, Integer> getComplinaceMap(Map<Long, Map<String, BigDecimal>> results) {
+	public static Map<String, Integer> getComplinaceMap(Map<Long, Map<String, BigDecimal>> results) {
 		final Map<String, Integer> resultCompilance = new TreeMap<>();
 		int totalC = 0;
 		int totalPC = 0;
