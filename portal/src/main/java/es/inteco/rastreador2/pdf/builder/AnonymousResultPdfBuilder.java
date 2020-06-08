@@ -949,7 +949,7 @@ public abstract class AnonymousResultPdfBuilder {
 		final String title = messageResources.getMessage("observatory.graphic.score.by.page.title");
 		final String filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test4.jpg";
 		ResultadosPrimariosObservatorioIntavUtils.getScoreByPageGraphic(messageResources, evaList, title, filePath, noDataMess);
-		final Image image = PDFUtils.createImage(filePath, null);
+		final Image image = PDFUtils.createImage(filePath, title);
 		image.scalePercent(80);
 		image.setAlignment(Element.ALIGN_CENTER);
 		chapter.add(image);
@@ -989,7 +989,7 @@ public abstract class AnonymousResultPdfBuilder {
 		final String filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test.jpg";
 		final String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.by.page.title");
 		ResultadosPrimariosObservatorioIntavUtils.getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, evaList, title, filePath, noDataMess);
-		final Image image = PDFUtils.createImage(filePath, null);
+		final Image image = PDFUtils.createImage(filePath, title);
 		image.scalePercent(60);
 		image.setAlignment(Element.ALIGN_CENTER);
 		section.add(image);
@@ -1032,7 +1032,7 @@ public abstract class AnonymousResultPdfBuilder {
 		PropertiesManager pmgr = new PropertiesManager();
 		ResultadosAnonimosObservatorioIntavUtils.getMidsComparationByVerificationLevelGraphic(request, level, title, filePath, noDataMess, evaList,
 				pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"), true);
-		Image image = PDFUtils.createImage(filePath, null);
+		Image image = PDFUtils.createImage(filePath, title);
 		image.scalePercent(60);
 		image.setAlignment(Element.ALIGN_CENTER);
 		section.add(image);
