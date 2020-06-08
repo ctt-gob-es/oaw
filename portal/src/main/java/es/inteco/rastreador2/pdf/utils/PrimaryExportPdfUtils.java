@@ -50,11 +50,9 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Section;
-import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfName;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfSmartCopy;
 import com.itextpdf.text.pdf.PdfString;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.events.IndexEvents;
@@ -408,12 +406,6 @@ public final class PrimaryExportPdfUtils {
 					File outputFile = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe_Revision_Profunidad_v1.ods");
 					ods.saveAs(outputFile);
 				}
-				// TODO Open an tag
-				com.itextpdf.text.pdf.PdfDocument pdfDoc = new com.itextpdf.text.pdf.PdfDocument();
-				com.itextpdf.text.pdf.PdfReader reader = new com.itextpdf.text.pdf.PdfReader(generalExpPath);
-				PdfCopy copy = new PdfSmartCopy(pdfDoc, new FileOutputStream(generalExpPath));
-				document.open();
-//				com.itextpdf.text.pdf.PdfWriter writer2 = new com.itextpdf.text.pdf.PdfWriter(pdfDoc, new FileOutputStream(new File(generalExpPath)));
 			} catch (DocumentException e) {
 				Logger.putLog("Error al exportar a pdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
@@ -667,7 +659,7 @@ public final class PrimaryExportPdfUtils {
 		final String filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test.jpg";
 		final String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.by.page.title");
 		ResultadosPrimariosObservatorioIntavUtils.getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, currentEvaluationPageList, title, filePath, noDataMess);
-		final Image image = PDFUtils.createImage(filePath, null);
+		final Image image = PDFUtils.createImage(filePath, title);
 		if (image != null) {
 			image.scalePercent(60);
 			image.setAlignment(Element.ALIGN_CENTER);
@@ -742,7 +734,7 @@ public final class PrimaryExportPdfUtils {
 		final PropertiesManager pmgr = new PropertiesManager();
 		pdfBuilder.getMidsComparationByVerificationLevelGraphic(messageResources, level, title, filePath, noDataMess, evaList, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"),
 				true);
-		final Image image = PDFUtils.createImage(filePath, null);
+		final Image image = PDFUtils.createImage(filePath, title);
 		if (image != null) {
 			image.scalePercent(60);
 			section.add(image);
@@ -770,7 +762,7 @@ public final class PrimaryExportPdfUtils {
 		final String title = messageResources.getMessage("observatory.graphic.score.by.page.title");
 		final String filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test4.jpg";
 		ResultadosPrimariosObservatorioIntavUtils.getScoreByPageGraphic(messageResources, evaList, title, filePath, noDataMess);
-		final Image image = PDFUtils.createImage(filePath, null);
+		final Image image = PDFUtils.createImage(filePath, title);
 		if (image != null) {
 			image.scalePercent(70);
 			image.setAlignment(Element.ALIGN_CENTER);

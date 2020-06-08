@@ -230,6 +230,7 @@ public class SeedMassImportAction extends Action {
 									HttpSession session = request.getSession();
 									// session.setAttribute(Constants.OBSERVATORY_SEED_LIST, seeds);
 									session.setAttribute(Constants.OBSERVATORY_SEED_LIST, updateAndNewSeeds);
+									session.setAttribute("errorSeeds", errorSeeds);
 								} else {
 									errors.add("xmlFile", new ActionMessage("xml.seed.not.valid"));
 									saveErrors(request, errors);
@@ -347,7 +348,16 @@ public class SeedMassImportAction extends Action {
 			session.removeAttribute(Constants.OBSERVATORY_SEED_LIST);
 			errors.add("xmlFile", new ActionMessage("no.xml.file"));
 			ActionMessages messages = new ActionMessages();
-			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("xml.import.success"));
+			List<SemillaForm> errorSeeds = (List<SemillaForm>) session.getAttribute("errorSeeds");
+			if (errorSeeds != null && !errorSeeds.isEmpty()) {
+				if (seeds.isEmpty()) {
+					messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("xml.import.success.all.errors"));
+				} else {
+					messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("xml.import.success.with.errors"));
+				}
+			} else {
+				messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("xml.import.success"));
+			}
 			saveMessages(session, messages);
 			return mapping.findForward("observatorySeed");
 		} catch (Exception e) {

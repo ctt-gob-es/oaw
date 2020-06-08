@@ -2846,7 +2846,7 @@ public final class SemillaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static long createSeedComplexity(final Connection c, final ComplejidadForm complejidadForm) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("INSERT INTO complejidad_lista nombre VALUES ?", Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement ps = c.prepareStatement("INSERT INTO complejidades_lista(nombre) VALUES (?)", Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, complejidadForm.getName());
 			ps.executeUpdate();
 			try (ResultSet rs = ps.getGeneratedKeys()) {
