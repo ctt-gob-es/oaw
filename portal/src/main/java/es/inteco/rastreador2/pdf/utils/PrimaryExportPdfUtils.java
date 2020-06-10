@@ -39,21 +39,23 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
+import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
-import com.lowagie.text.Chapter;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Image;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Section;
-import com.lowagie.text.pdf.PdfName;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfString;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.pdf.events.IndexEvents;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Section;
+import com.itextpdf.text.pdf.PdfName;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfString;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.events.IndexEvents;
 
 import es.gob.oaw.rastreador2.pdf.basicservice.BasicServiceObservatoryResultsSummaryPdfSectionBuilder;
 import es.gob.oaw.rastreador2.pdf.basicservice.ObservatoryPageResultsPdfSectionBuilder;
@@ -82,6 +84,10 @@ import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.rastreador2.utils.ResultadosPrimariosObservatorioIntavUtils;
+import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
+import es.oaw.wcagem.WcagEmReport;
+import es.oaw.wcagem.WcagEmUtils;
+import es.oaw.wcagem.WcagOdsUtils;
 
 /**
  * The Class PrimaryExportPdfUtils.
@@ -236,6 +242,7 @@ public final class PrimaryExportPdfUtils {
 				final List<ObservatoryEvaluationForm> previousEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(previousObservatoryExecution,
 						previousEvaluationIds);
 				final PdfWriter writer = PdfWriter.getInstance(document, outputFileStream);
+				writer.setTagged(0);
 				writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
 				writer.getExtraCatalog().put(new PdfName("Lang"), new PdfString("es"));
 				final String crawlingDate = crawling != null ? crawling.getDate() : CrawlerUtils.formatDate(new Date());
@@ -358,7 +365,10 @@ public final class PrimaryExportPdfUtils {
 						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryAccesibility(MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), document,
 								pdfTocManager);
 					} else if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
-						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources2019, document, pdfTocManager);
+						// TODO Call same method that basic service
+						// observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources2019, document, pdfTocManager);
+						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryWithCompliance(messageResources, document, pdfTocManager,
+								pdfBuilder.generateScores(messageResources, currentEvaluationPageList));
 					} else if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
 						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B), document, pdfTocManager);
 					} else {
@@ -383,12 +393,19 @@ public final class PrimaryExportPdfUtils {
 				// en el índice
 				IndexUtils.createIndex(writer, document, messageResources.getMessage("pdf.accessibility.index.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 				ExportPageEventsObservatoryMP.setPrintFooter(true);
-				// PENDING (Disable) Generar JSON compatible con WCAG-EM
-//				WcagEmReport report = WcagEmUtils.generateReport(messageResources, pdfBuilder, BasicServiceUtils.getTitleDocFromContent(currentEvaluationPageList.get(0).getSource(), false),
-//						Long.parseLong(crawling.getId()));
-//				ObjectMapper mapper = new ObjectMapper();
-//				String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);
-//				org.apache.commons.io.FileUtils.writeStringToFile(new File(new File(file.getPath()).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
+				// PENDING (Disable) JSON WCAG-EM and ODS
+				if (true) {
+					// JSON
+					WcagEmReport report = WcagEmUtils.generateReport(messageResources, pdfBuilder, BasicServiceUtils.getTitleDocFromContent(currentEvaluationPageList.get(0).getSource(), false),
+							Long.parseLong(crawling.getId()));
+					ObjectMapper mapper = new ObjectMapper();
+					String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);
+					org.apache.commons.io.FileUtils.writeStringToFile(new File(new File(file.getPath()).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
+					// ODS REPORT
+					SpreadSheet ods = WcagOdsUtils.generateOds(report);
+					File outputFile = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe_Revision_Profunidad_v1.ods");
+					ods.saveAs(outputFile);
+				}
 			} catch (DocumentException e) {
 				Logger.putLog("Error al exportar a pdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
@@ -642,7 +659,7 @@ public final class PrimaryExportPdfUtils {
 		final String filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test.jpg";
 		final String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.by.page.title");
 		ResultadosPrimariosObservatorioIntavUtils.getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, currentEvaluationPageList, title, filePath, noDataMess);
-		final Image image = PDFUtils.createImage(filePath, null);
+		final Image image = PDFUtils.createImage(filePath, title);
 		if (image != null) {
 			image.scalePercent(60);
 			image.setAlignment(Element.ALIGN_CENTER);
@@ -717,7 +734,7 @@ public final class PrimaryExportPdfUtils {
 		final PropertiesManager pmgr = new PropertiesManager();
 		pdfBuilder.getMidsComparationByVerificationLevelGraphic(messageResources, level, title, filePath, noDataMess, evaList, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"),
 				true);
-		final Image image = PDFUtils.createImage(filePath, null);
+		final Image image = PDFUtils.createImage(filePath, title);
 		if (image != null) {
 			image.scalePercent(60);
 			section.add(image);
@@ -745,7 +762,7 @@ public final class PrimaryExportPdfUtils {
 		final String title = messageResources.getMessage("observatory.graphic.score.by.page.title");
 		final String filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test4.jpg";
 		ResultadosPrimariosObservatorioIntavUtils.getScoreByPageGraphic(messageResources, evaList, title, filePath, noDataMess);
-		final Image image = PDFUtils.createImage(filePath, null);
+		final Image image = PDFUtils.createImage(filePath, title);
 		if (image != null) {
 			image.scalePercent(70);
 			image.setAlignment(Element.ALIGN_CENTER);

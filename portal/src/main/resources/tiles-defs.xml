@@ -812,5 +812,10 @@
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_configurarFiltrosAgregados.jsp" />
 	</definition>
+	
+	<definition name=".configurarFiltrosGlobales" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_configurarFiltrosGlobales.jsp" />
+	</definition>
 
 </tiles-definitions>    

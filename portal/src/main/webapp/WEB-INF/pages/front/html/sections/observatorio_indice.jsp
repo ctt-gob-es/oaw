@@ -138,6 +138,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								title="Crear un nuevo observatorio"></span>
 							<bean:message key="indice.observatorio.nuevo.observatorio" />
 						</html:link>
+
+						<html:link forward="newMergeObservatoryReport" styleClass="btn btn-default btn-lg">
+							<span class="glyphicon glyphicon-globe" aria-hidden="true" data-toggle="tooltip"
+								title="<bean:message key="indice.observatorio.informe.global" />"></span>
+							<bean:message key="indice.observatorio.informe.global" />
+						</html:link>
 					</p>
 					<div class="pag">
 						<table class="table table-stripped table-bordered table-hover">
@@ -146,13 +152,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							</caption>
 							<tr>
 								<th><bean:message key="indice.observatorio.nombre" /></th>
-								<th><bean:message key="indice.observatorio.activo"/> </th>
+								<th><bean:message key="indice.observatorio.activo" /></th>
 								<th><bean:message key="nuevo.observatorio.tipo" /></th>
 								<th><bean:message key="nuevo.observatorio.ambito" /></th>
 								<th><bean:message key="indice.observatorio.etiquetas" /></th>
 								<th><bean:message key="indice.observatorio.cartucho" /></th>
 								<th class="accion"><bean:message key="indice.observatorio.acciones" /></th>
-								<th class="accion"><bean:message key="indice.observatorio.eliminar"/> </th>
+								<th class="accion"><bean:message key="indice.observatorio.eliminar" /></th>
 							</tr>
 							<logic:iterate name="<%=Constants.CARGAR_OBSERVATORIO_FORM%>" property="listadoObservatorio" id="elemento">
 								<jsp:useBean id="params" class="java.util.HashMap" />
@@ -173,24 +179,17 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</html:link>
 											<span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true" />
 										</inteco:menu></td>
-									<td><logic:equal name="elemento" property="estado" value="true">Sí</logic:equal> <logic:notEqual
-											name="elemento" property="estado" value="true">No</logic:notEqual></td>
+									<td><logic:equal name="elemento" property="estado" value="true">
+											<bean:message key="select.yes" />
+										</logic:equal> <logic:notEqual name="elemento" property="estado" value="true">
+											<bean:message key="select.no" />
+										</logic:notEqual></td>
 									<td><bean:write name="elemento" property="tipo" /></td>
 									<td><logic:notEmpty name="elemento" property="ambito">
 											<bean:write name="elemento" property="ambito" />
 										</logic:notEmpty> <logic:empty name="elemento" property="ambito">
 										-
 									</logic:empty></td>
-									<%-- 									 <td><logic:notEmpty name="elemento" property="etiquetas">
-											<bean:write name="elemento" property="etiquetas" />
-										</logic:notEmpty> 
-									<logic:empty name="elemento" property="etiquetas">
-										-
-									</logic:empty></td> --%>
-
-									<%-- 							<td><logic:iterate name="elemento" property="etiquetas" id="etiqueta">
-									<bean:write name="elemento" property="etiquetas"/> (Actual)</label>
-							</logic:iterate>></td> --%>
 
 
 									<td>
@@ -213,7 +212,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											paramName="elemento" paramProperty="id_observatorio">
 											<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
 												title="<bean:message key="tooltip.show.iter.obs"/>" />
-											<span class="sr-only"><bean:message key="results"/></span>
+											<span class="sr-only"><bean:message key="results" /></span>
 										</html:link></td>
 									<td><jsp:useBean id="paramsEsPrim" class="java.util.HashMap" /> <bean:define id="actionEsPrim"
 											value="<%=Constants.ES_PRIMERA%>" /> <bean:define id="observatoryId" name="elemento"
@@ -223,7 +222,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											name="paramsEsPrim">
 											<span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip"
 												title="<bean:message key="tooltip.obs.remove"/>" />
-											<span class="sr-only"><bean:message key="remove"/></span>
+											<span class="sr-only"><bean:message key="remove" /></span>
 										</html:link></td>
 								</tr>
 							</logic:iterate>

@@ -946,7 +946,8 @@ public final class EvaluatorUtility {
 				connection.setDoOutput(true);
 				final OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
 				final URLCodec codec = new URLCodec();
-				writer.write("fragment=" + codec.encode(HTMLEntities.unhtmlAmpersand(HTMLEntities.htmlentities(contents))) + "&output=soap12");
+				// TODO FOCE HTML5
+				writer.write("fragment=" + codec.encode(HTMLEntities.unhtmlAmpersand(HTMLEntities.htmlentities(contents))) + "&output=soap12&doctype=HTML5");
 				writer.flush();
 				writer.close();
 				connection.connect();

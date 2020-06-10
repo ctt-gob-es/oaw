@@ -24,17 +24,18 @@ import java.util.regex.Pattern;
 
 import org.apache.struts.util.MessageResources;
 
-import com.lowagie.text.Anchor;
-import com.lowagie.text.Chapter;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Section;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
+import com.itextpdf.text.Anchor;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Section;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 
 import es.gob.oaw.rastreador2.pdf.utils.CheckDescriptionsManager;
@@ -175,7 +176,7 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 										tablaVerificacionProblema.addCell(PDFUtils.createEmptyTableCell());
 										final PdfPCell celdaRationale = new PdfPCell(rationale);
 										celdaRationale.setBorder(0);
-										celdaRationale.setBackgroundColor(Color.WHITE);
+										celdaRationale.setBackgroundColor(BaseColor.WHITE);
 										celdaRationale.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
 										celdaRationale.setVerticalAlignment(Element.ALIGN_MIDDLE);
 										celdaRationale.setPadding(DEFAULT_PADDING);
@@ -239,7 +240,7 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 				}
 				final PdfPCell labelCell = new PdfPCell(PDFUtils.createParagraphWithDiferentFormatWord(text, boldWords, ConstantsFont.codeCellFont, ConstantsFont.codeCellFont, false));
 				labelCell.setPadding(0);
-				labelCell.setBackgroundColor(new Color(255, 244, 223));
+				labelCell.setBackgroundColor(new BaseColor(255, 244, 223));
 				labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				labelCell.setPadding(DEFAULT_PADDING);
 				table.addCell(labelCell);
@@ -338,7 +339,7 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 								tablaVerificacionProblema.addCell(PDFUtils.createEmptyTableCell());
 								final PdfPCell celdaRationale = new PdfPCell(rationale);
 								celdaRationale.setBorder(0);
-								celdaRationale.setBackgroundColor(Color.WHITE);
+								celdaRationale.setBackgroundColor(BaseColor.WHITE);
 								celdaRationale.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
 								celdaRationale.setVerticalAlignment(Element.ALIGN_MIDDLE);
 								celdaRationale.setPadding(DEFAULT_PADDING);

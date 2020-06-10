@@ -27,18 +27,15 @@ import java.util.regex.Pattern;
 
 import org.apache.struts.util.MessageResources;
 
-import es.gob.oaw.rastreador2.observatorio.ObservatoryManager;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.AspectScoreForm;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ObservatoryLevelForm;
 import es.inteco.intav.form.ObservatorySiteEvaluationForm;
 import es.inteco.intav.form.ObservatorySubgroupForm;
 import es.inteco.intav.form.ObservatorySuitabilityForm;
-import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.observatorio.ResultadosObservatorioAction;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.dao.export.database.AspectScore;
@@ -56,10 +53,24 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 import es.inteco.rastreador2.utils.ResultadosPrimariosObservatorioIntavUtils;
 
+/**
+ * The Class DatabaseExportUtils.
+ */
 public final class DatabaseExportUtils {
+	/**
+	 * Instantiates a new database export utils.
+	 */
 	private DatabaseExportUtils() {
 	}
 
+	/**
+	 * Gets the observatory info.
+	 *
+	 * @param messageResources the message resources
+	 * @param idExecution      the id execution
+	 * @return the observatory info
+	 * @throws Exception the exception
+	 */
 	public static Observatory getObservatoryInfo(final MessageResources messageResources, final Long idExecution) throws Exception {
 		final Observatory observatory = new Observatory();
 		observatory.setIdExecution(idExecution);
@@ -125,6 +136,15 @@ public final class DatabaseExportUtils {
 		return observatory;
 	}
 
+	/**
+	 * Gets the category info.
+	 *
+	 * @param messageResources the message resources
+	 * @param categoriaForm    the categoria form
+	 * @param observatory      the observatory
+	 * @return the category info
+	 * @throws Exception the exception
+	 */
 	public static Category getCategoryInfo(final MessageResources messageResources, final CategoriaForm categoriaForm, final Observatory observatory) throws Exception {
 		final Category category = new Category();
 		category.setName(categoriaForm.getName());
@@ -217,6 +237,15 @@ public final class DatabaseExportUtils {
 		return category;
 	}
 
+	/**
+	 * Gets the site info.
+	 *
+	 * @param messagesResources             the messages resources
+	 * @param observatorySiteEvaluationForm the observatory site evaluation form
+	 * @param category                      the category
+	 * @return the site info
+	 * @throws Exception the exception
+	 */
 	public static Site getSiteInfo(final MessageResources messagesResources, ObservatorySiteEvaluationForm observatorySiteEvaluationForm, Category category) throws Exception {
 		final Site site = new Site();
 		site.setCategory(category);
@@ -290,16 +319,22 @@ public final class DatabaseExportUtils {
 			Page page = getPageInfo(messagesResources, observatoryEvaluationForm, site);
 			site.getPageList().add(page);
 		}
-		// TODO Compliance to export
-		final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), observatorySiteEvaluationForm.getId());
-		final ObservatoryManager observatoryManager = new ObservatoryManager();
-		final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
-		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(currentEvaluationPageList, Constants.OBS_PRIORITY_NONE);
+		// Compliance to export
+		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(observatorySiteEvaluationForm.getPages(),
+				Constants.OBS_PRIORITY_NONE);
 		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
-		site.setCompliance(calculatedCompliance.get(currentEvaluationPageList.get(0).getCrawlerExecutionId()));
+		site.setCompliance(calculatedCompliance.get(observatorySiteEvaluationForm.getPages().get(0).getCrawlerExecutionId()));
 		return site;
 	}
 
+	/**
+	 * Gets the page info.
+	 *
+	 * @param messageResources          the message resources
+	 * @param observatoryEvaluationForm the observatory evaluation form
+	 * @param site                      the site
+	 * @return the page info
+	 */
 	public static Page getPageInfo(final MessageResources messageResources, ObservatoryEvaluationForm observatoryEvaluationForm, Site site) {
 		Page page = new Page();
 		page.setSite(site);
@@ -347,6 +382,12 @@ public final class DatabaseExportUtils {
 		return page;
 	}
 
+	/**
+	 * Gets the verification id.
+	 *
+	 * @param verification the verification
+	 * @return the verification id
+	 */
 	private static String getVerificationId(final String verification) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final Pattern pattern = Pattern.compile(pmgr.getValue(CRAWLER_PROPERTIES, "verification.id.reg.exp"), Pattern.CASE_INSENSITIVE | Pattern.DOTALL);

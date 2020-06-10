@@ -34,7 +34,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.lowagie.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfReader;
 
 import es.gob.oaw.rastreador2.pdf.PdfGeneratorThread;
 import es.gob.oaw.rastreador2.pdf.PdfGeneratorThread2;

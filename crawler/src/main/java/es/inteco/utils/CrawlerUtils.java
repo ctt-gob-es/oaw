@@ -510,7 +510,8 @@ public final class CrawlerUtils {
 			httpsConnection.setHostnameVerifier(new HostnameVerifier() {
 				@Override
 				public boolean verify(String s, SSLSession sslSession) {
-					return true;
+					// return true;
+					return s.equalsIgnoreCase(sslSession.getPeerHost()); // TODO
 				}
 			});
 		}
@@ -543,6 +544,8 @@ public final class CrawlerUtils {
 				&& !url.toLowerCase().endsWith(".doc") && !url.toLowerCase().endsWith(".epub") && !url.toLowerCase().endsWith(".xml") && !url.toLowerCase().endsWith(".xls")
 				&& !url.toLowerCase().endsWith(".wsdl") && !url.toLowerCase().endsWith(".css") && !url.toLowerCase().endsWith(".png") && !url.toLowerCase().endsWith(".jpeg")
 				&& !url.toLowerCase().endsWith(".jpg") && !url.toLowerCase().endsWith(".bmp") && !url.toLowerCase().endsWith(".gif") && !url.toLowerCase().endsWith(".svg")
+				&& !url.toLowerCase().endsWith(".7z") && !url.toLowerCase().endsWith(".rar") && !url.toLowerCase().endsWith(".tar.gz") && !url.toLowerCase().endsWith(".zip")
+				&& !url.toLowerCase().endsWith(".tar.xz") && !url.toLowerCase().endsWith(".war") && !url.toLowerCase().endsWith(".jar") && !url.toLowerCase().endsWith(".tar")
 				&& !url.toLowerCase().endsWith(".webm") && !url.equalsIgnoreCase(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.validator")) && !url.toLowerCase().contains(".css")
 				&& !url.toLowerCase().contains(".scss") && !url.toLowerCase().contains(".pdf") && !url.toLowerCase().contains(".xml") && !url.toLowerCase().contains(".wsdl");
 	}

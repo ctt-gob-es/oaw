@@ -165,6 +165,7 @@
 		<forward name="deleteCategorie" path="/secure/EliminarCategoria.do" />
 		<forward name="observatoryMenu" path="/secure/CargarObservatorio.do" />
 		<forward name="newObservatory" path="/secure/NuevoObservatorio.do" />
+		<forward name="newMergeObservatoryReport" path="/secure/NuevoInformeGlobalObservatorio.do?action=config" />
 		<forward name="deleteObservatory" path="/secure/EliminarObservatorio.do" />
 		<forward name="deleteFulfilledObservatory" path="/secure/EliminarObservatorioRealizado.do" />
 		<forward name="getFulfilledObservatories"
@@ -272,7 +273,7 @@
 		<forward name="resultadosPrimariosObservatorio"
 			path="/secure/ResultadosObservatorio.do?action=getFulfilledObservatories" />
 		<forward name="resultadosObservatorioSemillas" path="/secure/ResultadosObservatorio.do?action=getSeeds" />
-		
+
 		<forward name="stopObservatorio" path="/secure/ResultadosObservatorio.do?action=stop" />
 		<forward name="regenerarResultadosObservatorioSemillas"
 			path="/secure/ResultadosObservatorio.do?action=regenerateResults" />
@@ -284,15 +285,15 @@
 		<forward name="getAnnexes" path="/secure/ResultadosObservatorio.do?action=getAnnexes" />
 		<forward name="editMyUserAccount" path="/secure/ModificarMiCuentaUsuario.do?deMenu=true" />
 		<forward name="exportAllPdfs" path="/secure/primaryExportPdfAction.do?action=exportAllPdfs" />
-		
+
 		<forward name="exportAllPdfsMail" path="/secure/primaryExportPdfAction.do?action=exportAllPdfsMail" />
-		
-		
+
+
 		<forward name="generateAllReports" path=".generateAllReports" />
-		
+
 		<forward name="generateReportAsync" path=".generateReportAsync" />
-		
-		
+
+
 
 
 		<forward name="uploadConclusion" path="/secure/ResultadosAnonimosObservatorio.do?action=upLoadPage" />
@@ -394,6 +395,12 @@
 			<forward name="exito" path=".Exito" />
 			<forward name="volverCarga" path="/secure/CargarObservatorio.do" />
 			<forward name="cargarSemillasObservatorio" path=".semillasObservatorio" />
+		</action>
+
+		<action path="/secure/NuevoInformeGlobalObservatorio"
+			type="es.inteco.rastreador2.action.observatorio.NuevoInformeGlobalObservatorioAction">
+			<forward name="volver" path=".nuevoObservatorio" />
+			<forward name="exito" path=".configurarFiltrosGlobales" />
 		</action>
 
 		<action path="/secure/EliminarObservatorio"
@@ -1027,12 +1034,12 @@
 
 		<!-- ReducirTablas -->
 		<action path="/secure/ViewReducirTablasObservatorio"
-			type="es.inteco.rastreador2.action.observatorio.ReducirTablasObservatorioAction" name="ReducirTablasForm" parameter="action"
-			scope="request" validate="false">
+			type="es.inteco.rastreador2.action.observatorio.ReducirTablasObservatorioAction" name="ReducirTablasForm"
+			parameter="action" scope="request" validate="false">
 			<forward name="exito" path=".cargarReducirTablasObservatorio" />
 
 		</action>
-		
+
 		<action path="/secure/ConfigExportOpenOfficeAction"
 			type="es.inteco.rastreador2.openOffice.export.ConfigExportOpenOfficeAction">
 		</action>

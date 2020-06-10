@@ -1,0 +1,1 @@
+ALTER TABLE basic_service ADD depthReport VARCHAR(128) NULL;

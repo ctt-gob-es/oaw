@@ -361,9 +361,10 @@ server._send = function(req, res) {
 	}
 
 	if (req.prerender.renderType == 'html') {
+
 		Object.keys(req.prerender.headers || {}).forEach(function(header) {
 			try {
-				res.setHeader(header, req.prerender.headers[header]);
+				res.setHeader(header, req.prerender.headers[header].replace(/\n/g, ''));
 			} catch (e) {
 				util.log('warning: unable to set header:', header);
 			}

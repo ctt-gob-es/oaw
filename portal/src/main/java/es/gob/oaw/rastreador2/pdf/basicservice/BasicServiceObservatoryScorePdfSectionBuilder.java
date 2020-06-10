@@ -30,15 +30,15 @@ import java.util.Map;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 
-import com.lowagie.text.Chapter;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Image;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Section;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
+import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Section;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 
 import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.common.Constants;
@@ -409,7 +409,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		final String filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test.jpg";
 		final String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.by.page.title");
 		ResultadosPrimariosObservatorioIntavUtils.getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, currentEvaluationPageList, title, filePath, noDataMess);
-		final Image image = PDFUtils.createImage(filePath, null);
+		final Image image = PDFUtils.createImage(filePath, title);
 		if (image != null) {
 			image.scalePercent(60);
 			image.setAlignment(Element.ALIGN_CENTER);
@@ -555,7 +555,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 			table.completeRow();
 		}
 		table.setSpacingBefore(ConstantsFont.HALF_LINE_SPACE);
-		createImage(section, filePath);
+		createImage(section, filePath, title);
 		section.add(table);
 	}
 
@@ -565,12 +565,14 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 	 * @param section  the section
 	 * @param filePath the file path
 	 */
-	private void createImage(final Section section, final String filePath) {
-		final com.lowagie.text.Image image = PDFUtils.createImage(filePath, null);
+	private void createImage(final Section section, final String filePath, final String alternativeText) {
+		// TODO add alt
+		final com.itextpdf.text.Image image = PDFUtils.createImage(filePath, alternativeText);
 		if (image != null) {
 			image.scalePercent(60);
 			image.setAlignment(Element.ALIGN_CENTER);
 			image.setSpacingAfter(ConstantsFont.LINE_SPACE);
+			image.setAlt(alternativeText);
 			section.add(image);
 		}
 	}
@@ -592,7 +594,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		final String filePath = file.getParentFile().getPath() + File.separator + TEMP_SUBDIR + File.separator + "test.jpg";
 		final String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.by.page.title");
 		ResultadosPrimariosObservatorioIntavUtils.getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, currentEvaluationPageList, title, filePath, noDataMess);
-		createImage(section, filePath);
+		createImage(section, filePath, title);
 		final float[] columnsWidth;
 		if (!previousEvaluationPageList.isEmpty()) {
 			columnsWidth = new float[] { 30f, 25f, 30f, 15f };
@@ -656,7 +658,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		final PropertiesManager pmgr = new PropertiesManager();
 		pdfBuilder.getMidsComparationByVerificationLevelGraphic(messageResources, level, title, filePath, noDataMess, evaList, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"),
 				true);
-		createImage(section, filePath);
+		createImage(section, filePath, title);
 	}
 
 	/**
@@ -827,7 +829,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		final String title = messageResources.getMessage("observatory.graphic.score.by.page.title");
 		final String filePath = file.getParentFile().getPath() + File.separator + TEMP_SUBDIR + File.separator + "test4.jpg";
 		ResultadosPrimariosObservatorioIntavUtils.getScoreByPageGraphic(messageResources, evaList, title, filePath, noDataMess);
-		final Image image = PDFUtils.createImage(filePath, null);
+		final Image image = PDFUtils.createImage(filePath, title);
 		if (image != null) {
 			image.scalePercent(70);
 			image.setAlignment(Element.ALIGN_CENTER);

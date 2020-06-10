@@ -17,8 +17,8 @@ import java.util.List;
 
 import org.apache.struts.util.MessageResources;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
 
 import es.inteco.common.Constants;
 import es.inteco.intav.form.ObservatoryEvaluationForm;

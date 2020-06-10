@@ -11,15 +11,15 @@ import java.util.Map;
 
 import org.apache.struts.util.MessageResources;
 
-import com.lowagie.text.Chapter;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.Section;
-import com.lowagie.text.pdf.PdfPTable;
+import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.Section;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 
 import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
@@ -145,7 +145,7 @@ public abstract class AnonymousResultExportPdf {
 		section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.341.p1"), anchorMap, ConstantsFont.PARAGRAPH));
 		final String imagesPath = pmgr.getValue(Constants.PDF_PROPERTIES, "path.images");
 		PDFUtils.addImageToSection(section, imagesPath + "PMP.png", "PMP = SRV/VP*10", 80);
-		com.lowagie.text.List list = new com.lowagie.text.List();
+		com.itextpdf.text.List list = new com.itextpdf.text.List();
 		final ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.341.p2"));
 		ListItem item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.341.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
@@ -165,7 +165,7 @@ public abstract class AnonymousResultExportPdf {
 		anchorMap.put(1, anchor);
 		section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.341.p8"), anchorMap, ConstantsFont.PARAGRAPH));
 		PDFUtils.addImageToSection(section, imagesPath + "PMPO.png", "PMPO = SPMP/NP", 80);
-		list = new com.lowagie.text.List();
+		list = new com.itextpdf.text.List();
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.341.p9"));
 		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.341.p10"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
@@ -185,7 +185,7 @@ public abstract class AnonymousResultExportPdf {
 		anchorMap.put(1, anchor);
 		section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.341.p15"), anchorMap, ConstantsFont.PARAGRAPH));
 		PDFUtils.addImageToSection(section, imagesPath + "PMV.png", "PMV = SR/PP*10", 80);
-		list = new com.lowagie.text.List();
+		list = new com.itextpdf.text.List();
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.341.p16"));
 		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.341.p17"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
@@ -205,7 +205,7 @@ public abstract class AnonymousResultExportPdf {
 		anchorMap.put(1, anchor);
 		section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.341.p22"), anchorMap, ConstantsFont.PARAGRAPH));
 		PDFUtils.addImageToSection(section, imagesPath + "PMNA.png", " PMNA= SPMVN/VN", 80);
-		list = new com.lowagie.text.List();
+		list = new com.itextpdf.text.List();
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.341.p23"));
 		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.341.p24"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
@@ -234,7 +234,7 @@ public abstract class AnonymousResultExportPdf {
 	 */
 	protected void createSection343(final MessageResources messageResources, Section section) {
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.46.p1"), ConstantsFont.PARAGRAPH, section);
-		com.lowagie.text.List list = new com.lowagie.text.List();
+		com.itextpdf.text.List list = new com.itextpdf.text.List();
 		final ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p2"));
 		ListItem item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
@@ -270,7 +270,7 @@ public abstract class AnonymousResultExportPdf {
 		section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.46.p18"), anchorMap, ConstantsFont.PARAGRAPH));
 		PropertiesManager pmgr = new PropertiesManager();
 		PDFUtils.addImageToSection(section, pmgr.getValue(Constants.PDF_PROPERTIES, "path.images") + "PMAP.png", "PMAP = SPMVA/VA", 75);
-		list = new com.lowagie.text.List();
+		list = new com.itextpdf.text.List();
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p19.bold"));
 		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p19"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
@@ -290,7 +290,7 @@ public abstract class AnonymousResultExportPdf {
 		anchorMap.put(1, anchor);
 		section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.46.p22"), anchorMap, ConstantsFont.PARAGRAPH));
 		PDFUtils.addImageToSection(section, pmgr.getValue(Constants.PDF_PROPERTIES, "path.images") + "PMA.png", "PMA = SPMA/NP", 75);
-		list = new com.lowagie.text.List();
+		list = new com.itextpdf.text.List();
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p23.bold"));
 		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p23"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
@@ -431,7 +431,7 @@ public abstract class AnonymousResultExportPdf {
 	 * @param variante        the variante
 	 */
 	protected void createSection31(final MessageResources resources, final Section section, final long observatoryType, final String variante) {
-		final com.lowagie.text.List list = new com.lowagie.text.List();
+		final com.itextpdf.text.List list = new com.itextpdf.text.List();
 		PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.31.p1." + variante), ConstantsFont.PARAGRAPH, section);
 		list.add(PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.31.p3." + variante),
 				Collections.singletonList(resources.getMessage("ob.resAnon.intav.report.31.p2." + variante)), ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
@@ -599,7 +599,7 @@ public abstract class AnonymousResultExportPdf {
 	 * @param modality         the modality
 	 */
 	protected void createMethodologyTableRow(final MessageResources messageResources, final PdfPTable table, final String id, final String name, final String question,
-			final com.lowagie.text.List answer, final com.lowagie.text.List value, final com.lowagie.text.List modality) {
+			final com.itextpdf.text.List answer, final com.itextpdf.text.List value, final com.itextpdf.text.List modality) {
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(id), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(name), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(question), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
@@ -613,9 +613,9 @@ public abstract class AnonymousResultExportPdf {
 	 *
 	 * @param messageResources the message resources
 	 * @param text             the text
-	 * @return the com.lowagie.text. list
+	 * @return the com.itextpdf.text. list
 	 */
-	protected com.lowagie.text.List createTextList(final MessageResources messageResources, final String text) {
+	protected com.itextpdf.text.List createTextList(final MessageResources messageResources, final String text) {
 		return createTextList(messageResources, text, Element.ALIGN_CENTER);
 	}
 
@@ -625,11 +625,11 @@ public abstract class AnonymousResultExportPdf {
 	 * @param messageResources the message resources
 	 * @param text             the text
 	 * @param align            the align
-	 * @return the com.lowagie.text. list
+	 * @return the com.itextpdf.text. list
 	 */
-	protected com.lowagie.text.List createTextList(final MessageResources messageResources, final String text, final int align) {
+	protected com.itextpdf.text.List createTextList(final MessageResources messageResources, final String text, final int align) {
 		final java.util.List<String> list = Arrays.asList(messageResources.getMessage(text).split(";"));
-		final com.lowagie.text.List pdfList = new com.lowagie.text.List();
+		final com.itextpdf.text.List pdfList = new com.itextpdf.text.List();
 		for (String str : list) {
 			PDFUtils.addListItem(str, pdfList, ConstantsFont.noteCellFont, false, false, align);
 		}
@@ -644,14 +644,14 @@ public abstract class AnonymousResultExportPdf {
 	 *
 	 * @param messageResources the message resources
 	 * @param text             the text
-	 * @return the com.lowagie.text. list
+	 * @return the com.itextpdf.text. list
 	 */
-	protected com.lowagie.text.List createImageList(final MessageResources messageResources, final String text) {
+	protected com.itextpdf.text.List createImageList(final MessageResources messageResources, final String text) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final java.util.List<String> list = Arrays.asList(messageResources.getMessage(text).split(";"));
-		final com.lowagie.text.List pdfList = new com.lowagie.text.List();
+		final com.itextpdf.text.List pdfList = new com.itextpdf.text.List();
 		for (String str : list) {
-			final com.lowagie.text.Image image;
+			final com.itextpdf.text.Image image;
 			if (str.equals("0")) {
 				image = PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.mode.red"), messageResources.getMessage("ob.resAnon.intav.report.33.modality.0.alt"));
 			} else {

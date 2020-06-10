@@ -68,6 +68,8 @@ public class BasicServiceForm extends ValidatorForm {
 	private String complexity;
 	/** The file name. */
 	private String fileName;
+	/** The informe profundidad. */
+	private String depthReport;
 
 	/**
 	 * Gets the language.
@@ -513,5 +515,23 @@ public class BasicServiceForm extends ValidatorForm {
 	 */
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	/**
+	 * Gets the depth report.
+	 *
+	 * @return the depthReport
+	 */
+	public String getDepthReport() {
+		return depthReport;
+	}
+
+	/**
+	 * Sets the depth report.
+	 *
+	 * @param depthReport the depthReport to set
+	 */
+	public void setDepthReport(String depthReport) {
+		this.depthReport = depthReport;
 	}
 }
