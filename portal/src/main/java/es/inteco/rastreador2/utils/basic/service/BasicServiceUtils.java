@@ -195,6 +195,7 @@ public final class BasicServiceUtils {
 		}
 		basicServiceForm.setFileName(parameterFileName);
 		basicServiceForm.setComplexity(request.getParameter(Constants.PARAM_COMPLEXITY));
+		basicServiceForm.setDepthReport(request.getParameter(Constants.PARAM_DEPTH_REPORT));
 		return basicServiceForm;
 	}
 
