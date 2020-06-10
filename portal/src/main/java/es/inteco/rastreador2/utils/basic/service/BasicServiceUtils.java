@@ -185,8 +185,17 @@ public final class BasicServiceUtils {
 		basicServiceForm.setRegisterAnalysis(Boolean.parseBoolean(request.getParameter("registerAnalysis")));
 		basicServiceForm.setAnalysisToDelete(request.getParameter("analysisToDelete"));
 		basicServiceForm.setDomain(BasicServiceUtils.checkIDN(basicServiceForm.getDomain()));
-		basicServiceForm.setFileName(request.getParameter("filename"));
+		// TODO Prevent full paths
+		String parameterFileName = request.getParameter("filename");
+		if (!org.apache.commons.lang3.StringUtils.isEmpty(parameterFileName)) {
+			String tmp = parameterFileName.replace("\\", "/");
+			if (tmp.lastIndexOf("/") > 0) {
+				parameterFileName = tmp.substring(tmp.lastIndexOf("/") + 1, tmp.length());
+			}
+		}
+		basicServiceForm.setFileName(parameterFileName);
 		basicServiceForm.setComplexity(request.getParameter(Constants.PARAM_COMPLEXITY));
+		basicServiceForm.setDepthReport(request.getParameter(Constants.PARAM_DEPTH_REPORT));
 		return basicServiceForm;
 	}
 

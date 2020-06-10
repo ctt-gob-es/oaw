@@ -943,7 +943,7 @@ public class Check {
 		case CheckFunctionConstants.FUNCTION_AUTOCOMPLETE_VALID:
 			return !functionAutocompleteValid(checkCode, nodeNode, elementGiven);
 		case CheckFunctionConstants.FUNCTION_HAS_SECTION:
-			return functionAccessibilityHasSection(checkCode, nodeNode, elementGiven);
+			return !functionAccessibilityHasSection(checkCode, nodeNode, elementGiven);
 		case CheckFunctionConstants.FUNCTION_SECTION_HAS_TEXT:
 			return !functionSectionHasText(checkCode, nodeNode, elementGiven);
 		case CheckFunctionConstants.FUNCTION_SECTION_HAS_MAILTO:
@@ -1103,12 +1103,19 @@ public class Check {
 		final int allowedUngrouped = Integer.parseInt(checkCode.getFunctionNumber());
 		for (Map.Entry<String, List<Node>> radioGroupEntry : radioGroups.entrySet()) {
 			if (radioGroupEntry.getValue().size() > allowedUngrouped) {
+				// En algunos casos, se agrupan elementos que no tiene name mezclados de varios fieldet por lo que vamos adicionalmente a contar cuantos no están en un fieldset además del tamaño del
+				// grupo
+				int countNotInFieldSet = 0;
 				// Comprobar si están agrupados
 				for (Node node : radioGroupEntry.getValue()) {
 					final Node ancestor = getAncestor(node, Arrays.asList("FIELDSET", "FORM"));
 					if (ancestor == null || !"FIELDSET".equalsIgnoreCase(ancestor.getNodeName())) {
-						// Si el ancestor no es un fieldset es fallo
-						return true;
+						// Si el ancestor no es un fieldset se incrementa el contador
+						countNotInFieldSet++;
+						// Si se ha superado el máximo se devuelve error
+						if (countNotInFieldSet > allowedUngrouped) {
+							return true;
+						}
 					}
 				}
 			}
@@ -4941,7 +4948,8 @@ public class Check {
 	 * @throws SAXException          the SAX exception
 	 */
 	private Document getRelativeDocument(final Element elementRoot, final String href) throws MalformedURLException, IOException, SAXException {
-		final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
+		// final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
+		final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL(new URL((String) elementRoot.getUserData("url")), href);
 		final String remoteUrlStr = new URL(documentUrl, href).toString();
 		final Document document;
 		if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
@@ -5866,7 +5874,7 @@ public class Check {
 					final Element element = (Element) listLabels.item(x);
 					if (element.getAttribute("for").equalsIgnoreCase(stringId) && !StringUtils.normalizeWhiteSpaces(element.getTextContent()).trim().isEmpty()) {
 						// found an associated label
-						return (!StringUtils.isEmpty(element.getTextContent()) && !arialValue.equals(StringUtils.normalizeWhiteSpaces(element.getTextContent())));
+						return (!StringUtils.isEmpty(element.getTextContent()) && !arialValue.contains(StringUtils.normalizeWhiteSpaces(element.getTextContent())));
 					}
 				}
 				return false;
@@ -5949,7 +5957,7 @@ public class Check {
 						if (hasSection2) {
 							TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 						}
-						hasSection |= hasSection2;
+						return true;
 					}
 				} catch (Exception e) {
 					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);

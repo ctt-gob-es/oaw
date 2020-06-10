@@ -130,6 +130,27 @@ public final class ExportOpenOfficeUtils {
 	}
 
 	/**
+	 * TODO Creates the open office documentglobal.
+	 *
+	 * @param request        the request
+	 * @param filePath       the file path
+	 * @param graphicPath    the graphic path
+	 * @param tagsToFilter   the tags to filter
+	 * @param exObsIds       the ex obs ids
+	 * @param reportTitle    the report title
+	 * @param idBaseTemplate the id base template
+	 */
+	public static void createOpenOfficeDocumentglobal(final HttpServletRequest request, final String filePath, final String graphicPath, String[] tagsToFilter, String[] exObsIds,
+			final String reportTitle, final Long idBaseTemplate) {
+		try (Connection c = DataBaseManager.getConnection()) {
+			// TODO
+			OpenOfficeGlobalReportBuilder.buildReport(request, filePath, graphicPath, tagsToFilter, exObsIds, reportTitle, idBaseTemplate);
+		} catch (Exception e) {
+			Logger.putLog("Error al exportar los resultados a OpenOffice", ExportOpenOfficeAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+	}
+
+	/**
 	 * Gets the document builder.
 	 *
 	 * @param executionId      the execution id

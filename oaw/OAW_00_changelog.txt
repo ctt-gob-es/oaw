@@ -1,7 +1,25 @@
+5.1.0
+------------------------------------------------------------------------------------------------------------------------------------
+- Generación de informe de accesibilidad en profundidad en ODS y JSON
+- Campo adicional en el formulario del servicio de diagnóstico para indicar si se genera el informe de accesibilidad en profundidad
+- Ajuste de la verificación de 443 Grupos de tres o más de botones de radio y/o casillas de verificación (con el mismo “name”) para evitar que agrupaciones con name vacío den error
+- Control en el cartucho de accesibilidad para que en aquellas semillas con selección manual sólo se analize la primera URL
+- 
+
+
 5.0.5
 ------------------------------------------------------------------------------------------------------------------------------------
 - Modificada la decodificación del los códigos fuentes almacenados que se hacía en el servidor MySQL para hacerlo en la codigo Java
 - Añadida a las cabeceras de las peticiones de CSS en el "Accept" el valor "text/css" para evitar 406 en algunas páginas por sólo aceptar "text/html"
+- Modificada la comprobación de generación de código mediante CSS para comprobar si las cadenas de más de 2 caracteres no soun un código unicode u otro elemento sin caracteres alfanuméricos como por ejemplo Option+0 generados por frameworks de forma automática
+- Ajustada la comprobación de enlaces en el mismo directorio para que no sea sensible a mayúsculas y minúsculas
+- Ajustados patrones de validaciones
+- Añadido el total de URLs analizadas al detalle de una análisis en los observatorios
+- Eliminado cálculo duplicado en anexos que provocaba tiempos de ejecución excesivamente largos
+- Corregida propagación de cookies en ciertos portales
+- Eliminada coletilla "beta" del cartucho UNE-EN301549:2019
+- Modificado la llamada al valdidador del W3C para forzar usar HTML5 como doctype de validación
+- Actualizada la librería de generación de PDF para incluir soporte a PDF/A
 
 5.0.4
 ------------------------------------------------------------------------------------------------------------------------------------

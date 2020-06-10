@@ -17,10 +17,16 @@ package es.inteco.common;
 
 import java.awt.Color;
 
+import org.apache.struts.util.MessageResources;
+
+import com.itextpdf.text.BaseColor;
+
 /**
  * The Interface Constants.
  */
 public interface Constants {
+	/** The message resources. */
+	MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 	/** The crawler properties. */
 	// ARCHIVOS DE PROPIEDADES
 	String CRAWLER_PROPERTIES = "crawler.properties";
@@ -1416,11 +1422,11 @@ public interface Constants {
 	/** The obs compilance. */
 	String OBS_COMPILANCE = "Conforme";
 	/** The obs compilance none. */
-	String OBS_COMPILANCE_NONE = "No conforme";
+	String OBS_COMPILANCE_NONE = messageResources.getMessage("resultados.anonimos.porc.portales.nc");
 	/** The obs compilance partial. */
-	String OBS_COMPILANCE_PARTIAL = "Parcialmente conforme";
+	String OBS_COMPILANCE_PARTIAL = messageResources.getMessage("resultados.anonimos.porc.portales.pc");;
 	/** The obs compilance full. */
-	String OBS_COMPILANCE_FULL = "Plenamente conforme";
+	String OBS_COMPILANCE_FULL = messageResources.getMessage("resultados.anonimos.porc.portales.tc");;
 	/** The obs accesibility full. */
 	String OBS_ACCESIBILITY_FULL = "Completo";
 	/** The obs accesibility partial. */
@@ -1480,6 +1486,8 @@ public interface Constants {
 	String PARAM_CONTENT = "content";
 	/** The param complexity. */
 	String PARAM_COMPLEXITY = "complexity";
+	/** The param depth report. */
+	String PARAM_DEPTH_REPORT = "depthReport";
 	/** The param in directory. */
 	String PARAM_IN_DIRECTORY = "inDirectory";
 	/** The execute. */
@@ -1820,7 +1828,7 @@ public interface Constants {
 	/** The normativa une 2012 b. */
 	String NORMATIVA_UNE_2012_B = "UNE-2012-B";
 	/** The normativa une en2019. */
-	String NORMATIVA_UNE_EN2019 = "UNE-EN301549:2019 (beta)";
+	String NORMATIVA_UNE_EN2019 = "UNE-EN301549:2019";
 	/** The normativa accesibilidad. */
 	String NORMATIVA_ACCESIBILIDAD = "Accesibilidad";
 	/** The message resources 2012 b. */
@@ -1862,13 +1870,28 @@ public interface Constants {
 	/** The Constant OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS. */
 	String OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS = "Comprobaciones Accesibilidad (beta)";
 	/** The Constant OBSERVATORIO_UNE_EN2019. */
-	String OBSERVATORIO_UNE_EN2019 = "Seguimiento Simplificado UNE-EN301549:2019 (beta)";
+	String OBSERVATORIO_UNE_EN2019 = "Seguimiento Simplificado UNE-EN301549:2019";
 	/** The Constant OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS. */
-	String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Seguimiento Simplificado UNE-EN301549:2019 (beta)(sin comprobar enlaces rotos)";
+	String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Seguimiento Simplificado UNE-EN301549:2019(sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_UNE_2012_VERSION_2. */
 	String OBSERVATORIO_UNE_2012_VERSION_2 = "Observatorio UNE 2012 (versión 2)";
 	/** The Constant OBSERVATORIO_UNE_2012_ANTIGUA. */
 	String OBSERVATORIO_UNE_2012_ANTIGUA = "Observatorio UNE 2012 (antigua)";
 	/** The observatorio une 2004. */
 	String OBSERVATORIO_UNE_2004 = "Observatorio UNE 2004";
+	/** The bc rojo inteco. */
+	// PENDING NEW BASE COLOR
+	BaseColor BC_ROJO_INTECO = new BaseColor(225, 18, 13);
+	/** The bc rosa inteco. */
+	BaseColor BC_ROSA_INTECO = new BaseColor(255, 225, 225);
+	/** The bc naranja mp. */
+	BaseColor BC_NARANJA_MP = new BaseColor(245, 164, 55);
+	/** The bc verde o mp. */
+	BaseColor BC_VERDE_O_MP = new BaseColor(106, 130, 54);
+	/** The bc verde c mp. */
+	BaseColor BC_VERDE_C_MP = new BaseColor(126, 154, 64);
+	/** The bc marrron c nc. */
+	BaseColor BC_MARRRON_C_NC = new BaseColor(196, 89, 17);
+	/** The bc gris muy claro. */
+	BaseColor BC_GRIS_MUY_CLARO = new BaseColor(245, 245, 245);
 }

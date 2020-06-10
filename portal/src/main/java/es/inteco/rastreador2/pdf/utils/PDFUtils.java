@@ -22,25 +22,26 @@ import java.util.Map;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Chapter;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.Image;
-import com.lowagie.text.List;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Section;
-import com.lowagie.text.SplitCharacter;
-import com.lowagie.text.pdf.PdfChunk;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.draw.LineSeparator;
-import com.lowagie.text.pdf.events.IndexEvents;
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chapter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.List;
+import com.itextpdf.text.ListItem;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Section;
+import com.itextpdf.text.SplitCharacter;
+import com.itextpdf.text.pdf.PdfChunk;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.draw.LineSeparator;
+import com.itextpdf.text.pdf.events.IndexEvents;
 
 import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.common.Constants;
@@ -193,7 +194,7 @@ public final class PDFUtils {
 		final Paragraph paragraph = new Paragraph("", titleFont);
 		paragraph.add(chunk);
 		// Line
-		Chunk CONNECT = new Chunk(new LineSeparator(0.5f, 95, Color.WHITE, Element.ALIGN_CENTER, -.5f));
+		Chunk CONNECT = new Chunk(new LineSeparator(0.5f, 95, BaseColor.WHITE, Element.ALIGN_CENTER, -.5f));
 		paragraph.add(CONNECT);
 		final Chapter chapter = new Chapter(paragraph, numChapter);
 		if (index != null) {
@@ -226,7 +227,7 @@ public final class PDFUtils {
 		aditionalAnchor.setLocalDestination(anchor);
 		paragraph.add(aditionalAnchor);
 		// Line
-		Chunk CONNECT = new Chunk(new LineSeparator(0.5f, 95, Color.WHITE, Element.ALIGN_CENTER, -.5f));
+		Chunk CONNECT = new Chunk(new LineSeparator(0.5f, 95, BaseColor.WHITE, Element.ALIGN_CENTER, -.5f));
 		paragraph.add(CONNECT);
 		final Chapter chapter = new Chapter(paragraph, numChapter);
 		if (index != null) {
@@ -344,7 +345,7 @@ public final class PDFUtils {
 		for (String linea : text.split(System.lineSeparator())) {
 			if (!linea.trim().isEmpty()) {
 				final PdfPCell labelCell = new PdfPCell();
-				labelCell.setBackgroundColor(new Color(255, 244, 223));
+				labelCell.setBackgroundColor(new BaseColor(255, 244, 223));
 				labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 				labelCell.setPadding(2f);
 				labelCell.setPaddingTop(0);
@@ -382,7 +383,7 @@ public final class PDFUtils {
 			}
 		}
 		final PdfPCell labelCell = new PdfPCell(paragraph);
-		labelCell.setBackgroundColor(Constants.GRIS_MUY_CLARO);
+		labelCell.setBackgroundColor(Constants.BC_GRIS_MUY_CLARO);
 		labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		labelCell.setPadding(ConstantsFont.DEFAULT_PADDING);
 		table.addCell(labelCell);
@@ -855,7 +856,9 @@ public final class PDFUtils {
 		chunk.setAnchor(url);
 		chunk.setSplitCharacter(ANY_CHARACTER_WORD_SPLITTER);
 		final PdfPCell labelCell = new PdfPCell(new Paragraph(chunk));
-		labelCell.setBackgroundColor(backgroundColor);
+		// PENDING
+		// labelCell.setBackgroundColor(backgroundColor);
+		labelCell.setBackgroundColor(new BaseColor(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue()));
 		labelCell.setHorizontalAlignment(horizontalAlignment);
 		labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		labelCell.setPaddingLeft(padding);
@@ -883,7 +886,9 @@ public final class PDFUtils {
 		final Paragraph imageParagraph = PDFUtils.createImageTextParagraph(image, " " + text, font);
 		imageParagraph.setLeading(image.getHeight());
 		labelCell.addElement(imageParagraph);
-		labelCell.setBackgroundColor(backgroundColor);
+		// PENDING
+		// labelCell.setBackgroundColor(backgroundColor);
+		labelCell.setBackgroundColor(new BaseColor(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue()));
 		labelCell.setHorizontalAlignment(horizontalAlignment);
 		labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		labelCell.setPadding(padding);
@@ -922,7 +927,9 @@ public final class PDFUtils {
 	 */
 	public static PdfPCell createTableCell(final String text, final Color backgroundColor, final Font font, final int align, final int padding, final float height) {
 		final PdfPCell labelCell = new PdfPCell(new Paragraph(text, font));
-		labelCell.setBackgroundColor(backgroundColor);
+		// PENDING
+		// labelCell.setBackgroundColor(backgroundColor);
+		labelCell.setBackgroundColor(new BaseColor(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue()));
 		labelCell.setHorizontalAlignment(align);
 		labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		labelCell.setPadding(padding);
@@ -947,7 +954,9 @@ public final class PDFUtils {
 		final Chunk chunk = new Chunk(text, font);
 		chunk.setLocalGoto(anchorId);
 		final PdfPCell labelCell = new PdfPCell(new Paragraph(chunk));
-		labelCell.setBackgroundColor(backgroundColor);
+		// PENDING
+		// labelCell.setBackgroundColor(backgroundColor);
+		labelCell.setBackgroundColor(new BaseColor(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue()));
 		labelCell.setHorizontalAlignment(align);
 		labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		labelCell.setPaddingLeft(margin);
@@ -981,7 +990,9 @@ public final class PDFUtils {
 	public static PdfPCell createListTableCell(final List list, final Color backgroundColor, final int horizontalAlign, final int verticalAlign, final int margin) {
 		final PdfPCell labelCell = new PdfPCell();
 		labelCell.addElement(list);
-		labelCell.setBackgroundColor(backgroundColor);
+		// PENDING
+		// labelCell.setBackgroundColor(backgroundColor);
+		labelCell.setBackgroundColor(new BaseColor(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue()));
 		labelCell.setHorizontalAlignment(horizontalAlign);
 		labelCell.setVerticalAlignment(verticalAlign);
 		labelCell.setPaddingLeft(margin);

@@ -1,5 +1,7 @@
 package es.oaw.wcagem.util;
 
+import es.inteco.intav.form.ProblemForm;
+
 /**
  * The Class ValidationResult.
  */
@@ -10,6 +12,8 @@ public class ValidationResult {
 	private String oawDescription;
 	/** The result. */
 	private String result;
+	/** The problems. */
+	private ProblemForm problem;
 
 	/**
 	 * Gets the oaw verification.
@@ -63,6 +67,24 @@ public class ValidationResult {
 	 */
 	public void setResult(String result) {
 		this.result = result;
+	}
+
+	/**
+	 * Gets the problem.
+	 *
+	 * @return the problem
+	 */
+	public ProblemForm getProblem() {
+		return problem;
+	}
+
+	/**
+	 * Sets the problem.
+	 *
+	 * @param problem the problem to set
+	 */
+	public void setProblem(ProblemForm problem) {
+		this.problem = problem;
 	}
 
 	/**

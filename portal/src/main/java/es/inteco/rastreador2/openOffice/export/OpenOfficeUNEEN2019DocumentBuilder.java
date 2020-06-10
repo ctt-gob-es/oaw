@@ -404,7 +404,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		this.idSegmentTemplate = idSegmentTemplate;
 		final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 		final long parseLong = Long.parseLong(request.getParameter(Constants.ID));
-		// TODO Thread
+		// Thread
 		final String url = request.getRequestURL().toString();
 		final String baseURL = url.substring(0, url.length() - request.getRequestURI().length()) + request.getContextPath() + "/";
 		// http://oaw.redsara.es/oaw/secure/exportOpenOfficeAction.do?idExObs=132&isPrimary=false&idCartucho=8&id_observatorio=41&id=132&esPrimera=true

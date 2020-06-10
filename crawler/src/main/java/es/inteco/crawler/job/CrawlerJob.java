@@ -19,6 +19,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
@@ -157,7 +160,7 @@ public class CrawlerJob implements InterruptableJob {
 		final String linkDirectory = link.replaceAll(protocolRegExp, EMPTY_STRING).lastIndexOf('/') != -1
 				? link.replaceAll(protocolRegExp, EMPTY_STRING).substring(0, link.replaceAll(protocolRegExp, EMPTY_STRING).lastIndexOf('/'))
 				: link.replaceAll(protocolRegExp, EMPTY_STRING);
-		return linkDirectory.contains(urlRootDirectory);
+		return linkDirectory.toString().contains(urlRootDirectory.toLowerCase());
 	}
 
 	/**
@@ -370,6 +373,10 @@ public class CrawlerJob implements InterruptableJob {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
+		// TODO Cookies
+		CookieManager cookieManager = new CookieManager();
+		CookieHandler.setDefault(cookieManager);
+		cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
 		final PropertiesManager pmgr = new PropertiesManager();
 		final int maxNumRetries = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.retries"));
 		final int maxNumRedirections = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.redirections"));
@@ -381,6 +388,13 @@ public class CrawlerJob implements InterruptableJob {
 		if (crawlerData.getIdCartridge() == 10) {
 			crawlerData.setTopN(1);
 			crawlerData.setProfundidad(1);
+			// If has more than one URL, took the first in this cartridge
+			if (crawlerData.getUrls() != null && !crawlerData.getUrls().isEmpty() && crawlerData.getUrls().size() > 1) {
+				String url = crawlerData.getUrls().get(0);
+				List<String> singleUrl = new ArrayList<String>();
+				singleUrl.add(url);
+				crawlerData.setUrls(singleUrl);
+			}
 		} else {
 			// Apply seed complex only if is not basic service an only if is not manual selection
 			if (crawlerData.getIdCrawling() > 0 && crawlerData.getUrls().size() == 1) {

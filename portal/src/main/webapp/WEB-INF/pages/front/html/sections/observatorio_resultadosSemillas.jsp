@@ -260,68 +260,92 @@ var translatedColNames = [ colNameId, colNameOldName,
 	function dialogAddSeed(){
 		
 		windowWidth = $(window).width() * 0.3;
-		windowHeight = $(window).height() * 0.2;
+		windowHeight = $(window).height() * 0.3;
 		
 		window.scrollTo(0, 0);
 
 		$('#erroresAddSeedObservatory').hide();
-
+		
+		
+		var windowTitle = '<bean:message key="application.title"/>';
+		
+		var windowTitle2 = '<bean:message key="tooltip.obs.add.seed"/>';
+			
+		
+		var saveButton = '<bean:message key="boton.aceptar"/>';
+		
+		var cancelButton = '<bean:message key="boton.cancelar"/>';
+		
+		
 		dialog = $("#dialogAddSeedObservatory").dialog({
 			height : windowHeight,
 			width : windowWidth,
 			modal : true,
-			title: 'RASTREADOR WEB - Añadir semilla al observatorio',
+			title: windowTitle + " - " + windowTitle2,
 			buttons : {
 				"Añadir" : {
 					click: function() {
-						addSeedObservatory($('#selectAddSeedObservatory').val());
+						addSeedObservatory($('#autocompleteAddSeedObservatoryHidden').val());
 					},
-					text : "Guardar",
+					text : saveButton,
 					class: 'jdialog-btn-save'
 				},
 				"Cancelar" : {
 					click: function() {
-						dialog.dialog("close");
+						dialog.dialog('destroy')
+						$('#autocompleteAddSeedObservatory').autocomplete( "destroy" );
+						$('#addSeedObservatoryForm')[0].reset();
 					},
-					text: "Cancelar", 
+					text: cancelButton, 
 					class :'jdialog-btn-cancel'
 				} 
 			},
-			open : function() {
-
+			open : function(event, ui) {
+					
 				
+				var allSeeds = [], cache = {};
 				
-				//Load candidate seed
-				$.ajax({
-					url : '/oaw/secure/JsonSemillasObservatorio.do?action=candidates&idObservatorio='
-					+ $('[name=id_observatorio]').val()
-					+ '&idExObs='
-					+ $('[name=idExObs]').val(),
-					method : 'POST',
-					cache : false
-				}).success(function(response) {
-					
-					$('#selectAddSeedObservatory').find('option').remove();
-					
-					
-					
-					if (response && response.length) {
-						for (var i = 0, l = response.length; i < l; i++) {
-							var ri = response[i];
-							$jn('#selectAddSeedObservatory')
-									.append(
-											'<option value="'+ri.id+'">'
-													+ ri.nombre
-													+ '</option>');
-						}
-					} else {
-
-						$('#selectAddSeedObservatory').append("<option value=''>---No hay semillas que se puedan añadir---</option>");
-					}
-
+				$('#autocompleteAddSeedObservatory').autocomplete({
+				    delay: 500,
+				    minLength: 3,
+				    autoFocus: true,
+				    create: function( event, ui ) {
+				      $.ajax( {
+				        url: '/oaw/secure/JsonSemillasObservatorio.do?action=candidates&idObservatorio='
+		 					+ $('[name=id_observatorio]').val()
+		 					+ '&idExObs='
+		 					+ $('[name=idExObs]').val(),
+				        dataType: "json",
+				        success: function( data ) {
+				          allSeeds = data.map(function(currentValue, index, arr) { 		            
+				            return {
+		                         label: currentValue.nombre,
+		                         value: currentValue.id
+		                     };
+				          }); 
+				        }
+				      });
+				    },
+				 	source: function(request, response) { 
+				      var term = request.term.toLowerCase();
+				      if ( !(term in cache) ) {
+				        var matcher = new RegExp("\\b" + $.ui.autocomplete.escapeRegex(term), "i");
+				        cache[term] = allSeeds.filter(function(seed) {
+				          return matcher.test(seed.label);
+				        });
+				      }
+				      response( cache[term] );
+				    }, 
+				    select: function(event, ui) {
+				        event.preventDefault();
+				        $(event.target).val(ui.item.label);
+				        $('#autocompleteAddSeedObservatoryHidden').val(ui.item.value);
+				    },
+				    focus: function(event, ui) {
+				      event.preventDefault();
+				      $(event.target).val(ui.item.label);
+				    }
 				});
-				
-
 			},
 			close : function() {
 				$('#addSeedObservatoryForm')[0].reset();				
@@ -490,7 +514,9 @@ var translatedColNames = [ colNameId, colNameOldName,
 				<label for="categoria" class="control-label"><strong class="labelVisu"><bean:message
 							key="nuevo.observatorio.semillas.nombre" /></strong></label>
 				<div class="col-md-8">
-					<select name="segmento" id="selectAddSeedObservatory" class="form-control"></select>
+					<!-- 					<select name="segmento" id="selectAddSeedObservatory" class="form-control"></select> -->
+					<input id="autocompleteAddSeedObservatory" class="form-control" /> <input
+						id="autocompleteAddSeedObservatoryHidden" type="hidden" />
 				</div>
 			</div>
 		</form>
@@ -536,7 +562,9 @@ var translatedColNames = [ colNameId, colNameOldName,
 				<input type="hidden" name="<%=Constants.ID_EX_OBS%>" value="<bean:write name="idExObs"/>" />
 				<input type="hidden" name="<%=Constants.ID_CARTUCHO%>" value="<bean:write name="<%=Constants.ID_CARTUCHO%>"/>" />
 				<fieldset>
-					<legend><bean:message key="buscador"/></legend>
+					<legend>
+						<bean:message key="buscador" />
+					</legend>
 					<jsp:include page="/common/crawler_messages.jsp" />
 					<div class="formItem">
 						<label for="nombre" class="control-label"><strong class="labelVisu"><bean:message

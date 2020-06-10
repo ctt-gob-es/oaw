@@ -44,6 +44,7 @@ import es.inteco.crawler.dao.EstadoObservatorioDAO;
 import es.inteco.rastreador2.actionform.cuentausuario.PeriodicidadForm;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.CargarObservatorioForm;
+import es.inteco.rastreador2.actionform.observatorio.ExecutedObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ListadoObservatorio;
 import es.inteco.rastreador2.actionform.observatorio.ModificarObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.NuevoObservatorioForm;
@@ -240,6 +241,41 @@ public final class ObservatorioDAO {
 	}
 
 	/**
+	 * Gets the executed observarories.
+	 *
+	 * @param c the c
+	 * @return the executed observarories
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<ExecutedObservatorioForm> getExecutedObservarories(Connection c) throws SQLException {
+		List<ExecutedObservatorioForm> results = new ArrayList<>();
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
+		try (Statement s = c.createStatement()) {
+			try (ResultSet rs = s.executeQuery(
+					"SELECT o.id_observatorio, o.nombre, ore.id, ore.fecha, c.aplicacion, (SELECT al.nombre FROM ambitos_lista al WHERE al.id_ambito=o.id_ambito) as 'ambito', (SELECT ot.name FROM observatorio_tipo ot WHERE ot.id_tipo=o.id_tipo) AS 'tipo' FROM observatorio o JOIN observatorios_realizados ore ON (o.id_observatorio=ore.id_observatorio) \n"
+							+ "	LEFT JOIN cartucho c ON (c.id_cartucho = ore.id_cartucho) WHERE c.id_cartucho = 9 ORDER BY ore.fecha DESC")) {
+				while (rs.next()) {
+					final ExecutedObservatorioForm tmp = new ExecutedObservatorioForm();
+					tmp.setIdObservatorio(rs.getInt("o.id_observatorio"));
+					tmp.setIdObsEx(rs.getInt("ore.id"));
+					tmp.setNombre(rs.getString("o.nombre"));
+					tmp.setFechaExSting((df.format(rs.getTimestamp("ore.fecha"))));
+					tmp.setFechaEx(rs.getTimestamp("ore.fecha"));
+					tmp.setCartucho(rs.getString("c.aplicacion"));
+					tmp.setAmbito(rs.getString("ambito"));
+					tmp.setTipo(rs.getString("tipo"));
+					results.add(tmp);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getAllFulfilledObservatories", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return results;
+	}
+
+	/**
 	 * Count fulfilled observatories.
 	 *
 	 * @param c             the c
@@ -380,8 +416,8 @@ public final class ObservatorioDAO {
 	/**
 	 * Gets the ambit by id.
 	 *
-	 * @param c  the c
-	 * @param id the id
+	 * @param c             the c
+	 * @param idObservatory the id observatory
 	 * @return the ambit by id
 	 * @throws SQLException the SQL exception
 	 */
@@ -2390,7 +2426,7 @@ public final class ObservatorioDAO {
 						psCR.setLong(1, idCartucho);
 						psCR.setLong(2, id);
 						psCR.executeUpdate();
-						addFullfilledCrawl(c, idExObs, id);
+						addFullfilledCrawl(c, idExObs, id, idSeed);
 					} catch (Exception e) {
 						// Remove prevoius insert
 						try (PreparedStatement psCR = c.prepareStatement("DELETE FROM cartucho_rastreo WHERE id_cartucho=? AND id_rastreo = ?")) {
@@ -2432,7 +2468,7 @@ public final class ObservatorioDAO {
 								psCR.setLong(1, idCartucho);
 								psCR.setLong(2, id);
 								psCR.executeUpdate();
-								addFullfilledCrawl(c, idExObs, id);
+								addFullfilledCrawl(c, idExObs, id, idSeed);
 							} catch (Exception e) {
 								// Remove prevoius insert
 								try (PreparedStatement psCR = c.prepareStatement("DELETE FROM cartucho_rastreo WHERE id_cartucho=? AND id_rastreo = ?")) {
@@ -2458,19 +2494,22 @@ public final class ObservatorioDAO {
 	 * @param c       the c
 	 * @param idExObs the id ex obs
 	 * @param id      the id
+	 * @param idSeed  the id seed
 	 * @throws SQLException the SQL exception
 	 * @throws Exception    the exception
 	 */
-	private static void addFullfilledCrawl(final Connection c, final Long idExObs, Long id) throws SQLException, Exception {
+	private static void addFullfilledCrawl(final Connection c, final Long idExObs, Long id, final Long idSeed) throws SQLException, Exception {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DatosCartuchoRastreoForm dcrForm = RastreoDAO.cargarDatosCartuchoRastreo(c, String.valueOf(id));
+		dcrForm.setId_rastreo(id.intValue());
 		dcrForm.setCartuchos(CartuchoDAO.getNombreCartucho(dcrForm.getId_rastreo()));
+		dcrForm.setIdSemilla(idSeed);
 		final int typeDomains = dcrForm.getIdObservatory() == 0 ? Constants.ID_LISTA_SEMILLA : Constants.ID_LISTA_SEMILLA_OBSERVATORIO;
-		dcrForm.setUrls(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), typeDomains, false));
-		dcrForm.setDomains(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), typeDomains, true));
-		dcrForm.setExceptions(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), Constants.ID_LISTA_NO_RASTREABLE, false));
-		dcrForm.setCrawlingList(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), Constants.ID_LISTA_RASTREABLE, false));
-		dcrForm.setId_guideline(es.inteco.plugin.dao.RastreoDAO.recuperarIdNorma(c, (long) dcrForm.getId_rastreo()));
+		dcrForm.setUrls(es.inteco.utils.CrawlerUtils.getDomainsList(id, typeDomains, false));
+		dcrForm.setDomains(es.inteco.utils.CrawlerUtils.getDomainsList(id, typeDomains, true));
+		dcrForm.setExceptions(es.inteco.utils.CrawlerUtils.getDomainsList(id, Constants.ID_LISTA_NO_RASTREABLE, false));
+		dcrForm.setCrawlingList(es.inteco.utils.CrawlerUtils.getDomainsList(id, Constants.ID_LISTA_RASTREABLE, false));
+		dcrForm.setId_guideline(es.inteco.plugin.dao.RastreoDAO.recuperarIdNorma(c, id));
 		if (CartuchoDAO.isCartuchoAccesibilidad(c, dcrForm.getId_cartucho())) {
 			dcrForm.setFicheroNorma(CrawlerUtils.getFicheroNorma(dcrForm.getId_guideline()));
 		}
