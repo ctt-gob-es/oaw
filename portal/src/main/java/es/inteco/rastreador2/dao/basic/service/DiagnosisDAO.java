@@ -90,7 +90,7 @@ public final class DiagnosisDAO {
 	 */
 	public static long insertBasicServices(final Connection conn, final BasicServiceForm basicServiceForm, final String status) {
 		try (PreparedStatement ps = conn.prepareStatement(
-				"INSERT INTO basic_service (usr, language, domain, email, depth, width, report, date, status, scheduling_date, analysis_type, in_directory, register_result, complexity, filename) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+				"INSERT INTO basic_service (usr, language, domain, email, depth, width, report, date, status, scheduling_date, analysis_type, in_directory, register_result, complexity, filename, depthReport) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 				Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, basicServiceForm.getUser());
 			ps.setString(2, basicServiceForm.getLanguage());
@@ -116,6 +116,7 @@ public final class DiagnosisDAO {
 			ps.setBoolean(13, basicServiceForm.isRegisterAnalysis());
 			ps.setString(14, basicServiceForm.getComplexity());
 			ps.setString(15, basicServiceForm.getFileName());
+			ps.setString(16, basicServiceForm.getDepthReport());
 			ps.executeUpdate();
 			try (ResultSet rs = ps.getGeneratedKeys()) {
 				if (rs.next()) {
@@ -162,6 +163,7 @@ public final class DiagnosisDAO {
 					}
 					basicServiceForm.setComplexity(rs.getString("complexity"));
 					basicServiceForm.setFileName(rs.getString("filename"));
+					basicServiceForm.setDepthReport(rs.getString("depthReport"));
 					return basicServiceForm;
 				}
 			}
@@ -197,6 +199,7 @@ public final class DiagnosisDAO {
 					basicServiceForm.setInDirectory(rs.getBoolean("in_directory"));
 					basicServiceForm.setRegisterAnalysis(rs.getBoolean("register_result"));
 					basicServiceForm.setDate(rs.getTimestamp("date"));
+					basicServiceForm.setDepthReport(rs.getString("depthReport"));
 					results.add(basicServiceForm);
 				}
 			}

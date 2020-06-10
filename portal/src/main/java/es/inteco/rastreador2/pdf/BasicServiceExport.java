@@ -209,7 +209,7 @@ public final class BasicServiceExport {
 	 * @param reportFile the report file
 	 * @return the string
 	 */
-	public static String compressReportWithCode(final String reportFile, final boolean isContentAnalysis, final String filename) {
+	public static String compressReportWithCode(final String reportFile, final boolean isContentAnalysis, final String filename, final String depthReport) {
 		final String reportCompressFile;
 		if (reportFile.endsWith(".pdf")) {
 			reportCompressFile = reportFile.substring(0, reportFile.length() - 4) + ".zip";
@@ -228,8 +228,8 @@ public final class BasicServiceExport {
 			try {
 				File parentFile = new File(reportFile).getParentFile();
 				zipFile(new File(parentFile + "/codigo_fuente.zip"), "codigo_fuente.zip", zos);
-				// PENDING (Disable) JSON WCAG-EM and ODS
-				if (false) {
+				// JSON WCAG-EM and ODS
+				if ("true".equalsIgnoreCase(depthReport)) {
 					// JSON
 					zipFile(new File(parentFile + "/wcagem-report.json"), "wcagem-report.json", zos);
 					// ODS

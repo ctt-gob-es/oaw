@@ -18,11 +18,53 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <meta name="keywords" content="inteco,malware,rastreador" />
 <meta name="version" content="4.3.9" />
 <!-- Bootstrap -->
-<link href="/oaw/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="styles/estilo.css" />
-	<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+<link href="/oaw/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="styles/estilo.css" />
+<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+<script src="/oaw/js/jquery-3.1.1.min.js"></script>
+<style type="text/css">
+.servicioAccesibilidad {
+	width: 98% !important;
+}
 
-	<script src="/oaw/js/jquery-3.1.1.min.js"></script>
+#tipo-analisis {
+	border: 0 !important;
+}
+
+#tipo-analisis label {
+	font-weight: bold;
+	padding-left: 5px;
+}
+
+#tipo-analisis {
+	column-count: 3;
+	-moz-columns: 3;
+	width: 100%;
+}
+
+fieldset#urlset, fieldset#source {
+	display: none;
+}
+
+fieldset p {
+	margin: 5px 0;
+}
+
+#opciones-rastreo {
+	border: 0 !important;
+}
+
+#cajaformularios form, #cajaformularios form fieldset {
+	background-color: #fff;
+}
+
+#cajaformularios fieldset.servicioAccesibilidad, #cajaformularios fieldset.servicioAccesibilidad fieldset {
+	border: 1px solid #e5e5e5;
+	margin-top: 25px;
+	padding: 15px 25px;
+}
+</style>
+
 </head>
 <body>
 	<div id="cabeza">
@@ -77,48 +119,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</div>
 					</fieldset>
 
-					<style type="text/css">
-.servicioAccesibilidad {
-	width: 98% !important;
-}
-
-#tipo-analisis {
-	border: 0 !important;
-}
-
-#tipo-analisis label {
-	font-weight: bold;
-	padding-left: 5px;
-}
-
-#tipo-analisis {
-	column-count: 3;
-	-moz-columns: 3;
-	width: 100%;
-}
-
-fieldset#urlset, fieldset#source {
-	display: none;
-}
-
-fieldset p {
-	margin: 5px 0;
-}
-
-#opciones-rastreo {
-	border: 0 !important;
-}
-
-#cajaformularios form, #cajaformularios form fieldset {
-	background-color: #fff;
-}
-
-#cajaformularios fieldset.servicioAccesibilidad, #cajaformularios fieldset.servicioAccesibilidad fieldset {
-	border: 1px solid #e5e5e5;
-	margin-top: 25px;
-	padding: 15px 25px;
-}
-</style>
 
 					<fieldset class="servicioAccesibilidad">
 						<legend>Seleccionar el tipo de an&aacute;lisis</legend>
@@ -263,10 +263,16 @@ fieldset p {
 						<div>
 							<p>Otras opciones de configuraci&oacute;n:</p>
 							<ul class="informes">
-								<li><input id="informe-nobroken" type="checkbox" name="informe-nobroken" value="true" checked="checked">
-										<label for="informe-nobroken"><strong>Sin comprobaci&oacute;n de enlaces rotos</strong></label> <span
-										class="help-block"> Acelera la ejecuci&oacute;n del servicio de diagn&oacute;stico al no verificar
-											todos los enlaces existentes en la p&aacute;gina analizada. </span></li>
+								<li><input id="informe-nobroken" type="checkbox" name="informe-nobroken" value="true" checked="checked"><label
+									for="informe-nobroken"><strong>Sin comprobaci&oacute;n de enlaces rotos</strong></label> <span
+									class="help-block"> Acelera la ejecuci&oacute;n del servicio de diagn&oacute;stico al no verificar todos
+										los enlaces existentes en la p&aacute;gina analizada. </span></li>
+
+
+
+								<li><input id="depthReport" type="checkbox" name="depthReport" value="true"><label for="depthReport"><strong>Generar
+												informe de revis&oacute;n en profundidad</strong></label> <span class="help-block"> Adjunta al informe en PDF un ODS y
+											un Json para realizar la revis&oacute;n en profundidad de la muestra seleccionada.</span></li>
 							</ul>
 						</div>
 					</fieldset>
@@ -290,24 +296,14 @@ fieldset p {
 	<div id="pie">
 		<div id="creditos">
 			Copyright &#169; 2019 - <span class="negrita">Ministerio de Pol&iacute;tica Territorial y Funci&oacute;n
-				P&uacute;blica</span> &nbsp; Versi&#243;n: <b>5.0.5</b>
+				P&uacute;blica</span> &nbsp; Versi&#243;n: <b>5.1.0</b>
 		</div>
 	</div>
-	<script type="application/javascript">
-		
-
-    
-
-	
-	
-	</script>
 	<!-- Bootstrap core JavaScript -->
 	<!-- Placed at the end of the document so the pages load faster -->
 	<script src="/oaw/js/jquery-ui-1.12.4.min.js"></script>
 	<script src="/oaw/bootstrap/js/bootstrap.min.js"></script>
 	<script type="application/javascript">
-		
-		
 		
 		
 		$("#radio-1").click(function () {
@@ -330,17 +326,7 @@ fieldset p {
           $("#historico").hide();
         });
 		
-		
-		
-		
 		$(function () { $('[data-toggle="tooltip"]').tooltip() })
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	</script>
