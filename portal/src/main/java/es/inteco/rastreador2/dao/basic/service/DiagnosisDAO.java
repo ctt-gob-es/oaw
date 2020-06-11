@@ -361,7 +361,7 @@ public final class DiagnosisDAO {
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 		final int resultFrom = pagSize * pagina;
 		StringBuilder query = new StringBuilder(
-				"SELECT (select distinct(nombre) from ambitos_lista where id_ambito =(select id_ambito from lista where lista = domain and  id_ambito is not null limit 1) limit 1) as ambito, id,usr,language,domain,email,depth,width,report,date,send_date, status,scheduling_date,analysis_type,in_directory,register_result, (select nombre from complejidades_lista where id_complejidad = complexity) as complexity_name FROM basic_service WHERE 1=1 ");
+				"SELECT (select distinct(nombre) from ambitos_lista where id_ambito =(select id_ambito from lista where lista = domain and  id_ambito is not null limit 1) limit 1) as ambito, id,usr,language,domain,email,depth,width,report,date,send_date, status,scheduling_date,analysis_type,in_directory,register_result, (select nombre from complejidades_lista where id_complejidad = complexity) as complexity_name,depthReport FROM basic_service WHERE 1=1 ");
 		addSearchParameters(search, query);
 		query.append("ORDER BY id DESC");
 		query.append(" LIMIT " + pagSize + " OFFSET " + resultFrom);
@@ -495,6 +495,7 @@ public final class DiagnosisDAO {
 			result.setSendDate(format.parse(rs.getString("send_date")));
 		}
 		result.setComplexityName(rs.getString("complexity_name"));
+		result.setDepthReport(rs.getString("depthReport"));
 		return result;
 	}
 
@@ -544,6 +545,9 @@ public final class DiagnosisDAO {
 			if (search.getEndDate() != null) {
 				ps.setDate(nextParameterCount++, new Date(convertToIncludingEndDate(format, search.getEndDate()).getTime()));
 			}
+			if (!StringUtils.isEmpty(search.getDepthReport())) {
+				ps.setString(nextParameterCount++, search.getDepthReport());
+			}
 		}
 	}
 
@@ -587,6 +591,9 @@ public final class DiagnosisDAO {
 			}
 			if (search.getEndDate() != null) {
 				query.append(" AND 	date <= STR_TO_DATE(?, '%Y-%m-%d') ");
+			}
+			if (search.getDepthReport() != null) {
+				query.append(" AND 	depthReport LIKE ? ");
 			}
 		}
 	}
