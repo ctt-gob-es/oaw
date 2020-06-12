@@ -464,7 +464,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItemBold(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.title"), ""));
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.np"), "-:"));
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.1"), "1:"));
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.1"), "0:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.0"), "0:"));
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.pass"), "P:"));
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.nopass"), "F:"));
 		final PdfPCell leyendaValoresResultadosTableCell = PDFUtils.createListTableCell(leyendaValoresResultados, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
@@ -511,7 +511,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItemBold(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.title"), ""));
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.np"), "-:"));
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.1"), "1:"));
-		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.1"), "0:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.0"), "0:"));
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.pass"), "P:"));
 		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem(messageResources.getMessage("pdf.accessibility.page.result.legend.modality.nopass"), "F:"));
 		final PdfPCell leyendaValoresResultadosTableCell = PDFUtils.createListTableCell(leyendaValoresResultados, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
