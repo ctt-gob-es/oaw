@@ -811,7 +811,8 @@ public final class GraphicsUtils {
 			map.mapKeyToGroup(dataset.getRowKeys().get(j).toString(), dateText);
 			if (!datesText.contains(dateText)) {
 				datesText.add(dateText);
-				domainAxis.addSubCategory(dateText);
+				// Hide subcategories
+				// domainAxis.addSubCategory(dateText);
 			}
 		}
 		domainAxis.setCategoryLabelPositionOffset(55);
