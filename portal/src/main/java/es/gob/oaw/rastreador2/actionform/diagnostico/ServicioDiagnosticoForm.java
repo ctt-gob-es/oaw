@@ -50,6 +50,26 @@ public class ServicioDiagnosticoForm extends ValidatorForm {
 	private String type;
 	/** The complexity name. */
 	private String complexityName;
+	/** The informe profundidad. */
+	private String depthReport;
+
+	/**
+	 * Gets the depth report.
+	 *
+	 * @return the depthReport
+	 */
+	public String getDepthReport() {
+		return depthReport;
+	}
+
+	/**
+	 * Sets the depth report.
+	 *
+	 * @param depthReport the depthReport to set
+	 */
+	public void setDepthReport(String depthReport) {
+		this.depthReport = depthReport;
+	}
 
 	/**
 	 * Gets the start date.

@@ -25,6 +25,7 @@ import com.itextpdf.text.BaseColor;
  * The Interface Constants.
  */
 public interface Constants {
+	/** The message resources. */
 	MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 	/** The crawler properties. */
 	// ARCHIVOS DE PROPIEDADES
@@ -1485,6 +1486,8 @@ public interface Constants {
 	String PARAM_CONTENT = "content";
 	/** The param complexity. */
 	String PARAM_COMPLEXITY = "complexity";
+	/** The param depth report. */
+	String PARAM_DEPTH_REPORT = "depthReport";
 	/** The param in directory. */
 	String PARAM_IN_DIRECTORY = "inDirectory";
 	/** The execute. */
@@ -1876,12 +1879,19 @@ public interface Constants {
 	String OBSERVATORIO_UNE_2012_ANTIGUA = "Observatorio UNE 2012 (antigua)";
 	/** The observatorio une 2004. */
 	String OBSERVATORIO_UNE_2004 = "Observatorio UNE 2004";
+	/** The bc rojo inteco. */
 	// PENDING NEW BASE COLOR
 	BaseColor BC_ROJO_INTECO = new BaseColor(225, 18, 13);
+	/** The bc rosa inteco. */
 	BaseColor BC_ROSA_INTECO = new BaseColor(255, 225, 225);
+	/** The bc naranja mp. */
 	BaseColor BC_NARANJA_MP = new BaseColor(245, 164, 55);
+	/** The bc verde o mp. */
 	BaseColor BC_VERDE_O_MP = new BaseColor(106, 130, 54);
+	/** The bc verde c mp. */
 	BaseColor BC_VERDE_C_MP = new BaseColor(126, 154, 64);
+	/** The bc marrron c nc. */
 	BaseColor BC_MARRRON_C_NC = new BaseColor(196, 89, 17);
+	/** The bc gris muy claro. */
 	BaseColor BC_GRIS_MUY_CLARO = new BaseColor(245, 245, 245);
 }

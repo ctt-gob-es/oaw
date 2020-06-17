@@ -1103,12 +1103,19 @@ public class Check {
 		final int allowedUngrouped = Integer.parseInt(checkCode.getFunctionNumber());
 		for (Map.Entry<String, List<Node>> radioGroupEntry : radioGroups.entrySet()) {
 			if (radioGroupEntry.getValue().size() > allowedUngrouped) {
+				// En algunos casos, se agrupan elementos que no tiene name mezclados de varios fieldet por lo que vamos adicionalmente a contar cuantos no están en un fieldset además del tamaño del
+				// grupo
+				int countNotInFieldSet = 0;
 				// Comprobar si están agrupados
 				for (Node node : radioGroupEntry.getValue()) {
 					final Node ancestor = getAncestor(node, Arrays.asList("FIELDSET", "FORM"));
 					if (ancestor == null || !"FIELDSET".equalsIgnoreCase(ancestor.getNodeName())) {
-						// Si el ancestor no es un fieldset es fallo
-						return true;
+						// Si el ancestor no es un fieldset se incrementa el contador
+						countNotInFieldSet++;
+						// Si se ha superado el máximo se devuelve error
+						if (countNotInFieldSet > allowedUngrouped) {
+							return true;
+						}
 					}
 				}
 			}
