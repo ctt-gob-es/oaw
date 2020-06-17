@@ -1487,12 +1487,19 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 					} else {
 						resultsC.put(keyNoCompilance, new BigDecimal(1));
 					}
-				} else {
+				}
+				// TODO SKIP NOT APPLY??
+				else {
 					// If exists +1
-					if (resultsC.containsKey(keyNoApply)) {
-						resultsC.put(keyNoApply, resultsC.get(keyNoApply).add(new BigDecimal(1)));
+//					if (resultsC.containsKey(keyNoApply)) {
+//						resultsC.put(keyNoApply, resultsC.get(keyNoApply).add(new BigDecimal(1)));
+//					} else {
+//						resultsC.put(keyNoApply, new BigDecimal(1));
+//					}
+					if (resultsC.containsKey(keyCompilance)) {
+						resultsC.put(keyCompilance, resultsC.get(keyCompilance).add(new BigDecimal(1)));
 					} else {
-						resultsC.put(keyNoApply, new BigDecimal(1));
+						resultsC.put(keyCompilance, new BigDecimal(1));
 					}
 				}
 			}
@@ -2364,21 +2371,22 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				// verificación
 				final Map<Long, Map<String, BigDecimal>> results = getVerificationResultsByPointAndCrawl(entry.getValue(), Constants.OBS_PRIORITY_NONE);
 				// C
-				BigDecimal value = generatePercentajesConformanceVerification(results).get(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX));
+				final Map<String, BigDecimal> generatePercentajesCompilanceVerification = generatePercentajesCompilanceVerification(results);
+				BigDecimal value = generatePercentajesCompilanceVerification.get(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX));
 				if (value != null) {
 					resultC.put(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX), value);
 				} else {
 					resultC.put(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX), BigDecimal.ZERO);
 				}
 				// NC
-				value = generatePercentajesConformanceVerification(results).get(verification.concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX));
+				value = generatePercentajesCompilanceVerification.get(verification.concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX));
 				if (value != null) {
 					resultC.put(verification.concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX), value);
 				} else {
 					resultC.put(verification.concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX), BigDecimal.ZERO);
 				}
 				// TODO NA
-				value = generatePercentajesCompilanceVerification(results).get(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX));
+				value = generatePercentajesCompilanceVerification.get(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX));
 				if (value != null) {
 					resultC.put(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX), value);
 				} else {
@@ -4440,13 +4448,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		final PropertiesManager pmgr = new PropertiesManager();
 		Map<String, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(LEVEL_I_VERIFICATIONS.subList(0, 7),
 				pageObservatoryMap);
-		GraphicsUtils.createBarChartGrouped(results, titles[0], "", "", pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR), false, true, true, filePaths[0], "", messageResources, 1465,
+		GraphicsUtils.createBarChartGrouped(results, titles[0], "", "", pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR), true, true, true, filePaths[0], "", messageResources, 1465,
 				654);
 		results = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(LEVEL_I_VERIFICATIONS.subList(7, 14), pageObservatoryMap);
-		GraphicsUtils.createBarChartGrouped(results, titles[0], "", "", pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR), false, true, true, filePaths[1], "", messageResources, 1465,
+		GraphicsUtils.createBarChartGrouped(results, titles[0], "", "", pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR), true, true, true, filePaths[1], "", messageResources, 1465,
 				654);
 		results = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSetDetailed(LEVEL_II_VERIFICATIONS, pageObservatoryMap);
-		GraphicsUtils.createBarChartGrouped(results, titles[1], "", "", pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR), false, true, true, filePaths[2], "", messageResources, 1465,
+		GraphicsUtils.createBarChartGrouped(results, titles[1], "", "", pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR), true, true, true, filePaths[2], "", messageResources, 1465,
 				654);
 	}
 
