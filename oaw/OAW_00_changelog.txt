@@ -1,3 +1,12 @@
+5.1.0
+------------------------------------------------------------------------------------------------------------------------------------
+- Generación de informe de accesibilidad en profundidad en ODS y JSON
+- Campo adicional en el formulario del servicio de diagnóstico para indicar si se genera el informe de accesibilidad en profundidad
+- Ajuste de la verificación de 443 Grupos de tres o más de botones de radio y/o casillas de verificación (con el mismo “name”) para evitar que agrupaciones con name vacío den error
+- Control en el cartucho de accesibilidad para que en aquellas semillas con selección manual sólo se analize la primera URL
+- 
+
+
 5.0.5
 ------------------------------------------------------------------------------------------------------------------------------------
 - Modificada la decodificación del los códigos fuentes almacenados que se hacía en el servidor MySQL para hacerlo en la codigo Java

@@ -787,7 +787,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		insertFileInsideODTFile(odt, PICTURES_ODT_PATH + f.getName(), f, MIME_TYPE_JPG);
 		// Table title
 		sb = new StringBuilder("");
-		sb.append("<text:p text:style-name=\"PTableTitle\">Evolución del nivel de adecuación estimado: " + category.getName() + "</text:p>");
+		sb.append("<text:p text:style-name=\"PTableTitle\">Evolución del Nivel de adecuación estimado: " + category.getName() + "</text:p>");
 		Element tableTitle = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, tableTitle, SEGMENT_EVOLUTION_BOOKMARK);
 		// Table
@@ -889,12 +889,14 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO, MIME_TYPE_JPG);
 		// Mid by verification
+		title = messageResources.getMessage("report.evolution.score.verifications.a.global");
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChartSplit(messageResources,
 				new String[] { graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1 + JPG_EXTENSION,
 						graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2 + JPG_EXTENSION },
-				pageObservatoryMap, LEVEL_I_VERIFICATIONS);
+				pageObservatoryMap, LEVEL_I_VERIFICATIONS, title);
+		title = messageResources.getMessage("report.evolution.score.verifications.aa.global");
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChart(messageResources,
-				graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA + JPG_EXTENSION, pageObservatoryMap, LEVEL_II_VERIFICATIONS);
+				graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA + JPG_EXTENSION, pageObservatoryMap, LEVEL_II_VERIFICATIONS, title);
 		replaceSectionEvolutionScoreByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1 + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1,
 				MIME_TYPE_JPG);
@@ -906,16 +908,18 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChartSplitGrouped(messageResources,
 				new String[] { graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1 + JPG_EXTENSION,
 						graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2 + JPG_EXTENSION, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA + JPG_EXTENSION },
+				new String[] { messageResources.getMessage("report.evolution.conformance.verification.a.global"), messageResources.getMessage("report.evolution.conformance.verification.aa.global") },
 				pageObservatoryMap);
 		replaceSectionComplianceByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1 + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1, MIME_TYPE_JPG);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2 + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2, MIME_TYPE_JPG);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA, MIME_TYPE_JPG);
 		// By aspects
+		title = messageResources.getMessage("report.evolution.score.aspect.global");
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA + JPG_EXTENSION,
-				pageObservatoryMap);
+				pageObservatoryMap, title);
 		replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
-		replaceImg(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA + JPG_EXTENSION, MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA, MIME_TYPE_JPG);
 	}
 
 	/**
@@ -943,7 +947,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED, MIME_TYPE_JPG);
 		// Section compliance
-		title = messageResources.getMessage("report.evolution.allocation.graphic.title.fixed");
+		title = messageResources.getMessage("report.evolution.compliance.graphic.title.fixed");
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA_FIXED + JPG_EXTENSION,
 				pageObservatoryMap, exObsIds, title);
 		replaceSectionEvolutionComplianceLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
@@ -952,12 +956,14 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO_FIJOS + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO_FIJOS, MIME_TYPE_JPG);
 		// Mid by verification
+		title = messageResources.getMessage("report.evolution.score.verifications.a.fixed");
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChartSplit(messageResources,
 				new String[] { graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION,
 						graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED + JPG_EXTENSION },
-				pageObservatoryMap, LEVEL_I_VERIFICATIONS);
+				pageObservatoryMap, LEVEL_I_VERIFICATIONS, title);
+		title = messageResources.getMessage("report.evolution.score.verifications.aa.fixed");
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChart(messageResources,
-				graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION, pageObservatoryMap, LEVEL_II_VERIFICATIONS);
+				graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION, pageObservatoryMap, LEVEL_II_VERIFICATIONS, title);
 		replaceSectionEvolutionScoreByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED,
 				MIME_TYPE_JPG);
@@ -970,6 +976,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				new String[] { graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION,
 						graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED + JPG_EXTENSION,
 						graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION },
+				new String[] { messageResources.getMessage("report.evolution.conformance.verification.a.fixed"), messageResources.getMessage("report.evolution.conformance.verification.aa.fixed") },
 				pageObservatoryMap);
 		replaceSectionComplianceByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
 		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED,
@@ -992,10 +999,11 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 //				MIME_TYPE_JPG);
 //		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA_FIXED, MIME_TYPE_JPG);
 		// By aspects
+		title = messageResources.getMessage("report.evolution.score.aspect.fixed");
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA_FIXED + JPG_EXTENSION,
-				pageObservatoryMap);
+				pageObservatoryMap, title);
 		replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
-		replaceImg(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA_FIXED + JPG_EXTENSION, MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA_FIXED, MIME_TYPE_JPG);
 	}
 
 	/**

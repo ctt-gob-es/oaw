@@ -46,6 +46,7 @@
         String confirm = "false";
         String complexity ="";
         String fileName;
+        String depthReport;
 
         private final List<String> errores;
 
@@ -121,11 +122,11 @@
                 this.type = item.getString();
             } else if (paramName.equalsIgnoreCase("confirm")) {
                 this.confirm = item.getString();
-            }else if (paramName.equalsIgnoreCase("complexity")) {
+            } else if (paramName.equalsIgnoreCase("complexity")) {
                 this.complexity = item.getString();
-            }
-            
-            
+            } else if (paramName.equalsIgnoreCase("depthReport")) {
+                this.depthReport = item.getString();
+            } 
         }
 
         public boolean isValidRequest() {
@@ -166,7 +167,7 @@
             try {
                 final String encodedCodigo = codec.encode(codigo);
                 //Save filename
-                final String postRequest = String.format("content=%s&url=%s&correo=%s&complexity=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s&type=%s&filename=%s",
+                final String postRequest = String.format("content=%s&url=%s&correo=%s&complexity=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s&type=%s&filename=%s&depthReport=%s",
                         encodedCodigo != null ? encodedCodigo : "",
                         url != null ? url : "",
                         correo,
@@ -179,7 +180,8 @@
                         nobroken,
                         urls,
                         type,
-                        fileName
+                        fileName,
+                        depthReport
                 );
                 return postRequest;
             } catch (Exception e) {

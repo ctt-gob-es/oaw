@@ -188,13 +188,21 @@ public final class BasicServiceUtils {
 		// TODO Prevent full paths
 		String parameterFileName = request.getParameter("filename");
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(parameterFileName)) {
-			String tmp = parameterFileName.replace("\\", "/");
+			String tmp;
+			try {
+				tmp = StringUtils.corregirEncoding(parameterFileName).replace("\\", "/");
+			} catch (UnsupportedEncodingException e) {
+				tmp = parameterFileName.replace("\\", "/");
+			}
 			if (tmp.lastIndexOf("/") > 0) {
 				parameterFileName = tmp.substring(tmp.lastIndexOf("/") + 1, tmp.length());
+			} else {
+				parameterFileName = tmp.toString();
 			}
 		}
 		basicServiceForm.setFileName(parameterFileName);
 		basicServiceForm.setComplexity(request.getParameter(Constants.PARAM_COMPLEXITY));
+		basicServiceForm.setDepthReport(request.getParameter(Constants.PARAM_DEPTH_REPORT));
 		return basicServiceForm;
 	}
 

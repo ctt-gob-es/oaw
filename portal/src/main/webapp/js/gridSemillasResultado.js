@@ -1,3 +1,4 @@
+
 var lastUrl;
 var scroll;
 
@@ -842,6 +843,8 @@ function reloadGrid(path) {
 						paginas = data.paginas;
 
 						$('#paginador').empty();
+						
+						$('#paginador').append("<span style='float: left;clear: both; display: block; width: 100%; text-align: left;padding: 10px 5px;'><strong>"+ paginadorTotal+ "</strong> " + data.paginador.total +"</span>");
 
 						// Si solo hay una página no pintamos el paginador
 						if (paginas.length > 1) {

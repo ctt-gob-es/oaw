@@ -87,6 +87,8 @@ display: block;
 <!--  JQ GRID   -->
 <script>
 
+var paginadorTotal = '<bean:message key="cargar.semilla.observatorio.buscar.total"/>'; 
+
 
 var colNameId = '<bean:message key="colname.id"/>';
 var colNameAcronym = '<bean:message key="colname.acronym"/>';

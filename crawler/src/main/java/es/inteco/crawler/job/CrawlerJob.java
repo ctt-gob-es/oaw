@@ -388,6 +388,13 @@ public class CrawlerJob implements InterruptableJob {
 		if (crawlerData.getIdCartridge() == 10) {
 			crawlerData.setTopN(1);
 			crawlerData.setProfundidad(1);
+			// If has more than one URL, took the first in this cartridge
+			if (crawlerData.getUrls() != null && !crawlerData.getUrls().isEmpty() && crawlerData.getUrls().size() > 1) {
+				String url = crawlerData.getUrls().get(0);
+				List<String> singleUrl = new ArrayList<String>();
+				singleUrl.add(url);
+				crawlerData.setUrls(singleUrl);
+			}
 		} else {
 			// Apply seed complex only if is not basic service an only if is not manual selection
 			if (crawlerData.getIdCrawling() > 0 && crawlerData.getUrls().size() == 1) {

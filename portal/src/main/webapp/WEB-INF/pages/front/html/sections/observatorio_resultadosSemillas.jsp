@@ -34,7 +34,7 @@ Email: observ.accesibilidad@correo.gob.es
 
 <!--  JQ GRID   -->
 <script>
-
+var paginadorTotal = '<bean:message key="cargar.semilla.observatorio.buscar.total"/>';
 
 var colNameId = '<bean:message key="colname.id"/>';
 

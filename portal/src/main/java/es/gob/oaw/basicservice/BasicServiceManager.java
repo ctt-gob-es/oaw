@@ -195,8 +195,8 @@ public class BasicServiceManager {
 				 * 
 				 * 
 				 */
-				// PENDING (Disable) JSON WCAG-EM and ODS
-				if (false) {
+				// JSON WCAG-EM and ODS
+				if ("true".equalsIgnoreCase(basicServiceForm.getDepthReport())) {
 					// JSON
 					WcagEmReport report = WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), basicServiceForm.getName(), idCrawling);
 					ObjectMapper mapper = new ObjectMapper();
@@ -219,7 +219,7 @@ public class BasicServiceManager {
 					sourceFilesManager.zipSources(true);
 				}
 				// Comprimimos el fichero
-				pdfPath = BasicServiceExport.compressReportWithCode(pdfPath, basicServiceForm.isContentAnalysis(), basicServiceForm.getFileName());
+				pdfPath = BasicServiceExport.compressReportWithCode(pdfPath, basicServiceForm.isContentAnalysis(), basicServiceForm.getFileName(), basicServiceForm.getDepthReport());
 				if (!basicServiceForm.isRegisterAnalysis()) {
 					// Si no es necesario registrar el análisis se borra
 					Logger.putLog("Borrando analisis " + idCrawling, BasicServiceManager.class, Logger.LOG_LEVEL_INFO);
