@@ -208,7 +208,7 @@ public final class WcagEmUtils {
 		}
 		graph.setType("Evaluation");
 		graph.setPublisher("reporter:releases/tag/<%= pkg.version =%>");
-		graph.setLang("en");
+		graph.setLang("es");
 		{
 			EvaluationScope evaluationScope = new EvaluationScope();
 			evaluationScope.setType("EvaluationScope");
