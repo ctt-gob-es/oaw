@@ -500,9 +500,9 @@ public final class WcagEmUtils {
 			break;
 		case Constants.OBS_VALUE_GREEN_ONE:
 			if (filterChecks) {
-				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_PASSED);
+				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_CANNOT_TELL);
 			} else {
-				validationDetailes.setResult(EARL_PASSED);
+				validationDetailes.setResult(EARL_CANNOT_TELL);
 				results = new ArrayList<>();
 				processChecks(observatorySubgroupForm, validationDetailes, results);
 				tmpWcag.put(wcagEmId, validationDetailes);

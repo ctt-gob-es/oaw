@@ -83,7 +83,7 @@ public final class WcagOdsUtils {
 					fillResult(sheetP1, auditResult, 448);
 					break;
 				case "WCAG2:reflow":
-					fillResult(sheetP1, auditResult, 548);
+					fillResult(sheetP1, auditResult, 547);
 					break;
 				case "WCAG2:text-spacing":
 					fillResult(sheetP1, auditResult, 613);
