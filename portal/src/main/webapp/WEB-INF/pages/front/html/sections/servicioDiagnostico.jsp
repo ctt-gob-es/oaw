@@ -47,7 +47,7 @@
 	var statusLaunched = '<bean:message key="status.launched"/>';
 	var statusWrongParams = '<bean:message key="status.wrong.params"/>';
 
-	var analysisTypeList = '<bean:message key="analysis.type.list"/>';
+	var analysisTypeList = '<bean:message key="analysis.type.lis"/>';
 	var analysisTypeSource = '<bean:message key="analysis.type.source"/>';
 
 	var others = '<bean:message key="other"/>';
