@@ -176,6 +176,38 @@ public final class RastreoDAO {
 	}
 
 	/**
+	 * Gets the execution observatory crawler ids ambit.
+	 *
+	 * @param c                      the c
+	 * @param idObservatoryExecution the id observatory execution
+	 * @param idAmbit                the id ambit
+	 * @return the execution observatory crawler ids ambit
+	 * @throws Exception the exception
+	 */
+	public static List<Long> getExecutionObservatoryCrawlerIdsAmbit(Connection c, Long idObservatoryExecution, final Long idAmbit) throws Exception {
+		final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
+		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ?";
+		if (idAmbit != 0) {
+			query = query + " AND l.id_ambito = ? ";
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(1, idObservatoryExecution);
+			if (idAmbit != 0) {
+				ps.setLong(2, idAmbit);
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					executionObservatoryCrawlersIds.add(rs.getLong(1));
+				}
+				return executionObservatoryCrawlersIds;
+			}
+		} catch (Exception e) {
+			Logger.putLog("Error en getExecutionObservatoryCrawlerIdsComplexity", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
 	 * Gets the id rastreo realizado from id rastreo and id observatory execution.
 	 *
 	 * @param c                      the c
@@ -2206,6 +2238,69 @@ public final class RastreoDAO {
 			throw e;
 		}
 	}
-	// (SELECT count(*) FROM rastreo r WHERE r.id_observatorio = 46 AND r.activo = 1 AND r.estado = 4 and r.id_rastreo not in (select id_rastreo from rastreos_realizados rr where rr.id_obs_realizado =
-	// 244 AND rr.id IN (select ta.cod_rastreo as id_rastreo from tanalisis ta)));
+
+	/**
+	 * Gets the finish crawler from seed and observatory not crawled yet.
+	 *
+	 * @param c               the c
+	 * @param tagsToFiler     the tags to filer
+	 * @param exObsIds        the ex obs ids
+	 * @param idClasificacion the id clasificacion
+	 * @return the finish crawler from seed and observatory not crawled yet
+	 * @throws Exception the exception
+	 */
+	public static List<GlobalReportStatistics> getGlobalReportStatistics(Connection c, String[] tagsToFiler, String[] exObsIds, final int idClasificacion) throws Exception {
+//		SELECT COUNT(*), e.nombre, e.id_clasificacion FROM rastreos_realizados rr 
+//		JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) 
+//		JOIN lista l ON (l.id_lista = r.semillas) 
+//		JOIN semilla_etiqueta se ON l.id_lista=se.id_lista 
+//		JOIN etiqueta e ON e.id_etiqueta = se.id_etiqueta 
+//		WHERE id_obs_realizado IN (258,254)
+//		GROUP BY e.nombre, e.id_clasificacion ORDER BY e.id_clasificacion, e.nombre
+		final List<GlobalReportStatistics> globalReportStatistics = new ArrayList<>();
+		String query = "SELECT COUNT(*) as countSeeds, e.nombre, e.id_clasificacion,ce.nombre FROM rastreos_realizados rr "
+				+ "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) " + "JOIN semilla_etiqueta se ON l.id_lista=se.id_lista "
+				+ "JOIN etiqueta e ON e.id_etiqueta = se.id_etiqueta JOIN clasificacion_etiqueta ce ON ce.id_clasificacion=e.id_clasificacion WHERE e.id_clasificacion = ? ";
+		// Cargamos los rastreos realizados
+		if (exObsIds != null && exObsIds.length > 0) {
+			query = query + "AND id_obs_realizado IN (" + exObsIds[0];
+			for (int i = 1; i < exObsIds.length; i++) {
+				query = query + "," + exObsIds[i];
+			}
+			query = query + ")";
+		}
+		if (tagsToFiler != null && tagsToFiler.length > 0) {
+			query = query + " AND ( 1=1 ";
+			for (int i = 0; i < tagsToFiler.length; i++) {
+				query = query + " OR el.id_etiqueta= ?";
+			}
+			query = query + ")";
+		}
+		query = query + " GROUP BY e.nombre, e.id_clasificacion ORDER BY e.id_clasificacion, e.nombre, ce.nombre";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			int paramNumber = 1;
+			ps.setInt(paramNumber, idClasificacion);
+			paramNumber++;
+			if (tagsToFiler != null && tagsToFiler.length > 0) {
+				for (int i = 0; i < tagsToFiler.length; i++) {
+					ps.setLong(paramNumber, Long.parseLong(tagsToFiler[i]));
+					paramNumber++;
+				}
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					GlobalReportStatistics grE = new GlobalReportStatistics();
+					grE.setCount(rs.getInt("countSeeds"));
+					grE.setNombre(rs.getString("e.nombre"));
+					grE.setIdClasificacion(rs.getInt("e.id_clasificacion"));
+					grE.setNombreClasificacion(rs.getString("ce.nombre"));
+					globalReportStatistics.add(grE);
+				}
+			}
+		} catch (Exception e) {
+			Logger.putLog("Error en getExecutionObservatoryCrawlerIds", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return globalReportStatistics;
+	}
 }

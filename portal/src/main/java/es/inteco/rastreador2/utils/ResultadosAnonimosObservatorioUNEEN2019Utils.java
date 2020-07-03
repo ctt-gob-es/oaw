@@ -62,6 +62,7 @@ import es.inteco.rastreador2.actionform.observatorio.ComplianceComparisonForm;
 import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
+import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
@@ -1291,6 +1292,16 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		return dataSet;
 	}
 
+	public static DefaultCategoryDataset createDataSetAmbit(final Map<AmbitoForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
+		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+		for (Map.Entry<AmbitoForm, Map<String, BigDecimal>> entry : result.entrySet()) {
+			dataSet.addValue(entry.getValue().get(Constants.OBS_NV), parseLevelLabel(Constants.OBS_NV, messageResources), entry.getKey().getName());
+			dataSet.addValue(entry.getValue().get(Constants.OBS_A), parseLevelLabel(Constants.OBS_A, messageResources), entry.getKey().getName());
+			dataSet.addValue(entry.getValue().get(Constants.OBS_AA), parseLevelLabel(Constants.OBS_AA, messageResources), entry.getKey().getName());
+		}
+		return dataSet;
+	}
+
 	/**
 	 * Creates the data set complexity compilance.
 	 *
@@ -1301,6 +1312,16 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	public static DefaultCategoryDataset createDataSetComplexityCompilance(final Map<ComplejidadForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 		for (Map.Entry<ComplejidadForm, Map<String, BigDecimal>> entry : result.entrySet()) {
+			dataSet.addValue(entry.getValue().get(Constants.OBS_COMPILANCE_NONE), parseLevelLabel(Constants.OBS_COMPILANCE_NONE, messageResources), entry.getKey().getName());
+			dataSet.addValue(entry.getValue().get(Constants.OBS_COMPILANCE_PARTIAL), parseLevelLabel(Constants.OBS_COMPILANCE_PARTIAL, messageResources), entry.getKey().getName());
+			dataSet.addValue(entry.getValue().get(Constants.OBS_COMPILANCE_FULL), parseLevelLabel(Constants.OBS_COMPILANCE_FULL, messageResources), entry.getKey().getName());
+		}
+		return dataSet;
+	}
+
+	public static DefaultCategoryDataset createDataSetAmbitCompilance(final Map<AmbitoForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
+		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+		for (Map.Entry<AmbitoForm, Map<String, BigDecimal>> entry : result.entrySet()) {
 			dataSet.addValue(entry.getValue().get(Constants.OBS_COMPILANCE_NONE), parseLevelLabel(Constants.OBS_COMPILANCE_NONE, messageResources), entry.getKey().getName());
 			dataSet.addValue(entry.getValue().get(Constants.OBS_COMPILANCE_PARTIAL), parseLevelLabel(Constants.OBS_COMPILANCE_PARTIAL, messageResources), entry.getKey().getName());
 			dataSet.addValue(entry.getValue().get(Constants.OBS_COMPILANCE_FULL), parseLevelLabel(Constants.OBS_COMPILANCE_FULL, messageResources), entry.getKey().getName());
@@ -3146,6 +3167,33 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	}
 
 	/**
+	 * Creates the graphics map ambits.
+	 *
+	 * @param ambits the ambits
+	 * @return the map
+	 */
+	public static Map<Integer, List<AmbitoForm>> createGraphicsMapAmbits(final List<AmbitoForm> ambits) {
+		final Map<Integer, List<AmbitoForm>> resultLists = new TreeMap<>();
+		final PropertiesManager pmgr = new PropertiesManager();
+		final int numBarByGrapg = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "num.max.bar.graph"));
+		int keyMap = 1;
+		for (int i = 1; i <= ambits.size(); i++) {
+			final List<AmbitoForm> list;
+			if (resultLists.get(keyMap) != null) {
+				list = resultLists.get(keyMap);
+			} else {
+				list = new ArrayList<>();
+			}
+			list.add(ambits.get(i - 1));
+			resultLists.put(keyMap, list);
+			if ((i >= numBarByGrapg) && (i % numBarByGrapg == 0) && (ambits.size() != i + 1)) {
+				keyMap++;
+			}
+		}
+		return resultLists;
+	}
+
+	/**
 	 * Gets the global mark by segment graphic.
 	 *
 	 * @param messageResources  the message resources
@@ -4177,6 +4225,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePath           the file path
 	 * @param pageObservatoryMap the page observatory map
 	 * @param exObsIds           the ex obs ids
+	 * @param title              the title
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionSuitabilityChart(final String observatoryId, final String executionId, final String filePath,
@@ -4207,6 +4256,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePath           the file path
 	 * @param pageObservatoryMap the page observatory map
 	 * @param exObsIds           the ex obs ids
+	 * @param title              the title
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionComplianceChart(final String observatoryId, final String executionId, final String filePath,
@@ -4332,6 +4382,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePath           String with the full path (filename included) where the chart will be saved as jpg file.
 	 * @param pageObservatoryMap a Map where each entrey is keyed by observatory date and the value is a list of the page evaluations
 	 * @param verifications      list of verifications to include on the chart
+	 * @param title              the title
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionAverageScoreByVerificationChart(final MessageResources messageResources, final String filePath,
@@ -4361,6 +4412,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePaths          the file paths
 	 * @param pageObservatoryMap the page observatory map
 	 * @param verifications      the verifications
+	 * @param title              the title
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionAverageScoreByVerificationChartSplit(final MessageResources messageResources, final String[] filePaths,
@@ -4440,6 +4492,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 *
 	 * @param messageResources   the message resources
 	 * @param filePaths          the file paths
+	 * @param titles             the titles
 	 * @param pageObservatoryMap the page observatory map
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
@@ -4465,6 +4518,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePaths          the file paths
 	 * @param pageObservatoryMap the page observatory map
 	 * @param verifications      the verifications
+	 * @param title              the title
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionComplianceByVerificationChart(final MessageResources messageResources, final String[] filePaths,
@@ -4494,6 +4548,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param messageResources   MessageResources needed for GraphicsUtils utility class
 	 * @param filePath           String with the full path (filename included) where the chart will be saved as jpg file.
 	 * @param pageObservatoryMap a Map where each entrey is keyed by observatory date and the value is a list of the page evaluations
+	 * @param title              the title
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionAverageScoreByAspectChart(final MessageResources messageResources, final String filePath, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap,
