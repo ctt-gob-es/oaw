@@ -20,7 +20,7 @@ import es.inteco.common.properties.PropertiesManager;
  */
 public final class WcagOdsUtils {
 	/** The Constant MAX_PAGES. */
-	private static final int MAX_PAGES = 30;
+	private static final int MAX_PAGES = 35;
 	/** The Constant EARL_INAPPLICABLE. */
 	private static final String EARL_INAPPLICABLE = "earl:inapplicable";
 	/** The Constant EARL_FAILED. */
@@ -42,6 +42,11 @@ public final class WcagOdsUtils {
 		File inputFile = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.ods.template"));
 		// Load template
 		final SpreadSheet workbook = SpreadSheet.createFromFile(inputFile);
+		// filt techs
+		final Sheet sheetTech = workbook.getSheet("02.Tecnologías");
+		sheetTech.getCellAt("C9").setValue("Sí");
+		sheetTech.getCellAt("C12").setValue("Sí");
+		sheetTech.getCellAt("C13").setValue("Sí");
 		final Sheet sheet = workbook.getSheet("03.Muestra");
 		int resultsProcessed = 0;
 		int initRow = 8; // Initial rowcount
@@ -52,7 +57,7 @@ public final class WcagOdsUtils {
 			if (resultsProcessed < MAX_PAGES) {
 				resultsProcessed++;
 				sheet.getCellAt("C" + initRow).setValue(webpage.getTitle(), ODValueType.STRING, true, false);
-				sheet.getCellAt("D" + initRow).setValue("Aleatoria", ODValueType.STRING, true, false);
+				sheet.getCellAt("D" + initRow).setValue("", ODValueType.STRING, true, false);
 				sheet.getCellAt("E" + initRow).setValue(webpage.getSource(), ODValueType.STRING, true, false);
 				initRow++;
 			}
@@ -71,79 +76,79 @@ public final class WcagOdsUtils {
 					fillResult(sheetP1, auditResult, 19);
 					break;
 				case "WCAG2:info-and-relationships":
-					fillResult(sheetP1, auditResult, 217);
+					fillResult(sheetP1, auditResult, 247);
 					break;
 				case "WCAG2:orientation":
-					fillResult(sheetP1, auditResult, 316);
+					fillResult(sheetP1, auditResult, 361);
 					break;
 				case "WCAG2:identify-input-purpose":
-					fillResult(sheetP1, auditResult, 349);
+					fillResult(sheetP1, auditResult, 399);
 					break;
 				case "WCAG2:contrast-minimum":
-					fillResult(sheetP1, auditResult, 448);
+					fillResult(sheetP1, auditResult, 513);
 					break;
 				case "WCAG2:reflow":
-					fillResult(sheetP1, auditResult, 547);
+					fillResult(sheetP1, auditResult, 627);
 					break;
 				case "WCAG2:text-spacing":
-					fillResult(sheetP1, auditResult, 613);
+					fillResult(sheetP1, auditResult, 703);
 					break;
 				// P2
 				case "WCAG2:keyboard":
 					fillResult(sheetP2, auditResult, 19);
 					break;
 				case "WCAG2:timing-adjustable":
-					fillResult(sheetP2, auditResult, 119);
+					fillResult(sheetP2, auditResult, 133);
 					break;
 				case "WCAG2:tpause-stop-hide":
-					fillResult(sheetP2, auditResult, 151);
+					fillResult(sheetP2, auditResult, 171);
 					break;
 				case "WCAG2:three-flashes-or-below-threshold":
-					fillResult(sheetP2, auditResult, 184);
+					fillResult(sheetP2, auditResult, 209);
 					break;
 				case "WCAG2:bypass-blocks":
-					fillResult(sheetP2, auditResult, 217);
+					fillResult(sheetP2, auditResult, 247);
 					break;
 				case "WCAG2:page-titled":
-					fillResult(sheetP2, auditResult, 250);
+					fillResult(sheetP2, auditResult, 285);
 					break;
 				case "WCAG2:focus-order":
-					fillResult(sheetP2, auditResult, 283);
+					fillResult(sheetP2, auditResult, 323);
 					break;
 				case "WCAG2:link-purpose-in-context":
-					fillResult(sheetP2, auditResult, 316);
+					fillResult(sheetP2, auditResult, 361);
 					break;
 				case "WCAG2:multiple-ways":
-					fillResult(sheetP2, auditResult, 349);
+					fillResult(sheetP2, auditResult, 399);
 					break;
 				case "WCAG2:focus-visible":
-					fillResult(sheetP2, auditResult, 416);
+					fillResult(sheetP2, auditResult, 475);
 					break;
 				case "WCAG2:label-in-name":
-					fillResult(sheetP2, auditResult, 514);
+					fillResult(sheetP2, auditResult, 589);
 					break;
 				// P3
 				case "WCAG2:language-of-page":
 					fillResult(sheetP3, auditResult, 19);
 					break;
 				case "WCAG2:language-of-parts":
-					fillResult(sheetP3, auditResult, 52);
+					fillResult(sheetP3, auditResult, 57);
 					break;
 				case "WCAG2:on-focus":
-					fillResult(sheetP3, auditResult, 85);
+					fillResult(sheetP3, auditResult, 95);
 					break;
 				case "WCAG2:on-input":
-					fillResult(sheetP3, auditResult, 119);
+					fillResult(sheetP3, auditResult, 133);
 					break;
 				case "WCAG2:consistent-navigation":
-					fillResult(sheetP3, auditResult, 151);
+					fillResult(sheetP3, auditResult, 171);
 					break;
 				case "WCAG2:labels-or-instructions":
-					fillResult(sheetP3, auditResult, 217);
+					fillResult(sheetP3, auditResult, 285);
 					break;
 				// p4
 				case "WCAG2:name-role-value":
-					fillResult(sheetP4, auditResult, 52);
+					fillResult(sheetP4, auditResult, 57);
 					break;
 				default:
 					break;
@@ -186,35 +191,35 @@ public final class WcagOdsUtils {
 	private static void fillNotTell(final SpreadSheet workbook, final int totalPages) {
 		final Sheet sheetP1 = workbook.getSheet("P1.Perceptible");
 		int tableRowIndex = 19;
-		while (tableRowIndex <= 613) {
+		while (tableRowIndex <= 776) {
 			for (int i = 0; i < totalPages; i++) {
 				sheetP1.getCellAt("D" + (i + tableRowIndex)).setValue("N/T");
 			}
-			tableRowIndex = tableRowIndex + 33;
+			tableRowIndex = tableRowIndex + 38;
 		}
 		final Sheet sheetP2 = workbook.getSheet("P2.Operable");
 		tableRowIndex = 19;
-		while (tableRowIndex <= 547) {
+		while (tableRowIndex <= 661) {
 			for (int i = 0; i < totalPages; i++) {
 				sheetP2.getCellAt("D" + (i + tableRowIndex)).setValue("N/T");
 			}
-			tableRowIndex = tableRowIndex + 33;
+			tableRowIndex = tableRowIndex + 38;
 		}
 		final Sheet sheetP3 = workbook.getSheet("P3.Comprensible");
 		tableRowIndex = 19;
-		while (tableRowIndex <= 316) {
+		while (tableRowIndex <= 395) {
 			for (int i = 0; i < totalPages; i++) {
 				sheetP3.getCellAt("D" + (i + tableRowIndex)).setValue("N/T");
 			}
-			tableRowIndex = tableRowIndex + 33;
+			tableRowIndex = tableRowIndex + 38;
 		}
 		final Sheet sheetP4 = workbook.getSheet("P4.Robusto");
 		tableRowIndex = 19;
-		while (tableRowIndex <= 85) {
+		while (tableRowIndex <= 129) {
 			for (int i = 0; i < totalPages; i++) {
 				sheetP4.getCellAt("D" + (i + tableRowIndex)).setValue("N/T");
 			}
-			tableRowIndex = tableRowIndex + 33;
+			tableRowIndex = tableRowIndex + 38;
 		}
 	}
 
