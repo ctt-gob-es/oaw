@@ -217,6 +217,7 @@ public final class PrimaryExportPdfUtils {
 	 * @param observatoryType        the observatory type
 	 * @throws Exception the exception
 	 */
+	@SuppressWarnings({ "unused", "deprecation" })
 	public static void exportToPdf(final AnonymousResultExportPdf pdfBuilder, final Long idRastreoRealizado, final List<Long> evaluationIds, final List<Long> previousEvaluationIds,
 			final MessageResources messageResources, final String generalExpPath, final String seed, final String content, final long idObservatoryExecution, final long observatoryType)
 			throws Exception {
@@ -365,8 +366,6 @@ public final class PrimaryExportPdfUtils {
 						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryAccesibility(MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), document,
 								pdfTocManager);
 					} else if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
-						// TODO Call same method that basic service
-						// observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources2019, document, pdfTocManager);
 						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryWithCompliance(messageResources, document, pdfTocManager,
 								pdfBuilder.generateScores(messageResources, currentEvaluationPageList));
 					} else if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
@@ -393,7 +392,7 @@ public final class PrimaryExportPdfUtils {
 				// en el índice
 				IndexUtils.createIndex(writer, document, messageResources.getMessage("pdf.accessibility.index.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 				ExportPageEventsObservatoryMP.setPrintFooter(true);
-				// PENDING (Disable) JSON WCAG-EM and ODS
+				// (Disable) JSON WCAG-EM and ODS
 				if (false) {
 					// JSON
 					WcagEmReport report = WcagEmUtils.generateReport(messageResources, pdfBuilder, BasicServiceUtils.getTitleDocFromContent(currentEvaluationPageList.get(0).getSource(), false),
