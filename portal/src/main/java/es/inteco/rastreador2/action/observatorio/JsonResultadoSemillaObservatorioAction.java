@@ -70,6 +70,14 @@ public class JsonResultadoSemillaObservatorioAction extends DispatchAction {
 			if (request.getParameter("listaUrlsString") != null && !StringUtils.isEmpty(request.getParameter("listaUrlsString").toString())) {
 				semillaForm.setListaUrlsString(request.getParameter("listaUrlsString").toString());
 			}
+			// Sort column
+			if (request.getParameter("sortCol") != null && !StringUtils.isEmpty(request.getParameter("sortCol").toString())) {
+				semillaForm.setSortCol(request.getParameter("sortCol").toString());
+			}
+			if (request.getParameter("sortOrder") != null && !StringUtils.isEmpty(request.getParameter("sortOrder").toString())) {
+				semillaForm.setSortOrder(request.getParameter("sortOrder").toString());
+			}
+			// Order direction
 			final int numResultA = ObservatorioDAO.countResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, Constants.COMPLEXITY_SEGMENT_NONE);
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 			final List<ResultadoSemillaFullForm> seedsResults2 = ObservatorioDAO.getResultSeedsFullFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE,

@@ -144,7 +144,7 @@ public class TestCrawl {
 //				"https://web.larioja.org", "http://www.caib.es/govern/index.do?lang=ca", "https://www.asturias.es/", "https://www.juntadeandalucia.es/institucional/index.html", "https://www.jcyl.es/",
 //				"http://www.juntaex.es/web/", "https://www.castillalamancha.es/", "http://www.carm.es", "https://www.xunta.gal/portada" };
 		String[] urlsD = new String[] {};
-		String[] urls = new String[] { "http://www.gobiernodeceuta.es" };
+		String[] urls = new String[] { "http://www.navarra.es/home_es/Temas/Portal+de+la+Salud/Ciudadania/" };
 		for (String url : urls) {
 			this.crawl(url, false);
 		}
@@ -165,7 +165,7 @@ public class TestCrawl {
 		System.out.println("-------------------------------------------------------------------------------------------\n\n");
 		final CrawlerData crawlerData = new CrawlerData();
 		crawlerData.setUrls(Collections.singletonList(url));
-		crawlerData.setProfundidad(5);
+		crawlerData.setProfundidad(10);
 		crawlerData.setTopN(10);
 		crawlerData.setPseudoaleatorio(true);
 		crawlerData.setTest(true);
