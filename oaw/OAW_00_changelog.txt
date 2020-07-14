@@ -1,11 +1,14 @@
 5.1.0
 ------------------------------------------------------------------------------------------------------------------------------------
-- Generación de informe de accesibilidad en profundidad en ODS y JSON
+- Generación de informe de accesibilidad en profundidad en ODS y JSON en el servicio de diagnóstico
 - Campo adicional en el formulario del servicio de diagnóstico para indicar si se genera el informe de accesibilidad en profundidad
 - Ajuste de la verificación de 443 Grupos de tres o más de botones de radio y/o casillas de verificación (con el mismo “name”) para evitar que agrupaciones con name vacío den error
 - Control en el cartucho de accesibilidad para que en aquellas semillas con selección manual sólo se analize la primera URL
 - Correciones en la sección de evolutivo del informe agregado para el cartucho UNE-EN301549:2019
 - Modificada la sección de evolución de los segmentos para generar una plantilla externa
+- Corregida la ordenación de resultados de un observatorio que sólo ordenaba en la página actual y no todos los resultados
+- Modificada plantilla de informe global para incluir más secciones
+- Añadidas en el XML anexo de portales las etiquetas de la semilla
 
 
 5.0.5
