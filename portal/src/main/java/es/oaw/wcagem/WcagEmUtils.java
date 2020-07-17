@@ -254,7 +254,8 @@ public final class WcagEmUtils {
 								HasPart hasPart = new HasPart();
 								hasPart.setType("Assertion");
 								hasPart.setAssertedBy("_:evaluator");
-								hasPart.setSubject(Arrays.asList(new String[] { "_:rand_" + pageCounter }));
+//								hasPart.setSubject(Arrays.asList(new String[] { "_:rand_" + pageCounter }));
+								hasPart.setSubject(Arrays.asList(new String[] { "_:struct_" + pageCounter }));
 								{
 									Result_ resultP = new Result_();
 									resultP.setType("TestResult");
@@ -296,24 +297,18 @@ public final class WcagEmUtils {
 		{
 			StructuredSample structuredSample = new StructuredSample();
 			List<Webpage> webpages = new ArrayList<>();
-			Webpage webpage = new Webpage();
-			webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
-			webpage.setId("_:struct_0");
-			webpage.setTitle("");
-			webpage.setTested(false);
-			webpages.add(webpage);
-			structuredSample.setWebpage(webpages);
-			graph.setStructuredSample(structuredSample);
-		}
-		{
-			RandomSample randomSample = new RandomSample();
-			List<Webpage_> webpages = new ArrayList<>();
+//			Webpage webpage = new Webpage();
+//			webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
+//			webpage.setId("_:struct_0");
+//			webpage.setTitle("");
+//			webpage.setTested(false);
+//			webpages.add(webpage);
 			int randCounter = 0;
 			// Iterate currentEvaluationPageList to preserve order
 			for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
-				Webpage_ webpage = new Webpage_();
+				Webpage webpage = new Webpage();
 				webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
-				webpage.setId("_:rand_" + randCounter);
+				webpage.setId("_:struct_" + randCounter);
 				webpage.setDescription(eval.getUrl());
 				webpage.setSource(eval.getUrl());
 				webpage.setTitle(BasicServiceUtils.getTitleDocFromContent(eval.getSource(), false));
@@ -321,6 +316,26 @@ public final class WcagEmUtils {
 				webpages.add(webpage);
 				randCounter++;
 			}
+			structuredSample.setWebpage(webpages);
+			graph.setStructuredSample(structuredSample);
+		}
+		{
+			RandomSample randomSample = new RandomSample();
+			List<Webpage_> webpages = new ArrayList<>();
+//			int randCounter = 0;
+//			// Iterate currentEvaluationPageList to preserve order
+//			for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
+//				Webpage_ webpage = new Webpage_();
+//				webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
+////				webpage.setId("_:rand_" + randCounter);
+//				webpage.setId("_:struct_" + randCounter);
+//				webpage.setDescription(eval.getUrl());
+//				webpage.setSource(eval.getUrl());
+//				webpage.setTitle(BasicServiceUtils.getTitleDocFromContent(eval.getSource(), false));
+//				webpage.setTested(false);// false to mark as incomplete un report step
+//				webpages.add(webpage);
+//				randCounter++;
+//			}
 			randomSample.setWebpage(webpages);
 			graph.setRandomSample(randomSample);
 		}
