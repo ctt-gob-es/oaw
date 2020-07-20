@@ -6,7 +6,7 @@ var server = prerender({
 	chromeLocation: '/usr/bin/chromium-browser', 
 	pageDoneCheckInterval: 1000,
 	waitAfterLastRequest: 1000,
-	pageLoadTimeout: 60000,
+	pageLoadTimeout: 25000,
 	workers: 4,
 	enableServiceWorker: true
 });
