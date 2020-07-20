@@ -3,9 +3,7 @@ version: '3.0'
 services:
   node:
     build: .
-    # ports:
-    #   - "9000:9000"
-    #   - "9001:9001"         
+    image: oaw/wcagemtool        
     command: npm start
     restart: always
     container_name: wcag_em_tool_node
