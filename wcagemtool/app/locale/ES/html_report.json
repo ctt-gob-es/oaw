@@ -1,0 +1,21 @@
+{
+    "BY" : "Report Creator:",
+    "COMMISION_BY": "Comisionado de evaluación:",
+    "HD_SUMMARY": "Resumen de los resultados de la evaluación",
+    "HD_SCOPE": "Alcance de la evaluación",
+    "LABEL_SITE_NAME": "Nombre del sitio web",
+    "LABEL_SITE_SCOPE": "Alcance del sitio web",
+    "LABEL_CONFORMANCE_TGT": "Objetivo de conformidad",
+    "LABEL_EXTRA_REQUIREMENTS": "Requisitos adicionales de evaluación",
+    "LABEL_SUPPORT_BASE": "Base de apoyo a la accesibilidad",
+    "LABEL_RELIEDUP_TECH": "Depende de las tecnologías",
+    "HD_SCORE": "Resumen de los resultados de la auditoría",
+    "RESULTS_OF": "Resultados de",
+    "PRINCIPLE": "Principio",
+    "TOTAL_SCORE": "Total",
+    "HD_CRITERIA_REPORT": "Resultados detallados de la auditoría",
+    "LABEL_DESCR": "Hallazgos",
+    "HD_SAMPLE": "Muestra de páginas web auditadas",
+    "HD_SPECIFICS": "Registro de los detalles de la evaluación",
+    "HD_DOCS": "Recursos relacionados con el WCAG 2"
+}

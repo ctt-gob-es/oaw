@@ -1,0 +1,17 @@
+{
+    "TITLE":"Herramienta de informe del WCAG-EM",
+    "SUBTITLE": "Generador de informes de evaluación de la accesibilidad del sitio web",
+    "INTRO_HD": "Lo que hace esta herramienta",
+    "INTRO_1": "Esta herramienta ayuda a generar un informe de acuerdo con la <a href={{link_wcagem}}>Metodología de Evaluación de Conformidad de Accesibilidad al Sitio Web (WCAG-EM)</a>. No realiza ninguna comprobación de accesibilidad. Le ayuda a seguir los pasos de WCAG-EM, para generar un <a href={{link_report}}>informe estructurado</a> a partir de la información que usted proporciona. Está diseñado para evaluadores experimentados que conocen <a href={{link_wcag}}> las Directrices de Accesibilidad al Contenido Web (WCAG) 2</a> y están algo familiarizados con WCAG-EM. Para una introducción a las WCAG-EM, ver el <a href={{link_conformance}}>Resumen de las WCAG-EM</a>.",
+    "INTRO_2": "<strong>Nota:</strong> Esta herramienta no guarda automáticamente la información que se introduce. Para guardar los datos en un archivo localmente en su computadora, utilice las teclas de atajo de Windows Ctrl+S o las teclas de atajo de Mac {{mac}} para abrir el cuadro de diálogo Guardar. (O el enlace 'Guardar' en la parte superior de la página abrirá la página Guardar el Informe de evaluación y desde allí el enlace 'Guardar el archivo de datos localmente en su computadora' abrirá el cuadro de diálogo Guardar)",
+    "USAGE_HD": "Cómo funciona esta herramienta",
+    "USAGE_LI1": "Toda la funcionalidad proporcionada por esta herramienta está ahora cargada y funcionando localmente en su navegador web. No necesitas una conexión a Internet más allá de este punto. Cuando cierras la ventana de tu navegador, cualquier dato no guardado se pierde",
+    "USAGE_LI2": "Toda la información que usted provee a través de esta herramienta se registra como datos JSON en segundo plano (en su navegador web, no en ningún servidor). Puede Guardar periódicamente mientras trabaja para evitar la pérdida de datos si su navegador web se cierra",
+    "USAGE_LI3": "Puede guardar informes parcialmente completos y trabajar en ellos más tarde. Para recargar un archivo guardado, use el enlace 'Abrir' en la parte superior y encuentre el archivo que ha guardado anteriormente",
+    "USAGE_LI4": "Los enlaces que no forman parte de la navegación o funcionalidad (enlaces a recursos externos) se abren en una nueva ventana del navegador web",
+    "TIPS_HD": "Consejos para usar esta herramienta",
+    "TIPS_LI1": "Puedes ir y venir entre los pasos en cualquier orden. Ninguno de los campos son obligatorios",
+    "TIPS_LI2": "Para obtener más información sobre un campo, seleccione el icono {{info}} junto a la etiqueta del campo",
+    "TIPS_LI3": "La herramienta proporciona su informe como archivos HTML y CSS. Puede descargar estos archivos desde la página 'Ver informe'. Luego puede cambiar el contenido del informe y el diseño visual",
+    "TIPS_LI4": "Puedes incluir en tu informe los criterios de éxito de WCAG 2 más allá del objetivo de conformidad. Por ejemplo, la página web sólo está obligada a cumplir con el Nivel AA, pero usted quiere incluir también los criterios de éxito del Nivel AAA en el informe. En el paso 4, utilice el filtro de nivel para mostrar los criterios de nivel superior. Cualquier criterio con un resultado siempre se incluirá en el informe."
+}
