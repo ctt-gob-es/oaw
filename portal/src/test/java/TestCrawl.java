@@ -14,6 +14,8 @@
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.CookieHandler;
+import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -84,7 +86,7 @@ public class TestCrawl {
 		ic.createSubcontext("java:/comp/env/jdbc");
 		// Construct DataSource
 		final MysqlConnectionPoolDataSource mysqlDataSource = new MysqlConnectionPoolDataSource();
-		mysqlDataSource.setURL("jdbc:mysql://localhost:3306/oaw_js");
+		mysqlDataSource.setURL("jdbc:mysql://localhost:3306/OAW");
 		mysqlDataSource.setUser("root");
 		mysqlDataSource.setPassword("root");
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
@@ -143,8 +145,8 @@ public class TestCrawl {
 //				",https://www.euskadi.eus/hasiera/", "https://www.aragon.es", "https://www.gobiernodecanarias.org/principal/", "https://www.cantabria.es/", "https://www.navarra.es/home_es/",
 //				"https://web.larioja.org", "http://www.caib.es/govern/index.do?lang=ca", "https://www.asturias.es/", "https://www.juntadeandalucia.es/institucional/index.html", "https://www.jcyl.es/",
 //				"http://www.juntaex.es/web/", "https://www.castillalamancha.es/", "http://www.carm.es", "https://www.xunta.gal/portada" };
-		String[] urlsD = new String[] {};
-		String[] urls = new String[] { "http://www.navarra.es/home_es/Temas/Portal+de+la+Salud/Ciudadania/" };
+		String[] urlsD = new String[] { "https://www.defensa.gob.es/ceseden/ccdc/" };
+		String[] urls = new String[] {};
 		for (String url : urls) {
 			this.crawl(url, false);
 		}
@@ -165,7 +167,7 @@ public class TestCrawl {
 		System.out.println("-------------------------------------------------------------------------------------------\n\n");
 		final CrawlerData crawlerData = new CrawlerData();
 		crawlerData.setUrls(Collections.singletonList(url));
-		crawlerData.setProfundidad(10);
+		crawlerData.setProfundidad(5);
 		crawlerData.setTopN(10);
 		crawlerData.setPseudoaleatorio(true);
 		crawlerData.setTest(true);
@@ -187,6 +189,9 @@ public class TestCrawl {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
+		// TODO Cookies
+		CookieManager cookieManager = new CookieManager();
+		CookieHandler.setDefault(cookieManager);
 		final int maxNumRetries = 3;
 		final int maxNumRedirections = 15;
 		final long timeRetry = 20000;
