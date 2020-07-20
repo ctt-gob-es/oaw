@@ -1,0 +1,15 @@
+{
+  "name": "exceljs",
+  "homepage": "https://github.com/guyonroche/exceljs",
+  "version": "4.0.0",
+  "_release": "4.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v4.0.0",
+    "commit": "0592a22fa0797eef9bc77c0b17c8b61f1ee1fda2"
+  },
+  "_source": "https://github.com/guyonroche/exceljs.git",
+  "_target": "^4.0.0",
+  "_originalSource": "exceljs",
+  "_direct": true
+}

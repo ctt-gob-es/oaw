@@ -1,39 +1,13 @@
 # OAW
 Rastreador Observatorio de Accesibilidad Web
 
+This repository contains 3 applications:
 
-# Requeriments
+* OAW: Java Web Application
+* Motor JS: An implementation of https://github.com/prerender/prerender to render web pages and return code
+* WCAG EM Tool: An fork of https://github.com/w3c/wcag-em-report-tool with capabiluty to exports as ODS format
 
-Currently OAW is deployment under this configuration:
-
-* Java 1.8.0_202 
-* Apache Tomcat 7
-* MySQL 5
-
-This is a Maven projet that requieres version 3.0.0 or high
-
-
-# Instalation
-
-## MySQL Database
-
-To fresh install execute the scripts locates in folder /portal/scripts from version 4.0.0 to higher version
-
-## Tomcat
-
-Create a context configuration like this in *server.xml*:
-```xml
-<Context path="/oaw" reloadable="true">
-    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" type="javax.sql.DataSource" name="jdbc/oaw" url="jdbc:mysql://<server>:<port>/<schema>"
-    maxActive="100"  maxIdle="10"  maxWait="-1" validationQuery="SELECT 1 as dbcp_connection_test"
-    removeAbandoned="true" testOnBorrow="true"
-    timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"                                         
-    defaultTransactionIsolation="READ_UNCOMMITTED" username="<username>" password="<password>"/>
-</Context>
-```
-Note to change *url*, *user* and *password* values
-
-# Application
+# OAW
 
 The application code is distributed in several maven projects:
 
@@ -54,14 +28,46 @@ To do this, inside the oaw directory we will execute the following command so th
 
 If everything goes well, a war will be generated in the portal/target folder which will be the one we should display this war in the webapps folder of the tomcat server. 
 
-## Profiles
+## Requeriments
+
+Currently OAW is deployment under this configuration:
+
+* Java 1.8.0_202 
+* Apache Tomcat 7
+* MySQL 5
+
+This is a Maven projet that requieres version 3.0.0 or high
+
+
+## Instalation
+
+### MySQL Database
+
+To fresh install execute the scripts locates in folder /portal/scripts from version 4.0.0 to higher version
+
+### Tomcat
+
+Create a context configuration like this in *server.xml*:
+```xml
+<Context path="/oaw" reloadable="true">
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" type="javax.sql.DataSource" name="jdbc/oaw" url="jdbc:mysql://<server>:<port>/<schema>"
+    maxActive="100"  maxIdle="10"  maxWait="-1" validationQuery="SELECT 1 as dbcp_connection_test"
+    removeAbandoned="true" testOnBorrow="true"
+    timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"                                         
+    defaultTransactionIsolation="READ_UNCOMMITTED" username="<username>" password="<password>"/>
+</Context>
+```
+Note to change *url*, *user* and *password* values
+
+
+### Profiles
 
 There are several parameters that are configurable by environment, as well as configuration files that depend on the environment. In the current project there are two default compilation profiles: development and integration. 
 
 In the oaw project's pom.xml is reflected the configuration for each profile, being possible to create new ones or take advantage of the existing ones. There are also profiles in the portal project folder. 
 It is necessary to review and adapt the configuration of the profiles if necessary.
 
-## External properties
+### External properties
 
 In the file /portal/profiles/<profile>/propertiesmanager.properties a series of properties files and their location are indicated. You should configure the files paths according to the information of this file.
 
@@ -80,3 +86,17 @@ Some of the links are not available in Maven's central repository. They can be d
 * javax.transaction:jta:jar:1.0.1B: http://www.java2s.com/Code/Jar/j/Downloadjta101bjar.htm
 
 They need to be installed manually: https://maven.apache.org/guides/mini/guide-3rd-party-jars-local.html 
+
+# Motor JS
+
+Into older motor-js contains this tool has 3 packages:
+
+* proxy: entrypoint of tool. Listen for petitions http/s.
+* nginx: recivies proxy petitions and handle http and https to renderer.
+* renderer: executes https://github.com/prerender/prerender ths listen to http/s requests, renderer the page and return result html
+
+This project is configuring to execute as docker solution
+
+# WCAG EM Tool
+
+Into folder wcagemtoll is an customitation of https://github.com/w3c/wcag-em-report-tool that can export result in ODS custom format.

@@ -1,0 +1,14 @@
+{
+    "BROWSER_NOT_SUPPORTED": "El navegador que está usando no soporta algunas funciones, como guardar y cargar informes. Puede seguir utilizando la Herramienta de informes con una funcionalidad limitada. Actualice o utilice un navegador web diferente para utilizar todas las funciones de esta herramienta de informes.",
+    "WARNING_BEFORE_UNLOAD": "Los datos que introdujo no se guardan automáticamente. Se perderán si cierras esta ventana del navegador. Utilice el enlace 'Guardar' (Ctrl + S o ⌘ S) que se encuentra en la parte superior de todas las páginas para guardar sus datos en un archivo localmente en su ordenador, y volver a cargarlo más tarde para seguir trabajando en él.",
+    "MORE_INFO": "Para más información, véase <a href={{url}}>{{name}}</a>.",
+    "HIDE_MESSAGE": "Ocultar mensaje",
+    "BTN_INFO": "Información expandida",
+    "BTN_CLOSE_INFO": "Cerrar información",
+    "YES": "Sí",
+    "NO": "No",
+    "CLICK_EXPAND": "Haga clic para mostrar la sección",
+    "CLICK_COLLAPSE": "Haga clic para ocultar la sección",
+    "TO_TOP": "Volver al principio",
+    "ACTIVE": "Activo"
+}
