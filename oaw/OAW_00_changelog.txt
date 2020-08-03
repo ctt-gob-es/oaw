@@ -9,6 +9,8 @@
 - Corregida la ordenación de resultados de un observatorio que sólo ordenaba en la página actual y no todos los resultados
 - Modificada plantilla de informe global para incluir más secciones
 - Añadidas en el XML anexo de portales las etiquetas de la semilla
+- Corregida la comprobación 476 que era sensible a mayúsculas y minúsculas
+- Corregida la comprobación 67 para incluir nuevos elementos etiquetables en html5 
 
 
 5.0.5

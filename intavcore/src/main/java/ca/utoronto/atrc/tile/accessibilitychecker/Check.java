@@ -4527,7 +4527,9 @@ public class Check {
 		final Document document = elementGiven.getOwnerDocument();
 		if (document != null) {
 			if (controlsNumIds(document.getElementsByTagName("input"), attributeFor) + controlsNumIds(document.getElementsByTagName("select"), attributeFor)
-					+ controlsNumIds(document.getElementsByTagName("textarea"), attributeFor) == 1) {
+					+ controlsNumIds(document.getElementsByTagName("textarea"), attributeFor) + controlsNumIds(document.getElementsByTagName("button"), attributeFor)
+					+ controlsNumIds(document.getElementsByTagName("output"), attributeFor) + controlsNumIds(document.getElementsByTagName("meter"), attributeFor)
+					+ controlsNumIds(document.getElementsByTagName("progess"), attributeFor) == 1) {
 				return false;
 			} else {
 				return true;
@@ -5874,7 +5876,9 @@ public class Check {
 					final Element element = (Element) listLabels.item(x);
 					if (element.getAttribute("for").equalsIgnoreCase(stringId) && !StringUtils.normalizeWhiteSpaces(element.getTextContent()).trim().isEmpty()) {
 						// found an associated label
-						return (!StringUtils.isEmpty(element.getTextContent()) && !arialValue.contains(StringUtils.normalizeWhiteSpaces(element.getTextContent())));
+						// return (!StringUtils.isEmpty(element.getTextContent()) && !arialValue.contains(StringUtils.normalizeWhiteSpaces(element.getTextContent())));
+						return (!StringUtils.isEmpty(element.getTextContent()) && !StringUtils.isEmpty(arialValue)
+								&& !arialValue.toLowerCase().contains(StringUtils.normalizeWhiteSpaces(element.getTextContent().toLowerCase())));
 					}
 				}
 				return false;
