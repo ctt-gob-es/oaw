@@ -1,1 +1,1 @@
-FROM nginx:1.13.8-alpine
+FROM artefactos-ic.scae.redsara.es:6000/nginx:1.13.8-alpine
