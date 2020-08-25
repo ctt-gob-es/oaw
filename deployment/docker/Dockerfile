@@ -9,7 +9,9 @@ COPY portal /tmp/portal
 
 WORKDIR /tmp/oaw
 
-RUN mvn clean install -P docker -DskipTests
+ARG proxy_settings=""
+
+RUN mvn clean install -P docker -DskipTests $proxy_settings
 
 
 FROM tomcat:7.0-jdk8-openjdk-slim
