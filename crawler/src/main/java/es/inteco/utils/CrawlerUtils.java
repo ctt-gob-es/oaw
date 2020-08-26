@@ -654,24 +654,27 @@ public final class CrawlerUtils {
 	public static String getCookie(final HttpURLConnection connection) {
 		// Cogemos la lista de cookies, teniendo en cuenta que el parametro
 		// set-cookie no es sensible a mayusculas o minusculas
-		final Map<String, List<String>> headerFields = connection.getHeaderFields();
-		final List<String> headers = new ArrayList<>();
-		if (headerFields != null && !headerFields.isEmpty()) {
-			for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
-				if ("SET-COOKIE".equalsIgnoreCase(entry.getKey())) {
-					headers.addAll(entry.getValue());
-				}
-			}
-		}
 		final StringBuilder headerText = new StringBuilder();
-		for (String header : headers) {
-			if (header.contains(";")) {
-				if (!header.substring(0, header.indexOf(';')).toLowerCase().endsWith("deleted")) {
-					headerText.append(header.substring(0, header.indexOf(';'))).append("; ");
+		try {
+			final Map<String, List<String>> headerFields = connection.getHeaderFields();
+			final List<String> headers = new ArrayList<>();
+			if (headerFields != null && !headerFields.isEmpty()) {
+				for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
+					if ("SET-COOKIE".equalsIgnoreCase(entry.getKey())) {
+						headers.addAll(entry.getValue());
+					}
 				}
-			} else {
-				headerText.append(header).append("; ");
 			}
+			for (String header : headers) {
+				if (header.contains(";")) {
+					if (!header.substring(0, header.indexOf(';')).toLowerCase().endsWith("deleted")) {
+						headerText.append(header.substring(0, header.indexOf(';'))).append("; ");
+					}
+				} else {
+					headerText.append(header).append("; ");
+				}
+			}
+		} catch (IllegalArgumentException ie) {
 		}
 		return headerText.toString();
 	}

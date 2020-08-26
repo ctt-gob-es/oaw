@@ -50,10 +50,10 @@ public final class WcagOdsUtils {
 		final Sheet sheet = workbook.getSheet("03.Muestra");
 		int resultsProcessed = 0;
 		int initRow = 8; // Initial rowcount
-		final List<Webpage_> webpageList = report.getGraph().get(0).getRandomSample().getWebpage();
+		final List<Webpage> webpageList = report.getGraph().get(0).getStructuredSample().getWebpage();
 		final int totalPages = webpageList.size();
 		fillNotTell(workbook, totalPages < MAX_PAGES ? totalPages : MAX_PAGES);
-		for (Webpage_ webpage : webpageList) {
+		for (Webpage webpage : webpageList) {
 			if (resultsProcessed < MAX_PAGES) {
 				resultsProcessed++;
 				sheet.getCellAt("C" + initRow).setValue(webpage.getTitle(), ODValueType.STRING, true, false);
