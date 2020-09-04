@@ -17,8 +17,9 @@ RUN mvn clean install -P docker -DskipTests $proxy_settings
 FROM tomcat:7.0-jdk8-openjdk-slim
 
 COPY --from=MAVEN_TOOL_CHAIN /tmp/portal/target/oaw.war $CATALINA_HOME/webapps/oaw.war
-COPY deployment/docker/conf-context-oaw.xml $CATALINA_BASE/conf/Catalina/localhost/oaw.xml
+#COPY deployment/docker/conf-context-oaw.xml $CATALINA_BASE/conf/Catalina/localhost/oaw.xml
 
+RUN mkdir -m777 $CATALINA_BASE/conf/Catalina
 RUN chmod -R 777 /usr/local/tomcat/webapps
 
 ENV CATALINA_OPTS="-Dorg.apache.tomcat.util.digester.PROPERTY_SOURCE=org.apache.tomcat.util.digester.EnvironmentPropertySource"
