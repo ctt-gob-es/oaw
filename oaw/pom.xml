@@ -168,7 +168,7 @@
             <id>docker</id>
             <properties>
                 <profile.name>docker</profile.name>
-                <deploy.path>/usr/local/tomcat/webapps/oaw</deploy.path>
+                <deploy.path>/bitnami/tomcat/data/oaw</deploy.path>
                 <files.path>/tmp/oaw/files</files.path>
             </properties>
         </profile>
