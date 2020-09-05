@@ -9,15 +9,15 @@ COPY portal /tmp/portal
 
 WORKDIR /tmp/oaw
 
-ARG proxy_settings=""
+ARG maven_extra_args=""
 
-RUN mvn clean install -P docker -DskipTests $proxy_settings
+RUN mvn clean install -P docker -DskipTests $maven_extra_args
 
 
 FROM bitnami/tomcat:7
 
-COPY --from=MAVEN_TOOL_CHAIN /tmp/portal/target/oaw.war $CATALINA_HOME/webapps/oaw.war
-COPY deployment/docker/conf-context-oaw.xml $CATALINA_BASE/conf/Catalina/localhost/oaw.xml
+COPY --from=MAVEN_TOOL_CHAIN /tmp/portal/target/oaw.war /bitnami/tomcat/data/oaw.war
+#COPY deployment/docker/conf-context-oaw.xml $CATALINA_BASE/conf/Catalina/localhost/oaw.xml
 
 ENV CATALINA_OPTS="-Dorg.apache.tomcat.util.digester.PROPERTY_SOURCE=org.apache.tomcat.util.digester.EnvironmentPropertySource"
 
