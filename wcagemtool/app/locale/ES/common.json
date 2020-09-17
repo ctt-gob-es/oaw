@@ -10,5 +10,7 @@
     "CLICK_EXPAND": "Haga clic para mostrar la sección",
     "CLICK_COLLAPSE": "Haga clic para ocultar la sección",
     "TO_TOP": "Volver al principio",
-    "ACTIVE": "Activo"
+    "ACTIVE": "Activo",
+    "FOOTER_OAW_COPYRIGHT": "Observatorio de Accesibilidad Web - Ministerio de Asuntos Económicos y Transformación Digital · Secretaría General de Administración Digital",
+    "FOOTER_OAW_BASED": "Basado en la <a href={{url1}}>herramienta de reporte</a> del <a href={{url2}}>W3C</a> y de la iniciativa <a href={{url3}}>WAI</a>"
 }

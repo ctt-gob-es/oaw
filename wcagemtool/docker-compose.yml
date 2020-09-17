@@ -2,13 +2,14 @@ version: '3.0'
 
 services:
   node:
-    image: artefactos-ic.scae.redsara.es:6000/oaw_wcagemtool        
+    build: .
+    image: oaw/wcagemtool        
     command: npm start
     restart: always
     container_name: wcag_em_tool_node
 
   nginx:
-    image: artefactos-ic.scae.redsara.es:6000/nginx:1.13.8-alpine      
+    image: nginx:1.13.8-alpine      
     ports:
       - "9000:80"
     volumes:

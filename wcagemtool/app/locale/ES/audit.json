@@ -28,5 +28,6 @@
     "TESTED": "Probado",
     "TITLE": "Paso 4: Auditar la muestra seleccionada",
     "UNDERSTAND": "Comprensión",
-    "UNTESTED": "{{critCount}} sin probar"
+    "UNTESTED": "{{critCount}} sin probar",
+    "LABEL_DESCR": "Descripción"
 }
