@@ -1,0 +1,6 @@
+./docker/*
+./node_modules/*
+./tmp/*
+./sass-cache/*
+Dockerfile
+docker-compose.yml
