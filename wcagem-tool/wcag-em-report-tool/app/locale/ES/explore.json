@@ -1,0 +1,19 @@
+{
+    "TITLE": "Paso 2: Explorar el sitio web del objetivo",
+    "INTRO": "Explora el sitio web para entender su propósito, funcionalidad y uso. Este paso le ayuda a determinar qué páginas web utilizar para la evaluación en los próximos pasos. Identifique las tecnologías web utilizadas para proporcionar el sitio web y, si lo desea, tome notas sobre otros aspectos del sitio web. Por lo general, lo mejor es obtener información de los propietarios y desarrolladores del sitio web para este paso. Más orientación sobre este paso se proporciona en <a href={{link_em_2}}>WCAG-EM Paso 2: Explorar el sitio web de destino</a>.",
+    "HD_RELIEDUP_TECH": "Tecnologías web en las que se basa",
+    "INF_RELIEDUP_TECH": "Identificar las tecnologías web <a href={{link_relied_upon}}> en las que se ha confiado de acuerdo con las WCAG 2</a> para proporcionar el sitio web. Para más información, ver <a href={{link_em_2d}}>WCAG-EM Paso 2.d: Identificar las tecnologías web en las que se basa </a>.<br> Nota: Para añadir otras tecnologías, seleccione 'Otros' y utilice el campo 'Tecnología web' y 'Dirección de especificación (URL)'. El campo 'Dirección de Especificación (URL)' debe identificar la especificación de la tecnología web.",
+    "LABEL_TECH": "Tecnología web",
+    "LABEL_TECH_SPEC": "Dirección de la especificación (URL)",
+    "PLH_TECH": "P.e. HTML5, CSS, DOM",
+    "PLH_TECH_SPEC": "Dirección (URL) o descripción para la especificación de la tecnología web",
+    "BTN_REMOVE_TECH": "Quitar la tecnología",
+    "BTN_ADD_TECH": "Añadir la tecnología web",
+    "HD_NOTE_TAKING": "Notas de exploración opcionales",
+    "INF_NOTE_TAKING": "Esta sección le permite registrar información durante la exploración de su sitio web. Estas notas se proporcionan en el siguiente paso, para ayudarle a seleccionar una muestra de páginas web para su evaluación. <strong>Estas notas no están incluidas en el informe final.</strong> Se guardan cuando se guarda el archivo, y están disponibles cuando se recarga el archivo más tarde",
+    "LABEL_ESSENT_FUNC": "Funcionalidad esencial del sitio web",
+    "INF_ESSENT_FUNC": "Puede utilizar este campo para tomar notas sobre la funcionalidad esencial del sitio web. Ejemplos de funcionalidad esencial incluyen:<br> 'seleccionar y comprar un producto del área de la tienda del sitio web'<br> 'completar y enviar un formulario proporcionado en el sitio web'<br> 'registrarse para una cuenta en el sitio web'<br> Para más información, ver <a href={{link_em_2b}}>WCAG-EM Paso 2.b: Identificar la funcionalidad esencial del sitio web</a>.",
+    "LABEL_VARIETY_PAGE_TYPES": "Variedad de tipos de páginas web",
+    "INF_VARIETY_PAGE_TYPES": "Puede utilizar este campo para tomar notas sobre los tipos (en contraposición a las instancias) de páginas web que se encuentran en el sitio web. Esto incluye notas sobre los diferentes estilos, diseños, estructuras y funcionalidad que se ofrecen en el sitio web. Para más información, ver <a href={{link_em_2c}}>WCAG-EM Paso 2.c: Identificar la variedad de tipos de páginas web</a>.<br> Nota: Las 'páginas web' incluyen diferentes 'estados de página web'; ver definición de <a href={{link_page_state}}>estados de página web</a>.",
+    "LABEL_OTHER": "Otros..."
+}

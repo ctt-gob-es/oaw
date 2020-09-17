@@ -3504,6 +3504,7 @@ public class Check {
 		if (nodeNode == null) {
 			return false;
 		}
+		// TODO If node is ul or ol and childs is li skip this verification
 		try {
 			int childLevel = -1;
 			if (checkCode.getFunctionAttribute1() != null && !checkCode.getFunctionAttribute1().equals("")) {

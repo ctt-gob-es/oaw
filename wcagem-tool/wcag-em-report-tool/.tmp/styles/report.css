@@ -1,0 +1,256 @@
+/* line 14, ../../app/styles/hint.scss */
+* > .hint {
+  float: left;
+  pointer-events: none;
+  display: none;
+  cursor: default;
+  line-height: 1em;
+  opacity: 0;
+  transition: opacity 0.2s;
+  transition-delay: 0s;
+  position: absolute;
+  display: block;
+  top: -7px;
+  background: #333333;
+  border-radius: 4px;
+  padding: 7px 10px;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  font-family: sans-serif;
+  color: white;
+  z-index: 100;
+}
+/* line 35, ../../app/styles/hint.scss */
+* > .hint::before {
+  content: " ";
+  width: 100%;
+  height: 7px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+}
+/* line 44, ../../app/styles/hint.scss */
+* > .hint::after {
+  content: " ";
+  width: 0;
+  height: 0;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-top: 11px solid #333333;
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* line 61, ../../app/styles/hint.scss */
+*:focus > .hint,
+*:hover > .hint {
+  pointer-events: auto;
+  opacity: 1;
+  transition-delay: 0.2s;
+}
+
+/* line 7, ../../app/styles/report.scss */
+.reporter-view table {
+  border-collapse: collapse;
+  min-width: 65%;
+}
+/* line 11, ../../app/styles/report.scss */
+.reporter-view table caption {
+  color: #333333;
+}
+/* line 15, ../../app/styles/report.scss */
+.reporter-view table thead th {
+  text-align: center;
+}
+/* line 19, ../../app/styles/report.scss */
+.reporter-view table tbody th {
+  text-align: left;
+}
+/* line 23, ../../app/styles/report.scss */
+.reporter-view table td,
+.reporter-view table th {
+  border: solid 1px #ddd;
+  padding: 0.2em 0.5em;
+}
+/* line 28, ../../app/styles/report.scss */
+.reporter-view table td > p:only-child,
+.reporter-view table th > p:only-child {
+  padding: 0;
+  margin: 0;
+}
+/* line 35, ../../app/styles/report.scss */
+.reporter-view h1 + h2,
+.reporter-view h2 + h3 {
+  margin-top: 12px;
+}
+/* line 40, ../../app/styles/report.scss */
+.reporter-view h1,
+.reporter-view .h1,
+.reporter-view h3,
+.reporter-view .h3 {
+  margin-top: 20px;
+  margin-bottom: 6.6666666667px;
+}
+/* line 48, ../../app/styles/report.scss */
+.reporter-view h2,
+.reporter-view .h2 {
+  margin-top: 20px;
+  margin-bottom: 6.6666666667px;
+}
+/* line 54, ../../app/styles/report.scss */
+.reporter-view h4,
+.reporter-view .h4,
+.reporter-view h5,
+.reporter-view .h5,
+.reporter-view h6,
+.reporter-view .h6 {
+  margin-top: 13.3333333333px;
+  margin-bottom: 6.6666666667px;
+}
+/* line 64, ../../app/styles/report.scss */
+.reporter-view a {
+  text-decoration: underline;
+}
+
+/* line 69, ../../app/styles/report.scss */
+.panel.criterion {
+  border-left-width: 6px;
+}
+/* line 72, ../../app/styles/report.scss */
+.panel.criterion.passed {
+  border-left-color: #86c8a7;
+}
+/* line 76, ../../app/styles/report.scss */
+.panel.criterion.failed {
+  border-left-color: #e48996;
+}
+/* line 80, ../../app/styles/report.scss */
+.panel.criterion.inapplicable {
+  border-left-color: #a6a6c7;
+}
+/* line 84, ../../app/styles/report.scss */
+.panel.criterion.canttell {
+  border-left-color: #e0b970;
+}
+/* line 88, ../../app/styles/report.scss */
+.panel.criterion .panel-heading {
+  padding-bottom: 0;
+}
+/* line 92, ../../app/styles/report.scss */
+.panel.criterion .criterion-title {
+  margin-bottom: 5px;
+}
+/* line 96, ../../app/styles/report.scss */
+.panel.criterion .crit-text {
+  visibility: visible;
+  opacity: 1;
+  max-height: 40em;
+  transition: visibility 0s, opacity 0.3s, max-height 0.3s ease-in;
+  overflow: hidden;
+}
+/* line 103, ../../app/styles/report.scss */
+.panel.criterion .crit-text.collapsed {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: visibility 0s linear 0.3s, opacity 0.3s, max-height 0.3s ease-out;
+}
+
+/* line 112, ../../app/styles/report.scss */
+.panel {
+  border-width: 2px;
+}
+
+/* line 116, ../../app/styles/report.scss */
+.panel .panel-heading,
+.alert {
+  color: #333333;
+}
+/* line 120, ../../app/styles/report.scss */
+.panel .panel-heading a,
+.alert a {
+  color: #333333;
+  text-decoration: underline;
+}
+/* line 124, ../../app/styles/report.scss */
+.panel .panel-heading a:hover, .panel .panel-heading a:focus,
+.alert a:hover,
+.alert a:focus {
+  color: black;
+}
+
+/* line 131, ../../app/styles/report.scss */
+.panel-heading h1 {
+  margin: 0;
+}
+
+/* line 135, ../../app/styles/report.scss */
+.outcome p:last-child {
+  margin-bottom: 0;
+}
+
+/* line 141, ../../app/styles/report.scss */
+.panel-body.assert-indent {
+  padding-left: 15px;
+}
+/* line 144, ../../app/styles/report.scss */
+.panel-body.assert-indent .subject-type {
+  line-height: 30px;
+}
+/* line 148, ../../app/styles/report.scss */
+.panel-body.assert-indent .earl-assert {
+  padding: 15px 0px;
+}
+/* line 151, ../../app/styles/report.scss */
+.panel-body.assert-indent .earl-assert .outcome {
+  padding: 15px 0px;
+}
+/* line 157, ../../app/styles/report.scss */
+.panel-body + hr {
+  margin: 0;
+}
+/* line 161, ../../app/styles/report.scss */
+.panel-body .earl-assert {
+  margin-bottom: 7px;
+  border-bottom: solid 1px #ddd;
+}
+/* line 165, ../../app/styles/report.scss */
+.panel-body .earl-assert:last-child {
+  border-bottom: none;
+}
+
+/* line 171, ../../app/styles/report.scss */
+.sample_narrow {
+  list-style: none;
+}
+/* line 174, ../../app/styles/report.scss */
+.sample_narrow li {
+  padding: 0.2em 0.1em;
+}
+
+/* line 179, ../../app/styles/report.scss */
+button.glyphicon-copy {
+  background: url("../images/copy.png") 7px 3px no-repeat !important;
+  width: 30px;
+  height: 23px;
+}
+
+/* line 185, ../../app/styles/report.scss */
+button.glyphicon {
+  background: inherit;
+  border: solid 1px gray;
+  padding: 3px 6px;
+  margin-bottom: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+/* line 195, ../../app/styles/report.scss */
+.glyphicon-none::before {
+  content: "\e013";
+  color: transparent !important;
+}

@@ -1,0 +1,18 @@
+{
+    "TITLE":"Paso 5: Informar de los resultados de la evaluación",
+    "INTRO": "Proporcione información adicional sobre la evaluación que desea que se incluya en el informe. Los resultados de la evaluación que usted introdujo en el paso anterior se incluyen a continuación en 'Resultados detallados de la auditoría' para su revisión y para ayudarle a escribir el resumen ejecutivo. Se proporciona más orientación sobre este paso en <a href={{link_em_5}}>WCAG-EM Paso 5: Informe de los resultados de la evaluación</a>.",
+    "LABEL_TITLE": "Título del informe",
+    "TITLE_PREFIX": "Informe para",
+    "INF_TITLE": "Proporcione un título para el informe de evaluación de la accesibilidad del sitio web. Por ejemplo:<br> 'Informe de evaluación para la organización ejemplo'<br> 'Análisis de accesibilidad de la tienda web y sugerencias de reparación'",
+    "LABEL_COMMISSIONER": "Comisionado de evaluación",
+    "INF_COMMISSIONER": "La persona, equipo de personas, organización, departamento interno u otra entidad que encargó la evaluación",
+    "LABEL_CREATOR": "Evaluador",
+    "INF_CREATOR": "La persona, equipo de personas, organización, departamento interno, u otra entidad responsable de llevar a cabo la evaluación",
+    "LABEL_DATE": "Fecha de evaluación",
+    "INF_DATE": "Proporcione la fecha de finalización o las fechas de duración de esta evaluación. Puede utilizar cualquier formato de fecha",
+    "LABEL_SUMMARY": "Resumen ejecutivo",
+    "INF_SUMMARY": "Proporcione un breve resumen de los resultados de la evaluación para dar una visión general de los resultados. Por ejemplo, describa la accesibilidad general del sitio web y las principales observaciones que haya hecho durante la evaluación, como los problemas y las pautas que se producen con frecuencia",
+    "LABEL_SPECIFICS": "Registro de los detalles de la evaluación (opcional)",
+    "INF_SPECIFICS": "WCAG-EM sugiere que archive las páginas web auditadas. Para más información, ver <a href={{link_em_5b}}>WCAG-EM Paso 5.b: Registrar los detalles de la evaluación</a>. Puede utilizar este campo de texto para registrar las herramientas de evaluación, los navegadores web, las tecnologías de asistencia, otros programas informáticos y los métodos utilizados para la evaluación. Lo que introduzca aquí se incluirá en el informe generado. Después de descargar el informe, podrá borrar o editar esta información en el archivo HTML antes de enviar el informe",
+    "HD_CRITERIA_REPORT": "Resultados detallados de la auditoría"
+}
