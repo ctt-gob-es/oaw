@@ -1,4 +1,5 @@
 FROM alpine:3.10
+#FROM artefactos-ic.scae.redsara.es:6000/alpine:3.10
 
 # Install base packages
 RUN apk update 

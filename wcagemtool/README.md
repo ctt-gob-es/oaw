@@ -1,5 +1,3 @@
-# WCAG-EM Tool
-
 WCAG-EM Report tool is an assistant that takes the user
 through the process of evaluating the accessibility of a
 website, using the WCAG-EM Evaluation Methodology. The Report
@@ -21,11 +19,7 @@ The official released version of the Report Tool can be found at <http://www.w3.
 This a fork of branch  <https://github.com/w3c/wcag-em-report-tool/tree/develop> at January 20, 2020 that includes WCAG 2.1 Rules. This fork adds textAngular library <https://github.com/textAngular/textAngular> to add rich text editor on resultDescription.html and implements a table button based on this issue <https://github.com/textAngular/textAngular/issues/436>
 
 
-# Customizations
 
-- WYSWIG editor for  text area
-- Custom Spanish exportation to ODS format https://administracionelectronica.gob.es/pae_Home/pae_Actualidad/pae_Noticias/Anio2020/Abril/Noticia-2020-04-24-Abierto-plazo-comentarios-borrador-Informe-revision-accesibilidad.html
-- Spanish Translation
 
 # Requirements
 
@@ -49,7 +43,7 @@ Install the _wcag em report tool_ by running:
 # Choose a root folder to install this project then:
 
 # 1
-git clone git clone <gitpath>
+git clone git clone https://alvaropelaez@bitbucket.org/alvaropelaez/oaw-wcag-em-tool.git
 
 # 2
 cd wcag-em-report-tool
