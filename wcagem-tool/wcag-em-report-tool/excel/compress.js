@@ -27,7 +27,7 @@ app.listen(9001, function () {
 });
 
 app.post('/ods', function (request, response) {
-    
+
 
 
     const sourceFile = path.resolve(__dirname) + '/ods/original/content.xml';
@@ -143,7 +143,9 @@ app.post('/ods', function (request, response) {
 
             var techCells = [];
             var otherTech = 1;
-            var cellInit = 12;
+
+            var cellRow = 13;
+
             for (var i = 0; i < technologies.length; i++) {
                 if (techMap.has(technologies[i].title)) {
                     techCells.push(techMap.get(technologies[i].title));
@@ -151,27 +153,84 @@ app.post('/ods', function (request, response) {
                 } else {
                     techCells.push(techMap.get("OTRAS"));
 
-                    var cellRow = cellInit + otherTech;
-                    if (otherTech < 12) {  //just to limit the number of other technologies shown 
+                    
+                
+                    console.log("# other techs : " + otherTech);
+
+                    for (var k = 0; k < otherTech && k < 12; k++) {
+
+                        var nameColumn = 2;
+                        var descriptionColumn = 3;
+
+                        if(cellRow == 13){
+                            nameColumn = 8;
+                            descriptionColumn = 9;
+                        }
 
                         // Tech ttile
                         var titleTech = doc.createElement("text:p");
                         var text = doc.createTextNode(technologies[i].title);
                         titleTech.appendChild(text);
+
+
+                        var oldNode = doc.createElement("text:p");
+
+                        select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${cellRow}]/table:table-cell[${nameColumn}]`, doc)[0].replaceChild(titleTech, oldNode);
+                        
+
                         //Tech URL
                         var urlTech = doc.createElement("text:p");
                         var url = doc.createTextNode(technologies[i].id);
                         urlTech.appendChild(url);
 
-                        //console.log(`--> Tecnología ${i + 1} : ` + technologies[i].title);
+                        oldNode = doc.createElement("text:p");
 
-                        select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${cellRow}]/table:table-cell[11]`, doc)[0].appendChild(titleTech);
-                        select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${cellRow}]/table:table-cell[12]`, doc)[0].appendChild(urlTech);
+                        select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${cellRow}]/table:table-cell[${descriptionColumn}]`, doc)[0].replaceChild(urlTech, oldNode);
+
+                        cellRow++;
 
                     }
-                    otherTech = otherTech + 1;
+
                 }
             }
+
+            //clean other techs
+            if(cellRow<23){
+
+                for(var c=cellRow;c<=23;c++){
+
+                    var nameColumn = 2;
+                    var descriptionColumn = 3;
+
+                    if(cellRow == 13){
+                        nameColumn = 8;
+                        descriptionColumn = 9;
+                    }
+
+                    // Tech ttile
+                    var titleTech = doc.createElement("text:p");
+                    var text = doc.createTextNode("");
+                    titleTech.appendChild(text);
+
+
+                    var oldNode = doc.createElement("text:p");
+
+                    select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${c}]/table:table-cell[${nameColumn}]`, doc)[0].replaceChild(titleTech, oldNode);
+                    
+
+                    //Tech URL
+                    var urlTech = doc.createElement("text:p");
+                    var url = doc.createTextNode("");
+                    urlTech.appendChild(url);
+
+                    oldNode = doc.createElement("text:p");
+
+                    select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${c}]/table:table-cell[${descriptionColumn}]`, doc)[0].replaceChild(urlTech, oldNode);
+                }
+            }
+            
+
+
             for (var i = 0; i < techCells.length; i++) {
                 //Technology used
                 var techUsed = doc.createElement("text:p");
@@ -202,7 +261,7 @@ app.post('/ods', function (request, response) {
                 titleElm.appendChild(text);
                 //Page URL
                 var urlElm = doc.createElement("text:p");
-                var url = doc.createTextNode(webpages[i].source);
+                var url = doc.createTextNode(webpages[i].source ? webpages[i].source : webpages[i].description);
                 urlElm.appendChild(url);
 
                 //Page ytpe
