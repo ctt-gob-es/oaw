@@ -2250,13 +2250,6 @@ public final class RastreoDAO {
 	 * @throws Exception the exception
 	 */
 	public static List<GlobalReportStatistics> getGlobalReportStatistics(Connection c, String[] tagsToFiler, String[] exObsIds, final int idClasificacion) throws Exception {
-//		SELECT COUNT(*), e.nombre, e.id_clasificacion FROM rastreos_realizados rr 
-//		JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) 
-//		JOIN lista l ON (l.id_lista = r.semillas) 
-//		JOIN semilla_etiqueta se ON l.id_lista=se.id_lista 
-//		JOIN etiqueta e ON e.id_etiqueta = se.id_etiqueta 
-//		WHERE id_obs_realizado IN (258,254)
-//		GROUP BY e.nombre, e.id_clasificacion ORDER BY e.id_clasificacion, e.nombre
 		final List<GlobalReportStatistics> globalReportStatistics = new ArrayList<>();
 		String query = "SELECT COUNT(*) as countSeeds, e.nombre, e.id_clasificacion,ce.nombre FROM rastreos_realizados rr "
 				+ "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) " + "JOIN semilla_etiqueta se ON l.id_lista=se.id_lista "
@@ -2294,6 +2287,118 @@ public final class RastreoDAO {
 					grE.setNombre(rs.getString("e.nombre"));
 					grE.setIdClasificacion(rs.getInt("e.id_clasificacion"));
 					grE.setNombreClasificacion(rs.getString("ce.nombre"));
+					globalReportStatistics.add(grE);
+				}
+			}
+		} catch (Exception e) {
+			Logger.putLog("Error en getExecutionObservatoryCrawlerIds", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return globalReportStatistics;
+	}
+
+	/**
+	 * Gets the global report statistics by tag.
+	 *
+	 * @param c           the c
+	 * @param tagsToFiler the tags to filer
+	 * @param exObsIds    the ex obs ids
+	 * @param tagName     the tag name
+	 * @return the global report statistics by tag
+	 * @throws Exception the exception
+	 */
+	public static List<GlobalReportStatistics> getGlobalReportStatisticsByTag(Connection c, String[] tagsToFiler, String[] exObsIds, final String tagName) throws Exception {
+		final List<GlobalReportStatistics> globalReportStatistics = new ArrayList<>();
+		String query = "SELECT COUNT(*) as countSeeds, e.nombre, e.id_clasificacion,ce.nombre FROM rastreos_realizados rr "
+				+ "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) " + "JOIN semilla_etiqueta se ON l.id_lista=se.id_lista "
+				+ "JOIN etiqueta e ON e.id_etiqueta = se.id_etiqueta JOIN clasificacion_etiqueta ce ON ce.id_clasificacion=e.id_clasificacion WHERE UPPER(e.nombre) = UPPER(?) ";
+		// Cargamos los rastreos realizados
+		if (exObsIds != null && exObsIds.length > 0) {
+			query = query + "AND id_obs_realizado IN (" + exObsIds[0];
+			for (int i = 1; i < exObsIds.length; i++) {
+				query = query + "," + exObsIds[i];
+			}
+			query = query + ")";
+		}
+		if (tagsToFiler != null && tagsToFiler.length > 0) {
+			query = query + " AND ( 1=1 ";
+			for (int i = 0; i < tagsToFiler.length; i++) {
+				query = query + " OR el.id_etiqueta= ?";
+			}
+			query = query + ")";
+		}
+		query = query + " GROUP BY e.nombre, e.id_clasificacion ORDER BY e.id_clasificacion, e.nombre, ce.nombre";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			int paramNumber = 1;
+			ps.setString(paramNumber, tagName);
+			paramNumber++;
+			if (tagsToFiler != null && tagsToFiler.length > 0) {
+				for (int i = 0; i < tagsToFiler.length; i++) {
+					ps.setLong(paramNumber, Long.parseLong(tagsToFiler[i]));
+					paramNumber++;
+				}
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					GlobalReportStatistics grE = new GlobalReportStatistics();
+					grE.setCount(rs.getInt("countSeeds"));
+					grE.setNombre(rs.getString("e.nombre"));
+					grE.setIdClasificacion(rs.getInt("e.id_clasificacion"));
+					grE.setNombreClasificacion(rs.getString("ce.nombre"));
+					globalReportStatistics.add(grE);
+				}
+			}
+		} catch (Exception e) {
+			Logger.putLog("Error en getExecutionObservatoryCrawlerIds", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return globalReportStatistics;
+	}
+
+	/**
+	 * Gets the global report statistics by ambit.
+	 *
+	 * @param c           the c
+	 * @param tagsToFiler the tags to filer
+	 * @param exObsIds    the ex obs ids
+	 * @return the global report statistics by ambit
+	 * @throws Exception the exception
+	 */
+	public static List<GlobalReportStatistics> getGlobalReportStatisticsByAmbit(Connection c, String[] tagsToFiler, String[] exObsIds) throws Exception {
+		final List<GlobalReportStatistics> globalReportStatistics = new ArrayList<>();
+		String query = "SELECT al.id_ambito,al.nombre, COUNT(*) as countSeeds" + " FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) "
+				+ "JOIN lista l ON (l.id_lista = r.semillas) " + "JOIN ambitos_lista al on al.id_ambito=l.id_ambito ";
+		// Cargamos los rastreos realizados
+		if (exObsIds != null && exObsIds.length > 0) {
+			query = query + "AND id_obs_realizado IN (" + exObsIds[0];
+			for (int i = 1; i < exObsIds.length; i++) {
+				query = query + "," + exObsIds[i];
+			}
+			query = query + ")";
+		}
+		if (tagsToFiler != null && tagsToFiler.length > 0) {
+			query = query + " AND ( 1=1 ";
+			for (int i = 0; i < tagsToFiler.length; i++) {
+				query = query + " OR el.id_etiqueta= ?";
+			}
+			query = query + ")";
+		}
+		query = query + " GROUP BY al.id_ambito ORDER BY al.id_ambito";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			int paramNumber = 1;
+			if (tagsToFiler != null && tagsToFiler.length > 0) {
+				for (int i = 0; i < tagsToFiler.length; i++) {
+					ps.setLong(paramNumber, Long.parseLong(tagsToFiler[i]));
+					paramNumber++;
+				}
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					GlobalReportStatistics grE = new GlobalReportStatistics();
+					grE.setCount(rs.getInt("countSeeds"));
+					grE.setNombre(rs.getString("al.nombre"));
+					grE.setIdClasificacion(rs.getInt("al.id_ambito"));
+					grE.setNombreClasificacion(rs.getString("al.nombre"));
 					globalReportStatistics.add(grE);
 				}
 			}

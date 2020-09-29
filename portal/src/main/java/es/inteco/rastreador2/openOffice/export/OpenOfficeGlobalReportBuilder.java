@@ -336,6 +336,10 @@ public final class OpenOfficeGlobalReportBuilder {
 	private static void replaceGlobalReportStatisticsSection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final MessageResources messageResources,
 			final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsToFiler, final String[] exObsIds) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
+			// Todo total
+			generateClasificationStatiticsTableGlobal(odt, odfFileContent, tagsToFiler, exObsIds, c, "Discapacidad");
+			// TODO Generate Distribution
+			generateClasificationStatiticsTableAmbit(odt, odfFileContent, tagsToFiler, exObsIds, c);
 			// Temática
 			generateClasificationStatiticsTable(odt, odfFileContent, tagsToFiler, exObsIds, c, 1);
 			// Distribución geográfica
@@ -373,6 +377,142 @@ public final class OpenOfficeGlobalReportBuilder {
 			// For each clasification a table
 			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>"
 					+ messageResources.getMessage("global.report.criteria.table.title", gre.get(0).getNombreClasificacion()) + "</text:p>";
+			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+			appendNodeAtMarkerPosition(odt, odfFileContent, title, "tablascriterios");
+			StringBuilder sb = generateStatisticsTable(header0, header1, gre);
+			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+			appendNodeAtMarkerPosition(odt, odfFileContent, node, "tablascriterios");
+			appendParagraphToMarker(odt, odfFileContent, "tablascriterios");
+		}
+	}
+
+	/**
+	 * Generate clasification statitics table.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param tagsToFiler    the tags to filer
+	 * @param exObsIds       the ex obs ids
+	 * @param c              the c
+	 * @param tagName        the tag name
+	 * @throws Exception                    the exception
+	 * @throws SAXException                 the SAX exception
+	 * @throws IOException                  Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 */
+	private static void generateClasificationStatiticsTable(final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsToFiler, final String[] exObsIds, Connection c, String tagName)
+			throws Exception, SAXException, IOException, ParserConfigurationException {
+		List<GlobalReportStatistics> gre = RastreoDAO.getGlobalReportStatisticsByTag(c, tagsToFiler, exObsIds, tagName);
+		if (gre != null && !gre.isEmpty()) {
+			String header0 = messageResources.getMessage(HEADER_ETIQUETA);
+			String header1 = messageResources.getMessage(HEADER_NUM_SITIOS_WEB);
+			// For each clasification a table
+			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + messageResources.getMessage("global.report.criteria.table.title", tagName) + "</text:p>";
+			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+			appendNodeAtMarkerPosition(odt, odfFileContent, title, "tablascriterios");
+			StringBuilder sb = generateStatisticsTable(header0, header1, gre);
+			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+			appendNodeAtMarkerPosition(odt, odfFileContent, node, "tablascriterios");
+			appendParagraphToMarker(odt, odfFileContent, "tablascriterios");
+		}
+	}
+
+	/**
+	 * Generate clasification statitics table.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param tagsToFiler    the tags to filer
+	 * @param exObsIds       the ex obs ids
+	 * @param c              the c
+	 * @param tagName        the tag name
+	 * @param tableHeader    the table header
+	 * @throws Exception                    the exception
+	 * @throws SAXException                 the SAX exception
+	 * @throws IOException                  Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 */
+	private static void generateClasificationStatiticsTableGlobal(final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsToFiler, final String[] exObsIds, Connection c,
+			String tagName) throws Exception, SAXException, IOException, ParserConfigurationException {
+		List<GlobalReportStatistics> gre1 = RastreoDAO.getGlobalReportStatisticsByAmbit(c, tagsToFiler, exObsIds);
+		List<GlobalReportStatistics> gre2 = RastreoDAO.getGlobalReportStatisticsByTag(c, tagsToFiler, exObsIds, tagName);
+		String header0 = "";
+		String header1 = messageResources.getMessage(HEADER_NUM_SITIOS_WEB);
+		// For each clasification a table
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + "Número de sitios web objeto del seguimiento simplificado" + "</text:p>";
+		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, title, "tablascriterios");
+		// StringBuilder sb = generateStatisticsTable(header0, header1, gre);
+		StringBuilder sb = new StringBuilder();
+		sb.append("<table:table table:name='Table_Statics_").append("Global").append("' table:style-name='TableGraphic'>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn2'/>");
+		// Header row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header0).append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header1).append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("</table:table-row>");
+		// Rows
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+		sb.append("<text:p text:style-name='GraphicTableCenter'>").append("Total de portales").append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+		int total = 0;
+		if (gre1 != null && !gre1.isEmpty()) {
+			for (GlobalReportStatistics gre : gre1) {
+				total += gre.getCount();
+			}
+		}
+		sb.append("<text:p text:style-name='GraphicTableCenter'>").append(total);
+		sb.append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("</table:table-row>");
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+		sb.append("<text:p text:style-name='GraphicTableCenter'>").append("Incluidos por las asociaciones de discapacidad").append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+		if (gre2 != null && !gre2.isEmpty()) {
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(gre2.get(0).getCount());
+		} else {
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(0);
+		}
+		sb.append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("</table:table-row>");
+		sb.append("</table:table>");
+		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, node, "tablascriterios");
+		appendParagraphToMarker(odt, odfFileContent, "tablascriterios");
+	}
+	//
+
+	/**
+	 * Generate clasification statitics table ambit.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param tagsToFiler    the tags to filer
+	 * @param exObsIds       the ex obs ids
+	 * @param c              the c
+	 * @throws Exception                    the exception
+	 * @throws SAXException                 the SAX exception
+	 * @throws IOException                  Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 */
+	private static void generateClasificationStatiticsTableAmbit(final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsToFiler, final String[] exObsIds, Connection c)
+			throws Exception, SAXException, IOException, ParserConfigurationException {
+		List<GlobalReportStatistics> gre = RastreoDAO.getGlobalReportStatisticsByAmbit(c, tagsToFiler, exObsIds);
+		if (gre != null && !gre.isEmpty()) {
+			String header0 = messageResources.getMessage(HEADER_AMBITO);
+			String header1 = messageResources.getMessage(HEADER_NUM_SITIOS_WEB);
+			// For each clasification a table
+			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + "Número de portales por ámbito" + "</text:p>";
 			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
 			appendNodeAtMarkerPosition(odt, odfFileContent, title, "tablascriterios");
 			StringBuilder sb = generateStatisticsTable(header0, header1, gre);
