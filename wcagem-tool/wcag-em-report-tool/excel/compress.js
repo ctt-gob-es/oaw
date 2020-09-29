@@ -153,21 +153,17 @@ app.post('/ods', function (request, response) {
                 } else {
                     techCells.push(techMap.get("OTRAS"));
 
-                    
-                
-                    console.log("# other techs : " + otherTech);
-
                     for (var k = 0; k < otherTech && k < 12; k++) {
 
                         var nameColumn = 2;
                         var descriptionColumn = 3;
 
-                        if(cellRow == 13){
+                        if (cellRow == 13) {
                             nameColumn = 8;
                             descriptionColumn = 9;
                         }
 
-                        // Tech ttile
+                        // Tech title
                         var titleTech = doc.createElement("text:p");
                         var text = doc.createTextNode(technologies[i].title);
                         titleTech.appendChild(text);
@@ -176,7 +172,7 @@ app.post('/ods', function (request, response) {
                         var oldNode = doc.createElement("text:p");
 
                         select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${cellRow}]/table:table-cell[${nameColumn}]`, doc)[0].replaceChild(titleTech, oldNode);
-                        
+
 
                         //Tech URL
                         var urlTech = doc.createElement("text:p");
@@ -195,40 +191,48 @@ app.post('/ods', function (request, response) {
             }
 
             //clean other techs
-            if(cellRow<23){
+            if (cellRow < 23) {
 
-                for(var c=cellRow;c<=23;c++){
+                try {
 
-                    var nameColumn = 2;
-                    var descriptionColumn = 3;
+                    for (var c = cellRow; c <= 23; c++) {
 
-                    if(cellRow == 13){
-                        nameColumn = 8;
-                        descriptionColumn = 9;
+
+
+                        var nameColumn = 2;
+                        var descriptionColumn = 3;
+
+                        if (c == 13) {
+                            nameColumn = 8;
+                            descriptionColumn = 9;
+                        }
+
+
+                        // Tech ttile
+                        var titleTech = doc.createElement("text:p");
+                        var text = doc.createTextNode("");
+                        titleTech.appendChild(text);
+
+
+                        var oldNode = doc.createElement("text:p");
+
+                        select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${c}]/table:table-cell[${nameColumn}]`, doc)[0].replaceChild(titleTech, oldNode);
+
+
+                        //Tech URL
+                        var urlTech = doc.createElement("text:p");
+                        var url = doc.createTextNode("");
+                        urlTech.appendChild(url);
+
+                        oldNode = doc.createElement("text:p");
+
+                        select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${c}]/table:table-cell[${descriptionColumn}]`, doc)[0].replaceChild(urlTech, oldNode);
                     }
-
-                    // Tech ttile
-                    var titleTech = doc.createElement("text:p");
-                    var text = doc.createTextNode("");
-                    titleTech.appendChild(text);
-
-
-                    var oldNode = doc.createElement("text:p");
-
-                    select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${c}]/table:table-cell[${nameColumn}]`, doc)[0].replaceChild(titleTech, oldNode);
-                    
-
-                    //Tech URL
-                    var urlTech = doc.createElement("text:p");
-                    var url = doc.createTextNode("");
-                    urlTech.appendChild(url);
-
-                    oldNode = doc.createElement("text:p");
-
-                    select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${c}]/table:table-cell[${descriptionColumn}]`, doc)[0].replaceChild(urlTech, oldNode);
+                } catch (error) {
+                    console.log(error);
                 }
             }
-            
+
 
 
             for (var i = 0; i < techCells.length; i++) {

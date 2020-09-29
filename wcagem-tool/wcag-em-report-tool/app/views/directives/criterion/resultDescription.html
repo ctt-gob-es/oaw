@@ -3,6 +3,5 @@
   <div text-angular ta-text-editor-class="form-control small-texteditor"
     ta-html-editor-class="form-control small-texteditor" ta-toolbar-button-class="btn btn-default btn-sm"
     ta-toolbar-group-class="btn-group" ta-toolbar-class="btn-toolbar mb-05" class="assert_description"
-    id="assert_desc_{{$id}}" ng-model="value" ng-change="updateMetadata()"></div>
+    id="assert_desc_{{$id}}" ng-model="value|translate"  ng-change="updateMetadata()" ></div>
 </div>
-
