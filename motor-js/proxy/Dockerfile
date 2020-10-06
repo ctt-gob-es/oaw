@@ -1,4 +1,4 @@
-FROM node:9.5.0-alpine
+FROM artefactos-ic.scae.redsara.es:6000/node:9.5.0-alpine
 
 #Instalamos dependencias necesarias
 RUN  npm install request --save
