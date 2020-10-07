@@ -107,7 +107,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		final Chapter chapter;
 		if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad || pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 			chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager.getIndex(), pdfTocManager.addSection(),
-					pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resumen_resultados");
+					pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_detalle_sitio_web");
 			final ArrayList<String> boldWords = new ArrayList<>();
 			if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 				Section section31 = PDFUtils.createSection(messageResources.getMessage("pdf.accessibility.global.summary.globals"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L,
@@ -168,13 +168,14 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 				}
 				chapter.add(Chunk.NEWLINE);
 				final BasicServicePageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new BasicServicePageResultsPdfSectionBuilder(currentEvaluationPageList);
-				boldWords.clear();
-				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p4.bold"));
-				chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p4"), boldWords, ConstantsFont.paragraphBoldFont,
-						ConstantsFont.PARAGRAPH, true));
-				chapter.add(Chunk.NEWLINE);
 				for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
 					chapter.add(observatoryPageResultsSectionBuilder.createPaginaTableInfoAccesibility(messageResources, evaluationForm));
+					chapter.add(Chunk.NEWLINE);
+					boldWords.clear();
+					boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p4.bold"));
+					chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p4"), boldWords, ConstantsFont.paragraphBoldFont,
+							ConstantsFont.PARAGRAPH, true));
+					chapter.add(Chunk.NEWLINE);
 					for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
 						chapter.add(observatoryPageResultsSectionBuilder.createPaginaTableVerificationSummary(messageResources, observatoryLevelForm, ""));
 					}

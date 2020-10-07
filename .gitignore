@@ -47,6 +47,7 @@ Thumbs.db
 *.app
 *.exe
 *.war
+*.tar
 
 # Large media files
 *.mp4
@@ -57,3 +58,15 @@ Thumbs.db
 *.wmv
 
 .history
+# File types to ignore
+*.exe
+*.bin
+*.jar
+*.war
+*.mp3
+*.mp4
+
+# Directories to ignore
+target/
+.build/
+.env/

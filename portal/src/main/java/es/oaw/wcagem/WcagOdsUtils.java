@@ -155,9 +155,6 @@ public final class WcagOdsUtils {
 				}
 			}
 		}
-		// Save
-		// File outputFile = new File("/home/alvaro/Downloads/Borrador_Informe_Revision_Profunidad_v1_M.ods");
-		// workbook.saveAs(outputFile);
 		return workbook;
 	}
 
@@ -236,7 +233,7 @@ public final class WcagOdsUtils {
 		case EARL_FAILED:
 			return "Falla";
 		case EARL_CANNOT_TELL:
-			return "N/T";
+			return "N/D";
 		case EARL_INAPPLICABLE:
 			return "N/A";
 		default:

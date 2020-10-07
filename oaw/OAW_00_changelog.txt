@@ -7,10 +7,11 @@
 - Correciones en la sección de evolutivo del informe agregado para el cartucho UNE-EN301549:2019
 - Modificada la sección de evolución de los segmentos para generar una plantilla externa
 - Corregida la ordenación de resultados de un observatorio que sólo ordenaba en la página actual y no todos los resultados
-- Modificada plantilla de informe global para incluir más secciones
+- Modificada plantilla de informe global para incluir más secciones e información en el apartado 3
 - Añadidas en el XML anexo de portales las etiquetas de la semilla
 - Corregida la comprobación 476 que era sensible a mayúsculas y minúsculas
-- Corregida la comprobación 67 para incluir nuevos elementos etiquetables en html5 
+- Corregida la comprobación 67 para incluir nuevos elementos etiquetables en html5
+- Actualizados los informes individuales de la metodología de accesibilidad 
 
 
 5.0.5
