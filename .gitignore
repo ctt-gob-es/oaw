@@ -70,3 +70,7 @@ Thumbs.db
 target/
 .build/
 .env/
+**.history/**
+**.tmp/**
+**.sass-cache/**
+
