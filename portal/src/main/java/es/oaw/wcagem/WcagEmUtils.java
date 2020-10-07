@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -248,26 +247,27 @@ public final class WcagEmUtils {
 					// Iterate WCAG Points
 					if (wcagCompliance != null && !wcagCompliance.isEmpty()) {
 						int pageCounter = 0;
-						for (Entry<String, Map<String, ValidationDetails>> result : wcagCompliance.entrySet()) {
+						// Iterate evl list to preserve order
+						for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
+							Map<String, ValidationDetails> result = wcagCompliance.get(eval.getUrl());
 							// if cointain current wcag rule
-							if (result.getValue().containsKey(wcagEmPointKey.getWcagEmId())) {
+							if (result.containsKey(wcagEmPointKey.getWcagEmId())) {
 								HasPart hasPart = new HasPart();
 								hasPart.setType("Assertion");
 								hasPart.setAssertedBy("_:evaluator");
-//								hasPart.setSubject(Arrays.asList(new String[] { "_:rand_" + pageCounter }));
 								hasPart.setSubject(Arrays.asList(new String[] { "_:struct_" + pageCounter }));
 								{
 									Result_ resultP = new Result_();
 									resultP.setType("TestResult");
 									resultP.setDate(OffsetDateTime.now(ZoneId.of("Europe/Madrid")).toString());
 									// Result from Details
-									final List<ValidationResult> results = result.getValue().get(wcagEmPointKey.getWcagEmId()).getResults();
+									final List<ValidationResult> results = result.get(wcagEmPointKey.getWcagEmId()).getResults();
 									if (results != null && !results.isEmpty()) {
 										resultP.setDescription(printProblemsAsTable(results, messageResources));
 									} else {
 										resultP.setDescription("");
 									}
-									final String validationResult = result.getValue().get(wcagEmPointKey.getWcagEmId()).getResult();
+									final String validationResult = result.get(wcagEmPointKey.getWcagEmId()).getResult();
 									resultP.setOutcome(validationResult);
 									hasPart.setResult(resultP);
 									// if one of this has earl:failed, all result marked as failed
@@ -297,12 +297,6 @@ public final class WcagEmUtils {
 		{
 			StructuredSample structuredSample = new StructuredSample();
 			List<Webpage> webpages = new ArrayList<>();
-//			Webpage webpage = new Webpage();
-//			webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
-//			webpage.setId("_:struct_0");
-//			webpage.setTitle("");
-//			webpage.setTested(false);
-//			webpages.add(webpage);
 			int randCounter = 0;
 			// Iterate currentEvaluationPageList to preserve order
 			for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
@@ -322,20 +316,6 @@ public final class WcagEmUtils {
 		{
 			RandomSample randomSample = new RandomSample();
 			List<Webpage_> webpages = new ArrayList<>();
-//			int randCounter = 0;
-//			// Iterate currentEvaluationPageList to preserve order
-//			for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
-//				Webpage_ webpage = new Webpage_();
-//				webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
-////				webpage.setId("_:rand_" + randCounter);
-//				webpage.setId("_:struct_" + randCounter);
-//				webpage.setDescription(eval.getUrl());
-//				webpage.setSource(eval.getUrl());
-//				webpage.setTitle(BasicServiceUtils.getTitleDocFromContent(eval.getSource(), false));
-//				webpage.setTested(false);// false to mark as incomplete un report step
-//				webpages.add(webpage);
-//				randCounter++;
-//			}
 			randomSample.setWebpage(webpages);
 			graph.setRandomSample(randomSample);
 		}

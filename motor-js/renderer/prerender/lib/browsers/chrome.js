@@ -532,19 +532,25 @@ chrome.parseHtmlFromPage = function(tab) {
 		tab.Runtime.evaluate({
 			expression: "document.firstElementChild.outerHTML"
 		}).then((resp) => {
-
 			tab.prerender.content = resp.result.value;
 			return tab.Runtime.evaluate({
 				expression: 'document.doctype && JSON.stringify({name: document.doctype.name, systemId: document.doctype.systemId, publicId: document.doctype.publicId})'
 			});
 		}).then((response) => {
 
-			let doctype = '';
+
+			//Prevent missing doctypes
+			let doctype = '<!DOCTYPE html>';
+
 			if (response && response.result && response.result.value) {
 				let obj = {name: 'html'};
 				try {
 					obj = JSON.parse(response.result.value);
-				} catch(e) {}
+				} catch(e) {
+				}
+
+
+				console.log(obj);
 
 				doctype = "<!DOCTYPE "
 					+ obj.name
@@ -552,7 +558,7 @@ chrome.parseHtmlFromPage = function(tab) {
 					+ (!obj.publicId && obj.systemId ? ' SYSTEM' : '')
 					+ (obj.systemId ? ' "' + obj.systemId + '"' : '')
 					+ '>'
-			}
+			} 
 
 			tab.prerender.content = doctype + tab.prerender.content;
 			clearTimeout(parseTimeout);

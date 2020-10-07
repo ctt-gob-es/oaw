@@ -286,15 +286,8 @@ public final class PrimaryExportPdfUtils {
 					AnonymousResultExportPdfAccesibilidad.addObservatoryScoreSummary(pdfBuilder, messageResourcesAccesibility, document, pdfTocManager, currentEvaluationPageList,
 							previousEvaluationPageList, file, rankingActual, rankingPrevio);
 					pdfTocManager.addChapterCount();
-					// Resultados por verificación
-					final BasicServiceObservatoryResultsSummaryPdfSectionBuilder observatoryResultsSummarySectionBuilder = new BasicServiceObservatoryResultsSummaryPdfSectionBuilder(
-							currentEvaluationPageList);
-					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryAccesibility(messageResourcesAccesibility, document, pdfTocManager);
-					// Detalles por página
-					final ObservatoryPageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new ObservatoryPageResultsPdfSectionBuilder(currentEvaluationPageList);
-					observatoryPageResultsSectionBuilder.addPageResultsAccesibility(messageResourcesAccesibility, document, pdfTocManager, true);
-					// Annex
-					pdfBuilder.createMethodologyChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType,
+//					// Annex
+					pdfBuilder.createMethodologyChapter(messageResourcesAccesibility, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0,
 							pdfBuilder.isBasicService());
 				} else
 				// Nuevo informe 2019

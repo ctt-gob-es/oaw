@@ -228,6 +228,9 @@ public class BasicServicePdfReport {
 				} else if (!(pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad)) {
 					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, false);
 					pdfBuilder.createMethodologyChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0, pdfBuilder.isBasicService());
+				} else if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad) {
+					pdfBuilder.createMethodologyChapter(messageResourcesAccesibility, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0,
+							pdfBuilder.isBasicService());
 				}
 				// Ponemos la variable a true para que no se escriba el footer
 				// en el índice

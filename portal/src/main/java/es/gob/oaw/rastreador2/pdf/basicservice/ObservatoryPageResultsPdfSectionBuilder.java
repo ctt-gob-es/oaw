@@ -268,21 +268,14 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		table.setWidthPercentage(100);
 		table.setSpacingBefore(10);
 		table.setSpacingAfter(0);
-		// Titulo
-		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.title"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT,
-				DEFAULT_PADDING, -1));
-		table.addCell(PDFUtils.createTableCell(title, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+//		// Titulo
+//		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.title"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT,
+//				DEFAULT_PADDING, -1));
+//		table.addCell(PDFUtils.createTableCell(title, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 		// URL
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.url"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT,
 				DEFAULT_PADDING, -1));
 		table.addCell(PDFUtils.createLinkedTableCell(url, url, Color.WHITE, Element.ALIGN_LEFT, DEFAULT_PADDING));
-		// Puntuación Media Página
-		table.addCell(PDFUtils.createTableCell("Puntuación", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
-		table.addCell(PDFUtils.createTableCell(puntuacionMedia.toPlainString(), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
-		// Nivel de Adecuación (a.k.a. Modalidad)
-		table.addCell(
-				PDFUtils.createTableCell(messageResources.getMessage("observatorio.nivel.adecuacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
-		table.addCell(PDFUtils.createTableCell(nivelAdecuacion, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 		// PENDING Add detail of accesibility links
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.urls.accesibilidad"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
 				Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
@@ -303,6 +296,13 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		} catch (Exception e) {
 			Logger.putLog("Error al obtener las urls de accesibilidad analizadas", ObservatoryPageResultsPdfSectionBuilder.class, Logger.LOG_LEVEL_ERROR);
 		}
+		// Puntuación Media Página
+		table.addCell(PDFUtils.createTableCell("Puntuación", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
+		table.addCell(PDFUtils.createTableCell(puntuacionMedia.toPlainString(), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+		// Nivel de Adecuación (a.k.a. Modalidad)
+		table.addCell(
+				PDFUtils.createTableCell(messageResources.getMessage("observatorio.nivel.adecuacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
+		table.addCell(PDFUtils.createTableCell(nivelAdecuacion, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 		return table;
 	}
 
