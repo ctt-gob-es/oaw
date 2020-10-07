@@ -141,8 +141,9 @@
 /* line 92, ../../app/styles/report.scss */
 .panel.criterion .criterion-title {
   margin-bottom: 5px;
+  margin-top: 15px;
 }
-/* line 96, ../../app/styles/report.scss */
+/* line 97, ../../app/styles/report.scss */
 .panel.criterion .crit-text {
   visibility: visible;
   opacity: 1;
@@ -150,7 +151,7 @@
   transition: visibility 0s, opacity 0.3s, max-height 0.3s ease-in;
   overflow: hidden;
 }
-/* line 103, ../../app/styles/report.scss */
+/* line 104, ../../app/styles/report.scss */
 .panel.criterion .crit-text.collapsed {
   max-height: 0;
   opacity: 0;
@@ -158,86 +159,86 @@
   transition: visibility 0s linear 0.3s, opacity 0.3s, max-height 0.3s ease-out;
 }
 
-/* line 112, ../../app/styles/report.scss */
+/* line 113, ../../app/styles/report.scss */
 .panel {
   border-width: 2px;
 }
 
-/* line 116, ../../app/styles/report.scss */
+/* line 117, ../../app/styles/report.scss */
 .panel .panel-heading,
 .alert {
   color: #333333;
 }
-/* line 120, ../../app/styles/report.scss */
+/* line 121, ../../app/styles/report.scss */
 .panel .panel-heading a,
 .alert a {
   color: #333333;
   text-decoration: underline;
 }
-/* line 124, ../../app/styles/report.scss */
+/* line 125, ../../app/styles/report.scss */
 .panel .panel-heading a:hover, .panel .panel-heading a:focus,
 .alert a:hover,
 .alert a:focus {
   color: black;
 }
 
-/* line 131, ../../app/styles/report.scss */
+/* line 132, ../../app/styles/report.scss */
 .panel-heading h1 {
   margin: 0;
 }
 
-/* line 135, ../../app/styles/report.scss */
+/* line 136, ../../app/styles/report.scss */
 .outcome p:last-child {
   margin-bottom: 0;
 }
 
-/* line 141, ../../app/styles/report.scss */
+/* line 142, ../../app/styles/report.scss */
 .panel-body.assert-indent {
   padding-left: 15px;
 }
-/* line 144, ../../app/styles/report.scss */
+/* line 145, ../../app/styles/report.scss */
 .panel-body.assert-indent .subject-type {
   line-height: 30px;
 }
-/* line 148, ../../app/styles/report.scss */
+/* line 149, ../../app/styles/report.scss */
 .panel-body.assert-indent .earl-assert {
   padding: 15px 0px;
 }
-/* line 151, ../../app/styles/report.scss */
+/* line 152, ../../app/styles/report.scss */
 .panel-body.assert-indent .earl-assert .outcome {
   padding: 15px 0px;
 }
-/* line 157, ../../app/styles/report.scss */
+/* line 158, ../../app/styles/report.scss */
 .panel-body + hr {
   margin: 0;
 }
-/* line 161, ../../app/styles/report.scss */
+/* line 162, ../../app/styles/report.scss */
 .panel-body .earl-assert {
   margin-bottom: 7px;
   border-bottom: solid 1px #ddd;
 }
-/* line 165, ../../app/styles/report.scss */
+/* line 166, ../../app/styles/report.scss */
 .panel-body .earl-assert:last-child {
   border-bottom: none;
 }
 
-/* line 171, ../../app/styles/report.scss */
+/* line 172, ../../app/styles/report.scss */
 .sample_narrow {
   list-style: none;
 }
-/* line 174, ../../app/styles/report.scss */
+/* line 175, ../../app/styles/report.scss */
 .sample_narrow li {
   padding: 0.2em 0.1em;
 }
 
-/* line 179, ../../app/styles/report.scss */
+/* line 180, ../../app/styles/report.scss */
 button.glyphicon-copy {
   background: url("../images/copy.png") 7px 3px no-repeat !important;
   width: 30px;
   height: 23px;
 }
 
-/* line 185, ../../app/styles/report.scss */
+/* line 186, ../../app/styles/report.scss */
 button.glyphicon {
   background: inherit;
   border: solid 1px gray;
@@ -249,7 +250,7 @@ button.glyphicon {
   border-bottom-left-radius: 3px;
 }
 
-/* line 195, ../../app/styles/report.scss */
+/* line 196, ../../app/styles/report.scss */
 .glyphicon-none::before {
   content: "\e013";
   color: transparent !important;
