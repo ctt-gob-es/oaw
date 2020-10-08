@@ -213,4 +213,9 @@ public final class StringUtils {
 
 		return fixedString;
 	}
+
+    public static String removeLastChar(String str) {
+	    if (str.length() == 0) return str;
+        return str.substring(0, str.length() - 1);
+    }
 }
