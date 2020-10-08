@@ -16,8 +16,38 @@ services:
     environment:
       DBCONN_RETRY_COUNT: '12'
       DBCONN_RETRY_DELAY: '5'
-    
+
+  proxy:
+    build:
+      context: ../../oaw/docker/proxy
+      dockerfile: Dockerfile
+    ports:
+      - "18088:18088"
+    command: node /opt/proxy/index.js
+    restart: always
+    container_name: oaw_js_proxy
   
+
+  renderer:
+    build:
+      context: ../../oaw/docker/renderer
+      dockerfile: Dockerfile
+    command: node /opt/prerender/server.js
+    privileged: true
+    restart: always
+
+
+  nginx:
+    image: nginx:1.13.8-alpine
+    volumes:
+      - ../../oaw/docker/nginx/reverse.conf:/etc/nginx/conf.d/default.conf
+      - ../../oaw/docker/nginx/certs/server.crt:/etc/nginx/ssl/server.crt
+      - ../../oaw/docker/nginx/certs/server.key:/etc/nginx/ssl/server.key
+    links:
+      - renderer
+    restart: always
+
+
   mysql:
     build:
       context: ..
