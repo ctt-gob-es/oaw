@@ -43,6 +43,7 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.semillas.SeedCategoriesAction;
 import es.inteco.rastreador2.action.semillas.SeedUtils;
+import es.inteco.rastreador2.action.semillas.SeedExcelUtils;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
@@ -303,7 +304,7 @@ public class SeedMassImportAction extends Action {
 			}
 			response.setContentType("text/json");
 			List<SemillaForm> seeds = SemillaDAO.getObservatorySeedsToExport(c, searchForm);
-			SeedUtils.writeFileToResponse(response, seeds, true);
+			SeedExcelUtils.writeSeedsToXlsxResponse(response, seeds);
 		} catch (Exception e) {
 			Logger.putLog("ERROR al intentar exportar semillas: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
