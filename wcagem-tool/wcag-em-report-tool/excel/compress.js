@@ -229,7 +229,7 @@ app.post('/ods', function (request, response) {
                         select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${c}]/table:table-cell[${descriptionColumn}]`, doc)[0].replaceChild(urlTech, oldNode);
                     }
                 } catch (error) {
-                    console.log(error);
+                    //console.log(error);
                 }
             }
 
@@ -284,41 +284,97 @@ app.post('/ods', function (request, response) {
             var FIRSTROW = 19;
             //checking results [P1]
             console.log("Procesando resultados de Perceptible...");
+
             for (var i = 0; i < 20; i++) {
                 var cellRow = FIRSTROW;
                 cellRow = cellRow + (38 * i);
-                if (i == 19) { cellRow++ }; //last table is one row lower   
                 if (perceptibleTablesData.has(i)) {
                     var resultsByType = report.data["@graph"][0].auditResult[perceptibleTablesData.get(i)].hasPart;
-                    for (var j = 0; j < resultsByType.length && j < webpages.length && j < 35; j++) {
-                        var cell = [4, cellRow];
-                        if (resultsByType[j].result.outcome == "earl:passed") {
-                            var type = doc.createTextNode("Pasa");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
-                        } else if (resultsByType[j].result.outcome == "earl:failed") {
-                            var type = doc.createTextNode("Falla");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
-                        } else if (resultsByType[j].result.outcome == "earl:cantTell") {
-                            var type = doc.createTextNode("N/D");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
-                        } else if (resultsByType[j].result.outcome == "earl:inapplicable") {
-                            var type = doc.createTextNode("N/A");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+
+                    if (resultsByType.length == 0) {
+                        for (var j = 0; j < webpages.length && j < 35; j++) {
+                            var cell = [4, cellRow];
+                            var type = doc.createElement("text:p");
+                            var text = doc.createTextNode("N/T");
+                            type.appendChild(text);
+                            select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                            cellRow = cellRow + 1;
                         }
 
-                        cellRow = cellRow + 1;
+                    } else {
+
+                        for (var j = 0; j < webpages.length && j < 35; j++) {
+                            var cell = [4, cellRow];
+
+                            if (resultsByType[j]) {
+
+                                if (resultsByType[j].result.outcome == "earl:passed") {
+                                    // var type = doc.createTextNode("Pasa");                            
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("Pasa");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    //select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                } else if (resultsByType[j].result.outcome == "earl:failed") {
+                                    // var type = doc.createTextNode("Falla");
+
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("Falla");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                } else if (resultsByType[j].result.outcome == "earl:cantTell") {
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("N/D");
+                                    type.appendChild(text);
+                                    // var type = doc.createTextNode("N/D");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                } else if (resultsByType[j].result.outcome == "earl:inapplicable") {
+                                    // var type = doc.createTextNode("N/A");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("N/A");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                }
+                                else {
+                                    // var type = doc.createTextNode("N/A");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("N/T");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                }
+                            } else {
+                                // var type = doc.createTextNode("N/A");
+                                var type = doc.createElement("text:p");
+                                var text = doc.createTextNode("N/T");
+                                type.appendChild(text);
+                                // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                // select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                select(`//office:spreadsheet/table:table[@table:name='P1.Perceptible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                            }
+
+                            cellRow = cellRow + 1;
+                        }
                     }
                 }
             }
@@ -332,37 +388,96 @@ app.post('/ods', function (request, response) {
                 cellRow = cellRow + (38 * i);
                 if (operableTablesData.has(i)) {
                     var resultsByType = report.data["@graph"][0].auditResult[operableTablesData.get(i)].hasPart;
-                    for (var j = 0; j < resultsByType.length && j < webpages.length && j < 35; j++) {
-                        cell = [4, cellRow];
-                        if (resultsByType[j].result.outcome == "earl:passed") {
-                            var type = doc.createTextNode("Pasa");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
-                        } else if (resultsByType[j].result.outcome == "earl:failed") {
-                            var type = doc.createTextNode("Falla");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
-                        } else if (resultsByType[j].result.outcome == "earl:cantTell") {
-                            var type = doc.createTextNode("N/D");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
-                        }
-                        else if (resultsByType[j].result.outcome == "earl:inapplicable") {
-                            var type = doc.createTextNode("N/A");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+
+                    if (resultsByType.length == 0) {
+                        for (var j = 0; j < webpages.length && j < 35; j++) {
+                            var cell = [4, cellRow];
+                            var type = doc.createElement("text:p");
+                            var text = doc.createTextNode("N/T");
+                            type.appendChild(text);
+                            select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                            cellRow = cellRow + 1;
                         }
 
+                    } else {
 
-                        cellRow = cellRow + 1;
+                        for (var j = 0; j < webpages.length && j < 35; j++) {
+                            cell = [4, cellRow];
+
+                            if (resultsByType[j]) {
+
+                                if (resultsByType[j].result.outcome == "earl:passed") {
+                                    // var type = doc.createTextNode("Pasa");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("Pasa");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                } else if (resultsByType[j].result.outcome == "earl:failed") {
+                                    // var type = doc.createTextNode("Falla");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("Falla");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                } else if (resultsByType[j].result.outcome == "earl:cantTell") {
+                                    // var type = doc.createTextNode("N/D");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("N/D");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                }
+                                else if (resultsByType[j].result.outcome == "earl:inapplicable") {
+                                    // var type = doc.createTextNode("N/A");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("N/A");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                }
+                                else {
+                                    // var type = doc.createTextNode("N/A");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("N/T");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                }
+
+                            } else {
+
+                                // var type = doc.createTextNode("N/A");
+                                var type = doc.createElement("text:p");
+                                var text = doc.createTextNode("N/A");
+                                type.appendChild(text);
+                                // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                // select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                select(`//office:spreadsheet/table:table[@table:name='P2.Operable']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+
+
+                            }
+
+
+                            cellRow = cellRow + 1;
+                        }
                     }
                 }
             }
@@ -375,36 +490,90 @@ app.post('/ods', function (request, response) {
                 cellRow = cellRow + (38 * i);
                 if (comprensibleTablesData.has(i)) {
                     var resultsByType = report.data["@graph"][0].auditResult[comprensibleTablesData.get(i)].hasPart;
-                    for (var j = 0; j < resultsByType.length && j < webpages.length && j < 35; j++) {
-                        cell = [4, cellRow];
-                        if (resultsByType[j].result.outcome == "earl:passed") {
-                            var type = doc.createTextNode("Pasa");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
-                        } else if (resultsByType[j].result.outcome == "earl:failed") {
-                            var type = doc.createTextNode("Falla");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
-                        } else if (resultsByType[j].result.outcome == "earl:cantTell") {
-                            var type = doc.createTextNode("N/D");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
-                        } else if (resultsByType[j].result.outcome == "earl:inapplicable") {
-                            var type = doc.createTextNode("N/A");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+
+                    if (resultsByType.length == 0) {
+                        for (var j = 0; j < webpages.length && j < 35; j++) {
+                            var cell = [4, cellRow];
+                            var type = doc.createElement("text:p");
+                            var text = doc.createTextNode("N/T");
+                            type.appendChild(text);
+                            select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                            cellRow = cellRow + 1;
                         }
 
+                    } else {
 
-                        cellRow = cellRow + 1;
+                        for (var j = 0; j < webpages.length && j < 35; j++) {
+
+                            cell = [4, cellRow];
+                            if (resultsByType[j]) {
+                                if (resultsByType[j].result.outcome == "earl:passed") {
+                                    // var type = doc.createTextNode("Pasa");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("Pasa");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                } else if (resultsByType[j].result.outcome == "earl:failed") {
+                                    // var type = doc.createTextNode("Falla");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("Falla");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                } else if (resultsByType[j].result.outcome == "earl:cantTell") {
+                                    // var type = doc.createTextNode("N/D");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("N/D");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                } else if (resultsByType[j].result.outcome == "earl:inapplicable") {
+                                    // var type = doc.createTextNode("N/A");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("N/A");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                }
+                                else {
+                                    // var type = doc.createTextNode("N/A");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("N/T");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                }
+                            } else {
+                                // var type = doc.createTextNode("N/A");
+                                var type = doc.createElement("text:p");
+                                var text = doc.createTextNode("N/A");
+                                type.appendChild(text);
+                                // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                // select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                select(`//office:spreadsheet/table:table[@table:name='P3.Comprensible']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                            }
+
+
+                            cellRow = cellRow + 1;
+                        }
                     }
                 }
             }
@@ -417,36 +586,90 @@ app.post('/ods', function (request, response) {
                 cellRow = cellRow + (38 * i);
                 if (robustoTablesData.has(i)) {
                     var resultsByType = report.data["@graph"][0].auditResult[robustoTablesData.get(i)].hasPart;
-                    for (var j = 0; j < resultsByType.length && j < webpages.length && j < 35; j++) {
-                        cell = [4, cellRow];
-                        if (resultsByType[j].result.outcome == "earl:passed") {
-                            var type = doc.createTextNode("Pasa");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
-                        } else if (resultsByType[j].result.outcome == "earl:failed") {
-                            var type = doc.createTextNode("Falla");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
-                        } else if (resultsByType[j].result.outcome == "earl:cantTell") {
-                            var type = doc.createTextNode("N/D");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
-                        } else if (resultsByType[j].result.outcome == "earl:inapplicable") {
-                            var type = doc.createTextNode("N/A");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
-                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+
+                    if (resultsByType.length == 0) {
+                        for (var j = 0; j < webpages.length && j < 35; j++) {
+                            var cell = [4, cellRow];
+                            var type = doc.createElement("text:p");
+                            var text = doc.createTextNode("N/T");
+                            type.appendChild(text);
+                            select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                            cellRow = cellRow + 1;
                         }
 
+                    } else {
+                        for (var j = 0; j < resultsByType.length && j < webpages.length && j < 35; j++) {
 
-                        cellRow = cellRow + 1;
+                            cell = [4, cellRow];
+
+                            if (resultsByType[j]) {
+                                if (resultsByType[j].result.outcome == "earl:passed") {
+                                    // var type = doc.createTextNode("Pasa");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("Pasa");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                } else if (resultsByType[j].result.outcome == "earl:failed") {
+                                    // var type = doc.createTextNode("Falla");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("Falla");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                } else if (resultsByType[j].result.outcome == "earl:cantTell") {
+                                    // var type = doc.createTextNode("N/D");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("N/D");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                } else if (resultsByType[j].result.outcome == "earl:inapplicable") {
+                                    // var type = doc.createTextNode("N/A");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("N/A");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                }
+                                else {
+                                    // var type = doc.createTextNode("N/A");
+                                    var type = doc.createElement("text:p");
+                                    var text = doc.createTextNode("N/T");
+                                    type.appendChild(text);
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                    // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                    select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                                }
+                            } else {
+                                // var type = doc.createTextNode("N/A");
+                                var type = doc.createElement("text:p");
+                                var text = doc.createTextNode("N/T");
+                                type.appendChild(text);
+                                // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("office:value-type", "string");
+                                // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].removeAttribute("table:formula");
+                                // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].setAttribute("calcext:value-type", "string");
+                                // select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]/text:p`, doc)[0].appendChild(type);
+                                select(`//office:spreadsheet/table:table[@table:name='P4.Robusto']/table:table-row[${cell[1]}]/table:table-cell[${cell[0]}]`, doc)[0].appendChild(type);
+                            }
+
+
+                            cellRow = cellRow + 1;
+                        }
                     }
                 }
             }
