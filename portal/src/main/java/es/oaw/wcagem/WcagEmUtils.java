@@ -97,7 +97,13 @@ public final class WcagEmUtils {
 		final ObservatoryManager observatoryManager = new ObservatoryManager();
 		final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), analisisId);
 		// Pagaes
-		final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+		List<ObservatoryEvaluationForm> currentEvaluationPageList = new ArrayList<>();
+		final List<ObservatoryEvaluationForm> tmp = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+		if (tmp.size() > 35) {
+			currentEvaluationPageList.addAll(tmp.subList(0, 35));
+		} else {
+			currentEvaluationPageList.addAll(tmp);
+		}
 		// This map store, the url and a map with everi wcag automatic validation an result
 		Map<String, Map<String, ValidationDetails>> wcagCompliance = generateEquivalenceMap(currentEvaluationPageList);
 		// Generate analysis info
