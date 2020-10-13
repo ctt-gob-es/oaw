@@ -386,7 +386,7 @@ public final class PrimaryExportPdfUtils {
 				IndexUtils.createIndex(writer, document, messageResources.getMessage("pdf.accessibility.index.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 				ExportPageEventsObservatoryMP.setPrintFooter(true);
 				// (Disable) JSON WCAG-EM and ODS
-				if (false) {
+				if (true) {
 					// JSON
 					WcagEmReport report = WcagEmUtils.generateReport(messageResources, pdfBuilder, BasicServiceUtils.getTitleDocFromContent(currentEvaluationPageList.get(0).getSource(), false),
 							Long.parseLong(crawling.getId()));
