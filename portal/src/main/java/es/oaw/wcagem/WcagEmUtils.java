@@ -488,8 +488,8 @@ public final class WcagEmUtils {
 			} else {
 				validationDetailes.setResult(EARL_CANNOT_TELL);
 				tmpWcag.put(wcagEmId, validationDetailes);
-				break;
 			}
+			break;
 		case Constants.OBS_VALUE_RED_ZERO:
 			if (filterChecks) {
 				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_FAILED);
@@ -507,8 +507,8 @@ public final class WcagEmUtils {
 				results = new ArrayList<>();
 				processChecks(observatorySubgroupForm, validationDetailes, results);
 				tmpWcag.put(wcagEmId, validationDetailes);
-				break;
 			}
+			break;
 		case Constants.OBS_VALUE_NOT_SCORE:
 			if (filterChecks) {
 				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_INAPPLICABLE);

@@ -12,6 +12,7 @@
 - Corregida la comprobación 476 que era sensible a mayúsculas y minúsculas
 - Corregida la comprobación 67 para incluir nuevos elementos etiquetables en html5
 - Actualizados los informes individuales de la metodología de accesibilidad 
+- Corregido un error al generar los anexos del cartucho de accesibilidad
 
 
 5.0.5
