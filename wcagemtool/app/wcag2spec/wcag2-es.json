@@ -94,7 +94,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Solo de Audio y de V\u00eddeo-s\u00f3lo (Pregrabado)",
+                            "handle": "Solo de Audio y de V\u00eddeo-s\u00f3lo (grabado)",
                             "text": "Para pregrabado solo de audio y de video pregrabado-s\u00f3lo los medios de comunicaci\u00f3n, la siguiente es cierto, excepto cuando el audio o el v\u00eddeo es un medio de comunicaci\u00f3n alternativo para el texto y est\u00e1 claramente identificado como tal:",
                             "details": [
                                 {
@@ -123,7 +123,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Subt\u00edtulos (Pregrabado)",
+                            "handle": "Subt\u00edtulos (grabados)",
                             "text": "Los subt\u00edtulos se proporcionan para todos los pregrabado del contenido de audio sincronizado en los medios de comunicaci\u00f3n, excepto cuando los medios de comunicaci\u00f3n es un medio de comunicaci\u00f3n alternativo para el texto y est\u00e1 claramente identificado como tal."
                         },
                         {
@@ -137,7 +137,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Descripci\u00f3n de Audio o de Medios Alternativos (Pregrabado)",
+                            "handle": "Audiodescripci\u00f3n o de Medio Alternativo (grabado)",
                             "text": "Una alternativa para el tiempo basado en los medios de comunicaci\u00f3n o de audio descripci\u00f3n de el video pregrabado del contenido se proporciona la sincronizaci\u00f3n de medios de comunicaci\u00f3n, excepto cuando los medios de comunicaci\u00f3n es un medio de comunicaci\u00f3n alternativo para el texto y est\u00e1 claramente identificado como tal."
                         },
                         {
@@ -151,7 +151,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Subt\u00edtulos (En Vivo)",
+                            "handle": "Subt\u00edtulos (en directo)",
                             "text": "Los subt\u00edtulos se proporcionan para todos los de audio en vivo de contenido en contenido multimedia sincronizado.",
                             "sufficientNotes": [
                                 "Los subt\u00edtulos pueden ser generados en tiempo real mediante la traducci\u00f3n de textos."
@@ -168,7 +168,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Descripci\u00f3n De Audio (Pregrabado)",
+                            "handle": "Audiodescripci\u00f3n (grabado)",
                             "text": "Descripci\u00f3n de Audio se proporciona para todos los video pregrabado de contenido en contenido multimedia sincronizado."
                         },
                         {
@@ -253,7 +253,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Info y las Relaciones",
+                            "handle": "Informaci\u00f3n y relaciones",
                             "text": "La informaci\u00f3n, la estructura y las relaciones transmitidos a trav\u00e9s de la presentaci\u00f3n puede ser determinado mediante programaci\u00f3n o est\u00e1n disponibles en el texto."
                         },
                         {
@@ -267,7 +267,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Secuencia Significativa",
+                            "handle": "Secuencia significativa",
                             "text": "Cuando la secuencia en la que el contenido se presenta afecta a su significado, una secuencia correcta de lectura puede ser determinado mediante programaci\u00f3n."
                         },
                         {
@@ -281,7 +281,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Caracter\u00edsticas Sensoriales",
+                            "handle": "Caracter\u00edsticas sensoriales",
                             "text": "Instrucciones para la comprensi\u00f3n y funcionamiento de contenidos no se basan \u00fanicamente en las caracter\u00edsticas sensoriales de los componentes, tales como forma, tama\u00f1o, visual ubicaci\u00f3n, orientaci\u00f3n o sonido.",
                             "details": [
                                 {
@@ -310,7 +310,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Identificar La Entrada De Prop\u00f3sito",
+                            "handle": "Identificar el prop\u00f3sito de campo",
                             "text": "El prop\u00f3sito de cada campo de entrada de recogida de informaci\u00f3n sobre el usuario puede ser mediante programaci\u00f3n determinado cuando:",
                             "details": [
                                 {
@@ -363,7 +363,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "El uso del Color",
+                            "handle": "El uso del color",
                             "text": "El Color no se utiliza como el \u00fanico medio visual de comunicaci\u00f3n de la informaci\u00f3n, lo que indica una acci\u00f3n, lo que provoc\u00f3 una respuesta, o distinguir un elemento visual.",
                             "details": [
                                 {
@@ -384,7 +384,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Control De Audio",
+                            "handle": "Control De audio",
                             "text": "Si alguno de audio en una p\u00e1gina Web se reproduce autom\u00e1ticamente durante m\u00e1s de 3 segundos, un mecanismo para poner en pausa o detener el audio, o un mecanismo para el control de volumen de audio de forma independiente del sistema general de nivel de volumen.",
                             "details": [
                                 {
@@ -405,7 +405,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Contraste (M\u00ednimo)",
+                            "handle": "Contraste (m\u00ednimo)",
                             "text": "La presentaci\u00f3n visual del texto y las im\u00e1genes de texto tiene una relaci\u00f3n de contraste de al menos 4.5:1, excepto para los siguientes:",
                             "details": [
                                 {
@@ -438,7 +438,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Cambiar el tama\u00f1o del texto",
+                            "handle": "Redimensi\u00f3n del texto",
                             "text": "Excepto para los t\u00edtulos y las im\u00e1genes de texto, el texto se puede cambiar de tama\u00f1o sin tecnolog\u00eda de apoyo de hasta 200 por ciento, sin p\u00e9rdida de contenido o funcionalidad."
                         },
                         {
@@ -452,7 +452,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Las im\u00e1genes de Texto",
+                            "handle": "Im\u00e1genes de texto",
                             "text": "Si las tecnolog\u00edas que se utilizan pueden lograr la presentaci\u00f3n visual de texto, se utiliza para transmitir informaci\u00f3n, en lugar de im\u00e1genes de texto, excepto los siguientes:",
                             "details": [
                                 {
@@ -611,7 +611,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Reflujo",
+                            "handle": "Reflow",
                             "text": "El contenido puede ser presentado sin p\u00e9rdida de informaci\u00f3n o funcionalidad, y sin necesidad de desplazamiento en dos dimensiones:",
                             "details": [
                                 {
@@ -639,7 +639,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "No Contraste en el texto",
+                            "handle": "Contraste en elementos no textuales",
                             "text": "La presentaci\u00f3n visual de los siguientes tienen una relaci\u00f3n de contraste de al menos 3:1 contra adyacentes de color(s):",
                             "details": [
                                 {
@@ -665,7 +665,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Espaciado De Texto",
+                            "handle": "Espaciado en el texto",
                             "text": "En el contenido de implementado el uso de lenguajes de marcado que admiten las siguientes propiedades de estilo de texto, sin p\u00e9rdida de contenido o funcionalidad se produce mediante la configuraci\u00f3n de todos los siguientes, y por el cambio de ning\u00fan otro estilo de propiedad:",
                             "details": [
                                 {
@@ -695,7 +695,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Contenido en Hover o Enfoque",
+                            "handle": "Contenido en hover o focus",
                             "text": "Donde recibir y, a continuaci\u00f3n, la eliminaci\u00f3n de puntero o el foco del teclado desencadenantes de contenido adicional para hacerse visible y, a continuaci\u00f3n, ocultos, los siguientes son verdaderas:",
                             "details": [
                                 {
@@ -781,7 +781,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "No Hay Ning\u00fan Teclado Trampa",
+                            "handle": "Sin trampas para el foco del teclado",
                             "text": "Si el foco del teclado se puede mover a un componente de la p\u00e1gina a trav\u00e9s de una interfaz de teclado, a continuaci\u00f3n, centrarse puede ser alejado de ese componente utilizando s\u00f3lo una interfaz de teclado, y, si se requiere m\u00e1s que no modificada de flecha o las teclas de la ficha u otro est\u00e1ndar de los m\u00e9todos de salida, el usuario es informado de que el m\u00e9todo para mover el foco.",
                             "details": [
                                 {
@@ -813,7 +813,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Car\u00e1cter Accesos Directos De La Tecla",
+                            "handle": "Atajos con teclas de carcteres",
                             "text": "Si un m\u00e9todo abreviado de teclado es implementado en el contenido utilizando s\u00f3lo la carta (incluyendo may\u00fasculas y min\u00fasculas), los signos de puntuaci\u00f3n, n\u00fameros o caracteres de s\u00edmbolo, entonces al menos uno de los siguientes es verdadera:",
                             "details": [
                                 {
@@ -861,7 +861,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Temporizaci\u00f3n Ajustable",
+                            "handle": "Tiempo ajustable",
                             "text": "Para cada l\u00edmite de tiempo establecido por el contenido, al menos uno de los siguientes es verdadera:",
                             "details": [
                                 {
@@ -911,7 +911,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Poner En Pausa, Detener, Ocultar",
+                            "handle": "Poner en pausa, detener, ocultar",
                             "text": "Para el movimiento, parpadeo, el desplazamiento, o auto-actualizaci\u00f3n de la informaci\u00f3n, todos los siguientes son verdaderas:",
                             "details": [
                                 {
@@ -1028,7 +1028,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Tres Destellos o por Debajo del Umbral",
+                            "handle": "Umbral de tres destellos o menos",
                             "text": "Las p\u00e1ginas Web no contienen nada que parpadea m\u00e1s de tres veces en un segundo per\u00edodo, o el flash est\u00e1 por debajo de la general de flash y flash rojo umbrales.",
                             "details": [
                                 {
@@ -1089,7 +1089,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Superar Bloqueos",
+                            "handle": "Evitar bloques",
                             "text": "Un mecanismo para eludir los bloques de contenido que se repiten en m\u00faltiples p\u00e1ginas Web."
                         },
                         {
@@ -1103,7 +1103,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "P\u00e1gina Titulada",
+                            "handle": "Titulado de  p\u00e1ginas",
                             "text": "Las p\u00e1ginas Web tienen t\u00edtulos que describen el tema o prop\u00f3sito."
                         },
                         {
@@ -1117,7 +1117,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "El Enfoque De La Orden",
+                            "handle": "Orden del foco",
                             "text": "Si una p\u00e1gina Web se puede navegar de forma secuencial y las secuencias de navegaci\u00f3n afectar el significado o la operaci\u00f3n seleccionable de componentes de recibir el foco en un orden que preserva el significado y operatividad."
                         },
                         {
@@ -1131,7 +1131,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Link Prop\u00f3sito (En Contexto)",
+                            "handle": "Prop\u00f3sito de los enlaces (en Contexto)",
                             "text": "El objetivo de cada v\u00ednculo puede ser determinado desde el enlace de texto o desde el enlace de texto junto con su programaci\u00f3n determinado enlace contexto, excepto cuando el prop\u00f3sito del enlace ser\u00eda ambiguo para los usuarios en general."
                         },
                         {
@@ -1145,7 +1145,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "De M\u00faltiples Maneras",
+                            "handle": "M\u00faltiples v\u00edas",
                             "text": "M\u00e1s que una forma est\u00e1 disponible para localizar una p\u00e1gina Web dentro de un conjunto de p\u00e1ginas Web, excepto cuando la P\u00e1gina Web es el resultado de, o un paso en un proceso."
                         },
                         {
@@ -1159,7 +1159,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Los encabezados y Etiquetas",
+                            "handle": "Encabezados y etiquetas",
                             "text": "Los t\u00edtulos y las etiquetas describen el tema o prop\u00f3sito.",
                             "sufficientNotes": [
                                 "Los encabezados y etiquetas deben ser de programaci\u00f3n determinado, por <a href='#contenido-estructura-separaci\u00f3n-program\u00e1tico'>Criterio de \u00c9xito 1.3.1</a>."
@@ -1176,7 +1176,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Foco Visible",
+                            "handle": "Foco visible",
                             "text": "Cualquier teclado operable de la interfaz de usuario tiene un modo de funcionamiento en el que el foco del teclado indicador est\u00e1 visible."
                         },
                         {
@@ -1253,7 +1253,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Puntero Gestos",
+                            "handle": "Gestos del puntero",
                             "text": "Toda la funcionalidad que utiliza multipunto o la ruta de acceso basado en gestos para la operaci\u00f3n puede ser operado con una sola puntero sin una ruta basada en el gesto, a menos que multipunto o la ruta de acceso basado en gesto es esencial."
                         },
                         {
@@ -1264,7 +1264,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Puntero De Cancelaci\u00f3n",
+                            "handle": "Cancelaci\u00f3n del puntero",
                             "text": "Para la funcionalidad que puede ser operado utilizando un \u00fanico puntero, al menos uno de los siguientes es verdadera:",
                             "details": [
                                 {
@@ -1298,7 +1298,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Etiqueta de Nombre",
+                            "handle": "Etiqueta en el nombre",
                             "text": "Para los componentes de interfaz de usuario con las etiquetas de texto o las im\u00e1genes de texto, el nombre contiene el texto que se presenta visualmente."
                         },
                         {
@@ -1309,7 +1309,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "El Movimiento De Accionamiento",
+                            "handle": "Activaci\u00f3n mediante movimiento",
                             "text": "La funcionalidad que puede ser operado por el movimiento del dispositivo o de usuario de movimiento tambi\u00e9n puede ser operado por componentes de interfaz de usuario y responder a la moci\u00f3n puede ser desactivado para evitar el accionamiento accidental, excepto cuando:",
                             "details": [
                                 {
@@ -1410,7 +1410,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "El idioma de la P\u00e1gina",
+                            "handle": "Idioma de la p\u00e1gina",
                             "text": "El valor predeterminado del lenguaje humano, de cada p\u00e1gina Web puede ser determinado mediante programaci\u00f3n."
                         },
                         {
@@ -1424,7 +1424,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "El lenguaje de las Piezas",
+                            "handle": "Idioma de las partes",
                             "text": "El lenguaje humano de cada pasaje o frase en el contenido puede ser determinado mediante programaci\u00f3n, excepto para los nombres propios, t\u00e9rminos t\u00e9cnicos, palabras de indeterminado lenguaje, y las palabras o frases que se han convertido en parte de la lengua vern\u00e1cula de la inmediatamente el texto que lo rodea."
                         },
                         {
@@ -1512,7 +1512,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "En El Enfoque",
+                            "handle": "Al recibir el foco",
                             "text": "Cuando cualquier componente recibe el foco, no iniciar un cambio de contexto.",
                             "sufficientNotes": [
                                 "Un cambio de contenido no es siempre un cambio de contexto. Este criterio de \u00e9xito es autom\u00e1ticamente se reuni\u00f3 si los cambios en los contenidos no son tambi\u00e9n los cambios de contexto."
@@ -1529,7 +1529,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "En La Entrada",
+                            "handle": "Al recibir entradas",
                             "text": "Cambiar la configuraci\u00f3n de cualquier componente de interfaz de usuario no causa autom\u00e1ticamente un cambio de contexto a menos que el usuario haya sido advertido de la conducta antes de utilizar el componente.",
                             "sufficientNotes": [
                                 "Un cambio de contenido no es siempre un cambio de contexto. Este criterio de \u00e9xito es autom\u00e1ticamente se reuni\u00f3 si los cambios en los contenidos no son tambi\u00e9n los cambios de contexto."
@@ -1546,7 +1546,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Navegaci\u00f3n Consistente",
+                            "handle": "Navegaci\u00f3n coherente",
                             "text": "De navegaci\u00f3n de los mecanismos que se repiten en m\u00faltiples p\u00e1ginas Web dentro de un conjunto de p\u00e1ginas Web se producen en el mismo orden relativo que cada vez que se repite, a menos que el cambio es iniciado por el usuario."
                         },
                         {
@@ -1560,7 +1560,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Coherente De Identificaci\u00f3n De",
+                            "handle": "Identificaci\u00f3n coherente",
                             "text": "Los componentes que tienen la misma funcionalidad dentro de un conjunto de p\u00e1ginas Web se identifican de forma coherente.",
                             "sufficientNotes": [
                                 "Alternativas de texto que son \"consistentes\", no siempre son \"id\u00e9nticos\". Por ejemplo, usted puede tener una gr\u00e1fica de flecha en la parte inferior de una p\u00e1gina Web que enlace a la siguiente p\u00e1gina Web. El texto alternativo puede decir \"Ir a la p\u00e1gina 4.\" Naturalmente, no ser\u00eda conveniente repetir este texto exacto alternativa en la siguiente p\u00e1gina Web. Ser\u00eda m\u00e1s apropiado decir \"Ir a la p\u00e1gina 5\". Aunque estas alternativas de texto no ser\u00eda id\u00e9ntico, que sea consistente, y por lo tanto satisfacer este Criterio de \u00c9xito.",
@@ -1607,7 +1607,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Error De Identificaci\u00f3n",
+                            "handle": "Identificaci\u00f3n de errores",
                             "text": "Si una entrada de error es detectado autom\u00e1ticamente, el elemento que est\u00e1 en el error es identificado y el error se describe para el usuario en el texto."
                         },
                         {
@@ -1621,7 +1621,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Las etiquetas o Instrucciones",
+                            "handle": "Etiquetas o instrucciones",
                             "text": "Las etiquetas o instrucciones que se proporcionan cuando el contenido requiere la intervenci\u00f3n del usuario.",
                             "sufficientNotes": [
                                 "Las t\u00e9cnicas al final de la lista anterior debe ser considerado como \"\u00faltimo recurso\" y s\u00f3lo se utilizan cuando las otras t\u00e9cnicas no pueden ser aplicados a la p\u00e1gina. Las anteriores t\u00e9cnicas son las preferidas porque a aumentar la accesibilidad a un amplio grupo de usuarios."
@@ -1638,7 +1638,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Error Sugerencia",
+                            "handle": "Sugerencias ante errores",
                             "text": "Si un error de entrada se detecta autom\u00e1ticamente y sugerencias para la correcci\u00f3n son conocidos, entonces las sugerencias que se proporcionan al usuario, a menos que se pusiera en peligro la seguridad o uso de los contenidos."
                         },
                         {
@@ -1652,7 +1652,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Prevenci\u00f3n De Errores (Legales, Financieros, Datos)",
+                            "handle": "Prevenci\u00f3n de errores (legales, financieros, datos)",
                             "text": "Para las p\u00e1ginas Web que causa legal de los compromisos o de las transacciones financieras para el usuario a ocurrir, que modificar o eliminar el usuario-controlable de datos en sistemas de almacenamiento de datos, o que env\u00ede el usuario las respuestas en la prueba, al menos uno de los siguientes es verdadera:",
                             "details": [
                                 {
@@ -1759,7 +1759,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "El an\u00e1lisis de",
+                            "handle": "Procesamiento",
                             "text": "En el contenido de implementado el uso de lenguajes de marcado, los elementos tienen completa de etiquetas de inicio y fin, los elementos anidados de acuerdo a sus especificaciones, los elementos no contienen atributos duplicados, y cualquier Identificadores son \u00fanicos, excepto donde las especificaciones permiten que estas caracter\u00edsticas.",
                             "details": [
                                 {
@@ -1780,7 +1780,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Nombre, Funci\u00f3n, Valor",
+                            "handle": "Nombre, funci\u00f3n, valor",
                             "text": "Para todos los componentes de interfaz de usuario (incluyendo pero no limitado a: los elementos de los formularios, enlaces y componentes generados por scripts), el nombre y la funci\u00f3n puede ser determinado mediante programaci\u00f3n; los estados, propiedades y valores que se pueden configurar por el usuario se puede establecer mediante programaci\u00f3n; y la notificaci\u00f3n de los cambios a estos elementos est\u00e1 disponible para los agentes de usuario, incluidas las tecnolog\u00edas de asistencia.",
                             "details": [
                                 {
@@ -1798,7 +1798,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Los Mensajes De Estado",
+                            "handle": "Mensajes De Estado",
                             "text": "En el contenido de implementado el uso de lenguajes de marcado, los mensajes de estado puede ser determinado mediante programaci\u00f3n a trav\u00e9s de roles o propiedades que pueden ser presentados al usuario a trav\u00e9s de las tecnolog\u00edas de asistencia sin recibir el foco."
                         }
                     ]
