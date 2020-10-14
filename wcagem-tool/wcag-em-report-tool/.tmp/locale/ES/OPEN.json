@@ -1,7 +1,0 @@
-{
-    "TITLE": "Informe de evaluación abierto",
-    "INTRO": "Para recargar un archivo guardado, haga clic en el botón 'Buscar y seleccionar el archivo de datos' y localice el archivo JSON que ha guardado anteriormente",
-    "LABEL_SELECT_FILE": "Buscar y seleccionar el archivo de datos",
-    "MSG_LOADING": "Cargando la evaluación, por favor espere...",
-    "BTN_LOAD_FILE": "Cargar datos del archivo seleccionado"
-}

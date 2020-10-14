@@ -380,6 +380,8 @@ td {
 .formulario fieldset, div.detail, .textoinformativo, #cajaformularios {
 	border: solid #e5e5e5 1px;
 	padding: 1% 4%;
+	float: left;
+    width: 100%;
 }
 
 #cajaformularios {

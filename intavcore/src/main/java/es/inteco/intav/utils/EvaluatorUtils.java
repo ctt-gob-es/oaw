@@ -903,6 +903,9 @@ public final class EvaluatorUtils {
 							} else { // Save passed checks to generate wcag.em report
 								observatorySubgroupForm.getSuccessChecks().add(check);
 							}
+						} else {
+							// TODO Not executed check
+							observatorySubgroupForm.getNotExecutedChecks().add(check);
 						}
 					}
 					if (evaluationForm.getCrawlerExecutionId() < 0 || isDebugMode) {

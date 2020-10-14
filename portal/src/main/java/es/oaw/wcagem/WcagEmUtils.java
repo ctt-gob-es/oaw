@@ -534,6 +534,15 @@ public final class WcagEmUtils {
 	 */
 	private static void filterObservatorySubgroupForm(Map<String, ValidationDetails> tmpWcag, final ObservatorySubgroupForm observatorySubgroupForm, final String wcagEmId,
 			ValidationDetails validationDetailes, List<ValidationResult> results, Map<String, List<String>> checkWcagRelationMap, final String result) {
+		List<Integer> notExecuted = observatorySubgroupForm.getNotExecutedChecks();
+		List<Integer> notExecutedrealtedThisWcagPoint = new ArrayList<>();
+		if (notExecuted != null) {
+			for (Integer notEx : notExecuted) {
+				if (checkWcagRelationMap.get(wcagEmId) != null && checkWcagRelationMap.get(wcagEmId).contains(notEx.toString())) {
+					notExecutedrealtedThisWcagPoint.add(notEx);
+				}
+			}
+		}
 		List<Integer> successChecks = observatorySubgroupForm.getSuccessChecks();
 		List<Integer> successRelatedThisWcagPoint = new ArrayList<>();
 		if (successChecks != null) {
@@ -559,6 +568,7 @@ public final class WcagEmUtils {
 				BeanUtils.copyProperties(filteredObservatorySubgroupForm, observatorySubgroupForm);
 				filteredObservatorySubgroupForm.setProblems(problemsrealtedThisWcagPoint);
 				filteredObservatorySubgroupForm.setSuccessChecks(successRelatedThisWcagPoint);
+				filteredObservatorySubgroupForm.setNotExecutedChecks(notExecutedrealtedThisWcagPoint);
 				validationDetailes.setResult(result);
 				processChecks(filteredObservatorySubgroupForm, validationDetailes, results);
 				tmpWcag.put(wcagEmId, validationDetailes);
@@ -576,6 +586,16 @@ public final class WcagEmUtils {
 	 * @param results                 the results
 	 */
 	private static void processChecks(final ObservatorySubgroupForm observatorySubgroupForm, ValidationDetails validationDetailes, List<ValidationResult> results) {
+		// Not Executed
+		if (observatorySubgroupForm.getNotExecutedChecks() != null && !observatorySubgroupForm.getNotExecutedChecks().isEmpty()) {
+			for (Integer notExecuted : observatorySubgroupForm.getNotExecutedChecks()) {
+				if (notExecuted != null) {
+					ValidationResult validationResult = processNotExecuted(observatorySubgroupForm, notExecuted);
+					results.add(validationResult);
+				}
+			}
+			validationDetailes.setResults(results);
+		}
 		// Problems
 		if (observatorySubgroupForm.getProblems() != null && !observatorySubgroupForm.getProblems().isEmpty()) {
 			for (ProblemForm problem : observatorySubgroupForm.getProblems()) {
@@ -624,6 +644,21 @@ public final class WcagEmUtils {
 		validationResult.setOawVerification(observatorySubgroupForm.getDescription());
 		validationResult.setOawDescription("check." + check + ".error");
 		validationResult.setResult(EARL_PASSED);
+		return validationResult;
+	}
+
+	/**
+	 * Process not executed.
+	 *
+	 * @param observatorySubgroupForm the observatory subgroup form
+	 * @param check                   the check
+	 * @return the validation result
+	 */
+	private static ValidationResult processNotExecuted(final ObservatorySubgroupForm observatorySubgroupForm, Integer check) {
+		ValidationResult validationResult = new ValidationResult();
+		validationResult.setOawVerification(observatorySubgroupForm.getDescription());
+		validationResult.setOawDescription("check." + check + ".error");
+		validationResult.setResult(EARL_INAPPLICABLE);
 		return validationResult;
 	}
 
