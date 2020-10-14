@@ -20,7 +20,7 @@ services:
       container_name: oaw_proxy   
 
     nginx:
-      image: artefactos-ic.scae.redsara.es:6000/nginx:1.17.9-alpine      
+      image: nginx:1.17.9-alpine      
       volumes:
         - ./nginx/reverse.conf:/etc/nginx/conf.d/default.conf
         - ./nginx/certs/server.crt:/etc/nginx/ssl/server.crt

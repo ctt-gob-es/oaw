@@ -1,4 +1,4 @@
-FROM artefactos-ic.scae.redsara.es:6000/alpine:3.12
+FROM alpine:3.12
 
 #Instalar Node
 RUN apk add --no-cache nodejs-current nodejs-npm tini

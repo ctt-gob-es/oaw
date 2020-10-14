@@ -5,6 +5,8 @@
     "BTN_SAVE_HTML": "Download the evaluation report (HTML)",
     "BTN_SAVE_CSS": "Download the report stylesheet (CSS)",
     "BTN_SAVE_JSON": "Save the evaluation data (JSON)",
-    "BTN_SAVE_XLSX": "Save the report book (ODS)",
-    "BTN_SAVE_XLSX_LOAD": "Generating report (ODS)"
+    "BTN_SAVE_ODS": "Save the report book (ODS)",
+    "BTN_SAVE_ODS_LOAD": "Generating report (ODS)",
+    "BTN_SAVE_XLSX": "Save the report book (XLSX)",
+    "BTN_SAVE_XLSX_LOAD": "Generating report (XLSX)"
 }
