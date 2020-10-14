@@ -160,7 +160,7 @@ public class CrawlerJob implements InterruptableJob {
 		final String linkDirectory = link.replaceAll(protocolRegExp, EMPTY_STRING).lastIndexOf('/') != -1
 				? link.replaceAll(protocolRegExp, EMPTY_STRING).substring(0, link.replaceAll(protocolRegExp, EMPTY_STRING).lastIndexOf('/'))
 				: link.replaceAll(protocolRegExp, EMPTY_STRING);
-		return linkDirectory.toString().contains(urlRootDirectory.toLowerCase());
+		return linkDirectory.toString().toLowerCase().contains(urlRootDirectory.toLowerCase());
 	}
 
 	/**

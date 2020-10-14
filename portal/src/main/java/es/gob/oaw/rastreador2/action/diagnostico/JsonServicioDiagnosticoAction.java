@@ -48,22 +48,15 @@ public class JsonServicioDiagnosticoAction extends DispatchAction {
 			final int numResult = DiagnosisDAO.count(c, search);
 			List<ServicioDiagnosticoForm> listSD = DiagnosisDAO.find(c, (pagina - 1), search);
 			Float avg = DiagnosisDAO.getAverageTime(c, search);
-			
-			
-			Gson gson = new GsonBuilder()
-					   .setDateFormat("dd/MM/yyyy HH:mm").create();
-			
+			Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy HH:mm").create();
 			String jsonSeeds = gson.toJson(listSD);
 			response.setContentType("text/json");
 			// Paginacion
 			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
-			
-
-			
 			String jsonPagination = gson.toJson(paginas);
 			PrintWriter pw = response.getWriter();
 			// pw.write(json);
-			pw.write("{\"diagnosticos\": " + jsonSeeds.toString() + ",\"avg\":"+ avg +",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
+			pw.write("{\"diagnosticos\": " + jsonSeeds.toString() + ",\"avg\":" + avg + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
 			pw.flush();
 			pw.close();
 		} catch (Exception e) {
@@ -112,6 +105,9 @@ public class JsonServicioDiagnosticoAction extends DispatchAction {
 		}
 		if (!StringUtils.isEmpty(request.getParameter("endDate"))) {
 			search.setEndDate(request.getParameter("endDate") + " 23:59:59");
+		}
+		if (!StringUtils.isEmpty(request.getParameter("depthReport"))) {
+			search.setDepthReport(request.getParameter("depthReport"));
 		}
 		return search;
 	}

@@ -63,6 +63,7 @@ public class OpenOfficeGeneratorThread extends Thread {
 	private Long idSegmentTemplate;
 	/** The id complexity template. */
 	private Long idComplexityTemplate;
+	private Long idSegmentEvolTemplate;
 	/** The report title. */
 	private String reportTitle;
 	/** The observatory FF form. */
@@ -95,7 +96,7 @@ public class OpenOfficeGeneratorThread extends Thread {
 	 * @throws IllegalAccessException
 	 */
 	public OpenOfficeGeneratorThread(final HttpServletRequest request, String filePath, String graphicPath, String date, Long tipoObservatorio, int numberObservatoryExecutions, String[] tagsToFilter,
-			Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate, String reportTitle,
+			Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate, Long idSegmentEvolTemplate, String reportTitle,
 			ObservatorioRealizadoForm observatoryFFForm, String email, ObservatorioForm observatoryForm) throws IllegalAccessException, InvocationTargetException {
 		BeanUtils.populate(this.request, request.getParameterMap());
 		this.filePath = filePath;
@@ -113,6 +114,7 @@ public class OpenOfficeGeneratorThread extends Thread {
 		this.observatoryFFForm = observatoryFFForm;
 		this.email = email;
 		this.observatoryForm = observatoryForm;
+		this.idSegmentEvolTemplate = idSegmentEvolTemplate;
 	}
 
 	/**
@@ -123,7 +125,7 @@ public class OpenOfficeGeneratorThread extends Thread {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final SimpleDateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
 		ExportOpenOfficeUtils.createOpenOfficeDocumentFiltered(request, filePath, graphicPath, df.format(observatoryFFForm.getFecha()), observatoryForm.getTipo(), exObsIds.length, tagsToFilter,
-				grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, reportTitle);
+				grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, idSegmentEvolTemplate, reportTitle);
 		FileUtils.deleteDir(new File(graphicPath));
 		StringBuilder mailBody = new StringBuilder(
 				String.format("El proceso de generación de informes ha finalizado para el observatorio %s. Puede descargar los informes agrupados por dependencia en los siguientes enlaces: <br/>",
@@ -141,7 +143,7 @@ public class OpenOfficeGeneratorThread extends Thread {
 		final MailService mailService = new MailService();
 		List<String> mailsTo = new ArrayList<>();
 		mailsTo.add(email);
-		mailsTo.add("alvaro.pelaez@ctic.es");
+		mailsTo.add("example@mail");
 		mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
 	}
 

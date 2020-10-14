@@ -3504,6 +3504,7 @@ public class Check {
 		if (nodeNode == null) {
 			return false;
 		}
+		// TODO If node is ul or ol and childs is li skip this verification
 		try {
 			int childLevel = -1;
 			if (checkCode.getFunctionAttribute1() != null && !checkCode.getFunctionAttribute1().equals("")) {
@@ -4527,7 +4528,9 @@ public class Check {
 		final Document document = elementGiven.getOwnerDocument();
 		if (document != null) {
 			if (controlsNumIds(document.getElementsByTagName("input"), attributeFor) + controlsNumIds(document.getElementsByTagName("select"), attributeFor)
-					+ controlsNumIds(document.getElementsByTagName("textarea"), attributeFor) == 1) {
+					+ controlsNumIds(document.getElementsByTagName("textarea"), attributeFor) + controlsNumIds(document.getElementsByTagName("button"), attributeFor)
+					+ controlsNumIds(document.getElementsByTagName("output"), attributeFor) + controlsNumIds(document.getElementsByTagName("meter"), attributeFor)
+					+ controlsNumIds(document.getElementsByTagName("progess"), attributeFor) == 1) {
 				return false;
 			} else {
 				return true;
@@ -5874,7 +5877,9 @@ public class Check {
 					final Element element = (Element) listLabels.item(x);
 					if (element.getAttribute("for").equalsIgnoreCase(stringId) && !StringUtils.normalizeWhiteSpaces(element.getTextContent()).trim().isEmpty()) {
 						// found an associated label
-						return (!StringUtils.isEmpty(element.getTextContent()) && !arialValue.contains(StringUtils.normalizeWhiteSpaces(element.getTextContent())));
+						// return (!StringUtils.isEmpty(element.getTextContent()) && !arialValue.contains(StringUtils.normalizeWhiteSpaces(element.getTextContent())));
+						return (!StringUtils.isEmpty(element.getTextContent()) && !StringUtils.isEmpty(arialValue)
+								&& !arialValue.toLowerCase().contains(StringUtils.normalizeWhiteSpaces(element.getTextContent().toLowerCase())));
 					}
 				}
 				return false;
@@ -5936,7 +5941,7 @@ public class Check {
 			// (en caso contrario falla la comprobacion 126 y no se ejecuta
 			// esta)
 			try {
-				return !AccesibilityDeclarationCheckUtils.hasSection(elementGiven.getOwnerDocument(), pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+				return AccesibilityDeclarationCheckUtils.hasSection(elementGiven.getOwnerDocument(), pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
 			} catch (Exception e) {
 				Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
 			}
@@ -5957,13 +5962,14 @@ public class Check {
 						if (hasSection2) {
 							TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 						}
-						return true;
+						// return hasSection2;
+						hasSection |= hasSection2;
 					}
 				} catch (Exception e) {
 					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
-			return !hasSection;
+			return hasSection;
 		}
 	}
 
@@ -6029,19 +6035,19 @@ public class Check {
 								if (patterAutocomplete.matcher(textSection).find()) {
 									// TODO INCREMENT CHECK OK IN DB
 									TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
-									return true;
+									hasContact |= true;
 								}
 							} catch (Exception e) {
 								Logger.putLog("Error al procesar el patrón" + stringPattern, AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
 							}
 						}
-						return !false;
+						return true;
 					}
 				} catch (Exception e) {
 					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
-			return !hasContact;
+			return hasContact;
 		}
 	}
 
@@ -6103,7 +6109,7 @@ public class Check {
 							if (patterAutocomplete.matcher(textSection).find()) {
 								// TODO INCREMENT CHECK OK IN DB
 								TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
-								return true;
+								hasContact |= true;
 							}
 						} catch (Exception e) {
 							Logger.putLog("Error al procesar el patrón" + pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2()), AccesibilityDeclarationCheckUtils.class,
@@ -6180,7 +6186,7 @@ public class Check {
 									if (link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("mailto")) {
 										// TODO INCREMENT CHECK OK IN DB
 										TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
-										return true;
+										hasContact |= true;
 									}
 								} catch (Exception e) {
 									Logger.putLog("Error al procesar el patrón" + "mailto", AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -6247,7 +6253,7 @@ public class Check {
 							if (linksC.getLength() > 0) {
 								// TODO INCREMENT CHECK OK IN DB
 								TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
-								return true;
+								hasContact |= true;
 							}
 						}
 						return false;
@@ -6331,7 +6337,7 @@ public class Check {
 								if (dateComparision) {
 									TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 								}
-								return dateComparision;
+								hasContact |= dateComparision;
 							}
 						}
 						return false;

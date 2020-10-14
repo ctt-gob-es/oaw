@@ -1,3 +1,4 @@
+
 var lastUrl;
 var scroll;
 
@@ -195,9 +196,15 @@ function textareaEditValue(elem, operation, value) {
 
 // Recarga el grid. Recibe como parámetro la url de la acción con la información
 // de paginación.
-function reloadGrid(path) {
+function reloadGrid(originalPath, col, direction) {
 
-	lastUrl = path;
+	lastUrl = originalPath;
+	
+	var path = originalPath;
+	
+	if(col && direction){
+		path = path +'&sortCol='+col+'&sortOrder='+direction;
+	}
 	
 	// Mantener el scroll
 	scroll = $(window).scrollTop();
@@ -245,13 +252,13 @@ function reloadGrid(path) {
 														sortable : false
 													},
 													{
-														name : "nombre",
+														name : "l.nombre",
 														width : 50,
 														editrules : {
 															required : true
 														},
 														edittype : "text",
-														sortable : false,
+														sortable : true,
 														align : "left",
 														formatter : nombreSemillaFormatter,
 														edittype : "custom",
@@ -740,7 +747,8 @@ function reloadGrid(path) {
 														align : "center",
 														width : 10,
 														editable : false,
-														datatype : 'html'
+														datatype : 'html',
+														sortable : false
 													},
 													{
 														name : 'verInformes',
@@ -748,7 +756,8 @@ function reloadGrid(path) {
 														align : "center",
 														width : 10,
 														editable : false,
-														datatype : 'html'
+														datatype : 'html',
+														sortable : false
 													},
 													{
 														name : 'relanzar',
@@ -756,14 +765,17 @@ function reloadGrid(path) {
 														align : "center",
 														width : 10,
 														editable : false,
-														datatype : 'html'
+														datatype : 'html',
+														sortable : false
 													},
 													{
 														name : 'eliminarSemilla',
 														formatter : eliminarResultadoFormater,
 														align : "center",
 														width : 10,
-														editable : false
+														editable : false,
+														sortable : false
+														
 													},
 													{
 														name : "observaciones",
@@ -821,13 +833,20 @@ function reloadGrid(path) {
 											gridComplete : function() {
 												// Restaurar el scroll
 												$(window).scrollTop(scroll);
-											}
+											},
+											onSortCol: function(index, iCol, sortorder){
+     												reloadGrid(lastUrl, this.p.colModel[iCol].name, sortorder);
+     												return 'stop';
+     										}
 										}).jqGrid("inlineNav");
 
 						// Recargar el grid
 						$('#grid').jqGrid('setGridParam', {
 							data : JSON.parse(ajaxJson)
 						}).trigger('reloadGrid');
+						
+						
+
 
 						$('#grid').unbind("contextmenu");
 						
@@ -842,6 +861,8 @@ function reloadGrid(path) {
 						paginas = data.paginas;
 
 						$('#paginador').empty();
+						
+						$('#paginador').append("<span style='float: left;clear: both; display: block; width: 100%; text-align: left;padding: 10px 5px;'><strong>"+ paginadorTotal+ "</strong> " + data.paginador.total +"</span>");
 
 						// Si solo hay una página no pintamos el paginador
 						if (paginas.length > 1) {

@@ -92,6 +92,39 @@ public final class PlantillaDAO {
 	}
 
 	/**
+	 * Find by name.
+	 *
+	 * @param c    the c
+	 * @param name the name
+	 * @return the plantilla form
+	 * @throws SQLException the SQL exception
+	 */
+	public static PlantillaForm findByName(Connection c, final String name) throws SQLException {
+		PlantillaForm plantilla = null;
+		// query += " LIMIT ? OFFSET ?";
+		try (PreparedStatement ps = c.prepareStatement("SELECT p.id_plantilla, p.nombre, p.documento FROM observatorio_plantillas p WHERE p.nombre = ?")) {
+			ps.setString(1, name);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					plantilla = new PlantillaForm();
+					plantilla.setId(rs.getLong("p.id_plantilla"));
+					plantilla.setNombre(rs.getString("p.nombre"));
+					Blob blob = rs.getBlob("p.documento");
+					int blobLength = (int) blob.length();
+					byte[] blobAsBytes = blob.getBytes(1, blobLength);
+					// release the blob and free up memory. (since JDBC 4.0)
+					blob.free();
+					plantilla.setDocumento(blobAsBytes);
+					return plantilla;
+				}
+			}
+		} catch (SQLException e) {
+			throw e;
+		}
+		return plantilla;
+	}
+
+	/**
 	 * Exists plantilla.
 	 *
 	 * @param c         the c
