@@ -24,12 +24,24 @@
             {{ 'DOWNLOAD.BTN_SAVE_JSON' | translate}}
           </a></li>
         <li class="list-group-item"><a ng-click="saveAsXlsx()" ng-show="loading != true" target="_blank" href="">
-            {{ 'DOWNLOAD.BTN_SAVE_XLSX' | translate}}
+            {{ 'DOWNLOAD.BTN_SAVE_ODS' | translate}}
           </a>
-          <span ng-show="loading == true">
-            <i class="glyphicon glyphicon-refresh spinning"></i> {{ 'DOWNLOAD.BTN_SAVE_XLSX_LOAD' | translate}}
+
+          <span ng-show="loading == true">            
+            <i class="glyphicon glyphicon-refresh spinning"></i> {{ 'DOWNLOAD.BTN_SAVE_ODS_LOAD' | translate}}
           </span>
+          <div ng-show="clickDownload == true" class="alert alert-info infobox text-justify" ng-bind-html="'DOWNLOAD.BTN_SAVE_ODS_INFO' | translate"></div>
+          
         </li>
+        
+        <li class="list-group-item"><a ng-click="saveAsXlsx2()" ng-show="loadingxlsx != true" target="_blank" href="">
+          {{ 'DOWNLOAD.BTN_SAVE_XLSX' | translate}}
+        </a>
+        
+        <span ng-show="loadingxlsx == true">
+          <i class="glyphicon glyphicon-refresh spinning"></i> {{ 'DOWNLOAD.BTN_SAVE_XLSX_LOAD' | translate}}
+        </span>
+      </li>
       </ul>
     </div>
   </div>

@@ -43,6 +43,8 @@ public class ObservatorySubgroupForm implements Serializable {
 	private List<ProblemForm> problems;
 	/** The value. */
 	private int value;
+	/** The not executed checks. */
+	private List<Integer> notExecutedChecks;
 
 	/**
 	 * Instantiates a new observatory subgroup form.
@@ -53,6 +55,7 @@ public class ObservatorySubgroupForm implements Serializable {
 		this.problems = new ArrayList<>();
 		this.ignoreRelatedChecks = new ArrayList<>();
 		this.successChecks = new ArrayList<>();
+		this.notExecutedChecks = new ArrayList<>();
 	}
 
 	/**
@@ -218,5 +221,23 @@ public class ObservatorySubgroupForm implements Serializable {
 	 */
 	public void setSuccessChecks(List<Integer> successChecks) {
 		this.successChecks = successChecks;
+	}
+
+	/**
+	 * Gets the not executed checks.
+	 *
+	 * @return the notExecutedChecks
+	 */
+	public List<Integer> getNotExecutedChecks() {
+		return notExecutedChecks;
+	}
+
+	/**
+	 * Sets the not executed checks.
+	 *
+	 * @param notExecutedChecks the notExecutedChecks to set
+	 */
+	public void setNotExecutedChecks(List<Integer> notExecutedChecks) {
+		this.notExecutedChecks = notExecutedChecks;
 	}
 }

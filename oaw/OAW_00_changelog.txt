@@ -13,7 +13,8 @@
 - Corregida la comprobación 67 para incluir nuevos elementos etiquetables en html5
 - Actualizados los informes individuales de la metodología de accesibilidad 
 - Corregido un error al generar los anexos del cartucho de accesibilidad
-
+- Plantilla de informe agregado del cartucho de la metodología de accesibilidad
+- Incluidos en la exportación de JSON los checks que no aplican
 
 5.0.5
 ------------------------------------------------------------------------------------------------------------------------------------

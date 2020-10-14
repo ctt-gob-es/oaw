@@ -94,7 +94,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Solo de Audio y de V\u00eddeo-s\u00f3lo (grabado)",
+                            "handle": "S\u00f3lo audio y de s\u00f3lo v\u00eddeo (grabado)",
                             "text": "Para pregrabado solo de audio y de video pregrabado-s\u00f3lo los medios de comunicaci\u00f3n, la siguiente es cierto, excepto cuando el audio o el v\u00eddeo es un medio de comunicaci\u00f3n alternativo para el texto y est\u00e1 claramente identificado como tal:",
                             "details": [
                                 {
@@ -363,7 +363,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "El uso del color",
+                            "handle": "Uso del color",
                             "text": "El Color no se utiliza como el \u00fanico medio visual de comunicaci\u00f3n de la informaci\u00f3n, lo que indica una acci\u00f3n, lo que provoc\u00f3 una respuesta, o distinguir un elemento visual.",
                             "details": [
                                 {
@@ -384,7 +384,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Control De audio",
+                            "handle": "Control del audio",
                             "text": "Si alguno de audio en una p\u00e1gina Web se reproduce autom\u00e1ticamente durante m\u00e1s de 3 segundos, un mecanismo para poner en pausa o detener el audio, o un mecanismo para el control de volumen de audio de forma independiente del sistema general de nivel de volumen.",
                             "details": [
                                 {
@@ -1131,7 +1131,7 @@
                                 "2.1"
                             ],
                             "level": "A",
-                            "handle": "Prop\u00f3sito de los enlaces (en Contexto)",
+                            "handle": "Prop\u00f3sito de los enlaces (en contexto)",
                             "text": "El objetivo de cada v\u00ednculo puede ser determinado desde el enlace de texto o desde el enlace de texto junto con su programaci\u00f3n determinado enlace contexto, excepto cuando el prop\u00f3sito del enlace ser\u00eda ambiguo para los usuarios en general."
                         },
                         {
@@ -1798,7 +1798,7 @@
                                 "2.1"
                             ],
                             "level": "AA",
-                            "handle": "Mensajes De Estado",
+                            "handle": "Mensajes de estado",
                             "text": "En el contenido de implementado el uso de lenguajes de marcado, los mensajes de estado puede ser determinado mediante programaci\u00f3n a trav\u00e9s de roles o propiedades que pueden ser presentados al usuario a trav\u00e9s de las tecnolog\u00edas de asistencia sin recibir el foco."
                         }
                     ]
