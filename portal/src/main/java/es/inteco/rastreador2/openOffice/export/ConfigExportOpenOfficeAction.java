@@ -104,6 +104,10 @@ public class ConfigExportOpenOfficeAction extends Action {
 		if (request.getParameter(Constants.ID_COMPLEXITY_TEMPLATE) != null) {
 			idComplexityTemplate = Long.parseLong(request.getParameter(Constants.ID_COMPLEXITY_TEMPLATE));
 		}
+		Long idSegmentEvolTemplate = null;
+		if (request.getParameter(Constants.ID_SEGMENT_EVOL_TEMPLATE) != null) {
+			idSegmentEvolTemplate = Long.parseLong(request.getParameter(Constants.ID_SEGMENT_EVOL_TEMPLATE));
+		}
 		String reportTitle = "";
 		if (request.getParameter(Constants.ID_REPORT_TITLE) != null) {
 			reportTitle = request.getParameter(Constants.ID_REPORT_TITLE);
@@ -120,7 +124,7 @@ public class ConfigExportOpenOfficeAction extends Action {
 			filePath = basePath + PDFUtils.formatSeedName(observatoryForm.getNombre()) + ".odt";
 			final String graphicPath = basePath + "temp" + File.separator;
 			ExportOpenOfficeUtils.createOpenOfficeDocumentFiltered(request, filePath, graphicPath, df.format(observatoryFFForm.getFecha()), observatoryForm.getTipo(), exObsIds.length, tagsToFilter,
-					grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, reportTitle);
+					grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, idSegmentEvolTemplate, reportTitle);
 			// FileUtils.deleteDir(new File(graphicPath));
 			final DatosForm userData = LoginDAO.getUserDataByName(c, request.getSession().getAttribute(Constants.USER).toString());
 			request.setAttribute("EMAIL", userData.getEmail());

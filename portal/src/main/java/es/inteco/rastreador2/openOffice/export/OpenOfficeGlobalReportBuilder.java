@@ -65,24 +65,63 @@ import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ComplianceComparisonForm;
 import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
+import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.PlantillaForm;
+import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
 import es.inteco.rastreador2.dao.login.DatosForm;
 import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.plantilla.PlantillaDAO;
+import es.inteco.rastreador2.dao.rastreo.GlobalReportStatistics;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.utils.ChartForm;
 import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.GraphicsUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
+import es.inteco.view.forms.AmbitViewListForm;
 import es.inteco.view.forms.ComplexityViewListForm;
 
 /**
  * The Class OpenOfficeGlobalReportBuilder.
  */
+@SuppressWarnings("restriction")
 public final class OpenOfficeGlobalReportBuilder {
+	/** The Constant OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPLIANCE_AMBIT_PRIMARY_MARK_TITLE. */
+	private static final String OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPLIANCE_AMBIT_PRIMARY_MARK_TITLE = "observatory.graphic.global.puntuation.compliance.ambit.primary.mark.title";
+	/** The Constant OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_PRIMARY_MARK_TITLE. */
+	private static final String OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_PRIMARY_MARK_TITLE = "observatory.graphic.global.puntuation.allocation.ambit.primary.mark.title";
+	/** The Constant OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_AMBIT_MARK_NAME. */
+	private static final String OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_AMBIT_MARK_NAME = "observatory.graphic.global.puntuation.compilance.ambit.mark.name";
+	/** The Constant OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPLIANCE_AMBIT_MARK_TITLE. */
+	private static final String OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPLIANCE_AMBIT_MARK_TITLE = "observatory.graphic.global.puntuation.compliance.ambit.mark.title";
+	/** The Constant OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_MARK_TITLE. */
+	private static final String OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_MARK_TITLE = "observatory.graphic.global.puntuation.allocation.ambit.mark.title";
+	/** The Constant OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_COMPLEXITIVIY_MARK_TITLE. */
+	private static final String OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_COMPLEXITIVIY_MARK_TITLE = "observatory.graphic.global.puntuation.compilance.complexitiviy.mark.title";
+	/** The Constant OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_COMPLEXITY_MARK_TITLE. */
+	private static final String OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_COMPLEXITY_MARK_TITLE = "observatory.graphic.global.puntuation.allocation.complexity.mark.title";
+	/** The Constant OBSERVATORY_GRAPHIC_VERIFICATION_COMPILANCE_COMPARATION_LEVEL_2_TITLE. */
+	private static final String OBSERVATORY_GRAPHIC_VERIFICATION_COMPILANCE_COMPARATION_LEVEL_2_TITLE = "observatory.graphic.verification.compilance.comparation.level.2.title";
+	/** The Constant OBSERVATORY_GRAPHIC_VERIFICATION_COMPILANCE_COMPARATION_LEVEL_1_TITLE. */
+	private static final String OBSERVATORY_GRAPHIC_VERIFICATION_COMPILANCE_COMPARATION_LEVEL_1_TITLE = "observatory.graphic.verification.compilance.comparation.level.1.title";
+	/** The Constant OBSERVATORY_GRAPHIC_COMPILANCE_LEVEL_ALLOCATION_NAME_TITLE. */
+	private static final String OBSERVATORY_GRAPHIC_COMPILANCE_LEVEL_ALLOCATION_NAME_TITLE = "observatory.graphic.compilance.level.allocation.name.title";
+	/** The Constant OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_AMBIT_PRIMARY_MARK_NAME. */
+	private static final String OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_AMBIT_PRIMARY_MARK_NAME = "observatory.graphic.global.puntuation.compilance.ambit.primary.mark.name";
+	/** The Constant CHART_OBSERVATORY_GRAPHIC_INTAV_COLORS. */
+	private static final String CHART_OBSERVATORY_GRAPHIC_INTAV_COLORS = "chart.observatory.graphic.intav.colors";
+	/** The Constant ODT_EXTENSION. */
+	private static final String ODT_EXTENSION = ".odt";
+	/** The Constant HEADER_NUM_SITIOS_WEB. */
+	private static final String HEADER_NUM_SITIOS_WEB = "global.report.header.num.sitios.web";
+	/** The Constant HEADER_ETIQUETA. */
+	private static final String HEADER_ETIQUETA = "global.report.header.tags";
+	/** The Constant HEADER_COMPLEJIDAD. */
+	private static final String HEADER_COMPLEJIDAD = "global.report.header.complexitivity";
+	/** The Constant HEADER_AMBITO. */
+	private static final String HEADER_AMBITO = "global.report.header.ambit";
 	/** The Constant TYPE_PUNTUACTION. */
 	private static final String TYPE_PUNTUACTION = "PUNTUACTION";
 	/** The Constant TYPE_COMPLIANCE. */
@@ -105,8 +144,20 @@ public final class OpenOfficeGlobalReportBuilder {
 	private static final String OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_COMPLEXITIVIY_MARK_NAME = "observatory.graphic.global.puntuation.compilance.complexitiviy.mark.name";
 	/** The Constant TABLASCOMPLEJIDAD_BOOKMARK. */
 	private static final String TABLASCOMPLEJIDAD_BOOKMARK = "tablascomplejidad";
+	/** The Constant TABLAS_CUMPLIMIENTO_BOOKMARK. */
+	private static final String TABLAS_CUMPLIMIENTO_BOOKMARK = "tablascumplimentoambito";
+	/** The Constant TABLAS_CUMPLIMIENTO_PRINCIPALES_BOOKMARK. */
+	private static final String TABLAS_CUMPLIMIENTO_PRINCIPALES_BOOKMARK = "tablacumpliminetoambitoprincipales";
+	/** The Constant TABLAS_ADECUACION_BOOKMARK. */
+	private static final String TABLAS_ADECUACION_BOOKMARK = "tablasadecuacionambito";
+	/** The Constant TABLAS_ADECUACION_PRINCIPALES_BOOKMARK. */
+	private static final String TABLAS_ADECUACION_PRINCIPALES_BOOKMARK = "tablaadecuacionambitoprincipales";
 	/** The Constant OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_COMPLEXITY_MARK_NAME. */
 	private static final String OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_COMPLEXITY_MARK_NAME = "observatory.graphic.global.puntuation.allocation.complexity.mark.name";
+	/** The Constant OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_MARK_NAME. */
+	private static final String OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_MARK_NAME = "observatory.graphic.global.puntuation.allocation.ambit.mark.name";
+	/** The Constant OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_PRIMARY_MARK_NAME. */
+	private static final String OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_PRIMARY_MARK_NAME = "observatory.graphic.global.puntuation.allocation.ambit.primary.mark.name";
 	/** The Constant TABLE_GLOBAL_COMPLIANCE_DISTRIBUTION_CELL_ROW_3_CELL_2. */
 	private static final String TABLE_GLOBAL_COMPLIANCE_DISTRIBUTION_CELL_ROW_3_CELL_2 = "-4c1.t1.c4-";
 	/** The Constant TABLE_GLOBAL_COMPLIANCE_DISTRIBUTION_CELL_ROW_2_CELL_2. */
@@ -144,23 +195,18 @@ public final class OpenOfficeGlobalReportBuilder {
 	/** The Constant TEXT_TITLE. */
 	private static final String TEXT_TITLE = "//text:title";
 	/** The Constant HEADER_NO_CONFORME. */
-	private static final String HEADER_NO_CONFORME = "No conforme";
+	private static final String HEADER_NO_CONFORME = "resultados.anonimos.porc.portales.nc";
 	/** The Constant HEADER_PARCIALMENTE_CONFORME. */
-	private static final String HEADER_PARCIALMENTE_CONFORME = "Parcialmente conforme";
+	private static final String HEADER_PARCIALMENTE_CONFORME = "resultados.anonimos.porc.portales.pc";
 	/** The Constant HEADER_TOTALMENTE_CONFORME. */
-	private static final String HEADER_TOTALMENTE_CONFORME = "Plenamente conforme";
-	/** The Constant HEADER_NIVEL_DE_CONFORMIDAD. */
-	private static final String HEADER_NIVEL_DE_CONFORMIDAD = "Nivel de conformidad";
+	private static final String HEADER_TOTALMENTE_CONFORME = "resultados.anonimos.porc.portales.pc";
 	/** The Constant HEADER_NO_VALIDO. */
-	private static final String HEADER_NO_VALIDO = "No válido";
+	private static final String HEADER_NO_VALIDO = "resultados.anonimos.punt.portales.nv";
 	/** The Constant HEADER_A. */
-	private static final String HEADER_A = "A";
+	private static final String HEADER_A = "resultados.anonimos.punt.portales.a";
 	/** The Constant HEADER_AA. */
-	private static final String HEADER_AA = "AA";
-	/** The Constant HEADER_PORCENTAJE_DE_PORTALES. */
-	private static final String HEADER_PORCENTAJE_DE_PORTALES = "Porcentaje de sitios web";
+	private static final String HEADER_AA = "resultados.anonimos.punt.portales.aa";
 	/** The Constant HEADER_NIVEL_DE_PRIORIDAD. */
-	private static final String HEADER_NIVEL_DE_PRIORIDAD = "Nivel de adecuación estimado";
 	/** The Constant EMPTY_STRING. */
 	private static final String EMPTY_STRING = "";
 	/** The Constant JPG_EXTENSION. */
@@ -177,6 +223,8 @@ public final class OpenOfficeGlobalReportBuilder {
 	private static final String FECHA_BOOKMARK = "[fecha]";
 	/** The Constant TEXT_SPAN_NODE. */
 	private static final String TEXT_SPAN_NODE = "text:span";
+	/** The Constant TEXT_SECTION_NAME_S. */
+	private static final String TEXT_SECTION_NAME_S = "//text:section[@text:name='%s']";
 	/** The x. */
 	private static int x = 0;
 	/** The y. */
@@ -186,6 +234,8 @@ public final class OpenOfficeGlobalReportBuilder {
 		x = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.x"));
 		y = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.y"));
 	}
+	/** The Constant messageResources. */
+	final static MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 
 	/**
 	 * Builds the report.
@@ -203,40 +253,47 @@ public final class OpenOfficeGlobalReportBuilder {
 	 */
 	public static OdfTextDocument buildReport(final HttpServletRequest request, final String filePath, final String graphicPath, final String[] tagsToFilter, final String[] exObsIds,
 			final String reportTitle, final Long idBaseTemplate) throws SQLException, Exception {
-		// TODO Thread
 		final PropertiesManager pmgr = new PropertiesManager();
 		final String url = request.getRequestURL().toString();
 		final String baseURL = url.substring(0, url.length() - request.getRequestURI().length()) + request.getContextPath() + "/";
-		// http://oaw.redsara.es/oaw/secure/exportOpenOfficeAction.do?idExObs=132&isPrimary=false&idCartucho=8&id_observatorio=41&id=132&esPrimera=true
 		final DatosForm userData = LoginDAO.getUserDataByName(DataBaseManager.getConnection(), request.getSession().getAttribute(Constants.USER).toString());
-		final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 		final SimpleDateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
 		Executors.newSingleThreadExecutor().execute(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					// TODO Get all seeds from executed
-					final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(Constants.COMPLEXITY_SEGMENT_NONE, null, false, tagsToFilter, exObsIds);
+					// Get all seeds from executed
+					final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(Constants.COMPLEXITY_SEGMENT_NONE, null, false, false, tagsToFilter, exObsIds);
 					// Generate graphics
 					generateGraphics(messageResources, filePath, true, tagsToFilter, exObsIds, pageExecutionList);
 					// Load template
 					final OdfTextDocument odt = getOdfTemplate(idBaseTemplate);
 					final OdfFileDom odfFileContent = odt.getContentDom();
 					final OdfFileDom odfStyles = odt.getStylesDom();
-					List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+					final List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+					final List<AmbitoForm> ambits = AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1);
 					replaceText(odt, odfFileContent, FECHA_BOOKMARK, df.format(new Date()));
 					replaceText(odt, odfStyles, FECHA_BOOKMARK, df.format(new Date()), TEXT_SPAN_NODE);
-//					// Global sections
-					replaceGlobalSection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, complexitivities, tagsToFilter, exObsIds);
-//					replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, tagsToFilter, exObsIds, categories);
+					// Replace getGlobalReportStatistics section
+					replaceGlobalReportStatisticsSection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, tagsToFilter, exObsIds);
+					// Global sections
+					replaceGlobalSection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, complexitivities, ambits, tagsToFilter, exObsIds);
+					List<ObservatoryEvaluationForm> onlyPrimarys = new ArrayList<ObservatoryEvaluationForm>();
+					for (int i = 0; i < exObsIds.length; i++) {
+						onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 65));
+						onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 79));
+						onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 45));
+						onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 71));
+					}
+					replaceAmbitPrimarySection(graphicPath, onlyPrimarys, messageResources, odt, odfFileContent, complexitivities, ambits, tagsToFilter, exObsIds);
 					finishDocumentConfiguration(odt, odfFileContent, reportTitle);
-//					// Lists all files in folder
+					// Lists all files in folder
 					File folder = new File("/tmp");
 					File fList[] = folder.listFiles();
 					// Searchs .lck
 					for (int i = 0; i < fList.length; i++) {
 						File pes = fList[i];
-						if (pes.getName().endsWith(".jpg") || pes.getName().endsWith(".odt")) {
+						if (pes.getName().endsWith(JPG_EXTENSION) || pes.getName().endsWith(ODT_EXTENSION)) {
 							// and deletes
 							pes.delete();
 						}
@@ -247,7 +304,6 @@ public final class OpenOfficeGlobalReportBuilder {
 					odt.close();
 					StringBuilder mailBody = new StringBuilder("El proceso del informe global informes ha finalizado. Puede descargarlo en el siguiente enlace: <br/>");
 					StringBuilder linkUrl = new StringBuilder(baseURL);
-					// String filePath = pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office") + filename;
 					linkUrl.append("secure/NuevoInformeGlobalObservatorio.do?action=downloadFile");
 					final String filename = odtPath.substring(odtPath.lastIndexOf(File.separator) + 1);
 					linkUrl.append("&file=").append(filename);
@@ -255,9 +311,10 @@ public final class OpenOfficeGlobalReportBuilder {
 					final MailService mailService = new MailService();
 					List<String> mailsTo = new ArrayList<>();
 					mailsTo.add(userData.getEmail());
-					mailsTo.add("alvaro.pelaez@ctic.es");
+					mailsTo.add("example@mail");
 					mailService.sendMail(mailsTo, "Generación de informe global completado", mailBody.toString(), true);
 				} catch (Exception e) {
+					Logger.putLog("Error", OpenOfficeGlobalReportBuilder.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
 		});
@@ -265,18 +322,258 @@ public final class OpenOfficeGlobalReportBuilder {
 	}
 
 	/**
+	 * Replace global report statistics section.
+	 *
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param tagsToFiler       the tags to filer
+	 * @param exObsIds          the ex obs ids
+	 * @throws Exception the exception
+	 */
+	private static void replaceGlobalReportStatisticsSection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final MessageResources messageResources,
+			final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsToFiler, final String[] exObsIds) throws Exception {
+		try (Connection c = DataBaseManager.getConnection()) {
+			// Todo total
+			generateClasificationStatiticsTableGlobal(odt, odfFileContent, tagsToFiler, exObsIds, c, "Discapacidad");
+			// TODO Generate Distribution
+			generateClasificationStatiticsTableAmbit(odt, odfFileContent, tagsToFiler, exObsIds, c);
+			// Temática
+			generateClasificationStatiticsTable(odt, odfFileContent, tagsToFiler, exObsIds, c, 1);
+			// Distribución geográfica
+			generateClasificationStatiticsTable(odt, odfFileContent, tagsToFiler, exObsIds, c, 2);
+			// Recurrencia
+			generateClasificationStatiticsTable(odt, odfFileContent, tagsToFiler, exObsIds, c, 3);
+			// Otros
+			generateClasificationStatiticsTable(odt, odfFileContent, tagsToFiler, exObsIds, c, 4);
+		} catch (SQLException e) {
+			Logger.putLog("Error en getGlobalResultData", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Generate clasification statitics table.
+	 *
+	 * @param odt             the odt
+	 * @param odfFileContent  the odf file content
+	 * @param tagsToFiler     the tags to filer
+	 * @param exObsIds        the ex obs ids
+	 * @param c               the c
+	 * @param idClasificacion the id clasificacion
+	 * @throws Exception                    the exception
+	 * @throws SAXException                 the SAX exception
+	 * @throws IOException                  Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 */
+	private static void generateClasificationStatiticsTable(final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsToFiler, final String[] exObsIds, Connection c,
+			int idClasificacion) throws Exception, SAXException, IOException, ParserConfigurationException {
+		List<GlobalReportStatistics> gre = RastreoDAO.getGlobalReportStatistics(c, tagsToFiler, exObsIds, idClasificacion);
+		if (gre != null && !gre.isEmpty()) {
+			String header0 = messageResources.getMessage(HEADER_ETIQUETA);
+			String header1 = messageResources.getMessage(HEADER_NUM_SITIOS_WEB);
+			// For each clasification a table
+			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>"
+					+ messageResources.getMessage("global.report.criteria.table.title", gre.get(0).getNombreClasificacion()) + "</text:p>";
+			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+			appendNodeAtMarkerPosition(odt, odfFileContent, title, "tablascriterios");
+			StringBuilder sb = generateStatisticsTable(header0, header1, gre);
+			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+			appendNodeAtMarkerPosition(odt, odfFileContent, node, "tablascriterios");
+			appendParagraphToMarker(odt, odfFileContent, "tablascriterios");
+		}
+	}
+
+	/**
+	 * Generate clasification statitics table.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param tagsToFiler    the tags to filer
+	 * @param exObsIds       the ex obs ids
+	 * @param c              the c
+	 * @param tagName        the tag name
+	 * @throws Exception                    the exception
+	 * @throws SAXException                 the SAX exception
+	 * @throws IOException                  Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 */
+	private static void generateClasificationStatiticsTable(final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsToFiler, final String[] exObsIds, Connection c, String tagName)
+			throws Exception, SAXException, IOException, ParserConfigurationException {
+		List<GlobalReportStatistics> gre = RastreoDAO.getGlobalReportStatisticsByTag(c, tagsToFiler, exObsIds, tagName);
+		if (gre != null && !gre.isEmpty()) {
+			String header0 = messageResources.getMessage(HEADER_ETIQUETA);
+			String header1 = messageResources.getMessage(HEADER_NUM_SITIOS_WEB);
+			// For each clasification a table
+			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + messageResources.getMessage("global.report.criteria.table.title", tagName) + "</text:p>";
+			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+			appendNodeAtMarkerPosition(odt, odfFileContent, title, "tablascriterios");
+			StringBuilder sb = generateStatisticsTable(header0, header1, gre);
+			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+			appendNodeAtMarkerPosition(odt, odfFileContent, node, "tablascriterios");
+			appendParagraphToMarker(odt, odfFileContent, "tablascriterios");
+		}
+	}
+
+	/**
+	 * Generate clasification statitics table.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param tagsToFiler    the tags to filer
+	 * @param exObsIds       the ex obs ids
+	 * @param c              the c
+	 * @param tagName        the tag name
+	 * @param tableHeader    the table header
+	 * @throws Exception                    the exception
+	 * @throws SAXException                 the SAX exception
+	 * @throws IOException                  Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 */
+	private static void generateClasificationStatiticsTableGlobal(final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsToFiler, final String[] exObsIds, Connection c,
+			String tagName) throws Exception, SAXException, IOException, ParserConfigurationException {
+		List<GlobalReportStatistics> gre1 = RastreoDAO.getGlobalReportStatisticsByAmbit(c, tagsToFiler, exObsIds);
+		List<GlobalReportStatistics> gre2 = RastreoDAO.getGlobalReportStatisticsByTag(c, tagsToFiler, exObsIds, tagName);
+		String header0 = "";
+		String header1 = messageResources.getMessage(HEADER_NUM_SITIOS_WEB);
+		// For each clasification a table
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + "Número de sitios web objeto del seguimiento simplificado" + "</text:p>";
+		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, title, "tablascriterios");
+		// StringBuilder sb = generateStatisticsTable(header0, header1, gre);
+		StringBuilder sb = new StringBuilder();
+		sb.append("<table:table table:name='Table_Statics_").append("Global").append("' table:style-name='TableGraphic'>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn2'/>");
+		// Header row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header0).append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header1).append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("</table:table-row>");
+		// Rows
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+		sb.append("<text:p text:style-name='GraphicTableCenter'>").append("Total de portales").append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+		int total = 0;
+		if (gre1 != null && !gre1.isEmpty()) {
+			for (GlobalReportStatistics gre : gre1) {
+				total += gre.getCount();
+			}
+		}
+		sb.append("<text:p text:style-name='GraphicTableCenter'>").append(total);
+		sb.append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("</table:table-row>");
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+		sb.append("<text:p text:style-name='GraphicTableCenter'>").append("Incluidos por las asociaciones de discapacidad").append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+		if (gre2 != null && !gre2.isEmpty()) {
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(gre2.get(0).getCount());
+		} else {
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(0);
+		}
+		sb.append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("</table:table-row>");
+		sb.append("</table:table>");
+		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, node, "tablascriterios");
+		appendParagraphToMarker(odt, odfFileContent, "tablascriterios");
+	}
+	//
+
+	/**
+	 * Generate clasification statitics table ambit.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param tagsToFiler    the tags to filer
+	 * @param exObsIds       the ex obs ids
+	 * @param c              the c
+	 * @throws Exception                    the exception
+	 * @throws SAXException                 the SAX exception
+	 * @throws IOException                  Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 */
+	private static void generateClasificationStatiticsTableAmbit(final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsToFiler, final String[] exObsIds, Connection c)
+			throws Exception, SAXException, IOException, ParserConfigurationException {
+		List<GlobalReportStatistics> gre = RastreoDAO.getGlobalReportStatisticsByAmbit(c, tagsToFiler, exObsIds);
+		if (gre != null && !gre.isEmpty()) {
+			String header0 = messageResources.getMessage(HEADER_AMBITO);
+			String header1 = messageResources.getMessage(HEADER_NUM_SITIOS_WEB);
+			// For each clasification a table
+			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + "Número de portales por ámbito" + "</text:p>";
+			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+			appendNodeAtMarkerPosition(odt, odfFileContent, title, "tablascriterios");
+			StringBuilder sb = generateStatisticsTable(header0, header1, gre);
+			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+			appendNodeAtMarkerPosition(odt, odfFileContent, node, "tablascriterios");
+			appendParagraphToMarker(odt, odfFileContent, "tablascriterios");
+		}
+	}
+
+	/**
+	 * Generate statistics table.
+	 *
+	 * @param header0    the header 0
+	 * @param header1    the header 1
+	 * @param statistics the statistics
+	 * @return the string builder
+	 */
+	private static StringBuilder generateStatisticsTable(final String header0, final String header1, final List<GlobalReportStatistics> statistics) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<table:table table:name='Table_Statics_").append("Segments").append("' table:style-name='TableGraphic'>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn2'/>");
+		// Header row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header0).append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header1).append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("</table:table-row>");
+		// Rows
+		for (int i = 0; i < statistics.size(); i++) {
+			sb.append("<table:table-row>");
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(statistics.get(i).getNombre()).append("</text:p>");
+			sb.append("</table:table-cell>");
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(statistics.get(i).getCount());
+			sb.append("</text:p>");
+			sb.append("</table:table-cell>");
+			sb.append("</table:table-row>");
+		}
+		sb.append("</table:table>");
+		return sb;
+	}
+
+	/**
 	 * Gets the global result data.
 	 *
-	 * @param categoryId         the category id
+	 * @param filterId           the category id
 	 * @param pageExecutionList  the page execution list
 	 * @param isComplexityFilter the is complexity filter
+	 * @param isAmbitFilter      the is ambit filter
 	 * @param tagsFilter         the tags filter
 	 * @param exObsIds           the ex obs ids
 	 * @return the global result data
 	 * @throws Exception the exception
 	 */
-	private static List<ObservatoryEvaluationForm> getGlobalResultData(final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList, boolean isComplexityFilter, String[] tagsFilter,
-			String[] exObsIds) throws Exception {
+	private static List<ObservatoryEvaluationForm> getGlobalResultData(final long filterId, final List<ObservatoryEvaluationForm> pageExecutionList, boolean isComplexityFilter, boolean isAmbitFilter,
+			String[] tagsFilter, String[] exObsIds) throws Exception {
 		List<ObservatoryEvaluationForm> observatoryEvaluationList;
 		try (Connection c = DataBaseManager.getConnection()) {
 			observatoryEvaluationList = new ArrayList<>();
@@ -323,10 +620,12 @@ public final class OpenOfficeGlobalReportBuilder {
 						}
 					}
 				}
-				if (!isComplexityFilter) {
-					observatoryEvaluationList.addAll(tmpList);
+				if (isAmbitFilter) {
+					observatoryEvaluationList.addAll(filterObservatoriesByAmbit(tmpList, Long.parseLong(executionId), filterId));
+				} else if (isComplexityFilter) {
+					observatoryEvaluationList.addAll(filterObservatoriesByComplexity(tmpList, Long.parseLong(executionId), filterId));
 				} else {
-					observatoryEvaluationList.addAll(filterObservatoriesByComplexity(tmpList, Long.parseLong(executionId), categoryId));
+					observatoryEvaluationList.addAll(tmpList);
 				}
 			}
 		} catch (SQLException e) {
@@ -367,6 +666,66 @@ public final class OpenOfficeGlobalReportBuilder {
 	}
 
 	/**
+	 * Filter observatories by complexity.
+	 *
+	 * @param observatoryEvaluationList the observatory evaluation list
+	 * @param executionId               the execution id
+	 * @param categoryId                the category id
+	 * @return the list
+	 * @throws Exception the exception
+	 */
+	private static List<ObservatoryEvaluationForm> filterObservatoriesByCategory(final List<ObservatoryEvaluationForm> observatoryEvaluationList, final Long executionId, final long categoryId)
+			throws Exception {
+		if (categoryId == Constants.COMPLEXITY_SEGMENT_NONE) {
+			return observatoryEvaluationList;
+		} else {
+			final List<ObservatoryEvaluationForm> results = new ArrayList<>();
+			try (Connection conn = DataBaseManager.getConnection()) {
+				final List<Long> listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(conn, executionId, categoryId);
+				for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
+					if (listExecutionsIds.contains(observatoryEvaluationForm.getCrawlerExecutionId())) {
+						results.add(observatoryEvaluationForm);
+					}
+				}
+			} catch (Exception e) {
+				Logger.putLog("Error al filtrar observatorios. ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+				throw e;
+			}
+			return results;
+		}
+	}
+
+	/**
+	 * Filter observatories by ambit.
+	 *
+	 * @param observatoryEvaluationList the observatory evaluation list
+	 * @param executionId               the execution id
+	 * @param ambitId                   the ambit id
+	 * @return the list
+	 * @throws Exception the exception
+	 */
+	private static List<ObservatoryEvaluationForm> filterObservatoriesByAmbit(final List<ObservatoryEvaluationForm> observatoryEvaluationList, final Long executionId, final Long ambitId)
+			throws Exception {
+		if (ambitId == 0) {
+			return observatoryEvaluationList;
+		} else {
+			final List<ObservatoryEvaluationForm> results = new ArrayList<>();
+			try (Connection conn = DataBaseManager.getConnection()) {
+				final List<Long> listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIdsAmbit(conn, executionId, ambitId);
+				for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
+					if (listExecutionsIds.contains(observatoryEvaluationForm.getCrawlerExecutionId())) {
+						results.add(observatoryEvaluationForm);
+					}
+				}
+			} catch (Exception e) {
+				Logger.putLog("Error al filtrar observatorios por complejidad. ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+				throw e;
+			}
+			return results;
+		}
+	}
+
+	/**
 	 * Generate graphics.
 	 *
 	 * @param messageResources  the message resources
@@ -384,11 +743,6 @@ public final class OpenOfficeGlobalReportBuilder {
 			String color = pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR);
 			// Gráficos globales
 			generateGlobalGraphics(messageResources, filePath, color, regenerate, tagsFilter, pageExecutionList, exObsIds);
-//TODO Evolution
-//			if (exObsIds != null && exObsIds.length > 1) {
-//				generateEvolutionGraphics(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, exObsIds);
-//				generateEvolutionGraphicsFixed(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, exObsIds);
-//			}
 		} catch (Exception e) {
 			Logger.putLog("No se han generado las gráficas correctamente.", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -404,50 +758,68 @@ public final class OpenOfficeGlobalReportBuilder {
 	 * @param regenerate        Indica si hay que regenerar el gráfico o no.
 	 * @param tagsFilter        the tags filter
 	 * @param pageExecutionList the page execution list
+	 * @param exObsIds          the ex obs ids
 	 * @return Mapa de gráficos
 	 * @throws Exception the exception
 	 */
 	private static Map<String, Object> generateGlobalGraphics(final MessageResources messageResources, final String filePath, final String color, final boolean regenerate, final String[] tagsFilter,
 			final List<ObservatoryEvaluationForm> pageExecutionList, final String[] exObsIds) throws Exception {
-//		3.1 Distribución del nivel de adecuación estimado global
-//		3.2 Distribución de la situación de cumplimiento estimada global
-//		3.3 Comparación de la conformidad de las verificaciones
-//		3.9 Comparación del nivel de adecuación estimado por complejidad
-//		3.10 Comparación de la situación de cumplimiento estimada por complejidad
 		final Map<String, Object> globalGraphics = new HashMap<>();
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final String noDataMess = messageResources.getMessage(GRAFICA_SIN_DATOS);
 			List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
-			// 3.1 Distribución del nivel de adecuación estimado global
-			String file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.name") + ".jpg";
+			List<AmbitoForm> ambitos = AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1);
+			// Distribución del nivel de adecuación estimado global
+			String file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_ACCESSIBILITY_LEVEL_ALLOCATION_NAME) + JPG_EXTENSION;
 			String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.title");
 			ResultadosAnonimosObservatorioUNEEN2019Utils.getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, regenerate);
-			// 3.2 Distribución de la situación de cumplimiento estimada global
-			title = messageResources.getMessage("observatory.graphic.compilance.level.allocation.name.title");
-			file = filePath + messageResources.getMessage("observatory.graphic.compilance.level.allocation.name") + ".jpg";
+			// Distribución de la situación de cumplimiento estimada global
+			title = messageResources.getMessage(OBSERVATORY_GRAPHIC_COMPILANCE_LEVEL_ALLOCATION_NAME_TITLE);
+			file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_COMPILANCE_LEVEL_ALLOCATION_NAME) + JPG_EXTENSION;
 			ResultadosAnonimosObservatorioUNEEN2019Utils.getGlobalCompilanceGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, regenerate);
-//			3.3 Comparación de la conformidad de las verificaciones
-			title = messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.1.title");
-			file = filePath + messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.1.name") + ".jpg";
+			// Comparación de la conformidad de las verificaciones
+			title = messageResources.getMessage(OBSERVATORY_GRAPHIC_VERIFICATION_COMPILANCE_COMPARATION_LEVEL_1_TITLE);
+			file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_VERIFICATION_COMPILANCE_COMPARATION_LEVEL_1_NAME) + JPG_EXTENSION;
 			ResultadosAnonimosObservatorioUNEEN2019Utils.getCompilanceComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_1, title, file, noDataMess,
 					pageExecutionList, color, regenerate);
-			title = messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.2.title");
-			file = filePath + messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.2.name") + ".jpg";
+			title = messageResources.getMessage(OBSERVATORY_GRAPHIC_VERIFICATION_COMPILANCE_COMPARATION_LEVEL_2_TITLE);
+			file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_VERIFICATION_COMPILANCE_COMPARATION_LEVEL_2_NAME) + JPG_EXTENSION;
 			ResultadosAnonimosObservatorioUNEEN2019Utils.getCompilanceComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_2, title, file, noDataMess,
 					pageExecutionList, color, regenerate);
-//			3.9 Comparación del nivel de adecuación estimado por complejidad
-			title = messageResources.getMessage("observatory.graphic.global.puntuation.allocation.complexity.mark.title");
-			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.complexity.mark.name") + ".jpg";
+			// Comparación del nivel de adecuación estimado por complejidad
+			title = messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_COMPLEXITY_MARK_TITLE);
+			file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_COMPLEXITY_MARK_NAME) + JPG_EXTENSION;
 			getGloballAllocationByComplexity(messageResources, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate, tagsFilter, title, exObsIds);
-//			3.10 Comparación de la situación de cumplimiento estimada por complejidad
-			title = messageResources.getMessage("observatory.graphic.global.puntuation.compilance.complexitiviy.mark.title");
-			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.compilance.complexitiviy.mark.name") + ".jpg";
+			// Comparación de la situación de cumplimiento estimada por complejidad
+			title = messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_COMPLEXITIVIY_MARK_TITLE);
+			file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_COMPLEXITIVIY_MARK_NAME) + JPG_EXTENSION;
 			getGlobalCompilanceByComplexitivity(messageResources, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate, tagsFilter, title, exObsIds);
+			// ALLOCATION BY AMBIT
+			title = messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_MARK_TITLE);
+			file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_MARK_NAME) + JPG_EXTENSION;
+			getGloballAllocationByAmbit(messageResources, globalGraphics, file, noDataMess, pageExecutionList, ambitos, regenerate, tagsFilter, title, exObsIds);
+			// Compliance by ambit
+			title = messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPLIANCE_AMBIT_MARK_TITLE);
+			file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_AMBIT_MARK_NAME) + JPG_EXTENSION;
+			getGloballComplianceByAmbit(messageResources, globalGraphics, file, noDataMess, pageExecutionList, ambitos, regenerate, tagsFilter, title, exObsIds);
 			/**
-			 * 
-			 * 
-			 * 
+			 * Primarys
 			 */
+			List<ObservatoryEvaluationForm> onlyPrimarys = new ArrayList<ObservatoryEvaluationForm>();
+			for (int i = 0; i < exObsIds.length; i++) {
+				onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 65));
+				onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 79));
+				onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 45));
+				onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 71));
+			}
+			// ALLOCATION BY AMBIT
+			title = messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_PRIMARY_MARK_TITLE);
+			file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_PRIMARY_MARK_NAME) + JPG_EXTENSION;
+			getGloballAllocationByAmbit(messageResources, globalGraphics, file, noDataMess, onlyPrimarys, ambitos, regenerate, tagsFilter, title, exObsIds);
+			// Compliance by ambit
+			title = messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPLIANCE_AMBIT_PRIMARY_MARK_TITLE);
+			file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_AMBIT_PRIMARY_MARK_NAME) + JPG_EXTENSION;
+			getGloballComplianceByAmbit(messageResources, globalGraphics, file, noDataMess, onlyPrimarys, ambitos, regenerate, tagsFilter, title, exObsIds);
 		}
 		return globalGraphics;
 	}
@@ -464,6 +836,7 @@ public final class OpenOfficeGlobalReportBuilder {
 	 * @param regenerate        the regenerate
 	 * @param tagsFilter        the tags filter
 	 * @param title             the title
+	 * @param exObsIds          the ex obs ids
 	 * @return the global mark by complexity group graphic
 	 * @throws Exception the exception
 	 */
@@ -473,15 +846,15 @@ public final class OpenOfficeGlobalReportBuilder {
 		final Map<Integer, List<ComplejidadForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMapComplexities(complexities);
 		final List<ComplexityViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
-			final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
+			final File file = new File(filePath.substring(0, filePath.indexOf(JPG_EXTENSION)) + i + JPG_EXTENSION);
 			final Map<ComplejidadForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageResultsByComplexityMap(pageExecutionList, resultLists.get(i), tagsFilter, exObsIds);
 			final DefaultCategoryDataset dataSet = ResultadosAnonimosObservatorioUNEEN2019Utils.createDataSetComplexity(resultsBySegment, messageResources);
 			final PropertiesManager pmgr = new PropertiesManager();
 			// Si la gráfica no existe, la creamos
 			if (!file.exists() || regenerate) {
-				final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+				final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, CHART_OBSERVATORY_GRAPHIC_INTAV_COLORS));
 				chartForm.setTitle(title);
-				GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
+				GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath.substring(0, filePath.indexOf(JPG_EXTENSION)) + i + JPG_EXTENSION);
 			}
 			// Incluimos los resultados en la request
 			for (ComplejidadForm category : resultLists.get(i)) {
@@ -495,11 +868,55 @@ public final class OpenOfficeGlobalReportBuilder {
 	}
 
 	/**
+	 * Gets the globall allocation by ambit.
+	 *
+	 * @param messageResources  the message resources
+	 * @param globalGraphics    the global graphics
+	 * @param filePath          the file path
+	 * @param noDataMess        the no data mess
+	 * @param pageExecutionList the page execution list
+	 * @param ambits            the ambits
+	 * @param regenerate        the regenerate
+	 * @param tagsFilter        the tags filter
+	 * @param title             the title
+	 * @param exObsIds          the ex obs ids
+	 * @return the globall allocation by ambit
+	 * @throws Exception the exception
+	 */
+	public static void getGloballAllocationByAmbit(final MessageResources messageResources, Map<String, Object> globalGraphics, final String filePath, final String noDataMess,
+			final List<ObservatoryEvaluationForm> pageExecutionList, final List<AmbitoForm> ambits, final boolean regenerate, String[] tagsFilter, final String title, final String[] exObsIds)
+			throws Exception {
+		final Map<Integer, List<AmbitoForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMapAmbits(ambits);
+		final List<AmbitViewListForm> categoriesLabels = new ArrayList<>();
+		for (int i = 1; i <= resultLists.size(); i++) {
+			final File file = new File(filePath.substring(0, filePath.indexOf(JPG_EXTENSION)) + i + JPG_EXTENSION);
+			final Map<AmbitoForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageAllocationResultsByAmbitMap(pageExecutionList, ambits, tagsFilter, exObsIds);
+			final DefaultCategoryDataset dataSet = ResultadosAnonimosObservatorioUNEEN2019Utils.createDataSetAmbit(resultsBySegment, messageResources);
+			final PropertiesManager pmgr = new PropertiesManager();
+			// Si la gráfica no existe, la creamos
+			if (!file.exists() || regenerate) {
+				final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, CHART_OBSERVATORY_GRAPHIC_INTAV_COLORS));
+				chartForm.setTitle(title);
+				GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath.substring(0, filePath.indexOf(JPG_EXTENSION)) + i + JPG_EXTENSION);
+			}
+			// Incluimos los resultados en la request
+			for (AmbitoForm ambit : resultLists.get(i)) {
+				final AmbitViewListForm categoryView = new AmbitViewListForm(ambit,
+						ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonAllocationPuntuation(messageResources, resultsBySegment.get(ambit)));
+				categoriesLabels.add(categoryView);
+			}
+		}
+		globalGraphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CPS, categoriesLabels);
+		globalGraphics.put(Constants.OBSERVATORY_NUM_CPS_GRAPH, resultLists.size());
+	}
+
+	/**
 	 * Calculate percentage results by complexity map.
 	 *
 	 * @param pageExecutionList the page execution list
 	 * @param complexities      the complexities
 	 * @param tagsFilter        the tags filter
+	 * @param exObsIds          the ex obs ids
 	 * @return the map
 	 * @throws Exception the exception
 	 */
@@ -512,7 +929,7 @@ public final class OpenOfficeGlobalReportBuilder {
 			}
 		});
 		for (ComplejidadForm complexity : complexities) {
-			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(Long.parseLong(complexity.getId()), pageExecutionList, true, tagsFilter, exObsIds);
+			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(Long.parseLong(complexity.getId()), pageExecutionList, true, false, tagsFilter, exObsIds);
 			resultsBySegment.put(complexity, ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentage(ResultadosAnonimosObservatorioUNEEN2019Utils.getResultsBySiteLevel(resultDataSegment)));
 		}
 		return resultsBySegment;
@@ -530,6 +947,7 @@ public final class OpenOfficeGlobalReportBuilder {
 	 * @param regenerate        the regenerate
 	 * @param tagsFilter        the tags filter
 	 * @param title             the title
+	 * @param exObsIds          the ex obs ids
 	 * @return the global compilance by complexitivity
 	 * @throws Exception the exception
 	 */
@@ -539,15 +957,15 @@ public final class OpenOfficeGlobalReportBuilder {
 		final Map<Integer, List<ComplejidadForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMapComplexities(complexities);
 		final List<ComplexityViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
-			final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
+			final File file = new File(filePath.substring(0, filePath.indexOf(JPG_EXTENSION)) + i + JPG_EXTENSION);
 			final Map<ComplejidadForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageCompilanceResultsByComplexitivityMap(pageExecutionList, resultLists.get(i), tagsFilter, exObsIds);
 			final DefaultCategoryDataset dataSet = ResultadosAnonimosObservatorioUNEEN2019Utils.createDataSetComplexityCompilance(resultsBySegment, messageResources);
 			final PropertiesManager pmgr = new PropertiesManager();
 			// Si la gráfica no existe, la creamos
 			if (!file.exists() || regenerate) {
-				final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+				final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, CHART_OBSERVATORY_GRAPHIC_INTAV_COLORS));
 				chartForm.setTitle(title);
-				GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
+				GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath.substring(0, filePath.indexOf(JPG_EXTENSION)) + i + JPG_EXTENSION);
 			}
 			// Incluimos los resultados en la request
 			for (ComplejidadForm complexitivity : resultLists.get(i)) {
@@ -561,11 +979,55 @@ public final class OpenOfficeGlobalReportBuilder {
 	}
 
 	/**
+	 * Gets the globall compliance by ambit.
+	 *
+	 * @param messageResources  the message resources
+	 * @param globalGraphics    the global graphics
+	 * @param filePath          the file path
+	 * @param noDataMess        the no data mess
+	 * @param pageExecutionList the page execution list
+	 * @param ambits            the ambits
+	 * @param regenerate        the regenerate
+	 * @param tagsFilter        the tags filter
+	 * @param title             the title
+	 * @param exObsIds          the ex obs ids
+	 * @return the globall compliance by ambit
+	 * @throws Exception the exception
+	 */
+	public static void getGloballComplianceByAmbit(final MessageResources messageResources, Map<String, Object> globalGraphics, final String filePath, final String noDataMess,
+			final List<ObservatoryEvaluationForm> pageExecutionList, final List<AmbitoForm> ambits, final boolean regenerate, String[] tagsFilter, final String title, final String[] exObsIds)
+			throws Exception {
+		final Map<Integer, List<AmbitoForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMapAmbits(ambits);
+		final List<AmbitViewListForm> categoriesLabels = new ArrayList<>();
+		for (int i = 1; i <= resultLists.size(); i++) {
+			final File file = new File(filePath.substring(0, filePath.indexOf(JPG_EXTENSION)) + i + JPG_EXTENSION);
+			final Map<AmbitoForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageCompilanceResultsByAmbitMap(pageExecutionList, resultLists.get(i), tagsFilter, exObsIds);
+			final DefaultCategoryDataset dataSet = ResultadosAnonimosObservatorioUNEEN2019Utils.createDataSetAmbitCompilance(resultsBySegment, messageResources);
+			final PropertiesManager pmgr = new PropertiesManager();
+			// Si la gráfica no existe, la creamos
+			if (!file.exists() || regenerate) {
+				final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, CHART_OBSERVATORY_GRAPHIC_INTAV_COLORS));
+				chartForm.setTitle(title);
+				GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath.substring(0, filePath.indexOf(JPG_EXTENSION)) + i + JPG_EXTENSION);
+			}
+			// Incluimos los resultados en la request
+			for (AmbitoForm ambit : resultLists.get(i)) {
+				final AmbitViewListForm categoryView = new AmbitViewListForm(ambit,
+						ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonCompilancePuntuaction(messageResources, resultsBySegment.get(ambit)));
+				categoriesLabels.add(categoryView);
+			}
+		}
+		globalGraphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMPC, categoriesLabels);
+		globalGraphics.put(Constants.OBSERVATORY_NUM_CMPC_GRAPH, resultLists.size());
+	}
+
+	/**
 	 * Calculate percentage compilance results by complexitivity map.
 	 *
 	 * @param pageExecutionList the page execution list
 	 * @param completivities    the completivities
 	 * @param tagsFilter        the tags filter
+	 * @param exObsIds          the ex obs ids
 	 * @return the map
 	 * @throws Exception the exception
 	 */
@@ -578,9 +1040,59 @@ public final class OpenOfficeGlobalReportBuilder {
 			}
 		});
 		for (ComplejidadForm complexitivity : completivities) {
-			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(Long.parseLong(complexitivity.getId()), pageExecutionList, true, tagsFilter, exObsIds);
+			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(Long.parseLong(complexitivity.getId()), pageExecutionList, true, false, tagsFilter, exObsIds);
 			resultsBySegment.put(complexitivity,
 					ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentage(ResultadosAnonimosObservatorioUNEEN2019Utils.getResultsBySiteCompilance(resultDataSegment)));
+		}
+		return resultsBySegment;
+	}
+
+	/**
+	 * Calculate percentage allocation results by ambit map.
+	 *
+	 * @param pageExecutionList the page execution list
+	 * @param ambits            the ambits
+	 * @param tagsFilter        the tags filter
+	 * @param exObsIds          the ex obs ids
+	 * @return the map
+	 * @throws Exception the exception
+	 */
+	public static Map<AmbitoForm, Map<String, BigDecimal>> calculatePercentageAllocationResultsByAmbitMap(final List<ObservatoryEvaluationForm> pageExecutionList, final List<AmbitoForm> ambits,
+			String[] tagsFilter, final String[] exObsIds) throws Exception {
+		final Map<AmbitoForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<>(new Comparator<AmbitoForm>() {
+			@Override
+			public int compare(AmbitoForm o1, AmbitoForm o2) {
+				return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
+			}
+		});
+		for (AmbitoForm ambit : ambits) {
+			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(Long.parseLong(ambit.getId()), pageExecutionList, false, true, tagsFilter, exObsIds);
+			resultsBySegment.put(ambit, ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentage(ResultadosAnonimosObservatorioUNEEN2019Utils.getResultsBySiteLevel(resultDataSegment)));
+		}
+		return resultsBySegment;
+	}
+
+	/**
+	 * Calculate percentage compilance results by ambit map.
+	 *
+	 * @param pageExecutionList the page execution list
+	 * @param ambits            the ambits
+	 * @param tagsFilter        the tags filter
+	 * @param exObsIds          the ex obs ids
+	 * @return the map
+	 * @throws Exception the exception
+	 */
+	public static Map<AmbitoForm, Map<String, BigDecimal>> calculatePercentageCompilanceResultsByAmbitMap(final List<ObservatoryEvaluationForm> pageExecutionList, final List<AmbitoForm> ambits,
+			String[] tagsFilter, final String[] exObsIds) throws Exception {
+		final Map<AmbitoForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<>(new Comparator<AmbitoForm>() {
+			@Override
+			public int compare(AmbitoForm o1, AmbitoForm o2) {
+				return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
+			}
+		});
+		for (AmbitoForm ambit : ambits) {
+			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(Long.parseLong(ambit.getId()), pageExecutionList, false, true, tagsFilter, exObsIds);
+			resultsBySegment.put(ambit, ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentage(ResultadosAnonimosObservatorioUNEEN2019Utils.getResultsBySiteCompilance(resultDataSegment)));
 		}
 		return resultsBySegment;
 	}
@@ -594,22 +1106,43 @@ public final class OpenOfficeGlobalReportBuilder {
 	 * @param odt               the odt
 	 * @param odfFileContent    the odf file content
 	 * @param complexitivities  the complexitivities
+	 * @param ambits            the ambits
 	 * @param tagsFilter        the tags filter
+	 * @param exObsIds          the ex obs ids
 	 * @throws Exception the exception
 	 */
 	private static void replaceGlobalSection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final MessageResources messageResources, final OdfTextDocument odt,
-			final OdfFileDom odfFileContent, List<ComplejidadForm> complexitivities, String[] tagsFilter, final String[] exObsIds) throws Exception {
-		// 3.1
+			final OdfFileDom odfFileContent, List<ComplejidadForm> complexitivities, final List<AmbitoForm> ambits, String[] tagsFilter, final String[] exObsIds) throws Exception {
 		replaceSectionGlobalAccesibilityDistribution(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
-		// 3.2
 		replaceSectionGlobalCompilanceDistribution(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
-		// 3.3
 		replaceSectionCompilanceByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		replaceSectionCompilanceByVerificationLevel2(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
-		// 3.9
 		replaceSectionComparisionPuntuactionAllocationComplexity(messageResources, odt, odfFileContent, graphicPath, complexitivities, pageExecutionList, tagsFilter, exObsIds);
-		// 3.10
 		replaceSectionComparisionPercentajeCompilanceComplexitivy(messageResources, odt, odfFileContent, graphicPath, complexitivities, pageExecutionList, tagsFilter, exObsIds);
+		replaceSectionComparisionPuntuactionAllocationAmbit(messageResources, odt, odfFileContent, graphicPath, ambits, pageExecutionList, tagsFilter, exObsIds);
+		replaceSectionComparisionPercentajeCompilanceAmbit(messageResources, odt, odfFileContent, graphicPath, ambits, pageExecutionList, tagsFilter, exObsIds);
+	}
+
+	/**
+	 * Replace ambit primary section.
+	 *
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param complexitivities  the complexitivities
+	 * @param ambits            the ambits
+	 * @param tagsFilter        the tags filter
+	 * @param exObsIds          the ex obs ids
+	 * @throws Exception the exception
+	 */
+	private static void replaceAmbitPrimarySection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final MessageResources messageResources,
+			final OdfTextDocument odt, final OdfFileDom odfFileContent, List<ComplejidadForm> complexitivities, final List<AmbitoForm> ambits, String[] tagsFilter, final String[] exObsIds)
+			throws Exception {
+		// AMBIT PRINCIPALES
+		replaceSectionComparisionPuntuactionAllocationAmbitPrimary(messageResources, odt, odfFileContent, graphicPath, ambits, pageExecutionList, tagsFilter, exObsIds);
+		replaceSectionComparisionPercentajeCompilanceAmbitPrimary(messageResources, odt, odfFileContent, graphicPath, ambits, pageExecutionList, tagsFilter, exObsIds);
 	}
 
 	/**
@@ -762,6 +1295,95 @@ public final class OpenOfficeGlobalReportBuilder {
 	}
 
 	/**
+	 * Replace section comparision puntuaction allocation ambit.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param ambits            the ambits
+	 * @param pageExecutionList the page execution list
+	 * @param tagsFilter        the tags filter
+	 * @param exObsIds          the ex obs ids
+	 * @throws Exception the exception
+	 */
+	private static void replaceSectionComparisionPuntuactionAllocationAmbit(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent,
+			final String graphicPath, final List<AmbitoForm> ambits, final List<ObservatoryEvaluationForm> pageExecutionList, String[] tagsFilter, final String[] exObsIds) throws Exception {
+		final Map<Integer, List<AmbitoForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMapAmbits(ambits);
+		String prevImage = EMPTY_STRING;
+		for (Integer i : resultLists.keySet()) {
+			String grpahicName = messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_MARK_NAME) + i;
+			// Si es la primera
+			if (i == 1) {
+				replaceImageGeneric(odt, graphicPath + grpahicName + JPG_EXTENSION, grpahicName, IMAGE_JPEG);
+				prevImage = grpahicName;
+			} else {
+				// El resto
+				addImageNext(odt, graphicPath + grpahicName + JPG_EXTENSION, grpahicName, IMAGE_JPEG, prevImage);
+			}
+		}
+		// Table
+		final Map<AmbitoForm, Map<String, BigDecimal>> res = calculatePercentageAllocationResultsByAmbitMap(pageExecutionList, AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1),
+				tagsFilter, exObsIds);
+		String columna1 = messageResources.getMessage(HEADER_AA);
+		String columna2 = messageResources.getMessage(HEADER_A);
+		String columna3 = messageResources.getMessage(HEADER_NO_VALIDO);
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + messageResources.getMessage("global.report.allocation.ambit.table.title") + "</text:p>";
+		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLAS_ADECUACION_BOOKMARK);
+		StringBuilder sb = generateTableRowAmbit("AllocationAmbit", messageResources.getMessage(HEADER_AMBITO), columna1, columna2, columna3, ambits, res, messageResources, TYPE_ALLOCATION, true);
+		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLAS_ADECUACION_BOOKMARK);
+		appendParagraphToMarker(odt, odfFileContent, TABLAS_ADECUACION_BOOKMARK);
+		addTableStyles(odt);
+	}
+
+	/**
+	 * Replace section comparision puntuaction allocation ambit primary.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param ambits            the ambits
+	 * @param pageExecutionList the page execution list
+	 * @param tagsFilter        the tags filter
+	 * @param exObsIds          the ex obs ids
+	 * @throws Exception the exception
+	 */
+	private static void replaceSectionComparisionPuntuactionAllocationAmbitPrimary(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent,
+			final String graphicPath, final List<AmbitoForm> ambits, final List<ObservatoryEvaluationForm> pageExecutionList, String[] tagsFilter, final String[] exObsIds) throws Exception {
+		final Map<Integer, List<AmbitoForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMapAmbits(ambits);
+		String prevImage = EMPTY_STRING;
+		for (Integer i : resultLists.keySet()) {
+			String grpahicName = messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_PRIMARY_MARK_NAME) + i;
+			// Si es la primera
+			if (i == 1) {
+				replaceImageGeneric(odt, graphicPath + grpahicName + JPG_EXTENSION, grpahicName, IMAGE_JPEG);
+				prevImage = grpahicName;
+			} else {
+				// El resto
+				addImageNext(odt, graphicPath + grpahicName + JPG_EXTENSION, grpahicName, IMAGE_JPEG, prevImage);
+			}
+		}
+		// Table
+		final Map<AmbitoForm, Map<String, BigDecimal>> res = calculatePercentageAllocationResultsByAmbitMap(pageExecutionList, AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1),
+				tagsFilter, exObsIds);
+		String columna1 = messageResources.getMessage(HEADER_AA);
+		String columna2 = messageResources.getMessage(HEADER_A);
+		String columna3 = messageResources.getMessage(HEADER_NO_VALIDO);
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + messageResources.getMessage("global.report.allocation.ambit.primary.table.title") + "</text:p>";
+		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLAS_ADECUACION_PRINCIPALES_BOOKMARK);
+		StringBuilder sb = generateTableRowAmbit("AllocationAmbitPrinary", messageResources.getMessage(HEADER_AMBITO), columna1, columna2, columna3, ambits, res, messageResources, TYPE_ALLOCATION,
+				true);
+		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLAS_ADECUACION_PRINCIPALES_BOOKMARK);
+		appendParagraphToMarker(odt, odfFileContent, TABLAS_ADECUACION_PRINCIPALES_BOOKMARK);
+		addTableStyles(odt);
+	}
+
+	/**
 	 * Replace section comparision puntuaction allocation complexity.
 	 *
 	 * @param messageResources  the message resources
@@ -771,6 +1393,7 @@ public final class OpenOfficeGlobalReportBuilder {
 	 * @param complexities      the complexities
 	 * @param pageExecutionList the page execution list
 	 * @param tagsFilter        the tags filter
+	 * @param exObsIds          the ex obs ids
 	 * @throws Exception the exception
 	 */
 	private static void replaceSectionComparisionPuntuactionAllocationComplexity(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent,
@@ -791,15 +1414,14 @@ public final class OpenOfficeGlobalReportBuilder {
 		}
 		final Map<ComplejidadForm, Map<String, BigDecimal>> res = calculatePercentageResultsByComplexityMap(pageExecutionList,
 				ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1), tagsFilter, exObsIds);
-		String header1 = HEADER_NIVEL_DE_PRIORIDAD;
-		String header2 = HEADER_PORCENTAJE_DE_PORTALES;
-		String columna1 = HEADER_AA;
-		String columna2 = HEADER_A;
-		String columna3 = HEADER_NO_VALIDO;
-		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Nivel de adecuación estimado (% de sitios web ) por complejidad</text:p>";
+		String columna1 = messageResources.getMessage(HEADER_AA);
+		String columna2 = messageResources.getMessage(HEADER_A);
+		String columna3 = messageResources.getMessage(HEADER_NO_VALIDO);
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + messageResources.getMessage("global.report.allocation.complexitivity.table.title") + "</text:p>";
 		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASCOMPLEJIDAD_BOOKMARK);
-		StringBuilder sb = generateTableRowComplexity(header1, header2, columna1, columna2, columna3, complexities, res, messageResources, TYPE_ALLOCATION, true);
+		StringBuilder sb = generateTableRowComplexity("AllocationComplexity", messageResources.getMessage(HEADER_COMPLEJIDAD), columna1, columna2, columna3, complexities, res, messageResources,
+				TYPE_ALLOCATION, true);
 		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCOMPLEJIDAD_BOOKMARK);
 		appendParagraphToMarker(odt, odfFileContent, TABLASCOMPLEJIDAD_BOOKMARK);
@@ -816,6 +1438,7 @@ public final class OpenOfficeGlobalReportBuilder {
 	 * @param complexitivities  the complexitivities
 	 * @param pageExecutionList the page execution list
 	 * @param tagsFilter        the tags filter
+	 * @param exObsIds          the ex obs ids
 	 * @throws Exception the exception
 	 */
 	private static void replaceSectionComparisionPercentajeCompilanceComplexitivy(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent,
@@ -836,18 +1459,104 @@ public final class OpenOfficeGlobalReportBuilder {
 		}
 		final Map<ComplejidadForm, Map<String, BigDecimal>> res = calculatePercentageCompilanceResultsByComplexitivityMap(pageExecutionList,
 				ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1), tagsFilter, exObsIds);
-		String header1 = HEADER_NIVEL_DE_CONFORMIDAD;
-		String header2 = HEADER_PORCENTAJE_DE_PORTALES;
-		String columna1 = HEADER_TOTALMENTE_CONFORME;
-		String columna2 = HEADER_PARCIALMENTE_CONFORME;
-		String columna3 = HEADER_NO_CONFORME;
-		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Situación de cumplimiento estimado (% de sitios web) por complejidad</text:p>";
+		String columna1 = messageResources.getMessage(HEADER_TOTALMENTE_CONFORME);
+		String columna2 = messageResources.getMessage(HEADER_PARCIALMENTE_CONFORME);
+		String columna3 = messageResources.getMessage(HEADER_NO_CONFORME);
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + messageResources.getMessage("global.report.compliance.complexitivity.table.title") + "</text:p>";
 		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
-		StringBuilder sb = generateTableRowComplexity(header1, header2, columna1, columna2, columna3, complexitivities, res, messageResources, TYPE_COMPLIANCE, true);
+		StringBuilder sb = generateTableRowComplexity("CompilanceComplexitivy", messageResources.getMessage(HEADER_COMPLEJIDAD), columna1, columna2, columna3, complexitivities, res, messageResources,
+				TYPE_COMPLIANCE, true);
 		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
 		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
 		appendParagraphToMarker(odt, odfFileContent, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
+		addTableStyles(odt);
+	}
+
+	/**
+	 * Replace section comparision percentaje compilance ambit.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param ambits            the ambits
+	 * @param pageExecutionList the page execution list
+	 * @param tagsFilter        the tags filter
+	 * @param exObsIds          the ex obs ids
+	 * @throws Exception the exception
+	 */
+	private static void replaceSectionComparisionPercentajeCompilanceAmbit(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent,
+			final String graphicPath, final List<AmbitoForm> ambits, final List<ObservatoryEvaluationForm> pageExecutionList, String[] tagsFilter, final String[] exObsIds) throws Exception {
+		final Map<Integer, List<AmbitoForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMapAmbits(ambits);
+		String prevImage = EMPTY_STRING;
+		for (Integer i : resultLists.keySet()) {
+			String grpahicName = messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_AMBIT_MARK_NAME) + i;
+			// Si es la primera
+			if (i == 1) {
+				replaceImageGeneric(odt, graphicPath + grpahicName + JPG_EXTENSION, grpahicName, IMAGE_JPEG);
+				prevImage = grpahicName;
+			} else {
+				// El resto
+				addImageNext(odt, graphicPath + grpahicName + JPG_EXTENSION, grpahicName, IMAGE_JPEG, prevImage);
+			}
+		}
+		final Map<AmbitoForm, Map<String, BigDecimal>> res = calculatePercentageCompilanceResultsByAmbitMap(pageExecutionList, AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1),
+				tagsFilter, exObsIds);
+		String columna1 = messageResources.getMessage(HEADER_TOTALMENTE_CONFORME);
+		String columna2 = messageResources.getMessage(HEADER_PARCIALMENTE_CONFORME);
+		String columna3 = messageResources.getMessage(HEADER_NO_CONFORME);
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + messageResources.getMessage("global.report.compliance.ambit.table.title") + "</text:p>";
+		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLAS_CUMPLIMIENTO_BOOKMARK);
+		StringBuilder sb = generateTableRowAmbit("CompilanceAmbit", messageResources.getMessage(HEADER_AMBITO), columna1, columna2, columna3, ambits, res, messageResources, TYPE_COMPLIANCE, true);
+		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLAS_CUMPLIMIENTO_BOOKMARK);
+		appendParagraphToMarker(odt, odfFileContent, TABLAS_CUMPLIMIENTO_BOOKMARK);
+		addTableStyles(odt);
+	}
+
+	/**
+	 * Replace section comparision percentaje compilance ambit.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param ambits            the ambits
+	 * @param pageExecutionList the page execution list
+	 * @param tagsFilter        the tags filter
+	 * @param exObsIds          the ex obs ids
+	 * @throws Exception the exception
+	 */
+	private static void replaceSectionComparisionPercentajeCompilanceAmbitPrimary(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent,
+			final String graphicPath, final List<AmbitoForm> ambits, final List<ObservatoryEvaluationForm> pageExecutionList, String[] tagsFilter, final String[] exObsIds) throws Exception {
+		final Map<Integer, List<AmbitoForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMapAmbits(ambits);
+		String prevImage = EMPTY_STRING;
+		for (Integer i : resultLists.keySet()) {
+			String grpahicName = messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_AMBIT_PRIMARY_MARK_NAME) + i;
+			// Si es la primera
+			if (i == 1) {
+				replaceImageGeneric(odt, graphicPath + grpahicName + JPG_EXTENSION, grpahicName, IMAGE_JPEG);
+				prevImage = grpahicName;
+			} else {
+				// El resto
+				addImageNext(odt, graphicPath + grpahicName + JPG_EXTENSION, grpahicName, IMAGE_JPEG, prevImage);
+			}
+		}
+		final Map<AmbitoForm, Map<String, BigDecimal>> res = calculatePercentageCompilanceResultsByAmbitMap(pageExecutionList, AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1),
+				tagsFilter, exObsIds);
+		String columna1 = messageResources.getMessage(HEADER_TOTALMENTE_CONFORME);
+		String columna2 = messageResources.getMessage(HEADER_PARCIALMENTE_CONFORME);
+		String columna3 = messageResources.getMessage(HEADER_NO_CONFORME);
+		String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + messageResources.getMessage("global.report.compliance.ambit.primary.table.title") + "</text:p>";
+		Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLAS_CUMPLIMIENTO_PRINCIPALES_BOOKMARK);
+		StringBuilder sb = generateTableRowAmbit("CompilanceAmbitPrimary", messageResources.getMessage(HEADER_AMBITO), columna1, columna2, columna3, ambits, res, messageResources, TYPE_COMPLIANCE,
+				true);
+		Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLAS_CUMPLIMIENTO_PRINCIPALES_BOOKMARK);
+		appendParagraphToMarker(odt, odfFileContent, TABLAS_CUMPLIMIENTO_PRINCIPALES_BOOKMARK);
 		addTableStyles(odt);
 	}
 
@@ -861,7 +1570,7 @@ public final class OpenOfficeGlobalReportBuilder {
 	private static OdfTextDocument getOdfTemplate(final Long idBaseTemplate) throws Exception {
 		PlantillaForm plantilla = PlantillaDAO.findById(DataBaseManager.getConnection(), idBaseTemplate);
 		if (plantilla != null && plantilla.getDocumento() != null && plantilla.getDocumento().length > 0) {
-			File f = File.createTempFile("tmp_base_template", ".odt");
+			File f = File.createTempFile("tmp_base_template", ODT_EXTENSION);
 			FileUtils.writeByteArrayToFile(f, plantilla.getDocumento());
 			return (OdfTextDocument) OdfDocument.loadDocument(f);
 		}
@@ -965,8 +1674,8 @@ public final class OpenOfficeGlobalReportBuilder {
 	/**
 	 * Generate table row complexity.
 	 *
-	 * @param header1          the header 1
-	 * @param header2          the header 2
+	 * @param tableName        the table name
+	 * @param header0          the header 0
 	 * @param columna1         the columna 1
 	 * @param columna2         the columna 2
 	 * @param columna3         the columna 3
@@ -978,9 +1687,9 @@ public final class OpenOfficeGlobalReportBuilder {
 	 * @return the string builder
 	 * @throws Exception the exception
 	 */
-	private static StringBuilder generateTableRowComplexity(String header1, String header2, String columna1, String columna2, String columna3, final List<ComplejidadForm> complexities,
+	private static StringBuilder generateTableRowComplexity(final String tableName, final String header0, String columna1, String columna2, String columna3, final List<ComplejidadForm> complexities,
 			final Map<ComplejidadForm, Map<String, BigDecimal>> res, final MessageResources messageResources, final String resultsType, final boolean isPercentaje) throws Exception {
-		StringBuilder sb = generateTableHeader(columna1, columna2, columna3, "Complejidad");
+		StringBuilder sb = generateTableHeader(columna1, columna2, columna3, header0, tableName);
 		for (ComplejidadForm complex : complexities) {
 			List<LabelValueBean> results = null;
 			switch (resultsType) {
@@ -1001,17 +1710,56 @@ public final class OpenOfficeGlobalReportBuilder {
 	}
 
 	/**
+	 * Generate table row ambit.
+	 *
+	 * @param tableName        the table name
+	 * @param header0          the header 0
+	 * @param columna1         the columna 1
+	 * @param columna2         the columna 2
+	 * @param columna3         the columna 3
+	 * @param ambits           the ambits
+	 * @param res              the res
+	 * @param messageResources the message resources
+	 * @param resultsType      the results type
+	 * @param isPercentaje     the is percentaje
+	 * @return the string builder
+	 * @throws Exception the exception
+	 */
+	private static StringBuilder generateTableRowAmbit(final String tableName, final String header0, String columna1, String columna2, String columna3, final List<AmbitoForm> ambits,
+			final Map<AmbitoForm, Map<String, BigDecimal>> res, final MessageResources messageResources, final String resultsType, final boolean isPercentaje) throws Exception {
+		StringBuilder sb = generateTableHeader(columna1, columna2, columna3, header0, tableName);
+		for (AmbitoForm ambit : ambits) {
+			List<LabelValueBean> results = null;
+			switch (resultsType) {
+			case TYPE_COMPLIANCE:
+				results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonCompilancePuntuaction(messageResources, res.get(ambit));
+				break;
+			case TYPE_ALLOCATION:
+				results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(ambit));
+				break;
+			case TYPE_PUNTUACTION:
+				results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonAllocationPuntuation(messageResources, res.get(ambit));
+				break;
+			}
+			generateGroupRow(sb, ambit.getName(), results, isPercentaje);
+		}
+		sb.append("</table:table>");
+		return sb;
+	}
+
+	/**
 	 * Generate table header.
 	 *
-	 * @param columna1 the columna 1
-	 * @param columna2 the columna 2
-	 * @param columna3 the columna 3
-	 * @param header0  the header 0
+	 * @param columna1  the columna 1
+	 * @param columna2  the columna 2
+	 * @param columna3  the columna 3
+	 * @param header0   the header 0
+	 * @param tableName the table name
 	 * @return the string builder
 	 */
-	private static StringBuilder generateTableHeader(String columna1, String columna2, String columna3, final String header0) {
+	private static StringBuilder generateTableHeader(String columna1, String columna2, String columna3, final String header0, final String tableName) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<table:table table:name='Table_Allocation_").append("Segments").append("' table:style-name='TableGraphic'>");
+		sb.append("<table:table table:name='Table_").append(tableName).append("' table:style-name='TableGraphic'>");
 		sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
 		sb.append("<table:table-column table:style-name='TableGraphicColumn2'/>");
 		sb.append("<table:table-column table:style-name='TableGraphicColumn3'/>");
@@ -1195,6 +1943,13 @@ public final class OpenOfficeGlobalReportBuilder {
 		addTableStyles(odt);
 		addHeaderStyles(odt);
 		addTableHeaderStyles(odt);
+		// Remove all marks (visual)
+		removeElement(odt, odfFileContent, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
+		removeElement(odt, odfFileContent, TABLASCOMPLEJIDAD_BOOKMARK);
+		removeElement(odt, odfFileContent, TABLAS_ADECUACION_BOOKMARK);
+		removeElement(odt, odfFileContent, TABLAS_ADECUACION_PRINCIPALES_BOOKMARK);
+		removeElement(odt, odfFileContent, TABLAS_CUMPLIMIENTO_BOOKMARK);
+		removeElement(odt, odfFileContent, TABLAS_CUMPLIMIENTO_PRINCIPALES_BOOKMARK);
 	}
 
 	/**
@@ -1279,5 +2034,22 @@ public final class OpenOfficeGlobalReportBuilder {
 		odfPackageNew.insert(packageDocument, xmlFile, mymeType);
 		odfPackageNew.save(doc);
 		odfPackageNew.close();
+	}
+
+	/**
+	 * Removes the section in an document.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param sectionName    the section name
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private static void removeElement(final OdfTextDocument odt, final OdfFileDom odfFileContent, String sectionName) throws XPathExpressionException {
+		XPath xpath = odt.getXPath();
+		NodeList nodeList = (NodeList) xpath.evaluate(String.format(TEXT_SECTION_NAME_S, sectionName), odfFileContent, XPathConstants.NODESET);
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			OdfElement node = (OdfElement) nodeList.item(i);
+			node.getParentNode().removeChild(node);
+		}
 	}
 }

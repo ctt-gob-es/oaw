@@ -337,6 +337,8 @@ public final class DatabaseExportUtils {
 	 */
 	public static Page getPageInfo(final MessageResources messageResources, ObservatoryEvaluationForm observatoryEvaluationForm, Site site) {
 		Page page = new Page();
+		page.setScoreLevel1(BigDecimal.ZERO);
+		page.setScoreLevel2(BigDecimal.ZERO);
 		page.setSite(site);
 		page.setUrl(observatoryEvaluationForm.getUrl());
 		page.setScore(observatoryEvaluationForm.getScore());

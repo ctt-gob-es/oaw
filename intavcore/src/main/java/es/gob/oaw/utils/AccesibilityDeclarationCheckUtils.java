@@ -362,10 +362,11 @@ public final class AccesibilityDeclarationCheckUtils {
 		final List<Element> headings = EvaluatorUtils.getHeadings(document);
 		if (headings != null && !headings.isEmpty()) {
 			for (Element heading : headings) {
-				if (heading.getTextContent() != null) {
+				final String textContent = heading.getTextContent();
+				if (textContent != null) {
 					for (String contactText : contactTexts) {
 						Pattern patterAutocomplete = Pattern.compile(contactText, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-						if (patterAutocomplete.matcher(heading.getTextContent()).find()) {
+						if (patterAutocomplete.matcher(textContent).find()) {
 							return true;
 						}
 					}

@@ -63,9 +63,12 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
+import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
+import es.inteco.view.forms.AmbitViewListForm;
 import es.inteco.view.forms.CategoryViewListForm;
 
 /**
@@ -76,6 +79,8 @@ import es.inteco.view.forms.CategoryViewListForm;
 public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	/** The Constant BIG_DECIMAL_HUNDRED. */
 	public static final BigDecimal BIG_DECIMAL_HUNDRED = BigDecimal.valueOf(100);
+	/** The Constant _00. */
+	private static final String _00 = ".00";
 	/** The x. */
 	// GENERATE GRAPHIC METHODS
 	private static int x = 0;
@@ -116,11 +121,6 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			// recuperamos las categorias del observatorio
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idExecutionObservatory);
 			generateGlobalGraphics(messageResources, executionId, filePath, categories, color, regenerate);
-			// iteramos sobre ellas y genermos las gráficas
-			for (CategoriaForm categoryForm : categories) {
-				generateCategoryGraphics(messageResources, executionId, categoryForm, filePath, color, regenerate);
-			}
-			generateEvolutionGraphics(messageResources, observatoryId, executionId, filePath, color, regenerate);
 		} catch (Exception e) {
 			Logger.putLog("No se han generado las gráficas correctamente.", ResultadosAnonimosObservatorioAccesibilidadUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -141,28 +141,83 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 */
 	public static Map<String, Object> generateGlobalGraphics(final MessageResources messageResources, final String executionId, final String filePath, final List<CategoriaForm> categories,
 			final String color, final boolean regenerate) throws Exception {
-		final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(executionId, Constants.COMPLEXITY_SEGMENT_NONE, null);
+		final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(executionId, 0, null, null, 2);
 		final Map<String, Object> globalGraphics = new HashMap<>();
+		final List<AmbitoForm> ambits = AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1);
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final String noDataMess = messageResources.getMessage("grafica.sin.datos");
 			String file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.name") + ".jpg";
-			getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, pageExecutionList, globalGraphics, "", file, noDataMess, regenerate);
-			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.name") + ".jpg";
-			getGlobalMarkBySegmentGraphic(messageResources, executionId, pageExecutionList, globalGraphics, "", file, noDataMess, categories);
-			file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg";
-			getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, globalGraphics, "", file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
-			file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + ".jpg";
-			getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, globalGraphics, "", file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
-			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.name") + ".jpg";
-			getGlobalMarkBySegmentsGroupGraphic(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, categories, regenerate);
-			file = filePath + messageResources.getMessage("observatory.graphic.aspect.mid.name") + ".jpg";
-			getAspectMidsGraphic(messageResources, globalGraphics, file, noDataMess, pageExecutionList, color, "", regenerate);
+			String title = messageResources.getMessage("report.evolution.compliance.global");
+			getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, regenerate);
+			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.compilance.ambit.mark.name") + ".jpg";
+			title = "Situación de cumplimiento estimada por ámbito";
+			getGlobalCompilanceBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, ambits, regenerate, title);
 			file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg";
 			getMidsComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
-			file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + ".jpg";
-			getMidsComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_2, "", file, noDataMess, pageExecutionList, color, regenerate);
+			title = messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.title");
+			file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg";
+			getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
 		}
 		return globalGraphics;
+	}
+
+	/**
+	 * Gets the global compilance by segment.
+	 *
+	 * @param messageResources  the message resources
+	 * @param executionId       the execution id
+	 * @param globalGraphics    the global graphics
+	 * @param filePath          the file path
+	 * @param noDataMess        the no data mess
+	 * @param pageExecutionList the page execution list
+	 * @param ambits            the ambits
+	 * @param regenerate        the regenerate
+	 * @param title             the title
+	 * @return the global compilance by segment
+	 * @throws Exception the exception
+	 */
+	public static void getGlobalCompilanceBySegment(final MessageResources messageResources, final String executionId, Map<String, Object> globalGraphics, final String filePath,
+			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<AmbitoForm> ambits, final boolean regenerate, final String title) throws Exception {
+		final Map<Integer, List<AmbitoForm>> resultLists = createGraphicsMapAmbits(ambits);
+		final List<AmbitViewListForm> categoriesLabels = new ArrayList<>();
+		for (int i = 1; i <= resultLists.size(); i++) {
+			final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
+			final Map<AmbitoForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageResultsByAmbitMap(executionId, pageExecutionList, ambits);
+			final DefaultCategoryDataset dataSet = createCompilanceDataSet(resultsBySegment, messageResources);
+			final PropertiesManager pmgr = new PropertiesManager();
+			// Si la gráfica no existe, la creamos
+			if (!file.exists() || regenerate) {
+				final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+				chartForm.setTitle(title);
+				chartForm.setColor(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.accesibility.colors"));
+				GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
+			}
+			// Incluimos los resultados en la request
+			for (AmbitoForm category : resultLists.get(i)) {
+				final AmbitViewListForm categoryView = new AmbitViewListForm(category, infoComparisonCompilancePuntuaction(messageResources, resultsBySegment.get(category)));
+				categoriesLabels.add(categoryView);
+			}
+		}
+		globalGraphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMPS, categoriesLabels);
+		globalGraphics.put(Constants.OBSERVATORY_NUM_CMPS_GRAPH, resultLists.size());
+	}
+
+	/**
+	 * Creates the compilance data set.
+	 *
+	 * @param result           the result
+	 * @param messageResources the message resources
+	 * @return the default category dataset
+	 */
+	private static DefaultCategoryDataset createCompilanceDataSet(final Map<AmbitoForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
+		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+		for (Map.Entry<AmbitoForm, Map<String, BigDecimal>> entry : result.entrySet()) {
+			dataSet.addValue(entry.getValue().get(Constants.OBS_ACCESIBILITY_NA), parseLevelLabel(Constants.OBS_ACCESIBILITY_NA, messageResources), entry.getKey().getName());
+			dataSet.addValue(entry.getValue().get(Constants.OBS_ACCESIBILITY_NONE), parseLevelLabel(Constants.OBS_ACCESIBILITY_NONE, messageResources), entry.getKey().getName());
+			dataSet.addValue(entry.getValue().get(Constants.OBS_ACCESIBILITY_PARTIAL), parseLevelLabel(Constants.OBS_ACCESIBILITY_PARTIAL, messageResources), entry.getKey().getName());
+			dataSet.addValue(entry.getValue().get(Constants.OBS_ACCESIBILITY_FULL), parseLevelLabel(Constants.OBS_ACCESIBILITY_FULL, messageResources), entry.getKey().getName());
+		}
+		return dataSet;
 	}
 
 	/**
@@ -303,10 +358,33 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 */
 	public static List<GraphicData> infoGlobalAccessibilityLevel(final MessageResources messageResources, final Map<String, Integer> result) {
 		final List<GraphicData> labelValueList = new ArrayList<>();
-		final int totalPort = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
-		labelValueList.add(infoGlobalAccessibilityLevelGraphicData(messageResources.getMessage("resultados.anonimos.porc.portales.aa"), result.get(Constants.OBS_AA), totalPort));
-		labelValueList.add(infoGlobalAccessibilityLevelGraphicData(messageResources.getMessage("resultados.anonimos.porc.portales.a"), result.get(Constants.OBS_A), totalPort));
-		labelValueList.add(infoGlobalAccessibilityLevelGraphicData(messageResources.getMessage("resultados.anonimos.porc.portales.parcial"), result.get(Constants.OBS_NV), totalPort));
+		final int totalPort = result.get(Constants.OBS_ACCESIBILITY_FULL) + result.get(Constants.OBS_ACCESIBILITY_PARTIAL) + result.get(Constants.OBS_ACCESIBILITY_NONE)
+				+ result.get(Constants.OBS_ACCESIBILITY_NA);
+		labelValueList.add(infoGlobalAccessibilityLevelGraphicData(messageResources.getMessage("resultados.anonimos.porc.portales.full"), result.get(Constants.OBS_ACCESIBILITY_FULL), totalPort));
+		labelValueList
+				.add(infoGlobalAccessibilityLevelGraphicData(messageResources.getMessage("resultados.anonimos.porc.portales.completo"), result.get(Constants.OBS_ACCESIBILITY_PARTIAL), totalPort));
+		labelValueList
+				.add(infoGlobalAccessibilityLevelGraphicData(messageResources.getMessage("resultados.anonimos.porc.portales.incompleto"), result.get(Constants.OBS_ACCESIBILITY_NONE), totalPort));
+		labelValueList.add(infoGlobalAccessibilityLevelGraphicData(messageResources.getMessage("resultados.anonimos.porc.portales.sin"), result.get(Constants.OBS_ACCESIBILITY_NA), totalPort));
+		return labelValueList;
+	}
+
+	/**
+	 * Info comparison compilance puntuaction.
+	 *
+	 * @param messageResources the message resources
+	 * @param result           the result
+	 * @return the list
+	 * @throws Exception the exception
+	 */
+	public static List<LabelValueBean> infoComparisonCompilancePuntuaction(final MessageResources messageResources, final Map<String, BigDecimal> result) throws Exception {
+		final List<LabelValueBean> labelValueList = new ArrayList<>();
+		labelValueList.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.porc.portales.full"), String.valueOf(result.get(Constants.OBS_ACCESIBILITY_FULL)).replace(_00, "")));
+		labelValueList
+				.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.porc.portales.completo"), String.valueOf(result.get(Constants.OBS_ACCESIBILITY_PARTIAL)).replace(_00, "")));
+		labelValueList
+				.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.porc.portales.incompleto"), String.valueOf(result.get(Constants.OBS_ACCESIBILITY_NONE)).replace(_00, "")));
+		labelValueList.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.porc.portales.sin"), String.valueOf(result.get(Constants.OBS_ACCESIBILITY_NA)).replace(_00, "")));
 		return labelValueList;
 	}
 
@@ -579,6 +657,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 		if (!file.exists() || regenerate) {
 			final PropertiesManager pmgr = new PropertiesManager();
 			final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.modality.colors"));
+			chartForm.setTitle(title);
 			GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
 		}
 	}
@@ -1046,7 +1125,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @throws Exception the exception
 	 */
 	public static List<ObservatoryEvaluationForm> getGlobalResultData(final String executionId, final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-		return getGlobalResultData(executionId, categoryId, pageExecutionList, null);
+		return getGlobalResultData(executionId, categoryId, pageExecutionList, null, 0);
 	}
 
 	/**
@@ -1056,12 +1135,13 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @param categoryId        the category id
 	 * @param pageExecutionList the page execution list
 	 * @param idCrawler         the id crawler
+	 * @param typeFilter        the type filter 0: category, 1: complex, 2:ambit
 	 * @return the global result data
 	 * @throws Exception the exception
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<ObservatoryEvaluationForm> getGlobalResultData(final String executionId, final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList, final Long idCrawler)
-			throws Exception {
+	public static List<ObservatoryEvaluationForm> getGlobalResultData(final String executionId, final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList, final Long idCrawler,
+			final int typeFilter) throws Exception {
 		List<ObservatoryEvaluationForm> observatoryEvaluationList;
 		try {
 			observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
@@ -1116,7 +1196,14 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			}
 			CacheUtils.putInCacheForever(observatoryEvaluationList, Constants.OBSERVATORY_KEY_CACHE + executionId);
 		}
-		return filterObservatoriesByComplexity(observatoryEvaluationList, Long.parseLong(executionId), categoryId);
+		switch (typeFilter) {
+		case 0:
+			return filterObservatoriesByComplexity(observatoryEvaluationList, Long.parseLong(executionId), categoryId);
+		case 2:
+			return filterObservatoriesByAmbit(observatoryEvaluationList, Long.parseLong(executionId), categoryId);
+		default:
+			return filterObservatoriesByComplexity(observatoryEvaluationList, Long.parseLong(executionId), categoryId);
+		}
 	}
 
 	/**
@@ -1143,6 +1230,36 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 				}
 			} catch (Exception e) {
 				Logger.putLog("Error al filtrar observatorios. ", ResultadosAnonimosObservatorioAccesibilidadUtils.class, Logger.LOG_LEVEL_ERROR, e);
+				throw e;
+			}
+			return results;
+		}
+	}
+
+	/**
+	 * Filter observatories by ambit.
+	 *
+	 * @param observatoryEvaluationList the observatory evaluation list
+	 * @param executionId               the execution id
+	 * @param ambitId                   the ambit id
+	 * @return the list
+	 * @throws Exception the exception
+	 */
+	private static List<ObservatoryEvaluationForm> filterObservatoriesByAmbit(final List<ObservatoryEvaluationForm> observatoryEvaluationList, final Long executionId, final Long ambitId)
+			throws Exception {
+		if (ambitId == 0) {
+			return observatoryEvaluationList;
+		} else {
+			final List<ObservatoryEvaluationForm> results = new ArrayList<>();
+			try (Connection conn = DataBaseManager.getConnection()) {
+				final List<Long> listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIdsAmbit(conn, executionId, ambitId);
+				for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
+					if (listExecutionsIds.contains(observatoryEvaluationForm.getCrawlerExecutionId())) {
+						results.add(observatoryEvaluationForm);
+					}
+				}
+			} catch (Exception e) {
+				Logger.putLog("Error al filtrar observatorios por complejidad. ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
 			}
 			return results;
@@ -1590,16 +1707,45 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 		final File file = new File(filePath);
 		final Map<String, Integer> result = getResultsBySiteLevel(pageExecutionList);
 		if (!file.exists() || regenerate) {
-			final int total = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
+			final int total = result.get(Constants.OBS_ACCESIBILITY_FULL) + result.get(Constants.OBS_ACCESIBILITY_PARTIAL) + result.get(Constants.OBS_ACCESIBILITY_NONE)
+					+ result.get(Constants.OBS_ACCESIBILITY_NA);
 			final DefaultPieDataset dataSet = new DefaultPieDataset();
-			dataSet.setValue(parseLevelLabel(Constants.OBS_PARCIAL, messageResources), result.get(Constants.OBS_NV));
-			dataSet.setValue(parseLevelLabel(Constants.OBS_A, messageResources), result.get(Constants.OBS_A));
-			dataSet.setValue(parseLevelLabel(Constants.OBS_AA, messageResources), result.get(Constants.OBS_AA));
-			GraphicsUtils.createPieChart(dataSet, "", messageResources.getMessage("observatory.graphic.site.number"), total, filePath, noDataMess,
-					pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
+			dataSet.setValue(parseLevelLabel(Constants.OBS_ACCESIBILITY_NA, messageResources), result.get(Constants.OBS_ACCESIBILITY_NA));
+			dataSet.setValue(parseLevelLabel(Constants.OBS_ACCESIBILITY_NONE, messageResources), result.get(Constants.OBS_ACCESIBILITY_NONE));
+			dataSet.setValue(parseLevelLabel(Constants.OBS_ACCESIBILITY_PARTIAL, messageResources), result.get(Constants.OBS_ACCESIBILITY_PARTIAL));
+			dataSet.setValue(parseLevelLabel(Constants.OBS_ACCESIBILITY_FULL, messageResources), result.get(Constants.OBS_ACCESIBILITY_FULL));
+			GraphicsUtils.createPieChart(dataSet, title, messageResources.getMessage("observatory.graphic.site.number"), total, filePath, noDataMess,
+					pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.accesibility.colors"), x, y);
 		}
 		graphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, infoGlobalAccessibilityLevel(messageResources, result));
 		infoGlobalAccessibilityLevel(messageResources, result);
+	}
+
+	/**
+	 * Creates the graphics map ambits.
+	 *
+	 * @param ambits the ambits
+	 * @return the map
+	 */
+	public static Map<Integer, List<AmbitoForm>> createGraphicsMapAmbits(final List<AmbitoForm> ambits) {
+		final Map<Integer, List<AmbitoForm>> resultLists = new TreeMap<>();
+		final PropertiesManager pmgr = new PropertiesManager();
+		final int numBarByGrapg = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "num.max.bar.graph"));
+		int keyMap = 1;
+		for (int i = 1; i <= ambits.size(); i++) {
+			final List<AmbitoForm> list;
+			if (resultLists.get(keyMap) != null) {
+				list = resultLists.get(keyMap);
+			} else {
+				list = new ArrayList<>();
+			}
+			list.add(ambits.get(i - 1));
+			resultLists.put(keyMap, list);
+			if ((i >= numBarByGrapg) && (i % numBarByGrapg == 0) && (ambits.size() != i + 1)) {
+				keyMap++;
+			}
+		}
+		return resultLists;
 	}
 
 	/**
@@ -1673,22 +1819,17 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 */
 	public static Map<String, Integer> getResultsBySiteLevel(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
 		final Map<String, Integer> globalResult = new HashMap<>();
-		globalResult.put(Constants.OBS_NV, 0);
-		globalResult.put(Constants.OBS_A, 0);
-		globalResult.put(Constants.OBS_AA, 0);
+		globalResult.put(Constants.OBS_ACCESIBILITY_FULL, 0);
+		globalResult.put(Constants.OBS_ACCESIBILITY_PARTIAL, 0);
+		globalResult.put(Constants.OBS_ACCESIBILITY_NONE, 0);
+		globalResult.put(Constants.OBS_ACCESIBILITY_NA, 0);
 		final Map<Long, Map<String, Integer>> globalResultBySiteType = getSitesByType(observatoryEvaluationList);
 		for (Map.Entry<Long, Map<String, Integer>> longMapEntry : globalResultBySiteType.entrySet()) {
 			final Map<String, Integer> pageType = longMapEntry.getValue();
-			final Integer numPages = pageType.get(Constants.OBS_A) + pageType.get(Constants.OBS_AA) + pageType.get(Constants.OBS_NV);
-			final BigDecimal value = new BigDecimal(pageType.get(Constants.OBS_A)).multiply(new BigDecimal(5)).add(new BigDecimal(pageType.get(Constants.OBS_AA)).multiply(BigDecimal.TEN))
-					.divide(new BigDecimal(numPages), 2, BigDecimal.ROUND_HALF_UP);
-			if (value.compareTo(new BigDecimal(8)) >= 0) {
-				globalResult.put(Constants.OBS_AA, globalResult.get(Constants.OBS_AA) + 1);
-			} else if (value.compareTo(new BigDecimal("3.5")) <= 0) {
-				globalResult.put(Constants.OBS_NV, globalResult.get(Constants.OBS_NV) + 1);
-			} else {
-				globalResult.put(Constants.OBS_A, globalResult.get(Constants.OBS_A) + 1);
-			}
+			globalResult.put(Constants.OBS_ACCESIBILITY_FULL, pageType.get(Constants.OBS_ACCESIBILITY_FULL));
+			globalResult.put(Constants.OBS_ACCESIBILITY_PARTIAL, pageType.get(Constants.OBS_ACCESIBILITY_PARTIAL));
+			globalResult.put(Constants.OBS_ACCESIBILITY_NONE, pageType.get(Constants.OBS_ACCESIBILITY_NONE));
+			globalResult.put(Constants.OBS_ACCESIBILITY_NA, pageType.get(Constants.OBS_ACCESIBILITY_NA));
 		}
 		return globalResult;
 	}
@@ -1988,9 +2129,10 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 */
 	public static Map<String, List<ObservatoryEvaluationForm>> getPagesByType(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
 		final Map<String, List<ObservatoryEvaluationForm>> globalResult = new HashMap<>();
-		globalResult.put(Constants.OBS_NV, new ArrayList<ObservatoryEvaluationForm>());
-		globalResult.put(Constants.OBS_A, new ArrayList<ObservatoryEvaluationForm>());
-		globalResult.put(Constants.OBS_AA, new ArrayList<ObservatoryEvaluationForm>());
+		globalResult.put(Constants.OBS_ACCESIBILITY_FULL, new ArrayList<ObservatoryEvaluationForm>());
+		globalResult.put(Constants.OBS_ACCESIBILITY_PARTIAL, new ArrayList<ObservatoryEvaluationForm>());
+		globalResult.put(Constants.OBS_ACCESIBILITY_NONE, new ArrayList<ObservatoryEvaluationForm>());
+		globalResult.put(Constants.OBS_ACCESIBILITY_NA, new ArrayList<ObservatoryEvaluationForm>());
 		final PropertiesManager pmgr = new PropertiesManager();
 		final int maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
 		// Se recorren las páginas de cada observatorio
@@ -1998,47 +2140,45 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			boolean isA = true;
 			boolean isAA = true;
 			// Se recorren los niveles de análisis
+			final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
+			// minhap.observatory.5_0.subgroup.3.4
+			boolean declaracion = true;
+			boolean situacionCumplimiento = true;
+			int numZeroRed = 0;
 			for (ObservatoryLevelForm observatoryLevel : observatoryEvaluationForm.getGroups()) {
-				// Se recorren los niveles de acecuación
+				// Se recorren los niveles de adecuación
 				for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevel.getSuitabilityGroups()) {
-					int numZeroRed = 0;
 					if (observatorySuitabilityForm.getName().equals(Constants.OBS_A)) {
-						if ((observatoryLevel.getName().equals(Constants.OBS_N1)) || (isA)) {
-							for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
-								if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
-									numZeroRed = numZeroRed + 1;
+						for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
+							if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
+								if ("minhap.observatory.5_0.subgroup.3.1".equals(observatorySubgroupForm.getDescription())) {
+									declaracion = false;
 								}
-							}
-							if (numZeroRed > maxFails) {
-								isA = false;
-							}
-						}
-					} else if (observatorySuitabilityForm.getName().equals(Constants.OBS_AA) && isA) {
-						if ((observatoryLevel.getName().equals(Constants.OBS_N1)) || (isAA)) {
-							for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
-								if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
-									numZeroRed = numZeroRed + 1;
+								if ("minhap.observatory.5_0.subgroup.3.4".equals(observatorySubgroupForm.getDescription())) {
+									situacionCumplimiento = false;
 								}
-							}
-							if (numZeroRed > maxFails) {
-								isAA = false;
+								numZeroRed++;
 							}
 						}
 					}
 				}
 			}
-			if (isA && isAA) {
-				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_AA);
+			if (numZeroRed == 0) {
+				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_ACCESIBILITY_FULL);
 				globalResult2.add(observatoryEvaluationForm);
-				globalResult.put(Constants.OBS_AA, globalResult2);
-			} else if (isA) {
-				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_A);
+				globalResult.put(Constants.OBS_ACCESIBILITY_FULL, globalResult2);
+			} else if (declaracion && situacionCumplimiento) {
+				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_ACCESIBILITY_PARTIAL);
 				globalResult2.add(observatoryEvaluationForm);
-				globalResult.put(Constants.OBS_A, globalResult2);
+				globalResult.put(Constants.OBS_ACCESIBILITY_PARTIAL, globalResult2);
+			} else if (!situacionCumplimiento) {
+				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_ACCESIBILITY_NONE);
+				globalResult2.add(observatoryEvaluationForm);
+				globalResult.put(Constants.OBS_ACCESIBILITY_NONE, globalResult2);
 			} else {
-				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_NV);
+				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_ACCESIBILITY_NA);
 				globalResult2.add(observatoryEvaluationForm);
-				globalResult.put(Constants.OBS_NV, globalResult2);
+				globalResult.put(Constants.OBS_ACCESIBILITY_NA, globalResult2);
 			}
 		}
 		return globalResult;
@@ -2061,20 +2201,25 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 					sitesByType.put(observatoryEvaluationForm.getCrawlerExecutionId(), value);
 				} else {
 					final Map<String, Integer> initialValues = new HashMap<>();
-					if (key.equals(Constants.OBS_NV)) {
-						initialValues.put(Constants.OBS_NV, 1);
+					if (key.equals(Constants.OBS_ACCESIBILITY_FULL)) {
+						initialValues.put(Constants.OBS_ACCESIBILITY_FULL, 1);
 					} else {
-						initialValues.put(Constants.OBS_NV, 0);
+						initialValues.put(Constants.OBS_ACCESIBILITY_FULL, 0);
 					}
-					if (key.equals(Constants.OBS_A)) {
-						initialValues.put(Constants.OBS_A, 1);
+					if (key.equals(Constants.OBS_ACCESIBILITY_PARTIAL)) {
+						initialValues.put(Constants.OBS_ACCESIBILITY_PARTIAL, 1);
 					} else {
-						initialValues.put(Constants.OBS_A, 0);
+						initialValues.put(Constants.OBS_ACCESIBILITY_PARTIAL, 0);
 					}
-					if (key.equals(Constants.OBS_AA)) {
-						initialValues.put(Constants.OBS_AA, 1);
+					if (key.equals(Constants.OBS_ACCESIBILITY_NONE)) {
+						initialValues.put(Constants.OBS_ACCESIBILITY_NONE, 1);
 					} else {
-						initialValues.put(Constants.OBS_AA, 0);
+						initialValues.put(Constants.OBS_ACCESIBILITY_NONE, 0);
+					}
+					if (key.equals(Constants.OBS_ACCESIBILITY_NA)) {
+						initialValues.put(Constants.OBS_ACCESIBILITY_NA, 1);
+					} else {
+						initialValues.put(Constants.OBS_ACCESIBILITY_NA, 0);
 					}
 					sitesByType.put(observatoryEvaluationForm.getCrawlerExecutionId(), initialValues);
 				}
@@ -2104,6 +2249,31 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 		for (CategoriaForm category : categories) {
 			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(executionId, Long.parseLong(category.getId()), pageExecutionList);
 			resultsBySegment.put(category, calculatePercentage(getResultsBySiteLevel(resultDataSegment)));
+		}
+		return resultsBySegment;
+	}
+
+	/**
+	 * Calculate percentage results by ambit map.
+	 *
+	 * @param executionId       the execution id
+	 * @param pageExecutionList the page execution list
+	 * @param ambits            the ambits
+	 * @return the map
+	 * @throws Exception the exception
+	 */
+	// Cálculo de resultados
+	public static Map<AmbitoForm, Map<String, BigDecimal>> calculatePercentageResultsByAmbitMap(final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList,
+			final List<AmbitoForm> ambits) throws Exception {
+		final Map<AmbitoForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<>(new Comparator<AmbitoForm>() {
+			@Override
+			public int compare(AmbitoForm o1, AmbitoForm o2) {
+				return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
+			}
+		});
+		for (AmbitoForm ambit : ambits) {
+			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(executionId, Long.parseLong(ambit.getId()), pageExecutionList, null, 2);
+			resultsBySegment.put(ambit, calculatePercentage(getResultsBySiteLevel(resultDataSegment)));
 		}
 		return resultsBySegment;
 	}

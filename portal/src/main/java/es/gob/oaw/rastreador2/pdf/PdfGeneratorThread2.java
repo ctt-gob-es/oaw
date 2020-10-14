@@ -105,7 +105,7 @@ public class PdfGeneratorThread2 extends Thread {
 		final MailService mailService = new MailService();
 		List<String> mailsTo = new ArrayList<>();
 		mailsTo.add(email);
-		mailsTo.add("alvaro.pelaez@ctic.es");
+		mailsTo.add("example@mail");
 //		mailService.sendMail(Collections.singletonList(email), "Generación de informes completado", mailBody.toString(), true);
 		mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
 	}

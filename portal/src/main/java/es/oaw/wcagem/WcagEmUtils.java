@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -98,7 +97,13 @@ public final class WcagEmUtils {
 		final ObservatoryManager observatoryManager = new ObservatoryManager();
 		final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), analisisId);
 		// Pagaes
-		final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+		List<ObservatoryEvaluationForm> currentEvaluationPageList = new ArrayList<>();
+		final List<ObservatoryEvaluationForm> tmp = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+		if (tmp.size() > 35) {
+			currentEvaluationPageList.addAll(tmp.subList(0, 35));
+		} else {
+			currentEvaluationPageList.addAll(tmp);
+		}
 		// This map store, the url and a map with everi wcag automatic validation an result
 		Map<String, Map<String, ValidationDetails>> wcagCompliance = generateEquivalenceMap(currentEvaluationPageList);
 		// Generate analysis info
@@ -208,7 +213,7 @@ public final class WcagEmUtils {
 		}
 		graph.setType("Evaluation");
 		graph.setPublisher("reporter:releases/tag/<%= pkg.version =%>");
-		graph.setLang("en");
+		graph.setLang("es");
 		{
 			EvaluationScope evaluationScope = new EvaluationScope();
 			evaluationScope.setType("EvaluationScope");
@@ -248,25 +253,27 @@ public final class WcagEmUtils {
 					// Iterate WCAG Points
 					if (wcagCompliance != null && !wcagCompliance.isEmpty()) {
 						int pageCounter = 0;
-						for (Entry<String, Map<String, ValidationDetails>> result : wcagCompliance.entrySet()) {
+						// Iterate evl list to preserve order
+						for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
+							Map<String, ValidationDetails> result = wcagCompliance.get(eval.getUrl());
 							// if cointain current wcag rule
-							if (result.getValue().containsKey(wcagEmPointKey.getWcagEmId())) {
+							if (result.containsKey(wcagEmPointKey.getWcagEmId())) {
 								HasPart hasPart = new HasPart();
 								hasPart.setType("Assertion");
 								hasPart.setAssertedBy("_:evaluator");
-								hasPart.setSubject(Arrays.asList(new String[] { "_:rand_" + pageCounter }));
+								hasPart.setSubject(Arrays.asList(new String[] { "_:struct_" + pageCounter }));
 								{
 									Result_ resultP = new Result_();
 									resultP.setType("TestResult");
 									resultP.setDate(OffsetDateTime.now(ZoneId.of("Europe/Madrid")).toString());
 									// Result from Details
-									final List<ValidationResult> results = result.getValue().get(wcagEmPointKey.getWcagEmId()).getResults();
+									final List<ValidationResult> results = result.get(wcagEmPointKey.getWcagEmId()).getResults();
 									if (results != null && !results.isEmpty()) {
 										resultP.setDescription(printProblemsAsTable(results, messageResources));
 									} else {
 										resultP.setDescription("");
 									}
-									final String validationResult = result.getValue().get(wcagEmPointKey.getWcagEmId()).getResult();
+									final String validationResult = result.get(wcagEmPointKey.getWcagEmId()).getResult();
 									resultP.setOutcome(validationResult);
 									hasPart.setResult(resultP);
 									// if one of this has earl:failed, all result marked as failed
@@ -296,24 +303,12 @@ public final class WcagEmUtils {
 		{
 			StructuredSample structuredSample = new StructuredSample();
 			List<Webpage> webpages = new ArrayList<>();
-			Webpage webpage = new Webpage();
-			webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
-			webpage.setId("_:struct_0");
-			webpage.setTitle("");
-			webpage.setTested(false);
-			webpages.add(webpage);
-			structuredSample.setWebpage(webpages);
-			graph.setStructuredSample(structuredSample);
-		}
-		{
-			RandomSample randomSample = new RandomSample();
-			List<Webpage_> webpages = new ArrayList<>();
 			int randCounter = 0;
 			// Iterate currentEvaluationPageList to preserve order
 			for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
-				Webpage_ webpage = new Webpage_();
+				Webpage webpage = new Webpage();
 				webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
-				webpage.setId("_:rand_" + randCounter);
+				webpage.setId("_:struct_" + randCounter);
 				webpage.setDescription(eval.getUrl());
 				webpage.setSource(eval.getUrl());
 				webpage.setTitle(BasicServiceUtils.getTitleDocFromContent(eval.getSource(), false));
@@ -321,6 +316,12 @@ public final class WcagEmUtils {
 				webpages.add(webpage);
 				randCounter++;
 			}
+			structuredSample.setWebpage(webpages);
+			graph.setStructuredSample(structuredSample);
+		}
+		{
+			RandomSample randomSample = new RandomSample();
+			List<Webpage_> webpages = new ArrayList<>();
 			randomSample.setWebpage(webpages);
 			graph.setRandomSample(randomSample);
 		}
@@ -487,8 +488,8 @@ public final class WcagEmUtils {
 			} else {
 				validationDetailes.setResult(EARL_CANNOT_TELL);
 				tmpWcag.put(wcagEmId, validationDetailes);
-				break;
 			}
+			break;
 		case Constants.OBS_VALUE_RED_ZERO:
 			if (filterChecks) {
 				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_FAILED);
@@ -500,14 +501,14 @@ public final class WcagEmUtils {
 			break;
 		case Constants.OBS_VALUE_GREEN_ONE:
 			if (filterChecks) {
-				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_PASSED);
+				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_CANNOT_TELL);
 			} else {
-				validationDetailes.setResult(EARL_PASSED);
+				validationDetailes.setResult(EARL_CANNOT_TELL);
 				results = new ArrayList<>();
 				processChecks(observatorySubgroupForm, validationDetailes, results);
 				tmpWcag.put(wcagEmId, validationDetailes);
-				break;
 			}
+			break;
 		case Constants.OBS_VALUE_NOT_SCORE:
 			if (filterChecks) {
 				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_INAPPLICABLE);
@@ -533,6 +534,15 @@ public final class WcagEmUtils {
 	 */
 	private static void filterObservatorySubgroupForm(Map<String, ValidationDetails> tmpWcag, final ObservatorySubgroupForm observatorySubgroupForm, final String wcagEmId,
 			ValidationDetails validationDetailes, List<ValidationResult> results, Map<String, List<String>> checkWcagRelationMap, final String result) {
+		List<Integer> notExecuted = observatorySubgroupForm.getNotExecutedChecks();
+		List<Integer> notExecutedrealtedThisWcagPoint = new ArrayList<>();
+		if (notExecuted != null) {
+			for (Integer notEx : notExecuted) {
+				if (checkWcagRelationMap.get(wcagEmId) != null && checkWcagRelationMap.get(wcagEmId).contains(notEx.toString())) {
+					notExecutedrealtedThisWcagPoint.add(notEx);
+				}
+			}
+		}
 		List<Integer> successChecks = observatorySubgroupForm.getSuccessChecks();
 		List<Integer> successRelatedThisWcagPoint = new ArrayList<>();
 		if (successChecks != null) {
@@ -558,6 +568,7 @@ public final class WcagEmUtils {
 				BeanUtils.copyProperties(filteredObservatorySubgroupForm, observatorySubgroupForm);
 				filteredObservatorySubgroupForm.setProblems(problemsrealtedThisWcagPoint);
 				filteredObservatorySubgroupForm.setSuccessChecks(successRelatedThisWcagPoint);
+				filteredObservatorySubgroupForm.setNotExecutedChecks(notExecutedrealtedThisWcagPoint);
 				validationDetailes.setResult(result);
 				processChecks(filteredObservatorySubgroupForm, validationDetailes, results);
 				tmpWcag.put(wcagEmId, validationDetailes);
@@ -575,6 +586,16 @@ public final class WcagEmUtils {
 	 * @param results                 the results
 	 */
 	private static void processChecks(final ObservatorySubgroupForm observatorySubgroupForm, ValidationDetails validationDetailes, List<ValidationResult> results) {
+		// Not Executed
+		if (observatorySubgroupForm.getNotExecutedChecks() != null && !observatorySubgroupForm.getNotExecutedChecks().isEmpty()) {
+			for (Integer notExecuted : observatorySubgroupForm.getNotExecutedChecks()) {
+				if (notExecuted != null) {
+					ValidationResult validationResult = processNotExecuted(observatorySubgroupForm, notExecuted);
+					results.add(validationResult);
+				}
+			}
+			validationDetailes.setResults(results);
+		}
 		// Problems
 		if (observatorySubgroupForm.getProblems() != null && !observatorySubgroupForm.getProblems().isEmpty()) {
 			for (ProblemForm problem : observatorySubgroupForm.getProblems()) {
@@ -623,6 +644,21 @@ public final class WcagEmUtils {
 		validationResult.setOawVerification(observatorySubgroupForm.getDescription());
 		validationResult.setOawDescription("check." + check + ".error");
 		validationResult.setResult(EARL_PASSED);
+		return validationResult;
+	}
+
+	/**
+	 * Process not executed.
+	 *
+	 * @param observatorySubgroupForm the observatory subgroup form
+	 * @param check                   the check
+	 * @return the validation result
+	 */
+	private static ValidationResult processNotExecuted(final ObservatorySubgroupForm observatorySubgroupForm, Integer check) {
+		ValidationResult validationResult = new ValidationResult();
+		validationResult.setOawVerification(observatorySubgroupForm.getDescription());
+		validationResult.setOawDescription("check." + check + ".error");
+		validationResult.setResult(EARL_INAPPLICABLE);
 		return validationResult;
 	}
 

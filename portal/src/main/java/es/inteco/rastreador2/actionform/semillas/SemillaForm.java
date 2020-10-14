@@ -75,6 +75,10 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	private List<DependenciaForm> dependencias;
 	/** The observaciones. */
 	private String observaciones;
+	/** The sort col. */
+	private String sortCol;
+	/** The sort order. */
+	private String sortOrder;
 
 	/**
 	 * Instantiates a new semilla form.
@@ -725,6 +729,34 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 				this.dependencias.add(dependencia);
 			}
 		}
+	}
+
+	/**
+	 * @return the sortCol
+	 */
+	public String getSortCol() {
+		return sortCol;
+	}
+
+	/**
+	 * @param sortCol the sortCol to set
+	 */
+	public void setSortCol(String sortCol) {
+		this.sortCol = sortCol;
+	}
+
+	/**
+	 * @return the sortOrder
+	 */
+	public String getSortOrder() {
+		return sortOrder;
+	}
+
+	/**
+	 * @param sortOrder the sortOrder to set
+	 */
+	public void setSortOrder(String sortOrder) {
+		this.sortOrder = sortOrder;
 	}
 
 	/**

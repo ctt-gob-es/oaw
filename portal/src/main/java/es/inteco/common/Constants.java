@@ -1857,6 +1857,8 @@ public interface Constants {
 	String ID_SEGMENT_TEMPLATE = "idPlantillaSegmento";
 	/** The id complexity template. */
 	String ID_COMPLEXITY_TEMPLATE = "idPlantillaComplejidad";
+	/** The id segment evol template. */
+	String ID_SEGMENT_EVOL_TEMPLATE = "idPlantillaEvolSegmento";
 	/** The id report title. */
 	String ID_REPORT_TITLE = "reportTitle";
 	/** The observatorio une 2012 version 2 sin enlaces rotos. */
