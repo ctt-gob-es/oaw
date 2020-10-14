@@ -1,5 +1,4 @@
-FROM alpine:3.10
-#FROM artefactos-ic.scae.redsara.es:6000/alpine:3.10
+FROM artefactos-ic.scae.redsara.es:6000/alpine:3.10
 
 # Install base packages
 RUN apk update 
@@ -18,11 +17,6 @@ RUN gem install compass --no-ri --no-rdoc
 RUN echo @edge http://nl.alpinelinux.org/alpine/v3.10/community >> /etc/apk/repositories \
     && echo @edge http://nl.alpinelinux.org/alpine/v3.10/main >> /etc/apk/repositories \
     && apk add --no-cache \
-    # chromium@edge \
-    # harfbuzz@edge \
-    # nss@edge \
-    # freetype@edge \
-    # ttf-freefont@edge \
     && rm -rf /var/cache/* \
     && mkdir /var/cache/apk
 
@@ -36,6 +30,3 @@ RUN npm install -g forever
 RUN npm install
 RUN bower install --allow-root
 
-#Usuario node para ejecutar el renderer
-# RUN addgroup -S node && adduser -S -G node node
-# USER node
