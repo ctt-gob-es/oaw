@@ -234,6 +234,8 @@ public final class BasicServiceExport {
 					zipFile(new File(parentFile + "/wcagem-report.json"), "wcagem-report.json", zos);
 					// ODS
 					zipFile(new File(parentFile + "/Informe_Revision_Profunidad_v1.ods"), "Informe_Revision_Profunidad_v1.ods", zos);
+					// XLSX
+					zipFile(new File(parentFile + "/Informe_Revision_Profunidad_v1.xlsx"), "Informe_Revision_Profunidad_v1.xlsx", zos);
 				}
 			} catch (Exception e) {
 				Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);

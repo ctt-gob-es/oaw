@@ -37,6 +37,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
@@ -88,6 +89,7 @@ import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import es.oaw.wcagem.WcagEmReport;
 import es.oaw.wcagem.WcagEmUtils;
 import es.oaw.wcagem.WcagOdsUtils;
+import es.oaw.wcagem.WcagXlsxUtils;
 
 /**
  * The Class PrimaryExportPdfUtils.
@@ -386,7 +388,7 @@ public final class PrimaryExportPdfUtils {
 				IndexUtils.createIndex(writer, document, messageResources.getMessage("pdf.accessibility.index.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 				ExportPageEventsObservatoryMP.setPrintFooter(true);
 				// (Disable) JSON WCAG-EM and ODS
-				if (true) {
+				if (false) {
 					// JSON
 					WcagEmReport report = WcagEmUtils.generateReport(messageResources, pdfBuilder, BasicServiceUtils.getTitleDocFromContent(currentEvaluationPageList.get(0).getSource(), false),
 							Long.parseLong(crawling.getId()));
@@ -395,8 +397,11 @@ public final class PrimaryExportPdfUtils {
 					org.apache.commons.io.FileUtils.writeStringToFile(new File(new File(file.getPath()).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
 					// ODS REPORT
 					SpreadSheet ods = WcagOdsUtils.generateOds(report);
+					Workbook wb = WcagXlsxUtils.generateXlsx(report);
 					File outputFile = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe_Revision_Profunidad_v1.ods");
 					ods.saveAs(outputFile);
+					File outputFilexlsx = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe_Revision_Profunidad_v1.xlsx");
+					wb.write(new FileOutputStream(outputFilexlsx));
 				}
 			} catch (DocumentException e) {
 				Logger.putLog("Error al exportar a pdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
