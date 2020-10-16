@@ -19,6 +19,7 @@ import static es.inteco.common.Constants.CATEGORY_NAME;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -30,6 +31,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.struts.util.MessageResources;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -257,6 +260,124 @@ public final class AnnexUtils {
 		}
 	}
 
+	public static void createAnnexXLSX(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "anexo.xlsm")) {
+			final String[] ColumnNames = new String[]{"", "namecat", "depende_de", "semilla", "puntuacion_2020-03-13", "adecuacion_2020-03-13", "cumplimiento_2020-03-13", "NV_2020-02-21", "A_2020-02-21", "AA_2020-02-21", "NC_2020-02-21", "PC_2020-02-21", "TC_2020-02-21"};
+
+			final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
+
+			for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
+				if (categoryForm != null) {
+					for (SiteForm siteForm : categoryForm.getSiteFormList()) {
+						if (siteForm != null) {
+							Workbook wb = new XSSFWorkbook();
+
+							Sheet sheet = wb.createSheet("Resultados");
+
+							//create default cell style (aligned top left and allow line wrapping)
+							CellStyle defaultStyle = wb.createCellStyle();
+							defaultStyle.setWrapText(true);
+							defaultStyle.setAlignment(HorizontalAlignment.LEFT);
+							defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
+
+							int rowIndex = 0;
+							int columnIndex = 0;
+
+							// first row contains column names
+							Row row = sheet.createRow(rowIndex);
+							for (String columnName : ColumnNames) {
+								row.createCell(columnIndex).setCellValue(columnName);
+								columnIndex++;
+							}
+							rowIndex++;
+
+							// page per row
+							for (PageForm pageForm : siteForm.getPageList()) {
+								if (pageForm != null) {
+									columnIndex = 0;
+									row = sheet.createRow(rowIndex);
+
+									for (String columnName : ColumnNames) {
+										Cell cell = row.createCell(columnIndex);
+
+										switch (ColumnNames[columnIndex]) {
+											case "":
+												cell.setCellValue("name");
+												cell.setCellStyle(defaultStyle);
+												break;
+											case "namecat":
+												cell.setCellValue("namecat");
+												cell.setCellStyle(defaultStyle);
+												break;
+											case "depende_de":
+												cell.setCellValue("depende_de");
+												cell.setCellStyle(defaultStyle);
+												break;
+											case "semilla":
+												cell.setCellValue(pageForm.getUrl());
+												cell.setCellStyle(defaultStyle);
+												break;
+											case "puntuacion_2020-03-13":
+												cell.setCellValue(pageForm.getScore());
+												cell.setCellStyle(defaultStyle);
+												break;
+											case "adecuacion_2020-03-13":
+												cell.setCellValue(ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
+												cell.setCellStyle(defaultStyle);
+												break;
+											case "cumplimiento_2020-03-13":
+												cell.setCellValue("cumplimiento_2020-03-13");
+												cell.setCellStyle(defaultStyle);
+												break;
+											case "NV_2020-02-21":
+												cell.setCellValue("NV_2020-02-21");
+												cell.setCellStyle(defaultStyle);
+												break;
+											case "A_2020-02-21":
+												cell.setCellValue("A_2020-02-21");
+												cell.setCellStyle(defaultStyle);
+												break;
+											case "AA_2020-02-21":
+												cell.setCellValue("AA_2020-02-21");
+												cell.setCellStyle(defaultStyle);
+												break;
+											case "NC_2020-02-21":
+												cell.setCellValue("NC_2020-02-21");
+												cell.setCellStyle(defaultStyle);
+												break;
+											case "PC_2020-02-21":
+												cell.setCellValue("PC_2020-02-21");
+												cell.setCellStyle(defaultStyle);
+												break;
+											case "TC_2020-02-21":
+												cell.setCellValue("TC_2020-02-21");
+												cell.setCellStyle(defaultStyle);
+												break;
+										}
+										columnIndex++;
+									}
+								}
+
+								rowIndex++;
+							}
+
+							// Increase width of columns to match content
+							for (int i = 0; i < ColumnNames.length; i++) {
+								sheet.autoSizeColumn(i);
+							}
+
+							wb.write(writer);
+							wb.close();
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
 	/**
 	 * Gets the file writer.
 	 *
@@ -272,6 +393,23 @@ public final class AnnexUtils {
 			Logger.putLog("No se ha podido crear los directorios al exportar los anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		}
 		return new FileWriter(file);
+	}
+
+	/**
+	 * Gets the file writer.
+	 *
+	 * @param idOperation the id operation
+	 * @param filename    the filename
+	 * @return the file writer
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	private static FileOutputStream getFileOutputStream(final Long idOperation, final String filename) throws IOException {
+		final PropertiesManager pmgr = new PropertiesManager();
+		final File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + filename);
+		if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
+			Logger.putLog("No se ha podido crear los directorios al exportar los anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		}
+		return new FileOutputStream(file);
 	}
 
 	/**
