@@ -6,11 +6,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 
+import org.apache.poi.poifs.crypt.HashAlgorithm;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import es.inteco.common.properties.PropertiesManager;
@@ -42,8 +45,9 @@ public final class WcagXlsxUtils {
 	 */
 	public static Workbook generateXlsx(final WcagEmReport report) throws Exception {
 		final PropertiesManager pmgr = new PropertiesManager();
-		FileInputStream file = new FileInputStream(new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.xlsx.template")));
-		Workbook workbook = new XSSFWorkbook(file);
+		File inputFile = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.xlsx.template"));
+		FileInputStream inputStream = new FileInputStream(inputFile);
+		XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
 		// Load template
 		// filt techs
 		final Sheet sheetTech = workbook.getSheet("02.Tecnologías");
@@ -59,8 +63,9 @@ public final class WcagXlsxUtils {
 		r = sheetTech.getRow(ref.getRow());
 		c = r.getCell(ref.getCol());
 		c.setCellValue("Sí");
-		final Sheet sheet = workbook.getSheet("03.Muestra");
 		int resultsProcessed = 0;
+		// Fill webpages
+		Sheet sampleSheet = workbook.getSheet("03.Muestra");
 		int initRow = 8; // Initial rowcount
 		final List<Webpage> webpageList = report.getGraph().get(0).getStructuredSample().getWebpage();
 		final int totalPages = webpageList.size();
@@ -68,12 +73,13 @@ public final class WcagXlsxUtils {
 		for (Webpage webpage : webpageList) {
 			if (resultsProcessed < MAX_PAGES) {
 				resultsProcessed++;
-				sheet.getRow(initRow - 1).getCell(2).setCellValue(webpage.getTitle());
-				sheet.getRow(initRow - 1).getCell(3).setCellValue("");
-				sheet.getRow(initRow - 1).getCell(4).setCellValue(webpage.getSource());
+				sampleSheet.getRow(initRow - 1).getCell(2).setCellValue(webpage.getTitle());
+				sampleSheet.getRow(initRow - 1).getCell(3).setCellValue("");
+				sampleSheet.getRow(initRow - 1).getCell(4).setCellValue(webpage.getSource());
 				initRow++;
 			}
 		}
+		// Fill results
 		final Sheet sheetP1 = workbook.getSheet("P1.Perceptible");
 		final Sheet sheetP2 = workbook.getSheet("P2.Operable");
 		final Sheet sheetP3 = workbook.getSheet("P3.Comprensible");
@@ -167,6 +173,14 @@ public final class WcagXlsxUtils {
 				}
 			}
 		}
+		XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
+		// lock workbook
+		for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+			XSSFSheet tmpSheet = (workbook.getSheetAt(i));
+			tmpSheet.protectSheet("oawxlsxpassword");
+		}
+		workbook.setWorkbookPassword("oawxlsxpassword", HashAlgorithm.sha512);
+		workbook.lockStructure();
 		return workbook;
 	}
 

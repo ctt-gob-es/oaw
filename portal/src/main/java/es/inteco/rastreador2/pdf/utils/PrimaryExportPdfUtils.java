@@ -22,6 +22,7 @@ import static es.inteco.common.ConstantsFont.LINE_SPACE;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -38,6 +39,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
@@ -401,7 +403,12 @@ public final class PrimaryExportPdfUtils {
 					File outputFile = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe_Revision_Profunidad_v1.ods");
 					ods.saveAs(outputFile);
 					File outputFilexlsx = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe_Revision_Profunidad_v1.xlsx");
-					wb.write(new FileOutputStream(outputFilexlsx));
+					final FileOutputStream fos = new FileOutputStream(outputFilexlsx);
+					wb.write(fos);
+					fos.close();
+					// Reload the workbook, workaround for bug 49940
+					// https://issues.apache.org/bugzilla/show_bug.cgi?id=49940
+					wb = new XSSFWorkbook(new FileInputStream(outputFilexlsx));
 				}
 			} catch (DocumentException e) {
 				Logger.putLog("Error al exportar a pdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);

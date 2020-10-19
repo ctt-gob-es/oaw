@@ -155,6 +155,7 @@ public final class WcagOdsUtils {
 				}
 			}
 		}
+//		FileUtils.doWithLock(f, transf)
 		return workbook;
 	}
 
