@@ -3996,8 +3996,16 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 					return major1 > major2 ? 1 : -1;
 				}
 
-				private int major(String[] version) {
-					return Integer.parseInt(version[0]);
+				private int major(String[] version)
+				{
+					int r;
+					try {
+						r = Integer.parseInt(version[0]);
+					}
+					catch (NumberFormatException ex) {
+						r = 0;
+					}
+					return r;
 				}
 
 				private Integer minor(String[] version) {
