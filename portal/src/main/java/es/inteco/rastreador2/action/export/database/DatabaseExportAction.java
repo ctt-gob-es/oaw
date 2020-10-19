@@ -186,7 +186,7 @@ public class DatabaseExportAction extends Action {
 			}
 			AnnexUtils.createAnnexPaginas(resources, idObsExecution, idOperation);
 			AnnexUtils.createAnnexPortales(resources, idObsExecution, idOperation);
-			AnnexUtils.createAnnexXLSX(resources, idObsExecution, idOperation);
+			AnnexUtils.createAnnexXLSM(resources, idObsExecution, idOperation);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
 			final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";

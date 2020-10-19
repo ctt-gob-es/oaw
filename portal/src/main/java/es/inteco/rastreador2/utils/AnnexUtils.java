@@ -18,10 +18,7 @@ package es.inteco.rastreador2.utils;
 import static es.inteco.common.Constants.CATEGORY_NAME;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -30,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.struts.util.MessageResources;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -260,19 +260,25 @@ public final class AnnexUtils {
 		}
 	}
 
-	public static void createAnnexXLSX(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+	public static void createAnnexXLSM(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "anexo.xlsm")) {
 			final String[] ColumnNames = new String[]{"", "namecat", "depende_de", "semilla", "puntuacion_2020-03-13", "adecuacion_2020-03-13", "cumplimiento_2020-03-13", "NV_2020-02-21", "A_2020-02-21", "AA_2020-02-21", "NC_2020-02-21", "PC_2020-02-21", "TC_2020-02-21"};
 
 			final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
 
-			for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
-				if (categoryForm != null) {
-					for (SiteForm siteForm : categoryForm.getSiteFormList()) {
-						if (siteForm != null) {
-							Workbook wb = new XSSFWorkbook();
+			for (CategoryForm categoryForm : observatoryForm.getCategoryFormList())
+			{
+				if (categoryForm != null)
+				{
+					for (SiteForm siteForm : categoryForm.getSiteFormList())
+					{
+						if (siteForm != null)
+						{
+							String templatePath = new PropertiesManager().getValue(CRAWLER_PROPERTIES, "export.open.office.template.empty.XLSM.template");
+							InputStream ExcelFileToRead = new FileInputStream(templatePath);
+							XSSFWorkbook  wb = new XSSFWorkbook(ExcelFileToRead);
 
-							Sheet sheet = wb.createSheet("Resultados");
+							XSSFSheet sheet = wb.getSheetAt(0);
 
 							//create default cell style (aligned top left and allow line wrapping)
 							CellStyle defaultStyle = wb.createCellStyle();
@@ -280,37 +286,36 @@ public final class AnnexUtils {
 							defaultStyle.setAlignment(HorizontalAlignment.LEFT);
 							defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
 
-							int rowIndex = 0;
-							int columnIndex = 0;
+							// The sheet already has headers, so we start in the second row.
+							int rowIndex = 1;
+							int columnIndex;
 
-							// first row contains column names
-							Row row = sheet.createRow(rowIndex);
-							for (String columnName : ColumnNames) {
-								row.createCell(columnIndex).setCellValue(columnName);
-								columnIndex++;
-							}
 							rowIndex++;
+							XSSFRow row;
 
 							// page per row
-							for (PageForm pageForm : siteForm.getPageList()) {
-								if (pageForm != null) {
+							for (PageForm pageForm : siteForm.getPageList())
+							{
+								if (pageForm != null)
+								{
 									columnIndex = 0;
 									row = sheet.createRow(rowIndex);
 
 									for (String columnName : ColumnNames) {
-										Cell cell = row.createCell(columnIndex);
+										XSSFCell cell = row.createCell(columnIndex);
 
+										int excelRowNumber = rowIndex+1;
 										switch (ColumnNames[columnIndex]) {
 											case "":
-												cell.setCellValue("name");
+												cell.setCellValue(siteForm.getName());
 												cell.setCellStyle(defaultStyle);
 												break;
 											case "namecat":
-												cell.setCellValue("namecat");
+												cell.setCellValue(categoryForm.getName());
 												cell.setCellStyle(defaultStyle);
 												break;
 											case "depende_de":
-												cell.setCellValue("depende_de");
+												cell.setCellValue("de qué depende?");
 												cell.setCellStyle(defaultStyle);
 												break;
 											case "semilla":
@@ -326,38 +331,37 @@ public final class AnnexUtils {
 												cell.setCellStyle(defaultStyle);
 												break;
 											case "cumplimiento_2020-03-13":
-												cell.setCellValue("cumplimiento_2020-03-13");
+												cell.setCellValue(pageForm.getScoreLevel1());
 												cell.setCellStyle(defaultStyle);
 												break;
 											case "NV_2020-02-21":
-												cell.setCellValue("NV_2020-02-21");
+												cell.setCellFormula("IF($F" + excelRowNumber + "=\"No Válido\",$E" + excelRowNumber + ",0)");;
 												cell.setCellStyle(defaultStyle);
 												break;
 											case "A_2020-02-21":
-												cell.setCellValue("A_2020-02-21");
+												cell.setCellFormula("IF($F" + excelRowNumber + "=\"A\",$E" + excelRowNumber + ",0)");
 												cell.setCellStyle(defaultStyle);
 												break;
 											case "AA_2020-02-21":
-												cell.setCellValue("AA_2020-02-21");
+												cell.setCellFormula("IF($F" + excelRowNumber + "=\"AA\",$E" + excelRowNumber + ",0)");
 												cell.setCellStyle(defaultStyle);
 												break;
 											case "NC_2020-02-21":
-												cell.setCellValue("NC_2020-02-21");
+												cell.setCellFormula("IF($G" + excelRowNumber + "=\"No conforme\",$E" + excelRowNumber + ",0)");
 												cell.setCellStyle(defaultStyle);
 												break;
 											case "PC_2020-02-21":
-												cell.setCellValue("PC_2020-02-21");
+												cell.setCellFormula("IF($G" + excelRowNumber + "=\"Parcialmente conforme\",$E" + excelRowNumber + ",0)");
 												cell.setCellStyle(defaultStyle);
 												break;
 											case "TC_2020-02-21":
-												cell.setCellValue("TC_2020-02-21");
+												cell.setCellFormula("IF($G" + excelRowNumber + "=\"Plenamente conforme\",$E" + excelRowNumber + ",0)");
 												cell.setCellStyle(defaultStyle);
 												break;
 										}
 										columnIndex++;
 									}
 								}
-
 								rowIndex++;
 							}
 
