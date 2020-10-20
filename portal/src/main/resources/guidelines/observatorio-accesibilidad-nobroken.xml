@@ -32,7 +32,7 @@
 					<!-- <check id="463" onlyWarning="true" relatedWith="126" /> -->
 				</checks>
 			</subgroup>
-			<subgroup aspect="observatory.aspect.general" >
+			<subgroup aspect="observatory.aspect.general">
 				<!-- Situación de cumplimiento y contenido no accesible -->
 				<name>minhap.observatory.5_0.subgroup.3.2</name>
 				<checks>
@@ -42,7 +42,7 @@
 
 				</checks>
 			</subgroup>
-			<subgroup aspect="observatory.aspect.general" >
+			<subgroup aspect="observatory.aspect.general">
 				<!-- Comunicaciones sobre requisitos de accesibilidad -->
 				<name>minhap.observatory.5_0.subgroup.3.3</name>
 				<checks>
@@ -58,6 +58,13 @@
 					<check id="488" relatedWith="126" />
 					<check id="489" relatedWith="489" />
 					<check id="490" relatedWith="489" />
+				</checks>
+			</subgroup>
+			<subgroup aspect="observatory.aspect.general">
+				<!-- Preparación de la declaración de accesibilidad -->
+				<name>minhap.observatory.5_0.subgroup.3.5</name>
+				<checks>
+					<check id="491" relatedWith="126" />
 				</checks>
 			</subgroup>
 		</suitability>

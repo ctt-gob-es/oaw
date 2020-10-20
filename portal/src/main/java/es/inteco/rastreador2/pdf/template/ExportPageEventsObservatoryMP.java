@@ -96,7 +96,8 @@ public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
 		PropertiesManager pmgr = new PropertiesManager();
 		int posX = Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.logo.posX"));
 		int posY = Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.logo.posY"));
-		final Image logoMinisterio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.ministerio.logo"), 158, 45, "Ministerio de Hacienda y Función Públicas");
+		final Image logoMinisterio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.ministerio.logo"), 158, 45,
+				"Vicepresidencia Tercera del Gobierno - Ministerio de Asuntos Económicos y Transformación Digital ");
 		if (logoMinisterio != null) {
 			pdfContentByte.beginMarkedContentSequence(PdfName.IMAGE);
 			logoMinisterio.setAbsolutePosition(posX, posY);

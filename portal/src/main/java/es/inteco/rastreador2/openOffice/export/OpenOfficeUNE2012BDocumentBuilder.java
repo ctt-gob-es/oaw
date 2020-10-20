@@ -987,7 +987,7 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 	@Override
 	public OdfTextDocument buildDocumentFiltered(HttpServletRequest request, String filePath, String graphicPath, String date, boolean evolution, List<ObservatoryEvaluationForm> pageExecutionList,
 			List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate,
-			String reportTitle) throws Exception {
+			final Long idSegmentEvolTemplate, String reportTitle) throws Exception {
 		return buildDocument(request, graphicPath, date, evolution, pageExecutionList, categories);
 	}
 }
