@@ -40,6 +40,7 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
@@ -172,6 +173,79 @@ public final class AnnexUtils {
 						writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), messageResources));
 						writeTag(hd, "cumplimiento_" + executionDateAux, entry.getValue().getCompliance());
 					}
+					// TODO Add seed tags
+					List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+					List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+					List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+					List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+					List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+					if (etiquetas != null && !etiquetas.isEmpty()) {
+						for (int i = 0; i < etiquetas.size(); i++) {
+							EtiquetaForm tmp = etiquetas.get(i);
+							if (tmp.getClasificacion() != null) {
+								switch (tmp.getClasificacion().getId()) {
+								case "1":
+									tagsTematica.add(tmp);
+									break;
+								case "2":
+									tagsDistribucion.add(tmp);
+									break;
+								case "3":
+									tagsRecurrencia.add(tmp);
+									break;
+								case "4":
+									tagsOtros.add(tmp);
+									break;
+								default:
+									break;
+								}
+							}
+						}
+					}
+					// 1
+					hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
+					if (tagsTematica != null && !tagsTematica.isEmpty()) {
+						for (int i = 0; i < tagsTematica.size(); i++) {
+							hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
+							if (i < tagsTematica.size() - 1) {
+								hd.characters("\n".toCharArray(), 0, "\n".length());
+							}
+						}
+					}
+					hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
+					// 2
+					hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
+					if (tagsDistribucion != null && !tagsDistribucion.isEmpty()) {
+						for (int i = 0; i < tagsDistribucion.size(); i++) {
+							hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
+							if (i < tagsDistribucion.size() - 1) {
+								hd.characters("\n".toCharArray(), 0, "\n".length());
+							}
+						}
+					}
+					hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
+					// 3
+					hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
+					if (tagsRecurrencia != null && !tagsRecurrencia.isEmpty()) {
+						for (int i = 0; i < tagsRecurrencia.size(); i++) {
+							hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
+							if (i < tagsRecurrencia.size() - 1) {
+								hd.characters("\n".toCharArray(), 0, "\n".length());
+							}
+						}
+					}
+					hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
+					// 4
+					hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
+					if (tagsOtros != null && !tagsOtros.isEmpty()) {
+						for (int i = 0; i < tagsOtros.size(); i++) {
+							hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
+							if (i < tagsOtros.size() - 1) {
+								hd.characters("\n".toCharArray(), 0, "\n".length());
+							}
+						}
+					}
+					hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
 					hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 				}
 			}

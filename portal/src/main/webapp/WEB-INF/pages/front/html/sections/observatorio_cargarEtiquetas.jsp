@@ -35,6 +35,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <script type="text/javascript">
 var $jn = jQuery.noConflict();
 
+var paginadorTotal = '<bean:message key="cargar.semilla.observatorio.buscar.total"/>'; 
+
 
 var colNameOldName = '<bean:message key="colname.oldname"/>';
 var colNameId = '<bean:message key="colname.id"/>';

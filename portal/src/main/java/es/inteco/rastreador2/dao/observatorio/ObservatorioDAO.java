@@ -1267,8 +1267,16 @@ public final class ObservatorioDAO {
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"));
 		final int resultFrom = pagSize * page;
 		int paramCount = 1;
-		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre, cl.orden , r.id_rastreo, l.id_categoria, l.id_ambito, l.id_complejidad, rr.id, al.nombre, cxl.nombre, cxl.profundidad, cxl.amplitud, rr.score, rr.level, l.observaciones FROM lista l "
-				+ "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) "
+		String numCrawlQuery = "(SELECT count(ta.cod_url) "
+				+ "FROM tanalisis ta, rastreos_realizados rr3, rastreo r2, lista l2 WHERE ta.cod_rastreo = rr3.id  and rr3.id_rastreo = r2.id_rastreo and r2.semillas = l2.id_lista  "
+				+ "and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado=" + idObservatorio + ") and rr3.id = rr.id) as numCrawls";
+//		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre as categoriaNombre, cl.orden , r.id_rastreo, l.id_categoria, l.id_ambito, l.id_complejidad, rr.id, al.nombre, cxl.nombre, cxl.profundidad, cxl.amplitud, rr.score, rr.level as nivel, l.observaciones FROM lista l "
+//				+ "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) "
+//				+ "LEFT JOIN complejidades_lista cxl ON(l.id_complejidad = cxl.id_complejidad) " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
+//				+ "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";		
+		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre as categoriaNombre, cl.orden , r.id_rastreo, "
+				+ "l.id_categoria, l.id_ambito, l.id_complejidad, rr.id, al.nombre, cxl.nombre, cxl.profundidad, cxl.amplitud, rr.score, rr.level as nivel, l.observaciones,  " + numCrawlQuery
+				+ " FROM lista l " + "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) "
 				+ "LEFT JOIN complejidades_lista cxl ON(l.id_complejidad = cxl.id_complejidad) " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
 				+ "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";
 		if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
@@ -1281,7 +1289,11 @@ public final class ObservatorioDAO {
 			query += " AND l.id_categoria = ?";
 		}
 		// Ordernar los resultados por categoría y nombre
-		query += " ORDER BY l.id_categoria ASC, l.nombre ASC";
+		if (StringUtils.isNotEmpty(searchForm.getSortCol()) && StringUtils.isNotEmpty(searchForm.getSortOrder())) {
+			query += " ORDER BY " + searchForm.getSortCol() + " " + searchForm.getSortOrder() + ", l.id_lista";
+		} else {
+			query += " ORDER BY l.id_categoria ASC, l.nombre ASC";
+		}
 		if (page != Constants.NO_PAGINACION) {
 			query += " LIMIT ? OFFSET ?";
 		}
@@ -1308,7 +1320,7 @@ public final class ObservatorioDAO {
 					resultadoSemillaForm.setAcronimo(rs.getString("l.acronimo"));
 					resultadoSemillaForm.setListaUrls(convertStringToList(rs.getString("l.lista")));
 					resultadoSemillaForm.setScore(rs.getString("rr.score"));
-					resultadoSemillaForm.setNivel(rs.getString("rr.level"));
+					resultadoSemillaForm.setNivel(rs.getString("nivel"));
 					resultadoSemillaForm.setObservaciones(rs.getString("l.observaciones"));
 					if (rs.getLong("l.activa") == 0) {
 						resultadoSemillaForm.setActiva(false);
@@ -1323,7 +1335,7 @@ public final class ObservatorioDAO {
 					resultadoSemillaForm.setIdCrawling(rs.getString("r.id_rastreo"));
 					final CategoriaForm categoriaForm = new CategoriaForm();
 					categoriaForm.setId(rs.getString("l.id_categoria"));
-					categoriaForm.setName(rs.getString("cl.nombre"));
+					categoriaForm.setName(rs.getString("categoriaNombre"));
 					categoriaForm.setOrden(rs.getInt("cl.orden"));
 					resultadoSemillaForm.setCategoria(categoriaForm);
 					final AmbitoForm ambitoForm = new AmbitoForm();
@@ -1338,6 +1350,7 @@ public final class ObservatorioDAO {
 					resultadoSemillaForm.setComplejidad(complejidadForm);
 					// resultadoSemillaForm.setIdCategory(rs.getLong("l.id_categoria"));
 					resultadoSemillaForm.setIdFulfilledCrawling(rs.getString("rr.id"));
+					resultadoSemillaForm.setNumCrawls(rs.getInt("numCrawls"));
 					// Cargar las dependencias de la semilla
 					PreparedStatement psDependencias = c
 							.prepareStatement("SELECT id_dependencia, nombre FROM dependencia WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?)");
@@ -1381,24 +1394,24 @@ public final class ObservatorioDAO {
 						DAOUtils.closeQueries(psEtiquetas, rsEtiquetas);
 					}
 					// Count URL crawled
-					String numCrawlQuery = "SELECT count(ta.cod_url) as numCrawls  "
-							+ "FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l WHERE ta.cod_rastreo = rr.id  and rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista  "
-							+ "and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado=?) and rr.id = ?";
-					PreparedStatement psCrawls = c.prepareStatement(numCrawlQuery);
-					psCrawls.setLong(1, idObservatorio);
-					psCrawls.setString(2, resultadoSemillaForm.getIdFulfilledCrawling());
-					ResultSet rsCrawls = null;
-					try {
-						rsCrawls = psCrawls.executeQuery();
-						if (rsCrawls.next()) {
-							resultadoSemillaForm.setNumCrawls(rsCrawls.getInt("numCrawls"));
-						}
-					} catch (SQLException e) {
-						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
-						throw e;
-					} finally {
-						DAOUtils.closeQueries(psDependencias, rsDependencias);
-					}
+//					String numCrawlQuery = "SELECT count(ta.cod_url) as numCrawls  "
+//							+ "FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l WHERE ta.cod_rastreo = rr.id  and rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista  "
+//							+ "and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado=?) and rr.id = ?";
+//					PreparedStatement psCrawls = c.prepareStatement(numCrawlQuery);
+//					psCrawls.setLong(1, idObservatorio);
+//					psCrawls.setString(2, resultadoSemillaForm.getIdFulfilledCrawling());
+//					ResultSet rsCrawls = null;
+//					try {
+//						rsCrawls = psCrawls.executeQuery();
+//						if (rsCrawls.next()) {
+//							resultadoSemillaForm.setNumCrawls(rsCrawls.getInt("numCrawls"));
+//						}
+//					} catch (SQLException e) {
+//						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+//						throw e;
+//					} finally {
+//						DAOUtils.closeQueries(psDependencias, rsDependencias);
+//					}
 					semillasFormList.add(resultadoSemillaForm);
 				}
 			}

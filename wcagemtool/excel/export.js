@@ -168,7 +168,6 @@ app.post('/ods', function (request, response) {
                             var oldNode = select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${cellRow}]/table:table-cell[${nameColumn}]`, doc)[0];
                             var tableCell = doc.createElement("table:table-cell");
                             tableCell.setAttribute("table:number-columns-repeated", repeat);
-                            //select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${cellRow}]`, doc)[0].replaceChild(tableCell,oldNode);
                             row.replaceChild(tableCell, oldNode);
 
                             // Tech title
@@ -177,7 +176,6 @@ app.post('/ods', function (request, response) {
                             titleTech.appendChild(text);
                             var tableCellTitle = doc.createElement("table:table-cell");
                             tableCellTitle.appendChild(titleTech);
-                            //select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${cellRow}]`, doc)[0].appendChild(tableCellTitle);
                             row.appendChild(tableCellTitle);
 
                             //Tech URL
@@ -188,7 +186,6 @@ app.post('/ods', function (request, response) {
                             var tableCellDesc = doc.createElement("table:table-cell");
                             tableCellDesc.appendChild(urlTech);
 
-                            //select(`//office:spreadsheet/table:table[@table:name='02.Tecnologías']/table:table-row[${cellRow}]`, doc)[0].appendChild(tableCellDesc);
                             row.appendChild(tableCellDesc);
 
                         } catch (error) {
@@ -229,7 +226,6 @@ app.post('/ods', function (request, response) {
             console.log("Procesando muestra de páginas...");
 
             for (var i = 0; i < webpages.length && i < 35; i++) {
-                //console.log(`--> Página ${i + 1} : ` + webpages[i].title);
                 //Page ttile
                 var titleElm = doc.createElement("text:p");
                 var text = doc.createTextNode(webpages[i].title);
@@ -273,8 +269,7 @@ app.post('/ods', function (request, response) {
 
                             if (resultsByType[j]) {
 
-                                if (resultsByType[j].result.outcome == "earl:passed") {
-                                    // var type = doc.createTextNode("Pasa");                            
+                                if (resultsByType[j].result.outcome == "earl:passed") {                  
                                     var type = doc.createElement("text:p");
                                     var text = doc.createTextNode("Pasa");
                                     type.appendChild(text);

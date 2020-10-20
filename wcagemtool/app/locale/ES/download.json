@@ -7,7 +7,7 @@
     "BTN_SAVE_JSON": "Descargar el informe de evaluación (JSON)",
     "BTN_SAVE_ODS": "Descargar el informe de evaluación (ODS)",
     "BTN_SAVE_ODS_LOAD": "Generando el informe de evaluación (ODS)",
-    "BTN_SAVE_ODS_INFO": "<strong>Nota:</strong> Una vez descargado el fichero ODS, la primera vez que lo abra, puede ser necesario forzar el cálculo de fórmulas: <ul><li>En <strong>LibreOffice</strong> en la opción de menú <em>Datos > Calcular > Recalculación incondicional</em> o pulsando <em>Shift+Ctrl+F9</em>.</li><li>En <strong>OpenOffice</strong> en la opción de menú <em>Datos > Calcular > Recalculación incondicional</em> o pulsando <em>Shift+Ctrl+F9</em>.</li></ul> ",
+    "BTN_SAVE_ODS_INFO": "<strong>Nota:</strong> Una vez descargado el fichero ODS, la primera vez que lo abra, puede ser necesario forzar el cálculo de fórmulas: <ul><li>En <strong>LibreOffice</strong> en la opción de menú <em>Datos > Calcular > Recalculación incondicional</em> o pulsando <em>Shift+Ctrl+F9</em>.</li></ul> ",
     "BTN_SAVE_XLSX": "Descargar el informe de evaluación (XLSX)",
     "BTN_SAVE_XLSX_LOAD": "Generando el informe de evaluación (XLSX)"
 }

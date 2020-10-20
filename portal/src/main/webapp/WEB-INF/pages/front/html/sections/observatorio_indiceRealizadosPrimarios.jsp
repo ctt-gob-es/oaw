@@ -115,10 +115,10 @@ Email: observ.accesibilidad@correo.gob.es
 
 
 
-											<html:link forward="stopObservatorio" name="params">
+<%-- 											<html:link forward="stopObservatorio" name="params"> 
 												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip" title="Parar ejecución" />
 												<span class="sr-only">Parar</span>
-											</html:link>
+											</html:link>--%>
 
 										</logic:equal> <logic:equal name="fulfilledObservatory" property="observatorio.estado" value="1">
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.lanzado" />
@@ -136,10 +136,10 @@ Email: observ.accesibilidad@correo.gob.es
 											</html:link>
 
 
-											<html:link forward="stopObservatorio" name="params">
+											<%-- <html:link forward="stopObservatorio" name="params">
 												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip" title="Parar ejecución" />
 												<span class="sr-only">Parar</span>
-											</html:link>
+											</html:link>--%>
 
 
 										</logic:equal> <logic:equal name="fulfilledObservatory" property="observatorio.estado" value="0">
@@ -158,10 +158,10 @@ Email: observ.accesibilidad@correo.gob.es
 												<span class="sr-only"><bean:message key='tooltip.status.obs'/></span>
 											</html:link>
 
-											<html:link forward="stopObservatorio" name="params">
+											<%-- <html:link forward="stopObservatorio" name="params">
 												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip" title="Parar ejecución" />
 												<span class="sr-only">Parar</span>
-											</html:link>
+											</html:link>--%>
 
 
 											<html:link forward="relanzarObservatorio" name="paramsRelanzar">

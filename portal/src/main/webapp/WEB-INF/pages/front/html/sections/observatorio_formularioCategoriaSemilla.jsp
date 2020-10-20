@@ -64,6 +64,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 <script type="text/javascript">
 
+var paginadorTotal = '<bean:message key="cargar.semilla.observatorio.buscar.total"/>';
 
 var colNameId = '<bean:message key="colname.id"/>';
 var colNameAcronym = '<bean:message key="colname.acronym"/>';

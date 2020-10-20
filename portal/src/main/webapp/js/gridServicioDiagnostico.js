@@ -28,6 +28,23 @@ function estadoFormatter(cellvalue, options, rowObject) {
 	return value;
 }
 
+function depthReportFormatter(cellvalue, options, rowObject) {
+	var value = "";
+
+	switch (cellvalue) {
+	case "false":
+		value = no;
+		break;
+	case "true":
+		value = yes;
+		break;
+	default:
+		value = "-";
+	}
+
+	return value;
+}
+
 function observatorioFormatter(cellvalue, options, rowObject) {
 
 	var valur = "";
@@ -126,105 +143,103 @@ function reloadGrid(path, gridId, paginadorId) {
 
 						ajaxJson = JSON.stringify(data.diagnosticos);
 
-						$('#avg').text(data.avg.toFixed(2) + " "+segundos + "  ("+(data.avg/60).toFixed(2)+" "+minutos+")");
-					
+						$('#avg').text(
+								data.avg.toFixed(2) + " " + segundos + "  ("
+										+ (data.avg / 60).toFixed(2) + " "
+										+ minutos + ")");
 
 						total = data.paginador.total;
 
-						$('#' + gridId).jqGrid(
-								{
-//									colNames : [ "URL", "Tipo de portal *",
-//											"Usuario", "Email", "Profundidad",
-//											"Amplitud", "Complejidad",
-//											"Tipo de informe",
-//											"Tipo de an&#225;lisis",
-//											"En directorio", "Hist&#243;rico",
-//											"Estado", "Fecha de solicitud",
-//											"Fecha de env&#237;o" ],
-									colNames: translatedColNames,
-									colModel : [ {
-										name : "domain",
-										width : 50,
-										sortable : false
-									}, {
-										name : "type",
-										width : 20,
-										sortable : false,
-										formatter : tipoFormatter,
-									}, {
-										name : "user",
-										width : 20,
-										sortable : false,
-										formatter : usuarioFormatter
-									}, {
-										name : "email",
-										width : 20,
-										sortable : false,
-									}, {
-										name : "depth",
-										width : 10,
-										sortable : false,
-									}, {
-										name : "width",
-										width : 10,
-										sortable : false,
-									}, {
-										name : "complexityName",
-										width : 20,
-										sortable : false,
-										formatter : complexityFormatter
-									}, {
-										name : "report",
-										width : 20,
-										sortable : false,
-										formatter : observatorioFormatter
-									}, {
-										name : "analysisType",
-										width : 20,
-										sortable : false,
-										formatter : tipoAnalisisFormatter
-									}, {
-										name : "inDirectory",
-										width : 10,
-										sortable : false,
-										template : "booleanCheckboxFa",
-									}, {
-										name : "registerResult",
-										width : 10,
-										sortable : false,
-										template : "booleanCheckboxFa",
-									}, {
-										name : "status",
-										width : 20,
-										sortable : false,
-										formatter : estadoFormatter,
-									}, {
-										name : "date",
-										width : 20,
-										sortable : false,
-									}, {
-										name : "sendDate",
-										width : 20,
-										sortable : false,
-									} ],
-									cmTemplate : {
-										autoResizable : true,
-										editable : true
-									},
-									viewrecords : false,
-									autowidth : true,
-									pgbuttons : false,
-									pgtext : false,
-									pginput : false,
-									hidegrid : false,
-									altRows : true,
-									mtype : 'POST',
-									headertitles : true,
-									gridComplete : function() {
-										// Restaurar el scroll
-										$(window).scrollTop(scroll);
-									}
-								}).jqGrid("inlineNav");
+						$('#' + gridId).jqGrid({
+							colNames : translatedColNames,
+							colModel : [ {
+								name : "domain",
+								width : 50,
+								sortable : false
+							}, {
+								name : "type",
+								width : 20,
+								sortable : false,
+								formatter : tipoFormatter,
+							}, {
+								name : "user",
+								width : 20,
+								sortable : false,
+								formatter : usuarioFormatter
+							}, {
+								name : "email",
+								width : 20,
+								sortable : false,
+							}, {
+								name : "depth",
+								width : 10,
+								sortable : false,
+							}, {
+								name : "width",
+								width : 10,
+								sortable : false,
+							}, {
+								name : "complexityName",
+								width : 20,
+								sortable : false,
+								formatter : complexityFormatter
+							}, {
+								name : "report",
+								width : 20,
+								sortable : false,
+								formatter : observatorioFormatter
+							}, {
+								name : "analysisType",
+								width : 20,
+								sortable : false,
+								formatter : tipoAnalisisFormatter
+							}, {
+								name : "inDirectory",
+								width : 10,
+								sortable : false,
+								template : "booleanCheckboxFa",
+							}, {
+								name : "registerResult",
+								width : 10,
+								sortable : false,
+								template : "booleanCheckboxFa",
+							}, {
+								name : "status",
+								width : 20,
+								sortable : false,
+								formatter : estadoFormatter,
+							}, {
+								name : "date",
+								width : 20,
+								sortable : false,
+							}, {
+								name : "sendDate",
+								width : 20,
+								sortable : false,
+							}, {
+								name : "depthReport",
+								width : 20,
+								sortable : false,
+								formatter : depthReportFormatter,
+							}],
+							cmTemplate : {
+								autoResizable : true,
+								editable : true
+							},
+							viewrecords : false,
+							autowidth : true,
+							pgbuttons : false,
+							pgtext : false,
+							pginput : false,
+							hidegrid : false,
+							altRows : true,
+							mtype : 'POST',
+							headertitles : true,
+							gridComplete : function() {
+								// Restaurar el scroll
+								$(window).scrollTop(scroll);
+							}
+						}).jqGrid("inlineNav");
 
 						// Recargar el grid
 						$('#' + gridId).jqGrid('setGridParam', {
@@ -237,7 +252,8 @@ function reloadGrid(path, gridId, paginadorId) {
 						if (total == 0) {
 							$('#' + gridId)
 									.append(
-											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="14" style="padding: 15px !important;" role="gridcell">'+noResults+'</td></tr>');
+											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="15" style="padding: 15px !important;" role="gridcell">'
+													+ noResults + '</td></tr>');
 						}
 
 						// Paginador
@@ -248,23 +264,31 @@ function reloadGrid(path, gridId, paginadorId) {
 						// Si solo hay una página no pintamos el paginador
 						if (paginas.length > 1) {
 
-							$.each(paginas, function(key, value) {
-								if (value.active == true) {
-									$('#' + paginadorId).append(
-											'<a href="javascript:reloadGrid(\''
-													+ value.path
-													+ '\',\'grid\',\'paginador\')" class="'
-													+ value.styleClass
-													+ ' btn btn-default">'
-													+ value.title + '</a>');
-								} else {
-									$('#' + paginadorId).append(
-											'<span class="' + value.styleClass
-													+ ' btn">' + value.title
-													+ '</span>');
-								}
+							$
+									.each(
+											paginas,
+											function(key, value) {
+												if (value.active == true) {
+													$('#' + paginadorId)
+															.append(
+																	'<a href="javascript:reloadGrid(\''
+																			+ value.path
+																			+ '\',\'grid\',\'paginador\')" class="'
+																			+ value.styleClass
+																			+ ' btn btn-default">'
+																			+ value.title
+																			+ '</a>');
+												} else {
+													$('#' + paginadorId)
+															.append(
+																	'<span class="'
+																			+ value.styleClass
+																			+ ' btn">'
+																			+ value.title
+																			+ '</span>');
+												}
 
-							});
+											});
 						}
 					}).error(function(data) {
 				console.log("Error")
