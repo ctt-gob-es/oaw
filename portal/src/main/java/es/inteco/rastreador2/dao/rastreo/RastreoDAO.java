@@ -2408,4 +2408,57 @@ public final class RastreoDAO {
 		}
 		return globalReportStatistics;
 	}
+
+	/**
+	 * Gets the global report statistics by complex.
+	 *
+	 * @param c           the c
+	 * @param tagsToFiler the tags to filer
+	 * @param exObsIds    the ex obs ids
+	 * @return the global report statistics by complex
+	 * @throws Exception the exception
+	 */
+	public static List<GlobalReportStatistics> getGlobalReportStatisticsByComplex(Connection c, String[] tagsToFiler, String[] exObsIds) throws Exception {
+		final List<GlobalReportStatistics> globalReportStatistics = new ArrayList<>();
+		String query = "SELECT cl.id_complejidad,cl.nombre, COUNT(*) as countSeeds FROM rastreos_realizados rr JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) JOIN complejidades_lista cl on cl.id_complejidad=l.id_complejidad ";
+		// Cargamos los rastreos realizados
+		if (exObsIds != null && exObsIds.length > 0) {
+			query = query + "AND id_obs_realizado IN (" + exObsIds[0];
+			for (int i = 1; i < exObsIds.length; i++) {
+				query = query + "," + exObsIds[i];
+			}
+			query = query + ")";
+		}
+		if (tagsToFiler != null && tagsToFiler.length > 0) {
+			query = query + " AND ( 1=1 ";
+			for (int i = 0; i < tagsToFiler.length; i++) {
+				query = query + " OR el.id_etiqueta= ?";
+			}
+			query = query + ")";
+		}
+		query = query + " GROUP BY cl.id_complejidad ORDER BY cl.id_complejidad DESC ";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			int paramNumber = 1;
+			if (tagsToFiler != null && tagsToFiler.length > 0) {
+				for (int i = 0; i < tagsToFiler.length; i++) {
+					ps.setLong(paramNumber, Long.parseLong(tagsToFiler[i]));
+					paramNumber++;
+				}
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					GlobalReportStatistics grE = new GlobalReportStatistics();
+					grE.setCount(rs.getInt("countSeeds"));
+					grE.setNombre(rs.getString("cl.nombre"));
+					grE.setIdClasificacion(rs.getInt("cl.id_complejidad"));
+					grE.setNombreClasificacion(rs.getString("cl.nombre"));
+					globalReportStatistics.add(grE);
+				}
+			}
+		} catch (Exception e) {
+			Logger.putLog("Error en getExecutionObservatoryCrawlerIds", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return globalReportStatistics;
+	}
 }
