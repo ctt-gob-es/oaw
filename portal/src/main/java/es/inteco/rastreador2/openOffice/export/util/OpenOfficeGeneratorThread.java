@@ -143,7 +143,7 @@ public class OpenOfficeGeneratorThread extends Thread {
 		final MailService mailService = new MailService();
 		List<String> mailsTo = new ArrayList<>();
 		mailsTo.add(email);
-		mailsTo.add("example@mail");
+		mailsTo.add("alvaro.pelaez@ctic.es");
 		mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
 	}
 

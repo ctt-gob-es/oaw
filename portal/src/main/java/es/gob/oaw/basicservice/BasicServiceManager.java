@@ -16,6 +16,7 @@ import static es.inteco.common.Constants.BASIC_SERVICE_PROPERTIES;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.mail.EmailException;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.struts.util.MessageResources;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
@@ -60,6 +62,7 @@ import es.inteco.utils.FileUtils;
 import es.oaw.wcagem.WcagEmReport;
 import es.oaw.wcagem.WcagEmUtils;
 import es.oaw.wcagem.WcagOdsUtils;
+import es.oaw.wcagem.WcagXlsxUtils;
 
 /**
  * Created by mikunis on 1/10/17.
@@ -206,6 +209,9 @@ public class BasicServiceManager {
 					SpreadSheet ods = WcagOdsUtils.generateOds(report);
 					File outputFile = new File(new File(pdfPath).getParentFile().getPath() + "/Informe_Revision_Profunidad_v1.ods");
 					ods.saveAs(outputFile);
+					Workbook wb = WcagXlsxUtils.generateXlsx(report);
+					File outputFilexlsx = new File(new File(pdfPath).getParentFile().getPath() + "/Informe_Revision_Profunidad_v1.xlsx");
+					wb.write(new FileOutputStream(outputFilexlsx));
 				}
 				// Generar código analizado
 				final SourceFilesManager sourceFilesManager = new SourceFilesManager(new File(pdfPath).getParentFile());
