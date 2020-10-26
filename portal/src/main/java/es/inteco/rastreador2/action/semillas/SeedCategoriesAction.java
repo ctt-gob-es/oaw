@@ -25,6 +25,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import es.inteco.rastreador2.actionform.semillas.SemillaSearchForm;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -215,48 +216,71 @@ public class SeedCategoriesAction extends Action {
 	 * @throws Exception the exception
 	 */
 	private ActionForward addSeedCategory(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
-		if (!isCancelled(request)) {
-			final PropertiesManager pmgr = new PropertiesManager();
-			CategoriaForm categoriaForm = (CategoriaForm) form;
-			request.setAttribute(Constants.ACTION, Constants.ADD_SEED_CATEGORY);
-			ActionErrors errors = categoriaForm.validate(mapping, request);
-			if (errors.isEmpty()) {
-				if (categoriaForm.getFileSeeds() == null || StringUtils.isEmpty(categoriaForm.getFileSeeds().getFileName()) || (categoriaForm.getFileSeeds().getFileName().endsWith(".xml")
-						&& categoriaForm.getFileSeeds().getFileSize() <= Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size")))) {
-					try (Connection c = DataBaseManager.getConnection()) {
-						final Long idSeedCategory = SemillaDAO.createSeedCategory(c, categoriaForm);
-						String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.creada", categoriaForm.getName());
-						String volver = pmgr.getValue("returnPaths.properties", "volver.listado.categorias.semilla");
-						if (categoriaForm.getFileSeeds().getFileData().length > 0) {
-							try {
-								List<SemillaForm> seeds = SeedUtils.getSeedsFromFile(categoriaForm.getFileSeeds().getInputStream(), false);
-								SemillaDAO.saveSeedsCategory(c, seeds, idSeedCategory.toString());
-							} catch (Exception e) {
-								Logger.putLog("Error en la creación de semillas asociadas al observatorio", SeedCategoriesAction.class, Logger.LOG_LEVEL_ERROR, e);
-								mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.creada.error.fichero.semillas", categoriaForm.getName());
-							}
-						}
-						request.setAttribute("mensajeExito", mensaje);
-						request.setAttribute("accionVolver", volver);
-						return mapping.findForward(Constants.EXITO);
-					}
-				} else if (!categoriaForm.getFileSeeds().getFileName().endsWith(".xml")) {
-					errors.add("xmlFile", new ActionMessage("no.xml.file"));
-					saveErrors(request, errors);
-					return mapping.findForward(Constants.VOLVER);
-				} else if (categoriaForm.getFileSeeds().getFileSize() > Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size"))) {
-					errors.add("xmlFile", new ActionMessage("xml.size.error"));
-					saveErrors(request, errors);
-					return mapping.findForward(Constants.VOLVER);
-				}
-			} else {
+
+		if (isCancelled(request)) {
+			return mapping.findForward(Constants.GET_SEED_CATEGORIES);
+		}
+
+		final PropertiesManager pmgr = new PropertiesManager();
+		CategoriaForm categoriaForm = (CategoriaForm) form;
+		request.setAttribute(Constants.ACTION, Constants.ADD_SEED_CATEGORY);
+
+		// Validate form
+		ActionErrors errors = categoriaForm.validate(mapping, request);
+		if (!errors.isEmpty())
+		{
+			saveErrors(request, errors);
+			return mapping.findForward(Constants.VOLVER);
+		}
+
+		boolean fileIncluded = (categoriaForm.getFileSeeds() != null &&
+								!StringUtils.isEmpty(categoriaForm.getFileSeeds().getFileName()));
+
+		// Validate format
+		String fileExtension = "";
+		if (fileIncluded){
+			String filename = categoriaForm.getFileSeeds().getFileName();
+			String[] splits = filename.split("\\.");
+			fileExtension = splits[splits.length-1];
+			if (!fileExtension.equals("xml") && !fileExtension.equals("xlsx")) {
+				errors.add("xmlFile", new ActionMessage("no.xml.file"));
 				saveErrors(request, errors);
 				return mapping.findForward(Constants.VOLVER);
 			}
-		} else {
-			return mapping.findForward(Constants.GET_SEED_CATEGORIES);
+
+			// validate file size
+			if (categoriaForm.getFileSeeds().getFileSize() > Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size"))) {
+				errors.add("xmlFile", new ActionMessage("xml.size.error"));
+				saveErrors(request, errors);
+				return mapping.findForward(Constants.VOLVER);
+			}
 		}
-		return null;
+
+		try (Connection c = DataBaseManager.getConnection()) {
+			final Long idSeedCategory = SemillaDAO.createSeedCategory(c, categoriaForm);
+			String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.creada", categoriaForm.getName());
+			String volver = pmgr.getValue("returnPaths.properties", "volver.listado.categorias.semilla");
+			if (fileIncluded) {
+				try {
+					List<SemillaForm> seeds = new ArrayList<>();
+					switch (fileExtension){
+						case "xml":
+							seeds = SeedUtils.getSeedsFromFile(categoriaForm.getFileSeeds().getInputStream(), true);
+							break;
+						case "xlsx":
+							seeds = SeedExcelUtils.getSeedsFromXlsxFile(categoriaForm.getFileSeeds().getInputStream());
+							break;
+					}
+					SemillaDAO.saveSeedsCategory(c, seeds, idSeedCategory.toString());
+				} catch (Exception e) {
+					Logger.putLog("Error en la creación de semillas asociadas al observatorio", SeedCategoriesAction.class, Logger.LOG_LEVEL_ERROR, e);
+					mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.creada.error.fichero.semillas", categoriaForm.getName());
+				}
+			}
+			request.setAttribute("mensajeExito", mensaje);
+			request.setAttribute("accionVolver", volver);
+			return mapping.findForward(Constants.EXITO);
+		}
 	}
 
 	/**
@@ -269,32 +293,74 @@ public class SeedCategoriesAction extends Action {
 	 * @throws Exception the exception
 	 */
 	private ActionForward updateSeedCategory(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
-		if (!isCancelled(request)) {
-			final CategoriaForm categoriaForm = (CategoriaForm) form;
-			final PropertiesManager pmgr = new PropertiesManager();
-			try (Connection c = DataBaseManager.getConnection()) {
-				SemillaDAO.updateSeedCategory(c, categoriaForm);
-				String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.editada", categoriaForm.getName());
-				final String volver = pmgr.getValue("returnPaths.properties", "volver.listado.categorias.semilla");
-				if (categoriaForm.getFileSeeds().getFileData().length > 0) {
-					try {
-						// Semillas que recuperamos del fichero
-						final List<SemillaForm> seeds = SeedUtils.getSeedsFromFile(categoriaForm.getFileSeeds().getInputStream(), false);
-						// Semillas de la categoria
-						final List<SemillaForm> oldSeeds = SemillaDAO.getSeedsByCategory(c, Long.parseLong(categoriaForm.getId()), Constants.NO_PAGINACION, new SemillaForm());
-						// Comparamos las semillas (x url)
-						compareSeeds(c, categoriaForm.getId(), seeds, oldSeeds);
-					} catch (Exception e) {
-						Logger.putLog("Error en la creación de semillas asociadas al observatorio", SeedCategoriesAction.class, Logger.LOG_LEVEL_ERROR, e);
-						mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.creada.error.fichero.semillas", categoriaForm.getName());
-					}
-				}
-				request.setAttribute("mensajeExito", mensaje);
-				request.setAttribute("accionVolver", volver);
-				return mapping.findForward(Constants.EXITO);
-			}
-		} else {
+
+		if (isCancelled(request)) {
 			return mapping.findForward(Constants.GET_SEED_CATEGORIES);
+		}
+
+		final PropertiesManager pmgr = new PropertiesManager();
+		CategoriaForm categoriaForm = (CategoriaForm) form;
+		request.setAttribute(Constants.ACTION, Constants.ADD_SEED_CATEGORY);
+
+		// Validate form
+		ActionErrors errors = categoriaForm.validate(mapping, request);
+		if (!errors.isEmpty())
+		{
+			saveErrors(request, errors);
+			return mapping.findForward(Constants.VOLVER);
+		}
+
+		boolean fileIncluded = (categoriaForm.getFileSeeds() != null &&
+				!StringUtils.isEmpty(categoriaForm.getFileSeeds().getFileName()));
+
+		// Validate format
+		String fileExtension = "";
+		if (fileIncluded){
+			String filename = categoriaForm.getFileSeeds().getFileName();
+			String[] splits = filename.split("\\.");
+			fileExtension = splits[splits.length-1];
+			if (!fileExtension.equals("xml") && !fileExtension.equals("xlsx")) {
+				errors.add("xmlFile", new ActionMessage("no.xml.file"));
+				saveErrors(request, errors);
+				return mapping.findForward(Constants.VOLVER);
+			}
+
+			// validate file size
+			if (categoriaForm.getFileSeeds().getFileSize() > Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size"))) {
+				errors.add("xmlFile", new ActionMessage("xml.size.error"));
+				saveErrors(request, errors);
+				return mapping.findForward(Constants.VOLVER);
+			}
+		}
+
+		try (Connection c = DataBaseManager.getConnection()) {
+			SemillaDAO.updateSeedCategory(c, categoriaForm);
+			String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.editada", categoriaForm.getName());
+			final String volver = pmgr.getValue("returnPaths.properties", "volver.listado.categorias.semilla");
+			if (fileIncluded) {
+				try {
+					// Semillas que recuperamos del fichero
+					List<SemillaForm> seeds = new ArrayList<>();
+					switch (fileExtension){
+						case "xml":
+							seeds = SeedUtils.getSeedsFromFile(categoriaForm.getFileSeeds().getInputStream(), true);
+							break;
+						case "xlsx":
+							seeds = SeedExcelUtils.getSeedsFromXlsxFile(categoriaForm.getFileSeeds().getInputStream());
+							break;
+					}
+					// Semillas de la categoria
+					final List<SemillaForm> oldSeeds = SemillaDAO.getSeedsByCategory(c, Long.parseLong(categoriaForm.getId()), Constants.NO_PAGINACION, new SemillaForm());
+					// Comparamos las semillas (x url)
+					compareSeeds(c, categoriaForm.getId(), seeds, oldSeeds);
+				} catch (Exception e) {
+					Logger.putLog("Error en la creación de semillas asociadas al observatorio", SeedCategoriesAction.class, Logger.LOG_LEVEL_ERROR, e);
+					mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.creada.error.fichero.semillas", categoriaForm.getName());
+				}
+			}
+			request.setAttribute("mensajeExito", mensaje);
+			request.setAttribute("accionVolver", volver);
+			return mapping.findForward(Constants.EXITO);
 		}
 	}
 
@@ -602,7 +668,7 @@ public class SeedCategoriesAction extends Action {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final Long idCategory = Long.parseLong(request.getParameter(Constants.ID_CATEGORIA));
 			final List<SemillaForm> seeds = SemillaDAO.getSeedsByCategory(c, idCategory, Constants.NO_PAGINACION, new SemillaForm());
-			SeedUtils.writeFileToResponse(response, seeds, false);
+			SeedExcelUtils.writeSeedsToXlsxResponse(response, seeds);
 			return null;
 		}
 	}

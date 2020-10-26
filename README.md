@@ -30,7 +30,7 @@ Create a context configuration like this in *server.xml*:
     timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"                                         
     defaultTransactionIsolation="READ_UNCOMMITTED" username="<username>" password="<password>"/>
 </Context>
-``
+```
 Note to chenge *url*, *user* and *password* values
 
 # Application
@@ -46,6 +46,7 @@ To compile the application, we will use maven (version 3.0.0 or higher). It will
 * https://maven.apache.org/guides/mini/guide-mirror-settings.html
 To do this, inside the oaw directory we will execute the following command so that it builds us the complete project:
 >	mvn clean install -P development -DskipTests
+>
 If everything goes well, a war will be generated in the portal/target folder which will be the one we should display this war in the webapps folder of the tomcat server. 
 
 ## Profiles
