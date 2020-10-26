@@ -1,13 +1,18 @@
 package es.inteco.rastreador2.action.semillas;
 
+import es.inteco.common.Constants;
+import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
+import org.apache.commons.digester.Digester;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -210,5 +215,102 @@ public final class SeedExcelUtils {
 		response.setHeader("Content-Disposition", "attachment; filename=semillas.xlsx");
 		wb.write(response.getOutputStream());
 		wb.close();
+	}
+
+	/**
+	 * Extracts a list of seeds from a .xlsx file encoded in an input stream
+	 * @param inputStream .xlsx file in a stream
+	 * @return List of decoded seeds
+	 * @throws Exception
+	 */
+	public static List<SemillaForm> getSeedsFromXlsxFile(InputStream inputStream) throws Exception {
+		try {
+			List<SemillaForm> seeds = new ArrayList<>();
+			Workbook workbook = new XSSFWorkbook(inputStream);
+			Sheet seedsSheet = workbook.getSheetAt(0);
+			boolean firstRow = true;
+			for (Row row : seedsSheet) {
+				if (firstRow){
+					firstRow = false;
+					continue;
+				}
+				// if row has no name ignore
+				if (row.getCell(SeedExcelColumns.NOMBRE.columnId) == null){
+					continue;
+				}
+
+				SemillaForm seed = new SemillaForm();
+				for (SeedExcelColumns col: SeedExcelColumns.values()){
+					Cell cell = row.getCell(col.columnId);
+					if (cell == null){
+						continue;
+					}
+					String value = cell.getRichStringCellValue().getString();
+					// big switch in case we need to do custom cell preprocessing for each column
+					switch (col){
+						case ID:
+							seed.setIdStr(value);
+							break;
+						case NOMBRE:
+							seed.setNombre(value);
+							break;
+						case ACTIVA:
+							seed.setActivaStr(value);
+							break;
+						case ELIMINADA:
+							seed.setEliminarStr(value);
+							break;
+						case URLS:
+							seed.addListUrl(value);
+							break;
+						case ACRONIMO:
+							seed.setAcronimo(value);
+							break;
+						case DEPENDENCIA:
+							seed.addDependenciaPorNombre(value);
+							break;
+						case DIRECTORIO:
+							seed.setInDirectoryStr(value);
+							break;
+						case SEGMENTO:
+							seed.setCategoryName(value);
+							break;
+						case AMBITO:
+							seed.setAmbitName(value);
+							break;
+						case COMPLEJIDAD:
+							seed.setComplexityName(value);
+							break;
+						case ETIQUETAS_TEMATICA:
+							seed.addEtiquetaTematica(value);
+							break;
+						case ETIQUETAS_DISTRIBUCION:
+							seed.addEtiquetaDistribucion(value);
+							break;
+						case ETIQUETAS_RECURRENCIA:
+							seed.addEtiquetaRecurrencia(value);
+							break;
+						case ETIQUETAS_OTROS:
+							seed.addEtiquetaOtros(value);
+							break;
+						case OBSERVACIONES:
+							seed.setObservaciones(value);
+							break;
+					}
+				}
+				seeds.add(seed);
+			}
+			return seeds;
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (Exception e) {
+					Logger.putLog("Error al cerrar el InputStream", SeedUtils.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
+		}
 	}
 }

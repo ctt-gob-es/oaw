@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologï¿½as de la Comunicaciï¿½n, 
 This program is licensed and may be used, modified and redistributed under the terms
 of the European Public License (EUPL), either version 1.2 or (at your option) any later 
 version as soon as they are approved by the European Commission.
@@ -541,7 +541,7 @@ var translatedColNames = [ colNameId, colNameOldName,
 			<p class="pull-right">
 				<a href="#" class="btn btn-default btn-lg " onclick="selectXMLFile()"> <span
 					class="glyphicon glyphicon-cloud-upload" aria-hidden="true" data-toggle="tooltip" title=""
-					data-original-title="Importar un fichero XML de semillas"></span> <bean:message
+					data-original-title="Importar un fichero XML/xlsx de semillas"></span> <bean:message
 						key="cargar.semilla.observatorio.importar.todo" />
 
 
@@ -562,7 +562,7 @@ var translatedColNames = [ colNameId, colNameOldName,
 			<!-- <p class="pull-right">
 				<a href="/oaw/secure/SeedMassImport.do?action=exportAllSeeds"> <span class="btn btn-default btn-lg"> <span
 						class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title=""
-						data-original-title="Exportar todas las semillas a un fichero XML"></span> <bean:message
+						data-original-title="Exportar todas las semillas a un fichero .xlsx"></span> <bean:message
 							key="cargar.semilla.observatorio.exportar.todo" />
 				</span>
 				</a>
