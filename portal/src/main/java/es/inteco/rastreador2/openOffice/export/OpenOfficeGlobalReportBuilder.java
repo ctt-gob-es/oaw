@@ -534,7 +534,7 @@ public final class OpenOfficeGlobalReportBuilder {
 			throws Exception, SAXException, IOException, ParserConfigurationException {
 		List<GlobalReportStatistics> gre = RastreoDAO.getGlobalReportStatisticsByComplex(c, tagsToFiler, exObsIds);
 		if (gre != null && !gre.isEmpty()) {
-			String header0 = messageResources.getMessage(HEADER_AMBITO);
+			String header0 = messageResources.getMessage(HEADER_COMPLEJIDAD);
 			String header1 = messageResources.getMessage(HEADER_NUM_SITIOS_WEB);
 			// For each clasification a table
 			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + "Número de sitios web por complejidad" + "</text:p>";
