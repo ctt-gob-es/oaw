@@ -216,7 +216,9 @@ public interface Constants {
 	/** The category seed form. */
 	String CATEGORY_SEED_FORM = "categorySeedForm";
 	/** The get category seeds file. */
-	String GET_CATEGORY_SEEDS_FILE = "getCategorySeedsFile";
+	String GET_CATEGORY_SEEDS_FILE_XML = "getCategorySeedsFileXml";
+	/** Action to export category seeds to an excel file */
+	String GET_CATEGORY_SEEDS_FILE_XLSX = "getCategorySeedsFileXlsx";
 	/** The load form. */
 	String LOAD_FORM = "loadForm";
 	/** The rastreo test. */

@@ -295,8 +295,8 @@ var translatedColNames = [ colNameId, colNameOldName,
 						.serialize());
 	}
 
-	function exportar(){
-		window.location.href = '/oaw/secure/SeedMassImport.do?action=exportAllSeeds&'
+	function exportar(format){
+		window.location.href = '/oaw/secure/SeedMassImport.do?action=exportAllSeeds&format=' + format + '&'
 			+ $('#SemillaSearchForm').serialize();
 	}
 	
@@ -536,56 +536,46 @@ var translatedColNames = [ colNameId, colNameOldName,
 				</em>:
 				<bean:message key="nueva.semilla.webs.info" />
 			</p>
+			<div class="pull-right">
+                   <!-- Nueva semilla -->
+                    <a href="#" class="btn btn-default btn-lg" onclick="dialogoNuevaSemilla()"> <span
+                        class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip" title=""
+                        data-original-title="Crear una semilla"></span> <bean:message key="cargar.semilla.observatorio.nueva.semilla" />
+                    </a>
+			</div>
 
-			<!-- Importar todas las semillas -->
-			<p class="pull-right">
-				<a href="#" class="btn btn-default btn-lg " onclick="selectXMLFile()"> <span
-					class="glyphicon glyphicon-cloud-upload" aria-hidden="true" data-toggle="tooltip" title=""
-					data-original-title="Importar un fichero XML/xlsx de semillas"></span> <bean:message
-						key="cargar.semilla.observatorio.importar.todo" />
+            <div class="pull-right">
+                    <!-- Exportar xml -->
+                    <a onclick="exportar('xml')"> <span class="btn btn-default btn-lg"> <span
+                            class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title=""
+                            data-original-title="Exportar las semillas a un fichero XML"></span> <bean:message
+                                key="cargar.semilla.observatorio.exportar.todo.xml" />
+                    </span>
+                    </a>
 
-
-				</a>
-			</p>
-
-
-			<form method="post" style="display: none" action="/oaw/secure/SeedMassImport.do?action=confirm"
-				enctype="multipart/form-data">
-				<div class="formItem">
-					<label for="fileSeeds" class="control-label"><strong class="labelVisu"><bean:message
-								key="categoria.semillas.fichero" />: </strong></label> <input type="file" id="importFile" name="fileSeeds" style="display: none">
-				</div>
-			</form>
-
-
-			<!-- Exportar todas las semillas -->
-			<!-- <p class="pull-right">
-				<a href="/oaw/secure/SeedMassImport.do?action=exportAllSeeds"> <span class="btn btn-default btn-lg"> <span
-						class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title=""
-						data-original-title="Exportar todas las semillas a un fichero .xlsx"></span> <bean:message
-							key="cargar.semilla.observatorio.exportar.todo" />
-				</span>
-				</a>
-			</p> -->
-
-				<p class="pull-right">
-				<a onclick="exportar()"> <span class="btn btn-default btn-lg"> <span
-						class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title=""
-						data-original-title="Exportar las semillas a un fichero XML"></span> <bean:message
-							key="cargar.semilla.observatorio.exportar.todo" />
-				</span>
-				</a>
-				</p> 
-			
-			<!-- Nueva semilla -->
-			<p class="pull-right">
-				<a href="#" class="btn btn-default btn-lg" onclick="dialogoNuevaSemilla()"> <span
-					class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip" title=""
-					data-original-title="Crear una semilla"></span> <bean:message key="cargar.semilla.observatorio.nueva.semilla" />
-				</a>
-			</p>
+                    <!-- Exportar excel -->
+                    <a onclick="exportar('xlsx')"> <span class="btn btn-default btn-lg"> <span
+                            class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title=""
+                            data-original-title="Exportar las semillas a un fichero .xlsx"></span> <bean:message
+                                key="cargar.semilla.observatorio.exportar.todo.xlsx" />
+                    </span>
+                    </a>
+                    <!-- Importar todas las semillas -->
+                    <a href="#" class="btn btn-default btn-lg " onclick="selectXMLFile()"> <span
+                        class="glyphicon glyphicon-cloud-upload" aria-hidden="true" data-toggle="tooltip" title=""
+                        data-original-title="Importar un fichero XML/xlsx de semillas"></span> <bean:message
+                            key="cargar.semilla.observatorio.importar.todo" />
+                    </a>
 
 
+                    <form method="post" style="display: none" action="/oaw/secure/SeedMassImport.do?action=confirm"
+                        enctype="multipart/form-data">
+                        <div class="formItem">
+                            <label for="fileSeeds" class="control-label"><strong class="labelVisu"><bean:message
+                                        key="categoria.semillas.fichero" />: </strong></label> <input type="file" id="importFile" name="fileSeeds" style="display: none">
+                        </div>
+                    </form>
+            </div>
 		</div>
 
 		<!-- Grid -->

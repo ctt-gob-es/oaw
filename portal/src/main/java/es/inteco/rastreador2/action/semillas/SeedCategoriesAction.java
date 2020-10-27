@@ -99,8 +99,10 @@ public class SeedCategoriesAction extends Action {
 					return addCategorySeed(mapping, form, request);
 				} else if (action.equals(Constants.UPDATE_CATEGORY_SEED)) {
 					return updateCategorySeed(mapping, form, request);
-				} else if (action.equals(Constants.GET_CATEGORY_SEEDS_FILE)) {
-					return getCategorySeedsFile(request, response);
+				} else if (action.equals(Constants.GET_CATEGORY_SEEDS_FILE_XML)) {
+					return getCategorySeedsFile(request, response, "xml");
+				}else if (action.equals(Constants.GET_CATEGORY_SEEDS_FILE_XLSX)) {
+					return getCategorySeedsFile(request, response, "xlsx");
 				}
 			} else {
 				return mapping.findForward(Constants.NO_PERMISSION);
@@ -664,11 +666,18 @@ public class SeedCategoriesAction extends Action {
 	 * @return the category seeds file
 	 * @throws Exception the exception
 	 */
-	private ActionForward getCategorySeedsFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private ActionForward getCategorySeedsFile(HttpServletRequest request, HttpServletResponse response, String format) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final Long idCategory = Long.parseLong(request.getParameter(Constants.ID_CATEGORIA));
 			final List<SemillaForm> seeds = SemillaDAO.getSeedsByCategory(c, idCategory, Constants.NO_PAGINACION, new SemillaForm());
-			SeedExcelUtils.writeSeedsToXlsxResponse(response, seeds);
+			switch(format){
+				case "xml":
+					SeedUtils.writeFileToResponse(response, seeds, true);
+					break;
+				case "xlsx":
+					SeedExcelUtils.writeSeedsToXlsxResponse(response, seeds);
+					break;
+			}
 			return null;
 		}
 	}
