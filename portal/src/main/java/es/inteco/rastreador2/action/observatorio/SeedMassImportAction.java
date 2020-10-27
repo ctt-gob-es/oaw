@@ -91,8 +91,8 @@ public class SeedMassImportAction extends Action {
 						return mapping.findForward(Constants.VOLVER);
 					}
 				} else if (Constants.ACCION_EXPORT_ALL.equals(request.getParameter(Constants.ACTION))) {
-					// return getAllSeedsFile(request, response);
-					return getSeedsFile(request, response, form);
+					String format = request.getParameter("format");
+					return getSeedsFile(request, response, form, format);
 				} else {
 					return mapping.findForward(Constants.VOLVER);
 				}
@@ -220,9 +220,11 @@ public class SeedMassImportAction extends Action {
 						List<String> xmlUrls = Arrays.asList(seed.getListaUrlsString().split(";"));
 						if (!StringUtils.isEmpty(seed.getListaUrlsString()) && seed.getComplejidad() != null) {
 							ComplejidadForm complexAux = ComplejidadDAO.getComplexityById(c, seed.getComplejidad().getId());
-							int maxUrls = complexAux.getAmplitud() * complexAux.getProfundidad() + 1;
-							if (xmlUrls.size() > maxUrls) {
-								errorsSeed.add(messageResources.getMessage("semilla.nueva.url.max.superado", new String[] { String.valueOf(maxUrls) }));
+							if (complexAux != null){
+								int maxUrls = complexAux.getAmplitud() * complexAux.getProfundidad() + 1;
+								if (xmlUrls.size() > maxUrls) {
+									errorsSeed.add(messageResources.getMessage("semilla.nueva.url.max.superado", new String[] { String.valueOf(maxUrls) }));
+								}
 							}
 						}
 
@@ -288,7 +290,7 @@ public class SeedMassImportAction extends Action {
 	 * @return the all seeds file
 	 * @throws Exception the exception
 	 */
-	private ActionForward getSeedsFile(HttpServletRequest request, HttpServletResponse response, ActionForm form) throws Exception {
+	private ActionForward getSeedsFile(HttpServletRequest request, HttpServletResponse response, ActionForm form, String format) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 			SemillaSearchForm searchForm = (SemillaSearchForm) form;
 			if (searchForm != null) {
@@ -320,7 +322,15 @@ public class SeedMassImportAction extends Action {
 			}
 			response.setContentType("text/json");
 			List<SemillaForm> seeds = SemillaDAO.getObservatorySeedsToExport(c, searchForm);
-			SeedExcelUtils.writeSeedsToXlsxResponse(response, seeds);
+
+			switch(format){
+				case "xml":
+					SeedUtils.writeFileToResponse(response, seeds, true);
+					break;
+				case "xlsx":
+					SeedExcelUtils.writeSeedsToXlsxResponse(response, seeds);
+					break;
+			}
 		} catch (Exception e) {
 			Logger.putLog("ERROR al intentar exportar semillas: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}

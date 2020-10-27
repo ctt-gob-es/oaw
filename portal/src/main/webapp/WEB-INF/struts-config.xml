@@ -311,8 +311,8 @@
 		<forward name="deleteCategorySeed" path="/secure/SeedCategoriesAction.do?action=deleteCategorySeed" />
 		<forward name="newCategorySeed" path="/secure/CategorySeedAction.do?action=newCategorySeed" />
 		<forward name="editCategorySeed" path="/secure/CategorySeedAction.do?action=editCategorySeed" />
-		<forward name="getCategorySeedsFile" path="/secure/CategorySeedAction.do?action=getCategorySeedsFile" />
-
+		<forward name="getCategorySeedsFileXml" path="/secure/CategorySeedAction.do?action=getCategorySeedsFileXml" />
+		<forward name="getCategorySeedsFileXlsx" path="/secure/CategorySeedAction.do?action=getCategorySeedsFileXlsx" />
 
 		<forward name="primaryExportPdfAction" path="/secure/primaryExportPdfAction.do" />
 		<forward name="anonymousExportPdfAction" path="/secure/anonymousExportPdfAction.do" />
