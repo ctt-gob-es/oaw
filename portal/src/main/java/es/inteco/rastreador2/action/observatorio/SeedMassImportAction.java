@@ -219,7 +219,7 @@ public class SeedMassImportAction extends Action {
 						// TODO Max url error
 						List<String> xmlUrls = Arrays.asList(seed.getListaUrlsString().split(";"));
 						if (!StringUtils.isEmpty(seed.getListaUrlsString()) && seed.getComplejidad() != null) {
-							ComplejidadForm complexAux = ComplejidadDAO.getComplexityById(DataBaseManager.getConnection(), seed.getComplejidad().getId());
+							ComplejidadForm complexAux = ComplejidadDAO.getComplexityById(c, seed.getComplejidad().getId());
 							int maxUrls = complexAux.getAmplitud() * complexAux.getProfundidad() + 1;
 							if (xmlUrls.size() > maxUrls) {
 								errorsSeed.add(messageResources.getMessage("semilla.nueva.url.max.superado", new String[] { String.valueOf(maxUrls) }));
