@@ -441,6 +441,34 @@ public final class ObservatorioDAO {
 	}
 
 	/**
+	 * Gets the ambit by observatory ex id.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @return the ambit by observatory ex id
+	 * @throws SQLException the SQL exception
+	 */
+	public static AmbitoForm getAmbitByObservatoryExId(final Connection c, final Long idObservatory) throws SQLException {
+		AmbitoForm ambit = null;
+		try (PreparedStatement ps = c.prepareStatement(
+				"SELECT al.* FROM ambitos_lista al JOIN observatorio o ON o.id_ambito= al.id_ambito JOIN observatorios_realizados ore ON o.id_observatorio=ore.id_observatorio WHERE ore.id = ? ORDER BY id_ambito ASC")) {
+			ps.setLong(1, idObservatory);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					ambit = new AmbitoForm();
+					ambit.setId(String.valueOf(rs.getLong("id_ambito")));
+					ambit.setName(rs.getString("nombre"));
+					ambit.setDescripcion(rs.getString("descripcion"));
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return ambit;
+	}
+
+	/**
 	 * Gets the complexity by id.
 	 *
 	 * @param c  the c
@@ -2528,5 +2556,44 @@ public final class ObservatorioDAO {
 		}
 		final DatosForm userData = LoginDAO.getUserDataByName(c, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"));
 		final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, idExObs, Long.valueOf(userData.getId()));
+	}
+
+	/**
+	 * Gets the obserbatories dates.
+	 *
+	 * @param c        the c
+	 * @param exObsIds the ex obs ids
+	 * @return the obserbatories dates
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<ObservatorioRealizadoForm> getObserbatoriesDates(Connection c, final String[] exObsIds) throws SQLException {
+		List<ObservatorioRealizadoForm> list = new ArrayList<>();
+		String query = "SELECT a.nombre,obr.fecha FROM observatorios_realizados obr JOIN observatorio o ON obr.id_observatorio=o.id_observatorio JOIN ambitos_lista a ON a.id_ambito=o.id_ambito\n"
+				+ "WHERE  1=1 ";
+		// Cargamos los rastreos realizados
+		if (exObsIds != null && exObsIds.length > 0) {
+			query = query + "AND obr.id IN (" + exObsIds[0];
+			for (int i = 1; i < exObsIds.length; i++) {
+				query = query + "," + exObsIds[i];
+			}
+			query = query + ")";
+		}
+		query = query + "ORDER BY o.id_ambito ASC";
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					ObservatorioRealizadoForm obs = new ObservatorioRealizadoForm();
+					obs.setAmbito(rs.getString("a.nombre"));
+					obs.setFechaStr(df.format(rs.getTimestamp("fecha")));
+					list.add(obs);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return list;
 	}
 }
