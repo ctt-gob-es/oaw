@@ -2265,7 +2265,7 @@ public final class RastreoDAO {
 		if (tagsToFiler != null && tagsToFiler.length > 0) {
 			query = query + " AND ( 1=1 ";
 			for (int i = 0; i < tagsToFiler.length; i++) {
-				query = query + " OR el.id_etiqueta= ?";
+				query = query + " OR se.id_etiqueta= ?";
 			}
 			query = query + ")";
 		}
@@ -2310,8 +2310,8 @@ public final class RastreoDAO {
 	public static List<GlobalReportStatistics> getGlobalReportStatisticsByTag(Connection c, String[] tagsToFiler, String[] exObsIds, final String tagName) throws Exception {
 		final List<GlobalReportStatistics> globalReportStatistics = new ArrayList<>();
 		String query = "SELECT COUNT(*) as countSeeds, e.nombre, e.id_clasificacion,ce.nombre FROM rastreos_realizados rr "
-				+ "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) " + "JOIN semilla_etiqueta se ON l.id_lista=se.id_lista "
-				+ "JOIN etiqueta e ON e.id_etiqueta = se.id_etiqueta JOIN clasificacion_etiqueta ce ON ce.id_clasificacion=e.id_clasificacion WHERE UPPER(e.nombre) = UPPER(?) ";
+				+ "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) " + "JOIN semilla_etiqueta el ON l.id_lista=el.id_lista "
+				+ "JOIN etiqueta e ON e.id_etiqueta = el.id_etiqueta JOIN clasificacion_etiqueta ce ON ce.id_clasificacion=e.id_clasificacion WHERE UPPER(e.nombre) = UPPER(?) ";
 		// Cargamos los rastreos realizados
 		if (exObsIds != null && exObsIds.length > 0) {
 			query = query + "AND id_obs_realizado IN (" + exObsIds[0];
@@ -2367,7 +2367,7 @@ public final class RastreoDAO {
 	public static List<GlobalReportStatistics> getGlobalReportStatisticsByAmbit(Connection c, String[] tagsToFiler, String[] exObsIds) throws Exception {
 		final List<GlobalReportStatistics> globalReportStatistics = new ArrayList<>();
 		String query = "SELECT al.id_ambito,al.nombre, COUNT(*) as countSeeds" + " FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) "
-				+ "JOIN lista l ON (l.id_lista = r.semillas) " + "JOIN ambitos_lista al on al.id_ambito=l.id_ambito ";
+				+ "JOIN lista l ON (l.id_lista = r.semillas) " + "JOIN ambitos_lista al on al.id_ambito=l.id_ambito JOIN semilla_etiqueta el ON l.id_lista=el.id_lista ";
 		// Cargamos los rastreos realizados
 		if (exObsIds != null && exObsIds.length > 0) {
 			query = query + "AND id_obs_realizado IN (" + exObsIds[0];
@@ -2420,7 +2420,7 @@ public final class RastreoDAO {
 	 */
 	public static List<GlobalReportStatistics> getGlobalReportStatisticsByComplex(Connection c, String[] tagsToFiler, String[] exObsIds) throws Exception {
 		final List<GlobalReportStatistics> globalReportStatistics = new ArrayList<>();
-		String query = "SELECT cl.id_complejidad,cl.nombre, COUNT(*) as countSeeds FROM rastreos_realizados rr JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) JOIN complejidades_lista cl on cl.id_complejidad=l.id_complejidad ";
+		String query = "SELECT cl.id_complejidad,cl.nombre, COUNT(*) as countSeeds FROM rastreos_realizados rr JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) JOIN complejidades_lista cl on cl.id_complejidad=l.id_complejidad JOIN semilla_etiqueta el ON l.id_lista=el.id_lista ";
 		// Cargamos los rastreos realizados
 		if (exObsIds != null && exObsIds.length > 0) {
 			query = query + "AND id_obs_realizado IN (" + exObsIds[0];
