@@ -283,6 +283,7 @@ public final class OpenOfficeGlobalReportBuilder {
 					for (int i = 0; i < exObsIds.length; i++) {
 						AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryExId(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]));
 						if (ambito != null && !"4".equalsIgnoreCase(ambito.getId())) {
+//							TODO final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]));
 							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 65));
 							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 79));
 							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 45));
