@@ -38,28 +38,9 @@ import org.apache.struts.util.MessageResources;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFChart;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTPlotArea;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTChart;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTPlotArea;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarChart;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTBoolean;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarSer;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTAxDataSource;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumDataSource;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumRef;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTStrRef;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTSerTx;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTCatAx;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTValAx;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTScaling;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTLegend;
-import org.openxmlformats.schemas.drawingml.x2006.chart.STAxPos;
-import org.openxmlformats.schemas.drawingml.x2006.chart.STBarDir;
-import org.openxmlformats.schemas.drawingml.x2006.chart.STOrientation;
-import org.openxmlformats.schemas.drawingml.x2006.chart.STLegendPos;
-import org.openxmlformats.schemas.drawingml.x2006.chart.STTickLblPos;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
@@ -298,19 +279,19 @@ public final class AnnexUtils {
     }
 
     /**
-     * Creates the XLSM annex.
+     * Creates the XLSX annex.
      *
      * @param messageResources the message resources
      * @param idObsExecution   the id obs execution
      * @param idOperation      the id operation
      * @throws Exception the exception
      */
-    public static void createAnnexXLSM(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
-        try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "anexo.xlsm")) {
+    public static void createAnnexXLSX(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+        try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "anexo.xlsx")) {
             final String[] ColumnNames = new String[]{"", "namecat", "depende_de", "semilla", "puntuacion_2020-03-13", "adecuacion_2020-03-13", "cumplimiento_2020-03-13", "NV_2020-02-21", "A_2020-02-21", "AA_2020-02-21", "NC_2020-02-21", "PC_2020-02-21", "TC_2020-02-21"};
             final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
 
-            String templatePath = new PropertiesManager().getValue(CRAWLER_PROPERTIES, "export.open.office.template.empty.XLSM.template");
+            String templatePath = new PropertiesManager().getValue(CRAWLER_PROPERTIES, "export.open.office.template.empty.XLSX.template");
             InputStream ExcelFileToRead = new FileInputStream(templatePath);
             XSSFWorkbook wb = new XSSFWorkbook(ExcelFileToRead);
             XSSFSheet sheet = wb.getSheetAt(0);
@@ -426,11 +407,9 @@ public final class AnnexUtils {
                     }
 
                     // Increase width of columns to match content
-                    /*
                     for (int i = 0; i < ColumnNames.length; i++) {
                         sheet.autoSizeColumn(i);
                     }
-                    */
 
                     // Create graph into the Category sheet
                     if (categoryForm.getSiteFormList().size() > 0) {
@@ -442,7 +421,8 @@ public final class AnnexUtils {
                         String currentCategory = categoryForm.getName().substring(0, Math.min(categoryForm.getName().length(), 31));
                         if (wb.getSheet(currentCategory) == null) {
                             wb.createSheet(currentCategory);
-                            InsertGraphIntoSheet(wb, wb.getSheet(currentCategory), categoryStarts, rowIndex);
+                            InsertGraphIntoSheet(wb, wb.getSheet(currentCategory), categoryStarts, rowIndex, true);
+                            InsertGraphIntoSheet(wb, wb.getSheet(currentCategory), categoryStarts, rowIndex, false);
                         }
                     }
                 }
@@ -457,50 +437,78 @@ public final class AnnexUtils {
         }
     }
 
-    private static void InsertGraphIntoSheet(XSSFWorkbook wb, XSSFSheet sheet, int categoryFirstRow, int categoryLastRow) {
+    private static void InsertGraphIntoSheet(XSSFWorkbook wb, XSSFSheet sheet, int categoryFirstRow, int categoryLastRow, boolean isFirst) {
         if (sheet != null) {
 
             XSSFDrawing drawing = sheet.createDrawingPatriarch();
-            XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, 4, 16, 40);
+            XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(categoryLastRow - categoryFirstRow, 16), isFirst ? 40 : 85);
 
             XSSFChart chart = drawing.createChart(anchor);
-            chart.setTitleText("Nivel de adecuación estimado");
+            chart.setTitleText(isFirst ? "Nivel de adecuación estimado" : "Situación de cumplimiento estimada");
             chart.setTitleOverlay(false);
 
-            // XDDFChartLegend legend = chart.getOrAddLegend();
-            // legend.setPosition(LegendPosition.TOP_RIGHT);
+            XDDFChartLegend legend = chart.getOrAddLegend();
+            legend.setPosition(LegendPosition.LEFT);
 
             XDDFCategoryAxis bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
-            //bottomAxis.setTitle("Country");
             XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
-            //leftAxis.setTitle("Area");
-            leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
 
+            XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
+            bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+            leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+            bottomAxis.setTickLabelPosition(AxisTickLabelPosition.LOW);
+            bottomAxis.setMajorTickMark(AxisTickMark.NONE);
+            bottomAxis.setPosition(AxisPosition.RIGHT);
+            CTPlotArea plotArea = chart.getCTChart().getPlotArea();
+            plotArea.getValAxArray()[0].addNewMajorGridlines();
+
+            // Get agency names
             XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0),
                     new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 2, 2));
 
-            XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-                    new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 7, 7));
-
-            XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
-            XDDFChartData.Series series1 = data.addSeries(agencies, values);
-            series1.setTitle("No Válido", null);
-
+            // First serie ("No válido" / "No Conforme")
+            XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+                    new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, isFirst ? 7 : 10, isFirst ? 7 : 10));
+            XDDFChartData.Series series1 = data.addSeries(agencies, values1);
+            series1.setTitle(isFirst ? "No Válido" : "No Conforme", null);
             // Set series color
-            XDDFShapeProperties properties = series1.getShapeProperties();
-            if (properties == null) {
-                properties = new XDDFShapeProperties();
+            XDDFShapeProperties properties1 = series1.getShapeProperties();
+            if (properties1 == null) {
+                properties1 = new XDDFShapeProperties();
             }
-            properties.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
-            series1.setShapeProperties(properties);
+            properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
+            series1.setShapeProperties(properties1);
 
-            //data.setVaryColors();
+            // Second serie ("A" / "Parcialmente conforme")
+            XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+                    new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, isFirst ? 8 : 11, isFirst ? 8 : 11));
+            XDDFChartData.Series series2 = data.addSeries(agencies, values2);
+            series2.setTitle(isFirst ? "A" : "Parcialmente conforme", null);
+            // Set series color
+            XDDFShapeProperties properties2 = series2.getShapeProperties();
+            if (properties2 == null) {
+                properties2 = new XDDFShapeProperties();
+            }
+            properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
+            series2.setShapeProperties(properties2);
+
+            // Third serie ("AA" / "Plenamente conforme")
+            XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+                    new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, isFirst ? 9 : 12, isFirst ? 9 : 12));
+            XDDFChartData.Series series3 = data.addSeries(agencies, values3);
+            series3.setTitle(isFirst ? "AA" : "Plenamente Conforme", null);
+            // Set series color
+            XDDFShapeProperties properties3 = series3.getShapeProperties();
+            if (properties3 == null) {
+                properties3 = new XDDFShapeProperties();
+            }
+            properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
+            series3.setShapeProperties(properties3);
+
             chart.plot(data);
 
-            // in order to transform a bar chart into a column chart, you just need to change the bar direction
             XDDFBarChartData bar = (XDDFBarChartData) data;
             bar.setBarDirection(BarDirection.COL);
-            //bar.setBarDirection(BarDirection.BAR);
         }
     }
 
