@@ -1298,10 +1298,6 @@ public final class ObservatorioDAO {
 		String numCrawlQuery = "(SELECT count(ta.cod_url) "
 				+ "FROM tanalisis ta, rastreos_realizados rr3, rastreo r2, lista l2 WHERE ta.cod_rastreo = rr3.id  and rr3.id_rastreo = r2.id_rastreo and r2.semillas = l2.id_lista  "
 				+ "and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado=" + idObservatorio + ") and rr3.id = rr.id) as numCrawls";
-//		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre as categoriaNombre, cl.orden , r.id_rastreo, l.id_categoria, l.id_ambito, l.id_complejidad, rr.id, al.nombre, cxl.nombre, cxl.profundidad, cxl.amplitud, rr.score, rr.level as nivel, l.observaciones FROM lista l "
-//				+ "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) "
-//				+ "LEFT JOIN complejidades_lista cxl ON(l.id_complejidad = cxl.id_complejidad) " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
-//				+ "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";		
 		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre as categoriaNombre, cl.orden , r.id_rastreo, "
 				+ "l.id_categoria, l.id_ambito, l.id_complejidad, rr.id, al.nombre, cxl.nombre, cxl.profundidad, cxl.amplitud, rr.score, rr.level as nivel, l.observaciones,  " + numCrawlQuery
 				+ " FROM lista l " + "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) "
@@ -1318,7 +1314,13 @@ public final class ObservatorioDAO {
 		}
 		// Ordernar los resultados por categoría y nombre
 		if (StringUtils.isNotEmpty(searchForm.getSortCol()) && StringUtils.isNotEmpty(searchForm.getSortOrder())) {
-			query += " ORDER BY " + searchForm.getSortCol() + " " + searchForm.getSortOrder() + ", l.id_lista";
+			if ("complejidad".equalsIgnoreCase(searchForm.getSortCol())) {
+				query += " ORDER BY cxl.nombre " + searchForm.getSortOrder() + ", l.id_lista";
+			} else if ("score".equalsIgnoreCase(searchForm.getSortCol())) {
+				query += " ORDER BY cast(rr.score as DECIMAL(10,5)) " + searchForm.getSortOrder() + ", l.id_lista";
+			} else {
+				query += " ORDER BY " + searchForm.getSortCol() + " " + searchForm.getSortOrder() + ", l.id_lista";
+			}
 		} else {
 			query += " ORDER BY l.id_categoria ASC, l.nombre ASC";
 		}
@@ -2307,6 +2309,40 @@ public final class ObservatorioDAO {
 				+ "JOIN observatorio_categoria oc ON (l.id_categoria = oc.id_categoria) " + "JOIN categorias_lista cl ON (oc.id_categoria = cl.id_categoria) "
 				+ "WHERE rr.id_obs_realizado = ? GROUP BY cl.id_categoria ORDER BY cl.orden, cl.nombre;")) {
 			ps.setLong(1, idExecutionObservatory);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					final CategoriaForm categoriaForm = new CategoriaForm();
+					categoriaForm.setId(rs.getString("cl.id_categoria"));
+					categoriaForm.setName(rs.getString("cl.nombre"));
+					categoriaForm.setOrden(rs.getInt("cl.orden"));
+					observatoryCategories.add(categoriaForm);
+				}
+			}
+			return observatoryCategories;
+		} catch (Exception e) {
+			Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Gets the execution observatory categories ambit.
+	 *
+	 * @param c                      the c
+	 * @param idExecutionObservatory the id execution observatory
+	 * @param idAmbit                the id ambit
+	 * @return the execution observatory categories ambit
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<CategoriaForm> getExecutionObservatoryPrinmayCategoriesAmbit(final Connection c, final Long idExecutionObservatory, final Long idAmbit, final Long order) throws SQLException {
+		final List<CategoriaForm> observatoryCategories = new ArrayList<>();
+		try (PreparedStatement ps = c.prepareStatement("SELECT cl.nombre, cl.id_categoria, cl.orden FROM rastreos_realizados rr " + "JOIN lista l ON (l.id_lista = rr.id_lista) "
+				+ "JOIN observatorio_categoria oc ON (l.id_categoria = oc.id_categoria) " + "JOIN categorias_lista cl ON (oc.id_categoria = cl.id_categoria) "
+				+ " JOIN rastreo r ON r.id_rastreo = rr.id_rastreo JOIN observatorio o ON r.id_observatorio=o.id_observatorio JOIN ambitos_lista al ON al.id_ambito = o.id_ambito "
+				+ " WHERE rr.id_obs_realizado = ?  AND o.id_ambito = ? AND cl.orden = ? GROUP BY cl.id_categoria ORDER BY cl.orden, cl.nombre;")) {
+			ps.setLong(1, idExecutionObservatory);
+			ps.setLong(2, idAmbit);
+			ps.setLong(3, order);
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					final CategoriaForm categoriaForm = new CategoriaForm();

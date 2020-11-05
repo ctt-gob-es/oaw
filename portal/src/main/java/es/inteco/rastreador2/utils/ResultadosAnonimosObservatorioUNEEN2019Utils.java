@@ -1512,16 +1512,16 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				// TODO SKIP NOT APPLY??
 				else {
 					// If exists +1
-//					if (resultsC.containsKey(keyNoApply)) {
-//						resultsC.put(keyNoApply, resultsC.get(keyNoApply).add(new BigDecimal(1)));
-//					} else {
-//						resultsC.put(keyNoApply, new BigDecimal(1));
-//					}
-					if (resultsC.containsKey(keyCompilance)) {
-						resultsC.put(keyCompilance, resultsC.get(keyCompilance).add(new BigDecimal(1)));
+					if (resultsC.containsKey(keyNoApply)) {
+						resultsC.put(keyNoApply, resultsC.get(keyNoApply).add(new BigDecimal(1)));
 					} else {
-						resultsC.put(keyCompilance, new BigDecimal(1));
+						resultsC.put(keyNoApply, new BigDecimal(1));
 					}
+//					if (resultsC.containsKey(keyCompilance)) {
+//						resultsC.put(keyCompilance, resultsC.get(keyCompilance).add(new BigDecimal(1)));
+//					} else {
+//						resultsC.put(keyCompilance, new BigDecimal(1));
+//					}
 				}
 			}
 		}

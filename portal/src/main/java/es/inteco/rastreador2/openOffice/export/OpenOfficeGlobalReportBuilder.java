@@ -67,6 +67,7 @@ import es.inteco.rastreador2.actionform.observatorio.ComplianceComparisonForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
+import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.PlantillaForm;
 import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
@@ -271,7 +272,8 @@ public final class OpenOfficeGlobalReportBuilder {
 					final OdfTextDocument odt = getOdfTemplate(idBaseTemplate);
 					final OdfFileDom odfFileContent = odt.getContentDom();
 					final OdfFileDom odfStyles = odt.getStylesDom();
-					final List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+					// final List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+					final List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidadesObs(DataBaseManager.getConnection(), tagsToFilter, exObsIds);
 					final List<AmbitoForm> ambits = AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1);
 					replaceText(odt, odfFileContent, FECHA_BOOKMARK, df.format(new Date()));
 					replaceText(odt, odfStyles, FECHA_BOOKMARK, df.format(new Date()), TEXT_SPAN_NODE);
@@ -283,10 +285,16 @@ public final class OpenOfficeGlobalReportBuilder {
 					for (int i = 0; i < exObsIds.length; i++) {
 						AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryExId(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]));
 						if (ambito != null && !"4".equalsIgnoreCase(ambito.getId())) {
-//							TODO final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]));
-							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 65));
-							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 79));
-							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 45));
+							final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryPrinmayCategoriesAmbit(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]),
+									Long.parseLong(ambito.getId()), "3".equals(ambito.getId()) ? 2L : 1L);
+							if (categories != null && !categories.isEmpty()) {
+								for (CategoriaForm cat : categories) {
+									onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), Long.parseLong(cat.getId())));
+								}
+							}
+//							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 65));
+//							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 79));
+//							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 45));
 							// onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 71));
 						}
 					}
@@ -837,7 +845,8 @@ public final class OpenOfficeGlobalReportBuilder {
 		final Map<String, Object> globalGraphics = new HashMap<>();
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final String noDataMess = messageResources.getMessage(GRAFICA_SIN_DATOS);
-			List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+			// List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+			final List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidadesObs(DataBaseManager.getConnection(), tagsFilter, exObsIds);
 			List<AmbitoForm> ambitos = AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1);
 			// Distribución del nivel de adecuación estimado global
 			String file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_ACCESSIBILITY_LEVEL_ALLOCATION_NAME) + JPG_EXTENSION;
@@ -879,10 +888,17 @@ public final class OpenOfficeGlobalReportBuilder {
 			for (int i = 0; i < exObsIds.length; i++) {
 				AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryExId(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]));
 				if (ambito != null && !"4".equalsIgnoreCase(ambito.getId())) {
-					onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 65));
-					onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 79));
-					onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 45));
-					onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 71));
+					final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryPrinmayCategoriesAmbit(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]),
+							Long.parseLong(ambito.getId()), "3".equals(ambito.getId()) ? 2L : 1L);
+					if (categories != null && !categories.isEmpty()) {
+						for (CategoriaForm cat : categories) {
+							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), Long.parseLong(cat.getId())));
+						}
+					}
+//					onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 65));
+//					onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 79));
+//					onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 45));
+//					onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 71));
 				}
 			}
 			final List<AmbitoForm> primaryAmbits = AmbitoDAO.getAmbitosPrimarios(DataBaseManager.getConnection(), null, -1);
