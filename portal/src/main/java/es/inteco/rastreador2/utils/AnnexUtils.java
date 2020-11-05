@@ -65,6 +65,7 @@ public final class AnnexUtils {
 	private static final String NOMBRE_ELEMENT = "nombre";
 	/** The Constant CATEGORIA_ELEMENT. */
 	private static final String CATEGORIA_ELEMENT = "categoria";
+	private static final String COMPLEX_ELEMENT = "complejidad";
 	/** The Constant DEPENDE_DE_ELEMENT. */
 	private static final String DEPENDE_DE_ELEMENT = "depende_de";
 	/** The Constant PORTAL_ELEMENT. */
@@ -100,6 +101,7 @@ public final class AnnexUtils {
 							final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(siteForm.getIdCrawlerSeed()));
 							writeTag(hd, NOMBRE_ELEMENT, siteForm.getName());
 							writeTag(hd, CATEGORIA_ELEMENT, semillaForm.getCategoria().getName());
+							writeTag(hd, COMPLEX_ELEMENT, semillaForm.getComplejidad().getName());
 							// Multidependencia
 							String dependencias = "";
 							if (semillaForm.getDependencias() != null) {
@@ -155,6 +157,7 @@ public final class AnnexUtils {
 					hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
 					writeTag(hd, NOMBRE_ELEMENT, semillaForm.getNombre());
 					writeTag(hd, CATEGORY_NAME, semillaForm.getCategoria().getName());
+					writeTag(hd, COMPLEX_ELEMENT, semillaForm.getComplejidad().getName());
 					// Multidependencia
 					String dependencias = "";
 					if (semillaForm.getDependencias() != null) {
