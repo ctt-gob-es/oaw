@@ -284,18 +284,14 @@ public final class OpenOfficeGlobalReportBuilder {
 					List<ObservatoryEvaluationForm> onlyPrimarys = new ArrayList<ObservatoryEvaluationForm>();
 					for (int i = 0; i < exObsIds.length; i++) {
 						AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryExId(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]));
-						if (ambito != null && !"4".equalsIgnoreCase(ambito.getId())) {
+						if (ambito != null) {
 							final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryPrinmayCategoriesAmbit(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]),
-									Long.parseLong(ambito.getId()), "3".equals(ambito.getId()) ? 2L : 1L);
+									Long.parseLong(ambito.getId()));
 							if (categories != null && !categories.isEmpty()) {
 								for (CategoriaForm cat : categories) {
 									onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), Long.parseLong(cat.getId())));
 								}
 							}
-//							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 65));
-//							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 79));
-//							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 45));
-							// onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 71));
 						}
 					}
 					final List<AmbitoForm> primaryAmbits = AmbitoDAO.getAmbitosPrimarios(DataBaseManager.getConnection(), null, -1);
@@ -887,18 +883,14 @@ public final class OpenOfficeGlobalReportBuilder {
 			List<ObservatoryEvaluationForm> onlyPrimarys = new ArrayList<ObservatoryEvaluationForm>();
 			for (int i = 0; i < exObsIds.length; i++) {
 				AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryExId(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]));
-				if (ambito != null && !"4".equalsIgnoreCase(ambito.getId())) {
+				if (ambito != null) {
 					final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryPrinmayCategoriesAmbit(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]),
-							Long.parseLong(ambito.getId()), "3".equals(ambito.getId()) ? 2L : 1L);
+							Long.parseLong(ambito.getId()));
 					if (categories != null && !categories.isEmpty()) {
 						for (CategoriaForm cat : categories) {
 							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), Long.parseLong(cat.getId())));
 						}
 					}
-//					onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 65));
-//					onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 79));
-//					onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 45));
-//					onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 71));
 				}
 			}
 			final List<AmbitoForm> primaryAmbits = AmbitoDAO.getAmbitosPrimarios(DataBaseManager.getConnection(), null, -1);

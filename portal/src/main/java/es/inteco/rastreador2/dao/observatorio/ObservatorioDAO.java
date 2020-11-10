@@ -2334,15 +2334,14 @@ public final class ObservatorioDAO {
 	 * @return the execution observatory categories ambit
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<CategoriaForm> getExecutionObservatoryPrinmayCategoriesAmbit(final Connection c, final Long idExecutionObservatory, final Long idAmbit, final Long order) throws SQLException {
+	public static List<CategoriaForm> getExecutionObservatoryPrinmayCategoriesAmbit(final Connection c, final Long idExecutionObservatory, final Long idAmbit) throws SQLException {
 		final List<CategoriaForm> observatoryCategories = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT cl.nombre, cl.id_categoria, cl.orden FROM rastreos_realizados rr " + "JOIN lista l ON (l.id_lista = rr.id_lista) "
 				+ "JOIN observatorio_categoria oc ON (l.id_categoria = oc.id_categoria) " + "JOIN categorias_lista cl ON (oc.id_categoria = cl.id_categoria) "
 				+ " JOIN rastreo r ON r.id_rastreo = rr.id_rastreo JOIN observatorio o ON r.id_observatorio=o.id_observatorio JOIN ambitos_lista al ON al.id_ambito = o.id_ambito "
-				+ " WHERE rr.id_obs_realizado = ?  AND o.id_ambito = ? AND cl.orden = ? GROUP BY cl.id_categoria ORDER BY cl.orden, cl.nombre;")) {
+				+ " WHERE rr.id_obs_realizado = ?  AND o.id_ambito = ? AND cl.principal = 1 GROUP BY cl.id_categoria ORDER BY cl.orden, cl.nombre;")) {
 			ps.setLong(1, idExecutionObservatory);
 			ps.setLong(2, idAmbit);
-			ps.setLong(3, order);
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					final CategoriaForm categoriaForm = new CategoriaForm();

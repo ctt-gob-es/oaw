@@ -221,16 +221,17 @@ public abstract class OpenOfficeDocumentBuilder {
 //				String vCount = resultC.getKey().substring(resultC.getKey().lastIndexOf(".") + 1, resultC.getKey().indexOf("_"));
 				final String oldTextC = "-" + rowId + vCount + ".b" + index + ".c-";
 				final String oldTextNC = "-" + rowId + vCount + ".b" + index + ".nc-";
+				final String oldTextNA = "-" + rowId + vCount + ".b" + index + ".na-";
 				// final String oldTextNA = "-" + rowId + vCount + ".b" + index + ".na-";
 				if (resultC.getKey().endsWith(Constants.OBS_VALUE_COMPILANCE_SUFFIX)) {
 					replaceText(odt, odfFileContent, oldTextC, getCellValue(resultC.getValue(), isPercentValue));
 				} else if (resultC.getKey().endsWith(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX)) {
 					replaceText(odt, odfFileContent, oldTextNC, getCellValue(resultC.getValue(), isPercentValue));
 				}
-				/*
-				 * else if (resultC.getKey().endsWith(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX)) { replaceText(odt, odfFileContent, oldTextNA, getCellValue(resultC.getValue(), isPercentValue));
-				 * }
-				 */
+				// TODO NOT APLLY
+				else if (resultC.getKey().endsWith(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX)) {
+					replaceText(odt, odfFileContent, oldTextNA, getCellValue(resultC.getValue(), isPercentValue));
+				}
 			}
 			index++;
 		}
@@ -240,7 +241,7 @@ public abstract class OpenOfficeDocumentBuilder {
 				replaceText(odt, odfFileContent, "-" + rowId + i + ".a" + index + "-", "");
 				replaceText(odt, odfFileContent, "-" + rowId + i + ".b" + index + ".c-", "");
 				replaceText(odt, odfFileContent, "-" + rowId + i + ".b" + index + ".nc-", "");
-				// replaceText(odt, odfFileContent, "-" + rowId + i + ".b" + index + ".na-", "");
+				replaceText(odt, odfFileContent, "-" + rowId + i + ".b" + index + ".na-", "");
 			}
 			index++;
 		}
