@@ -1826,10 +1826,10 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 		final Map<Long, Map<String, Integer>> globalResultBySiteType = getSitesByType(observatoryEvaluationList);
 		for (Map.Entry<Long, Map<String, Integer>> longMapEntry : globalResultBySiteType.entrySet()) {
 			final Map<String, Integer> pageType = longMapEntry.getValue();
-			globalResult.put(Constants.OBS_ACCESIBILITY_FULL, pageType.get(Constants.OBS_ACCESIBILITY_FULL));
-			globalResult.put(Constants.OBS_ACCESIBILITY_PARTIAL, pageType.get(Constants.OBS_ACCESIBILITY_PARTIAL));
-			globalResult.put(Constants.OBS_ACCESIBILITY_NONE, pageType.get(Constants.OBS_ACCESIBILITY_NONE));
-			globalResult.put(Constants.OBS_ACCESIBILITY_NA, pageType.get(Constants.OBS_ACCESIBILITY_NA));
+			globalResult.put(Constants.OBS_ACCESIBILITY_FULL, globalResult.get(Constants.OBS_ACCESIBILITY_FULL) + pageType.get(Constants.OBS_ACCESIBILITY_FULL));
+			globalResult.put(Constants.OBS_ACCESIBILITY_PARTIAL, globalResult.get(Constants.OBS_ACCESIBILITY_PARTIAL) + pageType.get(Constants.OBS_ACCESIBILITY_PARTIAL));
+			globalResult.put(Constants.OBS_ACCESIBILITY_NONE, globalResult.get(Constants.OBS_ACCESIBILITY_NONE) + pageType.get(Constants.OBS_ACCESIBILITY_NONE));
+			globalResult.put(Constants.OBS_ACCESIBILITY_NA, globalResult.get(Constants.OBS_ACCESIBILITY_NA) + pageType.get(Constants.OBS_ACCESIBILITY_NA));
 		}
 		return globalResult;
 	}
@@ -2133,50 +2133,60 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 		globalResult.put(Constants.OBS_ACCESIBILITY_PARTIAL, new ArrayList<ObservatoryEvaluationForm>());
 		globalResult.put(Constants.OBS_ACCESIBILITY_NONE, new ArrayList<ObservatoryEvaluationForm>());
 		globalResult.put(Constants.OBS_ACCESIBILITY_NA, new ArrayList<ObservatoryEvaluationForm>());
-		final PropertiesManager pmgr = new PropertiesManager();
-		final int maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
 		// Se recorren las páginas de cada observatorio
 		for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
-			boolean isA = true;
-			boolean isAA = true;
-			// Se recorren los niveles de análisis
-			final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
-			// minhap.observatory.5_0.subgroup.3.4
-			boolean declaracion = true;
-			boolean situacionCumplimiento = true;
-			int numZeroRed = 0;
-			for (ObservatoryLevelForm observatoryLevel : observatoryEvaluationForm.getGroups()) {
-				// Se recorren los niveles de adecuación
-				for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevel.getSuitabilityGroups()) {
-					if (observatorySuitabilityForm.getName().equals(Constants.OBS_A)) {
+			boolean greenv1 = false;
+			boolean greenv2 = false;
+			boolean greenv3 = false;
+			boolean greenv4 = false;
+			Boolean greenv5 = null;
+			for (ObservatoryLevelForm observatoryLevelForm : observatoryEvaluationForm.getGroups()) {
+				if (Constants.OBS_PRIORITY_1.equals(observatoryLevelForm.getName())) {
+					for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevelForm.getSuitabilityGroups()) {
 						for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
-							if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
-								if ("minhap.observatory.5_0.subgroup.3.1".equals(observatorySubgroupForm.getDescription())) {
-									declaracion = false;
+							// Se comprueba si puntúa o no puntúa
+							if (observatorySubgroupForm.getValue() != Constants.OBS_VALUE_NOT_SCORE) {
+								// Si puntúa, se isNombreValido si se le da un 0 o un 1
+								if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_GREEN_ONE) {
+									switch (observatorySubgroupForm.getDescription()) {
+									case "minhap.observatory.5_0.subgroup.3.1":
+										greenv1 = true;
+										break;
+									case "minhap.observatory.5_0.subgroup.3.2":
+										greenv2 = true;
+										break;
+									case "minhap.observatory.5_0.subgroup.3.3":
+										greenv3 = true;
+										break;
+									case "minhap.observatory.5_0.subgroup.3.4":
+										greenv4 = true;
+										break;
+									case "minhap.observatory.5_0.subgroup.3.5":
+										greenv5 = true;
+										break;
+									}
 								}
-								if ("minhap.observatory.5_0.subgroup.3.4".equals(observatorySubgroupForm.getDescription())) {
-									situacionCumplimiento = false;
-								}
-								numZeroRed++;
 							}
 						}
 					}
 				}
 			}
-			if (numZeroRed == 0) {
-				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_ACCESIBILITY_FULL);
+			if (greenv1 && greenv2 && greenv3 && greenv4 && ((greenv5 != null && true) || greenv5 == null)) {
+				List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_ACCESIBILITY_FULL);
 				globalResult2.add(observatoryEvaluationForm);
 				globalResult.put(Constants.OBS_ACCESIBILITY_FULL, globalResult2);
-			} else if (declaracion && situacionCumplimiento) {
-				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_ACCESIBILITY_PARTIAL);
-				globalResult2.add(observatoryEvaluationForm);
-				globalResult.put(Constants.OBS_ACCESIBILITY_PARTIAL, globalResult2);
-			} else if (!situacionCumplimiento) {
-				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_ACCESIBILITY_NONE);
-				globalResult2.add(observatoryEvaluationForm);
-				globalResult.put(Constants.OBS_ACCESIBILITY_NONE, globalResult2);
+			} else if (greenv1) {
+				if (!greenv2) {
+					List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_ACCESIBILITY_NONE);
+					globalResult2.add(observatoryEvaluationForm);
+					globalResult.put(Constants.OBS_ACCESIBILITY_NONE, globalResult2);
+				} else {
+					List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_ACCESIBILITY_PARTIAL);
+					globalResult2.add(observatoryEvaluationForm);
+					globalResult.put(Constants.OBS_ACCESIBILITY_PARTIAL, globalResult2);
+				}
 			} else {
-				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_ACCESIBILITY_NA);
+				List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_ACCESIBILITY_NA);
 				globalResult2.add(observatoryEvaluationForm);
 				globalResult.put(Constants.OBS_ACCESIBILITY_NA, globalResult2);
 			}

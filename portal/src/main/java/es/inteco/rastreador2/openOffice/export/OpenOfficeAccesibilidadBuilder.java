@@ -17,8 +17,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,11 +43,14 @@ import org.odftoolkit.odfdom.dom.style.props.OdfTableCellProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTableColumnProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTableProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTextProperties;
+import org.odftoolkit.odfdom.pkg.OdfPackage;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import es.gob.oaw.MailService;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
@@ -55,6 +60,8 @@ import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.PlantillaForm;
 import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
+import es.inteco.rastreador2.dao.login.DatosForm;
+import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.plantilla.PlantillaDAO;
 import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioAccesibilidadUtils;
@@ -63,6 +70,8 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioAccesibilidadUt
  * Clase encargada de construir el documento OpenOffice con los resultados del observatorio usando la metodología UNE 2012 - VERSIÓN 2017.
  */
 public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
+	/** The Constant TEXT_TITLE. */
+	private static final String TEXT_TITLE = "//text:title";
 	/** The Constant JPG_EXTENSION. */
 	private static final String JPG_EXTENSION = ".jpg";
 	/** The Constant IMAGE_JPEG. */
@@ -564,9 +573,119 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 	 * @throws Exception the exception
 	 */
 	@Override
-	public OdfTextDocument buildDocumentFiltered(HttpServletRequest request, String filePath, String graphicPath, String date, boolean evolution, List<ObservatoryEvaluationForm> pageExecutionList,
-			List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate,
-			final Long idSegmentEvolTemplate, String reportTitle) throws Exception {
-		return buildDocument(request, graphicPath, date, evolution, pageExecutionList, categories);
+	public OdfTextDocument buildDocumentFiltered(final HttpServletRequest request, final String filePath, final String graphicPath, final String date, final boolean evolution,
+			final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final String[] tagsToFilter, final Map<String, Boolean> grpahicConditional,
+			final String[] exObsIds, final Long idBaseTemplate, final Long idSegmentTemplate, final Long idComplexityTemplate, final Long idSegmentEvolTemplate, final String reportTitle)
+			throws Exception {
+		final String url = request.getRequestURL().toString();
+		final String baseURL = url.substring(0, url.length() - request.getRequestURI().length()) + request.getContextPath() + "/";
+		final DatosForm userData = LoginDAO.getUserDataByName(DataBaseManager.getConnection(), request.getSession().getAttribute(Constants.USER).toString());
+		Executors.newSingleThreadExecutor().execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
+					ResultadosAnonimosObservatorioAccesibilidadUtils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath,
+							Constants.MINISTERIO_P, true);
+					final List<AmbitoForm> ambits = AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1);
+					final OdfTextDocument odt = getOdfTemplateById(idBaseTemplate);
+					final OdfFileDom odfFileContent = odt.getContentDom();
+					final OdfFileDom odfStyles = odt.getStylesDom();
+					replaceText(odt, odfFileContent, "[fecha]", date);
+					replaceText(odt, odfStyles, "[fecha]", date, "text:span");
+					replaceSectionGlobalCompilanceDistribution(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+					replaceSectionGlobalComplianceByAmbit(messageResources, odt, odfFileContent, graphicPath, ambits, pageExecutionList, executionId);
+					replaceSectionModalityByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+					replaceDocumentTitle(odt, odfFileContent, reportTitle); // Lists all files in folder
+					File folder = new File("/tmp");
+					File fList[] = folder.listFiles();
+					// Searchs .lck
+					for (int i = 0; i < fList.length; i++) {
+						File pes = fList[i];
+						if (pes.getName().endsWith(".jpg") || pes.getName().endsWith(".odt")) {
+							// and deletes
+							pes.delete();
+						}
+					}
+					odt.save(filePath);
+					removeAttributeFromFile(filePath, "META-INF/manifest.xml", "manifest:file-entry", "manifest:size", "text/xml");
+					odt.close();
+					StringBuilder mailBody = new StringBuilder("El proceso de generación de informes ha finalizado. Puede descargarlo en el siguiente enlace: <br/>");
+					StringBuilder linkUrl = new StringBuilder(baseURL);
+					linkUrl.append("secure/exportOpenOfficeAction.do?action=downloadFile");
+					linkUrl.append("&idExObs=").append(executionId);
+					linkUrl.append("&id_observatorio=").append(observatoryId);
+					final String filename = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
+					linkUrl.append("&file=").append(filename);
+					mailBody.append("<a href=\"").append(linkUrl.toString()).append("\">").append(filename).append("</a><br>");
+					final MailService mailService = new MailService();
+					List<String> mailsTo = new ArrayList<>();
+					mailsTo.add(userData.getEmail());
+					mailsTo.add("alvaro.pelaez@ctic.es");
+					mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
+				} catch (Exception e) {
+				}
+			}
+		});
+		return null;
+	}
+
+	/**
+	 * Replace document title in metadata and in text content.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param newTitle       the new title
+	 * @throws Exception the exception
+	 */
+	private void replaceDocumentTitle(final OdfTextDocument odt, final OdfFileDom odfFileContent, String newTitle) throws Exception {
+		if (!org.apache.commons.lang3.StringUtils.isEmpty(newTitle)) {
+			XPath xpath = odt.getXPath();
+			NodeList nodeList = (NodeList) xpath.evaluate(TEXT_TITLE, odfFileContent, XPathConstants.NODESET);
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				OdfElement node = (OdfElement) nodeList.item(i);
+				node.setTextContent(newTitle);
+			}
+			odt.getOfficeMetadata().setTitle(newTitle);
+		}
+	}
+
+	/**
+	 * Removes the attribute from file.
+	 *
+	 * @param doc       the doc
+	 * @param xmlFile   the xml file
+	 * @param node      the node
+	 * @param attribute the attribute
+	 * @param mymeType  the myme type
+	 * @throws Exception the exception
+	 */
+	private static void removeAttributeFromFile(final String doc, final String xmlFile, final String node, final String attribute, final String mymeType) throws Exception {
+		final OdfPackage odfPackageNew = OdfPackage.loadPackage(doc);
+		final Document packageDocument = odfPackageNew.getDom(xmlFile);
+		final NodeList nodeList = packageDocument.getElementsByTagName(node);
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			((Element) nodeList.item(i)).removeAttribute(attribute);
+		}
+		odfPackageNew.insert(packageDocument, xmlFile, mymeType);
+		odfPackageNew.save(doc);
+		odfPackageNew.close();
+	}
+
+	/**
+	 * Gets the odf template.
+	 *
+	 * @param idBaseTemplate the id base template
+	 * @return the odf template
+	 * @throws Exception the exception
+	 */
+	private OdfTextDocument getOdfTemplateById(final Long idBaseTemplate) throws Exception {
+		PlantillaForm plantilla = PlantillaDAO.findById(DataBaseManager.getConnection(), idBaseTemplate);
+		if (plantilla != null && plantilla.getDocumento() != null && plantilla.getDocumento().length > 0) {
+			File f = File.createTempFile("tmp_base_template", ".odt");
+			FileUtils.writeByteArrayToFile(f, plantilla.getDocumento());
+			return (OdfTextDocument) OdfDocument.loadDocument(f);
+		}
+		return null;
 	}
 }

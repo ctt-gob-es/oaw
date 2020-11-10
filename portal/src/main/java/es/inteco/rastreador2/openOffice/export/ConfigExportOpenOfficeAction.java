@@ -58,6 +58,7 @@ public class ConfigExportOpenOfficeAction extends Action {
 	 * @return the action forward
 	 */
 	public ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request, final HttpServletResponse response) {
+//		if (request.getParameter(Constants.APPLICATION) != null && Constants.NORMATIVA_UNE_EN2019.equals(request.getParameter(Constants.APPLICATION))) {
 		long idExecution = 0;
 		if (request.getParameter(Constants.ID_EX_OBS) != null) {
 			idExecution = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
@@ -114,6 +115,9 @@ public class ConfigExportOpenOfficeAction extends Action {
 		}
 		// Evol executions ids
 		String[] exObsIds = request.getParameterValues("evol");
+		if (exObsIds == null) {
+			exObsIds = new String[] { request.getParameter(Constants.ID_EX_OBS) };
+		}
 		final PropertiesManager pmgr = new PropertiesManager();
 		final String basePath = pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office") + idObservatory + File.separator + idExecution + File.separator;
 		String filePath = null;
@@ -133,31 +137,6 @@ public class ConfigExportOpenOfficeAction extends Action {
 			Logger.putLog("Error al exportar a pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
 			return mapping.findForward(Constants.ERROR_PAGE);
 		}
-//		try {
-//			CrawlerUtils.returnFile(response, filePath, "application/vnd.oasis.opendocument.text", false);
-//		} catch (Exception e) {
-//			Logger.putLog("Exception al devolver el PDF", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
-//		}
-//		return null;
-//		String[] exObsIds = request.getParameterValues("evol");
-//		final PropertiesManager pmgr = new PropertiesManager();
-//		final String basePath = pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office") + idObservatory + File.separator + idExecution + File.separator;
-//		String filePath = null;
-//		try (Connection c = DataBaseManager.getConnection()) {
-//			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
-//			final SimpleDateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
-//			final ObservatorioRealizadoForm observatoryFFForm = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExecution);
-//			filePath = basePath + PDFUtils.formatSeedName(observatoryForm.getNombre()) + ".odt";
-//			final String graphicPath = basePath + "temp" + File.separator;
-//			final DatosForm userData = LoginDAO.getUserDataByName(c, request.getSession().getAttribute(Constants.USER).toString());
-//			final OpenOfficeGeneratorThread oofGT = new OpenOfficeGeneratorThread(request, filePath, graphicPath, df.format(observatoryFFForm.getFecha()), observatoryForm.getTipo(), exObsIds.length,
-//					tagsToFilter, grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, reportTitle, observatoryFFForm, userData.getEmail(), observatoryForm);
-//			oofGT.start();
-//			request.setAttribute("EMAIL", userData.getEmail());
-//			return mapping.findForward(Constants.GENERATE_REPORT_ASYNC);
-//		} catch (Exception e) {
-//			Logger.putLog("Error al exportar a pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
-//			return mapping.findForward(Constants.ERROR_PAGE);
 //		}
 	}
 }
