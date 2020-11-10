@@ -111,7 +111,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @throws Exception Excepción lanzada
 	 */
 	public static void generateGraphics(final MessageResources messageResources, String executionId, final Long idExecutionObservatory, final String observatoryId, final String filePath,
-			final String type, final boolean regenerate) throws Exception {
+			final String type, final boolean regenerate, final String[] tagsFilter) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final PropertiesManager pmgr = new PropertiesManager();
 			String color = pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors");
@@ -120,7 +120,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			}
 			// recuperamos las categorias del observatorio
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idExecutionObservatory);
-			generateGlobalGraphics(messageResources, executionId, filePath, categories, color, regenerate);
+			generateGlobalGraphics(messageResources, executionId, filePath, categories, color, regenerate, tagsFilter);
 		} catch (Exception e) {
 			Logger.putLog("No se han generado las gráficas correctamente.", ResultadosAnonimosObservatorioAccesibilidadUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -140,8 +140,8 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @throws Exception the exception
 	 */
 	public static Map<String, Object> generateGlobalGraphics(final MessageResources messageResources, final String executionId, final String filePath, final List<CategoriaForm> categories,
-			final String color, final boolean regenerate) throws Exception {
-		final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(executionId, 0, null, null, 2);
+			final String color, final boolean regenerate, final String[] tagsFilter) throws Exception {
+		final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(executionId, 0, null, null, 2, tagsFilter);
 		final Map<String, Object> globalGraphics = new HashMap<>();
 		final List<AmbitoForm> ambits = AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1);
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
@@ -151,7 +151,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, regenerate);
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.compilance.ambit.mark.name") + ".jpg";
 			title = "Situación de cumplimiento estimada por ámbito";
-			getGlobalCompilanceBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, ambits, regenerate, title);
+			getGlobalCompilanceBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, ambits, regenerate, title, tagsFilter);
 			file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg";
 			getMidsComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
 			title = messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.title");
@@ -177,12 +177,13 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @throws Exception the exception
 	 */
 	public static void getGlobalCompilanceBySegment(final MessageResources messageResources, final String executionId, Map<String, Object> globalGraphics, final String filePath,
-			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<AmbitoForm> ambits, final boolean regenerate, final String title) throws Exception {
+			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<AmbitoForm> ambits, final boolean regenerate, final String title, final String[] tagsFilter)
+			throws Exception {
 		final Map<Integer, List<AmbitoForm>> resultLists = createGraphicsMapAmbits(ambits);
 		final List<AmbitViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
 			final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
-			final Map<AmbitoForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageResultsByAmbitMap(executionId, pageExecutionList, ambits);
+			final Map<AmbitoForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageResultsByAmbitMap(executionId, pageExecutionList, ambits, tagsFilter);
 			final DefaultCategoryDataset dataSet = createCompilanceDataSet(resultsBySegment, messageResources);
 			final PropertiesManager pmgr = new PropertiesManager();
 			// Si la gráfica no existe, la creamos
@@ -1125,7 +1126,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @throws Exception the exception
 	 */
 	public static List<ObservatoryEvaluationForm> getGlobalResultData(final String executionId, final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-		return getGlobalResultData(executionId, categoryId, pageExecutionList, null, 0);
+		return getGlobalResultData(executionId, categoryId, pageExecutionList, null, 0, null);
 	}
 
 	/**
@@ -1141,7 +1142,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<ObservatoryEvaluationForm> getGlobalResultData(final String executionId, final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList, final Long idCrawler,
-			final int typeFilter) throws Exception {
+			final int typeFilter, final String[] tagsFilter) throws Exception {
 		List<ObservatoryEvaluationForm> observatoryEvaluationList;
 		try {
 			observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
@@ -1153,6 +1154,11 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 				final List<Long> listAnalysis = new ArrayList<>();
 				List<Long> listExecutionsIds = new ArrayList<>();
 				if (idCrawler == null) {
+					if (tagsFilter != null && tagsFilter.length > 0) {
+						listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIdsMatchTags(c, Long.parseLong(executionId), tagsFilter);
+					} else {
+						listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
+					}
 					listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
 				} else {
 					listExecutionsIds.add(idCrawler);
@@ -2274,7 +2280,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 */
 	// Cálculo de resultados
 	public static Map<AmbitoForm, Map<String, BigDecimal>> calculatePercentageResultsByAmbitMap(final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList,
-			final List<AmbitoForm> ambits) throws Exception {
+			final List<AmbitoForm> ambits, final String[] tagsFilter) throws Exception {
 		final Map<AmbitoForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<>(new Comparator<AmbitoForm>() {
 			@Override
 			public int compare(AmbitoForm o1, AmbitoForm o2) {
@@ -2282,7 +2288,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			}
 		});
 		for (AmbitoForm ambit : ambits) {
-			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(executionId, Long.parseLong(ambit.getId()), pageExecutionList, null, 2);
+			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(executionId, Long.parseLong(ambit.getId()), pageExecutionList, null, 2, tagsFilter);
 			resultsBySegment.put(ambit, calculatePercentage(getResultsBySiteLevel(resultDataSegment)));
 		}
 		return resultsBySegment;

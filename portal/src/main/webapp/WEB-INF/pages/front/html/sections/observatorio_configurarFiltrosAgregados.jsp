@@ -111,30 +111,28 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							</logic:notEqual>
 						</div>
 					</fieldset>
-					<logic:equal name="<%=Constants.APPLICATION%>" value="<%=Constants.NORMATIVA_UNE_EN2019%>">
-						<fieldset>
-							<legend>
-								<bean:message key="report.config.etiquetas.filter.title" />
-							</legend>
-							<div class="formItem">
-								<label for="url" class="control-label">
-									<strong class="labelVisu">
-										<bean:message key="report.config.tags.title" />
-									</strong>
-								</label>
-								<input name="tags" autocapitalize="off" placeholder="<bean:message key="placeholder.tags" />" autofocus
-									id="tagsFilter" type="text" value="" />
-							</div>
-							<p class="alert alert-info">
-								<span class="glyphicon glyphicon-info-sign"></span>
-								<em>
-									<bean:message key="nueva.semilla.webs.informacion" />
-								</em>
-								:
-								<bean:message key="report.config.etiquetas.filter.info" />
-							</p>
-						</fieldset>
-					</logic:equal>
+					<fieldset>
+						<legend>
+							<bean:message key="report.config.etiquetas.filter.title" />
+						</legend>
+						<div class="formItem">
+							<label for="url" class="control-label">
+								<strong class="labelVisu">
+									<bean:message key="report.config.tags.title" />
+								</strong>
+							</label>
+							<input name="tags" autocapitalize="off" placeholder="<bean:message key="placeholder.tags" />" autofocus
+								id="tagsFilter" type="text" value="" />
+						</div>
+						<p class="alert alert-info">
+							<span class="glyphicon glyphicon-info-sign"></span>
+							<em>
+								<bean:message key="nueva.semilla.webs.informacion" />
+							</em>
+							:
+							<bean:message key="report.config.etiquetas.filter.info" />
+						</p>
+					</fieldset>
 					<logic:equal name="<%=Constants.APPLICATION%>" value="<%=Constants.NORMATIVA_UNE_EN2019%>">
 						<fieldset>
 							<legend>

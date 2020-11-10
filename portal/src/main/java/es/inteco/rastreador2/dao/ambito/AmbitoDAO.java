@@ -132,7 +132,7 @@ public class AmbitoDAO {
 	 */
 	public static List<AmbitoForm> getAmbitosPrimarios(Connection c, String nombre, int page) throws SQLException {
 		final List<AmbitoForm> results = new ArrayList<>();
-		String query = "SELECT a.id_ambito, a.nombre, a.descripcion FROM ambitos_lista a WHERE 1=1 AND a.id_ambito <> 4 ";
+		String query = "SELECT a.id_ambito, a.nombre, a.descripcion FROM ambitos_lista a WHERE 1=1 ";
 		if (StringUtils.isNotEmpty(nombre)) {
 			query += " AND UPPER(a.nombre) like UPPER(?) ";
 		}

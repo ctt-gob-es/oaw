@@ -122,7 +122,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 			final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories) throws Exception {
 		final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 		ResultadosAnonimosObservatorioAccesibilidadUtils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath,
-				Constants.MINISTERIO_P, true);
+				Constants.MINISTERIO_P, true, null);
 		final List<AmbitoForm> ambits = AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1);
 		final OdfTextDocument odt = getOdfTemplate();
 		final OdfFileDom odfFileContent = odt.getContentDom();
@@ -130,7 +130,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 		replaceText(odt, odfFileContent, "[fecha]", date);
 		replaceText(odt, odfStyles, "[fecha]", date, "text:span");
 		replaceSectionGlobalCompilanceDistribution(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
-		replaceSectionGlobalComplianceByAmbit(messageResources, odt, odfFileContent, graphicPath, ambits, pageExecutionList, executionId);
+		replaceSectionGlobalComplianceByAmbit(messageResources, odt, odfFileContent, graphicPath, ambits, pageExecutionList, executionId, null);
 		replaceSectionModalityByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		return odt;
 	}
@@ -181,7 +181,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 	 * @throws Exception the exception
 	 */
 	private static void replaceSectionGlobalComplianceByAmbit(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
-			final List<AmbitoForm> ambits, final List<ObservatoryEvaluationForm> pageExecutionList, final String executionId) throws Exception {
+			final List<AmbitoForm> ambits, final List<ObservatoryEvaluationForm> pageExecutionList, final String executionId, final String[] tagsFilter) throws Exception {
 		final Map<Integer, List<AmbitoForm>> resultLists = ResultadosAnonimosObservatorioAccesibilidadUtils.createGraphicsMapAmbits(ambits);
 		String prevImage = EMPTY_STRING;
 		for (Integer i : resultLists.keySet()) {
@@ -197,7 +197,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 			}
 		}
 		// Table
-		final Map<AmbitoForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioAccesibilidadUtils.calculatePercentageResultsByAmbitMap(executionId, pageExecutionList, ambits);
+		final Map<AmbitoForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioAccesibilidadUtils.calculatePercentageResultsByAmbitMap(executionId, pageExecutionList, ambits, tagsFilter);
 		String header0 = "Ámbito";
 		String columna1 = "Completa";
 		String columna2 = "Parcial";
@@ -586,7 +586,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 				try {
 					final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 					ResultadosAnonimosObservatorioAccesibilidadUtils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath,
-							Constants.MINISTERIO_P, true);
+							Constants.MINISTERIO_P, true, tagsToFilter);
 					final List<AmbitoForm> ambits = AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1);
 					final OdfTextDocument odt = getOdfTemplateById(idBaseTemplate);
 					final OdfFileDom odfFileContent = odt.getContentDom();
@@ -594,7 +594,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 					replaceText(odt, odfFileContent, "[fecha]", date);
 					replaceText(odt, odfStyles, "[fecha]", date, "text:span");
 					replaceSectionGlobalCompilanceDistribution(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
-					replaceSectionGlobalComplianceByAmbit(messageResources, odt, odfFileContent, graphicPath, ambits, pageExecutionList, executionId);
+					replaceSectionGlobalComplianceByAmbit(messageResources, odt, odfFileContent, graphicPath, ambits, pageExecutionList, executionId, tagsToFilter);
 					replaceSectionModalityByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 					replaceDocumentTitle(odt, odfFileContent, reportTitle); // Lists all files in folder
 					File folder = new File("/tmp");
