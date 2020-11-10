@@ -44,6 +44,7 @@ import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.export.database.form.CategoryForm;
@@ -87,7 +88,7 @@ public final class AnnexUtils {
 	 * @param idOperation      the id operation
 	 * @throws Exception the exception
 	 */
-	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final Long idCartucho) throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_paginas.xml")) {
 			final ContentHandler hd = getContentHandler(writer);
 			hd.startDocument();
@@ -145,12 +146,13 @@ public final class AnnexUtils {
 	 * @param idOperation      the id operation
 	 * @throws Exception the exception
 	 */
-	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final Long idCartucho) throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_portales.xml")) {
 			final ContentHandler hd = getContentHandler(writer);
 			hd.startDocument();
 			hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
 			final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution);
+			final String application = CartuchoDAO.getApplication(DataBaseManager.getConnection(), idCartucho);
 			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
 				if (semillaForm.getId() != 0) {
@@ -173,7 +175,10 @@ public final class AnnexUtils {
 					for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
 						final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
 						writeTag(hd, "puntuacion_" + executionDateAux, entry.getValue().getTotalScore().toString());
-						writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), messageResources));
+						// TODO IF ACCESIBILITY CARTDIGE NOT INCLUDE
+						if (!Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
+							writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), messageResources));
+						}
 						writeTag(hd, "cumplimiento_" + executionDateAux, entry.getValue().getCompliance());
 					}
 					// TODO Add seed tags

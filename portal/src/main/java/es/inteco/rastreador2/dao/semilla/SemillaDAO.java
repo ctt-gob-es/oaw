@@ -1946,6 +1946,7 @@ public final class SemillaDAO {
 					categoriaForm.setName(rs.getString(NOMBRE));
 					categoriaForm.setOrden(rs.getInt(ORDEN));
 					categoriaForm.setKey(rs.getString(CLAVE));
+					categoriaForm.setPrincipal(rs.getBoolean("principal"));
 					categories.add(categoriaForm);
 				}
 			}
@@ -1974,6 +1975,7 @@ public final class SemillaDAO {
 					categoriaForm.setName(rs.getString(NOMBRE));
 					categoriaForm.setOrden(rs.getInt(ORDEN));
 					categoriaForm.setKey(rs.getString(CLAVE));
+					categoriaForm.setPrincipal(rs.getBoolean("principal"));
 					return categoriaForm;
 				}
 			}
@@ -2309,10 +2311,11 @@ public final class SemillaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static long createSeedCategory(final Connection c, final CategoriaForm categoriaForm) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("INSERT INTO categorias_lista (nombre, orden, clave) VALUES (?,?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement ps = c.prepareStatement("INSERT INTO categorias_lista (nombre, orden, clave,principal) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, categoriaForm.getName());
 			ps.setInt(2, categoriaForm.getOrden());
 			ps.setString(3, !org.apache.commons.lang3.StringUtils.isEmpty(categoriaForm.getKey()) ? categoriaForm.getKey() : null);
+			ps.setBoolean(4, categoriaForm.isPrincipal());
 			ps.executeUpdate();
 			try (ResultSet rs = ps.getGeneratedKeys()) {
 				if (rs.next()) {
@@ -2334,11 +2337,12 @@ public final class SemillaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static void updateSeedCategory(Connection c, CategoriaForm categoriaForm) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("UPDATE categorias_lista SET nombre = ?, orden=?, clave = ? WHERE id_categoria = ?")) {
+		try (PreparedStatement ps = c.prepareStatement("UPDATE categorias_lista SET nombre = ?, orden=?, clave = ?, principal = ? WHERE id_categoria = ?")) {
 			ps.setString(1, categoriaForm.getName());
 			ps.setInt(2, categoriaForm.getOrden());
 			ps.setString(3, !org.apache.commons.lang3.StringUtils.isEmpty(categoriaForm.getKey()) ? categoriaForm.getKey() : null);
-			ps.setString(4, categoriaForm.getId());
+			ps.setBoolean(4, categoriaForm.isPrincipal());
+			ps.setString(5, categoriaForm.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);

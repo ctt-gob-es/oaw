@@ -1426,7 +1426,9 @@ public interface Constants {
 	/** The obs compilance partial. */
 	String OBS_COMPILANCE_PARTIAL = messageResources.getMessage("resultados.anonimos.porc.portales.pc");;
 	/** The obs compilance full. */
-	String OBS_COMPILANCE_FULL = messageResources.getMessage("resultados.anonimos.porc.portales.tc");;
+	String OBS_COMPILANCE_FULL = messageResources.getMessage("resultados.anonimos.porc.portales.tc");
+	/** The obs compilance na. */
+	String OBS_COMPILANCE_NA = messageResources.getMessage("resultados.anonimos.porc.portales.na");
 	/** The obs accesibility full. */
 	String OBS_ACCESIBILITY_FULL = "Completo";
 	/** The obs accesibility partial. */
