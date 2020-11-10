@@ -1251,6 +1251,7 @@ public interface Constants {
 	String ID_CUENTA = "id_cuenta";
 	/** The id observatorio. */
 	String ID_OBSERVATORIO = "id_observatorio";
+	String APPLICATION = "application";
 	/** The id ex obs. */
 	String ID_EX_OBS = "idExObs";
 	/** The cuenta eliminar. */
@@ -1341,6 +1342,7 @@ public interface Constants {
 	String CONFIRMACION_IMPORTAR = "confirmacionImportar";
 	/** The configurar filtros agregados. */
 	String CONFIGURAR_FILTROS_AGREGADOS = "configurarFiltrosAgregados";
+	String CONFIGURAR_FILTROS_AGREGADOS_ACC = "configurarFiltrosAgregadosAcc";
 	/** The term. */
 	String TERM = "term";
 	/** The malware term form. */

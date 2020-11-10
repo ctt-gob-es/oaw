@@ -321,7 +321,7 @@ public final class OpenOfficeGlobalReportBuilder {
 					final MailService mailService = new MailService();
 					List<String> mailsTo = new ArrayList<>();
 					mailsTo.add(userData.getEmail());
-					mailsTo.add("alvaro.pelaez@ctic.es");
+					mailsTo.add("alvaro.pelaez@fundacionctic.org");
 					mailService.sendMail(mailsTo, "Generación de informe global completado", mailBody.toString(), true);
 				} catch (Exception e) {
 					Logger.putLog("Error", OpenOfficeGlobalReportBuilder.class, Logger.LOG_LEVEL_ERROR, e);
