@@ -386,8 +386,14 @@ public interface Constants {
 	String OBSERVATORY_GRAPHIC_PDF_REPORT = "pdfReport";
 	/** The observatory graphic global allocation. */
 	String OBSERVATORY_GRAPHIC_GLOBAL_ALLOCATION = "globalAllocation";
+	/** The observatory graphic global compliance. */
+	String OBSERVATORY_GRAPHIC_GLOBAL_COMPLIANCE = "globalCompliance";
 	/** The observatory graphic segments mark. */
 	String OBSERVATORY_GRAPHIC_SEGMENTS_MARK = "segmentsMark";
+	/** The observatory graphic segments cmp mark. */
+	String OBSERVATORY_GRAPHIC_SEGMENTS_CMP_MARK = "segmentsCMPMark";
+	/** The observatory graphic ambit mark. */
+	String OBSERVATORY_GRAPHIC_AMBIT_MARK = "ambitMark";
 	/** The observatory graphic group segment mark. */
 	String OBSERVATORY_GRAPHIC_GROUP_SEGMENT_MARK = "groupSegmentMark";
 	/** The observatory graphic global accessibility allocation. */
@@ -432,14 +438,20 @@ public interface Constants {
 	String OBSERVATORY_GRAPHIC_GLOBAL = "global";
 	/** The observatory graphic global data list dag. */
 	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG = "globalDataListDAG";
+	/** The observatory graphic global data list dcg. */
+	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DCG = "globalDataListDCG";
 	/** The observatory graphic global data list cas. */
 	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CAS = "globalDataListCAS";
 	/** The observatory graphic global data list casc. */
 	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CASC = "globalDataListCASC";
 	/** The observatory graphic global data list cps. */
 	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CPS = "globalDataListCPS";
+	/** The observatory graphic global data list cpcx. */
+	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CPCX = "globalDataListCPCX";
 	/** The observatory graphic global data list cmps. */
 	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMPS = "globalDataListCMPS";
+	/** The observatory graphic global data list cmps ambit. */
+	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMPS_AMBIT = "globalDataListCMPSAMBIT";
 	/** The observatory graphic global data list cmpc. */
 	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMPC = "globalDataListCMPC";
 	/** The observatory graphic global data list cma. */
@@ -468,8 +480,12 @@ public interface Constants {
 	String OBSERVATORY_NUM_CASC_GRAPH = "numGraphCASC";
 	/** The observatory num cps graph. */
 	String OBSERVATORY_NUM_CPS_GRAPH = "numGraphCPS";
+	/** The observatory num cpcx graph. */
+	String OBSERVATORY_NUM_CPCX_GRAPH = "numGraphCPCX";
 	/** The observatory num cmps graph. */
 	String OBSERVATORY_NUM_CMPS_GRAPH = "numGraphCMPS";
+	/** The observatory num cmps ambit graph. */
+	String OBSERVATORY_NUM_CMPS_AMBIT_GRAPH = "numGraphCMPSAMBIT";
 	/** The observatory num cmpc graph. */
 	String OBSERVATORY_NUM_CMPC_GRAPH = "numGraphCMPC";
 	/** The observatory num graph. */
@@ -1251,6 +1267,7 @@ public interface Constants {
 	String ID_CUENTA = "id_cuenta";
 	/** The id observatorio. */
 	String ID_OBSERVATORIO = "id_observatorio";
+	/** The application. */
 	String APPLICATION = "application";
 	/** The id ex obs. */
 	String ID_EX_OBS = "idExObs";
@@ -1342,6 +1359,7 @@ public interface Constants {
 	String CONFIRMACION_IMPORTAR = "confirmacionImportar";
 	/** The configurar filtros agregados. */
 	String CONFIGURAR_FILTROS_AGREGADOS = "configurarFiltrosAgregados";
+	/** The configurar filtros agregados acc. */
 	String CONFIGURAR_FILTROS_AGREGADOS_ACC = "configurarFiltrosAgregadosAcc";
 	/** The term. */
 	String TERM = "term";
