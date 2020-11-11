@@ -75,8 +75,8 @@ public final class EtiquetaDAO {
 	/**
 	 * Gets the etiquetas.
 	 *
-	 * @param c    the c
-	 * @param type the type
+	 * @param c      the c
+	 * @param pagina the pagina
 	 * @return the tags
 	 * @throws SQLException the SQL exceptio
 	 */
@@ -114,8 +114,7 @@ public final class EtiquetaDAO {
 	/**
 	 * Gets the etiquetas.
 	 *
-	 * @param c    the c
-	 * @param type the type
+	 * @param c the c
 	 * @return the tags
 	 * @throws SQLException the SQL exceptio
 	 */
@@ -146,8 +145,8 @@ public final class EtiquetaDAO {
 	/**
 	 * Exists etiqueta.
 	 *
-	 * @param c           the c
-	 * @param dependencia the etiqueta
+	 * @param c        the c
+	 * @param etiqueta the etiqueta
 	 * @return true, if successful
 	 * @throws SQLException the SQL exception
 	 */
@@ -198,8 +197,8 @@ public final class EtiquetaDAO {
 	/**
 	 * Update.
 	 *
-	 * @param c           the c
-	 * @param dependencia the etiqueta
+	 * @param c        the c
+	 * @param etiqueta the etiqueta
 	 * @throws SQLException the SQL exception
 	 */
 	public static void updateEtiqueta(Connection c, EtiquetaForm etiqueta) throws SQLException {
@@ -218,8 +217,8 @@ public final class EtiquetaDAO {
 	/**
 	 * Delete.
 	 *
-	 * @param c             the c
-	 * @param idDependencia the id etiqueta
+	 * @param c          the c
+	 * @param idEtiqueta the id etiqueta
 	 * @throws SQLException the SQL exception
 	 */
 	public static void deleteEtiqueta(Connection c, long idEtiqueta) throws SQLException {
@@ -235,9 +234,9 @@ public final class EtiquetaDAO {
 	/**
 	 * Insert tag.
 	 *
-	 * @param c              the c
-	 * @param nombreEtiqueta the nombre etiqueta
-	 * @param dependencia    the clasificacion
+	 * @param c             the c
+	 * @param nombre        the nombre
+	 * @param clasificacion the clasificacion
 	 * @return the long
 	 * @throws SQLException the SQL exception
 	 */
@@ -321,6 +320,14 @@ public final class EtiquetaDAO {
 		return 0;
 	}
 
+	/**
+	 * Gets the clasificacion by name.
+	 *
+	 * @param c       the c
+	 * @param tagName the tag name
+	 * @return the clasificacion by name
+	 * @throws Exception the exception
+	 */
 	public static long getClasificacionByName(Connection c, String tagName) throws Exception {
 		long clasificacion = 0;
 		String query = "SELECT c.id_clasificacion FROM etiqueta c WHERE c.nombre = ?";
@@ -338,6 +345,14 @@ public final class EtiquetaDAO {
 		return clasificacion;
 	}
 
+	/**
+	 * Gets the id by name.
+	 *
+	 * @param c       the c
+	 * @param tagName the tag name
+	 * @return the id by name
+	 * @throws Exception the exception
+	 */
 	public static long getIdByName(Connection c, String tagName) throws Exception {
 		long id = 0;
 		String query = "SELECT c.id_etiqueta FROM etiqueta c WHERE c.nombre = ?";
@@ -353,5 +368,28 @@ public final class EtiquetaDAO {
 			throw e;
 		}
 		return id;
+	}
+
+	/**
+	 * Gets the ids fixed tags.
+	 *
+	 * @param c the c
+	 * @return the ids fixed tags
+	 * @throws Exception the exception
+	 */
+	public static List<String> getIdsFixedTags(Connection c) throws Exception {
+		List<String> ids = new ArrayList<>();
+		String query = "SELECT c.id_etiqueta FROM etiqueta c WHERE c.id_clasificacion = 3 AND (UPPER(c.nombre) = 'FIJA' OR UPPER(c.nombre) = 'FIXED' OR UPPER(c.nombre) = 'FIJO')";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					ids.add(rs.getString("c.id_etiqueta"));
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return ids;
 	}
 }
