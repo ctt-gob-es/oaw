@@ -75,6 +75,7 @@ import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.PlantillaForm;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
+import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.dao.login.DatosForm;
 import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.plantilla.PlantillaDAO;
@@ -553,8 +554,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			/**
 			 * Results fixed
 			 */
+			// TODO Get fixed tag
+			;
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
-					Long.valueOf(executionId), new String[] { "1" }, exObsIds);
+					Long.valueOf(executionId), EtiquetaDAO.getIdsFixedTags(DataBaseManager.getConnection()).toArray(new String[0]), exObsIds);
+//			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
+//					Long.valueOf(executionId), new String[] { "1" }, exObsIds);
 			evolutionSectionsFixed(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMapFixed, FIXED_RESULTS_PREFIX);
 			/**
 			 * Results by segment
