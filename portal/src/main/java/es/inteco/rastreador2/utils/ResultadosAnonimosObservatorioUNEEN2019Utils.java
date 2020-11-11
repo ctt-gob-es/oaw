@@ -1237,7 +1237,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				categoriesLabels.add(categoryView);
 			}
 		}
-		globalGraphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CPS, categoriesLabels);
+		globalGraphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CPCX, categoriesLabels);
 		globalGraphics.put(Constants.OBSERVATORY_NUM_CPS_GRAPH, resultLists.size());
 	}
 
@@ -3010,7 +3010,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			GraphicsUtils.createPieChart(dataSet, title, messageResources.getMessage("observatory.graphic.site.number"), total, filePath, noDataMess,
 					pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
 		}
-		graphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, infoGlobalCompilanceLevel(messageResources, resultCompilance));
+		graphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DCG, infoGlobalCompilanceLevel(messageResources, resultCompilance));
 		infoGlobalCompilanceLevel(messageResources, resultCompilance);
 	}
 

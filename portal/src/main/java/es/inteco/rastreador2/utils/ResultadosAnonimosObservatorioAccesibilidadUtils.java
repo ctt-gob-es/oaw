@@ -152,8 +152,8 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.compilance.ambit.mark.name") + ".jpg";
 			title = "Situación de cumplimiento estimada por ámbito";
 			getGlobalCompilanceBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, ambits, regenerate, title, tagsFilter);
-			file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg";
-			getMidsComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
+//			file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg";
+//			getMidsComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
 			title = messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg";
 			getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
@@ -199,8 +199,8 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 				categoriesLabels.add(categoryView);
 			}
 		}
-		globalGraphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMPS, categoriesLabels);
-		globalGraphics.put(Constants.OBSERVATORY_NUM_CMPS_GRAPH, resultLists.size());
+		globalGraphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMPS_AMBIT, categoriesLabels);
+		globalGraphics.put(Constants.OBSERVATORY_NUM_CMPS_AMBIT_GRAPH, resultLists.size());
 	}
 
 	/**
@@ -363,7 +363,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 				+ result.get(Constants.OBS_ACCESIBILITY_NA);
 		labelValueList.add(infoGlobalAccessibilityLevelGraphicData(messageResources.getMessage("resultados.anonimos.porc.portales.full"), result.get(Constants.OBS_ACCESIBILITY_FULL), totalPort));
 		labelValueList
-				.add(infoGlobalAccessibilityLevelGraphicData(messageResources.getMessage("resultados.anonimos.porc.portales.completo"), result.get(Constants.OBS_ACCESIBILITY_PARTIAL), totalPort));
+				.add(infoGlobalAccessibilityLevelGraphicData(messageResources.getMessage("resultados.anonimos.porc.portales.parcial"), result.get(Constants.OBS_ACCESIBILITY_PARTIAL), totalPort));
 		labelValueList
 				.add(infoGlobalAccessibilityLevelGraphicData(messageResources.getMessage("resultados.anonimos.porc.portales.incompleto"), result.get(Constants.OBS_ACCESIBILITY_NONE), totalPort));
 		labelValueList.add(infoGlobalAccessibilityLevelGraphicData(messageResources.getMessage("resultados.anonimos.porc.portales.sin"), result.get(Constants.OBS_ACCESIBILITY_NA), totalPort));
@@ -382,7 +382,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 		final List<LabelValueBean> labelValueList = new ArrayList<>();
 		labelValueList.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.porc.portales.full"), String.valueOf(result.get(Constants.OBS_ACCESIBILITY_FULL)).replace(_00, "")));
 		labelValueList
-				.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.porc.portales.completo"), String.valueOf(result.get(Constants.OBS_ACCESIBILITY_PARTIAL)).replace(_00, "")));
+				.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.porc.portales.parcial"), String.valueOf(result.get(Constants.OBS_ACCESIBILITY_PARTIAL)).replace(_00, "")));
 		labelValueList
 				.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.porc.portales.incompleto"), String.valueOf(result.get(Constants.OBS_ACCESIBILITY_NONE)).replace(_00, "")));
 		labelValueList.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.porc.portales.sin"), String.valueOf(result.get(Constants.OBS_ACCESIBILITY_NA)).replace(_00, "")));
@@ -1159,7 +1159,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 					} else {
 						listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
 					}
-					listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
+					// listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
 				} else {
 					listExecutionsIds.add(idCrawler);
 				}
@@ -1723,7 +1723,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			GraphicsUtils.createPieChart(dataSet, title, messageResources.getMessage("observatory.graphic.site.number"), total, filePath, noDataMess,
 					pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.accesibility.colors"), x, y);
 		}
-		graphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, infoGlobalAccessibilityLevel(messageResources, result));
+		graphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DCG, infoGlobalAccessibilityLevel(messageResources, result));
 		infoGlobalAccessibilityLevel(messageResources, result);
 	}
 
