@@ -571,17 +571,19 @@ public class CrawlerJob implements InterruptableJob {
 	 * @param crawlerData la información CrawlerDate del proceso de crawling
 	 */
 	private void warnIncompleteCrawl(final CrawlerData crawlerData) {
-		final PropertiesManager pmgr = new PropertiesManager();
-		final List<String> mailTo = getAdministradoresMails();
-		final String subject = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.subject"), crawlerData.getNombreRastreo());
-		final String url = crawlerData.getUrls().get(0);
-		final int crawled = crawlingDomains.size();
-		final int objective = (crawlerData.getTopN() * crawlerData.getProfundidad()) + 1;
-		final String inDirectory = crawlerData.isInDirectory() ? "Sí" : "No";
-		final String connectionOkOAW = checkConnection(url, false) ? "Sí" : "No";
-		final String connectionOkJS = checkConnection(url, true) ? "Sí" : "No";
-		final String text = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.text"), url, crawled, objective, inDirectory, connectionOkOAW, connectionOkJS);
-		mailService.sendMail(mailTo, subject, text);
+		if (!interrupt) {
+			final PropertiesManager pmgr = new PropertiesManager();
+			final List<String> mailTo = getAdministradoresMails();
+			final String subject = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.subject"), crawlerData.getNombreRastreo());
+			final String url = crawlerData.getUrls().get(0);
+			final int crawled = crawlingDomains.size();
+			final int objective = (crawlerData.getTopN() * crawlerData.getProfundidad()) + 1;
+			final String inDirectory = crawlerData.isInDirectory() ? "Sí" : "No";
+			final String connectionOkOAW = checkConnection(url, false) ? "Sí" : "No";
+			final String connectionOkJS = checkConnection(url, true) ? "Sí" : "No";
+			final String text = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.text"), url, crawled, objective, inDirectory, connectionOkOAW, connectionOkJS);
+			mailService.sendMail(mailTo, subject, text);
+		}
 	}
 
 	/**
