@@ -449,7 +449,18 @@ public class ResultadosObservatorioAction extends Action {
 	 * @throws Exception the exception
 	 */
 	private ActionForward stop(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
-		CrawlerJobManager.endJob(Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
+//		Scheduler scheduler = new StdSchedulerFactory().getScheduler();
+//		// loop all group
+//		for (String groupName : scheduler.getJobGroupNames()) {
+//			// loop all jobs by groupname
+//			for (String jobName : scheduler.getJobNames(groupName)) {
+//				// get job's trigger
+//				Trigger[] triggers = scheduler.getTriggersOfJob(jobName, groupName);
+//				Date nextFireTime = triggers[0].getNextFireTime();
+//				System.out.println("[jobName] : " + jobName + " [groupName] : " + groupName + " - " + nextFireTime);
+//			}
+//		}
+		CrawlerJobManager.endJob(Long.parseLong(request.getParameter(Constants.ID_EX_OBS)), Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
 		return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
 	}
 

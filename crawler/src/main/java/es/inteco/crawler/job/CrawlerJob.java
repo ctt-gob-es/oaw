@@ -373,7 +373,7 @@ public class CrawlerJob implements InterruptableJob {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
-		// TODO Cookies
+		// Cookies
 		CookieManager cookieManager = new CookieManager();
 		CookieHandler.setDefault(cookieManager);
 		cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);

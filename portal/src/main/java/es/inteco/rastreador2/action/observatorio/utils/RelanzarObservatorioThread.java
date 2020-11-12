@@ -18,6 +18,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.quartz.SchedulerException;
+
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -99,7 +101,7 @@ public class RelanzarObservatorioThread extends Thread {
 							c.commit();
 							// Lanzamos el rastreo y recuperamos el id de
 							// ejecución
-							lanzarRastreo(String.valueOf(idCrawling));
+							lanzarRastreo(String.valueOf(idCrawling), String.valueOf(idObservatorio));
 							// Por si tarda mucho en acabar el rastreo, volvemos a
 							// inicializar una conexion
 							c = DataBaseManager.getConnection();
@@ -116,6 +118,8 @@ public class RelanzarObservatorioThread extends Thread {
 						} catch (Exception e) {
 							Logger.putLog("Error al relanzar el rastreo  " + idCrawling, ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 						}
+					} else {
+						Logger.putLog("Relanzamiento parado" + idCrawling, ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR);
 					}
 				}
 			} else {
@@ -124,7 +128,7 @@ public class RelanzarObservatorioThread extends Thread {
 			if (!isInterrupted()) {
 				ObservatorioDAO.updateObservatoryStatus(DataBaseManager.getConnection(), Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.FINISHED_OBSERVATORY_STATUS);
 			} else {
-				ObservatorioDAO.updateObservatoryStatus(DataBaseManager.getConnection(), Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.ERROR_OBSERVATORY_STATUS);
+				ObservatorioDAO.updateObservatoryStatus(DataBaseManager.getConnection(), Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.STOPPED_OBSERVATORY_STATUS);
 			}
 			Logger.putLog("Finalizado el observatorio con id " + idEjecucionObservatorio, RelanzarObservatorioThread.class, Logger.LOG_LEVEL_INFO);
 			c.commit();
@@ -137,16 +141,41 @@ public class RelanzarObservatorioThread extends Thread {
 					Logger.putLog("Error al realizar rollback", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
+		} finally {
+			if (c != null) {
+				try {
+					c.rollback();
+					DataBaseManager.closeConnection(c);
+				} catch (SQLException e1) {
+					Logger.putLog("Error al realizar rollback", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e1);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Interrupt.
+	 */
+	@Override
+	public void interrupt() {
+		super.interrupt();
+		try {
+			CrawlerJobManager.endJobsRelaunch(Long.parseLong(idObservatorio));
+		} catch (NumberFormatException e) {
+			Logger.putLog("Error al convertir el id en Long", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		} catch (SchedulerException e) {
+			Logger.putLog("Error al parar los jobs asciados", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 	}
 
 	/**
 	 * Lanza un rastreo.
 	 *
-	 * @param idCrawling the id crawling
+	 * @param idCrawling     the id crawling
+	 * @param idObservatorio the id observatorio
 	 * @throws Exception the exception
 	 */
-	private void lanzarRastreo(final String idCrawling) throws Exception {
+	private void lanzarRastreo(final String idCrawling, final String idObservatorio) throws Exception {
 		Logger.putLog("Realanzado el rastreo " + idCrawling, ResultadosObservatorioAction.class, Logger.LOG_LEVEL_INFO);
 		Connection c = DataBaseManager.getConnection();
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -154,6 +183,8 @@ public class RelanzarObservatorioThread extends Thread {
 		dcrForm.setCartuchos(CartuchoDAO.getNombreCartucho(dcrForm.getId_rastreo()));
 		// Cargamos los dominios introducidos en el archivo de semillas
 		final int typeDomains = dcrForm.getIdObservatory() == 0 ? Constants.ID_LISTA_SEMILLA : Constants.ID_LISTA_SEMILLA_OBSERVATORIO;
+		// todo ADD ID OBS TO CREATE AN IDENTIFICABLE GROUPNAME
+		dcrForm.setIdObservatory(Long.parseLong(idObservatorio));
 		dcrForm.setUrls(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), typeDomains, false));
 		dcrForm.setDomains(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), typeDomains, true));
 		dcrForm.setExceptions(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), Constants.ID_LISTA_NO_RASTREABLE, false));
