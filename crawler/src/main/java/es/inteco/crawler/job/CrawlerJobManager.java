@@ -16,13 +16,12 @@
 package es.inteco.crawler.job;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
@@ -64,43 +63,61 @@ public final class CrawlerJobManager {
 	 */
 	public static void startJob(CrawlerData crawlerData) throws Exception {
 		init();
-		final JobDetail jobDetail = new JobDetail(Constants.CRAWLER_JOB_NAME + "_" + crawlerData.getIdCrawling(), Constants.CRAWLER_JOB_GROUP, CrawlerJob.class);
+		final JobDetail jobDetail = new JobDetail(Constants.CRAWLER_JOB_NAME + "_" + crawlerData.getIdCrawling(), Constants.CRAWLER_JOB_GROUP + "_" + crawlerData.getIdObservatory(), CrawlerJob.class);
 		final JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put(Constants.CRAWLER_DATA, crawlerData);
 		jobDetail.setJobDataMap(jobDataMap);
-		final Trigger trigger = new SimpleTrigger(Constants.CRAWLER_JOB_TRIGGER + "_" + crawlerData.getIdCrawling(), Constants.CRAWLER_JOB_TRIGGER_GROUP, new Date());
+		final Trigger trigger = new SimpleTrigger(Constants.CRAWLER_JOB_TRIGGER + "_" + crawlerData.getIdCrawling(), Constants.CRAWLER_JOB_TRIGGER_GROUP + "_" + crawlerData.getIdObservatory(),
+				new Date());
 		scheduler.scheduleJob(jobDetail, trigger);
+	}
+
+	/**
+	 * End jobs relaunch.
+	 *
+	 * @param idObservatory the id observatory
+	 * @throws SchedulerException the scheduler exception
+	 */
+	public static void endJobsRelaunch(final Long idObservatory) throws SchedulerException {
+		final String groupNameToEnd = Constants.CRAWLER_JOB_GROUP + "_" + idObservatory;
+		Scheduler scheduler = new StdSchedulerFactory().getScheduler();
+		// loop all group
+		for (String groupName : scheduler.getJobGroupNames()) {
+			if (groupNameToEnd.equals(groupName)) {
+				for (String jobName : scheduler.getJobNames(groupName)) {
+					// get job's trigger
+					Trigger[] triggers = scheduler.getTriggersOfJob(jobName, groupName);
+					Date nextFireTime = triggers[0].getNextFireTime();
+					System.out.println("[jobName] : " + jobName + " [groupName] : " + groupName + " - " + nextFireTime);
+					scheduler.interrupt(jobName, groupName);
+					scheduler.deleteJob(jobName, groupName);
+				}
+			}
+		}
 	}
 
 	/**
 	 * End job.
 	 *
-	 * @param idJob the id job
+	 * @param idExObs       the id ex obs
+	 * @param idObservatory the id observatory
 	 * @throws Exception the exception
 	 */
-	public static void endJob(long idJob) throws Exception {
+	public static void endJob(long idExObs, long idObservatory) throws Exception {
 		init();
-		scheduler.interrupt(Constants.CRAWLER_JOB_NAME + "_" + idJob, Constants.CRAWLER_JOB_GROUP);
-		scheduler.deleteJob(Constants.CRAWLER_JOB_NAME + "_" + idJob, Constants.CRAWLER_JOB_GROUP);
-		List<JobExecutionContext> currentlyExecuting = scheduler.getCurrentlyExecutingJobs();
-		// verifying if job is running
-		for (JobExecutionContext jobExecutionContext : currentlyExecuting) {
-			CrawlerData crawlerData = (CrawlerData) jobExecutionContext.getJobDetail().getJobDataMap().get(Constants.CRAWLER_DATA);
-			if (crawlerData.getIdObservatory() == idJob) {
-				scheduler.interrupt(jobExecutionContext.getJobDetail().getName(), jobExecutionContext.getJobDetail().getGroup());
-				scheduler.deleteJob(jobExecutionContext.getJobDetail().getName(), jobExecutionContext.getJobDetail().getGroup());
-			}
-		}
+		scheduler.interrupt(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + idObservatory, Constants.EXECUTE_SCHEDULED_OBSERVATORY_GROUP);
+		scheduler.deleteJob(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + idObservatory, Constants.EXECUTE_SCHEDULED_OBSERVATORY_GROUP);
+		// Relaunch threads
 		Set<Thread> threads = Thread.getAllStackTraces().keySet();
 		for (Thread t : threads) {
 			String name = t.getName();
 			Thread.State state = t.getState();
 			int priority = t.getPriority();
 			String type = t.isDaemon() ? "Daemon" : "Normal";
-			if ("RelanzarObservatorioThread".equals(t.getName())) {
+			if (("RelanzarObservatorioThread_" + idExObs).equals(t.getName())) {
 				t.interrupt();
+				System.out.printf("%-20s \t %s \t %d \t %s\n", name, state, priority, type);
 			}
-			System.out.printf("%-20s \t %s \t %d \t %s\n", name, state, priority, type);
 		}
 	}
 }
