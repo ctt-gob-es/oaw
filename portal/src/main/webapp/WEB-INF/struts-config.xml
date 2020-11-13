@@ -435,6 +435,7 @@
 			<forward name="exito" path=".cargarRastreosRealizadosObservatorio" />
 			<forward name="throwSeedconfirmation" path=".confirmacionLanzarSemilla" />
 			<forward name="confirmacionDelete" path=".confirmacionBorrarEjecucionSemillaObs" />
+			<forward name="confirmarPararObservatorio" path=".confirmarPararObservatorio" />
 			<forward name="exito2" path=".Exito" />
 		</action>
 
