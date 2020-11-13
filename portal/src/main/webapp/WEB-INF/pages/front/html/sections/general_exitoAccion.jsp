@@ -25,10 +25,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		<bean:message key="migas.informacion" />
 	</p>
 </div> --%>
-
-
-
-
 <div id="main">
 	<bean:define id="mensajeExito">
 		<bean:write name="mensajeExito" />
@@ -36,30 +32,32 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	<bean:define id="accionVolver">
 		<bean:write name="accionVolver" />
 	</bean:define>
-
-<%-- 	<h1>
+	<%-- 	<h1>
 		<img src="../images/bullet_h1.gif" />
 		<bean:message key="pagina.exito" />
 	</h1>
  --%>
-
-
 	<div id="container_menu_izq">
 		<jsp:include page="menu.jsp" />
 	</div>
-
 	<div id="container_der">
-	
-	            <div id="migas">
-                <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
-                <ol class="breadcrumb">
-                  <li><html:link forward="observatoryMenu"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><bean:message key="migas.observatorio" /></html:link></li>
-                  <li class="active"><bean:message key="migas.indice.observatorios.realizados.lista"/></li>
-                </ol>
-            </div>
-	
+		<div id="migas">
+			<p class="sr-only">
+				<bean:message key="ubicacion.usuario" />
+			</p>
+			<ol class="breadcrumb">
+				<li>
+					<html:link forward="observatoryMenu">
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+						<bean:message key="migas.observatorio" />
+					</html:link>
+				</li>
+				<li class="active">
+					<bean:message key="migas.indice.observatorios.realizados.lista" />
+				</li>
+			</ol>
+		</div>
 		<div id="cajaformularios">
-
 			<h2>
 				<bean:message key="exito.informacion" />
 			</h2>
@@ -76,18 +74,15 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<bean:write name="accionVolver" filter="false" />
 					</bean:define>
 					<p>
-						<html:link styleClass="btn btn-default btn-lg"
-							href="<%=volvemos%>">
+						<html:link styleClass="btn btn-default btn-lg" href="<%=volvemos%>">
 							<bean:message key="boton.volver" />
 						</html:link>
 					</p>
 				</c:if>
 			</div>
-
 		</div>
 		<!-- fin cajaformularios -->
 	</div>
-
 </div>
 </div>
 </div>

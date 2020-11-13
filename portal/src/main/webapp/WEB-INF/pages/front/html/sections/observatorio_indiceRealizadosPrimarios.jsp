@@ -117,16 +117,23 @@ Email: observ.accesibilidad@correo.gob.es
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.parado" />
 											<html:link forward="estadoObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
-													title="<bean:message key='tooltip.status.obs'/>" />
+													title="<bean:message key='tooltip.status.obs'/>"></span>
 												<span class="sr-only">
 													<bean:message key='tooltip.status.obs' />
 												</span>
 											</html:link>
 											<html:link forward="relanzarObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-													title="<bean:message key='tooltip.status.relaunch'/>" />
+													title="<bean:message key='tooltip.status.relaunch'/>"></span>
 												<span class="sr-only">
 													<bean:message key='tooltip.status.relaunch' />
+												</span>
+											</html:link>
+											
+																						<html:link forward="stopObservatorio" name="params">
+												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip" title="<bean:message key='tooltip.status.stop' />"></span>
+												<span class="sr-only">
+													<bean:message key='tooltip.status.stop' />
 												</span>
 											</html:link>
 										</logic:equal>
@@ -134,35 +141,37 @@ Email: observ.accesibilidad@correo.gob.es
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.relanzado" />
 											<html:link forward="estadoObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
-													title="<bean:message key='tooltip.status.obs'/>" />
+													title="<bean:message key='tooltip.status.obs'/>"></span>
 												<span class="sr-only">
 													<bean:message key='tooltip.status.obs' />
 												</span>
 											</html:link>
 											<html:link forward="relanzarObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-													title="<bean:message key='tooltip.status.relaunch'/>" />
+													title="<bean:message key='tooltip.status.relaunch'/>"></span>
 												<span class="sr-only">
 													<bean:message key='tooltip.status.relaunch' />
 												</span>
 											</html:link>
 											<html:link forward="stopObservatorio" name="params">
-												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip" title="Parar ejecución" />
-												<span class="sr-only">Parar</span>
+												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip" title="<bean:message key='tooltip.status.stop' />"></span>
+												<span class="sr-only">
+													<bean:message key='tooltip.status.stop' />
+												</span>
 											</html:link>
 										</logic:equal>
 										<logic:equal name="fulfilledObservatory" property="observatorio.estado" value="1">
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.lanzado" />
 											<html:link forward="estadoObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
-													title="<bean:message key='tooltip.status.obs'/>" />
+													title="<bean:message key='tooltip.status.obs'/>"></span>
 												<span class="sr-only">
 													<bean:message key='tooltip.status.obs' />
 												</span>
 											</html:link>
 											<html:link forward="relanzarObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-													title="<bean:message key='tooltip.status.relaunch'/>" />
+													title="<bean:message key='tooltip.status.relaunch'/>"></span>
 												<span class="sr-only">
 													<bean:message key='tooltip.status.relaunch' />
 												</span>
@@ -176,7 +185,7 @@ Email: observ.accesibilidad@correo.gob.es
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.terminado" />
 											<html:link forward="estadoObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
-													title="<bean:message key='tooltip.status.obs'/>" />
+													title="<bean:message key='tooltip.status.obs'/>"></span>
 												<span class="sr-only">
 													<bean:message key='tooltip.status.obs' />
 												</span>
@@ -186,18 +195,14 @@ Email: observ.accesibilidad@correo.gob.es
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.error" />
 											<html:link forward="estadoObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
-													title="Estado de  esta iteraci&oacute;n del observatorio" />
+													title="Estado de  esta iteraci&oacute;n del observatorio"></span>
 												<span class="sr-only">
 													<bean:message key='tooltip.status.obs' />
 												</span>
 											</html:link>
-											<%-- <html:link forward="stopObservatorio" name="params">
-												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip" title="Parar ejecución" />
-												<span class="sr-only">Parar</span>
-											</html:link>--%>
 											<html:link forward="relanzarObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-													title="<bean:message key='tooltip.status.relaunch'/>" />
+													title="<bean:message key='tooltip.status.relaunch'/>"></span>
 												<span class="sr-only">
 													<bean:message key='tooltip.status.relaunch' />
 												</span>
@@ -207,7 +212,7 @@ Email: observ.accesibilidad@correo.gob.es
 									<td>
 										<html:link forward="resultadosObservatorioSemillas" name="params">
 											<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
-												title="<bean:message key='tooltip.status.results'/>" />
+												title="<bean:message key='tooltip.status.results'/>"></span>
 											<span class="sr-only">
 												<bean:message key='results' />
 											</span>
@@ -221,10 +226,9 @@ Email: observ.accesibilidad@correo.gob.es
 										<c:set target="${paramsInformeAgregado}" property="isPrimary" value="false" />
 										<c:set target="${paramsInformeAgregado}" property="idExObs" value="${fulfilledObservatory.id}" />
 										<logic:notEqual name="fulfilledObservatory" property="observatorio.estado" value="1">
-											<!-- <html:link forward="<%=Constants.OBSERVATORY_GRAPHIC%>" name="params"><img src="../images/list.gif" alt="<bean:message key="indice.observatorio.resultados.alt"/>"/></html:link></li> -->
 											<html:link forward="anonymousExportOpenOfficeAction" name="paramsInformeAgregado">
 												<span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip"
-													title="<bean:message key='tooltip.status.report.odt'/>" />
+													title="<bean:message key='tooltip.status.report.odt'/>"></span>
 												<span class="sr-only">
 													<bean:message key='tooltip.status.report.odt' />
 												</span>
@@ -236,7 +240,7 @@ Email: observ.accesibilidad@correo.gob.es
 										<c:set target="${paramsExportPDF}" property="${id_ex_obs}" value="${fulfilledObservatory.id}" />
 										<html:link forward="<%=Constants.EXPORT_ALL_PDF_FORWARD%>" name="paramsExportPDF">
 											<span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip"
-												title="<bean:message key='tooltip.status.report.pdf'/>" />
+												title="<bean:message key='tooltip.status.report.pdf'/>"></span>
 											<span class="sr-only">
 												<bean:message key='tooltip.status.report.pdf' />
 											</span>
@@ -247,7 +251,7 @@ Email: observ.accesibilidad@correo.gob.es
 										<c:set target="${paramsExportPDFMail}" property="${id_ex_obs}" value="${fulfilledObservatory.id}" />
 										<html:link forward="<%=Constants.EXPORT_ALL_PDF_FORWARD_MAIL%>" name="paramsExportPDFMail">
 											<span class="glyphicon glyphicon-send" aria-hidden="true" data-toggle="tooltip"
-												title="<bean:message key='tooltip.status.report.pdf.email'/>" />
+												title="<bean:message key='tooltip.status.report.pdf.email'/>"></span>
 											<span class="sr-only">
 												<bean:message key='tooltip.status.report.pdf.email' />
 											</span>
@@ -260,7 +264,7 @@ Email: observ.accesibilidad@correo.gob.es
 										<c:set target="${paramsGraphic}" property="Otype" value="${fulfilledObservatory.cartucho.id}" />
 										<html:link forward="getObservatoryGraphic" name="paramsGraphic">
 											<span class="glyphicon glyphicon-stats" aria-hidden="true" data-toggle="tooltip"
-												title="<bean:message key='tooltip.status.obs.graphics'/>" />
+												title="<bean:message key='tooltip.status.obs.graphics'/>"></span>
 											<span class="sr-only">
 												<bean:message key="migas.indice.observatorios.menu.graficas" />
 											</span>
@@ -269,7 +273,7 @@ Email: observ.accesibilidad@correo.gob.es
 									<td>
 										<html:link forward="databaseExportActionConfirm" name="paramsInformeAgregado">
 											<span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip"
-												title="<bean:message key="indice.rastreo.exportar.database" />" />
+												title="<bean:message key="indice.rastreo.exportar.database" />"></span>
 											<span class="sr-only">
 												<bean:message key="indice.rastreo.exportar.database" />
 											</span>
@@ -283,7 +287,7 @@ Email: observ.accesibilidad@correo.gob.es
 										<c:set target="${paramsDeleteExecution}" property="idExObs" value="${fulfilledObservatory.id}" />
 										<html:link forward="deleteFulfilledObservatory" name="paramsDeleteExecution">
 											<span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip"
-												title="<bean:message key='tooltip.status.obs.remove'/>" />
+												title="<bean:message key='tooltip.status.obs.remove'/>"></span>
 											<span class="sr-only">
 												<bean:message key='tooltip.status.obs.remove' />
 											</span>
