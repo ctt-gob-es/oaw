@@ -491,11 +491,6 @@ public final class RastreoDAO {
 					}
 					r.setCartucho(rst.getString("aplicacion"));
 					// Obtenemos el estado del rastreo
-					// 1: NO LANZADO
-					// 2: LANZADO
-					// 3: PARADO
-					// 4: TERMINADO
-					// int est = -1;
 					r.setEstado(rst.getInt("estado"));
 					r.setEstadoTexto("rastreo.estado." + r.getEstado());
 					r.setIdCuenta(rst.getLong("id_cuenta"));
@@ -1388,6 +1383,7 @@ public final class RastreoDAO {
 				ps.setLong(9, insertarRastreoForm.getId_semilla());
 				ps.setBoolean(11, insertarRastreoForm.isExhaustive());
 				ps.executeUpdate();
+				DAOUtils.closeQueries(ps, null);
 				if (insertarRastreoForm.getCartucho() != null && !insertarRastreoForm.getCartucho().isEmpty()) {
 					ps = c.prepareStatement("UPDATE cartucho_rastreo SET id_cartucho = ? WHERE id_rastreo = ?");
 					ps.setInt(1, Integer.parseInt(insertarRastreoForm.getCartucho()));
@@ -1421,7 +1417,6 @@ public final class RastreoDAO {
 	public static void updateRastreo(Connection c, boolean esMenu, InsertarRastreoForm insertarRastreoForm, Long idRastreo) throws SQLException {
 		PreparedStatement ps = null;
 		try {
-			PropertiesManager pmgr = new PropertiesManager();
 			ps = c.prepareStatement("UPDATE rastreo SET profundidad = ?, topn = ?, in_directory = ?, id_guideline= ? WHERE id_rastreo = ?");
 			ps.setInt(1, insertarRastreoForm.getProfundidad());
 			ps.setLong(2, insertarRastreoForm.getTopN());
@@ -2183,7 +2178,7 @@ public final class RastreoDAO {
 		// Union de rastreos no realizados y rastreos empezados pero no
 		// terminados (<> estado 4)
 		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT u.semillas  FROM (" + "	(SELECT r.semillas FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo NOT IN ("
-				+ "		SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ?) AND r.activo = 1 )" + "	UNION ALL"
+				+ "		SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ?) AND r.activo = 1)" + "	UNION ALL"
 				+ "	(SELECT r.semillas FROM rastreo r WHERE r.id_observatorio = ? AND r.estado = 1 AND r.activo = 1)" + "	) u ORDER BY u.semillas ASC")) {
 			ps.setLong(1, idObservatory);
 			ps.setLong(2, idObsRealizado);
