@@ -157,7 +157,8 @@ public class EstadoObservatorioDAO {
 		ObservatorySummary summary = new ObservatorySummary();
 		try (PreparedStatement ps = c.prepareStatement("SELECT (SELECT estado FROM observatorios_realizados WHERE id = ?) AS ESTADO_OBS, "
 				+ "(SELECT count(*) FROM rastreo r WHERE r.id_observatorio = ? AND r.activo = 1) AS TOTAL_SEMILLAS, "
-				+ "(SELECT count(*) FROM rastreo r WHERE r.id_observatorio = ? AND r.activo = 1 AND r.estado = 4  and r.id_rastreo in (select id_rastreo from rastreos_realizados rr where rr.id_obs_realizado = ? )) AS TOTAL_ANALIZADAS, "
+//				+ "(SELECT count(*) FROM rastreo r WHERE r.id_observatorio = ? AND r.activo = 1 AND r.estado = 4  and r.id_rastreo in (select id_rastreo from rastreos_realizados rr where rr.id_obs_realizado = ? )) AS TOTAL_ANALIZADAS, "
+				+ "(SELECT count(*) FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo in (select id_rastreo from rastreos_realizados rr where rr.id_obs_realizado = ? )) AS TOTAL_ANALIZADAS, "
 				+ "(SELECT count(*) FROM rastreo r WHERE r.id_observatorio = ? AND r.activo = 1 AND r.estado = 4  and r.id_rastreo in (select id_rastreo from rastreos_realizados rr where rr.id_obs_realizado = ? AND rr.id IN (select ta.cod_rastreo as id_rastreo from tanalisis ta))) AS TOTAL_ANALIZADAS_OK, "
 //				+ "(SELECT TIMESTAMPDIFF(MINUTE," + "(SELECT MIN(fecha) FROM rastreos_realizados WHERE id_obs_realizado=?),"
 //				+ "(SELECT MAX(fecha) FROM rastreos_realizados WHERE id_obs_realizado=?))) AS TIEMPO")) {
