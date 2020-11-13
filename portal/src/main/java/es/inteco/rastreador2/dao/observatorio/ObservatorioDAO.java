@@ -64,6 +64,7 @@ import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.login.CartuchoForm;
 import es.inteco.rastreador2.dao.login.DatosForm;
 import es.inteco.rastreador2.dao.login.LoginDAO;
+import es.inteco.rastreador2.dao.observatorio.form.ExtraConfigurationForm;
 import es.inteco.rastreador2.dao.rastreo.DatosCartuchoRastreoForm;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
@@ -2611,5 +2612,55 @@ public final class ObservatorioDAO {
 			throw e;
 		}
 		return list;
+	}
+
+	/**
+	 * Load extra configuration.
+	 *
+	 * @param c the c
+	 * @return the list
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<ExtraConfigurationForm> loadExtraConfiguration(Connection c) throws SQLException {
+		List<ExtraConfigurationForm> extraConfig = new ArrayList<>();
+		final String query = "SELECT `id` AS C_ID,`name` AS N_ID, `key` AS K_ID,`value` AS V_ID FROM `observatorio_extra_configuration` ORDER BY `id`";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					ExtraConfigurationForm config = new ExtraConfigurationForm();
+					config.setId(rs.getLong("C_ID"));
+					config.setKey(rs.getString("K_ID"));
+					config.setValue(rs.getString("V_ID"));
+					config.setName(rs.getString("N_ID"));
+					extraConfig.add(config);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return extraConfig;
+	}
+
+	/**
+	 * Save extra configurarion.
+	 *
+	 * @param c           the c
+	 * @param extraConfig the extra config
+	 * @throws SQLException the SQL exception
+	 */
+	public static void saveExtraConfiguration(Connection c, final List<ExtraConfigurationForm> extraConfig) throws SQLException {
+		if (extraConfig != null && !extraConfig.isEmpty()) {
+			for (ExtraConfigurationForm config : extraConfig) {
+				try (PreparedStatement ps = c.prepareStatement("UPDATE observatorio_extra_configuration SET `value` = ? WHERE `key` = ?")) {
+					ps.setString(1, config.getValue());
+					ps.setString(2, config.getKey());
+					ps.executeUpdate();
+				} catch (SQLException e) {
+					Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+					throw e;
+				}
+			}
+		}
 	}
 }

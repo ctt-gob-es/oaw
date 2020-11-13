@@ -1045,8 +1045,6 @@
 			type="es.inteco.rastreador2.openOffice.export.ConfigExportOpenOfficeAction">
 		</action>
 
-
-
 	</action-mappings>
 
 	<!-- Controller Configuration -->
