@@ -1918,4 +1918,5 @@ public interface Constants {
 	BaseColor BC_MARRRON_C_NC = new BaseColor(196, 89, 17);
 	/** The bc gris muy claro. */
 	BaseColor BC_GRIS_MUY_CLARO = new BaseColor(245, 245, 245);
+	String OBSERVATORY_EXTRA_CONFIGURATION_LIST = "extraConfigurationList";
 }
