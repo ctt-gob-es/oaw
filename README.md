@@ -7,7 +7,7 @@ This repository contains 3 applications:
 * Motor JS: An implementation of https://github.com/prerender/prerender to render web pages and return code.
 * WCAG EM Tool: An fork of https://github.com/w3c/wcag-em-report-tool with capabiluty to exports as ODS format.
 
-## OAW (Observatiro de Accesibilidad Web)
+## OAW (Observatorio de Accesibilidad Web)
 
 The application code is distributed in several maven projects:
 
