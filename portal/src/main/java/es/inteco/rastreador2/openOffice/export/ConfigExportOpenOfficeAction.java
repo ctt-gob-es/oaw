@@ -71,6 +71,10 @@ public class ConfigExportOpenOfficeAction extends Action {
 		if (request.getParameter("tags") != null && !StringUtils.isEmpty(request.getParameter("tags"))) {
 			tagsToFilter = request.getParameter("tags").split(",");
 		}
+		String[] tagsToFilterFixed = null;
+		if (request.getParameter("tagsFixed") != null && !StringUtils.isEmpty(request.getParameter("tagsFixed"))) {
+			tagsToFilterFixed = request.getParameter("tagsFixed").split(",");
+		}
 		Map<String, Boolean> grpahicConditional = new TreeMap<>();
 		if (request.getParameter(Constants.CHECK_GLOBAL_MODALITY_GRPAHICS) != null) {
 			grpahicConditional.put(Constants.CHECK_GLOBAL_MODALITY_GRPAHICS, Boolean.parseBoolean(request.getParameter(Constants.CHECK_GLOBAL_MODALITY_GRPAHICS)));
@@ -128,7 +132,7 @@ public class ConfigExportOpenOfficeAction extends Action {
 			filePath = basePath + PDFUtils.formatSeedName(observatoryForm.getNombre()) + ".odt";
 			final String graphicPath = basePath + "temp" + File.separator;
 			ExportOpenOfficeUtils.createOpenOfficeDocumentFiltered(request, filePath, graphicPath, df.format(observatoryFFForm.getFecha()), observatoryForm.getTipo(), exObsIds.length, tagsToFilter,
-					grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, idSegmentEvolTemplate, reportTitle);
+					tagsToFilterFixed, grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, idSegmentEvolTemplate, reportTitle);
 			// FileUtils.deleteDir(new File(graphicPath));
 			final DatosForm userData = LoginDAO.getUserDataByName(c, request.getSession().getAttribute(Constants.USER).toString());
 			request.setAttribute("EMAIL", userData.getEmail());

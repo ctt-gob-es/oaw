@@ -57,9 +57,27 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					itemClass : 'user'
 				});
 
-			})
+			});
+			
+			$.ajax({
+				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
+				method : 'POST',
+				cache : false
+			}).success(function(response) {
+
+				$('#tagsFilterFixed').tagbox({
+					items : response.etiquetas,
+					searchIn : [ 'name' ],
+					rowFormat : '<span class="name">{{name}}</span>',
+					tokenFormat : '{{name}}',
+					valueField : 'id',
+					itemClass : 'user'
+				});
+
+			});
 
 		});
+
 
 	});
 </script>
@@ -131,6 +149,25 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							</em>
 							:
 							<bean:message key="report.config.etiquetas.filter.info" />
+						</p>
+					</fieldset>
+					<fieldset>
+						<legend>
+							<bean:message key="report.config.tags.fixed.title" />
+						</legend>
+						<div class="formItem">
+							<label for="url" class="control-label">
+								<strong class="labelVisu">
+									<bean:message key="report.config.tags.title" />
+								</strong>
+							</label>
+							<input name="tagsFixed" autocapitalize="off" placeholder="<bean:message key="placeholder.tags" />" autofocus
+								id="tagsFilterFixed" type="text" value="" />
+						</div>
+						<p class="alert alert-info">
+							<span class="glyphicon glyphicon-info-sign"></span>
+							
+							<bean:message key="report.config.tags.fixed.filter.info" />
 						</p>
 					</fieldset>
 					<logic:equal name="<%=Constants.APPLICATION%>" value="<%=Constants.NORMATIVA_UNE_EN2019%>">
