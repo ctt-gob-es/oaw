@@ -422,8 +422,16 @@ public class CrawlerJob implements InterruptableJob {
 				try {
 					HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
 					// Para la conexión inicial aumentamos los tiempos de espera
-					connection.setConnectTimeout(connection.getConnectTimeout() * 2);
-					connection.setReadTimeout(connection.getReadTimeout() * 2);
+					// TODO Alter timeout
+					if (crawlerData.isExtendTimeout() && crawlerData.getExtendedTimeoutValue() != 0) {
+						connection.setConnectTimeout(crawlerData.getExtendedTimeoutValue() * 2);
+						connection.setReadTimeout(crawlerData.getExtendedTimeoutValue() * 2);
+						connection.addRequestProperty("extendedTimeout", String.valueOf(crawlerData.getExtendedTimeoutValue() * 2));
+					} else {
+						connection.setConnectTimeout(connection.getConnectTimeout() * 2);
+						connection.setReadTimeout(connection.getReadTimeout() * 2);
+						connection.addRequestProperty("extendedTimeout", String.valueOf(connection.getConnectTimeout() * 2));
+					}
 					int numRetries = 0;
 					int numRedirections = 0;
 					int responseCode = Integer.MAX_VALUE;
@@ -437,8 +445,30 @@ public class CrawlerJob implements InterruptableJob {
 						if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE && !contains(crawlingDomains, url) && !CrawlerUtils.isOpenDNSResponse(connection)) {
 							// Si hay redirecciones, puede que el dominio cambie
 							domain = connection.getURL().getHost();
-							final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(url, domain));
-							final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
+							// TODO Extend timeout
+							HttpURLConnection generateRendererConnection = CrawlerUtils.generateRendererConnection(url, domain);
+							if (crawlerData.isExtendTimeout() && crawlerData.getExtendedTimeoutValue() != 0) {
+								generateRendererConnection.setConnectTimeout(crawlerData.getExtendedTimeoutValue() * 2);
+								generateRendererConnection.setReadTimeout(crawlerData.getExtendedTimeoutValue() * 2);
+								generateRendererConnection.addRequestProperty("extendedTimeout", String.valueOf(crawlerData.getExtendedTimeoutValue() * 2));
+							} else {
+								generateRendererConnection.setConnectTimeout(connection.getConnectTimeout() * 2);
+								generateRendererConnection.setReadTimeout(connection.getReadTimeout() * 2);
+								generateRendererConnection.addRequestProperty("extendedTimeout", String.valueOf(connection.getConnectTimeout() * 2));
+							}
+							final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(generateRendererConnection);
+							// TODO Extend timeout
+							generateRendererConnection = CrawlerUtils.generateRendererConnection(url, domain);
+							if (crawlerData.isExtendTimeout() && crawlerData.getExtendedTimeoutValue() != 0) {
+								generateRendererConnection.setConnectTimeout(crawlerData.getExtendedTimeoutValue() * 2);
+								generateRendererConnection.setReadTimeout(crawlerData.getExtendedTimeoutValue() * 2);
+								generateRendererConnection.addRequestProperty("extendedTimeout", String.valueOf(crawlerData.getExtendedTimeoutValue() * 2));
+							} else {
+								generateRendererConnection.setConnectTimeout(connection.getConnectTimeout() * 2);
+								generateRendererConnection.setReadTimeout(connection.getReadTimeout() * 2);
+								generateRendererConnection.addRequestProperty("extendedTimeout", String.valueOf(connection.getConnectTimeout() * 2));
+							}
+							final String textContent = CrawlerUtils.getTextContent(generateRendererConnection, markableInputStream);
 							markableInputStream.reset();
 							// Recuerar el charset
 							final String charset = CrawlerUtils.getCharset(connection, markableInputStream);
@@ -831,7 +861,17 @@ public class CrawlerJob implements InterruptableJob {
 				connection.connect();
 				int responseCode = connection.getResponseCode();
 				if (responseCode == HttpURLConnection.HTTP_OK) {
-					final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(url, domain));
+					final HttpURLConnection generateRendererConnection = CrawlerUtils.generateRendererConnection(url, domain);
+					if (crawlerData.isExtendTimeout() && crawlerData.getExtendedTimeoutValue() != 0) {
+						generateRendererConnection.setConnectTimeout(crawlerData.getExtendedTimeoutValue() * 2);
+						generateRendererConnection.setReadTimeout(crawlerData.getExtendedTimeoutValue() * 2);
+						generateRendererConnection.addRequestProperty("extendedTimeout", String.valueOf(crawlerData.getExtendedTimeoutValue() * 2));
+					} else {
+						generateRendererConnection.setConnectTimeout(connection.getConnectTimeout() * 2);
+						generateRendererConnection.setReadTimeout(connection.getReadTimeout() * 2);
+						generateRendererConnection.addRequestProperty("extendedTimeout", String.valueOf(connection.getConnectTimeout() * 2));
+					}
+					final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(generateRendererConnection);
 					// final String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
 					final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
 					markableInputStream.close();
@@ -1110,7 +1150,17 @@ public class CrawlerJob implements InterruptableJob {
 				connection = CrawlerUtils.followRedirection(cookie, new URL(connectedURL), connection.getHeaderField("location"));
 			} else if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE) {
 				// final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-				final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(urlLink, domain));
+				final HttpURLConnection generateRendererConnection = CrawlerUtils.generateRendererConnection(urlLink, domain);
+				if (crawlerData.isExtendTimeout() && crawlerData.getExtendedTimeoutValue() != 0) {
+					generateRendererConnection.setConnectTimeout(crawlerData.getExtendedTimeoutValue() * 2);
+					generateRendererConnection.setReadTimeout(crawlerData.getExtendedTimeoutValue() * 2);
+					generateRendererConnection.addRequestProperty("extendedTimeout", String.valueOf(crawlerData.getExtendedTimeoutValue() * 2));
+				} else {
+					generateRendererConnection.setConnectTimeout(connection.getConnectTimeout() * 2);
+					generateRendererConnection.setReadTimeout(connection.getReadTimeout() * 2);
+					generateRendererConnection.addRequestProperty("extendedTimeout", String.valueOf(connection.getConnectTimeout() * 2));
+				}
+				final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(generateRendererConnection);
 				// Generate renderer connection (applies proxy config)
 				final String remoteContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(urlLink, domain), markableInputStream);
 				markableInputStream.close();

@@ -157,7 +157,12 @@ public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJo
 					// TODO Relaunch not crawled seeds
 					List<Long> finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis(c, observatoryId,
 							idFulfilledObservatory);
-					relaunchUnfinished(finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis, observatoryId, idFulfilledObservatory);
+					// TODO Get seed less pages umbral
+					List<Long> lessThreshbold = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(c, idFulfilledObservatory);
+					List<Long> allToRelaunch = new ArrayList<Long>();
+					allToRelaunch.addAll(finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis);
+					allToRelaunch.addAll(lessThreshbold);
+					relaunchUnfinished(allToRelaunch, observatoryId, idFulfilledObservatory);
 					// Generate cache add observatory ends
 					ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), 0, null);
 					final List<ResultadoSemillaFullForm> seedsResults2 = ObservatorioDAO.getResultSeedsFullFromObservatory(c, new SemillaForm(), idFulfilledObservatory, 0L, -1);
@@ -284,7 +289,11 @@ public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJo
 		}
 		final DatosForm userData = LoginDAO.getUserDataByName(c, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"));
 		final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, idEjecucionObservatorio, Long.valueOf(userData.getId()));
-		CrawlerJobManager.startJob(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
+		final CrawlerData crawlerData = CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null);
+		// TODO set extend timeout
+		crawlerData.setExtendTimeout(true);
+		crawlerData.setExtendedTimeoutValue(ObservatorioDAO.getTimeoutFromConfig(c));
+		CrawlerJobManager.startJob(crawlerData);
 		DataBaseManager.closeConnection(c);
 	}
 

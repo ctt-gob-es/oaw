@@ -10,7 +10,9 @@ const regexFontsGoogle = /fonts.googleapis.com/i;
 
 const server = http.createServer((req, res) => {
 
-  //var requestURL = req.url;
+  
+//  console.log("REQ: %j", req.headers);
+  
   var requestURL = encodeURIComponent(req.url);
 
   console.log("[proxy - http] : " + requestURL);
