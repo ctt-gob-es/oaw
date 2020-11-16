@@ -1050,5 +1050,5 @@ public abstract class AnonymousResultPdfBuilder {
 	 * @throws Exception the exception
 	 */
 	public abstract void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, String observatoryId, String filePath, String[] tagsFilter,
-			String[] exObsIds) throws Exception;
+			final String[] tagsFilterFixed, String[] exObsIds) throws Exception;
 }

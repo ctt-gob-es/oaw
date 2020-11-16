@@ -140,7 +140,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception Excepción lanzada
 	 */
 	public static void generateGraphics(final MessageResources messageResources, String executionId, final Long idExecutionObservatory, final String observatoryId, final String filePath,
-			final String type, final boolean regenerate, String[] tagsFilter, String[] exObsIds) throws Exception {
+			final String type, final boolean regenerate, String[] tagsFilter, final String[] tagsFilterFixed, String[] exObsIds) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final PropertiesManager pmgr = new PropertiesManager();
 			String color = pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_INTECO_RED_COLORS);
@@ -161,7 +161,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			}
 			if (exObsIds != null && exObsIds.length > 1) {
 				generateEvolutionGraphics(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, exObsIds);
-				generateEvolutionGraphicsFixed(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, exObsIds);
+				generateEvolutionGraphicsFixed(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, tagsFilterFixed, exObsIds);
 			}
 		} catch (Exception e) {
 			Logger.putLog("No se han generado las gráficas correctamente.", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -480,9 +480,9 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static Map<String, Object> generateEvolutionGraphicsFixed(MessageResources messageResources, String observatoryId, final String executionId, String filePath, String color,
-			boolean regenerate, String[] tagsFilter, String[] exObsIds) throws Exception {
+			boolean regenerate, String[] tagsFilter, final String[] tagsFilterFixed, String[] exObsIds) throws Exception {
 		final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId), Long.valueOf(executionId),
-				new String[] { "1" }, exObsIds);
+				tagsFilterFixed, exObsIds);
 		final Map<String, Object> evolutionGraphics = new HashMap<>();
 		if (pageObservatoryMap != null && !pageObservatoryMap.isEmpty()) {
 			if (pageObservatoryMap.size() != 1) {
