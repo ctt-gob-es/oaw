@@ -219,7 +219,7 @@ var translatedColNames = [ colNameId, colNameOldName,
 						+ $('#grid').getLocalRow(rowid).activa + ']').attr(
 				'selected', 'selected');
 	
-		$('#nuevaSemillaMultidependencia  select[name=inDirectory]').val();
+		$("#nuevaSemillaMultidependencia select[name=inDirectory]").find('option').attr("selected",false) ;
 		$('#nuevaSemillaMultidependencia  select[name=inDirectory] option[value='
 						+ $('#grid').getLocalRow(rowid).inDirectory + ']')
 				.attr('selected', 'selected');
