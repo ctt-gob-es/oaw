@@ -8,5 +8,5 @@ CREATE TABLE `observatorio_extra_configuration` (
 	UNIQUE (`key`)
 );
 
-INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Umbral relanzamiento', 'umbral', '30');
-INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Timeout relanzamiento','timemout', '60');
+INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Umbral relanzamiento (% páginas)', 'umbral', '30');
+INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Timeout relanzamiento (ms)','timemout', '60');
