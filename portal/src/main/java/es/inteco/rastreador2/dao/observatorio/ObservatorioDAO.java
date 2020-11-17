@@ -2504,11 +2504,15 @@ public final class ObservatorioDAO {
 						psCR.executeUpdate();
 						addFullfilledCrawl(c, idExObs, id, idSeed);
 					} catch (Exception e) {
+						Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						// Remove prevoius insert
 						try (PreparedStatement psCR = c.prepareStatement("DELETE FROM cartucho_rastreo WHERE id_cartucho=? AND id_rastreo = ?")) {
 							psCR.setLong(1, idCartucho);
 							psCR.setLong(2, id);
 							psCR.executeUpdate();
+							addFullfilledCrawl(c, idExObs, id, idSeed);
+						} catch (Exception e2) {
+							Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e2);
 						}
 					}
 				} else {
@@ -2551,6 +2555,9 @@ public final class ObservatorioDAO {
 									psCR.setLong(1, idCartucho);
 									psCR.setLong(2, id);
 									psCR.executeUpdate();
+									addFullfilledCrawl(c, idExObs, id, idSeed);
+								} catch (Exception e2) {
+									Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e2);
 								}
 							}
 						} else {

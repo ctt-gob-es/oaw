@@ -85,6 +85,7 @@ public final class RastreoDAO {
 	public static List<Long> getExecutionObservatoryCrawlerIdsMatchTags(Connection c, Long idObservatoryExecution, String[] tagsToFiler) throws Exception {
 		final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
 		String query = "SELECT DISTINCT id FROM rastreos_realizados rr JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) JOIN semilla_etiqueta el ON l.id_lista=el.id_lista WHERE id_obs_realizado = ? ";
+		query = query + " AND rr.id IN (SELECT cod_rastreo FROM tanalisis) ";
 		if (tagsToFiler != null && tagsToFiler.length > 0) {
 			query = query + " AND ( 1=0 ";
 			for (int i = 0; i < tagsToFiler.length; i++) {
@@ -122,7 +123,8 @@ public final class RastreoDAO {
 	 */
 	public static List<Long> getExecutionObservatoryCrawlerIds(Connection c, Long idObservatoryExecution, long idCategory) throws Exception {
 		final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
-		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ?";
+		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ? ";
+		query = query + " AND rr.id IN (SELECT cod_rastreo FROM tanalisis) ";
 		if (idCategory != 0) {
 			query = query + " AND l.id_categoria = ? ";
 		}
@@ -154,7 +156,8 @@ public final class RastreoDAO {
 	 */
 	public static List<Long> getExecutionObservatoryCrawlerIdsComplexity(Connection c, Long idObservatoryExecution, long idComplexity) throws Exception {
 		final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
-		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ?";
+		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ? ";
+		query = query + " AND rr.id IN (SELECT cod_rastreo FROM tanalisis) ";
 		if (idComplexity != 0) {
 			query = query + " AND l.id_complejidad = ? ";
 		}
@@ -186,7 +189,8 @@ public final class RastreoDAO {
 	 */
 	public static List<Long> getExecutionObservatoryCrawlerIdsAmbit(Connection c, Long idObservatoryExecution, final Long idAmbit) throws Exception {
 		final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
-		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ?";
+		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ? ";
+		query = query + " AND rr.id IN (SELECT cod_rastreo FROM tanalisis) ";
 		if (idAmbit != 0) {
 			query = query + " AND l.id_ambito = ? ";
 		}
