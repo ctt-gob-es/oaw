@@ -469,6 +469,7 @@ public class ResultadosObservatorioAction extends Action {
 		final Long idCartucho = Long.parseLong(request.getParameter(Constants.ID_CARTUCHO));
 		try (Connection c = DataBaseManager.getConnection()) {
 			ObservatorioDAO.addSeedObservatory(c, idObservatory, idExObs, idSeed, idCartucho);
+			ObservatorioDAO.addSeedObservatory(c, idObservatory, idExObs, idSeed, idCartucho);
 		} catch (Exception e) {
 			Logger.putLog("Error al cargar el formulario para crear un nuevo rastreo de cliente", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 			throw new Exception(e);
