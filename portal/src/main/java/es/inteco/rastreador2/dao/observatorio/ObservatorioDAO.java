@@ -2544,12 +2544,21 @@ public final class ObservatorioDAO {
 							// Saved
 							Long id = rsR.getLong(1);
 							// Insert into cartucho_rastreo id_cartucho
-							try (PreparedStatement psCR = c.prepareStatement("INSERT INTO cartucho_rastreo(id_cartucho, id_rastreo) VALUES(?,?)")) {
+							try (PreparedStatement psCR = c.prepareStatement("INSERT INTO cartucho_rastreo(id_cartucho, id_rastreo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS)) {
 								psCR.setLong(1, idCartucho);
 								psCR.setLong(2, id);
 								psCR.executeUpdate();
-								addFullfilledCrawl(c, idExObs, id, idSeed);
+								try (ResultSet rsCR = psCR.getGeneratedKeys()) {
+									if (rsCR.next()) {
+										addFullfilledCrawl(c, idExObs, id, idSeed);
+									} else {
+										Logger.putLog("e: " + psCR, ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR);
+									}
+								} catch (Exception e) {
+									Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+								}
 							} catch (Exception e) {
+								Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 								// Remove prevoius insert
 								try (PreparedStatement psCR = c.prepareStatement("DELETE FROM cartucho_rastreo WHERE id_cartucho=? AND id_rastreo = ?")) {
 									psCR.setLong(1, idCartucho);
@@ -2563,8 +2572,12 @@ public final class ObservatorioDAO {
 						} else {
 							// error??
 						}
+					} catch (Exception e) {
+						Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 					}
 				}
+			} catch (Exception e) {
+				Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			}
 		} catch (Exception e) {
 			Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
