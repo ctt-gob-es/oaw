@@ -153,7 +153,6 @@ public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJo
 					if (c != null && c.isClosed()) {
 						c = DataBaseManager.getConnection();
 					}
-					ObservatorioDAO.updateObservatoryStatus(c, idFulfilledObservatory, Constants.FINISHED_OBSERVATORY_STATUS);
 					// TODO Relaunch not crawled seeds
 					List<Long> finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis(c, observatoryId,
 							idFulfilledObservatory);
@@ -163,6 +162,8 @@ public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJo
 					allToRelaunch.addAll(finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis);
 					allToRelaunch.addAll(lessThreshbold);
 					relaunchUnfinished(allToRelaunch, observatoryId, idFulfilledObservatory);
+					// Mark as finished
+					ObservatorioDAO.updateObservatoryStatus(c, idFulfilledObservatory, Constants.FINISHED_OBSERVATORY_STATUS);
 					// Generate cache add observatory ends
 					ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), 0, null);
 					final List<ResultadoSemillaFullForm> seedsResults2 = ObservatorioDAO.getResultSeedsFullFromObservatory(c, new SemillaForm(), idFulfilledObservatory, 0L, -1);
@@ -293,6 +294,8 @@ public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJo
 		// TODO set extend timeout
 		crawlerData.setExtendTimeout(true);
 		crawlerData.setExtendedTimeoutValue(ObservatorioDAO.getTimeoutFromConfig(c));
+		crawlerData.setExtendedDepth(ObservatorioDAO.getDepthFromConfig(c));
+		crawlerData.setExtendedWidth(ObservatorioDAO.getWidthFromConfig(c));
 		CrawlerJobManager.startJob(crawlerData);
 		DataBaseManager.closeConnection(c);
 	}

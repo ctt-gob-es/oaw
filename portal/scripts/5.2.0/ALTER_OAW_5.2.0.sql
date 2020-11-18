@@ -10,3 +10,6 @@ CREATE TABLE `observatorio_extra_configuration` (
 
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Umbral relanzamiento (% páginas)', 'umbral', '30');
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Timeout relanzamiento (ms)','timemout', '60');
+INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Anchura relanzamiento (niveles)','width', '10');
+INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Profundidad relanzamiento (niveles)','depth', '10');
+

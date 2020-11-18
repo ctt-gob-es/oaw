@@ -91,6 +91,12 @@ public class CrawlerData {
 	private boolean extendTimeout = false;
 	/** The extended timeout value. */
 	private int extendedTimeoutValue = 0;
+	/** The is retry. */
+	private boolean isRetry = false;
+	/** The extended depth. */
+	private int extendedDepth = 0;
+	/** The extended width. */
+	private int extendedWidth = 0;
 
 	/**
 	 * Checks if is in directory.
@@ -676,6 +682,24 @@ public class CrawlerData {
 	}
 
 	/**
+	 * Checks if is retry.
+	 *
+	 * @return the isRetry
+	 */
+	public boolean isRetry() {
+		return isRetry;
+	}
+
+	/**
+	 * Sets the retry.
+	 *
+	 * @param isRetry the isRetry to set
+	 */
+	public void setRetry(boolean isRetry) {
+		this.isRetry = isRetry;
+	}
+
+	/**
 	 * Checks if is extend timeout.
 	 *
 	 * @return the extendTimeout
@@ -709,5 +733,41 @@ public class CrawlerData {
 	 */
 	public void setExtendedTimeoutValue(int extendedTimeoutValue) {
 		this.extendedTimeoutValue = extendedTimeoutValue;
+	}
+
+	/**
+	 * Gets the extended depth.
+	 *
+	 * @return the extendedDepth
+	 */
+	public int getExtendedDepth() {
+		return extendedDepth;
+	}
+
+	/**
+	 * Sets the extended depth.
+	 *
+	 * @param extendedDepth the extendedDepth to set
+	 */
+	public void setExtendedDepth(int extendedDepth) {
+		this.extendedDepth = extendedDepth;
+	}
+
+	/**
+	 * Gets the extended width.
+	 *
+	 * @return the extendedWidth
+	 */
+	public int getExtendedWidth() {
+		return extendedWidth;
+	}
+
+	/**
+	 * Sets the extended width.
+	 *
+	 * @param extendedWidth the extendedWidth to set
+	 */
+	public void setExtendedWidth(int extendedWidth) {
+		this.extendedWidth = extendedWidth;
 	}
 }
