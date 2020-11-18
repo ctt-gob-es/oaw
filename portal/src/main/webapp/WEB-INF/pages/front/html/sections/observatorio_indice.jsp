@@ -260,7 +260,7 @@ var dialog;
 
 
 var windowWidth = $jq(window).width() * 0.3;
-var windowHeight = $jq(window).height() * 0.5;
+var windowHeight = $jq(window).height() * 0.3;
 
 function extraConfigDialog() {
 
@@ -272,26 +272,10 @@ function extraConfigDialog() {
 	$jq('#errorExtraConfig').hide();
 
 	dialog = $jq("#extraConfigDialog").dialog({
-		height : windowHeight,
+		height : 'auto',
 		width : windowWidth,
 		modal : true,
 		title : windowTitle,
-		buttons : {
-			"Guardar" : {
-				click: function() {
-					updateConfig();
-				},
-				text : saveButton,
-				class: 'jdialog-btn-save'
-			},
-			"Cancelar" : {
-				click: function() {
-					dialog.dialog("close");
-				},
-				text: cancelButton,
-				class: 'jdialog-btn-cancel'
-			}
-		},
 		open: function(){
 			reloadGrid('/oaw/secure/CargarObservatorio.do?action=loadConfig');
 		}
@@ -360,40 +344,11 @@ function updateConfig(){
 	<div id="extraConfigDialog" style="display: none">
 		<div id="main" style="overflow: hidden">
 			<div id="errorExtraConfig" style="display: none"></div>
+			<p>
+				<bean:message key="observatory.extra.config.info" />
+			</p>
 			<table id="grid">
 			</table>
-			<!-- 			<form id="editExtraConfigForm"> -->
-			<%-- 				<logic:notEmpty name="<%=Constants.OBSERVATORY_EXTRA_CONFIGURATION_LIST%>"> --%>
-			<!-- 					<table class="table table-stripped table-bordered table-hover" style="width: 100%; overflow-wrap: break-word;"> -->
-			<!-- 						<caption> -->
-			<%-- 							<bean:message key="observatory.extra.config.title" /> --%>
-			<!-- 						</caption> -->
-			<!-- 						<thead> -->
-			<!-- 							<tr> -->
-			<!-- 								<th> -->
-			<%-- 									<bean:message key="observatory.extra.config.name" /> --%>
-			<!-- 								</th> -->
-			<!-- 								<th> -->
-			<%-- 									<bean:message key="observatory.extra.config.value" /> --%>
-			<!-- 								</th> -->
-			<!-- 							</tr> -->
-			<!-- 						</thead> -->
-			<!-- 						<tbody> -->
-			<%-- 							<logic:iterate name="<%=Constants.OBSERVATORY_EXTRA_CONFIGURATION_LIST%>" id="extraConfig"> --%>
-			<!-- 								<tr> -->
-			<!-- 									<td> -->
-			<%-- 										<input type="hidden" name="key" value="<bean:write name="extraConfig" property="key" />" /> --%>
-			<%-- 										<bean:write name="extraConfig" property="name" /> --%>
-			<!-- 									</td> -->
-			<!-- 									<td> -->
-			<%-- 										<input name="value" value="<bean:write name="extraConfig" property="value" />" type="number" min="0" step="1" /> --%>
-			<!-- 									</td> -->
-			<!-- 								</tr> -->
-			<%-- 							</logic:iterate> --%>
-			<!-- 						</tbody> -->
-			<!-- 					</table> -->
-			<%-- 				</logic:notEmpty> --%>
-			<!-- 			</form> -->
 		</div>
 	</div>
 	<div id="container_menu_izq">
@@ -461,7 +416,7 @@ function updateConfig(){
 							<bean:message key="indice.observatorio.informe.global" />
 						</html:link>
 						<a href="#" class="btn btn-default btn-lg" onclick="extraConfigDialog()">
-							<span class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip"
+							<span class="glyphicon glyphicon-cog" aria-hidden="true" data-toggle="tooltip"
 								title="<bean:message key="observatory.extra.config.button" />"
 								data-original-title="<bean:message key="observatory.extra.config.button" />"></span>
 							<bean:message key="observatory.extra.config.button" />

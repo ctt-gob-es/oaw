@@ -1448,7 +1448,7 @@ public final class ObservatorioDAO {
 		// Union de rastreos no realizados y rastreos empezados pero no
 		// terminados (<> estado 4)
 		String query = "SELECT DISTINCT u.id_rastreo  FROM ("
-				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo NOT IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ? ) AND r.activo = 1) "
+				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo NOT IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ? ) AND r.activo = 1 AND r.estado <> 4) "
 				+ "UNION ALL "
 				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE rr.id_obs_realizado = ? AND rr.id not IN (select ta.cod_rastreo as id_rastreo from tanalisis ta)) AND r.activo = 1)"
 				+ ") u ORDER BY u.id_rastreo ASC";
@@ -1460,6 +1460,31 @@ public final class ObservatorioDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					crawlerIds.add(rs.getLong("id_rastreo"));
+				}
+			}
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", EstadoObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return crawlerIds;
+	}
+
+	/**
+	 * Gets the finish crawler ids from seed and observatory with less results threshold.
+	 *
+	 * @param c              the c
+	 * @param idObsRealizado the id obs realizado
+	 * @return the finish crawler ids from seed and observatory with less results threshold
+	 * @throws Exception the exception
+	 */
+	public static List<Long> getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(Connection c, final Long idObsRealizado) throws Exception {
+		final List<Long> crawlerIds = new ArrayList<>();
+		String query = "SELECT ID_SEED,ID_RR,ID_R, NUM_C, ((cl.amplitud*cl.profundidad)+1) CX, (((cl.amplitud*cl.profundidad)+1)*((100 -(select `value` from observatorio_extra_configuration where `key` ='umbral'))/100)) THRESHOLD  FROM (SELECT l.id_lista as ID_SEED, rr.id as ID_RR, rr.id_rastreo as ID_R , count(ta.cod_url) as NUM_C FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l WHERE ta.cod_rastreo = rr.id AND rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista AND r.estado = 4 and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado= ?) GROUP by rr.id) AS NUM_CRAWLS, lista l2, complejidades_lista cl WHERE  l2.id_lista = ID_SEED AND cl.id_complejidad=l2.id_complejidad AND NUM_C < (((cl.amplitud*cl.profundidad)+1)*((100 -(select `value` from observatorio_extra_configuration where `key` ='umbral'))/100))";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(1, idObsRealizado);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					crawlerIds.add(rs.getLong("ID_R"));
 				}
 			}
 		} catch (Exception e) {
@@ -2640,6 +2665,93 @@ public final class ObservatorioDAO {
 			throw e;
 		}
 		return extraConfig;
+	}
+
+	/**
+	 * Gets the timout.
+	 *
+	 * @param c the c
+	 * @return the timout
+	 * @throws SQLException the SQL exception
+	 */
+	public static int getTimeoutFromConfig(Connection c) throws SQLException {
+		int timeout = 0;
+		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'timeout'";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					String value = rs.getString("V_ID");
+					try {
+						timeout = Integer.parseInt(value);
+						return timeout;
+					} catch (Exception e) {
+						return 0;
+					}
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return timeout;
+	}
+
+	/**
+	 * Gets the depth from config.
+	 *
+	 * @param c the c
+	 * @return the depth from config
+	 * @throws SQLException the SQL exception
+	 */
+	public static int getDepthFromConfig(Connection c) throws SQLException {
+		int timeout = 0;
+		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'depth'";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					String value = rs.getString("V_ID");
+					try {
+						timeout = Integer.parseInt(value);
+						return timeout;
+					} catch (Exception e) {
+						return 0;
+					}
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return timeout;
+	}
+
+	/**
+	 * Gets the depth from width.
+	 *
+	 * @param c the c
+	 * @return the depth from width
+	 * @throws SQLException the SQL exception
+	 */
+	public static int getWidthFromConfig(Connection c) throws SQLException {
+		int timeout = 0;
+		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'width'";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					String value = rs.getString("V_ID");
+					try {
+						timeout = Integer.parseInt(value);
+						return timeout;
+					} catch (Exception e) {
+						return 0;
+					}
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return timeout;
 	}
 
 	/**
