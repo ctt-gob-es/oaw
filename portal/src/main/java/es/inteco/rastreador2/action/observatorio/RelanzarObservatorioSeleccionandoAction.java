@@ -12,28 +12,29 @@
 ******************************************************************************/
 package es.inteco.rastreador2.action.observatorio;
 
-import java.sql.Connection;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-
 import es.inteco.common.Constants;
+import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.observatorio.utils.RelanzarObservatorioThread;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
+import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Connection;
+import java.util.*;
 
 /**
  * RelanzarObservatorioAction. Action para relanzar un observatorio incompleto.
  */
-public class RelanzarObservatorioAction extends Action {
+public class RelanzarObservatorioSeleccionandoAction extends Action {
 	/**
 	 * Execute.
 	 *
@@ -52,17 +53,7 @@ public class RelanzarObservatorioAction extends Action {
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		try {
 			if (CrawlerUtils.hasAccess(request, "delete.observatory")) {
-				if ("confirm".equals(request.getParameter(Constants.ACTION))) {
-					return confirm(mapping, request);
-				} else if ("relanzar".equals(request.getParameter(Constants.ACTION))) {
-					if (request.getParameter(Constants.CONFIRMACION).equals(Constants.CONF_SI)) {
-						return lanzarRastreosPendientes(mapping, request);
-					} else {
-						return mapping.findForward(Constants.VOLVER);
-					}
-				} else {
-					return mapping.findForward(Constants.VOLVER);
-				}
+				return lanzarRastreosPendientes(mapping, request);
 			} else {
 				return mapping.findForward(Constants.NO_PERMISSION);
 			}
@@ -99,12 +90,47 @@ public class RelanzarObservatorioAction extends Action {
 	 * @throws Exception the exception
 	 */
 	private ActionForward lanzarRastreosPendientes(ActionMapping mapping, HttpServletRequest request) throws Exception {
+		Connection c = null;
+		Enumeration<String> parameterNames = request.getParameterNames();
 		String idObservatorio = request.getParameter(Constants.ID_OBSERVATORIO);
 		String idEjecucionObservatorio = request.getParameter(Constants.ID_EX_OBS);
+		List<Long> seedIds = new ArrayList<>();
+		List<Long> crawlerIds = new ArrayList<>();
+
+		while (parameterNames.hasMoreElements()) {
+
+			String paramName = parameterNames.nextElement();
+
+			if (paramName.contains("line_check_")){
+				int lineNumber = Integer.parseInt(paramName.substring(11));
+				String[] values = request.getParameterValues("line_data_" + lineNumber);
+				seedIds.add(Long.valueOf(values[0]));
+			}
+		}
+
+		try {
+			c = DataBaseManager.getConnection();
+			c.setAutoCommit(false);
+
+			for (Long seed : seedIds){
+				Long idCrawling = RastreoDAO.getCrawlerFromSeedAndObservatory(c, seed, Long.parseLong(idObservatorio));
+				crawlerIds.add(idCrawling);
+			}
+		} catch (Exception e) {
+			Logger.putLog("Error: ", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+			if (c != null) {
+				c.rollback();
+			}
+			throw e;
+		} finally {
+			DataBaseManager.closeConnection(c);
+		}
+
 		// Lanzar en un hilo nuevo para acabar la acción
-		RelanzarObservatorioThread t = new RelanzarObservatorioThread(idObservatorio, idEjecucionObservatorio, null);
+		RelanzarObservatorioThread t = new RelanzarObservatorioThread(idObservatorio, idEjecucionObservatorio, crawlerIds);
 		t.setName("RelanzarObservatorioThread_" + idEjecucionObservatorio);
 		t.start();
+
 		final PropertiesManager pmgr = new PropertiesManager();
 		request.setAttribute("mensajeExito", getResources(request).getMessage("mensaje.exito.relanzar.observatorio"));
 		request.setAttribute("accionVolver", pmgr.getValue("returnPaths.properties", "volver.carga.observatorio"));
