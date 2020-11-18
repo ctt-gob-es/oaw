@@ -284,47 +284,124 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tbody>
 				</table>
 			</logic:notEqual>
+			<logic:notEqual name="estado" property="idEstado" value="0">
+				<h2>
+					<bean:size id="notCrawledSeedsYetSize" name="notCrawledSeedsYet" />
+					<bean:message key="observatory.status.pending.title" />
+					<c:if test="${notCrawledSeedsYetSize > 0}}">
+					&nbsp;(
+					<bean:write name="notCrawledSeedsYetSize" />
+					)
+					</c:if>
+				</h2>
+				<table class="table table-stripped table-bordered table-hover table-console">
+					<caption>
+						<bean:message key="observatory.status.pending.caption" />
+					</caption>
+					<colgroup>
+						<col style="width: 5%">
+						<col style="width: 30%">
+						<col style="width: 65%">
+					</colgroup>
+					<tbody>
+						<tr>
+							<th>#</th>
+							<th>
+								<bean:message key="observatory.status.pending.name" />
+							</th>
+							<th>URL</th>
+						</tr>
+						<logic:empty name="notCrawledSeedsYet">
+							<tr>
+								<td colspan="3">
+									<bean:message key="no.results" />
+								</td>
+							</tr>
+						</logic:empty>
+						<logic:iterate name="notCrawledSeedsYet" id="notCrawledSeedsYet" indexId="index">
+							<tr>
+								<td class="col-md-1">
+									<c:out value="${index + 1}" />
+								</td>
+								<td style="text-align: left">
+									<bean:write name="notCrawledSeedsYet" property="nombre" />
+								</td>
+								<td style="text-align: left" title="<bean:write name="notCrawledSeedsYet" property="listaUrlsString" />">
+									<bean:write name="notCrawledSeedsYet" property="listaUrlsString" />
+								</td>
+							</tr>
+						</logic:iterate>
+					</tbody>
+				</table>
+			</logic:notEqual>
+			<!-- Less Threshold -->
 			<h2>
-				<bean:size id="notCrawledSeedsYetSize" name="notCrawledSeedsYet" />
-				<bean:message key="observatory.status.pending.title" />
-				&nbsp;(
-				<bean:write name="notCrawledSeedsYetSize" />
+				<bean:size id="finishLessThresholdSize" name="finishLessThreshold" />
+				<bean:message key="observatory.status.less.threshold.title" />
+				&nbsp;
+				<c:if test="${finishLessThresholdSize > 0}}">
+				(
+				<bean:write name="finishLessThresholdSize" />
 				)
+				</c:if>
 			</h2>
 			<table class="table table-stripped table-bordered table-hover table-console">
 				<caption>
-					<bean:message key="observatory.status.pending.caption" />
+					<bean:message key="observatory.status.less.threshold.caption" />
 				</caption>
 				<colgroup>
 					<col style="width: 5%">
 					<col style="width: 30%">
-					<col style="width: 65%">
+					<col style="width: 55%">
+					<col style="width: 10%">
 				</colgroup>
 				<tbody>
 					<tr>
 						<th>#</th>
 						<th>
-							<bean:message key="observatory.status.pending.name" />
+							<bean:message key="observatory.status.no.results.name" />
 						</th>
 						<th>URL</th>
+						<th>
+							<bean:message key="observatory.status.no.results.relaunch" />
+						</th>
 					</tr>
-					<logic:empty name="notCrawledSeedsYet">
+					<logic:empty name="finishLessThreshold">
 						<tr>
-							<td colspan="3">
+							<td colspan="4">
 								<bean:message key="no.results" />
 							</td>
 						</tr>
 					</logic:empty>
-					<logic:iterate name="notCrawledSeedsYet" id="notCrawledSeedsYet" indexId="index">
+					<logic:iterate name="finishLessThreshold" id="crawlLessThreshold" indexId="index">
 						<tr>
 							<td class="col-md-1">
 								<c:out value="${index + 1}" />
 							</td>
-							<td style="text-align: left">
-								<bean:write name="notCrawledSeedsYet" property="nombre" />
+							<td style="text-align: left" class="col-md-4">
+								<bean:write name="crawlLessThreshold" property="nombre" />
 							</td>
-							<td style="text-align: left" title="<bean:write name="notCrawledSeedsYet" property="listaUrlsString" />">
-								<bean:write name="notCrawledSeedsYet" property="listaUrlsString" />
+							<td style="text-align: left" class="col-md-5"
+								title="<logic:iterate
+									name="crawlLessThreshold" property="listaUrls" id="url">
+									<bean:write name="url" />
+								</logic:iterate>">
+								<logic:iterate name="crawlLessThreshold" property="listaUrls" id="url">
+									<bean:write name="url" />
+								</logic:iterate>
+							</td>
+							<td class="col-md-2"><jsp:useBean id="paramsRelaunchThreshold" class="java.util.HashMap" />
+								<c:set target="${paramsRelaunchThreshold}" property="id_observatorio" value="${idObservatory}" />
+								<c:set target="${paramsRelaunchThreshold}" property="idExObs" value="${idExecutedObservatorio}" />
+								<c:set target="${paramsRelaunchThreshold}" property="idCartucho" value="${idCartucho}" />
+								<c:set target="${paramsRelaunchThreshold}" property="idSemilla" value="${crawlLessThreshold.id}" />
+								<html:link forward="resultadosObservatorioLanzarEjecucion" name="paramsRelaunchThreshold">
+									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
+										title="<bean:message key="observatory.status.no.results.relaunch"/>"></span>
+									<span class="sr-only">
+										<bean:message key="observatory.status.no.results.relaunch" />
+									</span>
+								</html:link>
 							</td>
 						</tr>
 					</logic:iterate>
@@ -333,9 +410,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			<h2>
 				<bean:size id="finishWithoutResultsSize" name="finishWithoutResults" />
 				<bean:message key="observatory.status.no.results.title" />
+				<c:if test="${finishWithoutResultsSize > 0}}">
 				&nbsp;(
 				<bean:write name="finishWithoutResultsSize" />
 				)
+				</c:if>
 			</h2>
 			<table class="table table-stripped table-bordered table-hover table-console">
 				<caption>

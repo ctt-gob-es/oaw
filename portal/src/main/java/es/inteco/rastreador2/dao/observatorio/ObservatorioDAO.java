@@ -1479,19 +1479,7 @@ public final class ObservatorioDAO {
 	 */
 	public static List<Long> getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(Connection c, final Long idObsRealizado) throws Exception {
 		final List<Long> crawlerIds = new ArrayList<>();
-//		SELECT ID_SEED,ID_RR,ID_R, NUM_C, ((cl.amplitud*cl.profundidad)+1) CX, ((cl.amplitud*cl.profundidad)+1)/( 100 -(select `value` from observatorio_extra_configuration where `key` ='umbral')) THRESHOLD FROM (
-//				SELECT l.id_lista as ID_SEED, rr.id as ID_RR, rr.id_rastreo as ID_R , count(ta.cod_url) as NUM_C FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l 
-//				WHERE ta.cod_rastreo = rr.id  and rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista AND r.estado = 4
-//				and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado=244) GROUP by rr.id) AS NUM_CRAWLS, lista l2, complejidades_lista cl
-//				WHERE  l2.id_lista = ID_SEED 
-//				AND cl.id_complejidad=l2.id_complejidad
-//				AND NUM_C < ((cl.amplitud*cl.profundidad)+1)/(100- (select `value` from observatorio_extra_configuration where `key` ='umbral'));
-		String query = "SELECT ID_SEED,ID_RR,ID_R, NUM_C, ((cl.amplitud*cl.profundidad)+1) CX, ((cl.amplitud*cl.profundidad)+1)/( 100 -(select `value` from observatorio_extra_configuration where `key` ='umbral')) THRESHOLD FROM ("
-				+ "SELECT l.id_lista as ID_SEED, rr.id as ID_RR, rr.id_rastreo as ID_R , count(ta.cod_url) as NUM_C FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l "
-				+ "WHERE ta.cod_rastreo = rr.id AND rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista AND r.estado = 4 "
-				+ "and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado= ?) GROUP by rr.id) AS NUM_CRAWLS, lista l2, complejidades_lista cl "
-				+ "WHERE  l2.id_lista = ID_SEED " + "AND cl.id_complejidad=l2.id_complejidad "
-				+ "AND NUM_C < ((cl.amplitud*cl.profundidad)+1)/(100- (select `value` from observatorio_extra_configuration where `key` ='umbral'))";
+		String query = "SELECT ID_SEED,ID_RR,ID_R, NUM_C, ((cl.amplitud*cl.profundidad)+1) CX, (((cl.amplitud*cl.profundidad)+1)*((100 -(select `value` from observatorio_extra_configuration where `key` ='umbral'))/100)) THRESHOLD  FROM (SELECT l.id_lista as ID_SEED, rr.id as ID_RR, rr.id_rastreo as ID_R , count(ta.cod_url) as NUM_C FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l WHERE ta.cod_rastreo = rr.id AND rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista AND r.estado = 4 and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado= ?) GROUP by rr.id) AS NUM_CRAWLS, lista l2, complejidades_lista cl WHERE  l2.id_lista = ID_SEED AND cl.id_complejidad=l2.id_complejidad AND NUM_C < (((cl.amplitud*cl.profundidad)+1)*((100 -(select `value` from observatorio_extra_configuration where `key` ='umbral'))/100))";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idObsRealizado);
 			try (ResultSet rs = ps.executeQuery()) {
