@@ -27,15 +27,17 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
+import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.triggers.CronTriggerImpl;
+import org.quartz.impl.triggers.SimpleTriggerImpl;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.crawler.common.Constants;
@@ -119,7 +121,7 @@ public class ScheduleObservatoryServlet extends GenericServlet {
 	public static void scheduleJob(String observatoryName, Long observatoryId, Date observatoryDate, PeriodicidadForm periodicidadForm, Long idCartridge) {
 		Logger.putLog("Programando el job para el observatorio " + observatoryName, ScheduleObservatoryServlet.class, Logger.LOG_LEVEL_INFO);
 		try {
-			JobDetail jobDetail = new JobDetail(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + observatoryId, "ExecuteScheduledObservatory", ExecuteScheduledObservatory.class);
+			JobDetailImpl jobDetail = new JobDetailImpl(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + observatoryId, "ExecuteScheduledObservatory", ExecuteScheduledObservatory.class);
 			JobDataMap jobDataMap = new JobDataMap();
 			jobDataMap.put(Constants.OBSERVATORY_ID, observatoryId);
 			jobDataMap.put(Constants.CARTRIDGE_ID, idCartridge);
@@ -129,9 +131,9 @@ public class ScheduleObservatoryServlet extends GenericServlet {
 			if (StringUtils.isNotEmpty(periodicidadForm.getCronExpression())) {
 				String cronExpression = CrawlerUtils.getCronExpression(observatoryDate, periodicidadForm.getCronExpression());
 				Logger.putLog("Estableciendo expresión de cron: " + cronExpression, ScheduleObservatoryServlet.class, Logger.LOG_LEVEL_INFO);
-				trigger = new CronTrigger(triggerName, Constants.CRAWLER_JOB_TRIGGER_GROUP, cronExpression);
+				trigger = new CronTriggerImpl(triggerName, Constants.CRAWLER_JOB_TRIGGER_GROUP, cronExpression);
 			} else {
-				trigger = new SimpleTrigger(triggerName, Constants.CRAWLER_JOB_TRIGGER_GROUP, observatoryDate, new Date(Long.MAX_VALUE), SimpleTrigger.REPEAT_INDEFINITELY,
+				trigger = new SimpleTriggerImpl(triggerName, Constants.CRAWLER_JOB_TRIGGER_GROUP, observatoryDate, new Date(Long.MAX_VALUE), SimpleTrigger.REPEAT_INDEFINITELY,
 						(long) periodicidadForm.getDias() * 24 * 60 * 60 * 1000);
 			}
 			scheduler.scheduleJob(jobDetail, trigger);
@@ -147,6 +149,6 @@ public class ScheduleObservatoryServlet extends GenericServlet {
 	 * @throws Exception the exception
 	 */
 	public static void deleteJob(Long observatoryId) throws Exception {
-		scheduler.deleteJob(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + observatoryId, "ExecuteScheduledObservatory");
+		scheduler.deleteJob(new JobKey(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + observatoryId, "ExecuteScheduledObservatory"));
 	}
 }
