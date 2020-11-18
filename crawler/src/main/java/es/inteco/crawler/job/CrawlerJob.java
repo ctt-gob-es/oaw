@@ -48,6 +48,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.InterruptableJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -81,6 +82,7 @@ import es.inteco.utils.CrawlerUtils;
 /**
  * CrawlerJob. Clase para realizar el rastreo de URL.
  */
+@DisallowConcurrentExecution
 public class CrawlerJob implements InterruptableJob {
 	/** Clave NOT_FILTERED_URIS_SECURITY_KEY. */
 	private static final String NOT_FILTERED_URIS_SECURITY_KEY = "not.filtered.uris.security.key";

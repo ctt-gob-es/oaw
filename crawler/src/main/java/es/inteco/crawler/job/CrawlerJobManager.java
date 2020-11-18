@@ -16,16 +16,19 @@
 package es.inteco.crawler.job;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
-import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
+import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.matchers.GroupMatcher;
+import org.quartz.impl.triggers.SimpleTriggerImpl;
 
 import es.inteco.crawler.common.Constants;
 
@@ -63,12 +66,13 @@ public final class CrawlerJobManager {
 	 */
 	public static void startJob(CrawlerData crawlerData) throws Exception {
 		init();
-		final JobDetail jobDetail = new JobDetail(Constants.CRAWLER_JOB_NAME + "_" + crawlerData.getIdCrawling(), Constants.CRAWLER_JOB_GROUP + "_" + crawlerData.getIdObservatory(), CrawlerJob.class);
+		final JobDetailImpl jobDetail = new JobDetailImpl(Constants.CRAWLER_JOB_NAME + "_" + crawlerData.getIdCrawling(), Constants.CRAWLER_JOB_GROUP + "_" + crawlerData.getIdObservatory(),
+				CrawlerJob.class);
 		final JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put(Constants.CRAWLER_DATA, crawlerData);
 		jobDetail.setJobDataMap(jobDataMap);
-		final Trigger trigger = new SimpleTrigger(Constants.CRAWLER_JOB_TRIGGER + "_" + crawlerData.getIdCrawling(), Constants.CRAWLER_JOB_TRIGGER_GROUP + "_" + crawlerData.getIdObservatory(),
-				new Date());
+		final SimpleTriggerImpl trigger = new SimpleTriggerImpl(Constants.CRAWLER_JOB_TRIGGER + "_" + crawlerData.getIdCrawling(),
+				Constants.CRAWLER_JOB_TRIGGER_GROUP + "_" + crawlerData.getIdObservatory(), new Date());
 		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
@@ -84,14 +88,25 @@ public final class CrawlerJobManager {
 		// loop all group
 		for (String groupName : scheduler.getJobGroupNames()) {
 			if (groupNameToEnd.equals(groupName)) {
-				for (String jobName : scheduler.getJobNames(groupName)) {
+				// Check all jobs if not found
+//			    for (String groupName : scheduler.getJobGroupNames()) {
+				for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
 					// get job's trigger
-					Trigger[] triggers = scheduler.getTriggersOfJob(jobName, groupName);
-					Date nextFireTime = triggers[0].getNextFireTime();
-					System.out.println("[jobName] : " + jobName + " [groupName] : " + groupName + " - " + nextFireTime);
-					scheduler.interrupt(jobName, groupName);
-					scheduler.deleteJob(jobName, groupName);
+					List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
+					Date nextFireTime = triggers.get(0).getNextFireTime();
+					System.out.println("[jobName] : " + jobKey.getName() + " [groupName] : " + groupName + " - " + nextFireTime);
+					scheduler.interrupt(jobKey);
+					scheduler.deleteJob(jobKey);
 				}
+//			    }
+//				for (String jobName : scheduler.getJobNames(groupName)) {
+//					// get job's trigger
+//					Trigger[] triggers = scheduler.getTriggersOfJob(jobName, groupName);
+//					Date nextFireTime = triggers[0].getNextFireTime();
+//					System.out.println("[jobName] : " + jobName + " [groupName] : " + groupName + " - " + nextFireTime);
+//					scheduler.interrupt(jobName, groupName);
+//					scheduler.deleteJob(jobName, groupName);
+//				}
 			}
 		}
 	}
@@ -105,8 +120,10 @@ public final class CrawlerJobManager {
 	 */
 	public static void endJob(long idExObs, long idObservatory) throws Exception {
 		init();
-		scheduler.interrupt(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + idObservatory, Constants.EXECUTE_SCHEDULED_OBSERVATORY_GROUP);
-		scheduler.deleteJob(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + idObservatory, Constants.EXECUTE_SCHEDULED_OBSERVATORY_GROUP);
+		scheduler.interrupt(new JobKey(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + idObservatory, Constants.EXECUTE_SCHEDULED_OBSERVATORY_GROUP));
+		scheduler.deleteJob(new JobKey(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + idObservatory, Constants.EXECUTE_SCHEDULED_OBSERVATORY_GROUP));
+//		scheduler.interrupt(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + idObservatory, Constants.EXECUTE_SCHEDULED_OBSERVATORY_GROUP);
+//		scheduler.deleteJob(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + idObservatory, Constants.EXECUTE_SCHEDULED_OBSERVATORY_GROUP);
 		// Relaunch threads
 		Set<Thread> threads = Thread.getAllStackTraces().keySet();
 		for (Thread t : threads) {

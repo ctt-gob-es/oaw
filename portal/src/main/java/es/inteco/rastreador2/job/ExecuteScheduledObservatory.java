@@ -38,7 +38,6 @@ import es.inteco.crawler.common.Constants;
 import es.inteco.crawler.dao.EstadoObservatorioDAO;
 import es.inteco.crawler.job.CrawlerData;
 import es.inteco.crawler.job.CrawlerJob;
-import es.inteco.crawler.job.CrawlerJobManager;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
@@ -296,7 +295,9 @@ public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJo
 		crawlerData.setExtendedTimeoutValue(ObservatorioDAO.getTimeoutFromConfig(c));
 		crawlerData.setExtendedDepth(ObservatorioDAO.getDepthFromConfig(c));
 		crawlerData.setExtendedWidth(ObservatorioDAO.getWidthFromConfig(c));
-		CrawlerJobManager.startJob(crawlerData);
+		// CrawlerJobManager.startJob(crawlerData);
+		crawlerJob = new CrawlerJob();
+		crawlerJob.launchCrawler(crawlerData);
 		DataBaseManager.closeConnection(c);
 	}
 
