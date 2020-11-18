@@ -939,7 +939,7 @@ div.detail p {
 	border: 2px solid #CCC
 }
 
-#container_der table th, #fullwidthgrid table th {
+#container_der table th, #fullwidthgrid table th, #extraConfigDialog table th {
 	text-align: center;
 	background: #e1120d;
 	background: -moz-linear-gradient(top, #e1120d 0%, #ff8e8e 100%);
@@ -955,7 +955,7 @@ div.detail p {
 	background: silver
 }
 
-#container_der table td, #fullwidthgrid   table td {
+#container_der table td, #fullwidthgrid   table td, #extraConfigDialog table td {
 	text-align: center;
 	background: white;
 	border: 1px solid #CCC
@@ -963,6 +963,10 @@ div.detail p {
 
 #container_der table td.alignLeft, #fullwidthgrid table td.alignLeft {
 	text-align: left
+}
+
+#extraConfigDialog table {
+	font-size:14px !important;
 }
 
 #NuevaSemillaIpForm fieldset li {

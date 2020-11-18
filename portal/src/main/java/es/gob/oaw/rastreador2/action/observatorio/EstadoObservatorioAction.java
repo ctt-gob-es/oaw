@@ -75,6 +75,11 @@ public class EstadoObservatorioAction extends Action {
 				finishWithoutResults = ObservatorioDAO.getResultSeedsFullFromObservatoryByIds(c, new SemillaForm(), idEjecucionObservatorio.longValue(), 0l, -1,
 						finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis);
 			}
+			List<Long> lessThresholdIds = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(c, (long) idEjecucionObservatorio);
+			List<ResultadoSemillaFullForm> finishLessThreshold = new ArrayList<ResultadoSemillaFullForm>();
+			if (lessThresholdIds != null && !lessThresholdIds.isEmpty()) {
+				finishLessThreshold = ObservatorioDAO.getResultSeedsFullFromObservatoryByIds(c, new SemillaForm(), idEjecucionObservatorio.longValue(), 0l, -1, lessThresholdIds);
+			}
 			request.setAttribute("idCartucho", idCartucho);
 			request.setAttribute("idObservatory", idObservatory);
 			request.setAttribute("idExecutedObservatorio", idEjecucionObservatorio);
@@ -83,6 +88,7 @@ public class EstadoObservatorioAction extends Action {
 			request.setAttribute("notCrawledSeedsYet", notCrawledSeedsYet);
 			request.setAttribute("notCrawledSeeds", notCrawledSeeds);
 			request.setAttribute("finishWithoutResults", finishWithoutResults);
+			request.setAttribute("finishLessThreshold", finishLessThreshold);
 		}
 		return mapping.findForward(Constants.EXITO);
 	}
