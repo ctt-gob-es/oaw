@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2019  Ministerio de Hacienda y Función Pública, 
+Copyright (C) 2019  Ministerio de Hacienda y Funciï¿½n Pï¿½blica, 
 This program is licensed and may be used, modified and redistributed under the terms
 of the European Public License (EUPL), either version 1.2 or (at your option) any later 
 version as soon as they are approved by the European Commission.
@@ -337,71 +337,133 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<bean:write name="finishWithoutResultsSize" />
 				)
 			</h2>
-			<table class="table table-stripped table-bordered table-hover table-console">
-				<caption>
-					<bean:message key="observatory.status.no.results.caption" />
-				</caption>
-				<colgroup>
-					<col style="width: 5%">
-					<col style="width: 30%">
-					<col style="width: 55%">
-					<col style="width: 10%">
-				</colgroup>
-				<tbody>
-					<tr>
-						<th>#</th>
-						<th>
-							<bean:message key="observatory.status.no.results.name" />
-						</th>
-						<th>URL</th>
-						<th>
-							<bean:message key="observatory.status.no.results.relaunch" />
-						</th>
-					</tr>
-					<logic:empty name="finishWithoutResults">
-						<tr>
-							<td colspan="4">
-								<bean:message key="no.results" />
-							</td>
-						</tr>
-					</logic:empty>
-					<logic:iterate name="finishWithoutResults" id="crawlWithoutAnalisis" indexId="index">
-						<tr>
-							<td class="col-md-1">
-								<c:out value="${index + 1}" />
-							</td>
-							<td style="text-align: left" class="col-md-4">
-								<bean:write name="crawlWithoutAnalisis" property="nombre" />
-							</td>
-							<td style="text-align: left" class="col-md-5"
-								title="<logic:iterate
-									name="crawlWithoutAnalisis" property="listaUrls" id="url">
-									<bean:write name="url" />
-								</logic:iterate>">
-								<logic:iterate name="crawlWithoutAnalisis" property="listaUrls" id="url">
-									<bean:write name="url" />
-								</logic:iterate>
-							</td>
-							<td class="col-md-2"><jsp:useBean id="paramsRelanzarCrawl" class="java.util.HashMap" />
-								<%-- 							<c:set --%>
-								<%-- 									target="${paramsRelanzarCrawl}" property="action" value="confirmacionExSeed" /> <c:set
-									target="${paramsRelanzarCrawl}" property="id" value="${crawlWithoutAnalisis.idFulfilledCrawling}" />--%>
-								<c:set target="${paramsRelanzarCrawl}" property="id_observatorio" value="${idObservatory}" />
-								<c:set target="${paramsRelanzarCrawl}" property="idExObs" value="${idExecutedObservatorio}" />
-								<c:set target="${paramsRelanzarCrawl}" property="idCartucho" value="${idCartucho}" />
-								<c:set target="${paramsRelanzarCrawl}" property="idSemilla" value="${crawlWithoutAnalisis.id}" />
-								<html:link forward="resultadosObservatorioLanzarEjecucion" name="paramsRelanzarCrawl">
-									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-										title="<bean:message key="observatory.status.no.results.relaunch"/>"></span>
-									<span class="sr-only">
-										<bean:message key="observatory.status.no.results.relaunch" />
-									</span>
-								</html:link>
-							</td>
-						</tr>
-					</logic:iterate>
-				</tbody>
-			</table>
+
+
+
+
+
+
+
+
+            <form action="/oaw/secure/RelanzarObservatorioSeleccionandoAction.do">
+                <input type="submit" value='<bean:message key="observatory.status.no.results.relaunchselected"/>' id="relaunchselected" disabled />
+
+
+                <input type="checkbox" id='checkbox_all' name='checkbox_all'>
+
+
+
+
+                <table class="table table-stripped table-bordered table-hover table-console">
+                    <caption>
+                        <bean:message key="observatory.status.no.results.caption" />
+                    </caption>
+                    <colgroup>
+                        <col style="width: 7%">
+                        <col style="width: 5%">
+                        <col style="width: 30%">
+                        <col style="width: 50%">
+                        <col style="width: 8%">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <th>
+                                <bean:message key="observatory.status.no.results.selector" />
+                            </th>
+                            <th>#</th>
+                            <th>
+                                <bean:message key="observatory.status.no.results.name" />
+                            </th>
+                            <th>URL</th>
+                            <th>
+                                <bean:message key="observatory.status.no.results.relaunch" />
+                            </th>
+                        </tr>
+                        <logic:empty name="finishWithoutResults">
+                            <tr>
+                                <td colspan="4">
+                                    <bean:message key="no.results" />
+                                </td>
+                            </tr>
+                        </logic:empty>
+                        <logic:iterate name="finishWithoutResults" id="crawlWithoutAnalisis" indexId="index">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="selectionCheckBox" <c:out value='name=line_check_${index}' />>
+                                    <input type="hidden" <c:out value='name=line_data_${index}' /> <c:out value='value=${crawlWithoutAnalisis.id}' />
+                                </td>
+                                <td class="col-md-1">
+                                    <c:out value="${index + 1}" />
+                                </td>
+                                <td style="text-align: left" class="col-md-4">
+                                    <bean:write name="crawlWithoutAnalisis" property="nombre" />
+                                </td>
+                                <td style="text-align: left" class="col-md-5"
+                                    title="<logic:iterate
+                                        name="crawlWithoutAnalisis" property="listaUrls" id="url">
+                                        <bean:write name="url" />
+                                    </logic:iterate>">
+                                    <logic:iterate name="crawlWithoutAnalisis" property="listaUrls" id="url">
+                                        <bean:write name="url" />
+                                    </logic:iterate>
+                                </td>
+                                <td class="col-md-2"><jsp:useBean id="paramsRelanzarCrawl" class="java.util.HashMap" />
+                                                    <%-- 							<c:set --%>
+                                                    <%-- 	target="${paramsRelanzarCrawl}" property="action" value="confirmacionExSeed" /> <c:set
+                                                            target="${paramsRelanzarCrawl}" property="id" value="${crawlWithoutAnalisis.idFulfilledCrawling}" />--%>
+                                    <c:set target="${paramsRelanzarCrawl}" property="id_observatorio" value="${idObservatory}" />
+                                    <c:set target="${paramsRelanzarCrawl}" property="idExObs" value="${idExecutedObservatorio}" />
+                                    <c:set target="${paramsRelanzarCrawl}" property="idCartucho" value="${idCartucho}" />
+                                    <c:set target="${paramsRelanzarCrawl}" property="idSemilla" value="${crawlWithoutAnalisis.id}" />
+                                    <html:link forward="resultadosObservatorioLanzarEjecucion" name="paramsRelanzarCrawl">
+                                        <span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
+                                            title="<bean:message key="observatory.status.no.results.relaunch"/>"></span>
+                                        <span class="sr-only">
+                                            <bean:message key="observatory.status.no.results.relaunch" />
+                                        </span>
+                                    </html:link>
+                                </td>
+                            </tr>
+                        </logic:iterate>
+                    </tbody>
+                </table>
+                <input type="hidden" name='id_observatorio' <c:out value='value=${idObservatory}' /> >
+                <input type="hidden" name='idExObs' <c:out value='value=${idExecutedObservatorio}' /> >
+            </form>
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+            <script language="JavaScript">
+                $(document).ready(function() {
+
+                    $(".selectionCheckBox").val(this.checked);
+
+                    $("#checkbox_all").change(function() {
+                       if(this.checked) {
+                           $(".selectionCheckBox").prop( "checked", true );
+                           $("#relaunchselected").prop( "disabled", false );
+                       }
+                       else {
+                           $(".selectionCheckBox").prop( "checked", false );
+                           $("#relaunchselected").prop( "disabled", true );
+                       }
+                    });
+
+                    $(".selectionCheckBox").change(function() {
+                                           if(this.checked) {
+                                               $("#relaunchselected").prop( "disabled", false );
+                                           }
+                                           else {
+                                                $("#relaunchselected").prop( "disabled", true );
+                                                $('.selectionCheckBox').each(function() {
+                                                    if ($(this).find(':checkbox:checked').length > 0){
+                                                        $("#relaunchselected").prop( "disabled", false );
+                                                    }
+                                                });
+
+                                               $(".relaunchselected").prop( "checked", false );
+                                           }
+                                        });
+                });
+             </script>
 		</div>
 		<!-- fin cajaformularios -->
 	</div>

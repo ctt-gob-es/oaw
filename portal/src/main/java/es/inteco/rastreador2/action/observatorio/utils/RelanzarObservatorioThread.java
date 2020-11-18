@@ -51,17 +51,21 @@ public class RelanzarObservatorioThread extends Thread {
 	private final String idObservatorio;
 	/** ID de la ejecución del observatorio. */
 	private final String idEjecucionObservatorio;
+	/** Lista de crawlers a relanzar. */
+	private final List<Long> crawlerIdsList;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param idObservatorio          ID del observatorio
 	 * @param idEjecucionObservatorio ID de la ejecución del observatorio
+	 * @param crawlerIdsList 		  [Optional] Lista de crawlers a relanzar (cuando es nula, se lanzan todos los pendientes).
 	 */
-	public RelanzarObservatorioThread(final String idObservatorio, final String idEjecucionObservatorio) {
+	public RelanzarObservatorioThread(final String idObservatorio, final String idEjecucionObservatorio, final List<Long> crawlerIdsList) {
 		super("RelanzarObservatorioThread");
 		this.idObservatorio = idObservatorio;
 		this.idEjecucionObservatorio = idEjecucionObservatorio;
+		this.crawlerIdsList = crawlerIdsList;
 	}
 
 	/**
@@ -78,10 +82,20 @@ public class RelanzarObservatorioThread extends Thread {
 		try {
 			c = DataBaseManager.getConnection();
 			c.setAutoCommit(false);
+
 			// Borramos de la tabla de estado
 			EstadoObservatorioDAO.deleteEstado(c, Integer.parseInt(idObservatorio), Integer.parseInt(idEjecucionObservatorio));
-			// Recuperamos los rastreos pendentes de este observatorio
-			List<Long> pendindCrawlings = RastreoDAO.getPendingCrawlerFromSeedAndObservatory(c, Long.parseLong(idObservatorio), Long.parseLong(idEjecucionObservatorio));
+
+			List<Long> pendindCrawlings = null;
+			// Comprobamos si se ha pasado una lista de crawlers a ejecutar.
+			if (crawlerIdsList != null){
+				pendindCrawlings = crawlerIdsList;
+			}
+			// Si no es así, recuperamos los todos rastreos pendentes de este observatorio
+			else {
+				pendindCrawlings = RastreoDAO.getPendingCrawlerFromSeedAndObservatory(c, Long.parseLong(idObservatorio), Long.parseLong(idEjecucionObservatorio));
+			}
+
 			// Cambiar el estado del observatorio a lanzado
 			ObservatorioDAO.updateObservatoryStatus(c, Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.RELAUNCHED_OBSERVATORY_STATUS);
 			if (pendindCrawlings != null && !pendindCrawlings.isEmpty()) {
