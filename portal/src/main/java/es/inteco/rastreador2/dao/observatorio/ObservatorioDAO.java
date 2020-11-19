@@ -1465,10 +1465,15 @@ public final class ObservatorioDAO {
 		final List<Long> crawlerIds = new ArrayList<>();
 		// Union de rastreos no realizados y rastreos empezados pero no
 		// terminados (<> estado 4)
+//		String query = "SELECT DISTINCT u.id_rastreo  FROM ("
+//				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo NOT IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ? ) AND r.activo = 1 AND r.estado <> 4) "
+//				+ "UNION ALL "
+//				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE rr.id_obs_realizado = ? AND rr.id not IN (select ta.cod_rastreo as id_rastreo from tanalisis ta)))"
+//				+ ") u ORDER BY u.id_rastreo ASC";
 		String query = "SELECT DISTINCT u.id_rastreo  FROM ("
-				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo NOT IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ? ) AND r.activo = 1 AND r.estado <> 4) "
+				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo NOT IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ? ) AND r.activo = 1) "
 				+ "UNION ALL "
-				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE rr.id_obs_realizado = ? AND rr.id not IN (select ta.cod_rastreo as id_rastreo from tanalisis ta)) AND r.activo = 1)"
+				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE rr.id_obs_realizado = ? AND rr.id not IN (select ta.cod_rastreo as id_rastreo from tanalisis ta)))"
 				+ ") u ORDER BY u.id_rastreo ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idObservatory);
