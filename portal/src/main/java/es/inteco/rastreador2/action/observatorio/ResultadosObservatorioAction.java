@@ -474,13 +474,6 @@ public class ResultadosObservatorioAction extends Action {
 			Logger.putLog("Error al cargar el formulario para crear un nuevo rastreo de cliente", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 			throw new Exception(e);
 		}
-		// TODO GO TO http://localhost:8080/oaw/secure/ResultadosObservatorio.do?action=getSeeds&id_observatorio=46&idExObs=244&idCartucho=9
 		return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
-//		ActionRedirect redirect = new ActionRedirect(mapping.findForward(Constants.OBSERVATORY_SEED_LIST));
-//		redirect.addParameter("action", "getSeeds");
-//		redirect.addParameter("id_observatorio", idObservatory);
-//		redirect.addParameter("idExObs", idExObs);
-//		redirect.addParameter("idCartucho", idCartucho);
-//		return redirect;
 	}
 }

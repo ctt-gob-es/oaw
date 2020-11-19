@@ -1473,6 +1473,14 @@ public final class RastreoDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static Long addFulfilledCrawling(Connection conn, DatosCartuchoRastreoForm dcrForm, Long idFulfilledObservatory, Long idUser) throws SQLException {
+		// TODO Remove previous??
+		try (PreparedStatement psCR = conn.prepareStatement("DELETE FROM rastreos_realizados WHERE id_obs_realizado=? AND id_lista = ?")) {
+			psCR.setLong(1, idFulfilledObservatory);
+			psCR.setLong(2, dcrForm.getIdSemilla());
+			psCR.executeUpdate();
+		} catch (Exception e2) {
+			Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e2);
+		}
 		try (PreparedStatement pst = conn.prepareStatement("INSERT INTO rastreos_realizados (id_rastreo, fecha, id_usuario, id_cartucho, id_obs_realizado, id_lista) VALUES (?,?,?,?,?,?)",
 				Statement.RETURN_GENERATED_KEYS)) {
 			pst.setLong(1, dcrForm.getId_rastreo());

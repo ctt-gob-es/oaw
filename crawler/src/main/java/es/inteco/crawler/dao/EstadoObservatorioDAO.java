@@ -157,10 +157,8 @@ public class EstadoObservatorioDAO {
 		ObservatorySummary summary = new ObservatorySummary();
 		try (PreparedStatement ps = c.prepareStatement("SELECT (SELECT estado FROM observatorios_realizados WHERE id = ?) AS ESTADO_OBS, "
 				+ "(SELECT count(*) FROM rastreo r WHERE r.id_observatorio = ? AND r.activo = 1) AS TOTAL_SEMILLAS, "
-				+ "(SELECT count(*) FROM rastreo r WHERE r.id_observatorio = ? AND r.activo = 1 AND r.estado = 4  and r.id_rastreo in (select id_rastreo from rastreos_realizados rr where rr.id_obs_realizado = ? )) AS TOTAL_ANALIZADAS, "
-				+ "(SELECT count(*) FROM rastreo r WHERE r.id_observatorio = ? AND r.activo = 1 AND r.estado = 4  and r.id_rastreo in (select id_rastreo from rastreos_realizados rr where rr.id_obs_realizado = ? AND rr.id IN (select ta.cod_rastreo as id_rastreo from tanalisis ta))) AS TOTAL_ANALIZADAS_OK, "
-//				+ "(SELECT TIMESTAMPDIFF(MINUTE," + "(SELECT MIN(fecha) FROM rastreos_realizados WHERE id_obs_realizado=?),"
-//				+ "(SELECT MAX(fecha) FROM rastreos_realizados WHERE id_obs_realizado=?))) AS TIEMPO")) {
+				+ "(SELECT count(*) FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo in (select id_rastreo from rastreos_realizados rr where rr.id_obs_realizado = ? )) AS TOTAL_ANALIZADAS, "
+				+ "(SELECT count(*) FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo in (select id_rastreo from rastreos_realizados rr where rr.id_obs_realizado = ? AND rr.id IN (select ta.cod_rastreo as id_rastreo from tanalisis ta))) AS TOTAL_ANALIZADAS_OK, "
 				+ "(SELECT sum(tiempo_rastreo) FROM (SELECT cod_rastreo, TIMESTAMPDIFF(MINUTE, min(fec_analisis),max(fec_analisis)) AS tiempo_rastreo FROM tanalisis WHERE cod_rastreo IN (SELECT id FROM rastreos_realizados WHERE id_obs_realizado = ?) group by cod_rastreo) AS SUMTIEMPOS) AS TIEMPO")) {
 			ps.setInt(1, idEjecucionObservatorio);
 			ps.setInt(2, idObservatorio);
@@ -196,8 +194,13 @@ public class EstadoObservatorioDAO {
 					// Semillas analizadas correctamente
 					summary.setSemillasAnalizadas(rs.getInt("TOTAL_ANALIZADAS"));
 					// Porcentaje completado
-					summary.setPorcentajeCompletado(((float) summary.getSemillasAnalizadas() / (float) summary.getTotalSemillas()) * 100);
-					summary.setPorcentajeCompletadoOk(((float) summary.getSemillasAnalizadasOk() / (float) summary.getTotalSemillas()) * 100);
+					if (rs.getLong("ESTADO_OBS") != 0) {
+						summary.setPorcentajeCompletado(((float) summary.getSemillasAnalizadas() / (float) summary.getSemillasAnalizadas()) * 100);
+						summary.setPorcentajeCompletadoOk(((float) summary.getSemillasAnalizadasOk() / (float) summary.getSemillasAnalizadas()) * 100);
+					} else {
+						summary.setPorcentajeCompletado(((float) summary.getSemillasAnalizadas() / (float) summary.getTotalSemillas()) * 100);
+						summary.setPorcentajeCompletadoOk(((float) summary.getSemillasAnalizadasOk() / (float) summary.getSemillasAnalizadas()) * 100);
+					}
 					// Diferencia en minutos entre la primera y al última ejecución
 					summary.setTiempoTotal(rs.getInt("TIEMPO"));
 					summary.setTiempoTotalHoras(rs.getInt("TIEMPO") / 60);

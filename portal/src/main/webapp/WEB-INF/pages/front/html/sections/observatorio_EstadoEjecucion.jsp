@@ -136,9 +136,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				</caption>
 				<tbody>
 					<tr>
-						<th>
-							<bean:message key="observatory.status.summary.seed.total" />
-						</th>
+						<logic:notEqual name="estado" property="idEstado" value="0">
+							<th>
+								<bean:message key="observatory.status.summary.seed.total" />
+							</th>
+						</logic:notEqual>
 						<th>
 							<bean:message key="observatory.status.summary.seed.processed" />
 						</th>
@@ -156,9 +158,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</th>
 					</tr>
 					<tr>
-						<td style="text-align: center">
-							<bean:write name="estado" property="totalSemillas" />
-						</td>
+						<logic:notEqual name="estado" property="idEstado" value="0">
+							<td style="text-align: center">
+								<bean:write name="estado" property="totalSemillas" />
+							</td>
+						</logic:notEqual>
 						<td>
 							<bean:write name="estado" property="semillasAnalizadas" />
 							(
@@ -284,54 +288,53 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tbody>
 				</table>
 			</logic:notEqual>
-			
 			<logic:notEqual name="estado" property="idEstado" value="0">
-			<h2>
-				<bean:size id="notCrawledSeedsYetSize" name="notCrawledSeedsYet" />
-				<bean:message key="observatory.status.pending.title" />
-				&nbsp;(
-				<bean:write name="notCrawledSeedsYetSize" />
-				)
-			</h2>
-			<table class="table table-stripped table-bordered table-hover table-console">
-				<caption>
-					<bean:message key="observatory.status.pending.caption" />
-				</caption>
-				<colgroup>
-					<col style="width: 5%">
-					<col style="width: 30%">
-					<col style="width: 65%">
-				</colgroup>
-				<tbody>
-					<tr>
-						<th>#</th>
-						<th>
-							<bean:message key="observatory.status.pending.name" />
-						</th>
-						<th>URL</th>
-					</tr>
-					<logic:empty name="notCrawledSeedsYet">
+				<h2>
+					<bean:size id="notCrawledSeedsYetSize" name="notCrawledSeedsYet" />
+					<bean:message key="observatory.status.pending.title" />
+					&nbsp;(
+					<bean:write name="notCrawledSeedsYetSize" />
+					)
+				</h2>
+				<table class="table table-stripped table-bordered table-hover table-console">
+					<caption>
+						<bean:message key="observatory.status.pending.caption" />
+					</caption>
+					<colgroup>
+						<col style="width: 5%">
+						<col style="width: 30%">
+						<col style="width: 65%">
+					</colgroup>
+					<tbody>
 						<tr>
-							<td colspan="3">
-								<bean:message key="no.results" />
-							</td>
+							<th>#</th>
+							<th>
+								<bean:message key="observatory.status.pending.name" />
+							</th>
+							<th>URL</th>
 						</tr>
-					</logic:empty>
-					<logic:iterate name="notCrawledSeedsYet" id="notCrawledSeedsYet" indexId="index">
-						<tr>
-							<td class="col-md-1">
-								<c:out value="${index + 1}" />
-							</td>
-							<td style="text-align: left">
-								<bean:write name="notCrawledSeedsYet" property="nombre" />
-							</td>
-							<td style="text-align: left" title="<bean:write name="notCrawledSeedsYet" property="listaUrlsString" />">
-								<bean:write name="notCrawledSeedsYet" property="listaUrlsString" />
-							</td>
-						</tr>
-					</logic:iterate>
-				</tbody>
-			</table>
+						<logic:empty name="notCrawledSeedsYet">
+							<tr>
+								<td colspan="3">
+									<bean:message key="no.results" />
+								</td>
+							</tr>
+						</logic:empty>
+						<logic:iterate name="notCrawledSeedsYet" id="notCrawledSeedsYet" indexId="index">
+							<tr>
+								<td class="col-md-1">
+									<c:out value="${index + 1}" />
+								</td>
+								<td style="text-align: left">
+									<bean:write name="notCrawledSeedsYet" property="nombre" />
+								</td>
+								<td style="text-align: left" title="<bean:write name="notCrawledSeedsYet" property="listaUrlsString" />">
+									<bean:write name="notCrawledSeedsYet" property="listaUrlsString" />
+								</td>
+							</tr>
+						</logic:iterate>
+					</tbody>
+				</table>
 			</logic:notEqual>
 			<h2>
 				<bean:size id="finishWithoutResultsSize" name="finishWithoutResults" />
