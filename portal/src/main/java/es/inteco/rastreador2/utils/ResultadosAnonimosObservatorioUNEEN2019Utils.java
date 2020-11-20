@@ -148,7 +148,9 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				color = pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR);
 			}
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idExecutionObservatory);
-			final List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+			// TODO Only complexitivities in obs
+			// final List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+			final List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidadesObs(DataBaseManager.getConnection(), tagsFilter, exObsIds);
 			// Gráficos globales
 			generateGlobalGraphics(messageResources, executionId, filePath, categories, color, regenerate, tagsFilter);
 			// Gráficos por segmento
@@ -188,7 +190,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		final Map<String, Object> globalGraphics = new HashMap<>();
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final String noDataMess = messageResources.getMessage(GRAFICA_SIN_DATOS);
-			List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+			// List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+			final List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidadesObs(DataBaseManager.getConnection(), tagsFilter, new String[] { executionId });
 			// Adecuación global
 			String file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.name") + ".jpg";
 			String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.title");
