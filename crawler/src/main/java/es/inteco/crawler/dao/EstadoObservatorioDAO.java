@@ -195,10 +195,10 @@ public class EstadoObservatorioDAO {
 					summary.setSemillasAnalizadas(rs.getInt("TOTAL_ANALIZADAS"));
 					// Porcentaje completado
 					if (rs.getLong("ESTADO_OBS") != 0) {
-						summary.setPorcentajeCompletado(((float) summary.getSemillasAnalizadas() / (float) summary.getSemillasAnalizadas()) * 100);
+						summary.setPorcentajeCompletado(((float) summary.getSemillasAnalizadas() / (float) summary.getTotalSemillas()) * 100);
 						summary.setPorcentajeCompletadoOk(((float) summary.getSemillasAnalizadasOk() / (float) summary.getSemillasAnalizadas()) * 100);
 					} else {
-						summary.setPorcentajeCompletado(((float) summary.getSemillasAnalizadas() / (float) summary.getTotalSemillas()) * 100);
+						summary.setPorcentajeCompletado(((float) summary.getSemillasAnalizadas() / (float) summary.getSemillasAnalizadas()) * 100);
 						summary.setPorcentajeCompletadoOk(((float) summary.getSemillasAnalizadasOk() / (float) summary.getSemillasAnalizadas()) * 100);
 					}
 					// Diferencia en minutos entre la primera y al última ejecución

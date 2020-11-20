@@ -2225,8 +2225,8 @@ public final class RastreoDAO {
 		final List<Long> crawlerIds = new ArrayList<>();
 		// Union de rastreos no realizados y rastreos empezados pero no
 		// terminados (<> estado 4)
-		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT u.semillas  FROM (" + "	(SELECT r.semillas FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo NOT IN ("
-				+ "		SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ?) AND r.activo = 1 )" + "	UNION ALL"
+		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT u.semillas  FROM (" + "	(SELECT r.semillas FROM rastreo r WHERE r.id_observatorio = ? AND r.semillas NOT IN ("
+				+ "		SELECT rr.id_lista FROM  rastreos_realizados rr WHERE id_obs_realizado = ?) AND r.activo = 1 )" + "	UNION ALL"
 				+ "	(SELECT r.semillas FROM rastreo r WHERE r.id_observatorio = ? AND r.estado <> 4 AND r.activo = 1)" + "	) u ORDER BY u.semillas ASC")) {
 			ps.setLong(1, idObservatory);
 			ps.setLong(2, idObsRealizado);
