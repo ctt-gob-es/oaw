@@ -23,7 +23,7 @@ public enum WcagEmPointKey {
 	/** The wcag 2 2 1. */
 	WCAG_2_2_1("2.2.1", "WCAG2:timing-adjustable"),
 	/** The wcag 2 2 2. */
-	WCAG_2_2_2("2.2.2", "WCAG2:tpause-stop-hide"),
+	WCAG_2_2_2("2.2.2", "WCAG2:pause-stop-hide"),
 	/** The wcag 2 3 1. */
 	WCAG_2_3_1("2.3.1", "WCAG2:three-flashes-or-below-threshold"),
 	/** The wcag 2 4 1. */
@@ -53,7 +53,9 @@ public enum WcagEmPointKey {
 	/** The wcag 3 3 2. */
 	WCAG_3_3_2("3.3.1", "WCAG2:labels-or-instructions"),
 	/** The wcag 4 1 2. */
-	WCAG_4_1_2("4.1.2", "WCAG2:name-role-value");
+	WCAG_4_1_2("4.1.2", "WCAG2:name-role-value"),
+	/** The wcag 4 1 1. */
+	WCAG_4_1_1("4.1.1", "WCAG2:parsing");
 
 	/** The wcag point. */
 	private final String wcagPoint;

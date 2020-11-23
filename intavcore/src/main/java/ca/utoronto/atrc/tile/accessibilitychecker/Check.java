@@ -5866,7 +5866,7 @@ public class Check {
 			final String stringId = elementGiven.getAttribute("id");
 			if (stringId.length() == 0) {
 				// control has no 'id' attribute so can't have an associated label
-				return true;
+				return false;
 			}
 			final Document document = elementGiven.getOwnerDocument();
 			if (document != null) {

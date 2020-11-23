@@ -100,7 +100,7 @@ public final class WcagOdsUtils {
 				case "WCAG2:timing-adjustable":
 					fillResult(sheetP2, auditResult, 133);
 					break;
-				case "WCAG2:tpause-stop-hide":
+				case "WCAG2:pause-stop-hide":
 					fillResult(sheetP2, auditResult, 171);
 					break;
 				case "WCAG2:three-flashes-or-below-threshold":
@@ -147,6 +147,9 @@ public final class WcagOdsUtils {
 					fillResult(sheetP3, auditResult, 285);
 					break;
 				// p4
+				case "WCAG2:parsing":
+					fillResult(sheetP4, auditResult, 19);
+					break;
 				case "WCAG2:name-role-value":
 					fillResult(sheetP4, auditResult, 57);
 					break;
