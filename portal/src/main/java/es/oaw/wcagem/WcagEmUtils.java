@@ -50,6 +50,8 @@ public final class WcagEmUtils {
 	private static final String _2_6 = "2.6";
 	/** The Constant _1_13. */
 	private static final String _1_13 = "1.13";
+	/** The Constant _1_14. */
+	private static final String _1_14 = "1.14";
 	/** The Constant _2_1. */
 	private static final String _2_1 = "2.1";
 	/** The Constant _1_7. */
@@ -406,6 +408,9 @@ public final class WcagEmUtils {
 			processSimpleVerification(tmpWcag, tmp.get(_2_1), WcagEmPointKey.WCAG_3_1_2.getWcagEmId(), false);
 			// Check 3.2.3
 			processSimpleVerification(tmpWcag, tmp.get(_2_6), WcagEmPointKey.WCAG_3_2_3.getWcagEmId(), false);
+			processSimpleVerification(tmpWcag, tmp.get(_2_6), WcagEmPointKey.WCAG_3_2_3.getWcagEmId(), false);
+			// Check 1.1.1
+			processSimpleVerification(tmpWcag, tmp.get(_1_14), WcagEmPointKey.WCAG_4_1_1.getWcagEmId(), false);
 			/*
 			 * This OAW verification points only matchs partial WCAG verfication
 			 */
@@ -414,6 +419,8 @@ public final class WcagEmUtils {
 			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_1_1.getWcagEmId(), true);
 			// Check 2.2.1
 			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_2_1.getWcagEmId(), true);
+			// Check 2.2.2
+			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_2_2.getWcagEmId(), true);
 			// Check 2.3.1
 			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_3_1.getWcagEmId(), true);
 			// Check 3.3.2
@@ -436,6 +443,8 @@ public final class WcagEmUtils {
 			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_1_3_4.getWcagEmId(), true);
 			// Check 1.3.5
 			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_1_3_5.getWcagEmId(), true);
+			// Check 1.3.5
+			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_2_4_7.getWcagEmId(), true);
 			// Check 1.4.10
 			/*
 			 * This OAW verification points only matchs with multiple WCAG verfication
@@ -538,7 +547,7 @@ public final class WcagEmUtils {
 		List<Integer> notExecutedrealtedThisWcagPoint = new ArrayList<>();
 		if (notExecuted != null) {
 			for (Integer notEx : notExecuted) {
-				if (checkWcagRelationMap.get(wcagEmId) != null && checkWcagRelationMap.get(wcagEmId).contains(notEx.toString())) {
+				if (checkWcagRelationMap.get(wcagEmId) != null && ((List<String>) checkWcagRelationMap.get(wcagEmId)).contains(notEx.toString())) {
 					notExecutedrealtedThisWcagPoint.add(notEx);
 				}
 			}
@@ -547,7 +556,7 @@ public final class WcagEmUtils {
 		List<Integer> successRelatedThisWcagPoint = new ArrayList<>();
 		if (successChecks != null) {
 			for (Integer success : successChecks) {
-				if (checkWcagRelationMap.get(wcagEmId) != null && checkWcagRelationMap.get(wcagEmId).contains(success.toString())) {
+				if (checkWcagRelationMap.get(wcagEmId) != null && ((List<String>) checkWcagRelationMap.get(wcagEmId)).contains(success.toString())) {
 					successRelatedThisWcagPoint.add(success);
 				}
 			}
@@ -556,13 +565,13 @@ public final class WcagEmUtils {
 		List<ProblemForm> problemsrealtedThisWcagPoint = new ArrayList<>();
 		if (problems != null) {
 			for (ProblemForm problem : problems) {
-				if (checkWcagRelationMap.get(wcagEmId) != null && checkWcagRelationMap.get(wcagEmId).contains(problem.getCheck())) {
+				if (checkWcagRelationMap.get(wcagEmId) != null && ((List<String>) checkWcagRelationMap.get(wcagEmId)).contains(problem.getCheck())) {
 					problemsrealtedThisWcagPoint.add(problem);
 				}
 			}
 		}
 		// Only if had checks related
-		if (!problemsrealtedThisWcagPoint.isEmpty() || !successRelatedThisWcagPoint.isEmpty()) {
+		if (!problemsrealtedThisWcagPoint.isEmpty() || !successRelatedThisWcagPoint.isEmpty() || !notExecutedrealtedThisWcagPoint.isEmpty()) {
 			ObservatorySubgroupForm filteredObservatorySubgroupForm = new ObservatorySubgroupForm();
 			try {
 				BeanUtils.copyProperties(filteredObservatorySubgroupForm, observatorySubgroupForm);
@@ -779,7 +788,7 @@ public final class WcagEmUtils {
 		checkWcagRelationMap.put(WcagEmPointKey.WCAG_1_4_3.getWcagEmId(), checks);
 		// 1.4.12
 		checks = new ArrayList<>();
-		checks.add("447"); // 2.2
+		checks.add("477"); // 2.2
 		checkWcagRelationMap.put(WcagEmPointKey.WCAG_1_4_12.getWcagEmId(), checks);
 		// 2.1.1
 		checks = new ArrayList<>();
