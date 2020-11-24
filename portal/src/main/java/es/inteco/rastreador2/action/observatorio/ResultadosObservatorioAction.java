@@ -459,6 +459,10 @@ public class ResultadosObservatorioAction extends Action {
 	 */
 	private ActionForward stop(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
 		CrawlerJobManager.endJob(Long.parseLong(request.getParameter(Constants.ID_EX_OBS)), Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
+		try (Connection c = DataBaseManager.getConnection()) {
+			ObservatorioDAO.updateObservatoryStatus(c, Long.parseLong(request.getParameter(Constants.ID_EX_OBS)), es.inteco.crawler.common.Constants.STOPPED_OBSERVATORY_STATUS);
+			DataBaseManager.closeConnection(c);
+		}
 		final PropertiesManager pmgr = new PropertiesManager();
 		request.setAttribute("mensajeExito", getResources(request).getMessage("observatory.stop.success.message"));
 		final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));

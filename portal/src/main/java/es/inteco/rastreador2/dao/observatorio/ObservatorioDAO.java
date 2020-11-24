@@ -1639,6 +1639,25 @@ public final class ObservatorioDAO {
 					} finally {
 						DAOUtils.closeQueries(psEtiquetas, rsEtiquetas);
 					}
+					// Count URL crawled
+					String numCrawlQuery = "SELECT count(ta.cod_url) as numCrawls  "
+							+ "FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l WHERE ta.cod_rastreo = rr.id  and rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista  "
+							+ "and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado=?) and rr.id = ?";
+					PreparedStatement psCrawls = c.prepareStatement(numCrawlQuery);
+					psCrawls.setLong(1, idObservatorio);
+					psCrawls.setString(2, resultadoSemillaForm.getIdFulfilledCrawling());
+					ResultSet rsCrawls = null;
+					try {
+						rsCrawls = psCrawls.executeQuery();
+						if (rsCrawls.next()) {
+							resultadoSemillaForm.setNumCrawls(rsCrawls.getInt("numCrawls"));
+						}
+					} catch (SQLException e) {
+						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+						throw e;
+					} finally {
+						DAOUtils.closeQueries(psCrawls, rsCrawls);
+					}
 				}
 			}
 		} catch (SQLException e) {

@@ -48,7 +48,6 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.quartz.DisallowConcurrentExecution;
 import org.quartz.InterruptableJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -82,7 +81,6 @@ import es.inteco.utils.CrawlerUtils;
 /**
  * CrawlerJob. Clase para realizar el rastreo de URL.
  */
-@DisallowConcurrentExecution
 public class CrawlerJob implements InterruptableJob {
 	/** Clave NOT_FILTERED_URIS_SECURITY_KEY. */
 	private static final String NOT_FILTERED_URIS_SECURITY_KEY = "not.filtered.uris.security.key";
@@ -291,6 +289,8 @@ public class CrawlerJob implements InterruptableJob {
 			} catch (Exception e) {
 				Logger.putLog("Error al concluir el rastreo", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
+			} finally {
+				DataBaseManager.closeConnection(c);
 			}
 		} else {
 			Logger.putLog("El rastreo " + crawlerData.getIdCrawling() + " ha sido detenido a petición del usuario", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
