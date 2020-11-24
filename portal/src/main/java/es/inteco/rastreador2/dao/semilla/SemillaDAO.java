@@ -2720,7 +2720,7 @@ public final class SemillaDAO {
 				+ "and (id_ambito = (select o.id_ambito from  observatorio o where o.id_observatorio = ? and o.id_ambito <> 0) OR 1=1)"
 				+ "and id_lista in (select id_lista from semilla_etiqueta where id_etiqueta in"
 				+ "(select id_etiqueta from etiqueta where id_clasificacion = 3 and find_in_set(id_etiqueta, (select tags from observatorio where id_observatorio = ?))))"
-				+ "and (id_lista not in  (select semillas from rastreo where id_observatorio = ? and activo = 1)"
+				+ "and (id_lista not in  (select semillas from rastreo where id_observatorio = ? )"
 				+ "or id_lista not in (select id_lista from rastreos_realizados where id_obs_realizado = ?) ) order by nombre";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idObservatorio);
