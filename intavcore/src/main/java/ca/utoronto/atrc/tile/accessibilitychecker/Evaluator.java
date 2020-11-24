@@ -897,11 +897,7 @@ public class Evaluator {
 		long time = System.currentTimeMillis();
 		final List<Incidencia> incidenceList = new ArrayList<>();
 		if (rootNode != null) {
-			try {
-				extractCSSResources(rootNode, evaluation);
-			} catch (Exception e) {
-				Logger.putLog("Error al extraer las CSS", Evaluator.class, Logger.LOG_LEVEL_WARNING);
-			}
+			extractCSSResources(rootNode, evaluation);
 			final List<Node> nodeList = EvaluatorUtils.generateNodeList(rootNode, new ArrayList<Node>(), IntavConstants.ALL_ELEMENTS);
 			int counter = 0;
 			for (Node node : nodeList) {
@@ -910,7 +906,6 @@ public class Evaluator {
 					if (nameElement.equals("html") && (node.getUserData("realHtml") != null) && (node.getUserData("realHtml").equals("false"))) {
 						continue;
 					}
-					Logger.putLog("Counter: " + counter, Evaluator.class, Logger.LOG_LEVEL_INFO);
 					// get a list of checks for this element
 					final List<Check> checks = new ArrayList<>();
 					addSpecificChecks(checks, elementsMap, nameElement);
