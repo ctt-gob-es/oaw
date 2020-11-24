@@ -315,6 +315,7 @@ var translatedColNames = [ colNameId, colNameOldName,
 		 					+ '&idExObs='
 		 					+ $('[name=idExObs]').val(),
 				        dataType: "json",
+				        cache: false,
 				        success: function( data ) {
 				          allSeeds = data.map(function(currentValue, index, arr) { 		            
 				            return {

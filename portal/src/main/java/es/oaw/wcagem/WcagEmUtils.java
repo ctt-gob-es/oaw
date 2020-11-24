@@ -501,7 +501,7 @@ public final class WcagEmUtils {
 			break;
 		case Constants.OBS_VALUE_RED_ZERO:
 			if (filterChecks) {
-				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_FAILED);
+				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_CANNOT_TELL);
 			} else {
 				validationDetailes.setResult(EARL_FAILED);
 				processChecks(observatorySubgroupForm, validationDetailes, results);
@@ -578,7 +578,11 @@ public final class WcagEmUtils {
 				filteredObservatorySubgroupForm.setProblems(problemsrealtedThisWcagPoint);
 				filteredObservatorySubgroupForm.setSuccessChecks(successRelatedThisWcagPoint);
 				filteredObservatorySubgroupForm.setNotExecutedChecks(notExecutedrealtedThisWcagPoint);
-				validationDetailes.setResult(result);
+				if (!problemsrealtedThisWcagPoint.isEmpty()) {
+					validationDetailes.setResult(EARL_FAILED);
+				} else {
+					validationDetailes.setResult(result);
+				}
 				processChecks(filteredObservatorySubgroupForm, validationDetailes, results);
 				tmpWcag.put(wcagEmId, validationDetailes);
 			} catch (IllegalAccessException | InvocationTargetException e) {

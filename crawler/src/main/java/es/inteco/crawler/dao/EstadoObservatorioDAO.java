@@ -211,7 +211,8 @@ public class EstadoObservatorioDAO {
 						summary.setTiempoMedio(summary.getTiempoTotal());
 					}
 					// Tiempo estimado
-					summary.setTiempoEstimado((summary.getTotalSemillas() - summary.getSemillasAnalizadas()) * summary.getTiempoMedio());
+					final int tiempoEstimado = (summary.getTotalSemillas() - summary.getSemillasAnalizadas()) * summary.getTiempoMedio();
+					summary.setTiempoEstimado(tiempoEstimado >= 0 ? tiempoEstimado : 0);
 					summary.setTiempoEstimadoHoras(summary.getTiempoEstimado() / 60);
 					// Tiempo minimo
 					summary.setTiempoMinimo(new ObservatorySummaryTimes(11, "http://www.defensa.gob.es", "Ministerio de Defensa"));
