@@ -472,7 +472,7 @@ public final class DiagnosisDAO {
 	 */
 	private static ServicioDiagnosticoForm getFormFromResultSet(ResultSet rs) throws SQLException, ParseException {
 		// 2019-11-19 10:38:26.0
-		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
+		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		ServicioDiagnosticoForm result = new ServicioDiagnosticoForm();
 		result.setId(rs.getLong("id"));
 		result.setUser(rs.getString("usr"));
