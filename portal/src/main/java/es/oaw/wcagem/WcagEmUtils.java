@@ -520,9 +520,9 @@ public final class WcagEmUtils {
 			break;
 		case Constants.OBS_VALUE_NOT_SCORE:
 			if (filterChecks) {
-				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_INAPPLICABLE);
+				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_CANNOT_TELL);
 			} else {
-				validationDetailes.setResult(EARL_INAPPLICABLE);
+				validationDetailes.setResult(EARL_CANNOT_TELL);
 				processChecks(observatorySubgroupForm, validationDetailes, results);
 				tmpWcag.put(wcagEmId, validationDetailes);
 			}
@@ -543,6 +543,15 @@ public final class WcagEmUtils {
 	 */
 	private static void filterObservatorySubgroupForm(Map<String, ValidationDetails> tmpWcag, final ObservatorySubgroupForm observatorySubgroupForm, final String wcagEmId,
 			ValidationDetails validationDetailes, List<ValidationResult> results, Map<String, List<String>> checkWcagRelationMap, final String result) {
+		List<Integer> onlyWarnings = observatorySubgroupForm.getOnlyWarningChecks();
+		List<Integer> onlyWarningsRelatedThisWcagPoint = new ArrayList<>();
+		if (onlyWarnings != null) {
+			for (Integer warning : onlyWarnings) {
+				if (checkWcagRelationMap.get(wcagEmId) != null && ((List<String>) checkWcagRelationMap.get(wcagEmId)).contains(warning.toString())) {
+					onlyWarningsRelatedThisWcagPoint.add(warning);
+				}
+			}
+		}
 		List<Integer> notExecuted = observatorySubgroupForm.getNotExecutedChecks();
 		List<Integer> notExecutedrealtedThisWcagPoint = new ArrayList<>();
 		if (notExecuted != null) {
