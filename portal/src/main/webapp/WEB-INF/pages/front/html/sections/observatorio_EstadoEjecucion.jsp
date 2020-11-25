@@ -408,6 +408,17 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</logic:iterate>
 				</tbody>
 			</table>
+			<h2>
+				<bean:message key="observatory.status.notes.title" />
+			</h2>
+			<logic:notEqual name="estado" property="idEstado" value="0">
+				<p>
+					<bean:message key="observatory.status.notes.running" />
+				</p>
+			</logic:notEqual>
+			<p>
+				<bean:message key="observatory.status.notes.info" />
+			</p>
 		</div>
 		<!-- fin cajaformularios -->
 	</div>
