@@ -580,6 +580,9 @@ public final class CrawlerUtils {
 		connection.addRequestProperty("Accept", pmgr.getValue("crawler.core.properties", "method.accept.header"));
 		connection.addRequestProperty("Accept-Language", pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
 		connection.addRequestProperty("User-Agent", pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
+		// TODO Keep alive
+		connection.addRequestProperty("Connection", "keep-alive");
+		connection.addRequestProperty("Cookie", "org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE=es");
 		if (refererUrl != null) {
 			connection.addRequestProperty("Referer", refererUrl);
 		}
