@@ -459,7 +459,8 @@ public final class WcagEmUtils {
 			verifications.add(tmp.get(_1_4));
 			verifications.add(tmp.get(_1_5));
 			verifications.add(tmp.get(_1_6));
-			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_1_3_1.getWcagEmId(), true);
+//			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_1_3_1.getWcagEmId(), true);
+//			verifications = new ArrayList<ObservatorySubgroupForm>();
 			verifications.add(tmp.get(_1_9));
 			verifications.add(tmp.get(_1_10));
 			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_1_3_1.getWcagEmId(), true);
@@ -589,7 +590,7 @@ public final class WcagEmUtils {
 				filteredObservatorySubgroupForm.setNotExecutedChecks(notExecutedrealtedThisWcagPoint);
 				if (!problemsrealtedThisWcagPoint.isEmpty()) {
 					validationDetailes.setResult(EARL_FAILED);
-				} else {
+				} else if (!EARL_FAILED.equals(validationDetailes.getResult())) {
 					validationDetailes.setResult(result);
 				}
 				processChecks(filteredObservatorySubgroupForm, validationDetailes, results);
@@ -704,14 +705,16 @@ public final class WcagEmUtils {
 		if (allEqual) {
 			processSimpleVerification(tmpWcag, observatorySubgroupForms.get(0), wcagEmId, checkChecks);
 		} else if (integerList.contains(Constants.OBS_VALUE_RED_ZERO)) {
-			validationDetailes.setResult(EARL_FAILED);
+			Map<String, List<String>> checkWcagRelationMap = checkWcagRelationMap();
+			validationDetailes.setResult(EARL_CANNOT_TELL);
 			// Detail errors
 			List<ValidationResult> results = new ArrayList<>();
 			for (ObservatorySubgroupForm observatorySubgroupForm : observatorySubgroupForms) {
-				processChecks(observatorySubgroupForm, validationDetailes, results);
+				// processChecks(observatorySubgroupForm, validationDetailes, results);
+				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_CANNOT_TELL);
 			}
-			validationDetailes.setResults(results);
-			tmpWcag.put(wcagEmId, validationDetailes);
+//			validationDetailes.setResults(results);
+//			tmpWcag.put(wcagEmId, validationDetailes);
 		} else {
 			validationDetailes.setResult(EARL_CANNOT_TELL);
 			List<ValidationResult> results = new ArrayList<>();
