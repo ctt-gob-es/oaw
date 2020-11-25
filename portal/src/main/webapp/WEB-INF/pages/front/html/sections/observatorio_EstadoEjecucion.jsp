@@ -419,6 +419,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			<p>
 				<bean:message key="observatory.status.notes.info" />
 			</p>
+			
+			<p>
+				<bean:message key="observatory.status.notes.info2" />
+			</p>
 		</div>
 		<!-- fin cajaformularios -->
 	</div>
