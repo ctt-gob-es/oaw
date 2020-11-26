@@ -396,8 +396,6 @@ public final class WcagEmUtils {
 			// Check 1.1.1
 			processSimpleVerification(tmpWcag, tmp.get(_1_1), WcagEmPointKey.WCAG_1_1_1.getWcagEmId(), false);
 			processSimpleVerification(tmpWcag, tmp.get(_2_3), WcagEmPointKey.WCAG_1_4_10.getWcagEmId(), false);
-			// Check 2.4.3
-			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_2_4_3.getWcagEmId(), false);
 			// Check 2.4.4
 			processSimpleVerification(tmpWcag, tmp.get(_1_12), WcagEmPointKey.WCAG_2_4_4.getWcagEmId(), false);
 			// Check 2.4.5
@@ -443,9 +441,10 @@ public final class WcagEmUtils {
 			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_1_3_4.getWcagEmId(), true);
 			// Check 1.3.5
 			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_1_3_5.getWcagEmId(), true);
-			// Check 1.3.5
+			// Check 2.4.3
+			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_2_4_3.getWcagEmId(), true);
+			// Check 2.4.7
 			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_2_4_7.getWcagEmId(), true);
-			// Check 1.4.10
 			/*
 			 * This OAW verification points only matchs with multiple WCAG verfication
 			 */
@@ -459,8 +458,6 @@ public final class WcagEmUtils {
 			verifications.add(tmp.get(_1_4));
 			verifications.add(tmp.get(_1_5));
 			verifications.add(tmp.get(_1_6));
-//			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_1_3_1.getWcagEmId(), true);
-//			verifications = new ArrayList<ObservatorySubgroupForm>();
 			verifications.add(tmp.get(_1_9));
 			verifications.add(tmp.get(_1_10));
 			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_1_3_1.getWcagEmId(), true);
@@ -692,6 +689,7 @@ public final class WcagEmUtils {
 	 * @param observatorySubgroupForms the observatory subgroup forms
 	 * @param wcagEmId                 the wcag em id
 	 * @param checkChecks              the check checks
+	 * @param allChecksApply           the all checks apply
 	 */
 	private static void processMultipleVerification(Map<String, ValidationDetails> tmpWcag, final List<ObservatorySubgroupForm> observatorySubgroupForms, final String wcagEmId,
 			final boolean checkChecks) {
@@ -710,11 +708,8 @@ public final class WcagEmUtils {
 			// Detail errors
 			List<ValidationResult> results = new ArrayList<>();
 			for (ObservatorySubgroupForm observatorySubgroupForm : observatorySubgroupForms) {
-				// processChecks(observatorySubgroupForm, validationDetailes, results);
 				filterObservatorySubgroupForm(tmpWcag, observatorySubgroupForm, wcagEmId, validationDetailes, results, checkWcagRelationMap, EARL_CANNOT_TELL);
 			}
-//			validationDetailes.setResults(results);
-//			tmpWcag.put(wcagEmId, validationDetailes);
 		} else {
 			validationDetailes.setResult(EARL_CANNOT_TELL);
 			List<ValidationResult> results = new ArrayList<>();
@@ -775,6 +770,52 @@ public final class WcagEmUtils {
 		// WCAG
 		// 1.3.1
 		checks = new ArrayList<>();
+		checks.add("37"); // 1.2
+		checks.add("421"); // 1.2
+		checks.add("38"); // 1.2
+		checks.add("395"); // 1.2
+		checks.add("422"); // 1.2
+		checks.add("433"); // 1.2
+		checks.add("469"); // 1.2
+		checks.add("470"); // 1.2
+		checks.add("471"); // 1.2
+		checks.add("472"); // 1.2
+		checks.add("101"); // 1.3
+		checks.add("120"); // 1.3
+		checks.add("121"); // 1.3
+		checks.add("410"); // 1.3
+		checks.add("311"); // 1.3
+		checks.add("427"); // 1.3
+		checks.add("313"); // 1.3
+		checks.add("314"); // 1.3
+		checks.add("317"); // 1.3
+		checks.add("318"); // 1.3
+		checks.add("319"); // 1.3
+		checks.add("320"); // 1.3
+		checks.add("423"); // 1.3
+		checks.add("424"); // 1.3
+		checks.add("425"); // 1.3
+		checks.add("416"); // 1.3
+		checks.add("445"); // 1.3
+		checks.add("459"); // 1.3
+		checks.add("431"); // 1.3
+		checks.add("7"); // 1.4
+		checks.add("86"); // 1.4
+		checks.add("116"); // 1.4
+		checks.add("156"); // 1.4
+		checks.add("159"); // 1.4
+		checks.add("245"); // 1.4
+		checks.add("418"); // 1.4
+		checks.add("243"); // 1.4
+		checks.add("415"); // 1.4
+		checks.add("464"); // 1.4
+		checks.add("492"); // 1.4
+		checks.add("16"); // 1.5
+		checks.add("33"); // 1.5
+		checks.add("436"); // 1.5
+		checks.add("45"); // 1.6
+		checks.add("345"); // 1.6
+		checks.add("447"); // 1.6
 		checks.add("57"); // 1.9
 		checks.add("91"); // 1.9
 		checks.add("95"); // 1.9
