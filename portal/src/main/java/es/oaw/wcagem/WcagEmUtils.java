@@ -406,7 +406,6 @@ public final class WcagEmUtils {
 			processSimpleVerification(tmpWcag, tmp.get(_2_1), WcagEmPointKey.WCAG_3_1_2.getWcagEmId(), false);
 			// Check 3.2.3
 			processSimpleVerification(tmpWcag, tmp.get(_2_6), WcagEmPointKey.WCAG_3_2_3.getWcagEmId(), false);
-			processSimpleVerification(tmpWcag, tmp.get(_2_6), WcagEmPointKey.WCAG_3_2_3.getWcagEmId(), false);
 			// Check 1.1.1
 			processSimpleVerification(tmpWcag, tmp.get(_1_14), WcagEmPointKey.WCAG_4_1_1.getWcagEmId(), false);
 			/*
@@ -419,8 +418,6 @@ public final class WcagEmUtils {
 			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_2_1.getWcagEmId(), true);
 			// Check 2.2.2
 			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_2_2.getWcagEmId(), true);
-			// Check 2.3.1
-			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_3_1.getWcagEmId(), true);
 			// Check 3.3.2
 			processSimpleVerification(tmpWcag, tmp.get(_1_9), WcagEmPointKey.WCAG_3_3_2.getWcagEmId(), true);
 			// Check 2.5.3
