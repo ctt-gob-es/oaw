@@ -85,6 +85,7 @@ public final class RastreoDAO {
 	public static List<Long> getExecutionObservatoryCrawlerIdsMatchTags(Connection c, Long idObservatoryExecution, String[] tagsToFiler) throws Exception {
 		final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
 		String query = "SELECT DISTINCT id FROM rastreos_realizados rr JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) JOIN semilla_etiqueta el ON l.id_lista=el.id_lista WHERE id_obs_realizado = ? ";
+		query = query + " AND rr.id IN (SELECT cod_rastreo FROM tanalisis) ";
 		if (tagsToFiler != null && tagsToFiler.length > 0) {
 			query = query + " AND ( 1=0 ";
 			for (int i = 0; i < tagsToFiler.length; i++) {
@@ -122,7 +123,8 @@ public final class RastreoDAO {
 	 */
 	public static List<Long> getExecutionObservatoryCrawlerIds(Connection c, Long idObservatoryExecution, long idCategory) throws Exception {
 		final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
-		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ?";
+		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ? ";
+		query = query + " AND rr.id IN (SELECT cod_rastreo FROM tanalisis) ";
 		if (idCategory != 0) {
 			query = query + " AND l.id_categoria = ? ";
 		}
@@ -154,7 +156,8 @@ public final class RastreoDAO {
 	 */
 	public static List<Long> getExecutionObservatoryCrawlerIdsComplexity(Connection c, Long idObservatoryExecution, long idComplexity) throws Exception {
 		final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
-		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ?";
+		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ? ";
+		query = query + " AND rr.id IN (SELECT cod_rastreo FROM tanalisis) ";
 		if (idComplexity != 0) {
 			query = query + " AND l.id_complejidad = ? ";
 		}
@@ -186,7 +189,8 @@ public final class RastreoDAO {
 	 */
 	public static List<Long> getExecutionObservatoryCrawlerIdsAmbit(Connection c, Long idObservatoryExecution, final Long idAmbit) throws Exception {
 		final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
-		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ?";
+		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ? ";
+		query = query + " AND rr.id IN (SELECT cod_rastreo FROM tanalisis) ";
 		if (idAmbit != 0) {
 			query = query + " AND l.id_ambito = ? ";
 		}
@@ -1469,6 +1473,14 @@ public final class RastreoDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static Long addFulfilledCrawling(Connection conn, DatosCartuchoRastreoForm dcrForm, Long idFulfilledObservatory, Long idUser) throws SQLException {
+		// TODO Remove previous??
+		try (PreparedStatement psCR = conn.prepareStatement("DELETE FROM rastreos_realizados WHERE id_obs_realizado=? AND id_lista = ?")) {
+			psCR.setLong(1, idFulfilledObservatory);
+			psCR.setLong(2, dcrForm.getIdSemilla());
+			psCR.executeUpdate();
+		} catch (Exception e2) {
+			Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e2);
+		}
 		try (PreparedStatement pst = conn.prepareStatement("INSERT INTO rastreos_realizados (id_rastreo, fecha, id_usuario, id_cartucho, id_obs_realizado, id_lista) VALUES (?,?,?,?,?,?)",
 				Statement.RETURN_GENERATED_KEYS)) {
 			pst.setLong(1, dcrForm.getId_rastreo());
@@ -1486,6 +1498,7 @@ public final class RastreoDAO {
 				if (rs.next()) {
 					return rs.getLong(1);
 				} else {
+					Logger.putLog("Error al añadir un rastreo realizado: " + pst, RastreoDAO.class, Logger.LOG_LEVEL_ERROR);
 					return null;
 				}
 			}
@@ -2212,8 +2225,8 @@ public final class RastreoDAO {
 		final List<Long> crawlerIds = new ArrayList<>();
 		// Union de rastreos no realizados y rastreos empezados pero no
 		// terminados (<> estado 4)
-		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT u.semillas  FROM (" + "	(SELECT r.semillas FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo NOT IN ("
-				+ "		SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ?) AND r.activo = 1 )" + "	UNION ALL"
+		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT u.semillas  FROM (" + "	(SELECT r.semillas FROM rastreo r WHERE r.id_observatorio = ? AND r.semillas NOT IN ("
+				+ "		SELECT rr.id_lista FROM  rastreos_realizados rr WHERE id_obs_realizado = ?) AND r.activo = 1 )" + "	UNION ALL"
 				+ "	(SELECT r.semillas FROM rastreo r WHERE r.id_observatorio = ? AND r.estado <> 4 AND r.activo = 1)" + "	) u ORDER BY u.semillas ASC")) {
 			ps.setLong(1, idObservatory);
 			ps.setLong(2, idObsRealizado);
@@ -2249,6 +2262,7 @@ public final class RastreoDAO {
 		String query = "SELECT COUNT(DISTINCT (l.id_lista)) as countSeeds, e.nombre, e.id_clasificacion,ce.nombre FROM rastreos_realizados rr "
 				+ "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) " + "JOIN semilla_etiqueta se ON l.id_lista=se.id_lista "
 				+ "JOIN etiqueta e ON e.id_etiqueta = se.id_etiqueta JOIN clasificacion_etiqueta ce ON ce.id_clasificacion=e.id_clasificacion WHERE e.id_clasificacion = ? ";
+		query = query + " AND rr.id IN (SELECT cod_rastreo FROM tanalisis) ";
 		// Cargamos los rastreos realizados
 		if (exObsIds != null && exObsIds.length > 0) {
 			query = query + "AND id_obs_realizado IN (" + exObsIds[0];
@@ -2307,6 +2321,7 @@ public final class RastreoDAO {
 		String query = "SELECT COUNT(*) as countSeeds, e.nombre, e.id_clasificacion,ce.nombre FROM rastreos_realizados rr "
 				+ "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) " + "JOIN semilla_etiqueta el ON l.id_lista=el.id_lista "
 				+ "JOIN etiqueta e ON e.id_etiqueta = el.id_etiqueta JOIN clasificacion_etiqueta ce ON ce.id_clasificacion=e.id_clasificacion WHERE UPPER(e.nombre) = UPPER(?) ";
+		query = query + " AND rr.id IN (SELECT cod_rastreo FROM tanalisis) ";
 		// Cargamos los rastreos realizados
 		if (exObsIds != null && exObsIds.length > 0) {
 			query = query + "AND id_obs_realizado IN (" + exObsIds[0];
@@ -2363,6 +2378,7 @@ public final class RastreoDAO {
 		final List<GlobalReportStatistics> globalReportStatistics = new ArrayList<>();
 		String query = "SELECT al.id_ambito,al.nombre, COUNT(DISTINCT (l.id_lista)) as countSeeds" + " FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) "
 				+ "JOIN lista l ON (l.id_lista = r.semillas) " + "JOIN ambitos_lista al on al.id_ambito=l.id_ambito JOIN semilla_etiqueta el ON l.id_lista=el.id_lista ";
+		query = query + " AND rr.id IN (SELECT cod_rastreo FROM tanalisis) ";
 		// Cargamos los rastreos realizados
 		if (exObsIds != null && exObsIds.length > 0) {
 			query = query + "AND id_obs_realizado IN (" + exObsIds[0];
@@ -2416,6 +2432,7 @@ public final class RastreoDAO {
 	public static List<GlobalReportStatistics> getGlobalReportStatisticsByComplex(Connection c, String[] tagsToFiler, String[] exObsIds) throws Exception {
 		final List<GlobalReportStatistics> globalReportStatistics = new ArrayList<>();
 		String query = "SELECT cl.id_complejidad,cl.nombre, COUNT(DISTINCT (l.id_lista)) as countSeeds FROM rastreos_realizados rr JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) JOIN complejidades_lista cl on cl.id_complejidad=l.id_complejidad JOIN semilla_etiqueta el ON l.id_lista=el.id_lista ";
+		query = query + " AND rr.id IN (SELECT cod_rastreo FROM tanalisis) ";
 		// Cargamos los rastreos realizados
 		if (exObsIds != null && exObsIds.length > 0) {
 			query = query + "AND id_obs_realizado IN (" + exObsIds[0];

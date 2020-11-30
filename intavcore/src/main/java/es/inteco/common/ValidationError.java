@@ -15,77 +15,181 @@
 ******************************************************************************/
 package es.inteco.common;
 
+/**
+ * The Class ValidationError.
+ */
 public class ValidationError {
-    private int type;
-    private int column;
-    private int line;
-    private String code;
-    private int numErrors;
-    private int numWarnings;
-    private boolean summary;
-    private String messageId;
+	/** The type. */
+	private int type;
+	/** The column. */
+	private int column;
+	/** The line. */
+	private int line;
+	/** The code. */
+	private String code;
+	/** The num errors. */
+	private int numErrors;
+	/** The num warnings. */
+	private int numWarnings;
+	/** The summary. */
+	private boolean summary;
+	/** The message id. */
+	private String messageId;
 
-    public int getColumn() {
-        return column;
-    }
+	/**
+	 * Gets the column.
+	 *
+	 * @return the column
+	 */
+	public int getColumn() {
+		return column;
+	}
 
-    public void setColumn(int column) {
-        this.column = column;
-    }
+	/**
+	 * Sets the column.
+	 *
+	 * @param column the new column
+	 */
+	public void setColumn(int column) {
+		this.column = column;
+	}
 
-    public int getLine() {
-        return line;
-    }
+	/**
+	 * Gets the line.
+	 *
+	 * @return the line
+	 */
+	public int getLine() {
+		return line;
+	}
 
-    public void setLine(int line) {
-        this.line = line;
-    }
+	/**
+	 * Sets the line.
+	 *
+	 * @param line the new line
+	 */
+	public void setLine(int line) {
+		this.line = line;
+	}
 
-    public String getCode() {
-        return code;
-    }
+	/**
+	 * Gets the code.
+	 *
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+	/**
+	 * Sets the code.
+	 *
+	 * @param code the new code
+	 */
+	public void setCode(String code) {
+		this.code = code;
+	}
 
-    public int getType() {
-        return type;
-    }
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
+	public int getType() {
+		return type;
+	}
 
-    public void setType(int type) {
-        this.type = type;
-    }
+	/**
+	 * Sets the type.
+	 *
+	 * @param type the new type
+	 */
+	public void setType(int type) {
+		this.type = type;
+	}
 
-    public int getNumErrors() {
-        return numErrors;
-    }
+	/**
+	 * Gets the num errors.
+	 *
+	 * @return the num errors
+	 */
+	public int getNumErrors() {
+		return numErrors;
+	}
 
-    public void setNumErrors(int numErrors) {
-        this.numErrors = numErrors;
-    }
+	/**
+	 * Sets the num errors.
+	 *
+	 * @param numErrors the new num errors
+	 */
+	public void setNumErrors(int numErrors) {
+		this.numErrors = numErrors;
+	}
 
-    public int getNumWarnings() {
-        return numWarnings;
-    }
+	/**
+	 * Gets the num warnings.
+	 *
+	 * @return the num warnings
+	 */
+	public int getNumWarnings() {
+		return numWarnings;
+	}
 
-    public void setNumWarnings(int numWarnings) {
-        this.numWarnings = numWarnings;
-    }
+	/**
+	 * Sets the num warnings.
+	 *
+	 * @param numWarnings the new num warnings
+	 */
+	public void setNumWarnings(int numWarnings) {
+		this.numWarnings = numWarnings;
+	}
 
-    public boolean isSummary() {
-        return summary;
-    }
+	/**
+	 * Checks if is summary.
+	 *
+	 * @return true, if is summary
+	 */
+	public boolean isSummary() {
+		return summary;
+	}
 
-    public void setSummary(boolean summary) {
-        this.summary = summary;
-    }
+	/**
+	 * Sets the summary.
+	 *
+	 * @param summary the new summary
+	 */
+	public void setSummary(boolean summary) {
+		this.summary = summary;
+	}
 
-    public String getMessageId() {
-        return messageId;
-    }
+	/**
+	 * Gets the message id.
+	 *
+	 * @return the message id
+	 */
+	public String getMessageId() {
+		return messageId;
+	}
 
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
-    }
+	/**
+	 * Sets the message id.
+	 *
+	 * @param messageId the new message id
+	 */
+	public void setMessageId(String messageId) {
+		this.messageId = messageId;
+	}
+
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ValidationError [type=").append(type).append(", column=").append(column).append(", line=").append(line).append(", code=").append(code).append(", numErrors=").append(numErrors)
+				.append(", numWarnings=").append(numWarnings).append(", summary=").append(summary).append(", messageId=").append(messageId).append("]");
+		return builder.toString();
+	}
 }

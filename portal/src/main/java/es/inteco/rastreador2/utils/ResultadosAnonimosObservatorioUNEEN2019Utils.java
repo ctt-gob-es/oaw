@@ -140,7 +140,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception Excepción lanzada
 	 */
 	public static void generateGraphics(final MessageResources messageResources, String executionId, final Long idExecutionObservatory, final String observatoryId, final String filePath,
-			final String type, final boolean regenerate, String[] tagsFilter, String[] exObsIds) throws Exception {
+			final String type, final boolean regenerate, String[] tagsFilter, final String[] tagsFilterFixed, String[] exObsIds) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final PropertiesManager pmgr = new PropertiesManager();
 			String color = pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_INTECO_RED_COLORS);
@@ -148,7 +148,9 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				color = pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR);
 			}
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idExecutionObservatory);
-			final List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+			// TODO Only complexitivities in obs
+			// final List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+			final List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidadesObs(DataBaseManager.getConnection(), tagsFilter, exObsIds);
 			// Gráficos globales
 			generateGlobalGraphics(messageResources, executionId, filePath, categories, color, regenerate, tagsFilter);
 			// Gráficos por segmento
@@ -161,7 +163,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			}
 			if (exObsIds != null && exObsIds.length > 1) {
 				generateEvolutionGraphics(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, exObsIds);
-				generateEvolutionGraphicsFixed(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, exObsIds);
+				generateEvolutionGraphicsFixed(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, tagsFilterFixed, exObsIds);
 			}
 		} catch (Exception e) {
 			Logger.putLog("No se han generado las gráficas correctamente.", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -188,7 +190,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		final Map<String, Object> globalGraphics = new HashMap<>();
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final String noDataMess = messageResources.getMessage(GRAFICA_SIN_DATOS);
-			List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+			// List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+			final List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidadesObs(DataBaseManager.getConnection(), tagsFilter, new String[] { executionId });
 			// Adecuación global
 			String file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.name") + ".jpg";
 			String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.title");
@@ -220,7 +223,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			// Comparación de la puntuación por complejidad
 			title = messageResources.getMessage("observatory.graphic.global.puntuation.allocation.complexitiviy.strached.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.complexitiviy.strached.name") + ".jpg";
-			getGlobalMarkByComplexitivityGraphic(messageResources, executionId, pageExecutionList, globalGraphics, title, file, noDataMess, complejidades, tagsFilter);
+			getGlobalMarkByComplexitivityGraphic(messageResources, executionId, pageExecutionList, globalGraphics, title, file, noDataMess, complejidades, regenerate, tagsFilter);
 			// Comparación puntuación por verificación
 			title = messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg";
@@ -480,9 +483,9 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static Map<String, Object> generateEvolutionGraphicsFixed(MessageResources messageResources, String observatoryId, final String executionId, String filePath, String color,
-			boolean regenerate, String[] tagsFilter, String[] exObsIds) throws Exception {
+			boolean regenerate, String[] tagsFilter, final String[] tagsFilterFixed, String[] exObsIds) throws Exception {
 		final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId), Long.valueOf(executionId),
-				new String[] { "1" }, exObsIds);
+				tagsFilterFixed, exObsIds);
 		final Map<String, Object> evolutionGraphics = new HashMap<>();
 		if (pageObservatoryMap != null && !pageObservatoryMap.isEmpty()) {
 			if (pageObservatoryMap.size() != 1) {
@@ -3247,15 +3250,15 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static void getGlobalMarkByComplexitivityGraphic(final MessageResources messageResources, final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList,
-			Map<String, Object> globalGraphics, final String title, final String filePath, final String noDataMess, final List<ComplejidadForm> complexitivities, String[] tagsFilter)
-			throws Exception {
+			Map<String, Object> globalGraphics, final String title, final String filePath, final String noDataMess, final List<ComplejidadForm> complexitivities, final boolean regenerate,
+			String[] tagsFilter) throws Exception {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final Map<Integer, List<ComplejidadForm>> resultLists = createGraphicsMapComplexities(complexitivities);
 		final List<ComplexityViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
 			final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
 			final Map<ComplejidadForm, Map<String, BigDecimal>> resultDataBySegment = calculateMidPuntuationResultsByComplexitivityMap(executionId, pageExecutionList, resultLists.get(i), tagsFilter);
-			if (!file.exists()) {
+			if (!file.exists() || regenerate) {
 				final ChartForm observatoryGraphicsForm = new ChartForm(createDataSetComplexity(resultDataBySegment, messageResources), true, true, false, false, true, false, false, x, y,
 						pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
 				observatoryGraphicsForm.setTitle(title);

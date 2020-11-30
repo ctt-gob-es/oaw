@@ -1,3 +1,12 @@
+5.2.0
+------------------------------------------------------------------------------------------------------------------------------------
+- Funcionalidad para detener una ejecución en curso
+- COnfiguración global para observatorios: umbral de relanzamiento, timeout y tamaño de rastreo
+- Relanzamiento en bloque de semillas sin resultados
+- Relanzamiento en bloque de semillas por debajo del umbral
+- Relanzamiento automático de semillas sin resultados o por debajo del umbral al finalizar un observatorio
+- Actualización de varias librerías para solventar vulnerabilidades.
+
 5.1.0
 ------------------------------------------------------------------------------------------------------------------------------------
 - Generación de informe de accesibilidad en profundidad en ODS, XLSX y JSON en el servicio de diagnóstico
@@ -16,7 +25,7 @@
 - Plantilla de informe agregado del cartucho de la metodología de accesibilidad
 - Incluidos en la exportación de JSON los checks que no aplican
 - Incluídas las puntuaciones 'No puntúa' de verificaciones en el agregado que se computaban erróneamente como 'Conforme'
-- Añadidad la complejidad a los anexos en XML
+- Añadidas la complejidad a los anexos en XML
 
 5.0.5
 ------------------------------------------------------------------------------------------------------------------------------------
