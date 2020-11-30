@@ -1,5 +1,6 @@
 <!--
-Copyright (C) 2019  Ministerio de Hacienda y Funciï¿½n Pï¿½blica, 
+
+Copyright (C) 2019  Ministerio de Hacienda y Función Pública, 
 This program is licensed and may be used, modified and redistributed under the terms
 of the European Public License (EUPL), either version 1.2 or (at your option) any later 
 version as soon as they are approved by the European Commission.
@@ -136,9 +137,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				</caption>
 				<tbody>
 					<tr>
-						<th>
-							<bean:message key="observatory.status.summary.seed.total" />
-						</th>
+						<logic:notEqual name="estado" property="idEstado" value="0">
+							<th>
+								<bean:message key="observatory.status.summary.seed.total" />
+							</th>
+						</logic:notEqual>
 						<th>
 							<bean:message key="observatory.status.summary.seed.processed" />
 						</th>
@@ -156,9 +159,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</th>
 					</tr>
 					<tr>
-						<td style="text-align: center">
-							<bean:write name="estado" property="totalSemillas" />
-						</td>
+						<logic:notEqual name="estado" property="idEstado" value="0">
+							<td style="text-align: center">
+								<bean:write name="estado" property="totalSemillas" />
+							</td>
+						</logic:notEqual>
 						<td>
 							<bean:write name="estado" property="semillasAnalizadas" />
 							(
@@ -580,6 +585,20 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
                    });
                 });
              </script>
+			<h2>
+				<bean:message key="observatory.status.notes.title" />
+			</h2>
+			<logic:notEqual name="estado" property="idEstado" value="0">
+				<p>
+					<bean:message key="observatory.status.notes.running" />
+				</p>
+			</logic:notEqual>
+			<p>
+				<bean:message key="observatory.status.notes.info" />
+			</p>
+			<p>
+				<bean:message key="observatory.status.notes.info2" />
+			</p>
 		</div>
 		<!-- fin cajaformularios -->
 	</div>

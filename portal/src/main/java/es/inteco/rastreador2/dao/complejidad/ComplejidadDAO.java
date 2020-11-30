@@ -128,7 +128,7 @@ public final class ComplejidadDAO {
 	 */
 	public static List<ComplejidadForm> getComplejidadesObs(Connection c, String[] tagsToFiler, String[] exObsIds) throws SQLException {
 		final List<ComplejidadForm> results = new ArrayList<>();
-		String query = "SELECT DISTINCT cx.id_complejidad, cx.nombre, cx.profundidad, cx.amplitud FROM complejidades_lista cx JOIN lista l ON cx.id_complejidad = l.id_complejidad JOIN rastreo r ON r.semillas=l.id_lista JOIN rastreos_realizados rr ON rr.id_rastreo = r.id_rastreo JOIN semilla_etiqueta se ON se.id_lista=l.id_lista ";
+		String query = "SELECT DISTINCT cx.id_complejidad, cx.nombre, cx.profundidad, cx.amplitud FROM complejidades_lista cx JOIN lista l ON cx.id_complejidad = l.id_complejidad JOIN rastreo r ON r.semillas=l.id_lista LEFT JOIN semilla_etiqueta se ON se.id_lista=l.id_lista JOIN rastreos_realizados rr ON rr.id_rastreo = r.id_rastreo  ";
 		if (exObsIds != null && exObsIds.length > 0) {
 			query = query + "AND id_obs_realizado IN (" + exObsIds[0];
 			for (int i = 1; i < exObsIds.length; i++) {

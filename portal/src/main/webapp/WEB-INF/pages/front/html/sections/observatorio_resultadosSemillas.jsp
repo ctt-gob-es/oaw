@@ -218,11 +218,15 @@ var translatedColNames = [ colNameId, colNameOldName,
 		$('#nuevaSemillaMultidependencia  select[name=activa] option[value='
 						+ $('#grid').getLocalRow(rowid).activa + ']').attr(
 				'selected', 'selected');
-	
-		$('#nuevaSemillaMultidependencia  select[name=inDirectory]').val();
+
+		//selectInDirectorySeed
+		$("#nuevaSemillaMultidependencia select[name=inDirectory]").find('option').attr("selected",false) ;
 		$('#nuevaSemillaMultidependencia  select[name=inDirectory] option[value='
 						+ $('#grid').getLocalRow(rowid).inDirectory + ']')
-				.attr('selected', 'selected');
+				.attr('selected', 'selected');		
+		$("#nuevaSemillaMultidependencia  select[name=inDirectory]").val(String($('#grid').getLocalRow(rowid).inDirectory));
+	
+		
 		$('#nuevaSemillaMultidependencia  select[name=inDirectory] option[value='
 						+ $('#grid').getLocalRow(rowid).inDirectory + ']')
 				.attr('selected', 'selected');
@@ -302,7 +306,7 @@ var translatedColNames = [ colNameId, colNameOldName,
 				
 				$('#autocompleteAddSeedObservatory').autocomplete({
 				    delay: 500,
-				    minLength: 3,
+				    minLength: 1,
 				    autoFocus: true,
 				    create: function( event, ui ) {
 				      $.ajax( {
@@ -311,6 +315,7 @@ var translatedColNames = [ colNameId, colNameOldName,
 		 					+ '&idExObs='
 		 					+ $('[name=idExObs]').val(),
 				        dataType: "json",
+				        cache: false,
 				        success: function( data ) {
 				          allSeeds = data.map(function(currentValue, index, arr) { 		            
 				            return {

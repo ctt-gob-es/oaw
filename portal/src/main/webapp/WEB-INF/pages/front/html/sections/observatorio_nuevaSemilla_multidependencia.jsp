@@ -381,7 +381,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<label for="inDirectory" class="control-label"><strong class="labelVisu"><bean:message
 							key="nueva.semilla.observatorio.in.directory" /></strong></label>
 				<div class="col-xs-2">
-					<select name="inDirectory" class="textoSelect form-control">
+					<select name="inDirectory" class="textoSelect form-control" id="selectInDirectorySeed">
 						<option value="false">
 							<bean:message key="select.no" />
 						</option>

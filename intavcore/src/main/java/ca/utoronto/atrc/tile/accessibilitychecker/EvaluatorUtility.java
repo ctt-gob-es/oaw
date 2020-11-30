@@ -41,7 +41,10 @@ Telephone: (416) 978-4360
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -55,6 +58,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,6 +68,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
@@ -947,11 +952,32 @@ public final class EvaluatorUtility {
 				final OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
 				final URLCodec codec = new URLCodec();
 				// TODO FOCE HTML5
-				writer.write("fragment=" + codec.encode(HTMLEntities.unhtmlAmpersand(HTMLEntities.htmlentities(contents))) + "&output=soap12&doctype=HTML5");
+				final String str = "output=soap12&doctype=HTML5&fragment=" + codec.encode(HTMLEntities.unhtmlAmpersand(HTMLEntities.htmlentities(contents)));
+				writer.write(str);
 				writer.flush();
 				writer.close();
 				connection.connect();
-				document = builder.parse(connection.getInputStream());
+				// TODO Extract to xml to prevent non prolog first lines
+				File tmpResponse = File.createTempFile("w3c_", ".txt");
+				FileUtils.copyInputStreamToFile(connection.getInputStream(), tmpResponse);
+				Scanner fileScanner = new Scanner(tmpResponse);
+				File tmpResponseProcesesd = File.createTempFile("w3c_", ".txt");
+				FileWriter fileStream = new FileWriter(tmpResponseProcesesd);
+				BufferedWriter out = new BufferedWriter(fileStream);
+				boolean copyLine = false;
+				while (fileScanner.hasNextLine()) {
+					String next = fileScanner.nextLine();
+					if (!copyLine && next.startsWith("<?xml")) {
+						copyLine = true;
+					}
+					if (copyLine) {
+						out.write(next);
+					}
+				}
+				out.close();
+				fileScanner.close();
+				// document = builder.parse(connection.getInputStream());
+				document = builder.parse(tmpResponseProcesesd);
 			} catch (Exception e) {
 				addValidationSummary(validationErrors, checkAccessibility.getUrl());
 				throw e;

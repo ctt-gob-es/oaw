@@ -282,19 +282,22 @@ public final class OpenOfficeGlobalReportBuilder {
 					// Global sections
 					replaceGlobalSection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, complexitivities, ambits, tagsToFilter, exObsIds);
 					List<ObservatoryEvaluationForm> onlyPrimarys = new ArrayList<ObservatoryEvaluationForm>();
+					// final List<AmbitoForm> primaryAmbits = AmbitoDAO.getAmbitosPrimarios(DataBaseManager.getConnection(), null, -1);
+					final List<AmbitoForm> primaryAmbits = new ArrayList<>();
 					for (int i = 0; i < exObsIds.length; i++) {
 						AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryExId(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]));
 						if (ambito != null) {
 							final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryPrinmayCategoriesAmbit(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]),
 									Long.parseLong(ambito.getId()));
 							if (categories != null && !categories.isEmpty()) {
+								primaryAmbits.add(ambito);
 								for (CategoriaForm cat : categories) {
 									onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), Long.parseLong(cat.getId())));
 								}
 							}
 						}
 					}
-					final List<AmbitoForm> primaryAmbits = AmbitoDAO.getAmbitosPrimarios(DataBaseManager.getConnection(), null, -1);
+//					final List<AmbitoForm> primaryAmbits = AmbitoDAO.getAmbitosPrimarios(DataBaseManager.getConnection(), null, -1);
 					replaceAmbitPrimarySection(graphicPath, onlyPrimarys, messageResources, odt, odfFileContent, complexitivities, primaryAmbits, tagsToFilter, exObsIds);
 					finishDocumentConfiguration(odt, odfFileContent, reportTitle);
 					// Lists all files in folder
@@ -880,20 +883,22 @@ public final class OpenOfficeGlobalReportBuilder {
 			/**
 			 * Primarys
 			 */
-			List<ObservatoryEvaluationForm> onlyPrimarys = new ArrayList<ObservatoryEvaluationForm>();
+			final List<ObservatoryEvaluationForm> onlyPrimarys = new ArrayList<ObservatoryEvaluationForm>();
+			final List<AmbitoForm> primaryAmbits = new ArrayList<>();
 			for (int i = 0; i < exObsIds.length; i++) {
 				AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryExId(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]));
 				if (ambito != null) {
 					final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryPrinmayCategoriesAmbit(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]),
 							Long.parseLong(ambito.getId()));
 					if (categories != null && !categories.isEmpty()) {
+						primaryAmbits.add(ambito);
 						for (CategoriaForm cat : categories) {
 							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), Long.parseLong(cat.getId())));
 						}
 					}
 				}
 			}
-			final List<AmbitoForm> primaryAmbits = AmbitoDAO.getAmbitosPrimarios(DataBaseManager.getConnection(), null, -1);
+			// final List<AmbitoForm> primaryAmbits = AmbitoDAO.getAmbitosPrimarios(DataBaseManager.getConnection(), null, -1);
 			// ALLOCATION BY AMBIT
 			title = messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_PRIMARY_MARK_TITLE);
 			file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_PRIMARY_MARK_NAME) + JPG_EXTENSION;
@@ -1810,6 +1815,12 @@ public final class OpenOfficeGlobalReportBuilder {
 	private static StringBuilder generateTableRowAmbit(final String tableName, final String header0, String columna1, String columna2, String columna3, final List<AmbitoForm> ambits,
 			final Map<AmbitoForm, Map<String, BigDecimal>> res, final MessageResources messageResources, final String resultsType, final boolean isPercentaje) throws Exception {
 		StringBuilder sb = generateTableHeader(columna1, columna2, columna3, header0, tableName);
+		ambits.sort(new Comparator<AmbitoForm>() {
+			@Override
+			public int compare(AmbitoForm o1, AmbitoForm o2) {
+				return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
+			}
+		});
 		for (AmbitoForm ambit : ambits) {
 			List<LabelValueBean> results = null;
 			switch (resultsType) {

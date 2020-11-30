@@ -58,7 +58,7 @@ public class AnonymousResultPdfAccesibilidadBuilder extends AnonymousResultPdfBu
 	 */
 	@Override
 	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, final String observatoryId, String filePath) throws Exception {
-		ResultadosAnonimosObservatorioAccesibilidadUtils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true, null);
+		ResultadosAnonimosObservatorioAccesibilidadUtils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true, null, null);
 	}
 
 	/**
@@ -199,8 +199,9 @@ public class AnonymousResultPdfAccesibilidadBuilder extends AnonymousResultPdfBu
 	 * @throws Exception the exception
 	 */
 	@Override
-	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, String observatoryId, String filePath, String[] tagsFilter, String[] exObsIds)
-			throws Exception {
-		ResultadosAnonimosObservatorioAccesibilidadUtils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true, tagsFilter);
+	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, String observatoryId, String filePath, String[] tagsFilter,
+			final String[] tagsFilterFixed, String[] exObsIds) throws Exception {
+		ResultadosAnonimosObservatorioAccesibilidadUtils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true, tagsFilter,
+				tagsFilterFixed);
 	}
 }

@@ -580,6 +580,7 @@ public final class CrawlerUtils {
 		connection.addRequestProperty("Accept", pmgr.getValue("crawler.core.properties", "method.accept.header"));
 		connection.addRequestProperty("Accept-Language", pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
 		connection.addRequestProperty("User-Agent", pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
+		connection.addRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36");
 		if (refererUrl != null) {
 			connection.addRequestProperty("Referer", refererUrl);
 		}

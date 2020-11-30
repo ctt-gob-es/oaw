@@ -111,7 +111,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @throws Exception Excepción lanzada
 	 */
 	public static void generateGraphics(final MessageResources messageResources, String executionId, final Long idExecutionObservatory, final String observatoryId, final String filePath,
-			final String type, final boolean regenerate, final String[] tagsFilter) throws Exception {
+			final String type, final boolean regenerate, final String[] tagsFilter, final String[] tagsFilterFixed) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final PropertiesManager pmgr = new PropertiesManager();
 			String color = pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors");
@@ -120,7 +120,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			}
 			// recuperamos las categorias del observatorio
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idExecutionObservatory);
-			generateGlobalGraphics(messageResources, executionId, filePath, categories, color, regenerate, tagsFilter);
+			generateGlobalGraphics(messageResources, executionId, filePath, categories, color, regenerate, tagsFilter, tagsFilterFixed);
 		} catch (Exception e) {
 			Logger.putLog("No se han generado las gráficas correctamente.", ResultadosAnonimosObservatorioAccesibilidadUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -140,7 +140,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @throws Exception the exception
 	 */
 	public static Map<String, Object> generateGlobalGraphics(final MessageResources messageResources, final String executionId, final String filePath, final List<CategoriaForm> categories,
-			final String color, final boolean regenerate, final String[] tagsFilter) throws Exception {
+			final String color, final boolean regenerate, final String[] tagsFilter, final String[] tasgFilterFixed) throws Exception {
 		final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(executionId, 0, null, null, 2, tagsFilter);
 		final Map<String, Object> globalGraphics = new HashMap<>();
 		final List<AmbitoForm> ambits = AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1);
