@@ -6,10 +6,15 @@
 
   <p ng-bind-html="'DOWNLOAD.INTRO' | translate"></p>
 
+
+  <p ng-bind-html="'DOWNLOAD.INFO_DOWNLOAD_REPORT' | translate"></p>
+
   <div class="container save-panel">
     <div class="panel panel-default">
+      
       <div class="panel-heading">
         {{ 'DOWNLOAD.DOWNLOAD_REPORT' | translate}}
+
       </div>
       <ul class="list-group">
         <li class="list-group-item"><a download="{{exportHtmlFile}}" ng-click="saveHtmlBlobIE()" target="_blank"
@@ -27,21 +32,22 @@
             {{ 'DOWNLOAD.BTN_SAVE_ODS' | translate}}
           </a>
 
-          <span ng-show="loading == true">            
+          <span ng-show="loading == true">
             <i class="glyphicon glyphicon-refresh spinning"></i> {{ 'DOWNLOAD.BTN_SAVE_ODS_LOAD' | translate}}
           </span>
-          <div ng-show="clickDownload == true" class="alert alert-info infobox text-justify" ng-bind-html="'DOWNLOAD.BTN_SAVE_ODS_INFO' | translate"></div>
-          
+          <div ng-show="clickDownload == true" class="alert alert-info infobox text-justify"
+            ng-bind-html="'DOWNLOAD.BTN_SAVE_ODS_INFO' | translate"></div>
+
         </li>
-        
+
         <li class="list-group-item"><a ng-click="saveAsXlsx2()" ng-show="loadingxlsx != true" target="_blank" href="">
-          {{ 'DOWNLOAD.BTN_SAVE_XLSX' | translate}}
-        </a>
-        
-        <span ng-show="loadingxlsx == true">
-          <i class="glyphicon glyphicon-refresh spinning"></i> {{ 'DOWNLOAD.BTN_SAVE_XLSX_LOAD' | translate}}
-        </span>
-      </li>
+            {{ 'DOWNLOAD.BTN_SAVE_XLSX' | translate}}
+          </a>
+
+          <span ng-show="loadingxlsx == true">
+            <i class="glyphicon glyphicon-refresh spinning"></i> {{ 'DOWNLOAD.BTN_SAVE_XLSX_LOAD' | translate}}
+          </span>
+        </li>
       </ul>
     </div>
   </div>
