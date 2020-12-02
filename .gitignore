@@ -9,7 +9,7 @@
 **/.metadata
 **/.sts4-cache
 **/.history
-**.attach_**
+.attach_*
 
 # Node artifact files
 node_modules/
