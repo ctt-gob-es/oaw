@@ -1,8 +1,8 @@
 {
     "TITLE": "¡Uy! Algo salió mal.",
-    "INTRO": "Esta no es la página que estás buscando. Intenta una de estas soluciones para resolver el problema.",
-    "SUGGESTION1": "Si has escrito la URL, asegúrate de que es exactamente lo que debería ser.",
-    "SUGGESTION2": "Vuelve a la <a href={{link_back}}>página anterior</a> e inténtalo de nuevo.",
-    "SUGGESTION3": "Asegúrate de que los archivos con los que trabajas siguen el formato <a href={{link_format}}>wcag-em</a>.",
-    "BUG_REPORT": "Para informar de cualquier error o sugerencia de características, deje un asunto en nuestro <a href={{link_github}}>Github</a>."
+    "INTRO": "Esta no es la página que está buscando. Intente una de estas soluciones para resolver el problema:",
+    "SUGGESTION1": "Si ha escrito la URL, asegúrese de que es exactamente la que debería ser.",
+    "SUGGESTION2": "Vuelva a la <a href={{link_back}}>página anterior</a> e inténtelo de nuevo.",
+    "SUGGESTION3": "Asegúrese de que los archivos con los que trabaja siguen el formato <a href={{link_format}}>wcag-em</a>.",
+    "BUG_REPORT": "Para informar de cualquier error o sugerencia, por favor, deje su comentario en nuestro proyecto de <a href={{link_github}}>Github</a>."
 }
