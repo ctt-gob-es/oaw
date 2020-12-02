@@ -151,8 +151,10 @@ public class BasicServiceMailService {
 			} catch (Exception e) {
 				Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			}
+			final String irap = "true".equalsIgnoreCase(basicServiceForm.getDepthReport()) ? pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.yes")
+					: pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.no");
 			text = MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory"), basicServiceForm.getUser(), basicServiceForm.getDomain(), complexName,
-					basicServiceForm.getProfundidad(), basicServiceForm.getAmplitud(), inDirectory, reportToString(basicServiceForm.getReport()), proxyActive);
+					basicServiceForm.getProfundidad(), basicServiceForm.getAmplitud(), inDirectory, reportToString(basicServiceForm.getReport()), proxyActive, irap);
 		}
 		return text;
 	}
