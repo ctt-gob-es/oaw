@@ -53,15 +53,15 @@ public class GraphicUtilsTest {
 
 	@Test
 	public void testGraphicsUtils() throws Exception {
-		final String sectionLabel = "N\u00BA Portales: ";
-		final int total = 18;
+		final String sectionLabel = "Número de sitios web: ";
+		final int total = 7;
 		final DefaultPieDataset dataSet = new DefaultPieDataset();
-		dataSet.setValue("Parcial", Integer.valueOf(3));
-		dataSet.setValue("Prioridad 1", Integer.valueOf(3));
-		dataSet.setValue("Prioridad 1 y 2", Integer.valueOf(12));
+		dataSet.setValue("No válido", Integer.valueOf(5));
+		dataSet.setValue("A", Integer.valueOf(2));
+		dataSet.setValue("AA", Integer.valueOf(0));
 		final PropertiesManager pmgr = new PropertiesManager();
-		GraphicsUtils.createPieChart(dataSet, "Distribución del Nivel de Accesibilidad. Segmento I: Principales", sectionLabel, total,
-				"/home/alvaro/Desktop/oaw-graficas-" + stringDate + "/na_seg_1.jpg", "", pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
+		GraphicsUtils.createPieChart(dataSet, "Nivel de adecuación estimado: segmento Propia", sectionLabel, total, "/home/alvaro/Desktop/oaw-graficas-" + stringDate + "/na_seg_1.jpg", "",
+				pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
 	}
 
 	@Test
@@ -588,8 +588,7 @@ public class GraphicUtilsTest {
 		chartForm = new ChartForm("", "", "", dataSet, true, false, false, true, true, false, false, 580, 485, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
 		GraphicsUtils.createStackedBarChart(chartForm, noDataMess, "/home/alvaro/Downloads/oaw-graficas-2020/comformidad-verifica-2.jpg");
 	}
-	
-	
+
 	@Test
 	public void testEvolucionConformidadSegmento() throws Exception {
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();

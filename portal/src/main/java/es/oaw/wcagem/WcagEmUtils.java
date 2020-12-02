@@ -900,6 +900,7 @@ public final class WcagEmUtils {
 		// 4.1.2
 		checks = new ArrayList<>();
 		checks.add("432");// 1.8
+		checks.add("57"); // 1.9
 		checks.add("91"); // 1.9
 		checks.add("95"); // 1.9
 		checks.add("444"); // 1.10
