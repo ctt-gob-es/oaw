@@ -211,6 +211,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold2"));
 			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold3"));
 			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold4"));
+			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold5"));
 			section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service"), boldWords, ConstantsFont.paragraphBoldFont,
 					ConstantsFont.PARAGRAPH, true));
 			/****** paragraph #2 *****/

@@ -24,8 +24,6 @@ public enum WcagEmPointKey {
 	WCAG_2_2_1("2.2.1", "WCAG2:timing-adjustable"),
 	/** The wcag 2 2 2. */
 	WCAG_2_2_2("2.2.2", "WCAG2:pause-stop-hide"),
-	/** The wcag 2 3 1. */
-	WCAG_2_3_1("2.3.1", "WCAG2:three-flashes-or-below-threshold"),
 	/** The wcag 2 4 1. */
 	WCAG_2_4_1("2.4.1", "WCAG2:bypass-blocks"),
 	/** The wcag 2 4 2. */

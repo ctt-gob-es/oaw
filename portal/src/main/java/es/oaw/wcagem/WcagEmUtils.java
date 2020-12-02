@@ -82,6 +82,8 @@ public final class WcagEmUtils {
 	private static final String EARL_PASSED = "earl:passed";
 	/** The Constant EARL_CANNOT_TELL. */
 	private static final String EARL_CANNOT_TELL = "earl:cantTell";
+	/** The Constant EARL_UNTESTED. */
+	private static final String EARL_UNTESTED = "earl:untested";
 
 	/**
 	 * Generate report.
@@ -246,7 +248,8 @@ public final class WcagEmUtils {
 					result.setDescription("");
 					result.setType("TestResult");
 					// By default, we mark all as cannot tell because this an automatic analisys that not cover all WCAG verfification point
-					result.setOutcome(EARL_CANNOT_TELL);
+//					result.setOutcome(EARL_CANNOT_TELL);
+					result.setOutcome(EARL_UNTESTED);
 					auditResult.setResult(result);
 				}
 				auditResult.setMode("earl:automatic");
@@ -686,7 +689,6 @@ public final class WcagEmUtils {
 	 * @param observatorySubgroupForms the observatory subgroup forms
 	 * @param wcagEmId                 the wcag em id
 	 * @param checkChecks              the check checks
-	 * @param allChecksApply           the all checks apply
 	 */
 	private static void processMultipleVerification(Map<String, ValidationDetails> tmpWcag, final List<ObservatorySubgroupForm> observatorySubgroupForms, final String wcagEmId,
 			final boolean checkChecks) {
