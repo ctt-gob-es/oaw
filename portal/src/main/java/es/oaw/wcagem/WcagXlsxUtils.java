@@ -4,6 +4,9 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.apache.poi.poifs.crypt.HashAlgorithm;
@@ -49,11 +52,17 @@ public final class WcagXlsxUtils {
 		FileInputStream inputStream = new FileInputStream(inputFile);
 		XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
 		// Load template
+		final Sheet sheetAmbit = workbook.getSheet("01.Definición de ámbito");
+		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyy");
+		CellReference ref = new CellReference("C35");
+		Row r = sheetAmbit.getRow(ref.getRow());
+		Cell c = r.getCell(ref.getCol());
+		c.setCellValue(fmt.format(OffsetDateTime.now(ZoneId.of("Europe/Madrid"))));
 		// filt techs
 		final Sheet sheetTech = workbook.getSheet("02.Tecnologías");
-		CellReference ref = new CellReference("C9");
-		Row r = sheetTech.getRow(ref.getRow());
-		Cell c = r.getCell(ref.getCol());
+		ref = new CellReference("C9");
+		r = sheetTech.getRow(ref.getRow());
+		c = r.getCell(ref.getCol());
 		c.setCellValue("Sí");
 		ref = new CellReference("C12");
 		r = sheetTech.getRow(ref.getRow());
