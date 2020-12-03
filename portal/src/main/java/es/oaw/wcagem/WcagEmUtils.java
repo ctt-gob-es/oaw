@@ -3,6 +3,7 @@ package es.oaw.wcagem;
 import java.lang.reflect.InvocationTargetException;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -227,7 +228,8 @@ public final class WcagEmUtils {
 				Website website = new Website();
 				website.setType(Arrays.asList(new String[] { "TestSubject", "WebSite" }));
 				website.setId("_:website");
-				website.setSiteName(siteUrl);
+				// website.setSiteName(siteUrl);
+				website.setSiteName("");
 				website.setSiteScope("");
 				evaluationScope.setWebsite(website);
 			}
@@ -244,11 +246,11 @@ public final class WcagEmUtils {
 				auditResult.setSubject("_:website");
 				{
 					Result result = new Result();
-					result.setDate(OffsetDateTime.now(ZoneId.of("Europe/Madrid")).toString());
+					DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyy");
+					result.setDate(fmt.format(OffsetDateTime.now(ZoneId.of("Europe/Madrid"))));
 					result.setDescription("");
 					result.setType("TestResult");
 					// By default, we mark all as cannot tell because this an automatic analisys that not cover all WCAG verfification point
-//					result.setOutcome(EARL_CANNOT_TELL);
 					result.setOutcome(EARL_UNTESTED);
 					auditResult.setResult(result);
 				}
@@ -282,11 +284,12 @@ public final class WcagEmUtils {
 									resultP.setOutcome(validationResult);
 									hasPart.setResult(resultP);
 									// if one of this has earl:failed, all result marked as failed
-									if (EARL_FAILED.equals(validationResult)) {
-										auditResult.getResult().setOutcome(EARL_FAILED);
-									} else {
-										auditResult.getResult().setOutcome(EARL_CANNOT_TELL);
-									}
+									// Modified, by default preservate EARL_UNTESTED
+//									if (EARL_FAILED.equals(validationResult)) {
+//										auditResult.getResult().setOutcome(EARL_FAILED);
+//									} else {
+//										auditResult.getResult().setOutcome(EARL_CANNOT_TELL);
+//									}
 								}
 								hasPart.setMultiPage(false);
 								hasPart.setMode("earl:automatic");
@@ -303,8 +306,8 @@ public final class WcagEmUtils {
 			graph.setAuditResult(auditResults);
 		}
 		graph.setCreator("_:evaluator");
-		graph.setTitle("Observatorio de Accesibilidad Web (OAW) - " + currentEvaluationPageList.get(0).getEntity());
-		graph.setCommissioner("Observatorio de Accesibilidad Web (OAW)");
+		graph.setTitle("Informe de revisión de accesibilidad - " + currentEvaluationPageList.get(0).getEntity());
+		graph.setCommissioner("");
 		{
 			StructuredSample structuredSample = new StructuredSample();
 			List<Webpage> webpages = new ArrayList<>();
