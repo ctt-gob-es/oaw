@@ -64,6 +64,7 @@ public final class CrawlerJobManager {
 	 * @param crawlerData the crawler data
 	 * @throws Exception the exception
 	 */
+	@SuppressWarnings("deprecation")
 	public static void startJob(CrawlerData crawlerData) throws Exception {
 		init();
 		final JobDetailImpl jobDetail = new JobDetailImpl(Constants.CRAWLER_JOB_NAME + "_" + crawlerData.getIdCrawling(), Constants.CRAWLER_JOB_GROUP + "_" + crawlerData.getIdObservatory(),
@@ -89,7 +90,6 @@ public final class CrawlerJobManager {
 		for (String groupName : scheduler.getJobGroupNames()) {
 			if (groupNameToEnd.equals(groupName)) {
 				// Check all jobs if not found
-//			    for (String groupName : scheduler.getJobGroupNames()) {
 				for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
 					// get job's trigger
 					List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
@@ -98,15 +98,6 @@ public final class CrawlerJobManager {
 					scheduler.interrupt(jobKey);
 					scheduler.deleteJob(jobKey);
 				}
-//			    }
-//				for (String jobName : scheduler.getJobNames(groupName)) {
-//					// get job's trigger
-//					Trigger[] triggers = scheduler.getTriggersOfJob(jobName, groupName);
-//					Date nextFireTime = triggers[0].getNextFireTime();
-//					System.out.println("[jobName] : " + jobName + " [groupName] : " + groupName + " - " + nextFireTime);
-//					scheduler.interrupt(jobName, groupName);
-//					scheduler.deleteJob(jobName, groupName);
-//				}
 			}
 		}
 	}
@@ -122,8 +113,6 @@ public final class CrawlerJobManager {
 		init();
 		scheduler.interrupt(new JobKey(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + idObservatory, Constants.EXECUTE_SCHEDULED_OBSERVATORY_GROUP));
 		scheduler.deleteJob(new JobKey(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + idObservatory, Constants.EXECUTE_SCHEDULED_OBSERVATORY_GROUP));
-//		scheduler.interrupt(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + idObservatory, Constants.EXECUTE_SCHEDULED_OBSERVATORY_GROUP);
-//		scheduler.deleteJob(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + idObservatory, Constants.EXECUTE_SCHEDULED_OBSERVATORY_GROUP);
 		// Relaunch threads
 		Set<Thread> threads = Thread.getAllStackTraces().keySet();
 		for (Thread t : threads) {
