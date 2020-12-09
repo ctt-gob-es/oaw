@@ -69,6 +69,27 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<c:set target="${paramsRelanzar}" property="id_observatorio" value="${idObservatory}" />
 						<c:set target="${paramsRelanzar}" property="idExObs" value="${idExecutedObservatorio}" />
 						<c:set target="${paramsRelanzar}" property="idCartucho" value="${idCartucho}" />
+						<logic:equal name="estado" property="idEstado" value="4">
+							<td style="text-align: center">
+								<bean:message key="resultado.observatorio.rastreo.realizado.estado.parado" />
+							</td>
+							<td>
+								<html:link forward="relanzarObservatorio" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
+										title="<bean:message key="observatory.status.relaunh"/>"></span>
+									<span class="sr-only">
+										<bean:message key="observatory.status.relaunh" />
+									</span>
+								</html:link>
+								<html:link forward="resultadosObservatorioSemillas" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
+										title="<bean:message key="observatory.status.results"/>"></span>
+									<span class="sr-only">
+										<bean:message key="observatory.status.results" />
+									</span>
+								</html:link>
+							</td>
+						</logic:equal>
 						<logic:equal name="estado" property="idEstado" value="3">
 							<td style="text-align: center">
 								<bean:message key="resultado.observatorio.rastreo.realizado.estado.relanzado" />
@@ -79,6 +100,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										title="<bean:message key="observatory.status.relaunh"/>"></span>
 									<span class="sr-only">
 										<bean:message key="observatory.status.relaunh" />
+									</span>
+								</html:link>
+								<html:link forward="resultadosObservatorioSemillas" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
+										title="<bean:message key="observatory.status.results"/>"></span>
+									<span class="sr-only">
+										<bean:message key="observatory.status.results" />
 									</span>
 								</html:link>
 							</td>
@@ -93,6 +121,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										title="<bean:message key="observatory.status.relaunh"/>"></span>
 									<span class="sr-only">
 										<bean:message key="observatory.status.relaunh" />
+									</span>
+								</html:link>
+								<html:link forward="resultadosObservatorioSemillas" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
+										title="<bean:message key="observatory.status.results"/>"></span>
+									<span class="sr-only">
+										<bean:message key="observatory.status.results" />
 									</span>
 								</html:link>
 							</td>
@@ -361,23 +396,35 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<col style="width: 7%">
 						<col style="width: 5%">
 						<col style="width: 30%">
-						<col style="width: 42%">
+						<col style="width: 36%">
+						<col style="width: 8%">
+						<col style="width: 8%">
 						<col style="width: 8%">
 						<col style="width: 8%">
 					</colgroup>
 					<tbody>
 						<tr>
 							<th>
-								<%-- 								<bean:message key="observatory.status.no.results.selector" /> --%>
 								<input type="checkbox" id='threshold_checkbox_all' name='threshold_checkbox_all'>
 							</th>
 							<th>#</th>
 							<th>
 								<bean:message key="observatory.status.no.results.name" />
 							</th>
+							<th>
+								<bean:message key="colname.complex" />
+							</th>
 							<th>URL</th>
 							<th>
 								<bean:message key="colname.total.url" />
+							</th>
+							<th>
+								%
+								<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
+									title="<bean:message key="observatory.status.percent.threshold" />"></span>
+								<span class="sr-only">
+									<bean:message key="observatory.status.percent.threshold" />
+								</span>
 							</th>
 							<th>
 								<bean:message key="observatory.status.no.results.relaunch" />
@@ -385,7 +432,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</tr>
 						<logic:empty name="finishLessThreshold">
 							<tr>
-								<td colspan="6">
+								<td colspan="7">
 									<bean:message key="no.results" />
 								</td>
 							</tr>
@@ -413,7 +460,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									</logic:iterate>
 								</td>
 								<td>
+									<bean:write name="crawlLessThreshold" property="complejidad.name" />
+								</td>
+								<td>
 									<bean:write name="crawlLessThreshold" property="numCrawls" />
+								</td>
+								<td>
+									<fmt:formatNumber type="number" maxFractionDigits="2" value="${crawlLessThreshold.percentNumCrawls}" />
+									%
 								</td>
 								<td class="col-md-2"><jsp:useBean id="paramsRelaunchThreshold" class="java.util.HashMap" />
 									<c:set target="${paramsRelaunchThreshold}" property="id_observatorio" value="${idObservatory}" />

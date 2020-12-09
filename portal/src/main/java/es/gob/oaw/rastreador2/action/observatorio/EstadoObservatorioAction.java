@@ -75,6 +75,7 @@ public class EstadoObservatorioAction extends Action {
 				finishWithoutResults = ObservatorioDAO.getResultSeedsFullFromObservatoryByIds(c, new SemillaForm(), idEjecucionObservatorio.longValue(), 0l, -1,
 						finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis);
 			}
+			// Less configured treshold
 			List<Long> lessThresholdIds = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(c, (long) idEjecucionObservatorio);
 			List<ResultadoSemillaFullForm> finishLessThreshold = new ArrayList<ResultadoSemillaFullForm>();
 			if (lessThresholdIds != null && !lessThresholdIds.isEmpty()) {
