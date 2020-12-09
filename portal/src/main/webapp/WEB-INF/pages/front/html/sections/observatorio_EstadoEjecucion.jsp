@@ -95,11 +95,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								<bean:message key="resultado.observatorio.rastreo.realizado.estado.relanzado" />
 							</td>
 							<td>
-								<html:link forward="relanzarObservatorio" name="paramsRelanzar">
-									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-										title="<bean:message key="observatory.status.relaunh"/>"></span>
+								<html:link forward="stopObservatorio" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip"
+										title="<bean:message key='tooltip.status.stop' />"></span>
 									<span class="sr-only">
-										<bean:message key="observatory.status.relaunh" />
+										<bean:message key='tooltip.status.stop' />
 									</span>
 								</html:link>
 								<html:link forward="resultadosObservatorioSemillas" name="paramsRelanzar">
@@ -116,11 +116,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								<bean:message key="resultado.observatorio.rastreo.realizado.estado.lanzado" />
 							</td>
 							<td>
-								<html:link forward="relanzarObservatorio" name="paramsRelanzar">
-									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-										title="<bean:message key="observatory.status.relaunh"/>"></span>
+								<html:link forward="stopObservatorio" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip"
+										title="<bean:message key='tooltip.status.stop' />"></span>
 									<span class="sr-only">
-										<bean:message key="observatory.status.relaunh" />
+										<bean:message key='tooltip.status.stop' />
 									</span>
 								</html:link>
 								<html:link forward="resultadosObservatorioSemillas" name="paramsRelanzar">
