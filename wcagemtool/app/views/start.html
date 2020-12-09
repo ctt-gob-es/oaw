@@ -25,10 +25,10 @@
 </button-collapse></h2>
 <div collapse="rootHide.start2" class="{{initial}}">
   <ul>
-    <li>{{ 'START.USAGE_LI1' | translate }}</li>
-    <li>{{ 'START.USAGE_LI2' | translate }}</li>
-    <li>{{ 'START.USAGE_LI3' | translate }}</li>
-    <li>{{ 'START.USAGE_LI4' | translate }}</li>
+    <li ng-bind-html="'START.USAGE_LI1' | translate"></li>
+    <li ng-bind-html="'START.USAGE_LI2' | translate"></li>
+    <li ng-bind-html="'START.USAGE_LI3' | translate"></li>
+    <li ng-bind-html="'START.USAGE_LI4' | translate"></li>
   </ul>
 </div>
 
@@ -38,14 +38,16 @@
 </button-collapse></h2>
 <div collapse="rootHide.start3" class="{{initial}}">
   <ul>
-    <li>{{ 'START.TIPS_LI1' | translate }}</li>
+    <li ng-bind-html="'START.TIPS_LI1' | translate"></li>
     <li ng-bind-html="'START.TIPS_LI2' | translate: { info :
       '<span class=\'glyphicon glyphicon-info-sign primary-color\'></span>' +
       '<span class=\'sr-only\'>' + translate('COMMON.BTN_INFO') + '</span>'
     }">
     </li>
-    <li>{{ 'START.TIPS_LI3' | translate }}</li>
-    <li>{{ 'START.TIPS_LI4' | translate }}</li>
+    <li ng-bind-html="'START.TIPS_LI3' | translate"></li>
+    <li ng-bind-html="'START.TIPS_LI4' | translate"></li>
+    <li ng-bind-html="'START.TIPS_LI5' | translate"></li>
+    <li ng-bind-html="'START.TIPS_LI6' | translate"></li>
 </ul> </div>
 </main>
 

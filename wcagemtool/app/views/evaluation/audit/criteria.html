@@ -7,7 +7,7 @@
 
   <info-field ref="inf_audit_criteria" exitto=""
   button="{{'COMMON.BTN_CLOSE_INFO' | translate}}">
-    <p>{{ 'AUDIT.INF_AUDIT_CRITERIA' | translate }}</p>
+    <p ng-bind-html="'AUDIT.INF_AUDIT_CRITERIA' | translate "></p>
   </info-field>
 
   <div ng-include src="'views/evaluation/audit/criteria-tools.html'"></div>
