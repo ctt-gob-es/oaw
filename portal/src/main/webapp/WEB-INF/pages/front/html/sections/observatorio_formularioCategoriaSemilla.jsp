@@ -14,23 +14,16 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml />
 <html:javascript formName="CategoriaForm" />
-
-
 <!--  JQ GRID   -->
 <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="/oaw/css/jqgrid.semillas.css">
-
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/oaw/js/jqgrid/jquery.jqgrid.src.js"></script>
 <script src="/oaw/js/jqgrid/i18n/grid.locale-es.js" type="text/javascript"></script>
-
 <script src="/oaw/js/gridSemillas.js" type="text/javascript"></script>
-
-
 <script src="/oaw/js/tagbox/tagbox.js" type="text/javascript"></script>
 <link rel="stylesheet" href="/oaw/js/tagbox/tagbox.css">
 <style>
@@ -59,55 +52,44 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	box-shadow: none !important;
 }
 </style>
-
-
-
 <script type="text/javascript">
+	var paginadorTotal = '<bean:message key="cargar.semilla.observatorio.buscar.total"/>';
 
-var paginadorTotal = '<bean:message key="cargar.semilla.observatorio.buscar.total"/>';
+	var colNameId = '<bean:message key="colname.id"/>';
+	var colNameAcronym = '<bean:message key="colname.acronym"/>';
+	var colNameActive = '<bean:message key="colname.active"/>';
+	var colNameComplex = '<bean:message key="colname.complex"/>';
+	var colNameDependencies = '<bean:message key="colname.dependecies"/>';
+	var colNameDirectory = '<bean:message key="colname.directory"/>';
+	var colNameTags = '<bean:message key="colname.etiqeutas"/>';
+	var colNameGo = '<bean:message key="colname.go"/>';
+	var colNameName = '<bean:message key="colname.name"/>';
+	var colNameObs = '<bean:message key="colname.observations"/>';
+	var colNameOldName = '<bean:message key="colname.oldname"/>';
+	var colNameRemove = '<bean:message key="colname.remove"/>';
+	var colNameRemovePerm = '<bean:message key="colname.remove.permanently"/>';
+	var colNameScope = '<bean:message key="colname.scope"/>';
+	var colNameSegment = '<bean:message key="colname.segment"/>';
 
-var colNameId = '<bean:message key="colname.id"/>';
-var colNameAcronym = '<bean:message key="colname.acronym"/>';
-var colNameActive = '<bean:message key="colname.active"/>';
-var colNameComplex = '<bean:message key="colname.complex"/>';
-var colNameDependencies = '<bean:message key="colname.dependecies"/>';
-var colNameDirectory = '<bean:message key="colname.directory"/>';
-var colNameTags = '<bean:message key="colname.etiqeutas"/>';
-var colNameGo = '<bean:message key="colname.go"/>';
-var colNameName = '<bean:message key="colname.name"/>';
-var colNameObs = '<bean:message key="colname.observations"/>';
-var colNameOldName = '<bean:message key="colname.oldname"/>';
-var colNameRemove = '<bean:message key="colname.remove"/>';
-var colNameRemovePerm = '<bean:message key="colname.remove.permanently"/>';
-var colNameScope = '<bean:message key="colname.scope"/>';
-var colNameSegment = '<bean:message key="colname.segment"/>';
+	var windowTitleRemoveSeed = '<bean:message key="eliminar.semilla.modal.titulo"/>';
 
+	var saveButton = '<bean:message key="boton.aceptar"/>';
 
-var windowTitleRemoveSeed = '<bean:message key="eliminar.semilla.modal.titulo"/>';
+	var cancelButton = '<bean:message key="boton.cancelar"/>';
 
-var saveButton = '<bean:message key="boton.aceptar"/>';
+	var confirmRemoveMessage1 = '<bean:message key="eliminar.semilla.modal.confirmacion.1"/>';
+	var confirmRemoveMessage2 = '<bean:message key="eliminar.semilla.modal.confirmacion.2"/>';
+	var confirmRemoveMessage3 = '<bean:message key="eliminar.semilla.modal.confirmacion.3"/>';
 
-var cancelButton = '<bean:message key="boton.cancelar"/>';
+	var semillaIrAlt = '<bean:message key="semilla.ir"/>';
 
-var confirmRemoveMessage1 = '<bean:message key="eliminar.semilla.modal.confirmacion.1"/>';
-var confirmRemoveMessage2 = '<bean:message key="eliminar.semilla.modal.confirmacion.2"/>';
-var confirmRemoveMessage3 = '<bean:message key="eliminar.semilla.modal.confirmacion.3"/>';
+	var semillaEliminarDefinitiva = '<bean:message key="seed.remove.permanently.alt"/>';
 
-var semillaIrAlt ='<bean:message key="semilla.ir"/>';
-
-var semillaEliminarDefinitiva ='<bean:message key="seed.remove.permanently.alt"/>';
-
-
-
-var translatedColNames = [ colNameId, colNameOldName,
-	colNameName, colNameAcronym,
-	colNameSegment, colNameScope,
-	colNameComplex, colNameTags,
-	colNameDependencies, "URLs",colNameObs,
-	colNameActive, colNameDirectory, 
-	colNameGo, colNameRemove, colNameRemovePerm ];
-
-
+	var translatedColNames = [ colNameId, colNameOldName, colNameName,
+			colNameAcronym, colNameSegment, colNameScope, colNameComplex,
+			colNameTags, colNameDependencies, "URLs", colNameObs,
+			colNameActive, colNameDirectory, colNameGo, colNameRemove,
+			colNameRemovePerm ];
 
 	var dialog;
 
@@ -238,81 +220,85 @@ var translatedColNames = [ colNameId, colNameOldName,
 
 					});
 </script>
-
 <logic:present parameter="<%=Constants.ID_CATEGORIA%>">
 	<bean:parameter name="<%=Constants.ID_CATEGORIA %>" id="idcat" />
 </logic:present>
-
 <div id="dialogoNuevaSemilla" style="display: none">
 	<jsp:include page="./observatorio_nuevaSemilla_multidependencia.jsp" />
-
 </div>
-
 <!-- observatorio_formularioCategoriaSemilla.jsp -->
 <div id="main">
-
 	<div id="container_menu_izq">
 		<jsp:include page="menu.jsp" />
 	</div>
-
 	<div id="container_der">
-
 		<div id="migas">
 			<p class="sr-only">
 				<bean:message key="ubicacion.usuario" />
 			</p>
 			<ol class="breadcrumb">
-				<li><html:link forward="observatoryMenu">
+				<li>
+					<html:link forward="observatoryMenu">
 						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 						<bean:message key="migas.observatorio" />
-					</html:link></li>
-				<li><html:link forward="getSeedCategories">
+					</html:link>
+				</li>
+				<li>
+					<html:link forward="getSeedCategories">
 						<bean:message key="migas.categoria" />
-					</html:link></li>
-				<li class="active"><logic:equal parameter="<%=Constants.ACTION%>" value="<%=Constants.NEW_SEED_CATEGORY%>">
+					</html:link>
+				</li>
+				<li class="active">
+					<logic:equal parameter="<%=Constants.ACTION%>" value="<%=Constants.NEW_SEED_CATEGORY%>">
 						<bean:message key="migas.nueva.categoria" />
-					</logic:equal> <logic:equal parameter="<%=Constants.ACTION%>" value="<%=Constants.EDIT_SEED_CATEGORY%>">
+					</logic:equal>
+					<logic:equal parameter="<%=Constants.ACTION%>" value="<%=Constants.EDIT_SEED_CATEGORY%>">
 						<bean:message key="migas.modificar.categoria" />
-					</logic:equal></li>
+					</logic:equal>
+				</li>
 			</ol>
 		</div>
-
 		<div id="cajaformularios">
 			<h2>
 				<bean:message key="categoria.semillas.titulo" />
 			</h2>
-
 			<div id="exitosNuevaSemillaMD" style="display: none"></div>
-
 			<p>
 				<bean:message key="categoria.semillas.fichero.info">
 					<jsp:attribute name="arg0">
                             <a href="../xml/seeds.xml"
-							title="<bean:message key="categoria.semillas.fichero.ejemplo.title"/>" download><bean:message
-								key="categoria.semillas.fichero.ejemplo" /></a>
+							title="<bean:message key="categoria.semillas.fichero.ejemplo.title"/>" download>
+							<bean:message key="categoria.semillas.fichero.ejemplo" />
+						</a>
                         </jsp:attribute>
 				</bean:message>
 			</p>
 			<p>
 				<bean:message key="leyenda.campo.obligatorio" />
 			</p>
-
 			<html:form styleClass="formulario form-horizontal" method="post" action="/secure/SeedCategoriesAction"
 				enctype="multipart/form-data" onsubmit="return validateCategoriaForm(this)">
 				<html:hidden property="id" />
 				<input type="hidden" name="<%=Constants.ACTION%>" value="<bean:write name="<%=Constants.ACTION%>"/>" />
 				<fieldset>
 					<jsp:include page="/common/crawler_messages.jsp" />
-
-
 					<div class="formItem">
-						<label for="name" class="control-label"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="migas.categoria" />: </strong></label>
+						<label for="name" class="control-label">
+							<strong class="labelVisu">
+								<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
+								<bean:message key="migas.categoria" />
+								:
+							</strong>
+						</label>
 						<html:text styleClass="texto form-control" property="name" styleId="name" maxlength="256" />
 					</div>
 					<div class="formItem">
-						<label for="orden" class="control-label"><strong class="labelVisu"><bean:message
-									key="categoria.semillas.orden" />: </strong></label>
+						<label for="orden" class="control-label">
+							<strong class="labelVisu">
+								<bean:message key="categoria.semillas.orden" />
+								:
+							</strong>
+						</label>
 						<html:select styleClass="textoSelect form-control" styleId="orden" property="orden">
 							<option value="1" <c:if test="${CategoriaForm.orden==1}">selected="selected"</c:if>>1</option>
 							<option value="2" <c:if test="${CategoriaForm.orden==2}">selected="selected"</c:if>>2</option>
@@ -326,16 +312,38 @@ var translatedColNames = [ colNameId, colNameOldName,
 							<option value="10" <c:if test="${CategoriaForm.orden==10}">selected="selected"</c:if>>10</option>
 						</html:select>
 					</div>
-					
-										<div class="formItem">
-						<label for="name" class="control-label"><strong class="labelVisu"> <bean:message key="modificar.categoria.clave" />:
-						</strong></label>
+					<div class="formItem">
+						<label for="principal" class="control-label">
+							<strong class="labelVisu">
+								<bean:message key="modificar.categoria.principal" />
+								:
+							</strong>
+						</label>
+						<html:select property="principal" styleClass="textoSelect form-control" styleId="principal">
+							<html:option value="true">
+								<bean:message key="select.yes" />
+							</html:option>
+							<html:option value="false">
+								<bean:message key="select.no" />
+							</html:option>
+						</html:select>
+					</div>
+					<div class="formItem">
+						<label for="name" class="control-label">
+							<strong class="labelVisu">
+								<bean:message key="modificar.categoria.clave" />
+								:
+							</strong>
+						</label>
 						<html:text styleClass="texto form-control" property="key" styleId="name" maxlength="256" />
 					</div>
-					
 					<div class="formItem">
-						<label for="fileSeeds" class="control-label"><strong class="labelVisu"><bean:message
-									key="categoria.semillas.fichero" />: </strong></label>
+						<label for="fileSeeds" class="control-label">
+							<strong class="labelVisu">
+								<bean:message key="categoria.semillas.fichero" />
+								:
+							</strong>
+						</label>
 						<html:file styleClass="texto" property="fileSeeds" styleId="fileSeeds" />
 					</div>
 					<div class="formButton">
@@ -345,56 +353,36 @@ var translatedColNames = [ colNameId, colNameOldName,
 					</div>
 				</fieldset>
 			</html:form>
-
-
-
-
 		</div>
 	</div>
-
-
 	<div id="fullwidthgrid">
-
 		<div id="fullwidthgridheader">
-
 			<p class="alert alert-info pull-left">
-				<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
-				</em>:
+				<span class="glyphicon glyphicon-info-sign"></span>
+				<em>
+					<bean:message key="nueva.semilla.webs.informacion" />
+				</em>
+				:
 				<bean:message key="nueva.semilla.webs.info" />
 			</p>
-
-
 			<logic:present name="<%=Constants.ID_CATEGORIA%>">
-
-
 				<p class="pull-right">
-					<a href="#" class="btn btn-default btn-lg" onclick="dialogoNuevaSemilla()"> <span
-						class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip" title=""
-						data-original-title="Crear una semilla"></span> <bean:message key="cargar.semilla.observatorio.nueva.semilla" />
+					<a href="#" class="btn btn-default btn-lg" onclick="dialogoNuevaSemilla()">
+						<span class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip" title=""
+							data-original-title="Crear una semilla"></span>
+						<bean:message key="cargar.semilla.observatorio.nueva.semilla" />
 					</a>
 				</p>
-
 			</logic:present>
 		</div>
-
-
 		<!-- Grid -->
 		<table id="grid">
 		</table>
-
-
-
 		<p id="paginador"></p>
 		<p id="pCenter">
 			<html:link forward="observatoryMenu" styleClass="btn btn-default btn-lg">
 				<bean:message key="boton.volver" />
 			</html:link>
 		</p>
-
 	</div>
-
-
-
-
 </div>
-

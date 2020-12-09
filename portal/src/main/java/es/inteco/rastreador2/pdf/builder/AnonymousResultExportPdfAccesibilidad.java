@@ -81,7 +81,6 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioAccesibilidadUt
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 import es.inteco.rastreador2.utils.ResultadosPrimariosObservatorioIntavUtils;
-import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 
 /**
  * AnonymousResultExportPdfUNE2012b. Clase replicada de {@link AnonymousResultExportPdfUNE2012} para la nueva versión de la metodología basada en la misma norma que la mencionada y conservar ambas
@@ -89,7 +88,7 @@ import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
  */
 public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExportPdf {
 	/** The message resources. */
-	private MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
+	private MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 
 	/**
 	 * Instantiates a new anonymous result export pdf UNE 2012b.
@@ -1369,7 +1368,7 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 		final BasicServicePageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new BasicServicePageResultsPdfSectionBuilder(currentEvaluationPageList);
 		boldWords.clear();
 		for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
-			chapter.add(createPaginaTableInfoAccesibility(messageResources, evaluationForm));
+			chapter.add(createPaginaTableInfoAccesibility(messageResources, evaluationForm, rankingActual, rankingPrevio));
 			chapter.add(Chunk.NEWLINE);
 			boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p4.bold"));
 			chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p4"), boldWords, ConstantsFont.paragraphBoldFont,
@@ -1389,10 +1388,12 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 	 *
 	 * @param messageResources the message resources
 	 * @param evaluationForm   the evaluation form
+	 * @param rankingActual    the ranking actual
+	 * @param rankingPrevio    the ranking previo
 	 * @return the pdf P table
 	 */
-	private static PdfPTable createPaginaTableInfoAccesibility(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm) {
-		final String title = BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), false);
+	private static PdfPTable createPaginaTableInfoAccesibility(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final RankingInfo rankingActual,
+			final RankingInfo rankingPrevio) {
 		final String url = evaluationForm.getUrl();
 		final BigDecimal puntuacionMedia = evaluationForm.getScore();
 		final String nivelAdecuacion = ObservatoryUtils.getValidationLevel(messageResources, ObservatoryUtils.pageSuitabilityLevel(evaluationForm));
@@ -1400,15 +1401,15 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 		for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
 			puntuacionesMediasNivel.add(observatoryLevelForm.getScore());
 		}
-		final float[] widths = { 0.22f, 0.78f };
+		final float[] widths = { 0.30f, 0.70f };
 		final PdfPTable table = new PdfPTable(widths);
 		table.setWidthPercentage(100);
 		table.setSpacingBefore(10);
 		table.setSpacingAfter(0);
-//		// Titulo
-//		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.title"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT,
-//				DEFAULT_PADDING, -1));
-//		table.addCell(PDFUtils.createTableCell(title, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+		table.setHeaderRows(1);
+		table.addCell(PDFUtils.createEmptyTableCell());
+		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.summary.table.result") + "\n" + rankingActual.getDate(), Constants.VERDE_C_MP,
+				ConstantsFont.labelCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
 		// URL
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.url"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT,
 				DEFAULT_PADDING, -1));
@@ -1421,15 +1422,6 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 			// Only returns one value
 			urls = TAnalisisAccesibilidadDAO.getUrls(DataBaseManager.getConnection(), evaluationForm.getIdAnalysis());
 			table.addCell(PDFUtils.createTableCell(urls, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));// if (urls != null &&
-																																				// !org.apache.commons.lang3.StringUtils.isEmpty(urls))
-																																				// {
-//				java.util.List<String> list = Arrays.asList(urls.split(","));
-//				com.lowagie.text.List PDFlist = new com.lowagie.text.List();
-//				for (String str : list) {
-//					PDFUtils.addListItem(str, PDFlist, ConstantsFont.noteCellFont, false, true, Element.ALIGN_LEFT);
-//				}
-//				table.addCell(PDFUtils.createListTableCell(PDFlist, Color.WHITE, Element.ALIGN_LEFT, DEFAULT_PADDING));
-//			}
 		} catch (Exception e) {
 			Logger.putLog("Error al obtener las urls de accesibilidad analizadas", ObservatoryPageResultsPdfSectionBuilder.class, Logger.LOG_LEVEL_ERROR);
 		}

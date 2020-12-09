@@ -1,6 +1,6 @@
 5.1.0
 ------------------------------------------------------------------------------------------------------------------------------------
-- Generación de informe de accesibilidad en profundidad en ODS y JSON en el servicio de diagnóstico
+- Generación de informe de accesibilidad en profundidad en ODS, XLSX y JSON en el servicio de diagnóstico
 - Campo adicional en el formulario del servicio de diagnóstico para indicar si se genera el informe de accesibilidad en profundidad
 - Ajuste de la verificación de 443 Grupos de tres o más de botones de radio y/o casillas de verificación (con el mismo “name”) para evitar que agrupaciones con name vacío den error
 - Control en el cartucho de accesibilidad para que en aquellas semillas con selección manual sólo se analize la primera URL
@@ -15,6 +15,8 @@
 - Corregido un error al generar los anexos del cartucho de accesibilidad
 - Plantilla de informe agregado del cartucho de la metodología de accesibilidad
 - Incluidos en la exportación de JSON los checks que no aplican
+- Incluídas las puntuaciones 'No puntúa' de verificaciones en el agregado que se computaban erróneamente como 'Conforme'
+- Añadidad la complejidad a los anexos en XML
 
 5.0.5
 ------------------------------------------------------------------------------------------------------------------------------------

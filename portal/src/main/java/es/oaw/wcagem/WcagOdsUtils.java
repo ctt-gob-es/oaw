@@ -3,6 +3,9 @@ package es.oaw.wcagem;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 import java.io.File;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.jopendocument.dom.ODValueType;
@@ -42,6 +45,10 @@ public final class WcagOdsUtils {
 		File inputFile = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.ods.template"));
 		// Load template
 		final SpreadSheet workbook = SpreadSheet.createFromFile(inputFile);
+		// Date
+		final Sheet sheetAmbit = workbook.getSheet("01.Definición de ámbito");
+		DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyy");
+		sheetAmbit.getCellAt("C35").setValue(fmt.format(OffsetDateTime.now(ZoneId.of("Europe/Madrid"))));
 		// filt techs
 		final Sheet sheetTech = workbook.getSheet("02.Tecnologías");
 		sheetTech.getCellAt("C9").setValue("Sí");
@@ -100,7 +107,7 @@ public final class WcagOdsUtils {
 				case "WCAG2:timing-adjustable":
 					fillResult(sheetP2, auditResult, 133);
 					break;
-				case "WCAG2:tpause-stop-hide":
+				case "WCAG2:pause-stop-hide":
 					fillResult(sheetP2, auditResult, 171);
 					break;
 				case "WCAG2:three-flashes-or-below-threshold":
@@ -147,6 +154,9 @@ public final class WcagOdsUtils {
 					fillResult(sheetP3, auditResult, 285);
 					break;
 				// p4
+				case "WCAG2:parsing":
+					fillResult(sheetP4, auditResult, 19);
+					break;
 				case "WCAG2:name-role-value":
 					fillResult(sheetP4, auditResult, 57);
 					break;
@@ -155,6 +165,7 @@ public final class WcagOdsUtils {
 				}
 			}
 		}
+//		FileUtils.doWithLock(f, transf)
 		return workbook;
 	}
 

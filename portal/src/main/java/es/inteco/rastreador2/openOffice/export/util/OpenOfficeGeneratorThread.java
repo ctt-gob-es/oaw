@@ -53,6 +53,8 @@ public class OpenOfficeGeneratorThread extends Thread {
 	private int numberObservatoryExecutions;
 	/** The tags to filter. */
 	private String[] tagsToFilter;
+	/** The tags to filter fixed. */
+	private String[] tagsToFilterFixed;
 	/** The grpahic conditional. */
 	private Map<String, Boolean> grpahicConditional;
 	/** The ex obs ids. */
@@ -63,6 +65,7 @@ public class OpenOfficeGeneratorThread extends Thread {
 	private Long idSegmentTemplate;
 	/** The id complexity template. */
 	private Long idComplexityTemplate;
+	/** The id segment evol template. */
 	private Long idSegmentEvolTemplate;
 	/** The report title. */
 	private String reportTitle;
@@ -83,21 +86,23 @@ public class OpenOfficeGeneratorThread extends Thread {
 	 * @param tipoObservatorio            the tipo observatorio
 	 * @param numberObservatoryExecutions the number observatory executions
 	 * @param tagsToFilter                the tags to filter
+	 * @param tagsToFilterFixed           the tags to filter fixed
 	 * @param grpahicConditional          the grpahic conditional
 	 * @param exObsIds                    the ex obs ids
 	 * @param idBaseTemplate              the id base template
 	 * @param idSegmentTemplate           the id segment template
 	 * @param idComplexityTemplate        the id complexity template
+	 * @param idSegmentEvolTemplate       the id segment evol template
 	 * @param reportTitle                 the report title
 	 * @param observatoryFFForm           the observatory FF form
 	 * @param email                       the email
 	 * @param observatoryForm             the observatory form
-	 * @throws InvocationTargetException
-	 * @throws IllegalAccessException
+	 * @throws IllegalAccessException    the illegal access exception
+	 * @throws InvocationTargetException the invocation target exception
 	 */
 	public OpenOfficeGeneratorThread(final HttpServletRequest request, String filePath, String graphicPath, String date, Long tipoObservatorio, int numberObservatoryExecutions, String[] tagsToFilter,
-			Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate, Long idSegmentEvolTemplate, String reportTitle,
-			ObservatorioRealizadoForm observatoryFFForm, String email, ObservatorioForm observatoryForm) throws IllegalAccessException, InvocationTargetException {
+			String[] tagsToFilterFixed, Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate, Long idSegmentEvolTemplate,
+			String reportTitle, ObservatorioRealizadoForm observatoryFFForm, String email, ObservatorioForm observatoryForm) throws IllegalAccessException, InvocationTargetException {
 		BeanUtils.populate(this.request, request.getParameterMap());
 		this.filePath = filePath;
 		this.graphicPath = graphicPath;
@@ -105,6 +110,7 @@ public class OpenOfficeGeneratorThread extends Thread {
 		this.tipoObservatorio = tipoObservatorio;
 		this.numberObservatoryExecutions = numberObservatoryExecutions;
 		this.tagsToFilter = tagsToFilter;
+		this.tagsToFilterFixed = tagsToFilter;
 		this.grpahicConditional = grpahicConditional;
 		this.exObsIds = exObsIds;
 		this.idBaseTemplate = idBaseTemplate;
@@ -125,7 +131,7 @@ public class OpenOfficeGeneratorThread extends Thread {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final SimpleDateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
 		ExportOpenOfficeUtils.createOpenOfficeDocumentFiltered(request, filePath, graphicPath, df.format(observatoryFFForm.getFecha()), observatoryForm.getTipo(), exObsIds.length, tagsToFilter,
-				grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, idSegmentEvolTemplate, reportTitle);
+				tagsToFilterFixed, grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, idSegmentEvolTemplate, reportTitle);
 		FileUtils.deleteDir(new File(graphicPath));
 		StringBuilder mailBody = new StringBuilder(
 				String.format("El proceso de generación de informes ha finalizado para el observatorio %s. Puede descargar los informes agrupados por dependencia en los siguientes enlaces: <br/>",
@@ -143,7 +149,7 @@ public class OpenOfficeGeneratorThread extends Thread {
 		final MailService mailService = new MailService();
 		List<String> mailsTo = new ArrayList<>();
 		mailsTo.add(email);
-		mailsTo.add("example@mail");
+		mailsTo.add("alvaro.pelaez@ctic.es");
 		mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
 	}
 
