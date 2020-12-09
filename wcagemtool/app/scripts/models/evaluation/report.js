@@ -10,7 +10,7 @@ angular.module('wcagReporter')
       commissioner: ''
     };
     var reportModel = Object.create(protoModel);
-    protoModel.date = $filter('date')(new Date(), 'longDate');
+    protoModel.date = $filter('date')(new Date(), 'dd/MM/yyyy');
 
     reportModel.exportData = function () {
       var res = angular.copy(reportModel);

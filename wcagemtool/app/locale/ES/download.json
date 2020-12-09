@@ -1,13 +1,14 @@
 {
-    "TITLE": "Informe de evaluación de la accesibilidad del sitio web",
-    "INTRO": "A continuación se presenta el informe de evaluación basado en los datos que usted proporcionó en los pasos anteriores. Puede volver a los pasos anteriores ahora y cambiar cualquiera de esta información. Puede descargar los datos de la evaluación para poder trabajar en ellos más tarde. (Esto es lo mismo que la funcionalidad de 'Guardar'.) <br> Este informe está destinado a ser descargado. Puede descargar los archivos HTML y CSS del Informe de Evaluación a continuación. Luego puede cambiar el contenido del informe y el diseño visual para satisfacer sus necesidades.",
+    "TITLE": "Informe de revisión de la accesibilidad del sitio web",
+    "INTRO": "A continuación se presenta el informe de revisión basado en los datos que usted ha proporcionado en los pasos anteriores. Si lo desea, puede volver a los pasos anteriores y modificar sus datos. También puede descargar los datos introducidos hasta ahora para poder trabajar en ellos más tarde (esto es lo mismo que la funcionalidad 'Guardar').<br>El objetivo de esta herramienta es la generación y descarga de este informe. A continuación, podrá descargar el Informe de Revisión de la Accesibilidad en varios formatos (HTML + CSS, ODS, XLSX y JSON).",
     "DOWNLOAD_REPORT": "Descargue y personalice este informe",
-    "BTN_SAVE_HTML": "Descargue el informe de evaluación (HTML)",
-    "BTN_SAVE_CSS": "Descargue la hoja de estilos del informe (CSS)",
-    "BTN_SAVE_JSON": "Descargar el informe de evaluación (JSON)",
-    "BTN_SAVE_ODS": "Descargar el informe de evaluación (ODS)",
-    "BTN_SAVE_ODS_LOAD": "Generando el informe de evaluación (ODS)",
-    "BTN_SAVE_ODS_INFO": "<strong>Nota:</strong> Una vez descargado el fichero ODS, la primera vez que lo abra, puede ser necesario forzar el cálculo de fórmulas: <ul><li>En <strong>LibreOffice</strong> en la opción de menú <em>Datos > Calcular > Recalculación incondicional</em> o pulsando <em>Shift+Ctrl+F9</em>.</li></ul> ",
-    "BTN_SAVE_XLSX": "Descargar el informe de evaluación (XLSX)",
-    "BTN_SAVE_XLSX_LOAD": "Generando el informe de evaluación (XLSX)"
+	"INFO_DOWNLOAD_REPORT": "Puede descargar el informe en varios formatos. Si, posteriormente quiere volver a cargar el informe para seguir trabajando sobre él, descargue la versión JSON. Si quiere descargarlo en formato HTML no olvide descargar también la hoja de estilos del informe (CSS) para más tarde, poder cambiar el contenido del informe y el diseño visual para satisfacer sus necesidades. Si decide descargar el informe en formato ODS o XLSX únicamente se incluirán en el informe los criterios de conformidad de nivel 'A' y 'AA' y un máximo de 35 páginas (no sucederá lo mismo si decide descargar el informe en formato JSON o HTML).",
+    "BTN_SAVE_HTML": "Informe de revisión en formato HTML",
+    "BTN_SAVE_CSS": "Hoja de estilos del informe (CSS)",
+    "BTN_SAVE_JSON": "Informe de revisión en formato JSON",
+    "BTN_SAVE_ODS": "Informe de revisión en formato ODS (LibreOffice)",
+    "BTN_SAVE_ODS_LOAD": "Generando el informe de revisión (ODS)",
+    "BTN_SAVE_ODS_INFO": "<strong>Nota importante:</strong> Una vez descargado el fichero ODS, la primera vez que lo abra, puede ser necesario forzar el cálculo de las distintas fórmulas: <ul><li>Para ello, en <strong>LibreOffice</strong> vaya a la opción de menú <em>Datos > Calcular > Recalculación incondicional</em> o pulse <em>Shift+Ctrl+F9</em>.</li></ul> ",
+    "BTN_SAVE_XLSX": "Informe de revisión en formato XLSX (Microsoft Excel)",
+    "BTN_SAVE_XLSX_LOAD": "Generando el informe de revisión (XLSX)"
 }
