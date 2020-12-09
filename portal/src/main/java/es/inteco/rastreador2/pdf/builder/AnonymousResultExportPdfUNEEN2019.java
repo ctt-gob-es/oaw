@@ -206,13 +206,23 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				pdfTocManager.addSection(), 1);
 		if (isBasicService) {
 			/****** paragraph #1 *****/
-			boldWords = new ArrayList<>();
-			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold1"));
-			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold2"));
-			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold3"));
-			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold4"));
-			section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service"), boldWords, ConstantsFont.paragraphBoldFont,
-					ConstantsFont.PARAGRAPH, true));
+//			boldWords = new ArrayList<>();
+//			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold1"));
+//			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold2"));
+//			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold3"));
+//			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold4"));
+//			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold5"));
+			specialChunkMap.put(1, new SpecialChunk(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold1"), ConstantsFont.paragraphBoldFont));
+			specialChunkMap.put(2, new SpecialChunk(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold2"), ConstantsFont.paragraphBoldFont));
+			specialChunkMap.put(3, new SpecialChunk(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold3"), ConstantsFont.paragraphBoldFont));
+			specialChunkMap.put(4, new SpecialChunk(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold4"), ConstantsFont.paragraphBoldFont));
+			specialChunkMap.put(5, new SpecialChunk(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold5"), ConstantsFont.paragraphBoldFont));
+			SpecialChunk chunkP1 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			chunkP1.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.anchor1.url"));
+			specialChunkMap.put(6, chunkP1);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service"), specialChunkMap, ConstantsFont.PARAGRAPH));
+//			section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service"), boldWords, ConstantsFont.paragraphBoldFont,
+//					ConstantsFont.PARAGRAPH, true));
 			/****** paragraph #2 *****/
 			PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p2"), ConstantsFont.PARAGRAPH, section);
 			/****** paragraph #3 #4 #5 merged *****/

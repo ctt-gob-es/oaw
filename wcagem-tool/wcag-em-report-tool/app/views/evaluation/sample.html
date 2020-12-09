@@ -61,11 +61,11 @@
     }"></p>
   </info-field>
 
-  <div class="alert alert-warning">
-    {{ "SAMPLE.RAND_SAMPLE_LENGTH" | translate: {
+  <div class="alert alert-warning" ng-bind-html="
+     'SAMPLE.RAND_SAMPLE_LENGTH' | translate: {
       total: structuredSample.webpage.length,
       count: randPageCount()}
-    }}
+    ">
   </div>
 
   <input-pages pages="randomSample.webpage"
