@@ -10,7 +10,7 @@
     "INF_SITE_SCOPE_LI2": "Todo el contenido de la versión móvil del sitio web público Ejemplo, situado en http://m.ejemplo.org",
     "INF_SITE_SCOPE_1": "WCAG-EM Paso 1.a: Definir el alcance del sitio web",
     "LABEL_WCAG_VERSION": "Versión WCAG",
-    "INFO_WCAG_VERSION": "Seleccione la versión WCAG a utilizar. Recuerde que la versión exigida por ley es WCAG 2.1 (por defecto), que es la versión de las WCAG alineada a la norma EN 301 549 V2.1.2 (2018-08), declarada como norma armonizada por la Comisión Europea en la <a href='https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=uriserv:OJ.L_.2018.327.01.0084.01.SPA&toc=OJ:L:2018:327:TOC' title='Decisión de Ejecución (UE) 2018/2048 (abre en nueva ventana)'>Decisión de Ejecución (UE) 2018/2048</a>.",
+    "INFO_WCAG_VERSION": "Seleccione la versión WCAG a utilizar. Recuerde que la versión exigida por ley es WCAG 2.1 (por defecto), que es la versión de las WCAG alineada a la <a hreflang='en' href='https://www.etsi.org/deliver/etsi_en/301500_301599/301549/02.01.02_60/en_301549v020102p.pdf' title='documento PDF en inglés de la norma EN 301 549 V2.1.2 (2018-08) (abre en nueva ventana)'>norma EN 301 549 V2.1.2 (2018-08)</a>, declarada como norma armonizada por la Comisión Europea en la <a href='https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=uriserv:OJ.L_.2018.327.01.0084.01.SPA&toc=OJ:L:2018:327:TOC' title='Decisión de Ejecución (UE) 2018/2048 (abre en nueva ventana)'>Decisión de Ejecución (UE) 2018/2048</a>.",
     "WCAG21": "WCAG 2.1",
 	"WCAG20": "WCAG 2.0",
     "LABEL_CONFORMANCE_TGT": "Nivel de conformidad a analizar",

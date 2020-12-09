@@ -1,7 +1,7 @@
 {
     "BROWSER_NOT_SUPPORTED": "El navegador que está usando no soporta algunas funciones, como guardar y cargar informes. Podrá seguir utilizando la Herramienta de generación de informes de accesibilidad pero con una funcionalidad limitada. Actualice su navegador web o utilice uno diferente para poder utilizar todas las funcionalidades de esta herramienta.",
     "WARNING_BEFORE_UNLOAD": "Los datos que ha introducido no se guardan de manera automática. Si cierra esta ventana del navegador se perderán. Utilice el enlace 'Guardar' (Ctrl + S o ⌘ S) que se encuentra en la parte superior de todas las páginas para guardar sus datos en un archivo local (en su ordenador), y así, continuar más tarde. Para ello, cuando quiera seguir trabajando, deberá pinchar en el enlace 'Abrir' y seleccionar el archivo para volver a cargarlo.",
-    "MORE_INFO": "Para más información, véase <a href={{url}}>{{name}}</a>.",
+    "MORE_INFO": "Para más información, véase <a hreflang='en' href={{url}}>{{name}}</a>.",
     "HIDE_MESSAGE": "Ocultar mensaje",
     "BTN_INFO": "Información expandida",
     "BTN_CLOSE_INFO": "Cerrar información",
