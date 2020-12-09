@@ -6,9 +6,9 @@
     "BTN_SAVE_HTML": "Informe de revisión en formato HTML",
     "BTN_SAVE_CSS": "Hoja de estilos del informe (CSS)",
     "BTN_SAVE_JSON": "Informe de revisión en formato JSON",
-    "BTN_SAVE_ODS": "Informe de revisión para LibreCalc (ODS)",
+    "BTN_SAVE_ODS": "Informe de revisión en formato ODS (LibreOffice)",
     "BTN_SAVE_ODS_LOAD": "Generando el informe de revisión (ODS)",
     "BTN_SAVE_ODS_INFO": "<strong>Nota importante:</strong> Una vez descargado el fichero ODS, la primera vez que lo abra, puede ser necesario forzar el cálculo de las distintas fórmulas: <ul><li>Para ello, en <strong>LibreOffice</strong> vaya a la opción de menú <em>Datos > Calcular > Recalculación incondicional</em> o pulse <em>Shift+Ctrl+F9</em>.</li></ul> ",
-    "BTN_SAVE_XLSX": "Informe de revisión en formato Microsoft Excel (XLSX).",
+    "BTN_SAVE_XLSX": "Informe de revisión en formato XLSX (Microsoft Excel)",
     "BTN_SAVE_XLSX_LOAD": "Generando el informe de revisión (XLSX)"
 }
