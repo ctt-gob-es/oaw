@@ -32,6 +32,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.util.MessageResources;
+import org.apache.struts.util.PropertyMessageResources;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -46,6 +47,7 @@ import es.inteco.rastreador2.dao.export.database.Category;
 import es.inteco.rastreador2.dao.export.database.Observatory;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.manager.BaseManager;
+import es.inteco.rastreador2.manager.ObservatoryExportManager;
 import es.inteco.rastreador2.manager.export.database.DatabaseExportManager;
 import es.inteco.rastreador2.pdf.utils.ZipUtils;
 import es.inteco.rastreador2.utils.ActionUtils;
@@ -100,10 +102,30 @@ public class DatabaseExportAction extends Action {
 	private ActionForward export(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
 		final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 		final Long idExObservatory = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+		final Long idCartucho = Long.valueOf(request.getParameter(Constants.ID_CARTUCHO));
 		try (Connection c = DataBaseManager.getConnection()) {
 			final ObservatorioRealizadoForm fulfilledObservatory = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExObservatory);
 			if (CartuchoDAO.isCartuchoAccesibilidad(c, fulfilledObservatory.getCartucho().getId())) {
-				exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, fulfilledObservatory);
+				// TODO idCartucho
+				final String application = CartuchoDAO.getApplication(DataBaseManager.getConnection(), idCartucho);
+				// TODO GENERATE DATA??
+				final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, idObservatory, Constants.NO_PAGINACION, fulfilledObservatory.getFecha(), false);
+				if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
+					for (ObservatorioRealizadoForm obsRealizado : observatoriesList) {
+						if (ObservatoryExportManager.getObservatory(obsRealizado.getId()) == null) {
+							exportResultadosAccesibilidad(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), idObservatory, c, obsRealizado);
+						}
+					}
+					// exportResultadosAccesibilidad(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), idObservatory, c, fulfilledObservatory);
+				} else {
+					// TODO GENERATE DATA??
+					for (ObservatorioRealizadoForm obsRealizado : observatoriesList) {
+						if (ObservatoryExportManager.getObservatory(obsRealizado.getId()) == null) {
+							exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, obsRealizado);
+						}
+					}
+					// exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, fulfilledObservatory);
+				}
 			} else {
 				return mapping.findForward(Constants.ERROR);
 			}
@@ -183,9 +205,11 @@ public class DatabaseExportAction extends Action {
 			final String application = CartuchoDAO.getApplication(DataBaseManager.getConnection(), idCartucho);
 			if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
 				resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
+			} else if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
+				resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 			}
-			AnnexUtils.createAnnexPaginas(resources, idObsExecution, idOperation);
-			AnnexUtils.createAnnexPortales(resources, idObsExecution, idOperation);
+			AnnexUtils.createAnnexPaginas(resources, idObsExecution, idOperation, idCartucho);
+			AnnexUtils.createAnnexPortales(resources, idObsExecution, idOperation, idCartucho);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
 			final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";

@@ -17,21 +17,14 @@ Email: observ.accesibilidad@correo.gob.es
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml />
 <html:javascript formName="SemillaObservatorioForm" />
-
 <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
-
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
-
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/oaw/js/jqgrid/jquery.jqgrid.src.js"></script>
 <script src="/oaw/js/jqgrid/i18n/grid.locale-es.js" type="text/javascript"></script>
-
 <script src="/oaw/js/gridSemillasResultado.js" type="text/javascript"></script>
-
-
 <!--  JQ GRID   -->
 <script>
 var paginadorTotal = '<bean:message key="cargar.semilla.observatorio.buscar.total"/>';
@@ -225,9 +218,15 @@ var translatedColNames = [ colNameId, colNameOldName,
 		$('#nuevaSemillaMultidependencia  select[name=activa] option[value='
 						+ $('#grid').getLocalRow(rowid).activa + ']').attr(
 				'selected', 'selected');
+
+		//selectInDirectorySeed
+		$("#nuevaSemillaMultidependencia select[name=inDirectory]").find('option').attr("selected",false) ;
 		$('#nuevaSemillaMultidependencia  select[name=inDirectory] option[value='
 						+ $('#grid').getLocalRow(rowid).inDirectory + ']')
-				.attr('selected', 'selected');
+				.attr('selected', 'selected');		
+		$("#nuevaSemillaMultidependencia  select[name=inDirectory]").val(String($('#grid').getLocalRow(rowid).inDirectory));
+	
+		
 		$('#nuevaSemillaMultidependencia  select[name=inDirectory] option[value='
 						+ $('#grid').getLocalRow(rowid).inDirectory + ']')
 				.attr('selected', 'selected');
@@ -307,7 +306,7 @@ var translatedColNames = [ colNameId, colNameOldName,
 				
 				$('#autocompleteAddSeedObservatory').autocomplete({
 				    delay: 500,
-				    minLength: 3,
+				    minLength: 1,
 				    autoFocus: true,
 				    create: function( event, ui ) {
 				      $.ajax( {
@@ -316,6 +315,7 @@ var translatedColNames = [ colNameId, colNameOldName,
 		 					+ '&idExObs='
 		 					+ $('[name=idExObs]').val(),
 				        dataType: "json",
+				        cache: false,
 				        success: function( data ) {
 				          allSeeds = data.map(function(currentValue, index, arr) { 		            
 				            return {
@@ -474,12 +474,7 @@ var translatedColNames = [ colNameId, colNameOldName,
 		
 	}
 </script>
-
-
-
 <link rel="stylesheet" href="/oaw/css/jqgrid.semillas.css">
-
-
 <bean:define id="idCartridgeMalware">
 	<inteco:properties key="cartridge.malware.id" file="crawler.properties" />
 </bean:define>
@@ -492,69 +487,64 @@ var translatedColNames = [ colNameId, colNameOldName,
 <bean:define id="idCartridgeMultilanguage">
 	<inteco:properties key="cartridge.multilanguage.id" file="crawler.properties" />
 </bean:define>
-
 <bean:parameter name="<%=Constants.ID_OBSERVATORIO%>" id="idObservatorio" />
 <bean:parameter name="<%=Constants.ID_EX_OBS%>" id="idExObs" />
 <bean:parameter name="<%=Constants.ID_CARTUCHO%>" id="idCartucho" />
-
 <div id="loading_cover_div"></div>
 <div id="dialogoEditarSemilla" style="display: none">
 	<jsp:include page="./observatorio_nuevaSemilla_multidependencia.jsp"></jsp:include>
-
 </div>
-
-
 <div id="dialogAddSeedObservatory" style="display: none">
 	<div id="main" style="overflow: hidden">
-
 		<div id="erroresAddSeedObservatory" style="display: none"></div>
-
 		<form id="addSeedObservatoryForm">
 			<div class="row formItem">
-				<label for="categoria" class="control-label"><strong class="labelVisu"><bean:message
-							key="nuevo.observatorio.semillas.nombre" /></strong></label>
+				<label for="categoria" class="control-label">
+					<strong class="labelVisu">
+						<bean:message key="nuevo.observatorio.semillas.nombre" />
+					</strong>
+				</label>
 				<div class="col-md-8">
 					<!-- 					<select name="segmento" id="selectAddSeedObservatory" class="form-control"></select> -->
-					<input id="autocompleteAddSeedObservatory" class="form-control" /> <input
-						id="autocompleteAddSeedObservatoryHidden" type="hidden" />
+					<input id="autocompleteAddSeedObservatory" class="form-control" />
+					<input id="autocompleteAddSeedObservatoryHidden" type="hidden" />
 				</div>
 			</div>
 		</form>
 	</div>
 </div>
-
-
-
 <div id="main">
-
 	<div id="container_menu_izq">
 		<jsp:include page="menu.jsp" />
 	</div>
-
 	<div id="container_der">
 		<div id="migas">
 			<p class="sr-only">
 				<bean:message key="ubicacion.usuario" />
 			</p>
 			<ol class="breadcrumb">
-				<li><html:link forward="observatoryMenu">
+				<li>
+					<html:link forward="observatoryMenu">
 						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 						<bean:message key="migas.observatorio" />
-					</html:link></li>
-				<li><html:link forward="resultadosPrimariosObservatorio" paramName="idObservatorio"
+					</html:link>
+				</li>
+				<li>
+					<html:link forward="resultadosPrimariosObservatorio" paramName="idObservatorio"
 						paramId="<%=Constants.ID_OBSERVATORIO%>">
 						<bean:message key="migas.indice.observatorios.realizados.lista" />
-					</html:link></li>
-				<li class="active"><bean:message key="migas.resultado.observatorio" /></li>
+					</html:link>
+				</li>
+				<li class="active">
+					<bean:message key="migas.resultado.observatorio" />
+				</li>
 			</ol>
 		</div>
 		<div id="cajaformularios">
 			<h2>
 				<bean:message key="gestion.resultados.observatorio" />
 			</h2>
-
 			<div id="exitosNuevaSemillaMD" style="display: none"></div>
-
 			<html:form action="/secure/ResultadosObservatorio.do" method="get" styleClass="formulario form-horizontal"
 				styleId="resultadosObsBuscador">
 				<input type="hidden" name="<%=Constants.ACTION%>" value="<%=Constants.GET_SEEDS%>" />
@@ -567,61 +557,71 @@ var translatedColNames = [ colNameId, colNameOldName,
 					</legend>
 					<jsp:include page="/common/crawler_messages.jsp" />
 					<div class="formItem">
-						<label for="nombre" class="control-label"><strong class="labelVisu"><bean:message
-									key="nueva.semilla.observatorio.nombre" /></strong></label>
+						<label for="nombre" class="control-label">
+							<strong class="labelVisu">
+								<bean:message key="nueva.semilla.observatorio.nombre" />
+							</strong>
+						</label>
 						<html:text styleClass="texto form-control" styleId="nombre" property="nombre" />
 					</div>
 					<div class="formItem">
-						<label for="listaUrlsString" class="control-label"><strong class="labelVisu"><bean:message
-									key="nueva.semilla.observatorio.url" /></strong></label>
+						<label for="listaUrlsString" class="control-label">
+							<strong class="labelVisu">
+								<bean:message key="nueva.semilla.observatorio.url" />
+							</strong>
+						</label>
 						<html:text styleClass="texto form-control" styleId="listaUrlsString" property="listaUrlsString" />
 					</div>
 					<div class="formButton">
-						<span onclick="buscar()" class="btn btn-default btn-lg"> <span class="glyphicon glyphicon-search"
-							aria-hidden="true"></span> <bean:message key="boton.buscar" />
-						</span> <span onclick="limpiar()" class="btn btn-default btn-lg"> <span aria-hidden="true"></span> <bean:message
-								key="boton.limpiar" />
+						<span onclick="buscar()" class="btn btn-default btn-lg">
+							<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+							<bean:message key="boton.buscar" />
+						</span>
+						<span onclick="limpiar()" class="btn btn-default btn-lg">
+							<span aria-hidden="true"></span>
+							<bean:message key="boton.limpiar" />
 						</span>
 						</button>
 				</fieldset>
 			</html:form>
-
 			<jsp:useBean id="params" class="java.util.HashMap" />
 			<c:set target="${params}" property="id_observatorio" value="${id_observatorio}" />
 			<c:set target="${params}" property="idCartucho" value="${idCartucho}" />
 			<c:set target="${params}" property="idExObs" value="${idExObs}" />
-
 			<p class="pull-right">
-
 				<!-- AÑADIR SEMILLAS -->
-
-				<a onclick="dialogAddSeed()"> <span class="btn btn-default btn-lg"><span
-						class="glyphicon glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip"
-						title="<bean:message key="tooltip.obs.add.seed" />" /> </span> <span><bean:message key="tooltip.obs.add.seed" /></span>
+				<a onclick="dialogAddSeed()">
+					<span class="btn btn-default btn-lg">
+						<span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip"
+							title="<bean:message key="tooltip.obs.add.seed" />" />
+					</span>
+					<span>
+						<bean:message key="tooltip.obs.add.seed" />
+					</span>
 				</a>
-
 				<html:link forward="regenerarResultadosObservatorioSemillas" name="params">
-					<span class="btn btn-default btn-lg"><span class="glyphicon glyphicon 	glyphicon glyphicon-repeat"
-						aria-hidden="true" data-toggle="tooltip" title="<bean:message key="tooltip.obs.regenerate.scores" />" /> </span>
-					<span><bean:message key="tooltip.obs.regenerate.scores" /></span>
+					<span class="btn btn-default btn-lg">
+						<span class="glyphicon glyphicon 	glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
+							title="<bean:message key="tooltip.obs.regenerate.scores" />" />
+					</span>
+					<span>
+						<bean:message key="tooltip.obs.regenerate.scores" />
+					</span>
 				</html:link>
-
-				<a onclick="reduceSize()"> <span class="btn btn-default btn-lg"><span
-						class="glyphicon glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip"
-						title="<bean:message key="tooltip.obs.clean" />" /> </span> <span><bean:message key="tooltip.obs.clean" /></span>
+				<a onclick="reduceSize()">
+					<span class="btn btn-default btn-lg">
+						<span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip"
+							title="<bean:message key="tooltip.obs.clean" />" />
+					</span>
+					<span>
+						<bean:message key="tooltip.obs.clean" />
+					</span>
 				</a>
 			</p>
-
-
 			<!-- Grid -->
 			<table id="grid">
 			</table>
-
 			<p id="paginador"></p>
-
-
-
-
 		</div>
 		<!-- fin cajaformularios -->
 	</div>

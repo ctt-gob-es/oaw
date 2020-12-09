@@ -15,55 +15,132 @@
 ******************************************************************************/
 package es.inteco.rastreador2.actionform.observatorio;
 
-import es.inteco.rastreador2.dao.login.CartuchoForm;
-
 import java.util.Date;
 
+import es.inteco.rastreador2.dao.login.CartuchoForm;
+
+/**
+ * The Class ObservatorioRealizadoForm.
+ */
 public class ObservatorioRealizadoForm {
+	/** The id. */
+	private long id;
+	/** The observatorio. */
+	private ObservatorioForm observatorio;
+	/** The cartucho. */
+	private CartuchoForm cartucho;
+	/** The fecha. */
+	private Date fecha;
+	/** The fecha str. */
+	private String fechaStr;
+	/** The ambito. */
+	private String ambito;
 
-    private long id;
-    private ObservatorioForm observatorio;
-    private CartuchoForm cartucho;
-    private Date fecha;
-    private String fechaStr;
+	/**
+	 * Gets the ambito.
+	 *
+	 * @return the ambito
+	 */
+	public String getAmbito() {
+		return ambito;
+	}
 
-    public long getId() {
-        return id;
-    }
+	/**
+	 * Sets the ambito.
+	 *
+	 * @param ambito the ambito to set
+	 */
+	public void setAmbito(String ambito) {
+		this.ambito = ambito;
+	}
 
-    public void setId(long id) {
-        this.id = id;
-    }
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
+	public long getId() {
+		return id;
+	}
 
-    public ObservatorioForm getObservatorio() {
-        return observatorio;
-    }
+	/**
+	 * Sets the id.
+	 *
+	 * @param id the new id
+	 */
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public void setObservatorio(ObservatorioForm observatorio) {
-        this.observatorio = observatorio;
-    }
+	/**
+	 * Gets the observatorio.
+	 *
+	 * @return the observatorio
+	 */
+	public ObservatorioForm getObservatorio() {
+		return observatorio;
+	}
 
-    public Date getFecha() {
-        return fecha;
-    }
+	/**
+	 * Sets the observatorio.
+	 *
+	 * @param observatorio the new observatorio
+	 */
+	public void setObservatorio(ObservatorioForm observatorio) {
+		this.observatorio = observatorio;
+	}
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
+	/**
+	 * Gets the fecha.
+	 *
+	 * @return the fecha
+	 */
+	public Date getFecha() {
+		return fecha;
+	}
 
-    public String getFechaStr() {
-        return fechaStr;
-    }
+	/**
+	 * Sets the fecha.
+	 *
+	 * @param fecha the new fecha
+	 */
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
 
-    public void setFechaStr(String fechaStr) {
-        this.fechaStr = fechaStr;
-    }
+	/**
+	 * Gets the fecha str.
+	 *
+	 * @return the fecha str
+	 */
+	public String getFechaStr() {
+		return fechaStr;
+	}
 
-    public CartuchoForm getCartucho() {
-        return cartucho;
-    }
+	/**
+	 * Sets the fecha str.
+	 *
+	 * @param fechaStr the new fecha str
+	 */
+	public void setFechaStr(String fechaStr) {
+		this.fechaStr = fechaStr;
+	}
 
-    public void setCartucho(CartuchoForm cartucho) {
-        this.cartucho = cartucho;
-    }
+	/**
+	 * Gets the cartucho.
+	 *
+	 * @return the cartucho
+	 */
+	public CartuchoForm getCartucho() {
+		return cartucho;
+	}
+
+	/**
+	 * Sets the cartucho.
+	 *
+	 * @param cartucho the new cartucho
+	 */
+	public void setCartucho(CartuchoForm cartucho) {
+		this.cartucho = cartucho;
+	}
 }

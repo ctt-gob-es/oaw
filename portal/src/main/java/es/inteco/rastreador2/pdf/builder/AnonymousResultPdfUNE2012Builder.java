@@ -143,8 +143,8 @@ public class AnonymousResultPdfUNE2012Builder extends AnonymousResultPdfBuilder 
 	 * @throws Exception the exception
 	 */
 	@Override
-	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, String observatoryId, String filePath, String[] tagsFilter, String[] exObsIds)
-			throws Exception {
+	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, String observatoryId, String filePath, String[] tagsFilter,
+			final String[] tagsFilterFixed, String[] exObsIds) throws Exception {
 		ResultadosAnonimosObservatorioUNE2012Utils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true);
 	}
 }

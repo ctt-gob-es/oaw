@@ -31,7 +31,6 @@ import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
  * The Class CartuchoDAO.
  */
 public final class CartuchoDAO {
-
 	/**
 	 * Instantiates a new cartucho DAO.
 	 */
@@ -139,7 +138,6 @@ public final class CartuchoDAO {
 		try (PreparedStatement ps = c.prepareStatement("SELECT aplicacion FROM cartucho c, rastreos_realizados rr where c.id_cartucho=rr.id_cartucho and rr.id_rastreo=? and rr.id=?")) {
 			ps.setLong(1, idRastreo);
 			ps.setLong(2, idRastreoRealizado);
-
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					return rs.getString("aplicacion");
@@ -152,7 +150,23 @@ public final class CartuchoDAO {
 			throw e;
 		}
 	}
-	
+
+	public static String getApplicationFromCrawlerExceutionId(final Connection c, final Long idRastreoRealizado) throws SQLException {
+		try (PreparedStatement ps = c.prepareStatement("SELECT aplicacion FROM cartucho c, rastreos_realizados rr where c.id_cartucho=rr.id_cartucho and rr.id=?")) {
+			ps.setLong(1, idRastreoRealizado);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					return rs.getString("aplicacion");
+				} else {
+					return null;
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
 	/**
 	 * Gets the application from analisis id.
 	 *
@@ -164,7 +178,6 @@ public final class CartuchoDAO {
 	public static String getApplicationFromAnalisisId(final Connection c, final Long idAnalisis) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("select c.aplicacion from cartucho c, tanalisis ta where c.id_guideline=ta.cod_guideline and ta.cod_analisis=?")) {
 			ps.setLong(1, idAnalisis);
-
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					return rs.getString("aplicacion");
@@ -177,6 +190,4 @@ public final class CartuchoDAO {
 			throw e;
 		}
 	}
-	
-
 }
