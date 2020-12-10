@@ -93,13 +93,14 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 						messageResources.getMessage("observatory.graphic.score.by.page.table.title", new String[] { getPriorityName(messageResources, observatoryLevelForm.getName()) })));
 			}
 			// Con o sin niveles
-			chapter.add(Chunk.NEXTPAGE);
+			// chapter.add(Chunk.NEXTPAGE);
 			if (withOutLevels) {
 				addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter, pdfTocManager);
 			} else {
 				addCheckCodes(messageResources, evaluationForm, chapter);
 			}
 			document.add(chapter);
+			document.add(Chunk.NEWLINE);
 			pdfTocManager.addChapterCount();
 			counter++;
 		}
@@ -295,6 +296,7 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 			throws IOException {
 		for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
 			if (hasProblems(priority)) {
+				chapter.add(Chunk.NEXTPAGE);
 				final Section prioritySection = PDFUtils.createSection(getPriorityName(messageResources, priority), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
 						pdfTocManager.addSection(), 1);
 				processLevels(messageResources, priority, prioritySection);
