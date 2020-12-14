@@ -288,13 +288,15 @@ public final class AnnexUtils {
      */
     public static void createAnnexXLSX(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
         try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "anexo.xlsx")) {
-            final String[] ColumnNames = new String[]{"", "namecat", "depende_de", "semilla", "puntuacion_2020-03-13", "adecuacion_2020-03-13", "cumplimiento_2020-03-13", "NV_2020-02-21", "A_2020-02-21", "AA_2020-02-21", "NC_2020-02-21", "PC_2020-02-21", "TC_2020-02-21"};
+            final String[] ColumnNames = new String[]{"nombre", "namecat", "depende_de", "semilla", "puntuacion_2020-03-13", "adecuacion_2020-03-13", "cumplimiento_2020-03-13", "NV_2020-02-21", "A_2020-02-21", "AA_2020-02-21", "NC_2020-02-21", "PC_2020-02-21", "TC_2020-02-21"};
             final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
 
-            String templatePath = new PropertiesManager().getValue(CRAWLER_PROPERTIES, "export.open.office.template.empty.XLSX.template");
-            InputStream ExcelFileToRead = new FileInputStream(templatePath);
-            XSSFWorkbook wb = new XSSFWorkbook(ExcelFileToRead);
-            XSSFSheet sheet = wb.getSheetAt(0);
+            XSSFWorkbook wb = new XSSFWorkbook();
+            XSSFSheet sheet = wb.createSheet("Hoja1");
+            XSSFRow row;
+            XSSFCell cell;
+            int rowIndex = 0;
+            int columnIndex = 0;
 
             //create default cell style (aligned top left and allow line wrapping)
             CellStyle defaultStyle = wb.createCellStyle();
@@ -302,12 +304,18 @@ public final class AnnexUtils {
             defaultStyle.setAlignment(HorizontalAlignment.LEFT);
             defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
 
+            // Add headers
+            row = sheet.createRow(rowIndex);
+            for (String name : ColumnNames ) {
+                cell = row.createCell(columnIndex);
+                cell.setCellValue(name);
+                cell.setCellStyle(defaultStyle);
+                columnIndex++;
+            }
+
             // The sheet already has headers, so we start in the second row.
-            int rowIndex = 1;
-            int columnIndex;
+            rowIndex++;
             int categoryStarts = 0;
-            XSSFRow row;
-            XSSFCell cell;
 
             for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
                 categoryStarts = rowIndex;
@@ -338,7 +346,7 @@ public final class AnnexUtils {
                                         int excelRowNumber = rowIndex + 1;
 
                                         switch (ColumnNames[columnIndex]) {
-                                            case "":
+                                            case "nombre":
                                                 cell.setCellValue(siteForm.getName());
                                                 cell.setCellStyle(defaultStyle);
                                                 break;
