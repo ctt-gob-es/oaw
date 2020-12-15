@@ -46,6 +46,8 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
+import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
+import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 
 /**
@@ -102,8 +104,16 @@ public final class DiagnosisDAO {
 				ps.setString(11, BasicServiceAnalysisType.CODIGO_FUENTE.getLabel());
 			}
 			ps.setString(4, basicServiceForm.getEmail());
-			ps.setString(5, basicServiceForm.getProfundidad());
-			ps.setString(6, basicServiceForm.getAmplitud());
+			// if complex != null && !=0
+			if (!org.apache.commons.lang3.StringUtils.isEmpty(basicServiceForm.getComplexity()) && !"0".equalsIgnoreCase(basicServiceForm.getComplexity())) {
+				String complex = basicServiceForm.getComplexity();
+				ComplejidadForm cx = ComplejidadDAO.getById(conn, complex);
+				ps.setString(5, String.valueOf(cx.getProfundidad()));
+				ps.setString(6, String.valueOf(cx.getAmplitud()));
+			} else {
+				ps.setString(5, basicServiceForm.getProfundidad());
+				ps.setString(6, basicServiceForm.getAmplitud());
+			}
 			ps.setString(7, basicServiceForm.getReport());
 			ps.setTimestamp(8, new Timestamp(new java.util.Date().getTime()));
 			ps.setString(9, status);
@@ -361,7 +371,11 @@ public final class DiagnosisDAO {
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 		final int resultFrom = pagSize * pagina;
 		StringBuilder query = new StringBuilder(
-				"SELECT (select distinct(nombre) from ambitos_lista where id_ambito =(select id_ambito from lista where lista = domain and  id_ambito is not null limit 1) limit 1) as ambito, id,usr,language,domain,email,depth,width,report,date,send_date, status,scheduling_date,analysis_type,in_directory,register_result, (select nombre from complejidades_lista where id_complejidad = complexity) as complexity_name,depthReport FROM basic_service WHERE 1=1 ");
+				"SELECT (select distinct(nombre) from ambitos_lista where id_ambito =(select id_ambito from lista where lista = domain and  id_ambito is not null limit 1) limit 1) as ambito, id,usr,language,domain,email,\n"
+						+ "IF(complexity > 0 AND depth IS NULL, (select profundidad from complejidades_lista where id_complejidad = complexity), depth) as depth,\n"
+						+ "IF(complexity > 0 AND width IS NULL, (select amplitud from complejidades_lista where id_complejidad = complexity), width) as width,\n"
+						+ "report,date,send_date, status,scheduling_date,analysis_type,in_directory,register_result, (select nombre from complejidades_lista where id_complejidad = complexity) as complexity_name, depthReport\n"
+						+ "FROM basic_service WHERE 1=1 ");
 		addSearchParameters(search, query);
 		query.append("ORDER BY id DESC");
 		query.append(" LIMIT " + pagSize + " OFFSET " + resultFrom);

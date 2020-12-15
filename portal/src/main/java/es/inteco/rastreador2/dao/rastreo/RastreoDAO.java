@@ -1428,6 +1428,12 @@ public final class RastreoDAO {
 			ps.setString(4, insertarRastreoForm.getCartucho());
 			ps.setLong(5, idRastreo);
 			ps.executeUpdate();
+			// TODO Update cartucho_rastreo
+			DAOUtils.closeQueries(ps, null);
+			ps = c.prepareStatement("UPDATE cartucho_rastreo SET id_cartucho = ? WHERE id_rastreo = ?");
+			ps.setInt(1, Integer.parseInt(insertarRastreoForm.getCartucho()));
+			ps.setLong(2, idRastreo);
+			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("Exception", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
