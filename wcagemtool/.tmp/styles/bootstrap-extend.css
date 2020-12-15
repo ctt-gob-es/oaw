@@ -1,0 +1,163 @@
+/* line 7, ../../app/styles/bootstrap-extend.scss */
+.dropdown-menu.lang-menu > li > a {
+  padding-left: 10px;
+}
+
+/* line 13, ../../app/styles/bootstrap-extend.scss */
+body .form-horizontal .control-label {
+  text-align: left;
+}
+/* line 17, ../../app/styles/bootstrap-extend.scss */
+body .alert {
+  margin-bottom: 10px;
+}
+/* line 21, ../../app/styles/bootstrap-extend.scss */
+body .btn > button {
+  border: none;
+  background: transparent;
+  margin: -1px -5px;
+  padding: 1px 5px;
+}
+/* line 28, ../../app/styles/bootstrap-extend.scss */
+body .btn-default {
+  border-color: #888;
+  background-color: #fff;
+}
+/* line 33, ../../app/styles/bootstrap-extend.scss */
+body .btn-group > input {
+  float: left;
+}
+/* line 37, ../../app/styles/bootstrap-extend.scss */
+body .btn.btn-primary-invert {
+  background-color: #fff;
+}
+/* line 41, ../../app/styles/bootstrap-extend.scss */
+body .navbar-nav > li > a {
+  text-decoration: none;
+}
+/* line 45, ../../app/styles/bootstrap-extend.scss */
+body .key-value-group {
+  text-indent: 0;
+}
+
+/* line 50, ../../app/styles/bootstrap-extend.scss */
+.alert {
+  position: relative;
+}
+/* line 53, ../../app/styles/bootstrap-extend.scss */
+.alert .floater {
+  width: 30px;
+  height: 30px;
+  float: right;
+}
+/* line 59, ../../app/styles/bootstrap-extend.scss */
+.alert .close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+/* line 66, ../../app/styles/bootstrap-extend.scss */
+label {
+  display: inline;
+}
+/* line 69, ../../app/styles/bootstrap-extend.scss */
+label::after {
+  content: "\200B";
+  display: inline-block;
+  margin-bottom: 5px;
+}
+
+/* line 76, ../../app/styles/bootstrap-extend.scss */
+.alert p:last-child {
+  margin-bottom: 0;
+}
+
+/* line 80, ../../app/styles/bootstrap-extend.scss */
+* a:focus,
+* button:focus,
+* .dropdown-toggle:focus {
+  outline: thin solid #477ba5;
+}
+
+/* line 86, ../../app/styles/bootstrap-extend.scss */
+.form-control:focus {
+  border-color: #477ba5;
+}
+
+/* line 90, ../../app/styles/bootstrap-extend.scss */
+.active *:focus {
+  outline-color: white;
+}
+
+/* line 94, ../../app/styles/bootstrap-extend.scss */
+.dropdown-menu a {
+  text-decoration: none;
+}
+
+@media (min-width: 768px) {
+  /* line 100, ../../app/styles/bootstrap-extend.scss */
+  .visible-xs-and-sr {
+    position: absolute !important;
+    top: -9999em;
+  }
+
+  /* line 105, ../../app/styles/bootstrap-extend.scss */
+  body .navbar-nav > li > a {
+    border-left: solid 1px #ccc;
+  }
+}
+@media (max-width: 768px) {
+  /* line 112, ../../app/styles/bootstrap-extend.scss */
+  body .visible-xs-and-sr {
+    position: relative !important;
+    clear: left;
+  }
+
+  /* line 117, ../../app/styles/bootstrap-extend.scss */
+  body .navbar-nav {
+    margin: 0;
+  }
+  /* line 120, ../../app/styles/bootstrap-extend.scss */
+  body .navbar-nav > li > a {
+    border-top: solid 1px #ccc;
+  }
+  /* line 124, ../../app/styles/bootstrap-extend.scss */
+  body .navbar-nav .dropdown-menu {
+    padding: 0;
+  }
+  /* line 127, ../../app/styles/bootstrap-extend.scss */
+  body .navbar-nav .dropdown-menu > li > a {
+    border-top: solid 1px #ccc;
+  }
+
+  /* line 133, ../../app/styles/bootstrap-extend.scss */
+  label {
+    line-height: 1em;
+  }
+
+  /* line 137, ../../app/styles/bootstrap-extend.scss */
+  .expanding {
+    margin-top: 5px;
+  }
+
+  /* line 141, ../../app/styles/bootstrap-extend.scss */
+  .form-block .form-control {
+    margin-top: -5px;
+    margin-bottom: 5px;
+  }
+}
+/* line 147, ../../app/styles/bootstrap-extend.scss */
+.crit-detail-btn {
+  padding: 2px;
+}
+/* line 150, ../../app/styles/bootstrap-extend.scss */
+.crit-detail-btn .btn {
+  width: 100%;
+  padding: 4px;
+}
+
+/* line 156, ../../app/styles/bootstrap-extend.scss */
+.form-group .alert {
+  margin-top: 1em;
+}
