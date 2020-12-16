@@ -2,8 +2,7 @@ version: '3.0'
 
 services:
   node:
-    build: .
-    image: artefactos-ic.scae.redsara.es:6000/oaw-wcagemtool        
+    image: artefactos-ic.scae.redsara.es:6001/oaw-wcagemtool:latest
     command: npm start
     restart: always
     container_name: wcag_em_tool_node
