@@ -68,7 +68,11 @@ class Worksheet {
         orientation: 'portrait',
         horizontalDpi: 4294967295,
         verticalDpi: 4294967295,
-        fitToPage: !!(options.pageSetup && (options.pageSetup.fitToWidth || options.pageSetup.fitToHeight) && !options.pageSetup.scale),
+        fitToPage: !!(
+          options.pageSetup &&
+          (options.pageSetup.fitToWidth || options.pageSetup.fitToHeight) &&
+          !options.pageSetup.scale
+        ),
         pageOrder: 'downThenOver',
         blackAndWhite: false,
         draft: false,
@@ -256,6 +260,10 @@ class Worksheet {
     this.workbook.definedNames.spliceColumns(this.name, start, count, inserts.length);
   }
 
+  get lastColumn() {
+    return this.getColumn(this.columnCount);
+  }
+
   get columnCount() {
     let maxCount = 0;
     this.eachRow(row => {
@@ -312,6 +320,11 @@ class Worksheet {
     return this._rows[r - 1];
   }
 
+  // find multiple rows (if exists) by row number
+  findRows(start, length) {
+    return this._rows.slice(start - 1, start - 1 + length);
+  }
+
   get rowCount() {
     return this._lastRowNumber;
   }
@@ -334,16 +347,71 @@ class Worksheet {
     return row;
   }
 
-  addRow(value) {
-    const row = this.getRow(this._nextRow);
+  // get multiple rows by row number.
+  getRows(start, length) {
+    if (length < 1) return undefined;
+    const rows = [];
+    for (let i = start; i < start + length; i++) {
+      rows.push(this.getRow(i));
+    }
+    return rows;
+  }
+
+  addRow(value, style = 'n') {
+    const rowNo = this._nextRow;
+    const row = this.getRow(rowNo);
     row.values = value;
+    this._setStyleOption(rowNo, style[0] === 'i' ? style : 'n');
     return row;
   }
 
-  addRows(value) {
+  addRows(value, style = 'n') {
+    const rows = [];
     value.forEach(row => {
-      this.addRow(row);
+      rows.push(this.addRow(row, style));
     });
+    return rows;
+  }
+
+  insertRow(pos, value, style = 'n') {
+    this.spliceRows(pos, 0, value);
+    this._setStyleOption(pos, style);
+    return this.getRow(pos);
+  }
+
+  insertRows(pos, values, style = 'n') {
+    this.spliceRows(pos, 0, ...values);
+    if (style !== 'n') {
+      // copy over the styles
+      for (let i = 0; i < values.length; i++) {
+        if (style[0] === 'o' && this.findRow(values.length + pos + i) !== undefined) {
+          this._copyStyle(values.length + pos + i, pos + i, style[1] === '+');
+        } else if (style[0] === 'i' && this.findRow(pos - 1) !== undefined) {
+          this._copyStyle(pos - 1, pos + i, style[1] === '+');
+        }
+      }
+    }
+    return this.getRows(pos, values.length);
+  }
+
+  // set row at position to same style as of either pervious row (option 'i') or next row (option 'o')
+  _setStyleOption(pos, style = 'n') {
+    if (style[0] === 'o' && this.findRow(pos + 1) !== undefined) {
+      this._copyStyle(pos + 1, pos, style[1] === '+');
+    } else if (style[0] === 'i' && this.findRow(pos - 1) !== undefined) {
+      this._copyStyle(pos - 1, pos, style[1] === '+');
+    }
+  }
+
+  _copyStyle(src, dest, styleEmpty = false) {
+    const rSrc = this.getRow(src);
+    const rDst = this.getRow(dest);
+    rDst.style = Object.freeze({...rSrc.style});
+    // eslint-disable-next-line no-loop-func
+    rSrc.eachCell({includeEmpty: styleEmpty}, (cell, colNumber) => {
+      rDst.getCell(colNumber).style = Object.freeze({...cell.style});
+    });
+    rDst.height = rSrc.height;
   }
 
   duplicateRow(rowNum, count, insert = false) {
@@ -369,7 +437,8 @@ class Worksheet {
   spliceRows(start, count, ...inserts) {
     // same problem as row.splice, except worse.
     const nKeep = start + count;
-    const nExpand = inserts.length - count;
+    const nInserts = inserts.length;
+    const nExpand = nInserts - count;
     const nEnd = this._rows.length;
     let i;
     let rSrc;
@@ -403,6 +472,16 @@ class Worksheet {
           // eslint-disable-next-line no-loop-func
           rSrc.eachCell({includeEmpty: true}, (cell, colNumber) => {
             rDst.getCell(colNumber).style = cell.style;
+
+            // remerge cells accounting for insert offset
+            if (cell._value.constructor.name === 'MergeValue') {
+              const cellToBeMerged = this.getRow(cell._row._number + nInserts).getCell(colNumber);
+              const prevMaster = cell._value._master;
+              const newMaster = this
+                .getRow(prevMaster._row._number + nInserts)
+                .getCell(prevMaster._column._number)
+              cellToBeMerged.merge(newMaster);
+            }
           });
         } else {
           this._rows[i + nExpand - 1] = undefined;
@@ -411,14 +490,14 @@ class Worksheet {
     }
 
     // now copy over the new values
-    for (i = 0; i < inserts.length; i++) {
+    for (i = 0; i < nInserts; i++) {
       const rDst = this.getRow(start + i);
       rDst.style = {};
       rDst.values = inserts[i];
     }
 
     // account for defined names
-    this.workbook.definedNames.spliceRows(this.name, start, count, inserts.length);
+    this.workbook.definedNames.spliceRows(this.name, start, count, nInserts);
   }
 
   // iterate over every row in the worksheet, including maybe empty rows
@@ -633,13 +712,21 @@ class Worksheet {
       };
       if (options && 'spinCount' in options) {
         // force spinCount to be integer >= 0
-        options.spinCount = Number.isFinite(options.spinCount) ? Math.round(Math.max(0, options.spinCount)) : 100000;
+        options.spinCount = Number.isFinite(options.spinCount)
+          ? Math.round(Math.max(0, options.spinCount))
+          : 100000;
       }
       if (password) {
         this.sheetProtection.algorithmName = 'SHA-512';
         this.sheetProtection.saltValue = Encryptor.randomBytes(16).toString('base64');
-        this.sheetProtection.spinCount = options && 'spinCount' in options ? options.spinCount : 100000; // allow user specified spinCount
-        this.sheetProtection.hashValue = Encryptor.convertPasswordToHash(password, 'SHA512', this.sheetProtection.saltValue, this.sheetProtection.spinCount);
+        this.sheetProtection.spinCount =
+          options && 'spinCount' in options ? options.spinCount : 100000; // allow user specified spinCount
+        this.sheetProtection.hashValue = Encryptor.convertPasswordToHash(
+          password,
+          'SHA512',
+          this.sheetProtection.saltValue,
+          this.sheetProtection.spinCount
+        );
       }
       if (options) {
         this.sheetProtection = Object.assign(this.sheetProtection, options);
@@ -695,13 +782,17 @@ class Worksheet {
   // Deprecated
   get tabColor() {
     // eslint-disable-next-line no-console
-    console.trace('worksheet.tabColor property is now deprecated. Please use worksheet.properties.tabColor');
+    console.trace(
+      'worksheet.tabColor property is now deprecated. Please use worksheet.properties.tabColor'
+    );
     return this.properties.tabColor;
   }
 
   set tabColor(value) {
     // eslint-disable-next-line no-console
-    console.trace('worksheet.tabColor property is now deprecated. Please use worksheet.properties.tabColor');
+    console.trace(
+      'worksheet.tabColor property is now deprecated. Please use worksheet.properties.tabColor'
+    );
     this.properties.tabColor = value;
   }
 
