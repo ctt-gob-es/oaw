@@ -34,9 +34,8 @@ WORKDIR /opt/wcag-em-tool
 RUN npm install -g bower 
 RUN npm install -g forever 
 RUN npm install
-RUN npm run build
-RUN bower install textAngular --allow-root
 RUN bower install --allow-root
+RUN npm run build
 
 #Usuario node para ejecutar el renderer
 # RUN addgroup -S node && adduser -S -G node node

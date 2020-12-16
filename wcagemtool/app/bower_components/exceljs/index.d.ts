@@ -1,6 +1,6 @@
 declare interface Buffer extends ArrayBuffer { }
 
-export const enum RelationshipType {
+export declare enum RelationshipType {
 	None = 0,
 	OfficeDocument = 1,
 	Worksheet = 2,
@@ -11,7 +11,7 @@ export const enum RelationshipType {
 	Hyperlink = 7
 }
 
-export const enum DocumentType {
+export declare enum DocumentType {
 	Xlsx = 1
 }
 
@@ -272,7 +272,7 @@ export interface Margins {
 	footer: number;
 }
 
-export const enum ReadingOrder {
+export declare enum ReadingOrder {
 	LeftToRight = 1,
 	RightToLeft = 2,
 }
@@ -318,6 +318,16 @@ export interface DataValidation {
 	showInputMessage?: boolean;
 }
 
+export declare enum ErrorValue {
+	NotApplicable = '#N/A',
+	Ref = '#REF!',
+	Name = '#NAME?',
+	DivZero = '#DIV/0!',
+	Null = '#NULL!',
+	Value = '#VALUE!',
+	Num = '#NUM!',
+}
+
 export interface CellErrorValue {
 	error: '#N/A' | '#REF!' | '#NAME?' | '#DIV/0!' | '#NULL!' | '#VALUE!' | '#NUM!';
 }
@@ -349,7 +359,7 @@ export interface CellSharedFormulaValue {
 	date1904: boolean;
 }
 
-export const enum ValueType {
+export declare enum ValueType {
 	Null = 0,
 	Merge = 1,
 	Number = 2,
@@ -363,14 +373,14 @@ export const enum ValueType {
 	Error = 10
 }
 
-export const enum FormulaType {
+export declare enum FormulaType {
 	None = 0,
 	Master = 1,
 	Shared = 2
 }
 
 export type CellValue =
-	| null | number | string | boolean | Date
+	| null | number | string | boolean | Date | undefined
 	| CellErrorValue
 	| CellRichTextValue | CellHyperlinkValue
 	| CellFormulaValue | CellSharedFormulaValue;
@@ -380,12 +390,12 @@ export type CellValue =
 		insetmode: 'auto' | 'custom';
 		inset: Number[];
 	}
-	
+
 	export interface CommentProtection {
 		locked: 'True' | 'False';
 		lockText: 'True' | 'False';
 	}
-	
+
 	export type CommentEditAs = 'twoCells' | 'oneCells' | 'absolute';
 
 	export interface Comment {
@@ -545,12 +555,12 @@ export interface Row extends Style {
 	readonly collapsed: boolean;
 
 	/**
-	 * Number of non-empty cells
+	 * Number of cells including empty ones
 	 */
 	readonly cellCount: number;
 
 	/**
-	 * Number of cells including empty ones
+	 * Number of non-empty cells
 	 */
 	readonly actualCellCount: number;
 
@@ -592,17 +602,17 @@ export interface Column {
 	/**
 	 * Can be a string to set one row high header or an array to set multi-row high header
 	 */
-	header: string | string[];
+	header?: string | string[];
 
 	/**
 	 * The name of the properties associated with this column in each row
 	 */
-	key: string;
+	key?: string;
 
 	/**
 	 * The width of the column
 	 */
-	width: number;
+	width?: number;
 
 	/**
 	 * Set an outline level for columns
@@ -634,12 +644,16 @@ export interface Column {
 	readonly headers: string[];
 	readonly isDefault: boolean;
 	readonly headerCount: number;
-	border: Partial<Borders>;
-	fill: Fill;
-	numFmt: string
-	font: Partial<Font>;
-	alignment: Partial<Alignment>;
-	protection: Partial<Protection>;
+
+	/**
+	 * Below properties read from style
+	 */
+	border?: Partial<Borders>;
+	fill?: Fill;
+	numFmt?: string;
+	font?: Partial<Font>;
+	alignment?: Partial<Alignment>;
+	protection?: Partial<Protection>;
 
 	toString(): string
 	equivalentTo(other: Column): boolean
@@ -867,7 +881,6 @@ export interface WorksheetProtection {
 	autoFilter: boolean;
 	pivotTables: boolean;
 }
-
 export interface Image {
 	extension: 'jpeg' | 'png' | 'gif';
 	base64?: string;
@@ -897,8 +910,8 @@ export class Anchor implements IAnchor {
 	constructor(model?: IAnchor | object);
 }
 export interface ImageRange {
-	tl: { col: number; row: number } | Anchor;
-	br: { col: number; row: number } | Anchor;
+	tl: Anchor;
+	br: Anchor;
 }
 
 export interface ImagePosition {
@@ -1026,7 +1039,7 @@ export interface AboveAverageRuleType extends ConditionalFormattingBaseRule {
 export interface ColorScaleRuleType extends ConditionalFormattingBaseRule {
 	type: 'colorScale';
 	cfvo?: Cvfo[];
-	color?: Partial<Color>;
+	color?: Partial<Color>[];
 }
 
 export interface IconSetRuleType extends ConditionalFormattingBaseRule {
@@ -1065,6 +1078,9 @@ export interface DataBarRuleType extends ConditionalFormattingBaseRule {
 
 export type ConditionalFormattingRule = ExpressionRuleType | CellIsRuleType | Top10RuleType | AboveAverageRuleType | ColorScaleRuleType | IconSetRuleType
 	| ContainsTextRuleType | TimePeriodRuleType | DataBarRuleType;
+
+
+export type RowValues = CellValue[] | { [key: string]: CellValue } | undefined | null; 
 
 export interface ConditionalFormattingOptions {
 	ref: string;
@@ -1125,18 +1141,18 @@ export interface Worksheet {
 	 */
 	readonly actualColumnCount: number;
 
-	getColumnKey(key: string): Partial<Column>;
+	getColumnKey(key: string): Column;
 
-	setColumnKey(key: string, value: Partial<Column>): void;
+	setColumnKey(key: string, value: Column): void;
 
 	deleteColumnKey(key: string): void;
 
-	eachColumnKey(callback: (col: Partial<Column>, index: number) => void): void;
+	eachColumnKey(callback: (col: Column, index: number) => void): void;
 
 	/**
 	 * Access an individual columns by key, letter and 1-based column number
 	 */
-	getColumn(indexOrKey: number | string): Partial<Column>;
+	getColumn(indexOrKey: number | string): Column;
 
 	/**
 	 * Cut one or more columns (columns to the right are shifted left)
@@ -1157,7 +1173,7 @@ export interface Worksheet {
 	 * Note: these column structures are a workbook-building convenience only,
 	 * apart from the column width, they will not be fully persisted.
 	 */
-	columns: Array<Partial<Column>>;
+	columns: Array<Column>;
 
 	/**
 	 * The total row size of the document. Equal to the row number of the last row that has values.
@@ -1169,7 +1185,20 @@ export interface Worksheet {
 	 */
 	readonly lastRow: Row | undefined;
 
+	/**
+	 * Tries to find and return row for row no, else undefined
+	 * 
+	 * @param row The 1-index row number
+	 */
 	findRow(row: number): Row | undefined;
+
+	/**
+	 * Tries to find and return rows for row no start and length, else undefined
+	 * 
+	 * @param start The 1-index starting row number
+	 * @param length The length of the expected array
+	 */
+	findRows(start: number, length: number): Row[] | undefined;
 
 	/**
 	 * Cut one or more rows (rows below are shifted up)
@@ -1183,12 +1212,24 @@ export interface Worksheet {
 	 * Add a couple of Rows by key-value, after the last current row, using the column keys,
 	 * or add a row by contiguous Array (assign to columns A, B & C)
 	 */
-	addRow(data: any[] | any): Row;
+	addRow(data: any[] | any, style?: string): Row;
 
 	/**
 	 * Add multiple rows by providing an array of arrays or key-value pairs
 	 */
-	addRows(rows: any[]): void;
+	addRows(rows: any[], style?: string): Row[];
+
+	/**
+	 * Insert a Row by key-value, at the position (shifiting down all rows from position),
+	 * using the column keys, or add a row by contiguous Array (assign to columns A, B & C)
+	 */
+	insertRow(pos: number, value: any[] | any, style?: string): Row;
+
+	/**
+	 * Insert multiple rows at position (shifiting down all rows from position)
+	 * by providing an array of arrays or key-value pairs
+	 */
+	insertRows(pos: number, values: any[], style?: string): Row[];
 
 	/**
 	 * Duplicate rows and insert new rows
@@ -1199,6 +1240,11 @@ export interface Worksheet {
 	 * Get or create row by 1-based index
 	 */
 	getRow(index: number): Row;
+
+	/**
+	 * Get or create rows by 1-based index
+	 */
+	getRows(start: number, length: number): Row[];
 
 	/**
 	 * Iterate over all rows that have values in a worksheet
@@ -1213,7 +1259,7 @@ export interface Worksheet {
 	/**
 	 * return all rows as sparse array
 	 */
-	getSheetValues(): Row[];
+	getSheetValues(): RowValues[];
 
 	/**
 	 * returns the cell at [r,c] or address given by r. If not found, return undefined
@@ -1584,7 +1630,7 @@ export interface CellMatrix {
 
 export interface DefinedNamesRanges {
 	name: string;
-	range: string[];
+	ranges: string[];
 }
 
 export type DefinedNamesModel = DefinedNamesRanges[];
@@ -1935,7 +1981,7 @@ export namespace stream {
 		class WorkbookReader extends Workbook {
 			constructor(input: string | import('stream').Stream, options: Partial<WorkbookStreamReaderOptions>);
 			read(): Promise<void>;
-			[Symbol.asyncIterator]: AsyncIterator<WorksheetReader>;
+			[Symbol.asyncIterator](): AsyncGenerator<WorksheetReader>;
 			parse(): AsyncIterator<any>;
 		}
 
@@ -1949,7 +1995,7 @@ export namespace stream {
 		class WorksheetReader {
 			constructor(options: WorksheetReaderOptions);
 			read(): Promise<void>;
-			[Symbol.asyncIterator]: AsyncIterator<Row>;
+			[Symbol.asyncIterator](): AsyncGenerator<Row>;
 			parse(): AsyncIterator<Array<any>>;
 			dimensions(): number;
 			columns(): number;
