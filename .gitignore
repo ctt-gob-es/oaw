@@ -12,4 +12,4 @@
 **/.vscode
 **/.attach_*
 update-code.sh
-profiles
+profiles/
