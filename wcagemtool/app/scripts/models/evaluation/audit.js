@@ -167,7 +167,15 @@ angular.module('wcagReporter')
           .forEach(function (critName) {
             criteria[critName].removePage(page);
           });
+      },
+
+      updatePageFromAsserts: function (page,newId) {
+        Object.keys(criteria)
+          .forEach(function (critName) {            
+            criteria[critName].updatePage(page, newId);
+          });
       }
+
     };
     return auditModel;
   });

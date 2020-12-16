@@ -7,11 +7,13 @@ angular.module('wcagReporter')
       scope: {
         pages: '=',
         addPage: '&',
-        removePage: '&'
+        removePage: '&',
+        updatePage: '&',
       },
       link: function (scope) {
         var addPageFunc = scope.addPage();
         var removePageFunc = scope.removePage();
+        var updatePageFunc = scope.updatePage();
         scope.addPage = function ($event) {
           var button = angular.element($event.delegateTarget);
           addPageFunc();
@@ -30,6 +32,19 @@ angular.module('wcagReporter')
 
         scope.removePage = function ($index, $event) {
           removePageFunc($index);
+          // We need this timeout to prevent Angular UI from throwing an error
+          $timeout(function () {
+            angular.element($event.delegateTarget)
+              .closest('fieldset')
+              .parent()
+              .children()
+              .last()
+              .focus();
+          });
+        };
+
+        scope.updatePage = function ($index, $event) {
+          updatePageFunc($index);
           // We need this timeout to prevent Angular UI from throwing an error
           $timeout(function () {
             angular.element($event.delegateTarget)
