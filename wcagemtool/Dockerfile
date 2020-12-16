@@ -1,4 +1,5 @@
 FROM artefactos-ic.scae.redsara.es:6000/alpine:3.10
+#FROM alpine:3.10
 
 # Install base packages
 RUN apk update 
@@ -34,6 +35,7 @@ RUN npm install -g bower
 RUN npm install -g forever 
 RUN npm install
 RUN npm run build
+RUN bower install textAngular --allow-root
 RUN bower install --allow-root
 
 #Usuario node para ejecutar el renderer
