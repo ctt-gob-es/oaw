@@ -18,12 +18,12 @@ angular.module('wcagReporter')
       $scope.exploreModel = evalExploreModel;
 
       if ($scope.structuredSample &&
-    $scope.structuredSample.webpage.length === 0) {
+        $scope.structuredSample.webpage.length === 0) {
         var strPage = evalSampleModel.addNewStructuredPage();
         evalAuditModel.addPageForAsserts(strPage);
 
         if ($scope.randomSample &&
-        $scope.randomSample.webpage.length === 0) {
+          $scope.randomSample.webpage.length === 0) {
           var rndPage = evalSampleModel.addNewRandomPage();
           evalAuditModel.addPageForAsserts(rndPage);
         }
@@ -38,7 +38,7 @@ angular.module('wcagReporter')
           // Add a random page if it's one off
           var randomSampleSize = Math.ceil(strSize / 10);
           if ($scope.randomSample.webpage.length + 1 === randomSampleSize &&
-                strSize % 10 === 1) {
+            strSize % 10 === 1) {
             var rndPage = evalSampleModel
               .addNewPage($scope.randomSample);
             evalAuditModel.addPageForAsserts(rndPage);
