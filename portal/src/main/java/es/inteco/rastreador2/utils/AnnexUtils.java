@@ -288,8 +288,10 @@ public final class AnnexUtils {
      */
     public static void createAnnexXLSX(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
         try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "anexo.xlsx")) {
-            final String[] ColumnNames = new String[]{"nombre", "namecat", "depende_de", "semilla", "puntuacion_2020-03-13", "adecuacion_2020-03-13", "cumplimiento_2020-03-13", "NV_2020-02-21", "A_2020-02-21", "AA_2020-02-21", "NC_2020-02-21", "PC_2020-02-21", "TC_2020-02-21"};
+
             final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
+            final String ObservatoryFormDate = observatoryForm.getDate().substring(0,10);
+            final String[] ColumnNames = new String[]{"nombre", "namecat", "depende_de", "semilla", "puntuacion_"+ObservatoryFormDate, "adecuacion_"+ObservatoryFormDate, "cumplimiento_"+ObservatoryFormDate, "NV_"+ObservatoryFormDate, "A_"+ObservatoryFormDate, "AA_"+ObservatoryFormDate, "NC_"+ObservatoryFormDate, "PC_"+ObservatoryFormDate, "TC_"+ObservatoryFormDate};
 
             XSSFWorkbook wb = new XSSFWorkbook();
             XSSFSheet sheet = wb.createSheet("Hoja1");
@@ -345,66 +347,75 @@ public final class AnnexUtils {
 
                                         int excelRowNumber = rowIndex + 1;
 
-                                        switch (ColumnNames[columnIndex]) {
-                                            case "nombre":
-                                                cell.setCellValue(siteForm.getName());
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "namecat":
+                                        if (ColumnNames[columnIndex].equals("nombre")) {
+                                            cell.setCellValue(siteForm.getName());
+                                            cell.setCellStyle(defaultStyle);
+                                        }else {
+                                            if (ColumnNames[columnIndex].equals("namecat")) {
                                                 cell.setCellValue(categoryForm.getName());
                                                 cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "depende_de":
-                                                cell.setCellValue(dependencias);
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "semilla":
-                                                cell.setCellValue(pageForm.getUrl());
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "puntuacion_2020-03-13":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellValue(Double.parseDouble(pageForm.getScore()));
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "adecuacion_2020-03-13":
-                                                cell.setCellValue(ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
-
-                                                break;
-                                            case "cumplimiento_2020-03-13":
-                                                cell.setCellValue(siteForm.getCompliance());
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "NV_2020-02-21":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellFormula("IF($F" + excelRowNumber + "=\"No Válido\",$E" + excelRowNumber + ",0)");
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "A_2020-02-21":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellFormula("IF($F" + excelRowNumber + "=\"A\",$E" + excelRowNumber + ",0)");
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "AA_2020-02-21":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellFormula("IF($F" + excelRowNumber + "=\"AA\",$E" + excelRowNumber + ",0)");
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "NC_2020-02-21":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellFormula("IF($G" + excelRowNumber + "=\"No conforme\",$E" + excelRowNumber + ",0)");
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "PC_2020-02-21":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellFormula("IF($G" + excelRowNumber + "=\"Parcialmente conforme\",$E" + excelRowNumber + ",0)");
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "TC_2020-02-21":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellFormula("IF($G" + excelRowNumber + "=\"Plenamente conforme\",$E" + excelRowNumber + ",0)");
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
+                                            } else {
+                                                if (ColumnNames[columnIndex].equals("depende_de")) {
+                                                    cell.setCellValue(dependencias);
+                                                    cell.setCellStyle(defaultStyle);
+                                                } else {
+                                                    if (ColumnNames[columnIndex].equals("semilla")) {
+                                                        cell.setCellValue(pageForm.getUrl());
+                                                        cell.setCellStyle(defaultStyle);
+                                                    } else {
+                                                        if (ColumnNames[columnIndex].equals("puntuacion_" + ObservatoryFormDate)) {
+                                                            cell.setCellType(CellType.NUMERIC);
+                                                            cell.setCellValue(Double.parseDouble(pageForm.getScore()));
+                                                            cell.setCellStyle(defaultStyle);
+                                                        } else {
+                                                            if (ColumnNames[columnIndex].equals("adecuacion_" + ObservatoryFormDate)) {
+                                                                cell.setCellValue(ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
+                                                            } else {
+                                                                if (ColumnNames[columnIndex].equals("cumplimiento_" + ObservatoryFormDate)) {
+                                                                    cell.setCellValue(siteForm.getCompliance());
+                                                                    cell.setCellStyle(defaultStyle);
+                                                                } else {
+                                                                    if (ColumnNames[columnIndex].equals("NV_" + ObservatoryFormDate)) {
+                                                                        cell.setCellType(CellType.NUMERIC);
+                                                                        cell.setCellFormula("IF($F" + excelRowNumber + "=\"No Válido\",$E" + excelRowNumber + ",0)");
+                                                                        cell.setCellStyle(defaultStyle);
+                                                                    } else {
+                                                                        if (ColumnNames[columnIndex].equals("A_" + ObservatoryFormDate)) {
+                                                                            cell.setCellType(CellType.NUMERIC);
+                                                                            cell.setCellFormula("IF($F" + excelRowNumber + "=\"A\",$E" + excelRowNumber + ",0)");
+                                                                            cell.setCellStyle(defaultStyle);
+                                                                        } else {
+                                                                            if (ColumnNames[columnIndex].equals("AA_" + ObservatoryFormDate)) {
+                                                                                cell.setCellType(CellType.NUMERIC);
+                                                                                cell.setCellFormula("IF($F" + excelRowNumber + "=\"AA\",$E" + excelRowNumber + ",0)");
+                                                                                cell.setCellStyle(defaultStyle);
+                                                                            } else {
+                                                                                if (ColumnNames[columnIndex].equals("NC_" + ObservatoryFormDate)) {
+                                                                                    cell.setCellType(CellType.NUMERIC);
+                                                                                    cell.setCellFormula("IF($G" + excelRowNumber + "=\"No conforme\",$E" + excelRowNumber + ",0)");
+                                                                                    cell.setCellStyle(defaultStyle);
+                                                                                } else {
+                                                                                    if (ColumnNames[columnIndex].equals("PC_" + ObservatoryFormDate)) {
+                                                                                        cell.setCellType(CellType.NUMERIC);
+                                                                                        cell.setCellFormula("IF($G" + excelRowNumber + "=\"Parcialmente conforme\",$E" + excelRowNumber + ",0)");
+                                                                                        cell.setCellStyle(defaultStyle);
+                                                                                    } else {
+                                                                                        if (ColumnNames[columnIndex].equals("TC_" + ObservatoryFormDate)) {
+                                                                                            cell.setCellType(CellType.NUMERIC);
+                                                                                            cell.setCellFormula("IF($G" + excelRowNumber + "=\"Plenamente conforme\",$E" + excelRowNumber + ",0)");
+                                                                                            cell.setCellStyle(defaultStyle);
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                         columnIndex++;
                                     }
