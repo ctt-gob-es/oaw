@@ -12,7 +12,7 @@ angular.module('wcagReporter')
      * @param  {object} sample
      * @return {int}    pageNum
      */
-    function getAvailablePageNum (sample) {
+    function getAvailablePageNum(sample) {
       var name, lastId;
       if (!ng.isArray(sample.webpage) || sample.webpage.length === 0) {
         return 0;
@@ -69,6 +69,30 @@ angular.module('wcagReporter')
       page.id = '_:rand_' + num;
       page.title = '';
       return page;
+    };
+
+    sampleModel.insertStructuredPage = function (page) {
+      var sample = sampleModel.structuredSample;
+      var num = getAvailablePageNum(sample);
+
+      sample.webpage.push(page);
+      page.id = '_:struct_' + num;
+      return page;
+    };
+
+    sampleModel.insertRandomPage = function (page) {
+      var num = getAvailablePageNum(sampleModel.randomSample);
+      sampleModel.randomSample.webpage.push(page);
+      page.id = '_:rand_' + num;
+      return page;
+    };
+
+    sampleModel.insertPage = function (sample, page) {
+      if (sample === sampleModel.randomSample) {
+        return sampleModel.insertRandomPage(page);
+      } else {
+        return sampleModel.insertStructuredPage(page);
+      }
     };
 
     sampleModel.addNewPage = function (sample) {

@@ -46,7 +46,9 @@
   </info-field>
 
   <input-pages pages="structuredSample.webpage" add-page="getPageAdder(structuredSample)"
-  remove-page="getPageRemover(structuredSample)"></input-pages>
+  remove-page="getPageRemover(structuredSample)"
+  update-page="getPageUpdater(structuredSample,randomSample)""
+  ></input-pages>
 
   <h2>
     {{'SAMPLE.HD_RANDOM_SAMPLE' | translate }}&nbsp;<info-button
@@ -61,16 +63,18 @@
     }"></p>
   </info-field>
 
-  <div class="alert alert-warning">
-    {{ "SAMPLE.RAND_SAMPLE_LENGTH" | translate: {
+  <div class="alert alert-warning" ng-bind-html="
+     'SAMPLE.RAND_SAMPLE_LENGTH' | translate: {
       total: structuredSample.webpage.length,
       count: randPageCount()}
-    }}
+    ">
   </div>
 
   <input-pages pages="randomSample.webpage"
   add-page="getPageAdder(randomSample)"
-  remove-page="getPageRemover(randomSample)"></input-pages>
+  remove-page="getPageRemover(randomSample)"
+  update-page="getPageUpdater(randomSample,structuredSample)"
+  ></input-pages>
 
 </form>
 </main>
