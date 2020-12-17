@@ -17,6 +17,7 @@
     "PLH_PAGE_URL": "Dirección (URL) o descripción de cómo llegar",
     "BTN_ADD_PAGE": "Añadir página web",
     "BTN_REMOVE_PAGE": "Eliminar página web",
+    "BTN_UPDATE_PAGE_TYPE":"Cambiar a página estructurada/aleatoria",
     "STRUCTURED_PAGE": "Página estructurada",
     "RANDOM_PAGE": "Página aleatoria",
     "SAMPLE_PAGE": "Página de muestra"
