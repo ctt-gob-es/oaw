@@ -184,9 +184,13 @@ public class DatabaseExportAction extends Action {
 			if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
 				resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 			}
+
 			AnnexUtils.createAnnexPaginas(resources, idObsExecution, idOperation);
 			AnnexUtils.createAnnexPortales(resources, idObsExecution, idOperation);
 			AnnexUtils.createAnnexXLSX(resources, idObsExecution, idOperation);
+			AnnexUtils.createAnnexXLSX_Evolution(resources, idObsExecution, idOperation);
+			AnnexUtils.createComparativeSuitabilitieXLSX(resources, idObsExecution, idOperation);
+
 			final PropertiesManager pmgr = new PropertiesManager();
 			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
 			final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";
