@@ -503,6 +503,7 @@ public final class AnnexUtils {
             // Sort all category names
             Collections.sort(categories);
 
+            // Loop to insert fixed values
             for (int categoryIndex = 0 ; categoryIndex < categories.size() ; categoryIndex++) {
                 for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 
@@ -595,37 +596,10 @@ public final class AnnexUtils {
 
                         rowIndex++;
                     }
-
-/*
-                for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
-                    categoryStarts = rowIndex;
-                    if (categoryForm != null) {
-
-                        // Increase width of columns to match content
-                        for (int i = 0; i < ColumnNames.size(); i++) {
-                            sheet.autoSizeColumn(i);
-                        }
-
-                        // Create graph into the Category sheet
-                        if (categoryForm.getSiteFormList().size() > 0) {
-                            //
-                            // Excel allows sheet names up to 31 chars in length but other applications
-                            // (such as OpenOffice) allow more. Some versions of Excel crash with names longer than 31 chars,
-                            // others - truncate such names to 31 character.
-                            //
-                            String currentCategory = categoryForm.getName().substring(0, Math.min(categoryForm.getName().length(), 31));
-                            if (wb.getSheet(currentCategory) == null) {
-                                wb.createSheet(currentCategory);
-                                InsertGraphIntoSheet(wb, wb.getSheet(currentCategory), categoryStarts, rowIndex, true);
-                                InsertGraphIntoSheet(wb, wb.getSheet(currentCategory), categoryStarts, rowIndex, false);
-                            }
-                        }
-                    }
-                }
-*/
                 }
             }
 
+            // Loop to insert executions values.
             rowIndex = 0;
             for (int categoryIndex = 0 ; categoryIndex < categories.size() ; categoryIndex++) {
                 for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
@@ -692,6 +666,44 @@ public final class AnnexUtils {
                     }
                 }
             }
+
+            // Loop to insert puntuation evolution.
+            ColumnNames.add("evol_puntuacion_ant");
+            XSSFRow headerRow = sheet.getRow(0);
+            XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+            cellInHeader.setCellValue("evol_puntuacion_ant");
+            cellInHeader.setCellStyle(defaultStyle);
+            rowIndex = 1;
+
+            for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+
+                final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+
+                // On each category iteration we filter the other categories.
+                if (semillaForm.getId() != 0) {
+
+                    row = sheet.getRow(rowIndex);
+
+                    if (row != null) {
+                        // Discard rows without the last execution
+                        XSSFCell tmpCell = row.getCell(ColumnNames.size() - 2);
+                        if (tmpCell != null && tmpCell.getCellFormula() != "") {
+
+                            String columnFirstLetter = getExcelColumnNameForNumber(5);
+                            String columnSecondLetter = getExcelColumnNameForNumber(5 + (2 * executionDates.size() - 2));
+
+                            cell = row.createCell(ColumnNames.size() - 1);
+                            String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<=-0.5,\"EMPEORA\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<=0.5,\"SE MANTIENE\",\"MEJORA\")))";
+                            cell.setCellFormula(formula);
+                            cell.setCellStyle(defaultStyle);
+                        }
+                    }
+                }
+                rowIndex++;
+            }
+
+
+
 
             // Increase width of columns to match content
             for (int i = 0; i < ColumnNames.size(); i++) {
