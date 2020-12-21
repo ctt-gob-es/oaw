@@ -702,7 +702,89 @@ public final class AnnexUtils {
                 rowIndex++;
             }
 
+            // Loop to insert adecuation evolution.
+            ColumnNames.add("evol_adecuacion_ant");
+            headerRow = sheet.getRow(0);
+            cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+            cellInHeader.setCellValue("evol_adecuacion_ant");
+            cellInHeader.setCellStyle(defaultStyle);
+            rowIndex = 1;
 
+            for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+
+                final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+
+                // On each category iteration we filter the other categories.
+                if (semillaForm.getId() != 0) {
+
+                    row = sheet.getRow(rowIndex);
+
+                    if (row != null) {
+                        // Discard rows without the last execution
+                        XSSFCell tmpCell = row.getCell(ColumnNames.size() - 2);
+                        if (tmpCell != null && tmpCell.getCellFormula() != "") {
+
+                            String columnFirstLetter = getExcelColumnNameForNumber(6);
+                            String columnSecondLetter = getExcelColumnNameForNumber(6 + (2 * executionDates.size() - 2));
+
+                            cell = row.createCell(ColumnNames.size() - 1);
+                            String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))";
+                            cell.setCellFormula(formula);
+                            cell.setCellStyle(defaultStyle);
+                        }
+                    }
+                }
+                rowIndex++;
+            }
+
+            // Insert Summary table.
+            String columnResumeName = getExcelColumnNameForNumber(ColumnNames.size());
+
+            row = sheet.createRow(rowIndex + 5);
+            cell = row.createCell(0);
+            cell.setCellValue("Datos de evolución de portales por nivel de adecuación");
+
+            row = sheet.createRow(rowIndex + 6);
+            cell = row.createCell(0);
+            cell.setCellValue("De NV a P1");
+            cell = row.createCell(1);
+            cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",1)");
+
+            row = sheet.createRow(rowIndex + 7);
+            cell = row.createCell(0);
+            cell.setCellValue("De NV a P2");
+            cell = row.createCell(1);
+            cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",3)");
+
+            row = sheet.createRow(rowIndex + 8);
+            cell = row.createCell(0);
+            cell.setCellValue("De P1 a P2");
+            cell = row.createCell(1);
+            cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",2)");
+
+            row = sheet.createRow(rowIndex + 9);
+            cell = row.createCell(0);
+            cell.setCellValue("De P2 a P1");
+            cell = row.createCell(1);
+            cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-2)");
+
+            row = sheet.createRow(rowIndex + 10);
+            cell = row.createCell(0);
+            cell.setCellValue("De P2 a NV");
+            cell = row.createCell(1);
+            cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-3)");
+
+            row = sheet.createRow(rowIndex + 11);
+            cell = row.createCell(0);
+            cell.setCellValue("De P1 a NV");
+            cell = row.createCell(1);
+            cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-1)");
+
+            row = sheet.createRow(rowIndex + 12);
+            cell = row.createCell(0);
+            cell.setCellValue("Total cambian: ");
+            cell = row.createCell(1);
+            cell.setCellFormula("SUM(B" + Integer.toString(rowIndex+7) + ":B" + Integer.toString(rowIndex+12) + ")");
 
 
             // Increase width of columns to match content
