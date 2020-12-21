@@ -489,78 +489,93 @@ public final class AnnexUtils {
             }
             rowIndex++;
 
-            // "NV_"+ObservatoryFormDate, "A_"+ObservatoryFormDate, "AA_"+ObservatoryFormDate, "NC_"+ObservatoryFormDate, "PC_"+ObservatoryFormDate, "TC_"+ObservatoryFormDate
-
             final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution);
+
+            // Get all category names
+            List<String> categories = new ArrayList<>();
             for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
                 final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
                 if (semillaForm.getId() != 0) {
+                    if (!categories.contains(semillaForm.getCategoria().getName()))
+                        categories.add(semillaForm.getCategoria().getName());
+                }
+            }
+            // Sort all category names
+            Collections.sort(categories);
 
-                    row = sheet.createRow(rowIndex);
-                    int excelRowNumber = rowIndex + 1;
-                    columnIndex = 0;
+            for (int categoryIndex = 0 ; categoryIndex < categories.size() ; categoryIndex++) {
+                for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 
-                    // "nombre"
-                    cell = row.createCell(columnIndex++);
-                    cell.setCellValue(semillaForm.getNombre());
-                    cell.setCellStyle(defaultStyle);
+                    final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
 
-                    // "namecat"
-                    cell = row.createCell(columnIndex++);
-                    cell.setCellValue(semillaForm.getCategoria().getName());
-                    cell.setCellStyle(defaultStyle);
+                    // On each category iteration we filter the other categories.
+                    if (semillaForm.getId() != 0 && semillaForm.getCategoria().getName().equals(categories.get(categoryIndex))) {
 
-                    // "depende_de"
-                    // Multidependencia
-                    String dependencias = "";
-                    if (semillaForm.getDependencias() != null) {
-                        for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-                            dependencias += semillaForm.getDependencias().get(i).getName();
-                            if (i < semillaForm.getDependencias().size() - 1) {
-                                dependencias += "\n";
+                        row = sheet.createRow(rowIndex);
+                        int excelRowNumber = rowIndex + 1;
+                        columnIndex = 0;
+
+                        // "nombre"
+                        cell = row.createCell(columnIndex++);
+                        cell.setCellValue(semillaForm.getNombre());
+                        cell.setCellStyle(defaultStyle);
+
+                        // "namecat"
+                        cell = row.createCell(columnIndex++);
+                        cell.setCellValue(semillaForm.getCategoria().getName());
+                        cell.setCellStyle(defaultStyle);
+
+                        // "depende_de"
+                        // Multidependencia
+                        String dependencias = "";
+                        if (semillaForm.getDependencias() != null) {
+                            for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+                                dependencias += semillaForm.getDependencias().get(i).getName();
+                                if (i < semillaForm.getDependencias().size() - 1) {
+                                    dependencias += "\n";
+                                }
                             }
                         }
-                    }
-                    cell = row.createCell(columnIndex++);
-                    cell.setCellValue(dependencias);
-                    cell.setCellStyle(defaultStyle);
-
-                    // "semilla"
-                    cell = row.createCell(columnIndex++);
-                    cell.setCellValue(semillaForm.getListaUrls().get(0));
-                    cell.setCellStyle(defaultStyle);
-
-                    for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-                        final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
-                        if (!executionDates.contains(executionDateAux))
-                            executionDates.add(executionDateAux);
-
-                        // PUNTUACIÓN
-                        // Add header if it is not already created
-                        if (!ColumnNames.contains("puntuacion_" + executionDateAux)) {
-                            ColumnNames.add("puntuacion_" + executionDateAux);
-                            XSSFRow headerRow = sheet.getRow(0);
-                            XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-                            cellInHeader.setCellValue("puntuacion_" + executionDateAux);
-                            cellInHeader.setCellStyle(defaultStyle);
-                        }
                         cell = row.createCell(columnIndex++);
-                        cell.setCellType(CellType.NUMERIC);
-                        cell.setCellValue(Double.parseDouble(entry.getValue().getTotalScore().toString()));
+                        cell.setCellValue(dependencias);
                         cell.setCellStyle(defaultStyle);
 
-                        // ADECUACIÓN
-                        // Add header if it is not already created
-                        if (!ColumnNames.contains("adecuacion_" + executionDateAux)) {
-                            ColumnNames.add("adecuacion_" + executionDateAux);
-                            XSSFRow headerRow = sheet.getRow(0);
-                            XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-                            cellInHeader.setCellValue("adecuacion_" + executionDateAux);
-                            cellInHeader.setCellStyle(defaultStyle);
-                        }
+                        // "semilla"
                         cell = row.createCell(columnIndex++);
-                        cell.setCellValue(changeLevelName(entry.getValue().getLevel(), messageResources));
+                        cell.setCellValue(semillaForm.getListaUrls().get(0));
                         cell.setCellStyle(defaultStyle);
+
+                        for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+                            final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+                            if (!executionDates.contains(executionDateAux))
+                                executionDates.add(executionDateAux);
+
+                            // PUNTUACIÓN
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("puntuacion_" + executionDateAux)) {
+                                ColumnNames.add("puntuacion_" + executionDateAux);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+                                cellInHeader.setCellValue("puntuacion_" + executionDateAux);
+                                cellInHeader.setCellStyle(defaultStyle);
+                            }
+                            cell = row.createCell(columnIndex++);
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellValue(Double.parseDouble(entry.getValue().getTotalScore().toString()));
+                            cell.setCellStyle(defaultStyle);
+
+                            // ADECUACIÓN
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("adecuacion_" + executionDateAux)) {
+                                ColumnNames.add("adecuacion_" + executionDateAux);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+                                cellInHeader.setCellValue("adecuacion_" + executionDateAux);
+                                cellInHeader.setCellStyle(defaultStyle);
+                            }
+                            cell = row.createCell(columnIndex++);
+                            cell.setCellValue(changeLevelName(entry.getValue().getLevel(), messageResources));
+                            cell.setCellStyle(defaultStyle);
 
                         /*
                         // CUMPLIMIENTO
@@ -576,10 +591,10 @@ public final class AnnexUtils {
                         cell.setCellValue(entry.getValue().getCompliance());
                         cell.setCellStyle(defaultStyle);
                         */
-                    }
+                        }
 
-                    rowIndex++;
-                }
+                        rowIndex++;
+                    }
 
 /*
                 for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
@@ -608,66 +623,72 @@ public final class AnnexUtils {
                     }
                 }
 */
+                }
             }
 
             rowIndex = 0;
-            for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-                final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
-                if (semillaForm.getId() != 0) {
-                    rowIndex++;
-                    int numberOfDate = 0;
-                    for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+            for (int categoryIndex = 0 ; categoryIndex < categories.size() ; categoryIndex++) {
+                for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 
-                        final String date = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+                    final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
 
-                        row = sheet.getRow(rowIndex);
-                        String columnFirstLetter = getExcelColumnNameForNumber(6 + (2 * executionDates.indexOf(date)));
-                        String columnSecondLetter = getExcelColumnNameForNumber(5 + (2 * executionDates.indexOf(date)));
+                    // On each category iteration we filter the other categories.
+                    if (semillaForm.getId() != 0 && semillaForm.getCategoria().getName().equals(categories.get(categoryIndex))) {
+                        rowIndex++;
+                        int numberOfDate = 0;
+                        for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+
+                            final String date = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+
+                            row = sheet.getRow(rowIndex);
+                            String columnFirstLetter = getExcelColumnNameForNumber(6 + (2 * executionDates.indexOf(date)));
+                            String columnSecondLetter = getExcelColumnNameForNumber(5 + (2 * executionDates.indexOf(date)));
 
 
-                        // "NV_" + date
-                        // Add header if it is not already created
-                        if (!ColumnNames.contains("NV_" + date)) {
-                            ColumnNames.add("NV_" + date);
-                            XSSFRow headerRow = sheet.getRow(0);
-                            XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-                            cellInHeader.setCellValue("NV_" + date);
-                            cellInHeader.setCellStyle(defaultStyle);
+                            // "NV_" + date
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("NV_" + date)) {
+                                ColumnNames.add("NV_" + date);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+                                cellInHeader.setCellValue("NV_" + date);
+                                cellInHeader.setCellStyle(defaultStyle);
+                            }
+                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate));
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+                            cell.setCellStyle(defaultStyle);
+
+                            // "A_" + date
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("A_" + date)) {
+                                ColumnNames.add("A_" + date);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+                                cellInHeader.setCellValue("A_" + date);
+                                cellInHeader.setCellStyle(defaultStyle);
+                            }
+                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 1);
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"A\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+                            cell.setCellStyle(defaultStyle);
+
+                            // "AA_" + date
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("AA_" + date)) {
+                                ColumnNames.add("AA_" + date);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+                                cellInHeader.setCellValue("AA_" + date);
+                                cellInHeader.setCellStyle(defaultStyle);
+                            }
+                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 2);
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+                            cell.setCellStyle(defaultStyle);
+
+                            numberOfDate++;
                         }
-                        cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate));
-                        cell.setCellType(CellType.NUMERIC);
-                        cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex+1) + "=\"No Válido\",$"+ columnSecondLetter + (rowIndex+1) + ",0)");
-                        cell.setCellStyle(defaultStyle);
-
-                        // "A_" + date
-                        // Add header if it is not already created
-                        if (!ColumnNames.contains("A_" + date)) {
-                            ColumnNames.add("A_" + date);
-                            XSSFRow headerRow = sheet.getRow(0);
-                            XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-                            cellInHeader.setCellValue("A_" + date);
-                            cellInHeader.setCellStyle(defaultStyle);
-                        }
-                        cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 1);
-                        cell.setCellType(CellType.NUMERIC);
-                        cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex+1) + "=\"A\",$" + columnSecondLetter + (rowIndex+1) + ",0)");
-                        cell.setCellStyle(defaultStyle);
-
-                        // "AA_" + date
-                        // Add header if it is not already created
-                        if (!ColumnNames.contains("AA_" + date)) {
-                            ColumnNames.add("AA_" + date);
-                            XSSFRow headerRow = sheet.getRow(0);
-                            XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-                            cellInHeader.setCellValue("AA_" + date);
-                            cellInHeader.setCellStyle(defaultStyle);
-                        }
-                        cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 2);
-                        cell.setCellType(CellType.NUMERIC);
-                        cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex+1) + "=\"AA\",$" + columnSecondLetter + (rowIndex+1) + ",0)");
-                        cell.setCellStyle(defaultStyle);
-
-                        numberOfDate++;
                     }
                 }
             }
@@ -676,8 +697,6 @@ public final class AnnexUtils {
             for (int i = 0; i < ColumnNames.size(); i++) {
                 sheet.autoSizeColumn(i);
             }
-
-            //sortSheet(wb, sheet);
 
             XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
             wb.write(writer);
