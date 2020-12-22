@@ -62,6 +62,20 @@ angular.module('wcagReporter')
           }
         });
       };
+
+
+      this.updatePage = function (page, newId) {
+        var parts = this.hasPart;
+        var x = parts.map(function (assert) {
+          return assert.subject[0].id;
+        });
+        parts.forEach(function (assert, partIndex) {
+          var subjIndex = assert.subject.indexOf(page);
+          if (subjIndex !== -1) {
+            parts.subject = newId;
+          }
+        });
+      };
     }
 
     CriterionAssert.prototype = {

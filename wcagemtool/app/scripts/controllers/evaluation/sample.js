@@ -55,6 +55,21 @@ angular.module('wcagReporter')
         };
       };
 
+      $scope.getPageUpdater = function (originSample, destinySample) {
+        return function (index) {
+          //remove page from current sample
+          var originPage = evalSampleModel.removePage(originSample, index);
+          console.log("Origin page: " + originPage.id);
+
+          //add page to destiny sample
+          var destinyPage = evalSampleModel.insertPage(destinySample,originPage);
+          console.log("Destiny page: " + originPage.id);
+
+          //update audit references
+          evalAuditModel.updatePageFromAsserts(originPage, destinyPage.id);
+        };
+      };
+
       $scope.randPageCount = function () {
         return Math
           .ceil($scope.structuredSample.webpage.length / 10);
