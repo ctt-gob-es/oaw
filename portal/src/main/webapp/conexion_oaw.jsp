@@ -435,6 +435,7 @@
                 <input type="hidden" name="profundidad"         value="<%=requestManager.profundidad %>">
                 <input type="hidden" name="amplitud"            value="<%=requestManager.amplitud %>">
                 <input type="hidden" name="correo"              value="<%=requestManager.correo %>">
+       			<input type="hidden" name="complexity"          value="<%=requestManager.complexity %>">
                 <input type="hidden" name="informe"             value="<%=requestManager.informe %>">
                 <input type="hidden" name="informe-nobroken"    value="<%=requestManager.nobroken!=null?requestManager.nobroken:"" %>">
                 <input type="hidden" name="registerAnalysis"    value="<%=requestManager.registerAnalysis %>">

@@ -35,7 +35,9 @@ RUN npm install -g bower
 RUN npm install -g forever 
 RUN npm install
 RUN bower install --allow-root
+RUN npm run build
 
 #Usuario node para ejecutar el renderer
 # RUN addgroup -S node && adduser -S -G node node
 # USER node
+

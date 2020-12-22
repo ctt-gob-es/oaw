@@ -18,12 +18,12 @@ angular.module('wcagReporter')
       $scope.exploreModel = evalExploreModel;
 
       if ($scope.structuredSample &&
-    $scope.structuredSample.webpage.length === 0) {
+        $scope.structuredSample.webpage.length === 0) {
         var strPage = evalSampleModel.addNewStructuredPage();
         evalAuditModel.addPageForAsserts(strPage);
 
         if ($scope.randomSample &&
-        $scope.randomSample.webpage.length === 0) {
+          $scope.randomSample.webpage.length === 0) {
           var rndPage = evalSampleModel.addNewRandomPage();
           evalAuditModel.addPageForAsserts(rndPage);
         }
@@ -38,7 +38,7 @@ angular.module('wcagReporter')
           // Add a random page if it's one off
           var randomSampleSize = Math.ceil(strSize / 10);
           if ($scope.randomSample.webpage.length + 1 === randomSampleSize &&
-                strSize % 10 === 1) {
+            strSize % 10 === 1) {
             var rndPage = evalSampleModel
               .addNewPage($scope.randomSample);
             evalAuditModel.addPageForAsserts(rndPage);
@@ -52,6 +52,21 @@ angular.module('wcagReporter')
         return function (index) {
           var page = evalSampleModel.removePage(sample, index);
           evalAuditModel.removePageFromAsserts(page);
+        };
+      };
+
+      $scope.getPageUpdater = function (originSample, destinySample) {
+        return function (index) {
+          //remove page from current sample
+          var originPage = evalSampleModel.removePage(originSample, index);
+          console.log("Origin page: " + originPage.id);
+
+          //add page to destiny sample
+          var destinyPage = evalSampleModel.insertPage(destinySample,originPage);
+          console.log("Destiny page: " + originPage.id);
+
+          //update audit references
+          evalAuditModel.updatePageFromAsserts(originPage, destinyPage.id);
         };
       };
 

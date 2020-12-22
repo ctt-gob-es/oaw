@@ -3,7 +3,7 @@ version: '3.0'
 services:
   node:
     build: .
-    image: oaw/wcagemtool        
+    # image: oaw/wcagemtool        
     command: npm start
     restart: always
     container_name: wcag_em_tool_node
