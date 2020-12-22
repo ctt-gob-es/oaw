@@ -1,12 +1,14 @@
 {
     "TITLE": "Website Accessibility Evaluation Report",
-    "INTRO": "Below is the evaluation report based on the input that you provided in previous steps. You can go back to previous steps now and change any of this information. You can download the evaluation data so that you can work on it later. (This is the same as the 'Save' functionality.) <br> This report is intended to be downloaded. You can download the Evaluation Report HTML and CSS files below. You can then change the report content and visual design to meet your needs.",
+    "INTRO": "Below is the evaluation report based on the input that you provided in previous steps. You can go back to previous steps now and change any of this information. You can download the evaluation data so that you can work on it later. (This is the same as the 'Save' functionality.) <br>The aim of this tool is to generate and download this report. You can then download the Accessibility Review Report in various formats (HTML + CSS, ODS, XLSX and JSON).",
     "DOWNLOAD_REPORT": "Download and customize this report",
+	"INFO_DOWNLOAD_REPORT": "You can download the report in various formats. If you want to reload the report later to continue working on it, download the JSON version. If you want to download it in HTML format, don't forget to download the report's style sheet (CSS) as well, so that later you can change the report's content and visual design to meet your needs. If you choose to download the report in ODS or XLSX format, only the 'A' and 'AA' level conformity criteria and a maximum of 35 pages will be included in the report (this will not be the case if you choose to download the report in JSON or HTML format).",
     "BTN_SAVE_HTML": "Download the evaluation report (HTML)",
     "BTN_SAVE_CSS": "Download the report stylesheet (CSS)",
     "BTN_SAVE_JSON": "Save the evaluation data (JSON)",
     "BTN_SAVE_ODS": "Save the report book (ODS)",
     "BTN_SAVE_ODS_LOAD": "Generating report (ODS)",
+	"BTN_SAVE_ODS_INFO": "<strong>Important note:</strong> Once you have downloaded the ODS file, the first time you open it, it may be necessary to force the calculation of the different formulas: <ul>li>To do so, in <strong>LibreOffice</strong> go to the menu option <em>Data > Calculate > Unconditional Recalculation</em> or press <em>Shift+Ctrl+F9</em>.</li></ul> ",
     "BTN_SAVE_XLSX": "Save the report book (XLSX)",
     "BTN_SAVE_XLSX_LOAD": "Generating report (XLSX)"
 }
