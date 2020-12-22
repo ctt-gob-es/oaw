@@ -40,6 +40,7 @@
         String confirm = "false";
         String complexity ="";
         String fileName;
+        String depthReport;
 
 
         private final List<String> errores;
@@ -134,7 +135,9 @@
                 this.confirm = item.getString();
             } else if (paramName.equalsIgnoreCase("complexity")) {
                 this.complexity = item.getString();
-            }
+             } else if (paramName.equalsIgnoreCase("depthReport")) {
+                this.depthReport = item.getString();
+            } 
         }
 
         private void initProxy() {
@@ -213,7 +216,8 @@
                         nobroken,
                         urls,
                         type,
-                        fileName
+                        fileName,
+                        depthReport
                 );
                 return postRequest;
             } catch (Exception e) {
@@ -347,7 +351,7 @@
                     }
                 }
             } else {
-                if (codigo.length() > 2000000) {
+                if (codigo.length() > 4194304 ) {
                     errores.add("El c&oacute;digo fuente a analizar es demasiado largo");
                 }
                 this.registerAnalysis = "false";
