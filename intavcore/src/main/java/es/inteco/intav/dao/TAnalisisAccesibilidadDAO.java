@@ -1,14 +1,17 @@
 package es.inteco.intav.dao;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.Element;
 
 import es.inteco.common.logging.Logger;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 
 /**
@@ -42,6 +45,41 @@ public class TAnalisisAccesibilidadDAO {
 			}
 		}
 		DataBaseManager.closeConnection(c);
+	}
+
+	/**
+	 * Save document.
+	 *
+	 * @param c                 the c
+	 * @param idAnalisis        the id analisis
+	 * @param accessibilityLink the accessibility link
+	 * @param documentContent   the document content
+	 * @throws SQLException the SQL exception
+	 */
+	public static void saveDocument(Connection c, final Long idAnalisis, final Element accessibilityLink, final String documentContent) throws SQLException {
+		final String query = "UPDATE tanalisis_accesibilidad SET cod_fuente = ?  WHERE id_analisis = ? AND url = ?";
+		String url = accessibilityLink.getAttribute("href");
+		if (url.length() > 256) {
+			url = accessibilityLink.getAttribute("href").substring(0, 256);
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			// Encode BASE64 code
+			if (!StringUtils.isEmpty(documentContent)) {
+				ps.setString(1, new String(Base64.encodeBase64(documentContent.getBytes("UTF-8"))));
+			} else {
+				ps.setString(1, "");
+			}
+			ps.setLong(2, idAnalisis);
+			ps.setString(3, url);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", TAnalisisAccesibilidadDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} catch (UnsupportedEncodingException e) {
+			Logger.putLog("Exception: ", TAnalisisAccesibilidadDAO.class, Logger.LOG_LEVEL_ERROR, e);
+		} finally {
+			DataBaseManager.closeConnection(c);
+		}
 	}
 
 	/**
@@ -96,5 +134,32 @@ public class TAnalisisAccesibilidadDAO {
 			DataBaseManager.closeConnection(c);
 		}
 		return urls;
+	}
+
+	/**
+	 * Gets the source code.
+	 *
+	 * @param c          the c
+	 * @param idAnalisis the id analisis
+	 * @return the source code
+	 * @throws SQLException the SQL exception
+	 */
+	public static String getSourceCode(Connection c, final Long idAnalisis) throws SQLException {
+		// Max ok
+		final String query = "SELECT cod_fuente FROM tanalisis_accesibilidad WHERE id_analisis = ? ORDER BY checks_ok DESC limit 1";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(1, idAnalisis);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					return new String(Base64.decodeBase64(rs.getString("cod_fuente").getBytes()));
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DataBaseManager.closeConnection(c);
+		}
+		return null;
 	}
 }
