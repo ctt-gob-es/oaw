@@ -21,17 +21,11 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 import java.io.*;
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
+import org.apache.commons.compress.utils.Lists;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xddf.usermodel.PresetColor;
-import org.apache.poi.xddf.usermodel.XDDFColor;
-import org.apache.poi.xddf.usermodel.XDDFShapeProperties;
-import org.apache.poi.xddf.usermodel.XDDFSolidFillProperties;
+import org.apache.poi.xddf.usermodel.*;
 import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xssf.usermodel.*;
 import org.apache.struts.util.MessageResources;
@@ -288,13 +282,17 @@ public final class AnnexUtils {
      */
     public static void createAnnexXLSX(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
         try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "anexo.xlsx")) {
-            final String[] ColumnNames = new String[]{"", "namecat", "depende_de", "semilla", "puntuacion_2020-03-13", "adecuacion_2020-03-13", "cumplimiento_2020-03-13", "NV_2020-02-21", "A_2020-02-21", "AA_2020-02-21", "NC_2020-02-21", "PC_2020-02-21", "TC_2020-02-21"};
-            final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
 
-            String templatePath = new PropertiesManager().getValue(CRAWLER_PROPERTIES, "export.open.office.template.empty.XLSX.template");
-            InputStream ExcelFileToRead = new FileInputStream(templatePath);
-            XSSFWorkbook wb = new XSSFWorkbook(ExcelFileToRead);
-            XSSFSheet sheet = wb.getSheetAt(0);
+            final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
+            final String ObservatoryFormDate = observatoryForm.getDate().substring(0,10);
+            final String[] ColumnNames = new String[]{"nombre", "namecat", "depende_de", "semilla", "puntuacion_"+ObservatoryFormDate, "adecuacion_"+ObservatoryFormDate, "cumplimiento_"+ObservatoryFormDate, "NV_"+ObservatoryFormDate, "A_"+ObservatoryFormDate, "AA_"+ObservatoryFormDate, "NC_"+ObservatoryFormDate, "PC_"+ObservatoryFormDate, "TC_"+ObservatoryFormDate};
+
+            XSSFWorkbook wb = new XSSFWorkbook();
+            XSSFSheet sheet = wb.createSheet("Hoja1");
+            XSSFRow row;
+            XSSFCell cell;
+            int rowIndex = 0;
+            int columnIndex = 0;
 
             //create default cell style (aligned top left and allow line wrapping)
             CellStyle defaultStyle = wb.createCellStyle();
@@ -302,12 +300,18 @@ public final class AnnexUtils {
             defaultStyle.setAlignment(HorizontalAlignment.LEFT);
             defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
 
+            // Add headers
+            row = sheet.createRow(rowIndex);
+            for (String name : ColumnNames ) {
+                cell = row.createCell(columnIndex);
+                cell.setCellValue(name);
+                cell.setCellStyle(defaultStyle);
+                columnIndex++;
+            }
+
             // The sheet already has headers, so we start in the second row.
-            int rowIndex = 1;
-            int columnIndex;
+            rowIndex++;
             int categoryStarts = 0;
-            XSSFRow row;
-            XSSFCell cell;
 
             for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
                 categoryStarts = rowIndex;
@@ -325,81 +329,84 @@ public final class AnnexUtils {
                                     }
                                 }
                             }
-
                             // page per row
                             for (PageForm pageForm : siteForm.getPageList()) {
                                 if (pageForm != null) {
-                                    columnIndex = 0;
+
                                     row = sheet.createRow(rowIndex);
+                                    int excelRowNumber = rowIndex + 1;
 
-                                    for (String columnName : ColumnNames) {
-                                        cell = row.createCell(columnIndex);
+                                    // "nombre"
+                                    cell = row.createCell(0);
+                                    cell.setCellValue(siteForm.getName());
+                                    cell.setCellStyle(defaultStyle);
 
-                                        int excelRowNumber = rowIndex + 1;
+                                    // "namecat"
+                                    cell = row.createCell(1);
+                                    cell.setCellValue(categoryForm.getName());
+                                    cell.setCellStyle(defaultStyle);
 
-                                        switch (ColumnNames[columnIndex]) {
-                                            case "":
-                                                cell.setCellValue(siteForm.getName());
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "namecat":
-                                                cell.setCellValue(categoryForm.getName());
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "depende_de":
-                                                cell.setCellValue(dependencias);
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "semilla":
-                                                cell.setCellValue(pageForm.getUrl());
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "puntuacion_2020-03-13":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellValue(Double.parseDouble(pageForm.getScore()));
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "adecuacion_2020-03-13":
-                                                cell.setCellValue(ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
+                                    // "depende_de"
+                                    cell = row.createCell(2);
+                                    cell.setCellValue(dependencias);
+                                    cell.setCellStyle(defaultStyle);
 
-                                                break;
-                                            case "cumplimiento_2020-03-13":
-                                                cell.setCellValue(siteForm.getCompliance());
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "NV_2020-02-21":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellFormula("IF($F" + excelRowNumber + "=\"No Válido\",$E" + excelRowNumber + ",0)");
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "A_2020-02-21":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellFormula("IF($F" + excelRowNumber + "=\"A\",$E" + excelRowNumber + ",0)");
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "AA_2020-02-21":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellFormula("IF($F" + excelRowNumber + "=\"AA\",$E" + excelRowNumber + ",0)");
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "NC_2020-02-21":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellFormula("IF($G" + excelRowNumber + "=\"No conforme\",$E" + excelRowNumber + ",0)");
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "PC_2020-02-21":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellFormula("IF($G" + excelRowNumber + "=\"Parcialmente conforme\",$E" + excelRowNumber + ",0)");
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                            case "TC_2020-02-21":
-                                                cell.setCellType(CellType.NUMERIC);
-                                                cell.setCellFormula("IF($G" + excelRowNumber + "=\"Plenamente conforme\",$E" + excelRowNumber + ",0)");
-                                                cell.setCellStyle(defaultStyle);
-                                                break;
-                                        }
-                                        columnIndex++;
-                                    }
+                                    // "semilla"
+                                    cell = row.createCell(3);
+                                    cell.setCellValue(pageForm.getUrl());
+                                    cell.setCellStyle(defaultStyle);
+
+                                    // "puntuacion_" + date
+                                    cell = row.createCell(4);
+                                    cell.setCellType(CellType.NUMERIC);
+                                    cell.setCellValue(Double.parseDouble(pageForm.getScore()));
+                                    cell.setCellStyle(defaultStyle);
+
+                                    // "adecuacion_" + date
+                                    cell = row.createCell(5);
+                                    cell.setCellValue(ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
+
+                                    // "cumplimiento_" + date
+                                    cell = row.createCell(6);
+                                    cell.setCellValue(siteForm.getCompliance());
+                                    cell.setCellStyle(defaultStyle);
+
+                                    // "NV_" + date
+                                    cell = row.createCell(7);
+                                    cell.setCellType(CellType.NUMERIC);
+                                    cell.setCellFormula("IF($F" + excelRowNumber + "=\"No Válido\",$E" + excelRowNumber + ",0)");
+                                    cell.setCellStyle(defaultStyle);
+
+                                    // "A_" + date
+                                    cell = row.createCell(8);
+                                    cell.setCellType(CellType.NUMERIC);
+                                    cell.setCellFormula("IF($F" + excelRowNumber + "=\"A\",$E" + excelRowNumber + ",0)");
+                                    cell.setCellStyle(defaultStyle);
+
+                                    // "AA_" + date
+                                    cell = row.createCell(9);
+                                    cell.setCellType(CellType.NUMERIC);
+                                    cell.setCellFormula("IF($F" + excelRowNumber + "=\"AA\",$E" + excelRowNumber + ",0)");
+                                    cell.setCellStyle(defaultStyle);
+
+                                    // "NC_" + date
+                                    cell = row.createCell(10);
+                                    cell.setCellType(CellType.NUMERIC);
+                                    cell.setCellFormula("IF($G" + excelRowNumber + "=\"No conforme\",$E" + excelRowNumber + ",0)");
+                                    cell.setCellStyle(defaultStyle);
+
+                                    // "PC_" + date
+                                    cell = row.createCell(11);
+                                    cell.setCellType(CellType.NUMERIC);
+                                    cell.setCellFormula("IF($G" + excelRowNumber + "=\"Parcialmente conforme\",$E" + excelRowNumber + ",0)");
+                                    cell.setCellStyle(defaultStyle);
+
+                                    // "TC_" + date
+                                    cell = row.createCell(12);
+                                    cell.setCellType(CellType.NUMERIC);
+                                    cell.setCellFormula("IF($G" + excelRowNumber + "=\"Plenamente conforme\",$E" + excelRowNumber + ",0)");
+                                    cell.setCellStyle(defaultStyle);
+
                                     rowIndex++;
                                 }
                             }
@@ -435,6 +442,621 @@ public final class AnnexUtils {
             Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
+    }
+
+    /**
+     * Creates the XLSX annex.
+     *
+     * @param messageResources the message resources
+     * @param idObsExecution   the id obs execution
+     * @param idOperation      the id operation
+     * @throws Exception the exception
+     */
+    public static void createAnnexXLSX_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+        try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "anexo_Evolution.xlsx")) {
+
+            final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
+            final String ObservatoryFormDate = observatoryForm.getDate().substring(0,10);
+
+            XSSFWorkbook wb = new XSSFWorkbook();
+            XSSFSheet sheet = wb.createSheet("Resultados");
+            XSSFRow row;
+            XSSFCell cell;
+            int rowIndex = 0;
+            int columnIndex = 0;
+            List<String> executionDates = new ArrayList();
+
+            //create default cell style (aligned top left and allow line wrapping)
+            CellStyle defaultStyle = wb.createCellStyle();
+            defaultStyle.setWrapText(true);
+            defaultStyle.setAlignment(HorizontalAlignment.LEFT);
+            defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
+
+            //create header cell style
+            CellStyle headerStyle = wb.createCellStyle();
+            headerStyle.setWrapText(true);
+            headerStyle.setAlignment(HorizontalAlignment.CENTER);
+            headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE .getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            //create light shadow cell style
+            CellStyle shadowStyle = wb.createCellStyle();
+            shadowStyle.setWrapText(true);
+            shadowStyle.setAlignment(HorizontalAlignment.LEFT);
+            shadowStyle.setVerticalAlignment(VerticalAlignment.TOP);
+            shadowStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
+            shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            // Add headers without values
+            List<String> ColumnNames = new ArrayList();
+            ColumnNames.add("nombre");
+            ColumnNames.add("namecat");
+            ColumnNames.add("depende_de");
+            ColumnNames.add("semilla");
+
+            row = sheet.createRow(rowIndex);
+            for (String name : ColumnNames ) {
+                cell = row.createCell(columnIndex);
+                cell.setCellValue(name);
+                cell.setCellStyle(headerStyle);
+                columnIndex++;
+            }
+            rowIndex++;
+
+            final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution);
+
+            // Get all category names
+            List<String> categories = new ArrayList<>();
+            for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+                final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+                if (semillaForm.getId() != 0) {
+                    if (!categories.contains(semillaForm.getCategoria().getName()))
+                        categories.add(semillaForm.getCategoria().getName());
+                }
+            }
+            // Sort all category names
+            Collections.sort(categories);
+
+            // Loop to insert fixed values
+            for (int categoryIndex = 0 ; categoryIndex < categories.size() ; categoryIndex++) {
+                for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+
+                    final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+
+                    // On each category iteration we filter the other categories.
+                    if (semillaForm.getId() != 0 && semillaForm.getCategoria().getName().equals(categories.get(categoryIndex))) {
+
+                        row = sheet.createRow(rowIndex);
+                        int excelRowNumber = rowIndex + 1;
+                        columnIndex = 0;
+
+                        // "nombre"
+                        cell = row.createCell(columnIndex++);
+                        cell.setCellValue(semillaForm.getNombre());
+                        cell.setCellStyle(shadowStyle);
+
+                        // "namecat"
+                        cell = row.createCell(columnIndex++);
+                        cell.setCellValue(semillaForm.getCategoria().getName());
+                        cell.setCellStyle(shadowStyle);
+
+                        // "depende_de"
+                        // Multidependencia
+                        String dependencias = "";
+                        if (semillaForm.getDependencias() != null) {
+                            for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+                                dependencias += semillaForm.getDependencias().get(i).getName();
+                                if (i < semillaForm.getDependencias().size() - 1) {
+                                    dependencias += "\n";
+                                }
+                            }
+                        }
+                        cell = row.createCell(columnIndex++);
+                        cell.setCellValue(dependencias);
+                        cell.setCellStyle(shadowStyle);
+
+                        // "semilla"
+                        cell = row.createCell(columnIndex++);
+                        cell.setCellValue(semillaForm.getListaUrls().get(0));
+                        cell.setCellStyle(shadowStyle);
+
+                        for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+                            final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+                            if (!executionDates.contains(executionDateAux))
+                                executionDates.add(executionDateAux);
+
+                            // PUNTUACIÓN
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("puntuacion_" + executionDateAux)) {
+                                ColumnNames.add("puntuacion_" + executionDateAux);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+                                cellInHeader.setCellValue("puntuacion_" + executionDateAux);
+                                cellInHeader.setCellStyle(headerStyle);
+                            }
+                            cell = row.createCell(columnIndex++);
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellValue(Double.parseDouble(entry.getValue().getTotalScore().toString()));
+                            cell.setCellStyle(shadowStyle);
+
+                            // ADECUACIÓN
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("adecuacion_" + executionDateAux)) {
+                                ColumnNames.add("adecuacion_" + executionDateAux);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+                                cellInHeader.setCellValue("adecuacion_" + executionDateAux);
+                                cellInHeader.setCellStyle(headerStyle);
+                            }
+                            cell = row.createCell(columnIndex++);
+                            cell.setCellValue(changeLevelName(entry.getValue().getLevel(), messageResources));
+                            cell.setCellStyle(shadowStyle);
+
+                        /*
+                        // CUMPLIMIENTO
+                        // Add header if it is not already created
+                        if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
+                            ColumnNames.add("cumplimiento_" + executionDateAux);
+                            XSSFRow headerRow = sheet.getRow(0);
+                            XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size());
+                            cellInHeader.setCellValue("cumplimiento_" + executionDateAux);
+                            cellInHeader.setCellStyle(defaultStyle);
+                        }
+                        cell = row.createCell(columnIndex++);
+                        cell.setCellValue(entry.getValue().getCompliance());
+                        cell.setCellStyle(defaultStyle);
+                        */
+                        }
+
+                        rowIndex++;
+                    }
+                }
+            }
+
+            // Loop to insert executions values.
+            rowIndex = 0;
+            for (int categoryIndex = 0 ; categoryIndex < categories.size() ; categoryIndex++) {
+                for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+
+                    final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+
+                    // On each category iteration we filter the other categories.
+                    if (semillaForm.getId() != 0 && semillaForm.getCategoria().getName().equals(categories.get(categoryIndex))) {
+                        rowIndex++;
+                        int numberOfDate = 0;
+                        for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+
+                            final String date = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+
+                            row = sheet.getRow(rowIndex);
+                            String columnFirstLetter = GetExcelColumnNameForNumber(6 + (2 * executionDates.indexOf(date)));
+                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (2 * executionDates.indexOf(date)));
+
+
+                            // "NV_" + date
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("NV_" + date)) {
+                                ColumnNames.add("NV_" + date);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+                                cellInHeader.setCellValue("NV_" + date);
+                                cellInHeader.setCellStyle(headerStyle);
+                            }
+                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate));
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+                            cell.setCellStyle(shadowStyle);
+
+                            // "A_" + date
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("A_" + date)) {
+                                ColumnNames.add("A_" + date);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+                                cellInHeader.setCellValue("A_" + date);
+                                cellInHeader.setCellStyle(headerStyle);
+                            }
+                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 1);
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"A\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+                            cell.setCellStyle(shadowStyle);
+
+                            // "AA_" + date
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("AA_" + date)) {
+                                ColumnNames.add("AA_" + date);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+                                cellInHeader.setCellValue("AA_" + date);
+                                cellInHeader.setCellStyle(headerStyle);
+                            }
+                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 2);
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+                            cell.setCellStyle(shadowStyle);
+
+                            numberOfDate++;
+                        }
+                    }
+                }
+            }
+
+            // Loop to insert puntuation evolution.
+            ColumnNames.add("evol_puntuacion_ant");
+            XSSFRow headerRow = sheet.getRow(0);
+            XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+            cellInHeader.setCellValue("evol_puntuacion_ant");
+            cellInHeader.setCellStyle(headerStyle);
+            rowIndex = 1;
+
+            for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+
+                final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+
+                // On each category iteration we filter the other categories.
+                if (semillaForm.getId() != 0) {
+
+                    row = sheet.getRow(rowIndex);
+
+                    if (row != null) {
+                        // Discard rows without the last execution
+                        XSSFCell tmpCell = row.getCell(ColumnNames.size() - 2);
+                        if (tmpCell != null && tmpCell.getCellFormula() != "") {
+
+                            String columnFirstLetter = GetExcelColumnNameForNumber(5);
+                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (2 * executionDates.size() - 2));
+
+                            cell = row.createCell(ColumnNames.size() - 1);
+                            String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<=-0.5,\"EMPEORA\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<=0.5,\"SE MANTIENE\",\"MEJORA\")))";
+                            cell.setCellFormula(formula);
+                            cell.setCellStyle(shadowStyle);
+                        }
+                    }
+                }
+                rowIndex++;
+            }
+
+            // Loop to insert adecuation evolution.
+            ColumnNames.add("evol_adecuacion_ant");
+            headerRow = sheet.getRow(0);
+            cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+            cellInHeader.setCellValue("evol_adecuacion_ant");
+            cellInHeader.setCellStyle(headerStyle);
+            rowIndex = 1;
+
+            for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+
+                final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+
+                // On each category iteration we filter the other categories.
+                if (semillaForm.getId() != 0) {
+
+                    row = sheet.getRow(rowIndex);
+
+                    if (row != null) {
+                        // Discard rows without the last execution
+                        XSSFCell tmpCell = row.getCell(ColumnNames.size() - 2);
+                        if (tmpCell != null && tmpCell.getCellFormula() != "") {
+
+                            String columnFirstLetter = GetExcelColumnNameForNumber(6);
+                            String columnSecondLetter = GetExcelColumnNameForNumber(6 + (2 * executionDates.size() - 2));
+
+                            cell = row.createCell(ColumnNames.size() - 1);
+                            String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))";
+                            cell.setCellFormula(formula);
+                            cell.setCellStyle(shadowStyle);
+                        }
+                    }
+                }
+                rowIndex++;
+            }
+
+            int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
+
+            nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, ColumnNames, categories, headerStyle, shadowStyle, rowIndex);
+
+            // Insert graph sheets per category
+            for (String category : categories) {
+
+                /*
+                 * Excel allows sheet names up to 31 chars in length but other applications
+                 * (such as OpenOffice) allow more. Some versions of Excel crash with names longer than 31 chars,
+                 * others - truncate such names to 31 character.
+                 */
+                String categorySheetName = category.substring(0, Math.min(category.length(), 31));
+
+                // Search category initial and final row.
+                int categoryFirstRow = 0;
+                int categoryLastRow = 0;
+                for (int i = 0; i < rowIndex; i++)
+                {
+                    row = sheet.getRow(i);
+                    if (row != null)
+                    {
+                        cell = row.getCell(1);
+                        if (categoryFirstRow == 0 && cell.getStringCellValue().equals(category))
+                            categoryFirstRow = i;
+                        if (categoryLastRow == 0 && !cell.getStringCellValue().equals(category) && categoryFirstRow != 0)
+                            categoryLastRow = i;
+                    }
+                }
+                if (categories.indexOf(category) == categories.size() - 1)
+                    categoryLastRow = rowIndex;
+
+                if (wb.getSheet(categorySheetName) == null && categoryFirstRow != 0 && categoryLastRow != 0) {
+                    wb.createSheet(categorySheetName);
+                    XSSFSheet currentSheet = wb.getSheet(categorySheetName);
+
+                    XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
+                    XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, 4, Math.max(categoryLastRow - categoryFirstRow, 16), 40);
+
+                    XSSFChart chart = drawing.createChart(anchor);
+                    chart.setTitleText("Evolución de la adecuación");
+                    chart.setTitleOverlay(false);
+
+                    XDDFChartLegend legend = chart.getOrAddLegend();
+                    legend.setPosition(LegendPosition.LEFT);
+
+                    XDDFCategoryAxis bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+                    XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
+
+                    XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
+                    bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+                    leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+                    bottomAxis.setTickLabelPosition(AxisTickLabelPosition.LOW);
+                    bottomAxis.setMajorTickMark(AxisTickMark.NONE);
+                    bottomAxis.setPosition(AxisPosition.RIGHT);
+                    CTPlotArea plotArea = chart.getCTChart().getPlotArea();
+                    plotArea.getValAxArray()[0].addNewMajorGridlines();
+
+                    // Get agency names
+                    XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0),
+                            new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 0, 0));
+
+                    // Iterate through the executions
+                    for (String date : executionDates){
+
+                        int firstSerieColumn = 4 + (executionDates.size() * 2) + (3 * executionDates.indexOf(date));
+
+                        // First serie ("No válido" / "No Conforme")
+                        FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow -1, firstSerieColumn);
+                        XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+                                new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn, firstSerieColumn));
+                        XDDFChartData.Series series1 = data.addSeries(agencies, values1);
+                        series1.setTitle("NV_" + date, null);
+                        // Set series color
+                        XDDFShapeProperties properties1 = series1.getShapeProperties();
+                        if (properties1 == null) {
+                            properties1 = new XDDFShapeProperties();
+                        }
+                        properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
+                        series1.setShapeProperties(properties1);
+
+                        // Second serie ("A" / "Parcialmente conforme")
+                        FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + 1);
+                        XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+                                new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + 1, firstSerieColumn + 1));
+                        XDDFChartData.Series series2 = data.addSeries(agencies, values2);
+                        series2.setTitle("A_" + date, null);
+                        // Set series color
+                        XDDFShapeProperties properties2 = series2.getShapeProperties();
+                        if (properties2 == null) {
+                            properties2 = new XDDFShapeProperties();
+                        }
+                        properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
+                        series2.setShapeProperties(properties2);
+
+                        // Third serie ("AA" / "Plenamente conforme")
+                        FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + 2);
+                        XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+                                new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + 2, firstSerieColumn + 2));
+                        XDDFChartData.Series series3 = data.addSeries(agencies, values3);
+                        series3.setTitle("AA_" + date, null);
+                        // Set series color
+                        XDDFShapeProperties properties3 = series3.getShapeProperties();
+                        if (properties3 == null) {
+                            properties3 = new XDDFShapeProperties();
+                        }
+                        properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
+                        series3.setShapeProperties(properties3);
+                    }
+
+                    chart.plot(data);
+
+                    XDDFBarChartData bar = (XDDFBarChartData) data;
+                    bar.setBarDirection(BarDirection.COL);
+                }
+            }
+
+            // Increase width of columns to match content
+            for (int i = 0; i < ColumnNames.size(); i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+            wb.write(writer);
+            wb.close();
+
+        } catch (Exception e) {
+            Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
+        }
+    }
+
+    private static void FillNullCellInRange(XSSFSheet sheetAt, int categoryFirstRow, int categoryLastRow, int firstSerieColumn) {
+        for (int i = categoryFirstRow; i <= categoryLastRow; i++){
+
+            XSSFRow row = sheetAt.getRow(i);
+
+            if (row != null){
+                XSSFCell cell = row.getCell(firstSerieColumn);
+                if (cell == null)
+                {
+                    XSSFCell c =  row.createCell(firstSerieColumn);
+                    c.setCellValue(-1);
+                }
+            }
+        }
+    }
+
+    private static int InsertSummaryTable(XSSFSheet sheet, int RowStartPosition, List<String> ColumnNames, CellStyle headerStyle, CellStyle shadowStyle) {
+        XSSFCell cell;
+        XSSFRow row;
+        // Insert Summary table.
+        String columnResumeName = GetExcelColumnNameForNumber(ColumnNames.size());
+
+        row = sheet.createRow(RowStartPosition);
+        cell = row.createCell(0);
+        cell.setCellValue("Datos de evolución de portales por nivel de adecuación");
+        cell.setCellStyle(headerStyle);
+
+        row = sheet.createRow(RowStartPosition + 1);
+        cell = row.createCell(0);
+        cell.setCellStyle(headerStyle);
+        cell.setCellValue("De NV a P1");
+        cell = row.createCell(1);
+        cell.setCellStyle(shadowStyle);
+        cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",1)");
+
+        row = sheet.createRow(RowStartPosition + 2);
+        cell = row.createCell(0);
+        cell.setCellValue("De NV a P2");
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(1);
+        cell.setCellStyle(shadowStyle);
+        cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",3)");
+
+        row = sheet.createRow(RowStartPosition + 3);
+        cell = row.createCell(0);
+        cell.setCellStyle(headerStyle);
+        cell.setCellValue("De P1 a P2");
+        cell = row.createCell(1);
+        cell.setCellStyle(shadowStyle);
+        cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",2)");
+
+        row = sheet.createRow(RowStartPosition + 4);
+        cell = row.createCell(0);
+        cell.setCellValue("De P2 a P1");
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(1);
+        cell.setCellStyle(shadowStyle);
+        cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-2)");
+
+        row = sheet.createRow(RowStartPosition + 5);
+        cell = row.createCell(0);
+        cell.setCellStyle(headerStyle);
+        cell.setCellValue("De P2 a NV");
+        cell = row.createCell(1);
+        cell.setCellStyle(shadowStyle);
+        cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-3)");
+
+        row = sheet.createRow(RowStartPosition + 6);
+        cell = row.createCell(0);
+        cell.setCellValue("De P1 a NV");
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(1);
+        cell.setCellStyle(shadowStyle);
+        cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-1)");
+
+        row = sheet.createRow(RowStartPosition + 7);
+        cell = row.createCell(0);
+        cell.setCellValue("Total cambian: ");
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(1);
+        cell.setCellStyle(headerStyle);
+        cell.setCellFormula("SUM(B" + Integer.toString(RowStartPosition +2) + ":B" + Integer.toString(RowStartPosition +7) + ")");
+
+        return RowStartPosition + 7;
+    }
+
+    private static int InsertCategoriesTable(XSSFSheet sheet, int RowStartPosition, List<String> ColumnNames, List<String> categories,CellStyle headerStyle, CellStyle shadowStyle, int lastDataRow) {
+        XSSFCell cell;
+        XSSFRow row;
+        // Insert Summary table.
+        String columnResumeName = GetExcelColumnNameForNumber(ColumnNames.size());
+
+        row = sheet.createRow(RowStartPosition);
+        cell = row.createCell(0);
+        cell.setCellValue("Datos de evolución de portales respecto a la primera iteración/anterior iteración (Empeora, Se mantiene, Mejora) por segmento. Diferencia 0,5 puntos");
+        cell.setCellStyle(headerStyle);
+
+        row = sheet.createRow(RowStartPosition + 1);
+        cell = row.createCell(0);
+        cell.setCellStyle(headerStyle);
+        cell.setCellValue("Segmento");
+        cell = row.createCell(1);
+        cell.setCellStyle(headerStyle);
+        cell.setCellValue("Empeoran");
+        cell = row.createCell(2);
+        cell.setCellStyle(headerStyle);
+        cell.setCellValue("Mejoran");
+        cell = row.createCell(3);
+        cell.setCellStyle(headerStyle);
+        cell.setCellValue("Se mantiene");
+        cell = row.createCell(4);
+        cell.setCellStyle(headerStyle);
+
+        for (int i = 0; i < categories.size(); i++)
+        {
+            row = sheet.createRow(RowStartPosition+ i + 2);
+
+            cell = row.createCell(0);
+            cell.setCellStyle(shadowStyle);
+            cell.setCellValue(categories.get(i));
+
+            cell = row.createCell(1);
+            cell.setCellStyle(shadowStyle);
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"EMPEORA\")");
+
+            cell = row.createCell(2);
+            cell.setCellStyle(shadowStyle);
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"MEJORA\")");
+
+            cell = row.createCell(3);
+            cell.setCellStyle(shadowStyle);
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"SE MANTIENE\")");
+
+            cell = row.createCell(4);
+            cell.setCellStyle(shadowStyle);
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"SE MANTIENE\")");
+        }
+
+        // TOTAL row
+        row = sheet.createRow(RowStartPosition + categories.size() + 2);
+        cell = row.createCell(0);
+        cell.setCellStyle(headerStyle);
+        cell.setCellValue("TOTAL");
+
+        cell = row.createCell(1);
+        cell.setCellStyle(headerStyle);
+        cell.setCellFormula("SUM(B" + (RowStartPosition+3) + ":B" + (RowStartPosition + categories.size() + 2) + ")");
+
+        cell = row.createCell(2);
+        cell.setCellStyle(headerStyle);
+        cell.setCellFormula("SUM(C" + (RowStartPosition+3) + ":C" + (RowStartPosition + categories.size() + 2) + ")");
+
+        cell = row.createCell(3);
+        cell.setCellStyle(headerStyle);
+        cell.setCellFormula("SUM(D" + (RowStartPosition+3) + ":D" + (RowStartPosition + categories.size() + 2) + ")");
+
+        cell = row.createCell(4);
+        cell.setCellStyle(headerStyle);
+        cell.setCellFormula("SUM(E" + (RowStartPosition+3) + ":E" + (RowStartPosition + categories.size() + 2) + ")");
+
+        return 1;
+    }
+
+    public static String GetExcelColumnNameForNumber(int number) {
+        StringBuilder sb = new StringBuilder();
+
+        int num = number - 1;
+        while (num >=  0) {
+            int numChar = (num % 26)  + 65;
+            sb.append((char)numChar);
+            num = (num  / 26) - 1;
+        }
+        return sb.reverse().toString();
     }
 
     private static void InsertGraphIntoSheet(XSSFWorkbook wb, XSSFSheet sheet, int categoryFirstRow, int categoryLastRow, boolean isFirst) {
@@ -510,6 +1132,232 @@ public final class AnnexUtils {
             XDDFBarChartData bar = (XDDFBarChartData) data;
             bar.setBarDirection(BarDirection.COL);
         }
+    }
+
+    /**
+     * Creates the XLSX annex.
+     *
+     * @param messageResources the message resources
+     * @param idObsExecution   the id obs execution
+     * @param idOperation      the id operation
+     * @throws Exception the exception
+     */
+    public static void createComparativeSuitabilitieXLSX(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+        /*
+        try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "suitabilities.xlsx")) {
+            final String[] ColumnNames = new String[]{"Grupo", "Observatorio", "Parcial", "Prioridad 1", "Prioridad 1 y 2"};
+            final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
+
+            XSSFWorkbook wb = new XSSFWorkbook();
+            XSSFSheet sheet = wb.createSheet("Global");
+
+            //create default cell style (aligned top left and allow line wrapping)
+            CellStyle defaultStyle = wb.createCellStyle();
+            defaultStyle.setWrapText(true);
+            defaultStyle.setAlignment(HorizontalAlignment.LEFT);
+            defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
+
+            int rowIndex = 0;
+            int columnIndex = 0;
+            XSSFRow row;
+            XSSFCell cell;
+
+            Object[][] tableData = {
+                    {"Global", "AGE Mayo 2018", 28, 13, 59},
+                    {"Global", "CCAA Mayo 2018", 45, 27, 28},
+                    {"Global", "EELL Mayo 2018", 62, 18, 20},
+                    {"Principales", "AGE Mayo 2018", 0 , 22, 78},
+                    {"Principales", "CCAA Mayo 2018", 21, 26, 53},
+                    {"Principales", "EELL Mayo 2018", 44, 28, 28},
+                    {"Global", "AGE Noviembre 2018", 27, 14, 59},
+                    {"Global", "CCAA Noviembre 2018", 45, 25, 30},
+                    {"Global", "EELL Noviembre 2018", 60, 18, 22},
+                    {"Principales", "AGE Noviembre 2018", 14, 9,  77},
+                    {"Principales", "CCAA Noviembre 2018", 32, 26, 42},
+                    {"Principales", "EELL Noviembre 2018", 45, 20, 35},
+                    {"Global", "AGE Junio 2019", 25, 11, 64},
+                    {"Global", "CCAA Junio 2019", 38, 30, 32},
+                    {"Global", "EELL Junio 2019", 61, 16, 23},
+                    {"Principales", "AGE Junio 2019", 9 , 5,  86},
+                    {"Principales", "CCAA Junio 2019", 25, 30, 45},
+                    {"Principales", "EELL Junio 2019", 47, 16, 37}
+            };
+
+            // Add headers
+            row = sheet.createRow(rowIndex);
+            for (String name : ColumnNames ) {
+                cell = row.createCell(columnIndex);
+                cell.setCellValue(name);
+                columnIndex++;
+            }
+
+            // [TEMPORAL] Add info manually
+            rowIndex=0;
+            for (Object[] dataLine : tableData) {
+                row = sheet.createRow(++rowIndex);
+
+                columnIndex = 0;
+                for (Object field : dataLine) {
+                    cell = row.createCell(columnIndex);
+                    if (field instanceof String) {
+                        cell.setCellValue((String) field);
+                    } else if (field instanceof Integer) {
+                        cell.setCellValue((Integer) field);
+                    }
+                    columnIndex++;
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // determine the type of the category axis from it's first category value (value in A2 in this case)
+            XDDFDataSource dataSource = null;
+            CellType type = CellType.ERROR;
+            row = sheet.getRow(1);
+            if (row != null) {
+                cell = row.getCell(0);
+                if (cell != null)
+                {
+                    dataSource = XDDFDataSourcesFactory.fromStringCellRange(sheet, new CellRangeAddress(1, 10, 1, 1));
+                }
+            }
+            if (dataSource != null) { // if no type of category axis found, don't create a chart at all
+                XDDFNumericalDataSource<Double> high = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(1, 10, 2, 2));
+                XDDFNumericalDataSource<Double> medium = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(1, 10, 3, 3));
+                XDDFNumericalDataSource<Double> low = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(1, 10, 4, 4));
+
+                XSSFDrawing drawing = sheet.createDrawingPatriarch();
+                XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 6, 0, 16, 20);
+
+                XSSFChart chart = drawing.createChart(anchor);
+                XDDFChartLegend legend = chart.getOrAddLegend();
+                legend.setPosition(LegendPosition.RIGHT);
+
+                // bar chart
+
+                XDDFCategoryAxis bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+                XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
+                leftAxis.setTitle("Number of defects");
+                leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+
+                // category axis crosses the value axis between the strokes and not midpoint the strokes
+                leftAxis.setCrossBetween(AxisCrossBetween.BETWEEN);
+
+                XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
+                XDDFChartData.Series series1 = data.addSeries(dataSource, high);
+                series1.setTitle("Parcial", new CellReference(sheet.getSheetName(), 0, 2, true, true));
+                XDDFChartData.Series series2 = data.addSeries(dataSource, medium);
+                series2.setTitle("Prioridad 1", new CellReference(sheet.getSheetName(), 0, 3, true, true));
+                XDDFChartData.Series series3 = data.addSeries(dataSource, low);
+                series3.setTitle("Prioridad 1 y 2", new CellReference(sheet.getSheetName(), 0, 4, true, true));
+                chart.plot(data);
+
+                XDDFBarChartData bar = (XDDFBarChartData) data;
+                bar.setBarDirection(BarDirection.COL);
+
+                // looking for "Stacked Bar Chart"? uncomment the following line
+                bar.setBarGrouping(BarGrouping.STACKED);
+
+                // correcting the overlap so bars really are stacked and not side by side
+                chart.getCTChart().getPlotArea().getBarChartArray(0).addNewOverlap().setVal((byte)100);
+
+                solidFillSeries(data, 0, PresetColor.ORANGE);
+                solidFillSeries(data, 1, PresetColor.YELLOW);
+                solidFillSeries(data, 2, PresetColor.GREEN);
+
+                // add data labels
+                for (int s = 0 ; s < 3; s++) {
+                    chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).addNewDLbls();
+                    // chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls()
+                    //        .addNewDLblPos().setVal(org.openxmlformats.schemas.drawingml.x2006.chart.STDLblPos.CTR);
+                    chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewShowVal().setVal(true);
+                    chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewShowLegendKey().setVal(false);
+                    chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewShowCatName().setVal(false);
+                    chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewShowSerName().setVal(false);
+                }
+
+                // line chart
+
+                // axis must be there but must not be visible
+                bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+                bottomAxis.setVisible(false);
+                leftAxis = chart.createValueAxis(AxisPosition.LEFT);
+                leftAxis.setVisible(false);
+
+                // set correct cross axis
+                bottomAxis.crossAxis(leftAxis);
+                leftAxis.crossAxis(bottomAxis);
+
+                data = chart.createData(ChartTypes.LINE, bottomAxis, leftAxis);
+
+                chart.plot(data);
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+            wb.write(writer);
+            wb.close();
+        } catch (Exception e) {
+            Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
+        }
+        */
+    }
+
+    private static void solidFillSeries(XDDFChartData data, int index, PresetColor color) {
+        XDDFSolidFillProperties fill = new XDDFSolidFillProperties(XDDFColor.from(color));
+        XDDFChartData.Series series = data.getSeries().get(index);
+        XDDFShapeProperties properties = series.getShapeProperties();
+        if (properties == null) {
+            properties = new XDDFShapeProperties();
+        }
+        properties.setFillProperties(fill);
+        series.setShapeProperties(properties);
+    }
+
+    private static void solidLineSeries(XDDFChartData data, int index, PresetColor color) {
+        XDDFSolidFillProperties fill = new XDDFSolidFillProperties(XDDFColor.from(color));
+        XDDFLineProperties line = new XDDFLineProperties();
+        line.setFillProperties(fill);
+        XDDFChartData.Series series = data.getSeries().get(index);
+        XDDFShapeProperties properties = series.getShapeProperties();
+        if (properties == null) {
+            properties = new XDDFShapeProperties();
+        }
+        properties.setLineProperties(line);
+        series.setShapeProperties(properties);
     }
 
     /**
