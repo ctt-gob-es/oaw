@@ -459,7 +459,7 @@ public final class AnnexUtils {
             final String ObservatoryFormDate = observatoryForm.getDate().substring(0,10);
 
             XSSFWorkbook wb = new XSSFWorkbook();
-            XSSFSheet sheet = wb.createSheet("Hoja1");
+            XSSFSheet sheet = wb.createSheet("Resultados");
             XSSFRow row;
             XSSFCell cell;
             int rowIndex = 0;
@@ -630,8 +630,8 @@ public final class AnnexUtils {
                             final String date = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
 
                             row = sheet.getRow(rowIndex);
-                            String columnFirstLetter = getExcelColumnNameForNumber(6 + (2 * executionDates.indexOf(date)));
-                            String columnSecondLetter = getExcelColumnNameForNumber(5 + (2 * executionDates.indexOf(date)));
+                            String columnFirstLetter = GetExcelColumnNameForNumber(6 + (2 * executionDates.indexOf(date)));
+                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (2 * executionDates.indexOf(date)));
 
 
                             // "NV_" + date
@@ -704,8 +704,8 @@ public final class AnnexUtils {
                         XSSFCell tmpCell = row.getCell(ColumnNames.size() - 2);
                         if (tmpCell != null && tmpCell.getCellFormula() != "") {
 
-                            String columnFirstLetter = getExcelColumnNameForNumber(5);
-                            String columnSecondLetter = getExcelColumnNameForNumber(5 + (2 * executionDates.size() - 2));
+                            String columnFirstLetter = GetExcelColumnNameForNumber(5);
+                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (2 * executionDates.size() - 2));
 
                             cell = row.createCell(ColumnNames.size() - 1);
                             String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<=-0.5,\"EMPEORA\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<=0.5,\"SE MANTIENE\",\"MEJORA\")))";
@@ -739,8 +739,8 @@ public final class AnnexUtils {
                         XSSFCell tmpCell = row.getCell(ColumnNames.size() - 2);
                         if (tmpCell != null && tmpCell.getCellFormula() != "") {
 
-                            String columnFirstLetter = getExcelColumnNameForNumber(6);
-                            String columnSecondLetter = getExcelColumnNameForNumber(6 + (2 * executionDates.size() - 2));
+                            String columnFirstLetter = GetExcelColumnNameForNumber(6);
+                            String columnSecondLetter = GetExcelColumnNameForNumber(6 + (2 * executionDates.size() - 2));
 
                             cell = row.createCell(ColumnNames.size() - 1);
                             String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))";
@@ -752,9 +752,122 @@ public final class AnnexUtils {
                 rowIndex++;
             }
 
-            InsertSummaryTable(sheet, rowIndex, ColumnNames, headerStyle, shadowStyle);
+            int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
 
-            InsertCategoriesTable(sheet, rowIndex, ColumnNames, headerStyle, shadowStyle);
+            nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, ColumnNames, categories, headerStyle, shadowStyle, rowIndex);
+
+            // Insert graph sheets per category
+            for (String category : categories) {
+
+                /*
+                 * Excel allows sheet names up to 31 chars in length but other applications
+                 * (such as OpenOffice) allow more. Some versions of Excel crash with names longer than 31 chars,
+                 * others - truncate such names to 31 character.
+                 */
+                String categorySheetName = category.substring(0, Math.min(category.length(), 31));
+
+                // Search category initial and final row.
+                int categoryFirstRow = 0;
+                int categoryLastRow = 0;
+                for (int i = 0; i < rowIndex; i++)
+                {
+                    row = sheet.getRow(i);
+                    if (row != null)
+                    {
+                        cell = row.getCell(1);
+                        if (categoryFirstRow == 0 && cell.getStringCellValue().equals(category))
+                            categoryFirstRow = i;
+                        if (categoryLastRow == 0 && !cell.getStringCellValue().equals(category) && categoryFirstRow != 0)
+                            categoryLastRow = i;
+                    }
+                }
+                if (categories.indexOf(category) == categories.size() - 1)
+                    categoryLastRow = rowIndex;
+
+                if (wb.getSheet(categorySheetName) == null && categoryFirstRow != 0 && categoryLastRow != 0) {
+                    wb.createSheet(categorySheetName);
+                    XSSFSheet currentSheet = wb.getSheet(categorySheetName);
+
+                    XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
+                    XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, 4, Math.max(categoryLastRow - categoryFirstRow, 16), 40);
+
+                    XSSFChart chart = drawing.createChart(anchor);
+                    chart.setTitleText("Evolución de la adecuación");
+                    chart.setTitleOverlay(false);
+
+                    XDDFChartLegend legend = chart.getOrAddLegend();
+                    legend.setPosition(LegendPosition.LEFT);
+
+                    XDDFCategoryAxis bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+                    XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
+
+                    XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
+                    bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+                    leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+                    bottomAxis.setTickLabelPosition(AxisTickLabelPosition.LOW);
+                    bottomAxis.setMajorTickMark(AxisTickMark.NONE);
+                    bottomAxis.setPosition(AxisPosition.RIGHT);
+                    CTPlotArea plotArea = chart.getCTChart().getPlotArea();
+                    plotArea.getValAxArray()[0].addNewMajorGridlines();
+
+                    // Get agency names
+                    XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0),
+                            new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 0, 0));
+
+                    // Iterate through the executions
+                    for (String date : executionDates){
+
+                        int firstSerieColumn = 4 + (executionDates.size() * 2) + (3 * executionDates.indexOf(date));
+
+                        // First serie ("No válido" / "No Conforme")
+                        FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow -1, firstSerieColumn);
+                        XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+                                new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn, firstSerieColumn));
+                        XDDFChartData.Series series1 = data.addSeries(agencies, values1);
+                        series1.setTitle("NV_" + date, null);
+                        // Set series color
+                        XDDFShapeProperties properties1 = series1.getShapeProperties();
+                        if (properties1 == null) {
+                            properties1 = new XDDFShapeProperties();
+                        }
+                        properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
+                        series1.setShapeProperties(properties1);
+
+                        // Second serie ("A" / "Parcialmente conforme")
+                        FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + 1);
+                        XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+                                new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + 1, firstSerieColumn + 1));
+                        XDDFChartData.Series series2 = data.addSeries(agencies, values2);
+                        series2.setTitle("A_" + date, null);
+                        // Set series color
+                        XDDFShapeProperties properties2 = series2.getShapeProperties();
+                        if (properties2 == null) {
+                            properties2 = new XDDFShapeProperties();
+                        }
+                        properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
+                        series2.setShapeProperties(properties2);
+
+                        // Third serie ("AA" / "Plenamente conforme")
+                        FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + 2);
+                        XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+                                new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + 2, firstSerieColumn + 2));
+                        XDDFChartData.Series series3 = data.addSeries(agencies, values3);
+                        series3.setTitle("AA_" + date, null);
+                        // Set series color
+                        XDDFShapeProperties properties3 = series3.getShapeProperties();
+                        if (properties3 == null) {
+                            properties3 = new XDDFShapeProperties();
+                        }
+                        properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
+                        series3.setShapeProperties(properties3);
+                    }
+
+                    chart.plot(data);
+
+                    XDDFBarChartData bar = (XDDFBarChartData) data;
+                    bar.setBarDirection(BarDirection.COL);
+                }
+            }
 
             // Increase width of columns to match content
             for (int i = 0; i < ColumnNames.size(); i++) {
@@ -771,18 +884,34 @@ public final class AnnexUtils {
         }
     }
 
-    private static void InsertSummaryTable(XSSFSheet sheet, int rowIndex, List<String> ColumnNames, CellStyle headerStyle, CellStyle shadowStyle) {
+    private static void FillNullCellInRange(XSSFSheet sheetAt, int categoryFirstRow, int categoryLastRow, int firstSerieColumn) {
+        for (int i = categoryFirstRow; i <= categoryLastRow; i++){
+
+            XSSFRow row = sheetAt.getRow(i);
+
+            if (row != null){
+                XSSFCell cell = row.getCell(firstSerieColumn);
+                if (cell == null)
+                {
+                    XSSFCell c =  row.createCell(firstSerieColumn);
+                    c.setCellValue(-1);
+                }
+            }
+        }
+    }
+
+    private static int InsertSummaryTable(XSSFSheet sheet, int RowStartPosition, List<String> ColumnNames, CellStyle headerStyle, CellStyle shadowStyle) {
         XSSFCell cell;
         XSSFRow row;
         // Insert Summary table.
-        String columnResumeName = getExcelColumnNameForNumber(ColumnNames.size());
+        String columnResumeName = GetExcelColumnNameForNumber(ColumnNames.size());
 
-        row = sheet.createRow(rowIndex + 5);
+        row = sheet.createRow(RowStartPosition);
         cell = row.createCell(0);
         cell.setCellValue("Datos de evolución de portales por nivel de adecuación");
         cell.setCellStyle(headerStyle);
 
-        row = sheet.createRow(rowIndex + 6);
+        row = sheet.createRow(RowStartPosition + 1);
         cell = row.createCell(0);
         cell.setCellStyle(headerStyle);
         cell.setCellValue("De NV a P1");
@@ -790,7 +919,7 @@ public final class AnnexUtils {
         cell.setCellStyle(shadowStyle);
         cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",1)");
 
-        row = sheet.createRow(rowIndex + 7);
+        row = sheet.createRow(RowStartPosition + 2);
         cell = row.createCell(0);
         cell.setCellValue("De NV a P2");
         cell.setCellStyle(headerStyle);
@@ -798,7 +927,7 @@ public final class AnnexUtils {
         cell.setCellStyle(shadowStyle);
         cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",3)");
 
-        row = sheet.createRow(rowIndex + 8);
+        row = sheet.createRow(RowStartPosition + 3);
         cell = row.createCell(0);
         cell.setCellStyle(headerStyle);
         cell.setCellValue("De P1 a P2");
@@ -806,7 +935,7 @@ public final class AnnexUtils {
         cell.setCellStyle(shadowStyle);
         cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",2)");
 
-        row = sheet.createRow(rowIndex + 9);
+        row = sheet.createRow(RowStartPosition + 4);
         cell = row.createCell(0);
         cell.setCellValue("De P2 a P1");
         cell.setCellStyle(headerStyle);
@@ -814,7 +943,7 @@ public final class AnnexUtils {
         cell.setCellStyle(shadowStyle);
         cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-2)");
 
-        row = sheet.createRow(rowIndex + 10);
+        row = sheet.createRow(RowStartPosition + 5);
         cell = row.createCell(0);
         cell.setCellStyle(headerStyle);
         cell.setCellValue("De P2 a NV");
@@ -822,7 +951,7 @@ public final class AnnexUtils {
         cell.setCellStyle(shadowStyle);
         cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-3)");
 
-        row = sheet.createRow(rowIndex + 11);
+        row = sheet.createRow(RowStartPosition + 6);
         cell = row.createCell(0);
         cell.setCellValue("De P1 a NV");
         cell.setCellStyle(headerStyle);
@@ -830,70 +959,95 @@ public final class AnnexUtils {
         cell.setCellStyle(shadowStyle);
         cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-1)");
 
-        row = sheet.createRow(rowIndex + 12);
+        row = sheet.createRow(RowStartPosition + 7);
         cell = row.createCell(0);
         cell.setCellValue("Total cambian: ");
         cell.setCellStyle(headerStyle);
         cell = row.createCell(1);
-        cell.setCellStyle(shadowStyle);
-        cell.setCellFormula("SUM(B" + Integer.toString(rowIndex +7) + ":B" + Integer.toString(rowIndex +12) + ")");
+        cell.setCellStyle(headerStyle);
+        cell.setCellFormula("SUM(B" + Integer.toString(RowStartPosition +2) + ":B" + Integer.toString(RowStartPosition +7) + ")");
+
+        return RowStartPosition + 7;
     }
 
-    private static void InsertCategoriesTable(XSSFSheet sheet, int rowIndex, List<String> ColumnNames, CellStyle headerStyle, CellStyle shadowStyle) {
+    private static int InsertCategoriesTable(XSSFSheet sheet, int RowStartPosition, List<String> ColumnNames, List<String> categories,CellStyle headerStyle, CellStyle shadowStyle, int lastDataRow) {
         XSSFCell cell;
         XSSFRow row;
         // Insert Summary table.
-        String columnResumeName = getExcelColumnNameForNumber(ColumnNames.size());
+        String columnResumeName = GetExcelColumnNameForNumber(ColumnNames.size());
 
-        row = sheet.createRow(rowIndex + 5);
+        row = sheet.createRow(RowStartPosition);
         cell = row.createCell(0);
-        cell.setCellValue("Datos de evolución de portales por nivel de adecuación");
+        cell.setCellValue("Datos de evolución de portales respecto a la primera iteración/anterior iteración (Empeora, Se mantiene, Mejora) por segmento. Diferencia 0,5 puntos");
         cell.setCellStyle(headerStyle);
 
-        row = sheet.createRow(rowIndex + 6);
+        row = sheet.createRow(RowStartPosition + 1);
         cell = row.createCell(0);
-        cell.setCellValue("De NV a P1");
+        cell.setCellStyle(headerStyle);
+        cell.setCellValue("Segmento");
         cell = row.createCell(1);
-        cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",1)");
+        cell.setCellStyle(headerStyle);
+        cell.setCellValue("Empeoran");
+        cell = row.createCell(2);
+        cell.setCellStyle(headerStyle);
+        cell.setCellValue("Mejoran");
+        cell = row.createCell(3);
+        cell.setCellStyle(headerStyle);
+        cell.setCellValue("Se mantiene");
+        cell = row.createCell(4);
+        cell.setCellStyle(headerStyle);
 
-        row = sheet.createRow(rowIndex + 7);
-        cell = row.createCell(0);
-        cell.setCellValue("De NV a P2");
-        cell = row.createCell(1);
-        cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",3)");
+        for (int i = 0; i < categories.size(); i++)
+        {
+            row = sheet.createRow(RowStartPosition+ i + 2);
 
-        row = sheet.createRow(rowIndex + 8);
-        cell = row.createCell(0);
-        cell.setCellValue("De P1 a P2");
-        cell = row.createCell(1);
-        cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",2)");
+            cell = row.createCell(0);
+            cell.setCellStyle(shadowStyle);
+            cell.setCellValue(categories.get(i));
 
-        row = sheet.createRow(rowIndex + 9);
-        cell = row.createCell(0);
-        cell.setCellValue("De P2 a P1");
-        cell = row.createCell(1);
-        cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-2)");
+            cell = row.createCell(1);
+            cell.setCellStyle(shadowStyle);
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"EMPEORA\")");
 
-        row = sheet.createRow(rowIndex + 10);
-        cell = row.createCell(0);
-        cell.setCellValue("De P2 a NV");
-        cell = row.createCell(1);
-        cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-3)");
+            cell = row.createCell(2);
+            cell.setCellStyle(shadowStyle);
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"MEJORA\")");
 
-        row = sheet.createRow(rowIndex + 11);
-        cell = row.createCell(0);
-        cell.setCellValue("De P1 a NV");
-        cell = row.createCell(1);
-        cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-1)");
+            cell = row.createCell(3);
+            cell.setCellStyle(shadowStyle);
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"SE MANTIENE\")");
 
-        row = sheet.createRow(rowIndex + 12);
+            cell = row.createCell(4);
+            cell.setCellStyle(shadowStyle);
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"SE MANTIENE\")");
+        }
+
+        // TOTAL row
+        row = sheet.createRow(RowStartPosition + categories.size() + 2);
         cell = row.createCell(0);
-        cell.setCellValue("Total cambian: ");
+        cell.setCellStyle(headerStyle);
+        cell.setCellValue("TOTAL");
+
         cell = row.createCell(1);
-        cell.setCellFormula("SUM(B" + Integer.toString(rowIndex +7) + ":B" + Integer.toString(rowIndex +12) + ")");
+        cell.setCellStyle(headerStyle);
+        cell.setCellFormula("SUM(B" + (RowStartPosition+3) + ":B" + (RowStartPosition + categories.size() + 2) + ")");
+
+        cell = row.createCell(2);
+        cell.setCellStyle(headerStyle);
+        cell.setCellFormula("SUM(C" + (RowStartPosition+3) + ":C" + (RowStartPosition + categories.size() + 2) + ")");
+
+        cell = row.createCell(3);
+        cell.setCellStyle(headerStyle);
+        cell.setCellFormula("SUM(D" + (RowStartPosition+3) + ":D" + (RowStartPosition + categories.size() + 2) + ")");
+
+        cell = row.createCell(4);
+        cell.setCellStyle(headerStyle);
+        cell.setCellFormula("SUM(E" + (RowStartPosition+3) + ":E" + (RowStartPosition + categories.size() + 2) + ")");
+
+        return 1;
     }
 
-    private static String getExcelColumnNameForNumber(int number) {
+    public static String GetExcelColumnNameForNumber(int number) {
         StringBuilder sb = new StringBuilder();
 
         int num = number - 1;
