@@ -206,7 +206,10 @@ public final class BasicServiceExport {
 	/**
 	 * Compress report folder.
 	 *
-	 * @param reportFile the report file
+	 * @param reportFile        the report file
+	 * @param isContentAnalysis the is content analysis
+	 * @param filename          the filename
+	 * @param depthReport       the depth report
 	 * @return the string
 	 */
 	public static String compressReportWithCode(final String reportFile, final boolean isContentAnalysis, final String filename, final String depthReport) {
@@ -235,6 +238,7 @@ public final class BasicServiceExport {
 					// ODS
 					zipFile(new File(parentFile + "/Informe_Revision_Profunidad_v1.ods"), "Informe_Revision_Profunidad_v1.ods", zos);
 				}
+				zipFile(new File(parentFile + "/pagina_accesibilidad.html"), "pagina_accesibilidad.html", zos);
 			} catch (Exception e) {
 				Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
 			}
@@ -254,32 +258,34 @@ public final class BasicServiceExport {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
-		if (fileToZip.isHidden()) {
-			return;
-		}
-		if (fileToZip.isDirectory()) {
-			if (fileName.endsWith("/")) {
-				zipOut.putNextEntry(new ZipEntry(fileName));
-				zipOut.closeEntry();
-			} else {
-				zipOut.putNextEntry(new ZipEntry(fileName + "/"));
-				zipOut.closeEntry();
+		if (fileToZip.exists()) {
+			if (fileToZip.isHidden()) {
+				return;
 			}
-			File[] children = fileToZip.listFiles();
-			for (File childFile : children) {
-				zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
+			if (fileToZip.isDirectory()) {
+				if (fileName.endsWith("/")) {
+					zipOut.putNextEntry(new ZipEntry(fileName));
+					zipOut.closeEntry();
+				} else {
+					zipOut.putNextEntry(new ZipEntry(fileName + "/"));
+					zipOut.closeEntry();
+				}
+				File[] children = fileToZip.listFiles();
+				for (File childFile : children) {
+					zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
+				}
+				return;
 			}
-			return;
+			FileInputStream fis = new FileInputStream(fileToZip);
+			ZipEntry zipEntry = new ZipEntry(fileName);
+			zipOut.putNextEntry(zipEntry);
+			byte[] bytes = new byte[1024];
+			int length;
+			while ((length = fis.read(bytes)) >= 0) {
+				zipOut.write(bytes, 0, length);
+			}
+			fis.close();
 		}
-		FileInputStream fis = new FileInputStream(fileToZip);
-		ZipEntry zipEntry = new ZipEntry(fileName);
-		zipOut.putNextEntry(zipEntry);
-		byte[] bytes = new byte[1024];
-		int length;
-		while ((length = fis.read(bytes)) >= 0) {
-			zipOut.write(bytes, 0, length);
-		}
-		fis.close();
 	}
 
 	/**
