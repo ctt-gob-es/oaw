@@ -281,7 +281,7 @@ public final class AnnexUtils {
      * @throws Exception the exception
      */
     public static void createAnnexXLSX(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
-        try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "anexo.xlsx")) {
+        try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "Adecuación de SW por segmentos.xlsx")) {
 
             final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
             final String ObservatoryFormDate = observatoryForm.getDate().substring(0,10);
@@ -453,7 +453,7 @@ public final class AnnexUtils {
      * @throws Exception the exception
      */
     public static void createAnnexXLSX_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
-        try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "anexo_Evolution.xlsx")) {
+        try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "Adecuación de SW por segmentos con evolutivo.xlsx")) {
 
             final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
             final String ObservatoryFormDate = observatoryForm.getDate().substring(0,10);
