@@ -18,14 +18,14 @@ import okhttp3.Response;
 
 /**
  * The Class W3CValidatorProxy.
+ * 
+ * This class call new API of W3C Validator and process response to generate validation error list to mantain compatibility with older method.
  */
 public final class W3CValidatorProxy {
 	/** The Constant REGEX_DUPLICATE_ID. */
 	private static final String REGEX_DUPLICATE_ID = "Duplicate ID";
 	/** The Constant REGEX_BAD_ATTRIBUTE_VALUE. */
 	private static final String REGEX_BAD_ATTRIBUTE_VALUE = "Bad value(.*)for attribute(.*)must not contain";
-	/** The Constant REGEX_ATRIBUTE_NOT_ALLOWED. */
-	private static final String REGEX_ATRIBUTE_NOT_ALLOWED = "Attribute(.*)not allowed on element(.*)at this point";
 	/** The Constant REGEX_SELF_CLOSE_SYNTAX. */
 	private static final String REGEX_SELF_CLOSE_SYNTAX = "Self-closing syntax(.*)used on a non-void HTML element";
 	/** The Constant REGEX_STRAY_END_TAG. */
@@ -86,10 +86,6 @@ public final class W3CValidatorProxy {
 			if (p.matcher(errorMessage).lookingAt()) {
 				return "82";
 			}
-//			p = Pattern.compile(REGEX_ATRIBUTE_NOT_ALLOWED);
-//			if (p.matcher(errorMessage).lookingAt()) {
-//				return "106";
-//			}
 			p = Pattern.compile(REGEX_SELF_CLOSE_SYNTAX);
 			if (p.matcher(errorMessage).lookingAt()) {
 				return "70";
