@@ -304,18 +304,28 @@ public final class AnnexUtils {
             int rowIndex = 0;
             int columnIndex = 0;
 
-            //create default cell style (aligned top left and allow line wrapping)
-            CellStyle defaultStyle = wb.createCellStyle();
-            defaultStyle.setWrapText(true);
-            defaultStyle.setAlignment(HorizontalAlignment.LEFT);
-            defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
+            //create header cell style
+            CellStyle headerStyle = wb.createCellStyle();
+            headerStyle.setWrapText(true);
+            headerStyle.setAlignment(HorizontalAlignment.CENTER);
+            headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE .getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            //create light shadow cell style
+            CellStyle shadowStyle = wb.createCellStyle();
+            shadowStyle.setWrapText(true);
+            shadowStyle.setAlignment(HorizontalAlignment.LEFT);
+            shadowStyle.setVerticalAlignment(VerticalAlignment.TOP);
+            shadowStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
+            shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
             // Add headers
             row = sheet.createRow(rowIndex);
             for (String name : ColumnNames ) {
                 cell = row.createCell(columnIndex);
                 cell.setCellValue(name);
-                cell.setCellStyle(defaultStyle);
+                cell.setCellStyle(headerStyle);
                 columnIndex++;
             }
 
@@ -348,73 +358,74 @@ public final class AnnexUtils {
                                     // "nombre"
                                     cell = row.createCell(0);
                                     cell.setCellValue(siteForm.getName());
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "namecat"
                                     cell = row.createCell(1);
                                     cell.setCellValue(categoryForm.getName());
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "depende_de"
                                     cell = row.createCell(2);
                                     cell.setCellValue(dependencias.toString());
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "semilla"
                                     cell = row.createCell(3);
                                     cell.setCellValue(pageForm.getUrl());
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "puntuacion_" + date
                                     cell = row.createCell(4);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellValue(Double.parseDouble(pageForm.getScore()));
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "adecuacion_" + date
                                     cell = row.createCell(5);
                                     cell.setCellValue(ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "cumplimiento_" + date
                                     cell = row.createCell(6);
                                     cell.setCellValue(siteForm.getCompliance());
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "NV_" + date
                                     cell = row.createCell(7);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellFormula("IF($F" + excelRowNumber + "=\"No Válido\",$E" + excelRowNumber + ",0)");
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "A_" + date
                                     cell = row.createCell(8);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellFormula("IF($F" + excelRowNumber + "=\"A\",$E" + excelRowNumber + ",0)");
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "AA_" + date
                                     cell = row.createCell(9);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellFormula("IF($F" + excelRowNumber + "=\"AA\",$E" + excelRowNumber + ",0)");
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "NC_" + date
                                     cell = row.createCell(10);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellFormula("IF($G" + excelRowNumber + "=\"No conforme\",$E" + excelRowNumber + ",0)");
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "PC_" + date
                                     cell = row.createCell(11);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellFormula("IF($G" + excelRowNumber + "=\"Parcialmente conforme\",$E" + excelRowNumber + ",0)");
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "TC_" + date
                                     cell = row.createCell(12);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellFormula("IF($G" + excelRowNumber + "=\"Plenamente conforme\",$E" + excelRowNumber + ",0)");
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     rowIndex++;
                                 }
@@ -473,12 +484,6 @@ public final class AnnexUtils {
             executionDates = new ArrayList<>();
             excelLines = new HashMap<>();
             ExcelLine excelLine;
-
-            //create default cell style (aligned top left and allow line wrapping)
-            CellStyle defaultStyle = wb.createCellStyle();
-            defaultStyle.setWrapText(true);
-            defaultStyle.setAlignment(HorizontalAlignment.LEFT);
-            defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
 
             //create header cell style
             CellStyle headerStyle = wb.createCellStyle();
@@ -924,6 +929,8 @@ public final class AnnexUtils {
 
     /**
      * Creates the XLSX evolution annex per dependency.
+     * NEEDS THE EXECUTION OF createAnnexXLSX_Evolution METHOD PREVIOULY
+     * TO CONSTRUCT THE DATA DICTIONARY FROM DATABASE INFO.
      *
      * @param idOperation      the id operation
      * @throws Exception the exception
@@ -942,12 +949,6 @@ public final class AnnexUtils {
                 int rowIndex = 0;
                 int columnIndex = 0;
 
-                //create default cell style (aligned top left and allow line wrapping)
-                CellStyle defaultStyle = wb.createCellStyle();
-                defaultStyle.setWrapText(true);
-                defaultStyle.setAlignment(HorizontalAlignment.LEFT);
-                defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
-
                 //create header cell style
                 CellStyle headerStyle = wb.createCellStyle();
                 headerStyle.setWrapText(true);
@@ -965,9 +966,9 @@ public final class AnnexUtils {
                 shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
                 row = sheet.createRow(rowIndex);
-                for (String name : ColumnNames ) {
+                for (int i = 0; i < ColumnNames.size() - 2; i++) {
                     cell = row.createCell(columnIndex);
-                    cell.setCellValue(name);
+                    cell.setCellValue(ColumnNames.get(i));
                     cell.setCellStyle(headerStyle);
                     columnIndex++;
                 }
@@ -1154,12 +1155,6 @@ public final class AnnexUtils {
             }
         }
     }
-
-
-
-
-
-
 
     private static void FillNullCellInRange(XSSFSheet sheetAt, int categoryFirstRow, int categoryLastRow, int firstSerieColumn) {
         for (int i = categoryFirstRow; i <= categoryLastRow; i++){
@@ -1760,12 +1755,8 @@ public final class AnnexUtils {
         }
     }
 
-
-
     private static class ExcelLine
     {
-
-
         private String nombre;
         private String namecat;
         private String depende_de;
