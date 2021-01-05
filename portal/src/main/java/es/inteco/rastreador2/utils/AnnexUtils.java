@@ -1,4 +1,4 @@
-/*******************************************************************************
+/* ******************************************************************************
  * Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación,
  * This program is licensed and may be used, modified and redistributed under the terms
  * of the European Public License (EUPL), either version 1.2 or (at your option) any later
@@ -12,7 +12,7 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública)
  * Email: observ.accesibilidad@correo.gob.es
- ******************************************************************************/
+ ***************************************************************************** */
 package es.inteco.rastreador2.utils;
 
 import static es.inteco.common.Constants.CATEGORY_NAME;
@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.*;
 
-import com.helger.css.decl.ICSSTopLevelRule;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xddf.usermodel.*;
 import org.apache.poi.xddf.usermodel.chart.*;
@@ -93,22 +92,17 @@ public final class AnnexUtils {
      * Column names list created by generation Evolution and
      * reused generating PerDependency annex.
      */
-    private static List<String> ColumnNames = new ArrayList();
+    private static List<String> ColumnNames = new ArrayList<>();
     /**
      * Execution dates list created by generation Evolution and
      * reused generating PerDependency annex.
      */
-    private static List<String> executionDates = new ArrayList();
+    private static List<String> executionDates = new ArrayList<>();
     /**
      * Dependency names list created by generation Evolution and
      * reused generating PerDependency annex.
      */
     private static List<String> dependencies = new ArrayList<>();
-    /**
-     * Category names list created by generation Evolution and
-     * reused generating PerDependency annex.
-     */
-    private static List<String> categories = new ArrayList<>();
 
     /**
      * Creates the annex paginas.
@@ -310,24 +304,34 @@ public final class AnnexUtils {
             int rowIndex = 0;
             int columnIndex = 0;
 
-            //create default cell style (aligned top left and allow line wrapping)
-            CellStyle defaultStyle = wb.createCellStyle();
-            defaultStyle.setWrapText(true);
-            defaultStyle.setAlignment(HorizontalAlignment.LEFT);
-            defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
+            //create header cell style
+            CellStyle headerStyle = wb.createCellStyle();
+            headerStyle.setWrapText(true);
+            headerStyle.setAlignment(HorizontalAlignment.CENTER);
+            headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE .getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+            //create light shadow cell style
+            CellStyle shadowStyle = wb.createCellStyle();
+            shadowStyle.setWrapText(true);
+            shadowStyle.setAlignment(HorizontalAlignment.LEFT);
+            shadowStyle.setVerticalAlignment(VerticalAlignment.TOP);
+            shadowStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
+            shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
             // Add headers
             row = sheet.createRow(rowIndex);
             for (String name : ColumnNames ) {
                 cell = row.createCell(columnIndex);
                 cell.setCellValue(name);
-                cell.setCellStyle(defaultStyle);
+                cell.setCellStyle(headerStyle);
                 columnIndex++;
             }
 
             // The sheet already has headers, so we start in the second row.
             rowIndex++;
-            int categoryStarts = 0;
+            int categoryStarts;
 
             for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
                 categoryStarts = rowIndex;
@@ -336,12 +340,11 @@ public final class AnnexUtils {
                         if (siteForm != null) {
                             // Multidependence
                             final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(siteForm.getIdCrawlerSeed()));
-                            String dependencias = "";
+                            StringBuilder dependencias = new StringBuilder();
                             if (semillaForm.getDependencias() != null) {
                                 for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-                                    dependencias += semillaForm.getDependencias().get(i).getName();
                                     if (i < semillaForm.getDependencias().size() - 1) {
-                                        dependencias += "\n";
+                                        dependencias.append("\n");
                                     }
                                 }
                             }
@@ -355,73 +358,74 @@ public final class AnnexUtils {
                                     // "nombre"
                                     cell = row.createCell(0);
                                     cell.setCellValue(siteForm.getName());
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "namecat"
                                     cell = row.createCell(1);
                                     cell.setCellValue(categoryForm.getName());
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "depende_de"
                                     cell = row.createCell(2);
-                                    cell.setCellValue(dependencias);
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellValue(dependencias.toString());
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "semilla"
                                     cell = row.createCell(3);
                                     cell.setCellValue(pageForm.getUrl());
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "puntuacion_" + date
                                     cell = row.createCell(4);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellValue(Double.parseDouble(pageForm.getScore()));
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "adecuacion_" + date
                                     cell = row.createCell(5);
                                     cell.setCellValue(ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "cumplimiento_" + date
                                     cell = row.createCell(6);
                                     cell.setCellValue(siteForm.getCompliance());
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "NV_" + date
                                     cell = row.createCell(7);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellFormula("IF($F" + excelRowNumber + "=\"No Válido\",$E" + excelRowNumber + ",0)");
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "A_" + date
                                     cell = row.createCell(8);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellFormula("IF($F" + excelRowNumber + "=\"A\",$E" + excelRowNumber + ",0)");
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "AA_" + date
                                     cell = row.createCell(9);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellFormula("IF($F" + excelRowNumber + "=\"AA\",$E" + excelRowNumber + ",0)");
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "NC_" + date
                                     cell = row.createCell(10);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellFormula("IF($G" + excelRowNumber + "=\"No conforme\",$E" + excelRowNumber + ",0)");
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "PC_" + date
                                     cell = row.createCell(11);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellFormula("IF($G" + excelRowNumber + "=\"Parcialmente conforme\",$E" + excelRowNumber + ",0)");
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     // "TC_" + date
                                     cell = row.createCell(12);
                                     cell.setCellType(CellType.NUMERIC);
                                     cell.setCellFormula("IF($G" + excelRowNumber + "=\"Plenamente conforme\",$E" + excelRowNumber + ",0)");
-                                    cell.setCellStyle(defaultStyle);
+                                    cell.setCellStyle(shadowStyle);
 
                                     rowIndex++;
                                 }
@@ -471,24 +475,15 @@ public final class AnnexUtils {
     public static void createAnnexXLSX_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
         try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "Adecuación de SW por segmentos con evolutivo.xlsx")) {
 
-            final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
-            final String ObservatoryFormDate = observatoryForm.getDate().substring(0,10);
-
             XSSFWorkbook wb = new XSSFWorkbook();
             XSSFSheet sheet = wb.createSheet("Resultados");
             XSSFRow row;
             XSSFCell cell;
             int rowIndex = 0;
             int columnIndex = 0;
-            executionDates = new ArrayList();
+            executionDates = new ArrayList<>();
             excelLines = new HashMap<>();
             ExcelLine excelLine;
-
-            //create default cell style (aligned top left and allow line wrapping)
-            CellStyle defaultStyle = wb.createCellStyle();
-            defaultStyle.setWrapText(true);
-            defaultStyle.setAlignment(HorizontalAlignment.LEFT);
-            defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
 
             //create header cell style
             CellStyle headerStyle = wb.createCellStyle();
@@ -525,7 +520,11 @@ public final class AnnexUtils {
             final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution);
 
             // Get all category names
-            categories = new ArrayList<>();
+            /*
+             * Category names list created by generation Evolution and
+             * reused generating PerDependency annex.
+             */
+            List<String> categories = new ArrayList<>();
             for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
                 final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
                 String namecat = semillaForm.getCategoria().getName();
@@ -538,14 +537,14 @@ public final class AnnexUtils {
             Collections.sort(categories);
 
             // Loop to insert fixed values
-            for (int categoryIndex = 0 ; categoryIndex < categories.size() ; categoryIndex++) {
+            for (String currentCategory : categories) {
                 for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 
                     final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
                     String namecat = semillaForm.getCategoria().getName();
 
                     // On each category iteration we filter the other categories.
-                    if (semillaForm.getId() != 0 && namecat.equals(categories.get(categoryIndex))) {
+                    if (semillaForm.getId() != 0 && namecat.equals(currentCategory)) {
 
                         row = sheet.createRow(rowIndex);
                         columnIndex = 0;
@@ -568,7 +567,7 @@ public final class AnnexUtils {
 
                         // "depende_de"
                         // Multidependencia
-                        String dependencias = "";
+                        StringBuilder dependencias = new StringBuilder();
                         if (semillaForm.getDependencias() != null) {
                             for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
 
@@ -576,16 +575,16 @@ public final class AnnexUtils {
                                 if (!dependencies.contains(semillaForm.getDependencias().get(i).getName()))
                                     dependencies.add(semillaForm.getDependencias().get(i).getName());
 
-                                dependencias += semillaForm.getDependencias().get(i).getName();
+                                dependencias.append(semillaForm.getDependencias().get(i).getName());
                                 if (i < semillaForm.getDependencias().size() - 1) {
-                                    dependencias += "\n";
+                                    dependencias.append("\n");
                                 }
                             }
                         }
                         cell = row.createCell(columnIndex++);
-                        cell.setCellValue(dependencias);
+                        cell.setCellValue(dependencias.toString());
                         cell.setCellStyle(shadowStyle);
-                        excelLine.setDepende_de(dependencias);
+                        excelLine.setDepende_de(dependencias.toString());
 
                         // "semilla"
                         String semilla = semillaForm.getListaUrls().get(0);
@@ -599,13 +598,15 @@ public final class AnnexUtils {
                             if (!executionDates.contains(executionDateAux))
                                 executionDates.add(executionDateAux);
 
-                            Double score = Double.parseDouble(entry.getValue().getTotalScore().toString());
+                            double score = Double.parseDouble(entry.getValue().getTotalScore().toString());
                             String adequacy = changeLevelName(entry.getValue().getLevel(), messageResources);
+                            String compliance = entry.getValue().getCompliance();
 
                             ExcelExecution execution = new ExcelExecution();
                             execution.setDate(executionDateAux);
                             execution.setScore(score);
                             execution.setAdequacy(adequacy);
+                            execution.setCompliance(compliance);
                             excelLine.addExecution(execution);
 
                             // PUNTUACIÓN
@@ -635,20 +636,19 @@ public final class AnnexUtils {
                             cell.setCellValue(adequacy);
                             cell.setCellStyle(shadowStyle);
 
-                        /*
-                        // CUMPLIMIENTO
-                        // Add header if it is not already created
-                        if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
-                            ColumnNames.add("cumplimiento_" + executionDateAux);
-                            XSSFRow headerRow = sheet.getRow(0);
-                            XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size());
-                            cellInHeader.setCellValue("cumplimiento_" + executionDateAux);
-                            cellInHeader.setCellStyle(defaultStyle);
-                        }
-                        cell = row.createCell(columnIndex++);
-                        cell.setCellValue(entry.getValue().getCompliance());
-                        cell.setCellStyle(defaultStyle);
-                        */
+
+                            // CUMPLIMIENTO
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
+                                ColumnNames.add("cumplimiento_" + executionDateAux);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() -1);
+                                cellInHeader.setCellValue("cumplimiento_" + executionDateAux);
+                                cellInHeader.setCellStyle(headerStyle);
+                            }
+                            cell = row.createCell(columnIndex++);
+                            cell.setCellValue(compliance);
+                            cell.setCellStyle(shadowStyle);
                         }
 
                         excelLines.put(rowIndex, excelLine);
@@ -659,13 +659,13 @@ public final class AnnexUtils {
 
             // Loop to insert executions values.
             rowIndex = 0;
-            for (int categoryIndex = 0 ; categoryIndex < categories.size() ; categoryIndex++) {
+            for (String currentCategory : categories) {
                 for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 
                     final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
 
                     // On each category iteration we filter the other categories.
-                    if (semillaForm.getId() != 0 && semillaForm.getCategoria().getName().equals(categories.get(categoryIndex))) {
+                    if (semillaForm.getId() != 0 && semillaForm.getCategoria().getName().equals(currentCategory)) {
                         rowIndex++;
                         int numberOfDate = 0;
                         for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
@@ -673,8 +673,8 @@ public final class AnnexUtils {
                             final String date = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
 
                             row = sheet.getRow(rowIndex);
-                            String columnFirstLetter = GetExcelColumnNameForNumber(6 + (2 * executionDates.indexOf(date)));
-                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (2 * executionDates.indexOf(date)));
+                            String columnFirstLetter = GetExcelColumnNameForNumber(6 + (3 * executionDates.indexOf(date)));
+                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (3 * executionDates.indexOf(date)));
 
 
                             // "NV_" + date
@@ -686,7 +686,7 @@ public final class AnnexUtils {
                                 cellInHeader.setCellValue("NV_" + date);
                                 cellInHeader.setCellStyle(headerStyle);
                             }
-                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate));
+                            cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate));
                             cell.setCellType(CellType.NUMERIC);
                             cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
                             cell.setCellStyle(shadowStyle);
@@ -700,7 +700,7 @@ public final class AnnexUtils {
                                 cellInHeader.setCellValue("A_" + date);
                                 cellInHeader.setCellStyle(headerStyle);
                             }
-                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 1);
+                            cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 1);
                             cell.setCellType(CellType.NUMERIC);
                             cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"A\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
                             cell.setCellStyle(shadowStyle);
@@ -714,7 +714,7 @@ public final class AnnexUtils {
                                 cellInHeader.setCellValue("AA_" + date);
                                 cellInHeader.setCellStyle(headerStyle);
                             }
-                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 2);
+                            cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 2);
                             cell.setCellType(CellType.NUMERIC);
                             cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
                             cell.setCellStyle(shadowStyle);
@@ -744,11 +744,11 @@ public final class AnnexUtils {
 
                     if (row != null) {
                         // Discard rows without the last execution
-                        XSSFCell tmpCell = row.getCell(ColumnNames.size() - 2);
-                        if (tmpCell != null && tmpCell.getCellFormula() != "") {
+                        XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
+                        if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
 
                             String columnFirstLetter = GetExcelColumnNameForNumber(5);
-                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (2 * executionDates.size() - 2));
+                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (3 * executionDates.size() - 3));
 
                             cell = row.createCell(ColumnNames.size() - 1);
                             String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<=-0.5,\"EMPEORA\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<=0.5,\"SE MANTIENE\",\"MEJORA\")))";
@@ -779,11 +779,11 @@ public final class AnnexUtils {
 
                     if (row != null) {
                         // Discard rows without the last execution
-                        XSSFCell tmpCell = row.getCell(ColumnNames.size() - 2);
-                        if (tmpCell != null && tmpCell.getCellFormula() != "") {
+                        XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
+                        if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
 
                             String columnFirstLetter = GetExcelColumnNameForNumber(6);
-                            String columnSecondLetter = GetExcelColumnNameForNumber(6 + (2 * executionDates.size() - 2));
+                            String columnSecondLetter = GetExcelColumnNameForNumber(6 + (3 * executionDates.size() - 3));
 
                             cell = row.createCell(ColumnNames.size() - 1);
                             String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))";
@@ -797,7 +797,7 @@ public final class AnnexUtils {
 
             int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
 
-            nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, ColumnNames, categories, headerStyle, shadowStyle, rowIndex);
+            nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex);
 
             // Insert graph sheets per category
             for (String category : categories) {
@@ -860,7 +860,7 @@ public final class AnnexUtils {
                     // Iterate through the executions
                     for (String date : executionDates){
 
-                        int firstSerieColumn = 4 + (executionDates.size() * 2) + (3 * executionDates.indexOf(date));
+                        int firstSerieColumn = 4 + (executionDates.size() * 3) + (3 * executionDates.indexOf(date));
 
                         // First serie ("No válido" / "No Conforme")
                         FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow -1, firstSerieColumn);
@@ -929,261 +929,232 @@ public final class AnnexUtils {
 
     /**
      * Creates the XLSX evolution annex per dependency.
+     * NEEDS THE EXECUTION OF createAnnexXLSX_Evolution METHOD PREVIOULY
+     * TO CONSTRUCT THE DATA DICTIONARY FROM DATABASE INFO.
      *
-     * @param messageResources the message resources
-     * @param idObsExecution   the id obs execution
      * @param idOperation      the id operation
      * @throws Exception the exception
      */
-    public static void createAnnexXLSX_PerDependency(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+    public static void createAnnexXLSX_PerDependency(final Long idOperation) throws Exception {
 
-        try (Connection c = DataBaseManager.getConnection()) {
+        // Iterate through dependencies to create each file
+        for (String currentDependency : dependencies)
+        {
+            try (FileOutputStream writer = getFileOutputStream(idOperation,"/Dependencias/" + currentDependency + ".xlsx")) {
 
-            final Map<Long, TreeMap<String, ScoreForm>> annexmap0 = createAnnexMap(idObsExecution);
+                XSSFWorkbook wb = new XSSFWorkbook();
+                XSSFSheet sheet = wb.createSheet("Resultados");
+                XSSFRow row;
+                XSSFCell cell;
+                int rowIndex = 0;
+                int columnIndex = 0;
 
-            // Iterate through dependencies to create each file
-            for (String currentDependency : dependencies)
-            {
-                try (FileOutputStream writer = getFileOutputStream(idOperation, currentDependency + ".xlsx")) {
+                //create header cell style
+                CellStyle headerStyle = wb.createCellStyle();
+                headerStyle.setWrapText(true);
+                headerStyle.setAlignment(HorizontalAlignment.CENTER);
+                headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+                headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE .getIndex());
+                headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-                    final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
-                    final String ObservatoryFormDate = observatoryForm.getDate().substring(0,10);
+                //create light shadow cell style
+                CellStyle shadowStyle = wb.createCellStyle();
+                shadowStyle.setWrapText(true);
+                shadowStyle.setAlignment(HorizontalAlignment.LEFT);
+                shadowStyle.setVerticalAlignment(VerticalAlignment.TOP);
+                shadowStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
+                shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-                    XSSFWorkbook wb = new XSSFWorkbook();
-                    XSSFSheet sheet = wb.createSheet("Resultados");
-                    XSSFRow row;
-                    XSSFCell cell;
-                    int rowIndex = 0;
-                    int columnIndex = 0;
+                row = sheet.createRow(rowIndex);
+                for (int i = 0; i < ColumnNames.size() - 2; i++) {
+                    cell = row.createCell(columnIndex);
+                    cell.setCellValue(ColumnNames.get(i));
+                    cell.setCellStyle(headerStyle);
+                    columnIndex++;
+                }
+                rowIndex++;
 
-                    //create default cell style (aligned top left and allow line wrapping)
-                    CellStyle defaultStyle = wb.createCellStyle();
-                    defaultStyle.setWrapText(true);
-                    defaultStyle.setAlignment(HorizontalAlignment.LEFT);
-                    defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
+                for (Map.Entry<Integer, ExcelLine> currentLine : excelLines.entrySet()) {
 
-                    //create header cell style
-                    CellStyle headerStyle = wb.createCellStyle();
-                    headerStyle.setWrapText(true);
-                    headerStyle.setAlignment(HorizontalAlignment.CENTER);
-                    headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-                    headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE .getIndex());
-                    headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                    // On each dependency iteration we filter other dependencies.
+                    if (currentLine.getValue().getDepende_de().contains(currentDependency)) {
 
-                    //create light shadow cell style
-                    CellStyle shadowStyle = wb.createCellStyle();
-                    shadowStyle.setWrapText(true);
-                    shadowStyle.setAlignment(HorizontalAlignment.LEFT);
-                    shadowStyle.setVerticalAlignment(VerticalAlignment.TOP);
-                    shadowStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
-                    shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                        row = sheet.createRow(rowIndex);
+                        columnIndex = 0;
 
-                    row = sheet.createRow(rowIndex);
-                    for (String name : ColumnNames ) {
-                        cell = row.createCell(columnIndex);
-                        cell.setCellValue(name);
-                        cell.setCellStyle(headerStyle);
-                        columnIndex++;
-                    }
-                    rowIndex++;
+                        // "nombre"
+                        cell = row.createCell(columnIndex++);
+                        cell.setCellValue(currentLine.getValue().getNombre());
+                        cell.setCellStyle(shadowStyle);
 
-                    for (Map.Entry<Integer, ExcelLine> currentLine : excelLines.entrySet()) {
+                        // "namecat"
+                        cell = row.createCell(columnIndex++);
+                        cell.setCellValue(currentLine.getValue().getNamecat());
+                        cell.setCellStyle(shadowStyle);
 
-                        // On each dependency iteration we filter other dependencies.
-                        if (currentLine.getValue().getDepende_de().contains(currentDependency)) {
+                        // "depende_de"
+                        cell = row.createCell(columnIndex++);
+                        cell.setCellValue(currentLine.getValue().getDepende_de());
+                        cell.setCellStyle(shadowStyle);
 
-                            row = sheet.createRow(rowIndex);
-                            columnIndex = 0;
+                        // "semilla"
+                        cell = row.createCell(columnIndex++);
+                        cell.setCellValue(currentLine.getValue().getSemilla());
+                        cell.setCellStyle(shadowStyle);
 
-                            // "nombre"
+                        for (String date : executionDates) {
+
                             cell = row.createCell(columnIndex++);
-                            cell.setCellValue(currentLine.getValue().getNombre());
+                            cell.setCellType(CellType.NUMERIC);
                             cell.setCellStyle(shadowStyle);
-
-                            // "namecat"
-                            cell = row.createCell(columnIndex++);
-                            cell.setCellValue(currentLine.getValue().getNamecat());
-                            cell.setCellStyle(shadowStyle);
-
-                            // "depende_de"
-                            cell = row.createCell(columnIndex++);
-                            cell.setCellValue(currentLine.getValue().getDepende_de());
-                            cell.setCellStyle(shadowStyle);
-
-                            // "semilla"
-                            cell = row.createCell(columnIndex++);
-                            cell.setCellValue(currentLine.getValue().getSemilla());
-                            cell.setCellStyle(shadowStyle);
-
-                            for (String date : executionDates) {
-
-                                cell = row.createCell(columnIndex++);
-                                cell.setCellType(CellType.NUMERIC);
-                                cell.setCellStyle(shadowStyle);
-                                if (currentLine.getValue().HasDate(date)) {
-                                    cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getScore());
-                                }
-
-                                cell = row.createCell(columnIndex++);
-                                cell.setCellStyle(shadowStyle);
-                                if (currentLine.getValue().HasDate(date)) {
-                                    cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getAdequacy());
-                                }
-
-                                /*
-                                // CUMPLIMIENTO
-                                // Add header if it is not already created
-                                if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
-                                    ColumnNames.add("cumplimiento_" + executionDateAux);
-                                    XSSFRow headerRow = sheet.getRow(0);
-                                    XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size());
-                                    cellInHeader.setCellValue("cumplimiento_" + executionDateAux);
-                                    cellInHeader.setCellStyle(defaultStyle);
-                                }
-                                cell = row.createCell(columnIndex++);
-                                cell.setCellValue(entry.getValue().getCompliance());
-                                cell.setCellStyle(defaultStyle);
-                                */
+                            if (currentLine.getValue().HasDate(date)) {
+                                cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getScore());
                             }
 
-                            rowIndex++;
-                        }
-                    }
-
-                    // Insert NV, A and AA columns for each execution.
-                    for (int i = 1; i < rowIndex; i++) {
-
-                        row = sheet.getRow(i);
-
-                        for (int numberOfDate = 0; numberOfDate < executionDates.size(); numberOfDate++) {
-
-                            String columnFirstLetter = GetExcelColumnNameForNumber(6 + (2 * numberOfDate));
-                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (2 * numberOfDate));
-
-                            // "NV_" + date
-                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate));
-                            cell.setCellType(CellType.NUMERIC);
-                            cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No Válido\",$" + columnSecondLetter + (i + 1) + ",0)");
+                            cell = row.createCell(columnIndex++);
                             cell.setCellStyle(shadowStyle);
+                            if (currentLine.getValue().HasDate(date)) {
+                                cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getAdequacy());
+                            }
 
-                            // "A_" + date
-                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 1);
-                            cell.setCellType(CellType.NUMERIC);
-                            cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"A\",$" + columnSecondLetter + (i + 1) + ",0)");
+                            cell = row.createCell(columnIndex++);
                             cell.setCellStyle(shadowStyle);
-
-                            // "AA_" + date
-                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 2);
-                            cell.setCellType(CellType.NUMERIC);
-                            cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"AA\",$" + columnSecondLetter + (i + 1) + ",0)");
-                            cell.setCellStyle(shadowStyle);
+                            if (currentLine.getValue().HasDate(date)) {
+                                cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getCompliance());
+                            }
                         }
+
+                        rowIndex++;
                     }
-
-                    // Increase width of columns to match content
-                    for (int i = 0; i < ColumnNames.size(); i++) {
-                        sheet.autoSizeColumn(i);
-                    }
-
-                    XSSFSheet currentSheet = wb.createSheet("Grafica Adecuación");
-
-                    XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
-                    XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, 4, Math.max(rowIndex, 16), 40);
-
-                    XSSFChart chart = drawing.createChart(anchor);
-                    chart.setTitleText("Evolución de la adecuación");
-                    chart.setTitleOverlay(false);
-
-                    XDDFChartLegend legend = chart.getOrAddLegend();
-                    legend.setPosition(LegendPosition.LEFT);
-
-                    XDDFCategoryAxis bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
-                    XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
-
-                    XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
-                    bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-                    leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-                    bottomAxis.setTickLabelPosition(AxisTickLabelPosition.LOW);
-                    bottomAxis.setMajorTickMark(AxisTickMark.NONE);
-                    bottomAxis.setPosition(AxisPosition.RIGHT);
-                    CTPlotArea plotArea = chart.getCTChart().getPlotArea();
-                    plotArea.getValAxArray()[0].addNewMajorGridlines();
-
-                    // Get agency names
-                    XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0),
-                            new CellRangeAddress(1, rowIndex - 1, 0, 0));
-
-                    // Iterate through the executions
-                    for (String date : executionDates){
-
-                        int firstSerieColumn = 4 + (executionDates.size() * 2) + (3 * executionDates.indexOf(date));
-
-                        // First serie ("No válido" / "No Conforme")
-                        FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex -1, firstSerieColumn);
-                        XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-                                new CellRangeAddress(1, rowIndex - 1, firstSerieColumn, firstSerieColumn));
-                        XDDFChartData.Series series1 = data.addSeries(agencies, values1);
-                        series1.setTitle("NV_" + date, null);
-                        // Set series color
-                        XDDFShapeProperties properties1 = series1.getShapeProperties();
-                        if (properties1 == null) {
-                            properties1 = new XDDFShapeProperties();
-                        }
-                        properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
-                        series1.setShapeProperties(properties1);
-
-                        // Second serie ("A" / "Parcialmente conforme")
-                        FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + 1);
-                        XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-                                new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + 1, firstSerieColumn + 1));
-                        XDDFChartData.Series series2 = data.addSeries(agencies, values2);
-                        series2.setTitle("A_" + date, null);
-                        // Set series color
-                        XDDFShapeProperties properties2 = series2.getShapeProperties();
-                        if (properties2 == null) {
-                            properties2 = new XDDFShapeProperties();
-                        }
-                        properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
-                        series2.setShapeProperties(properties2);
-
-                        // Third serie ("AA" / "Plenamente conforme")
-                        FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + 2);
-                        XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-                                new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + 2, firstSerieColumn + 2));
-                        XDDFChartData.Series series3 = data.addSeries(agencies, values3);
-                        series3.setTitle("AA_" + date, null);
-                        // Set series color
-                        XDDFShapeProperties properties3 = series3.getShapeProperties();
-                        if (properties3 == null) {
-                            properties3 = new XDDFShapeProperties();
-                        }
-                        properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
-                        series3.setShapeProperties(properties3);
-                    }
-
-                    chart.plot(data);
-
-                    XDDFBarChartData bar = (XDDFBarChartData) data;
-                    bar.setBarDirection(BarDirection.COL);
-
-
-                    XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
-                    wb.write(writer);
-                    wb.close();
-
-                } catch (Exception e) {
-                    Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-                    throw e;
                 }
+
+                // Insert NV, A and AA columns for each execution.
+                for (int i = 1; i < rowIndex; i++) {
+
+                    row = sheet.getRow(i);
+
+                    for (int numberOfDate = 0; numberOfDate < executionDates.size(); numberOfDate++) {
+
+                        String columnFirstLetter = GetExcelColumnNameForNumber(6 + (3 * numberOfDate));
+                        String columnSecondLetter = GetExcelColumnNameForNumber(5 + (3 * numberOfDate));
+
+                        // "NV_" + date
+                        cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate));
+                        cell.setCellType(CellType.NUMERIC);
+                        cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No Válido\",$" + columnSecondLetter + (i + 1) + ",0)");
+                        cell.setCellStyle(shadowStyle);
+
+                        // "A_" + date
+                        cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 1);
+                        cell.setCellType(CellType.NUMERIC);
+                        cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"A\",$" + columnSecondLetter + (i + 1) + ",0)");
+                        cell.setCellStyle(shadowStyle);
+
+                        // "AA_" + date
+                        cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 2);
+                        cell.setCellType(CellType.NUMERIC);
+                        cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"AA\",$" + columnSecondLetter + (i + 1) + ",0)");
+                        cell.setCellStyle(shadowStyle);
+                    }
+                }
+
+                // Increase width of columns to match content
+                for (int i = 0; i < ColumnNames.size(); i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                XSSFSheet currentSheet = wb.createSheet("Grafica Adecuación");
+
+                XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
+                XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, 4, Math.max(rowIndex, 16), 40);
+
+                XSSFChart chart = drawing.createChart(anchor);
+                chart.setTitleText("Evolución de la adecuación");
+                chart.setTitleOverlay(false);
+
+                XDDFChartLegend legend = chart.getOrAddLegend();
+                legend.setPosition(LegendPosition.LEFT);
+
+                XDDFCategoryAxis bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+                XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
+
+                XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
+                bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+                leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+                bottomAxis.setTickLabelPosition(AxisTickLabelPosition.LOW);
+                bottomAxis.setMajorTickMark(AxisTickMark.NONE);
+                bottomAxis.setPosition(AxisPosition.RIGHT);
+                CTPlotArea plotArea = chart.getCTChart().getPlotArea();
+                plotArea.getValAxArray()[0].addNewMajorGridlines();
+
+                // Get agency names
+                XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0),
+                        new CellRangeAddress(1, rowIndex - 1, 0, 0));
+
+                // Iterate through the executions
+                for (String date : executionDates){
+
+                    int firstSerieColumn = 4 + (executionDates.size() * 3) + (3 * executionDates.indexOf(date));
+
+                    // First serie ("No válido" / "No Conforme")
+                    FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex -1, firstSerieColumn);
+                    XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+                            new CellRangeAddress(1, rowIndex - 1, firstSerieColumn, firstSerieColumn));
+                    XDDFChartData.Series series1 = data.addSeries(agencies, values1);
+                    series1.setTitle("NV_" + date, null);
+                    // Set series color
+                    XDDFShapeProperties properties1 = series1.getShapeProperties();
+                    if (properties1 == null) {
+                        properties1 = new XDDFShapeProperties();
+                    }
+                    properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
+                    series1.setShapeProperties(properties1);
+
+                    // Second serie ("A" / "Parcialmente conforme")
+                    FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + 1);
+                    XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+                            new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + 1, firstSerieColumn + 1));
+                    XDDFChartData.Series series2 = data.addSeries(agencies, values2);
+                    series2.setTitle("A_" + date, null);
+                    // Set series color
+                    XDDFShapeProperties properties2 = series2.getShapeProperties();
+                    if (properties2 == null) {
+                        properties2 = new XDDFShapeProperties();
+                    }
+                    properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
+                    series2.setShapeProperties(properties2);
+
+                    // Third serie ("AA" / "Plenamente conforme")
+                    FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + 2);
+                    XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+                            new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + 2, firstSerieColumn + 2));
+                    XDDFChartData.Series series3 = data.addSeries(agencies, values3);
+                    series3.setTitle("AA_" + date, null);
+                    // Set series color
+                    XDDFShapeProperties properties3 = series3.getShapeProperties();
+                    if (properties3 == null) {
+                        properties3 = new XDDFShapeProperties();
+                    }
+                    properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
+                    series3.setShapeProperties(properties3);
+                }
+
+                chart.plot(data);
+
+                XDDFBarChartData bar = (XDDFBarChartData) data;
+                bar.setBarDirection(BarDirection.COL);
+
+
+                XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+                wb.write(writer);
+                wb.close();
+
+            } catch (Exception e) {
+                Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+                throw e;
             }
         }
     }
-
-
-
-
-
-
 
     private static void FillNullCellInRange(XSSFSheet sheetAt, int categoryFirstRow, int categoryLastRow, int firstSerieColumn) {
         for (int i = categoryFirstRow; i <= categoryLastRow; i++){
@@ -1266,17 +1237,16 @@ public final class AnnexUtils {
         cell.setCellStyle(headerStyle);
         cell = row.createCell(1);
         cell.setCellStyle(headerStyle);
-        cell.setCellFormula("SUM(B" + Integer.toString(RowStartPosition +2) + ":B" + Integer.toString(RowStartPosition +7) + ")");
+        cell.setCellFormula("SUM(B" + (RowStartPosition + 2) + ":B" + (RowStartPosition + 7) + ")");
 
         return RowStartPosition + 7;
     }
 
-    private static int InsertCategoriesTable(XSSFSheet sheet, int RowStartPosition, List<String> ColumnNames, List<String> categories,CellStyle headerStyle, CellStyle shadowStyle, int lastDataRow) {
+    private static int InsertCategoriesTable(XSSFSheet sheet, int RowStartPosition, List<String> categories,CellStyle headerStyle, CellStyle shadowStyle, int lastDataRow) {
         XSSFCell cell;
         XSSFRow row;
-        // Insert Summary table.
-        String columnResumeName = GetExcelColumnNameForNumber(ColumnNames.size());
 
+        // Insert Summary table.
         row = sheet.createRow(RowStartPosition);
         cell = row.createCell(0);
         cell.setCellValue("Datos de evolución de portales respecto a la primera iteración/anterior iteración (Empeora, Se mantiene, Mejora) por segmento. Diferencia 0,5 puntos");
@@ -1308,19 +1278,19 @@ public final class AnnexUtils {
 
             cell = row.createCell(1);
             cell.setCellStyle(shadowStyle);
-            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"EMPEORA\")");
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"EMPEORA\")");
 
             cell = row.createCell(2);
             cell.setCellStyle(shadowStyle);
-            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"MEJORA\")");
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"MEJORA\")");
 
             cell = row.createCell(3);
             cell.setCellStyle(shadowStyle);
-            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"SE MANTIENE\")");
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"SE MANTIENE\")");
 
             cell = row.createCell(4);
             cell.setCellStyle(shadowStyle);
-            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"SE MANTIENE\")");
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"SE MANTIENE\")");
         }
 
         // TOTAL row
@@ -1785,12 +1755,8 @@ public final class AnnexUtils {
         }
     }
 
-
-
     private static class ExcelLine
     {
-
-
         private String nombre;
         private String namecat;
         private String depende_de;
@@ -1870,6 +1836,7 @@ public final class AnnexUtils {
         private String date;
         private Double score;
         private String adequacy;
+        private String compliance;
 
 
         public String getDate() {
@@ -1880,9 +1847,7 @@ public final class AnnexUtils {
             this.date = date;
         }
 
-        public Double getScore() {
-            return score;
-        }
+        public Double getScore() { return score; }
 
         public void setScore(Double score) {
             this.score = score;
@@ -1895,5 +1860,9 @@ public final class AnnexUtils {
         public void setAdequacy(String adequacy) {
             this.adequacy = adequacy;
         }
+
+        public String getCompliance() { return compliance; }
+
+        public void setCompliance(String compliance) { this.compliance = compliance; }
     }
 }
