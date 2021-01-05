@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.*;
 
-import org.apache.commons.compress.utils.Lists;
+import com.helger.css.decl.ICSSTopLevelRule;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xddf.usermodel.*;
 import org.apache.poi.xddf.usermodel.chart.*;
@@ -84,14 +84,31 @@ public final class AnnexUtils {
      * The Constant PORTAL_ELEMENT.
      */
     private static final String PORTAL_ELEMENT = "portal";
-
     /**
-     * Instantiates a new annex utils.
+     * Excel lines created by generation Evolution and
+     * reused generating PerDependency annex.
      */
-    private AnnexUtils() {
-    }
-    // Anexos sin iteraciones
-    // *************************************************************************************
+    private static HashMap<Integer, ExcelLine> excelLines;
+    /**
+     * Column names list created by generation Evolution and
+     * reused generating PerDependency annex.
+     */
+    private static List<String> ColumnNames = new ArrayList();
+    /**
+     * Execution dates list created by generation Evolution and
+     * reused generating PerDependency annex.
+     */
+    private static List<String> executionDates = new ArrayList();
+    /**
+     * Dependency names list created by generation Evolution and
+     * reused generating PerDependency annex.
+     */
+    private static List<String> dependencies = new ArrayList<>();
+    /**
+     * Category names list created by generation Evolution and
+     * reused generating PerDependency annex.
+     */
+    private static List<String> categories = new ArrayList<>();
 
     /**
      * Creates the annex paginas.
@@ -116,16 +133,16 @@ public final class AnnexUtils {
                             writeTag(hd, NOMBRE_ELEMENT, siteForm.getName());
                             writeTag(hd, CATEGORIA_ELEMENT, semillaForm.getCategoria().getName());
                             // Multidependencia
-                            String dependencias = "";
+                            StringBuilder dependencias = new StringBuilder();
                             if (semillaForm.getDependencias() != null) {
                                 for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-                                    dependencias += semillaForm.getDependencias().get(i).getName();
+                                    dependencias.append(semillaForm.getDependencias().get(i).getName());
                                     if (i < semillaForm.getDependencias().size() - 1) {
-                                        dependencias += "\n";
+                                        dependencias.append("\n");
                                     }
                                 }
                             }
-                            writeTag(hd, DEPENDE_DE_ELEMENT, dependencias);
+                            writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
                             hd.startElement(EMPTY_STRING, EMPTY_STRING, "paginas", null);
                             for (PageForm pageForm : siteForm.getPageList()) {
                                 if (pageForm != null) {
@@ -171,16 +188,16 @@ public final class AnnexUtils {
                     writeTag(hd, NOMBRE_ELEMENT, semillaForm.getNombre());
                     writeTag(hd, CATEGORY_NAME, semillaForm.getCategoria().getName());
                     // Multidependencia
-                    String dependencias = "";
+                    StringBuilder dependencias = new StringBuilder();
                     if (semillaForm.getDependencias() != null) {
                         for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-                            dependencias += semillaForm.getDependencias().get(i).getName();
+                            dependencias.append(semillaForm.getDependencias().get(i).getName());
                             if (i < semillaForm.getDependencias().size() - 1) {
-                                dependencias += "\n";
+                                dependencias.append("\n");
                             }
                         }
                     }
-                    writeTag(hd, DEPENDE_DE_ELEMENT, dependencias);
+                    writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
                     writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
                     for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
                         final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
@@ -195,8 +212,7 @@ public final class AnnexUtils {
                     List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
                     List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
                     if (etiquetas != null && !etiquetas.isEmpty()) {
-                        for (int i = 0; i < etiquetas.size(); i++) {
-                            EtiquetaForm tmp = etiquetas.get(i);
+                        for (EtiquetaForm tmp : etiquetas) {
                             if (tmp.getClasificacion() != null) {
                                 switch (tmp.getClasificacion().getId()) {
                                     case "1":
@@ -219,7 +235,7 @@ public final class AnnexUtils {
                     }
                     // 1
                     hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
-                    if (tagsTematica != null && !tagsTematica.isEmpty()) {
+                    if (!tagsTematica.isEmpty()) {
                         for (int i = 0; i < tagsTematica.size(); i++) {
                             hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
                             if (i < tagsTematica.size() - 1) {
@@ -230,7 +246,7 @@ public final class AnnexUtils {
                     hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
                     // 2
                     hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
-                    if (tagsDistribucion != null && !tagsDistribucion.isEmpty()) {
+                    if (!tagsDistribucion.isEmpty()) {
                         for (int i = 0; i < tagsDistribucion.size(); i++) {
                             hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
                             if (i < tagsDistribucion.size() - 1) {
@@ -241,7 +257,7 @@ public final class AnnexUtils {
                     hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
                     // 3
                     hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
-                    if (tagsRecurrencia != null && !tagsRecurrencia.isEmpty()) {
+                    if (!tagsRecurrencia.isEmpty()) {
                         for (int i = 0; i < tagsRecurrencia.size(); i++) {
                             hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
                             if (i < tagsRecurrencia.size() - 1) {
@@ -252,7 +268,7 @@ public final class AnnexUtils {
                     hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
                     // 4
                     hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
-                    if (tagsOtros != null && !tagsOtros.isEmpty()) {
+                    if (!tagsOtros.isEmpty()) {
                         for (int i = 0; i < tagsOtros.size(); i++) {
                             hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
                             if (i < tagsOtros.size() - 1) {
@@ -281,7 +297,7 @@ public final class AnnexUtils {
      * @throws Exception the exception
      */
     public static void createAnnexXLSX(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
-        try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "Adecuación de SW por segmentos.xlsx")) {
+        try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "Adecuación de SW por segmentos.xls.xlsx")) {
 
             final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
             final String ObservatoryFormDate = observatoryForm.getDate().substring(0,10);
@@ -445,7 +461,7 @@ public final class AnnexUtils {
     }
 
     /**
-     * Creates the XLSX annex.
+     * Creates the XLSX evolution annex.
      *
      * @param messageResources the message resources
      * @param idObsExecution   the id obs execution
@@ -464,7 +480,9 @@ public final class AnnexUtils {
             XSSFCell cell;
             int rowIndex = 0;
             int columnIndex = 0;
-            List<String> executionDates = new ArrayList();
+            executionDates = new ArrayList();
+            excelLines = new HashMap<>();
+            ExcelLine excelLine;
 
             //create default cell style (aligned top left and allow line wrapping)
             CellStyle defaultStyle = wb.createCellStyle();
@@ -489,7 +507,7 @@ public final class AnnexUtils {
             shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
             // Add headers without values
-            List<String> ColumnNames = new ArrayList();
+            ColumnNames = new ArrayList<>();
             ColumnNames.add("nombre");
             ColumnNames.add("namecat");
             ColumnNames.add("depende_de");
@@ -507,12 +525,13 @@ public final class AnnexUtils {
             final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution);
 
             // Get all category names
-            List<String> categories = new ArrayList<>();
+            categories = new ArrayList<>();
             for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
                 final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+                String namecat = semillaForm.getCategoria().getName();
                 if (semillaForm.getId() != 0) {
-                    if (!categories.contains(semillaForm.getCategoria().getName()))
-                        categories.add(semillaForm.getCategoria().getName());
+                    if (!categories.contains(namecat))
+                        categories.add(namecat);
                 }
             }
             // Sort all category names
@@ -523,29 +542,40 @@ public final class AnnexUtils {
                 for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 
                     final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+                    String namecat = semillaForm.getCategoria().getName();
 
                     // On each category iteration we filter the other categories.
-                    if (semillaForm.getId() != 0 && semillaForm.getCategoria().getName().equals(categories.get(categoryIndex))) {
+                    if (semillaForm.getId() != 0 && namecat.equals(categories.get(categoryIndex))) {
 
                         row = sheet.createRow(rowIndex);
-                        int excelRowNumber = rowIndex + 1;
                         columnIndex = 0;
 
+                        excelLine = new ExcelLine();
+                        excelLine.setRowIndex(rowIndex);
+
                         // "nombre"
+                        String name = semillaForm.getNombre();
                         cell = row.createCell(columnIndex++);
-                        cell.setCellValue(semillaForm.getNombre());
+                        cell.setCellValue(name);
                         cell.setCellStyle(shadowStyle);
+                        excelLine.setNombre(name);
 
                         // "namecat"
                         cell = row.createCell(columnIndex++);
-                        cell.setCellValue(semillaForm.getCategoria().getName());
+                        cell.setCellValue(namecat);
                         cell.setCellStyle(shadowStyle);
+                        excelLine.setNamecat(namecat);
 
                         // "depende_de"
                         // Multidependencia
                         String dependencias = "";
                         if (semillaForm.getDependencias() != null) {
                             for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+
+                                // Store all dependencies globally (we will use it in other files generation
+                                if (!dependencies.contains(semillaForm.getDependencias().get(i).getName()))
+                                    dependencies.add(semillaForm.getDependencias().get(i).getName());
+
                                 dependencias += semillaForm.getDependencias().get(i).getName();
                                 if (i < semillaForm.getDependencias().size() - 1) {
                                     dependencias += "\n";
@@ -555,16 +585,28 @@ public final class AnnexUtils {
                         cell = row.createCell(columnIndex++);
                         cell.setCellValue(dependencias);
                         cell.setCellStyle(shadowStyle);
+                        excelLine.setDepende_de(dependencias);
 
                         // "semilla"
+                        String semilla = semillaForm.getListaUrls().get(0);
                         cell = row.createCell(columnIndex++);
-                        cell.setCellValue(semillaForm.getListaUrls().get(0));
+                        cell.setCellValue(semilla);
                         cell.setCellStyle(shadowStyle);
+                        excelLine.setSemilla(semilla);
 
                         for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
                             final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
                             if (!executionDates.contains(executionDateAux))
                                 executionDates.add(executionDateAux);
+
+                            Double score = Double.parseDouble(entry.getValue().getTotalScore().toString());
+                            String adequacy = changeLevelName(entry.getValue().getLevel(), messageResources);
+
+                            ExcelExecution execution = new ExcelExecution();
+                            execution.setDate(executionDateAux);
+                            execution.setScore(score);
+                            execution.setAdequacy(adequacy);
+                            excelLine.addExecution(execution);
 
                             // PUNTUACIÓN
                             // Add header if it is not already created
@@ -577,7 +619,7 @@ public final class AnnexUtils {
                             }
                             cell = row.createCell(columnIndex++);
                             cell.setCellType(CellType.NUMERIC);
-                            cell.setCellValue(Double.parseDouble(entry.getValue().getTotalScore().toString()));
+                            cell.setCellValue(score);
                             cell.setCellStyle(shadowStyle);
 
                             // ADECUACIÓN
@@ -590,7 +632,7 @@ public final class AnnexUtils {
                                 cellInHeader.setCellStyle(headerStyle);
                             }
                             cell = row.createCell(columnIndex++);
-                            cell.setCellValue(changeLevelName(entry.getValue().getLevel(), messageResources));
+                            cell.setCellValue(adequacy);
                             cell.setCellStyle(shadowStyle);
 
                         /*
@@ -609,6 +651,7 @@ public final class AnnexUtils {
                         */
                         }
 
+                        excelLines.put(rowIndex, excelLine);
                         rowIndex++;
                     }
                 }
@@ -883,6 +926,183 @@ public final class AnnexUtils {
             throw e;
         }
     }
+
+    /**
+     * Creates the XLSX evolution annex per dependency.
+     *
+     * @param messageResources the message resources
+     * @param idObsExecution   the id obs execution
+     * @param idOperation      the id operation
+     * @throws Exception the exception
+     */
+    public static void createAnnexXLSX_PerDependency(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+
+        try (Connection c = DataBaseManager.getConnection()) {
+
+            final Map<Long, TreeMap<String, ScoreForm>> annexmap0 = createAnnexMap(idObsExecution);
+
+            // Iterate through dependencies to create each file
+            for (String currentDependency : dependencies)
+            {
+                try (FileOutputStream writer = getFileOutputStream(idOperation, currentDependency + ".xlsx")) {
+
+                    final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
+                    final String ObservatoryFormDate = observatoryForm.getDate().substring(0,10);
+
+                    XSSFWorkbook wb = new XSSFWorkbook();
+                    XSSFSheet sheet = wb.createSheet("Resultados");
+                    XSSFRow row;
+                    XSSFCell cell;
+                    int rowIndex = 0;
+                    int columnIndex = 0;
+
+                    //create default cell style (aligned top left and allow line wrapping)
+                    CellStyle defaultStyle = wb.createCellStyle();
+                    defaultStyle.setWrapText(true);
+                    defaultStyle.setAlignment(HorizontalAlignment.LEFT);
+                    defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
+
+                    //create header cell style
+                    CellStyle headerStyle = wb.createCellStyle();
+                    headerStyle.setWrapText(true);
+                    headerStyle.setAlignment(HorizontalAlignment.CENTER);
+                    headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+                    headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE .getIndex());
+                    headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+                    //create light shadow cell style
+                    CellStyle shadowStyle = wb.createCellStyle();
+                    shadowStyle.setWrapText(true);
+                    shadowStyle.setAlignment(HorizontalAlignment.LEFT);
+                    shadowStyle.setVerticalAlignment(VerticalAlignment.TOP);
+                    shadowStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
+                    shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+                    row = sheet.createRow(rowIndex);
+                    for (String name : ColumnNames ) {
+                        cell = row.createCell(columnIndex);
+                        cell.setCellValue(name);
+                        cell.setCellStyle(headerStyle);
+                        columnIndex++;
+                    }
+                    rowIndex++;
+
+
+                    for (Map.Entry<Integer, ExcelLine> currentLine : excelLines.entrySet()) {
+
+                        // On each dependency iteration we filter other dependencies.
+                        if (currentLine.getValue().getDepende_de().contains(currentDependency)) {
+
+                            row = sheet.createRow(rowIndex);
+                            columnIndex = 0;
+
+                            // "nombre"
+                            cell = row.createCell(columnIndex++);
+                            cell.setCellValue(currentLine.getValue().getNombre());
+                            cell.setCellStyle(shadowStyle);
+
+                            // "namecat"
+                            cell = row.createCell(columnIndex++);
+                            cell.setCellValue(currentLine.getValue().getNamecat());
+                            cell.setCellStyle(shadowStyle);
+
+                            // "depende_de"
+                            cell = row.createCell(columnIndex++);
+                            cell.setCellValue(currentLine.getValue().getDepende_de());
+                            cell.setCellStyle(shadowStyle);
+
+                            // "semilla"
+                            cell = row.createCell(columnIndex++);
+                            cell.setCellValue(currentLine.getValue().getSemilla());
+                            cell.setCellStyle(shadowStyle);
+
+                            for (String date : executionDates) {
+
+                                cell = row.createCell(columnIndex++);
+                                cell.setCellType(CellType.NUMERIC);
+                                cell.setCellStyle(shadowStyle);
+                                if (currentLine.getValue().HasDate(date)) {
+                                    cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getScore());
+                                }
+
+                                cell = row.createCell(columnIndex++);
+                                cell.setCellStyle(shadowStyle);
+                                if (currentLine.getValue().HasDate(date)) {
+                                    cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getAdequacy());
+                                }
+
+                                /*
+                                // CUMPLIMIENTO
+                                // Add header if it is not already created
+                                if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
+                                    ColumnNames.add("cumplimiento_" + executionDateAux);
+                                    XSSFRow headerRow = sheet.getRow(0);
+                                    XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size());
+                                    cellInHeader.setCellValue("cumplimiento_" + executionDateAux);
+                                    cellInHeader.setCellStyle(defaultStyle);
+                                }
+                                cell = row.createCell(columnIndex++);
+                                cell.setCellValue(entry.getValue().getCompliance());
+                                cell.setCellStyle(defaultStyle);
+                                */
+                            }
+
+                            rowIndex++;
+                        }
+                    }
+
+                    // Insert NV, A and AA columns for each execution.
+                    for (int i = 1; i < rowIndex; i++) {
+
+                        row = sheet.getRow(i);
+
+                        for (int numberOfDate = 0; numberOfDate < executionDates.size(); numberOfDate++) {
+
+                            String columnFirstLetter = GetExcelColumnNameForNumber(6 + (2 * numberOfDate));
+                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (2 * numberOfDate));
+
+                            // "NV_" + date
+                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate));
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No Válido\",$" + columnSecondLetter + (i + 1) + ",0)");
+                            cell.setCellStyle(shadowStyle);
+
+                            // "A_" + date
+                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 1);
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"A\",$" + columnSecondLetter + (i + 1) + ",0)");
+                            cell.setCellStyle(shadowStyle);
+
+                            // "AA_" + date
+                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 2);
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"AA\",$" + columnSecondLetter + (i + 1) + ",0)");
+                            cell.setCellStyle(shadowStyle);
+                        }
+                    }
+
+                    // Increase width of columns to match content
+                    for (int i = 0; i < ColumnNames.size(); i++) {
+                        sheet.autoSizeColumn(i);
+                    }
+
+                    XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+                    wb.write(writer);
+                    wb.close();
+
+                } catch (Exception e) {
+                    Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+                    throw e;
+                }
+            }
+        }
+    }
+
+
+
+
+
+
 
     private static void FillNullCellInRange(XSSFSheet sheetAt, int categoryFirstRow, int categoryLastRow, int firstSerieColumn) {
         for (int i = categoryFirstRow; i <= categoryLastRow; i++){
@@ -1481,6 +1701,118 @@ public final class AnnexUtils {
             return messageResources.getMessage("resultados.anonimos.num.portales.a");
         } else {
             return EMPTY_STRING;
+        }
+    }
+
+
+
+    private static class ExcelLine
+    {
+
+
+        private String nombre;
+        private String namecat;
+        private String depende_de;
+        private String semilla;
+        private Integer rowIndex;
+        private List<ExcelExecution> executions = new ArrayList<>();
+
+        public String getNombre() {
+            return nombre;
+        }
+
+        public void setNombre(String nombre) {
+            this.nombre = nombre;
+        }
+
+        public String getNamecat() {
+            return namecat;
+        }
+
+        public void setNamecat(String namecat) {
+            this.namecat = namecat;
+        }
+
+        public String getDepende_de() {
+            return depende_de;
+        }
+
+        public void setDepende_de(String depende_de) {
+            this.depende_de = depende_de;
+        }
+
+        public String getSemilla() {
+            return semilla;
+        }
+
+        public void setSemilla(String semilla) {
+            this.semilla = semilla;
+        }
+
+        public List<ExcelExecution> getExecutions() {
+            return executions;
+        }
+
+        public boolean HasDate(String dateToSearch){
+            for (ExcelExecution e : executions){
+                if (e.date.equals(dateToSearch)){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public ExcelExecution GetExecutionByDate(String dateToSearch){
+            for (ExcelExecution e : executions){
+                if (e.date.equals(dateToSearch)){
+                    return e;
+                }
+            }
+            return null;
+        }
+
+        public void addExecution(ExcelExecution execution) {
+            this.executions.add(execution);
+        }
+
+        public Integer getRowIndex() {
+            return rowIndex;
+        }
+
+        public void setRowIndex(Integer rowIndex) {
+            this.rowIndex = rowIndex;
+        }
+    }
+
+    private static class ExcelExecution
+    {
+        private String date;
+        private Double score;
+        private String adequacy;
+
+
+        public String getDate() {
+            return date;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
+        }
+
+        public Double getScore() {
+            return score;
+        }
+
+        public void setScore(Double score) {
+            this.score = score;
+        }
+
+        public String getAdequacy() {
+            return adequacy;
+        }
+
+        public void setAdequacy(String adequacy) {
+            this.adequacy = adequacy;
         }
     }
 }
