@@ -595,11 +595,13 @@ public final class AnnexUtils {
 
                             double score = Double.parseDouble(entry.getValue().getTotalScore().toString());
                             String adequacy = changeLevelName(entry.getValue().getLevel(), messageResources);
+                            String compliance = entry.getValue().getCompliance();
 
                             ExcelExecution execution = new ExcelExecution();
                             execution.setDate(executionDateAux);
                             execution.setScore(score);
                             execution.setAdequacy(adequacy);
+                            execution.setCompliance(compliance);
                             excelLine.addExecution(execution);
 
                             // PUNTUACIÓN
@@ -629,20 +631,19 @@ public final class AnnexUtils {
                             cell.setCellValue(adequacy);
                             cell.setCellStyle(shadowStyle);
 
-                        /*
-                        // CUMPLIMIENTO
-                        // Add header if it is not already created
-                        if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
-                            ColumnNames.add("cumplimiento_" + executionDateAux);
-                            XSSFRow headerRow = sheet.getRow(0);
-                            XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size());
-                            cellInHeader.setCellValue("cumplimiento_" + executionDateAux);
-                            cellInHeader.setCellStyle(defaultStyle);
-                        }
-                        cell = row.createCell(columnIndex++);
-                        cell.setCellValue(entry.getValue().getCompliance());
-                        cell.setCellStyle(defaultStyle);
-                        */
+
+                            // CUMPLIMIENTO
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
+                                ColumnNames.add("cumplimiento_" + executionDateAux);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() -1);
+                                cellInHeader.setCellValue("cumplimiento_" + executionDateAux);
+                                cellInHeader.setCellStyle(headerStyle);
+                            }
+                            cell = row.createCell(columnIndex++);
+                            cell.setCellValue(compliance);
+                            cell.setCellStyle(shadowStyle);
                         }
 
                         excelLines.put(rowIndex, excelLine);
@@ -667,8 +668,8 @@ public final class AnnexUtils {
                             final String date = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
 
                             row = sheet.getRow(rowIndex);
-                            String columnFirstLetter = GetExcelColumnNameForNumber(6 + (2 * executionDates.indexOf(date)));
-                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (2 * executionDates.indexOf(date)));
+                            String columnFirstLetter = GetExcelColumnNameForNumber(6 + (3 * executionDates.indexOf(date)));
+                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (3 * executionDates.indexOf(date)));
 
 
                             // "NV_" + date
@@ -680,7 +681,7 @@ public final class AnnexUtils {
                                 cellInHeader.setCellValue("NV_" + date);
                                 cellInHeader.setCellStyle(headerStyle);
                             }
-                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate));
+                            cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate));
                             cell.setCellType(CellType.NUMERIC);
                             cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
                             cell.setCellStyle(shadowStyle);
@@ -694,7 +695,7 @@ public final class AnnexUtils {
                                 cellInHeader.setCellValue("A_" + date);
                                 cellInHeader.setCellStyle(headerStyle);
                             }
-                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 1);
+                            cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 1);
                             cell.setCellType(CellType.NUMERIC);
                             cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"A\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
                             cell.setCellStyle(shadowStyle);
@@ -708,7 +709,7 @@ public final class AnnexUtils {
                                 cellInHeader.setCellValue("AA_" + date);
                                 cellInHeader.setCellStyle(headerStyle);
                             }
-                            cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 2);
+                            cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 2);
                             cell.setCellType(CellType.NUMERIC);
                             cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
                             cell.setCellStyle(shadowStyle);
@@ -738,11 +739,11 @@ public final class AnnexUtils {
 
                     if (row != null) {
                         // Discard rows without the last execution
-                        XSSFCell tmpCell = row.getCell(ColumnNames.size() - 2);
+                        XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
                         if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
 
                             String columnFirstLetter = GetExcelColumnNameForNumber(5);
-                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (2 * executionDates.size() - 2));
+                            String columnSecondLetter = GetExcelColumnNameForNumber(5 + (3 * executionDates.size() - 3));
 
                             cell = row.createCell(ColumnNames.size() - 1);
                             String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<=-0.5,\"EMPEORA\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<=0.5,\"SE MANTIENE\",\"MEJORA\")))";
@@ -773,11 +774,11 @@ public final class AnnexUtils {
 
                     if (row != null) {
                         // Discard rows without the last execution
-                        XSSFCell tmpCell = row.getCell(ColumnNames.size() - 2);
+                        XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
                         if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
 
                             String columnFirstLetter = GetExcelColumnNameForNumber(6);
-                            String columnSecondLetter = GetExcelColumnNameForNumber(6 + (2 * executionDates.size() - 2));
+                            String columnSecondLetter = GetExcelColumnNameForNumber(6 + (3 * executionDates.size() - 3));
 
                             cell = row.createCell(ColumnNames.size() - 1);
                             String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))";
@@ -854,7 +855,7 @@ public final class AnnexUtils {
                     // Iterate through the executions
                     for (String date : executionDates){
 
-                        int firstSerieColumn = 4 + (executionDates.size() * 2) + (3 * executionDates.indexOf(date));
+                        int firstSerieColumn = 4 + (executionDates.size() * 3) + (3 * executionDates.indexOf(date));
 
                         // First serie ("No válido" / "No Conforme")
                         FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow -1, firstSerieColumn);
@@ -1015,20 +1016,11 @@ public final class AnnexUtils {
                                 cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getAdequacy());
                             }
 
-                            /*
-                            // CUMPLIMIENTO
-                            // Add header if it is not already created
-                            if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
-                                ColumnNames.add("cumplimiento_" + executionDateAux);
-                                XSSFRow headerRow = sheet.getRow(0);
-                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size());
-                                cellInHeader.setCellValue("cumplimiento_" + executionDateAux);
-                                cellInHeader.setCellStyle(defaultStyle);
-                            }
                             cell = row.createCell(columnIndex++);
-                            cell.setCellValue(entry.getValue().getCompliance());
-                            cell.setCellStyle(defaultStyle);
-                            */
+                            cell.setCellStyle(shadowStyle);
+                            if (currentLine.getValue().HasDate(date)) {
+                                cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getCompliance());
+                            }
                         }
 
                         rowIndex++;
@@ -1042,23 +1034,23 @@ public final class AnnexUtils {
 
                     for (int numberOfDate = 0; numberOfDate < executionDates.size(); numberOfDate++) {
 
-                        String columnFirstLetter = GetExcelColumnNameForNumber(6 + (2 * numberOfDate));
-                        String columnSecondLetter = GetExcelColumnNameForNumber(5 + (2 * numberOfDate));
+                        String columnFirstLetter = GetExcelColumnNameForNumber(6 + (3 * numberOfDate));
+                        String columnSecondLetter = GetExcelColumnNameForNumber(5 + (3 * numberOfDate));
 
                         // "NV_" + date
-                        cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate));
+                        cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate));
                         cell.setCellType(CellType.NUMERIC);
                         cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No Válido\",$" + columnSecondLetter + (i + 1) + ",0)");
                         cell.setCellStyle(shadowStyle);
 
                         // "A_" + date
-                        cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 1);
+                        cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 1);
                         cell.setCellType(CellType.NUMERIC);
                         cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"A\",$" + columnSecondLetter + (i + 1) + ",0)");
                         cell.setCellStyle(shadowStyle);
 
                         // "AA_" + date
-                        cell = row.createCell(4 + (2 * executionDates.size()) + (3 * numberOfDate) + 2);
+                        cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 2);
                         cell.setCellType(CellType.NUMERIC);
                         cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"AA\",$" + columnSecondLetter + (i + 1) + ",0)");
                         cell.setCellStyle(shadowStyle);
@@ -1101,7 +1093,7 @@ public final class AnnexUtils {
                 // Iterate through the executions
                 for (String date : executionDates){
 
-                    int firstSerieColumn = 4 + (executionDates.size() * 2) + (3 * executionDates.indexOf(date));
+                    int firstSerieColumn = 4 + (executionDates.size() * 3) + (3 * executionDates.indexOf(date));
 
                     // First serie ("No válido" / "No Conforme")
                     FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex -1, firstSerieColumn);
@@ -1291,19 +1283,19 @@ public final class AnnexUtils {
 
             cell = row.createCell(1);
             cell.setCellStyle(shadowStyle);
-            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"EMPEORA\")");
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"EMPEORA\")");
 
             cell = row.createCell(2);
             cell.setCellStyle(shadowStyle);
-            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"MEJORA\")");
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"MEJORA\")");
 
             cell = row.createCell(3);
             cell.setCellStyle(shadowStyle);
-            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"SE MANTIENE\")");
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"SE MANTIENE\")");
 
             cell = row.createCell(4);
             cell.setCellStyle(shadowStyle);
-            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$O$2:$O$" + lastDataRow + ",\"SE MANTIENE\")");
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"SE MANTIENE\")");
         }
 
         // TOTAL row
@@ -1853,6 +1845,7 @@ public final class AnnexUtils {
         private String date;
         private Double score;
         private String adequacy;
+        private String compliance;
 
 
         public String getDate() {
@@ -1863,9 +1856,7 @@ public final class AnnexUtils {
             this.date = date;
         }
 
-        public Double getScore() {
-            return score;
-        }
+        public Double getScore() { return score; }
 
         public void setScore(Double score) {
             this.score = score;
@@ -1878,5 +1869,9 @@ public final class AnnexUtils {
         public void setAdequacy(String adequacy) {
             this.adequacy = adequacy;
         }
+
+        public String getCompliance() { return compliance; }
+
+        public void setCompliance(String compliance) { this.compliance = compliance; }
     }
 }
