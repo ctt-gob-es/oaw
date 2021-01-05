@@ -189,6 +189,7 @@ public class DatabaseExportAction extends Action {
 			AnnexUtils.createAnnexPortales(resources, idObsExecution, idOperation);
 			AnnexUtils.createAnnexXLSX(resources, idObsExecution, idOperation);
 			AnnexUtils.createAnnexXLSX_Evolution(resources, idObsExecution, idOperation);
+			AnnexUtils.createAnnexXLSX_PerDependency(idOperation);
 			AnnexUtils.createComparativeSuitabilitieXLSX(resources, idObsExecution, idOperation);
 
 			final PropertiesManager pmgr = new PropertiesManager();
