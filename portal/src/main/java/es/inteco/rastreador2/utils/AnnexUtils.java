@@ -570,6 +570,7 @@ public final class AnnexUtils {
                                 if (!dependencies.contains(semillaForm.getDependencias().get(i).getName()))
                                     dependencies.add(semillaForm.getDependencias().get(i).getName());
 
+                                dependencias.append(semillaForm.getDependencias().get(i).getName());
                                 if (i < semillaForm.getDependencias().size() - 1) {
                                     dependencias.append("\n");
                                 }
