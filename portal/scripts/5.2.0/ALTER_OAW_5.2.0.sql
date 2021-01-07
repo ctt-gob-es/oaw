@@ -13,3 +13,4 @@ INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES (
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Anchura relanzamiento (niveles)','width', '10');
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Profundidad relanzamiento (niveles)','depth', '10');
 
+ALTER TABLE `tanalisis_accesibilidad` ADD `COD_FUENTE` MEDIUMTEXT;
