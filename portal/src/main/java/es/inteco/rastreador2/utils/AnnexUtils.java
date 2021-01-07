@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.util.*;
 
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xddf.usermodel.*;
 import org.apache.poi.xddf.usermodel.chart.*;
 import org.apache.poi.xssf.usermodel.*;
@@ -343,6 +344,7 @@ public final class AnnexUtils {
                             StringBuilder dependencias = new StringBuilder();
                             if (semillaForm.getDependencias() != null) {
                                 for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+                                    dependencias.append(semillaForm.getDependencias().get(i).getName());
                                     if (i < semillaForm.getDependencias().size() - 1) {
                                         dependencias.append("\n");
                                     }
@@ -1357,7 +1359,7 @@ public final class AnnexUtils {
 
             // Get agency names
             XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0),
-                    new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 2, 2));
+                    new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 0, 0));
 
             // First serie ("No válido" / "No Conforme")
             XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
