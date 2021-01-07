@@ -43,6 +43,8 @@ public class CategoriaForm extends ValidatorForm implements Serializable {
 	private int orden;
 	/** The key. */
 	private String key;
+	/** The principal. */
+	private boolean principal;
 
 	/**
 	 * Gets the key.
@@ -177,6 +179,24 @@ public class CategoriaForm extends ValidatorForm implements Serializable {
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
+	}
+
+	/**
+	 * Checks if is principal.
+	 *
+	 * @return the principal
+	 */
+	public boolean isPrincipal() {
+		return principal;
+	}
+
+	/**
+	 * Sets the principal.
+	 *
+	 * @param principal the principal to set
+	 */
+	public void setPrincipal(boolean principal) {
+		this.principal = principal;
 	}
 
 	/**

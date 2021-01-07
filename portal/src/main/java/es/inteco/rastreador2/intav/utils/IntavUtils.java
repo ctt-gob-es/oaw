@@ -38,6 +38,7 @@ import es.inteco.common.logging.Logger;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ObservatoryLevelForm;
+import es.inteco.intav.form.ObservatorySubgroupForm;
 import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
@@ -214,6 +215,60 @@ public final class IntavUtils {
 	}
 
 	/**
+	 * Generate scores accesibity.
+	 *
+	 * @param messageResources the message resources
+	 * @param evaList          the eva list
+	 * @return the score form
+	 * @throws Exception the exception
+	 */
+	public static ScoreForm generateScoresAccesibility(final MessageResources messageResources, List<ObservatoryEvaluationForm> evaList) throws Exception {
+		final ScoreForm scoreForm = new ScoreForm();
+		int suitabilityGroups = 0;
+		for (ObservatoryEvaluationForm evaluationForm : evaList) {
+			scoreForm.setTotalScore(scoreForm.getTotalScore().add(evaluationForm.getScore()));
+			String pageSuitabilityLevel = ObservatoryUtils.pageSuitabilityLevel(evaluationForm);
+			if (pageSuitabilityLevel.equals(Constants.OBS_AA)) {
+				scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().add(BigDecimal.TEN));
+			} else if (pageSuitabilityLevel.equals(Constants.OBS_A)) {
+				scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().add(new BigDecimal(5)));
+			}
+			for (ObservatoryLevelForm levelForm : evaluationForm.getGroups()) {
+				suitabilityGroups = levelForm.getSuitabilityGroups().size();
+				if (levelForm.getName().equalsIgnoreCase("priority 1")) {
+					scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().add(levelForm.getScore()));
+				} else if (levelForm.getName().equalsIgnoreCase("priority 2")) {
+					scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().add(levelForm.getScore()));
+				}
+				for (ObservatorySuitabilityForm suitabilityForm : levelForm.getSuitabilityGroups()) {
+					if (suitabilityForm.getName().equalsIgnoreCase("A")) {
+						scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().add(suitabilityForm.getScore()));
+					} else if (suitabilityForm.getName().equalsIgnoreCase("AA")) {
+						scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().add(suitabilityForm.getScore()));
+					}
+				}
+			}
+		}
+		Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_1);
+		Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_2);
+		List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(messageResources, resultL1);
+		List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(messageResources, resultL2);
+		scoreForm.setVerifications1(labelsL1);
+		scoreForm.setVerifications2(labelsL2);
+		if (!evaList.isEmpty()) {
+			scoreForm.setTotalScore(scoreForm.getTotalScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+		}
+		// El nivel de validación del portal
+		scoreForm.setLevel(getValidationLevelAccesibility(evaList, messageResources));
+		return scoreForm;
+	}
+
+	/**
 	 * Gets the failed checks.
 	 *
 	 * @param request          the request
@@ -285,6 +340,66 @@ public final class IntavUtils {
 			return messageResources.getMessage("resultados.anonimos.num.portales.nv");
 		} else {
 			return messageResources.getMessage("resultados.anonimos.num.portales.a");
+		}
+	}
+
+	/**
+	 * Gets the validation level accesibility.
+	 *
+	 * @param scoreForm        the score form
+	 * @param messageResources the message resources
+	 * @return the validation level accesibility
+	 */
+	public static String getValidationLevelAccesibility(List<ObservatoryEvaluationForm> resultData, final MessageResources messageResources) {
+		boolean greenv1 = false;
+		boolean greenv2 = false;
+		boolean greenv3 = false;
+		boolean greenv4 = false;
+		Boolean greenv5 = null;
+		for (ObservatoryEvaluationForm observatoryEvaluationForm : resultData) {
+			for (ObservatoryLevelForm observatoryLevelForm : observatoryEvaluationForm.getGroups()) {
+				if (Constants.OBS_PRIORITY_1.equals(observatoryLevelForm.getName())) {
+					for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevelForm.getSuitabilityGroups()) {
+						for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
+							// Se comprueba si puntúa o no puntúa
+							if (observatorySubgroupForm.getValue() != Constants.OBS_VALUE_NOT_SCORE) {
+								// Si puntúa, se isNombreValido si se le da un 0 o un 1
+								if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_GREEN_ONE) {
+									switch (observatorySubgroupForm.getDescription()) {
+									case "minhap.observatory.5_0.subgroup.3.1":
+										greenv1 = true;
+										break;
+									case "minhap.observatory.5_0.subgroup.3.2":
+										greenv2 = true;
+										break;
+									case "minhap.observatory.5_0.subgroup.3.3":
+										greenv3 = true;
+										break;
+									case "minhap.observatory.5_0.subgroup.3.4":
+										greenv4 = true;
+										break;
+									case "minhap.observatory.5_0.subgroup.3.5":
+										greenv5 = true;
+										break;
+									}
+								}
+							} else {
+							}
+						}
+					}
+				}
+			}
+		}
+		if (greenv1 && greenv2 && greenv3 && greenv4 && ((greenv5 != null && true) || greenv5 == null)) {
+			return Constants.OBS_ACCESIBILITY_FULL;
+		} else if (greenv1) {
+			if (!greenv2) {
+				return Constants.OBS_ACCESIBILITY_NONE;
+			} else {
+				return Constants.OBS_ACCESIBILITY_PARTIAL;
+			}
+		} else {
+			return Constants.OBS_ACCESIBILITY_NA;
 		}
 	}
 

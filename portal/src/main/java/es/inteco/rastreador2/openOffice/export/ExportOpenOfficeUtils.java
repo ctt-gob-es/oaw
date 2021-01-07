@@ -103,8 +103,8 @@ public final class ExportOpenOfficeUtils {
 	 * @param reportTitle                 the report title
 	 */
 	public static void createOpenOfficeDocumentFiltered(final HttpServletRequest request, final String filePath, final String graphicPath, final String date, final Long tipoObservatorio,
-			int numberObservatoryExecutions, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate,
-			final Long idSegmentEvolTemplate, String reportTitle) {
+			int numberObservatoryExecutions, String[] tagsToFilter, String[] tagsToFilterFixed, Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate,
+			Long idComplexityTemplate, final Long idSegmentEvolTemplate, String reportTitle) {
 		final long idObservatory;
 		if (request.getParameter(Constants.ID_OBSERVATORIO) != null) {
 			idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
@@ -120,7 +120,7 @@ public final class ExportOpenOfficeUtils {
 			final OpenOfficeDocumentBuilder openOfficeDocumentBuilder = getDocumentBuilder(request.getParameter(Constants.ID), request.getParameter(Constants.ID_OBSERVATORIO), tipoObservatorio,
 					CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId()));
 			final OdfTextDocument odt = openOfficeDocumentBuilder.buildDocumentFiltered(request, filePath, graphicPath, date, includeEvolution(numberObservatoryExecutions), pageExecutionList,
-					categories, tagsToFilter, grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, idSegmentEvolTemplate, reportTitle);
+					categories, tagsToFilter, tagsToFilterFixed, grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, idSegmentEvolTemplate, reportTitle);
 //			odt.save(filePath);
 //			removeAttributeFromFile(filePath, "META-INF/manifest.xml", "manifest:file-entry", "manifest:size", "text/xml");
 //			odt.close();

@@ -19,28 +19,16 @@ angular.module('wcagReporter')
     $scope.scope = evalModel.scopeModel;
     $scope.explore = evalModel.exploreModel;
 
-
-    //-----------------------------------------------------------------------------------------
-    //to generate the xlsx file
-    //for some reason it makes the column width wpx * 1.145
-    //and the row heigth hpx * 1.145
-
-    //map with technologies to select them later
     $scope.saveAsXlsx = function () {
       try {
 
         $scope.loading = true;
-
-        //console.log(doc);
-        //console.log($scope);
-        //Load JSON
-
-
+        $scope.clickDownload = true;
+      
         $http.get($scope.exportJsonUrl, {}).then(function onSuccess(response) {
-          //console.log(response.data);
           $http({
-            url: 'http://localhost:9001/ods',
-            //url: $location.protocol() + "://" + $location.host() + ':' + $location.port() + "/ods",
+            //url: 'http://localhost:9001/ods',
+            url: $location.protocol() + "://" + $location.host() + ':' + $location.port() + "/ods",
             method: "POST",
             data: response,
             responseType: 'blob'
@@ -125,6 +113,50 @@ angular.module('wcagReporter')
         wcagReporterExport.saveBlobIE(htmlBlob, $scope.exportHtmlFile);
       }
     };
+
+
+
+    $scope.saveAsXlsx2 = function () {
+      try {
+
+        $scope.loadingxlsx = true;
+
+        //console.log(doc);
+        //console.log($scope);
+        //Load JSON
+
+
+        $http.get($scope.exportJsonUrl, {}).then(function onSuccess(response) {
+          //console.log(response.data);
+          $http({
+            //url: 'http://localhost:9001/xlsx',
+            url: $location.protocol() + "://" + $location.host() + ':' + $location.port() + "/xlsx",
+            method: "POST",
+            data: response,
+            responseType: 'blob'
+          }).then(function (response) {
+            var data = response.data;
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+
+            var file = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            var fileURL = window.URL.createObjectURL(file);
+            a.href = fileURL;
+            a.download = 'Informe_Revision_Profunidad_v1.xlsx';
+            a.click();
+
+            $scope.loadingxlsx = false;
+          }).catch(function (response) {
+            $scope.loadingxlsx = false;
+            console.log('Unable to download the file')
+          });
+
+        });
+
+      } catch (e) { if (typeof console != 'undefined') console.log(e, $scope.wbout); $scope.loading = false; }
+      return $scope.wbout;
+    };
+
 
     $scope.exportHtmlFile = wcagReporterExport.getFileName('html');
     $scope.exportJsonUrl = wcagReporterExport.getBlobUrl();

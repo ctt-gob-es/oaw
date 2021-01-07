@@ -119,7 +119,6 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 				chapter.add(createPaginaTableVerificationSummary(messageResources, observatoryLevelForm,
 						messageResources.getMessage("pdf.accessibility.page.result.graphict.title") + " " + getPriorityName(messageResources, observatoryLevelForm.getName())));
 			}
-			chapter.add(Chunk.NEXTPAGE);
 			if (withOutLevels) {
 				addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter, pdfTocManager);
 			} else {
@@ -150,6 +149,7 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 				chapter.add(notice);
 			}
 			document.add(chapter);
+			document.add(Chunk.NEWLINE);
 			pdfTocManager.addChapterCount();
 			counter++;
 		}
@@ -557,6 +557,7 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 			throws IOException {
 		for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
 			if (hasProblems(priority)) {
+				chapter.add(Chunk.NEXTPAGE);
 				// pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter()
 				final Section prioritySection = PDFUtils.createSection(getPriorityName(messageResources, priority), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
 						pdfTocManager.addSection(), 1);

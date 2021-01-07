@@ -350,7 +350,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 		// Generate grpahics to use in the document generated
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath,
-				Constants.MINISTERIO_P, true, null, null);
+				Constants.MINISTERIO_P, true, null, null, null);
 		final OdfTextDocument odt = getOdfTemplate();
 		final OdfFileDom odfFileContent = odt.getContentDom();
 		final OdfFileDom odfStyles = odt.getStylesDom();
@@ -364,7 +364,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		// Generate complexities
 		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, null, null);
 		// Evolution
-		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, null, null, null);
+		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, null, null, null, null);
 		finishDocumentConfiguration(odt, odfFileContent, "");
 		// Remove files on tmp
 		try {
@@ -407,9 +407,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 */
 	@Override
 	public OdfTextDocument buildDocumentFiltered(final HttpServletRequest request, final String filePath, final String graphicPath, final String date, final boolean evolution,
-			final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final String[] tagsToFilter, final Map<String, Boolean> grpahicConditional,
-			final String[] exObsIds, final Long idBaseTemplate, final Long idSegmentTemplate, final Long idComplexityTemplate, final Long idSegmentEvolTemplate, final String reportTitle)
-			throws Exception {
+			final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final String[] tagsToFilter, final String[] tagsToFilterFixed,
+			final Map<String, Boolean> grpahicConditional, final String[] exObsIds, final Long idBaseTemplate, final Long idSegmentTemplate, final Long idComplexityTemplate,
+			final Long idSegmentEvolTemplate, final String reportTitle) throws Exception {
 		this.idBaseTemplate = idBaseTemplate;
 		this.idComplexityTemplate = idComplexityTemplate;
 		this.idSegmentTemplate = idSegmentTemplate;
@@ -426,18 +426,20 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			public void run() {
 				try {
 					ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId, parseLong, observatoryId, graphicPath, Constants.MINISTERIO_P, true, tagsToFilter,
-							exObsIds);
+							tagsToFilterFixed, exObsIds);
 					final OdfTextDocument odt = getOdfTemplate();
 					final OdfFileDom odfFileContent = odt.getContentDom();
 					final OdfFileDom odfStyles = odt.getStylesDom();
-					List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+					// TODO Only complexitivities in obs
+					// List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+					List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidadesObs(DataBaseManager.getConnection(), tagsToFilter, exObsIds);
 					replaceText(odt, odfFileContent, FECHA_BOOKMARK, date);
 					replaceText(odt, odfStyles, FECHA_BOOKMARK, date, TEXT_SPAN_NODE);
 					// Global sections
 					replaceGlobalSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, complexitivities, tagsToFilter, grpahicConditional);
 					replaceSegmentSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, tagsToFilter, grpahicConditional);
 					replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, tagsToFilter, grpahicConditional);
-					replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, tagsToFilter, exObsIds, categories);
+					replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, tagsToFilter, tagsToFilterFixed, exObsIds, categories);
 					finishDocumentConfiguration(odt, odfFileContent, reportTitle);
 					// Lists all files in folder
 					File folder = new File("/tmp");
@@ -542,7 +544,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @throws Exception   the exception
 	 */
 	private void replaceEvolutionSection(final String graphicPath, final boolean evolution, final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent,
-			String[] tagsFilter, String[] exObsIds, final List<CategoriaForm> categories) throws IOException, Exception {
+			final String[] tagsFilter, final String[] tagsFilterFixed, String[] exObsIds, final List<CategoriaForm> categories) throws IOException, Exception {
 		if (evolution) {
 			/**
 			 * General results
@@ -554,7 +556,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			 * Results fixed
 			 */
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
-					Long.valueOf(executionId), new String[] { "1" }, exObsIds);
+					Long.valueOf(executionId), tagsFilterFixed, exObsIds);
 			evolutionSectionsFixed(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMapFixed, FIXED_RESULTS_PREFIX);
 			/**
 			 * Results by segment

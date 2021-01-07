@@ -13,31 +13,28 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <%@ include file="/common/taglibs.jsp"%>
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml />
-
-
-
 <!-- observatorio_categoriasSemilla.jsp -->
 <div id="main">
-
 	<div id="container_menu_izq">
 		<jsp:include page="menu.jsp" />
 	</div>
-
 	<div id="container_der">
-
 		<div id="migas">
 			<p class="sr-only">
 				<bean:message key="ubicacion.usuario" />
 			</p>
 			<ol class="breadcrumb">
-				<li><html:link forward="observatoryMenu">
+				<li>
+					<html:link forward="observatoryMenu">
 						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 						<bean:message key="migas.observatorio" />
-					</html:link></li>
-				<li class="active"><bean:message key="migas.categoria" /></li>
+					</html:link>
+				</li>
+				<li class="active">
+					<bean:message key="migas.categoria" />
+				</li>
 			</ol>
 		</div>
-
 		<div id="cajaformularios">
 			<h2 class="pull-left">
 				<bean:message key="indice.categorias.gestion.categorias" />
@@ -60,42 +57,74 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<bean:message key="categoria.semillas.lista" />
 						</caption>
 						<colgroup>
-							
 							<col style="width: 70%">
 							<col style="width: 20%">
+							<col style="width: 5%">
 							<col style="width: 5%">
 							<col style="width: 5%">
 						</colgroup>
 						<tbody>
 							<tr>
-
-								<th><bean:message key="cargar.semilla.observatorio.categoria" /></th>
-								<th><bean:message key="cargar.semilla.observatorio.clave" /></th>
-								<th class="accion"><bean:message key="cargar.semilla.observatorio.file"/> </th>
-								<th class="accion"><bean:message key="cargar.semilla.observatorio.eliminar"/> </th>
+								<th>
+									<bean:message key="cargar.semilla.observatorio.categoria" />
+								</th>
+								<th>
+									<bean:message key="cargar.semilla.observatorio.clave" />
+								</th>
+								<th class="accion">
+									<bean:message key="cargar.semilla.observatorio.principal" />
+								</th>
+								<th class="accion">
+									<bean:message key="cargar.semilla.observatorio.file" />
+								</th>
+								<th class="accion">
+									<bean:message key="cargar.semilla.observatorio.eliminar" />
+								</th>
 							</tr>
 							<logic:iterate name="<%=Constants.SEED_CATEGORIES %>" id="category">
 								<tr>
-
-									<td style="text-align: left;"><html:link forward="editSeedCategory" paramId="<%=Constants.ID_CATEGORIA%>"
-											paramName="category" paramProperty="id">
-											<span data-toggle="tooltip" title="<bean:message key="indice.categorias.edit"/>"><bean:write
-													name="category" property="name" /></span>
-										</html:link> <span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true" /></td>
-									<td style="text-align: left;"><span data-toggle="tooltip" title="Agrupado por"><bean:write
-												name="category" property="key" /></span></td>
-									<td><html:link forward="getCategorySeedsFile" paramId="<%=Constants.ID_CATEGORIA%>" paramName="category"
+									<td style="text-align: left;">
+										<html:link forward="editSeedCategory" paramId="<%=Constants.ID_CATEGORIA%>" paramName="category"
+											paramProperty="id">
+											<span data-toggle="tooltip" title="<bean:message key="indice.categorias.edit"/>">
+												<bean:write name="category" property="name" />
+											</span>
+										</html:link>
+										<span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true" />
+									</td>
+									<td style="text-align: left;">
+										<span data-toggle="tooltip" title="Agrupado por">
+											<bean:write name="category" property="key" />
+										</span>
+									</td>
+									<td style="text-align: left;">
+										<span data-toggle="tooltip" title="Agrupado por">
+											<logic:equal name="category" property="principal" value="true">
+												<bean:message key="select.yes" />
+											</logic:equal>
+											<logic:notEqual name="category" property="principal" value="true">
+												<bean:message key="select.no" />
+											</logic:notEqual>
+										</span>
+									</td>
+									<td>
+										<html:link forward="getCategorySeedsFile" paramId="<%=Constants.ID_CATEGORIA%>" paramName="category"
 											paramProperty="id">
 											<span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip"
 												title='<bean:message key="indice.categorias.download"/>' />
 											<span class="sr-only">Descargar</span>
-										</html:link></td>
-									<td><html:link forward="deleteSeedCategoryConfirmation" paramId="<%=Constants.ID_CATEGORIA%>"
-											paramName="category" paramProperty="id">
+										</html:link>
+									</td>
+									<td>
+										<html:link forward="deleteSeedCategoryConfirmation" paramId="<%=Constants.ID_CATEGORIA%>" paramName="category"
+											paramProperty="id">
 											<span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip"
 												title="<bean:message key="indice.categorias.remove"/>" />
-											<span class="sr-only"><bean:message key="indice.rastreo.img.eliminar.rastreo.alt" /></span>
-										</html:link></td>
+											<span class="sr-only">
+												<bean:message key="indice.rastreo.img.eliminar.rastreo.alt" />
+											</span>
+										</html:link>
+									</td>
 								</tr>
 							</logic:iterate>
 						</tbody>
@@ -111,4 +140,3 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		</div>
 	</div>
 </div>
-

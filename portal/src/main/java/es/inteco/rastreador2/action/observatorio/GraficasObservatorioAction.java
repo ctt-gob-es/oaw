@@ -98,9 +98,18 @@ public class GraficasObservatorioAction extends Action {
 			if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_GLOBAL_ALLOCATION)) {
 				path += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.global") + File.separator;
 				title = getResources(request).getMessage(getLocale(request), "observatory.graphic.accessibility.level.allocation.name");
+			} else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_GLOBAL_COMPLIANCE)) {
+				path += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.global") + File.separator;
+				title = getResources(request).getMessage(getLocale(request), "observatory.graphic.compilance.level.allocation.name");
 			} else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_SEGMENTS_MARK)) {
 				path += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.global") + File.separator;
 				title = getResources(request).getMessage(getLocale(request), "observatory.graphic.global.puntuation.allocation.segments.mark.name");
+			} else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_SEGMENTS_CMP_MARK)) {
+				path += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.global") + File.separator;
+				title = getResources(request).getMessage(getLocale(request), "observatory.graphic.global.puntuation.compilance.segments.mark.name");
+			} else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_AMBIT_MARK)) {
+				path += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.global") + File.separator;
+				title = getResources(request).getMessage(getLocale(request), "observatory.graphic.global.puntuation.compilance.ambit.mark.name");
 			} else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_GROUP_SEGMENT_MARK)) {
 				path += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.global") + File.separator;
 				title = getResources(request).getMessage(getLocale(request), "observatory.graphic.global.puntuation.allocation.segment.strached.name");
@@ -164,9 +173,16 @@ public class GraficasObservatorioAction extends Action {
 					title = title.substring(0, title.length() - 1);
 				}
 				CategoriaForm category = CategoriaDAO.getCategoryByID(connection, request.getParameter(Constants.GRAPHIC_TYPE));
-				String graphicSuffix = "_".concat(category.getName().replaceAll(REGEX_SPACES_1_MORE, EMPTY_STRING));
+				String graphicSuffix = "";
+				if (category != null && category.getName() != null) {
+					graphicSuffix = "_".concat(category.getName().replaceAll(REGEX_SPACES_1_MORE, EMPTY_STRING));
+				}
 				connection.close();
-				CrawlerUtils.returnFile(response, path + title + graphicSuffix + ".jpg", "image/jpeg", false);
+				if (request.getParameter(Constants.OBSERVATORY_NUM_GRAPH) != null) {
+					CrawlerUtils.returnFile(response, path + title + request.getParameter(Constants.OBSERVATORY_NUM_GRAPH) + graphicSuffix + ".jpg", "image/jpeg", false);
+				} else {
+					CrawlerUtils.returnFile(response, path + title + graphicSuffix + ".jpg", "image/jpeg", false);
+				}
 			} else {
 				if (request.getParameter(Constants.OBSERVATORY_NUM_GRAPH) != null) {
 					CrawlerUtils.returnFile(response, path + title + request.getParameter(Constants.OBSERVATORY_NUM_GRAPH) + ".jpg", "image/jpeg", false);

@@ -90,7 +90,7 @@ public class ImportedCSSExtractor {
 					}
 				}
 			} catch (Exception e) {
-				Logger.putLog("Error al intentar parsear el CSS", OAWCSSVisitor.class, Logger.LOG_LEVEL_INFO, e);
+				Logger.putLog("Error al intentar parsear el CSS: " + e.getLocalizedMessage(), OAWCSSVisitor.class, Logger.LOG_LEVEL_INFO);
 			}
 		}
 		return importedCSSResources;

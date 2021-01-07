@@ -36,8 +36,10 @@ import es.inteco.intav.form.ObservatoryLevelForm;
 import es.inteco.intav.form.ObservatorySiteEvaluationForm;
 import es.inteco.intav.form.ObservatorySubgroupForm;
 import es.inteco.intav.form.ObservatorySuitabilityForm;
+import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.observatorio.ResultadosObservatorioAction;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.export.database.AspectScore;
 import es.inteco.rastreador2.dao.export.database.Category;
 import es.inteco.rastreador2.dao.export.database.Observatory;
@@ -253,7 +255,13 @@ public final class DatabaseExportUtils {
 		site.setScore(observatorySiteEvaluationForm.getScore());
 		site.setLevel(observatorySiteEvaluationForm.getLevel());
 		site.setIdCrawlerSeed(observatorySiteEvaluationForm.getIdSeed());
-		final ScoreForm scoreForm = IntavUtils.generateScores(messagesResources, observatorySiteEvaluationForm.getPages());
+		ScoreForm scoreForm = null;
+		final String application = CartuchoDAO.getApplicationFromCrawlerExceutionId(DataBaseManager.getConnection(), observatorySiteEvaluationForm.getId());
+		if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
+			scoreForm = IntavUtils.generateScoresAccesibility(messagesResources, observatorySiteEvaluationForm.getPages());
+		} else {
+			scoreForm = IntavUtils.generateScores(messagesResources, observatorySiteEvaluationForm.getPages());
+		}
 		site.setScoreLevel1(scoreForm.getScoreLevel1());
 		site.setScoreLevel2(scoreForm.getScoreLevel2());
 		final Map<String, Integer> resultsByLevel = ResultadosPrimariosObservatorioIntavUtils.getResultsByLevel(observatorySiteEvaluationForm.getPages());
@@ -320,10 +328,15 @@ public final class DatabaseExportUtils {
 			site.getPageList().add(page);
 		}
 		// Compliance to export
-		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(observatorySiteEvaluationForm.getPages(),
-				Constants.OBS_PRIORITY_NONE);
-		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
-		site.setCompliance(calculatedCompliance.get(observatorySiteEvaluationForm.getPages().get(0).getCrawlerExecutionId()));
+		if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
+			site.setCompliance(IntavUtils.getValidationLevelAccesibility(observatorySiteEvaluationForm.getPages(), messagesResources));
+		} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
+			Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(observatorySiteEvaluationForm.getPages(),
+					Constants.OBS_PRIORITY_NONE);
+			Map<Long, String> calculatedCompliance = null;
+			calculatedCompliance = calculateCrawlingCompliance(results);
+			site.setCompliance(calculatedCompliance.get(observatorySiteEvaluationForm.getPages().get(0).getCrawlerExecutionId()));
+		}
 		return site;
 	}
 
