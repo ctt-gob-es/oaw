@@ -6,6 +6,8 @@
 - Relanzamiento en bloque de semillas por debajo del umbral
 - Relanzamiento automático de semillas sin resultados o por debajo del umbral al finalizar un observatorio
 - Actualización de varias librerías para solventar vulnerabilidades.
+- Modificada la llamada a la API del validador W3C para recuperar los errores correctamente y actualizar a la nueva versión ya que 
+  la anterior está deprecada y será retirada en algún momento
 
 5.1.0
 ------------------------------------------------------------------------------------------------------------------------------------
