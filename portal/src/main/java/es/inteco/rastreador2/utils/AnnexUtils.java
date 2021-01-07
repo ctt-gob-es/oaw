@@ -644,7 +644,7 @@ public final class AnnexUtils {
                             if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
                                 ColumnNames.add("cumplimiento_" + executionDateAux);
                                 XSSFRow headerRow = sheet.getRow(0);
-                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() -1);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
                                 cellInHeader.setCellValue("cumplimiento_" + executionDateAux);
                                 cellInHeader.setCellStyle(headerStyle);
                             }
@@ -688,7 +688,7 @@ public final class AnnexUtils {
                                 cellInHeader.setCellValue("NV_" + date);
                                 cellInHeader.setCellStyle(headerStyle);
                             }
-                            cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate));
+                            cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate));
                             cell.setCellType(CellType.NUMERIC);
                             cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
                             cell.setCellStyle(shadowStyle);
@@ -702,7 +702,7 @@ public final class AnnexUtils {
                                 cellInHeader.setCellValue("A_" + date);
                                 cellInHeader.setCellStyle(headerStyle);
                             }
-                            cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 1);
+                            cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 1);
                             cell.setCellType(CellType.NUMERIC);
                             cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"A\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
                             cell.setCellStyle(shadowStyle);
@@ -716,9 +716,53 @@ public final class AnnexUtils {
                                 cellInHeader.setCellValue("AA_" + date);
                                 cellInHeader.setCellStyle(headerStyle);
                             }
-                            cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 2);
+                            cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 2);
                             cell.setCellType(CellType.NUMERIC);
                             cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+                            cell.setCellStyle(shadowStyle);
+
+                            columnFirstLetter = GetExcelColumnNameForNumber(7 + (3 * executionDates.indexOf(date)));
+
+                            // "NC_" + date
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("NC_" + date)) {
+                                ColumnNames.add("NC_" + date);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+                                cellInHeader.setCellValue("NC_" + date);
+                                cellInHeader.setCellStyle(headerStyle);
+                            }
+                            cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+                            cell.setCellStyle(shadowStyle);
+
+                            // "PC_" + date
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("PC_" + date)) {
+                                ColumnNames.add("PC_" + date);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+                                cellInHeader.setCellValue("PC_" + date);
+                                cellInHeader.setCellStyle(headerStyle);
+                            }
+                            cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 4);
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+                            cell.setCellStyle(shadowStyle);
+
+                            // "TC_" + date
+                            // Add header if it is not already created
+                            if (!ColumnNames.contains("TC_" + date)) {
+                                ColumnNames.add("TC_" + date);
+                                XSSFRow headerRow = sheet.getRow(0);
+                                XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+                                cellInHeader.setCellValue("TC_" + date);
+                                cellInHeader.setCellStyle(headerStyle);
+                            }
+                            cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 5);
+                            cell.setCellType(CellType.NUMERIC);
+                            cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
                             cell.setCellStyle(shadowStyle);
 
                             numberOfDate++;
@@ -799,7 +843,7 @@ public final class AnnexUtils {
 
             int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
 
-            nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex);
+            nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.size() - 1);
 
             // Insert graph sheets per category
             for (String category : categories) {
@@ -862,10 +906,10 @@ public final class AnnexUtils {
                     // Iterate through the executions
                     for (String date : executionDates){
 
-                        int firstSerieColumn = 4 + (executionDates.size() * 3) + (3 * executionDates.indexOf(date));
+                        int firstSerieColumn = 4 + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
 
                         // First serie ("No válido" / "No Conforme")
-                        FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow -1, firstSerieColumn);
+                        FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn);
                         XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
                                 new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn, firstSerieColumn));
                         XDDFChartData.Series series1 = data.addSeries(agencies, values1);
@@ -1099,7 +1143,7 @@ public final class AnnexUtils {
                     int firstSerieColumn = 4 + (executionDates.size() * 3) + (3 * executionDates.indexOf(date));
 
                     // First serie ("No válido" / "No Conforme")
-                    FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex -1, firstSerieColumn);
+                    FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn);
                     XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
                             new CellRangeAddress(1, rowIndex - 1, firstSerieColumn, firstSerieColumn));
                     XDDFChartData.Series series1 = data.addSeries(agencies, values1);
@@ -1244,7 +1288,7 @@ public final class AnnexUtils {
         return RowStartPosition + 7;
     }
 
-    private static int InsertCategoriesTable(XSSFSheet sheet, int RowStartPosition, List<String> categories,CellStyle headerStyle, CellStyle shadowStyle, int lastDataRow) {
+    private static int InsertCategoriesTable(XSSFSheet sheet, int RowStartPosition, List<String> categories,CellStyle headerStyle, CellStyle shadowStyle, int lastDataRow, int columnSourceData) {
         XSSFCell cell;
         XSSFRow row;
 
@@ -1270,6 +1314,8 @@ public final class AnnexUtils {
         cell = row.createCell(4);
         cell.setCellStyle(headerStyle);
 
+        String dataColumn = GetExcelColumnNameForNumber(columnSourceData);
+
         for (int i = 0; i < categories.size(); i++)
         {
             row = sheet.createRow(RowStartPosition+ i + 2);
@@ -1280,19 +1326,15 @@ public final class AnnexUtils {
 
             cell = row.createCell(1);
             cell.setCellStyle(shadowStyle);
-            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"EMPEORA\")");
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"EMPEORA\")");
 
             cell = row.createCell(2);
             cell.setCellStyle(shadowStyle);
-            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"MEJORA\")");
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"MEJORA\")");
 
             cell = row.createCell(3);
             cell.setCellStyle(shadowStyle);
-            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"SE MANTIENE\")");
-
-            cell = row.createCell(4);
-            cell.setCellStyle(shadowStyle);
-            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"SE MANTIENE\")");
+            cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"SE MANTIENE\")");
         }
 
         // TOTAL row
@@ -1315,7 +1357,7 @@ public final class AnnexUtils {
 
         cell = row.createCell(4);
         cell.setCellStyle(headerStyle);
-        cell.setCellFormula("SUM(E" + (RowStartPosition+3) + ":E" + (RowStartPosition + categories.size() + 2) + ")");
+        cell.setCellFormula("SUM(B" + (RowStartPosition +categories.size() + 3) + ":D" + (RowStartPosition +categories.size() + 3) + ")");
 
         return 1;
     }
