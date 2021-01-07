@@ -1,6 +1,7 @@
 5.3.0
 ------------------------------------------------------------------------------------------------------------------------------------
 - Generación de excels de adeucación y cumplimiento con y sin evolutivo junto con los anexos
+- Generación de excels de adeucación y cumplimiento con y sin evolutivo junto con los anexos por dependencia
 - Adjuntado el código fuente de la página de accesibilidad en el cartucho de accesibilidad
 
 
