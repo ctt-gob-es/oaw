@@ -57,9 +57,27 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					itemClass : 'user'
 				});
 
-			})
+			});
+			
+			$.ajax({
+				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
+				method : 'POST',
+				cache : false
+			}).success(function(response) {
+
+				$('#tagsFilterFixed').tagbox({
+					items : response.etiquetas,
+					searchIn : [ 'name' ],
+					rowFormat : '<span class="name">{{name}}</span>',
+					tokenFormat : '{{name}}',
+					valueField : 'id',
+					itemClass : 'user'
+				});
+
+			});
 
 		});
+
 
 	});
 </script>
@@ -101,8 +119,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<bean:message key="report.config.title.label" />
 								</strong>
 							</label>
-							<input style="width: 50%;" name="reportTitle" id="reportTitle" type="text"
-								value="<bean:message key="report.config.title.default" /> <c:out value="${ambito}" />" />
+							<logic:equal name="<%=Constants.APPLICATION%>" value="<%=Constants.NORMATIVA_UNE_EN2019%>">
+								<input style="width: 50%;" name="reportTitle" id="reportTitle" type="text"
+									value="<bean:message key="report.config.title.default" /> <c:out value="${ambito}" />" />
+							</logic:equal>
+							<logic:notEqual name="<%=Constants.APPLICATION%>" value="<%=Constants.NORMATIVA_UNE_EN2019%>">
+								<input style="width: 50%;" name="reportTitle" id="reportTitle" type="text"
+									value="<bean:message key="report.config.title.default.acc" />" />
+							</logic:notEqual>
 						</div>
 					</fieldset>
 					<fieldset>
@@ -129,83 +153,106 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</fieldset>
 					<fieldset>
 						<legend>
-							<bean:message key="report.config.observatorios.filter.title" />
+							<bean:message key="report.config.tags.fixed.title" />
 						</legend>
 						<div class="formItem">
-							<logic:iterate name="<%=Constants.FULFILLED_OBSERVATORIES%>" id="fulfilledObservatory">
-								<c:if test="${fulfilledObservatory.id == param.idExObs}">
-									<label class="label100">
-										<input type="checkbox" checked value="<c:out value="${fulfilledObservatory.id}" />" name="evol">
-										<bean:write name="fulfilledObservatory" property="fechaStr" />
-										(
-										<bean:message key="current" />
-										)
-									</label>
-								</c:if>
-								<c:if test="${fulfilledObservatory.id != param.idExObs}">
-									<label class="label100">
-										<input type="checkbox" value="<c:out value="${fulfilledObservatory.id}" />" name="evol">
-										<bean:write name="fulfilledObservatory" property="fechaStr" />
-									</label>
-								</c:if>
-							</logic:iterate>
+							<label for="url" class="control-label">
+								<strong class="labelVisu">
+									<bean:message key="report.config.tags.title" />
+								</strong>
+							</label>
+							<input name="tagsFixed" autocapitalize="off" placeholder="<bean:message key="placeholder.tags" />" autofocus
+								id="tagsFilterFixed" type="text" value="" />
 						</div>
+						<p class="alert alert-info">
+							<span class="glyphicon glyphicon-info-sign"></span>
+							
+							<bean:message key="report.config.tags.fixed.filter.info" />
+						</p>
 					</fieldset>
-					<fieldset>
-						<legend>
-							<bean:message key="report.config.graficas.filter.title" />
-						</legend>
-						<bean:message key="report.config.graficas.filter.info" />
-						<div class="formItem">
-							<label class="label100">
-								<input type="checkbox" value="true" name="checkGlobalModalityGrpahics">
-								<bean:message key="report.config.optional.1" />
-							</label>
-							<br>
-						</div>
-						<div class="formItem">
-							<label class="label100">
-								<input type="checkbox" value="true" name="checkGlobalAspectsGrpahics">
-								<bean:message key="report.config.optional.2" />
-							</label>
-							<br>
-						</div>
-						<div class="formItem">
-							<label class="label100">
-								<input type="checkbox" value="true" name="checkSegmentPMVGrpahics">
-								<bean:message key="report.config.optional.3" />
-							</label>
-							<br>
-						</div>
-						<div class="formItem">
-							<label class="label100">
-								<input type="checkbox" value="true" name="checkSegmentModalityGrpahics">
-								<bean:message key="report.config.optional.4" />
-							</label>
-							<br>
-						</div>
-						<div class="formItem">
-							<label class="label100">
-								<input type="checkbox" value="true" name="checkSegmentAspectsGrpahics">
-								<bean:message key="report.config.optional.5" />
-							</label>
-							<br>
-						</div>
-						<div class="formItem">
-							<label class="label100">
-								<input type="checkbox" value="true" name="checkEvoAspectsGrpahics">
-								<bean:message key="report.config.optional.6" />
-							</label>
-							<br>
-						</div>
-						<div class="formItem">
-							<label class="label100">
-								<input type="checkbox" value="true" name="checkEvoComplianceVerificationGrpahics">
-								<bean:message key="report.config.optional.7" />
-							</label>
-							<br>
-						</div>
-					</fieldset>
+					<logic:equal name="<%=Constants.APPLICATION%>" value="<%=Constants.NORMATIVA_UNE_EN2019%>">
+						<fieldset>
+							<legend>
+								<bean:message key="report.config.observatorios.filter.title" />
+							</legend>
+							<div class="formItem">
+								<logic:iterate name="<%=Constants.FULFILLED_OBSERVATORIES%>" id="fulfilledObservatory">
+									<c:if test="${fulfilledObservatory.id == param.idExObs}">
+										<label class="label100">
+											<input type="checkbox" checked value="<c:out value="${fulfilledObservatory.id}" />" name="evol">
+											<bean:write name="fulfilledObservatory" property="fechaStr" />
+											(
+											<bean:message key="current" />
+											)
+										</label>
+									</c:if>
+									<c:if test="${fulfilledObservatory.id != param.idExObs}">
+										<label class="label100">
+											<input type="checkbox" value="<c:out value="${fulfilledObservatory.id}" />" name="evol">
+											<bean:write name="fulfilledObservatory" property="fechaStr" />
+										</label>
+									</c:if>
+								</logic:iterate>
+							</div>
+						</fieldset>
+					</logic:equal>
+					<logic:equal name="<%=Constants.APPLICATION%>" value="<%=Constants.NORMATIVA_UNE_EN2019%>">
+						<fieldset>
+							<legend>
+								<bean:message key="report.config.graficas.filter.title" />
+							</legend>
+							<bean:message key="report.config.graficas.filter.info" />
+							<div class="formItem">
+								<label class="label100">
+									<input type="checkbox" value="true" name="checkGlobalModalityGrpahics">
+									<bean:message key="report.config.optional.1" />
+								</label>
+								<br>
+							</div>
+							<div class="formItem">
+								<label class="label100">
+									<input type="checkbox" value="true" name="checkGlobalAspectsGrpahics">
+									<bean:message key="report.config.optional.2" />
+								</label>
+								<br>
+							</div>
+							<div class="formItem">
+								<label class="label100">
+									<input type="checkbox" value="true" name="checkSegmentPMVGrpahics">
+									<bean:message key="report.config.optional.3" />
+								</label>
+								<br>
+							</div>
+							<div class="formItem">
+								<label class="label100">
+									<input type="checkbox" value="true" name="checkSegmentModalityGrpahics">
+									<bean:message key="report.config.optional.4" />
+								</label>
+								<br>
+							</div>
+							<div class="formItem">
+								<label class="label100">
+									<input type="checkbox" value="true" name="checkSegmentAspectsGrpahics">
+									<bean:message key="report.config.optional.5" />
+								</label>
+								<br>
+							</div>
+							<div class="formItem">
+								<label class="label100">
+									<input type="checkbox" value="true" name="checkEvoAspectsGrpahics">
+									<bean:message key="report.config.optional.6" />
+								</label>
+								<br>
+							</div>
+							<div class="formItem">
+								<label class="label100">
+									<input type="checkbox" value="true" name="checkEvoComplianceVerificationGrpahics">
+									<bean:message key="report.config.optional.7" />
+								</label>
+								<br>
+							</div>
+						</fieldset>
+					</logic:equal>
 					<fieldset>
 						<legend>
 							<bean:message key="report.config.plantillas.filter.title" />
@@ -225,76 +272,83 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								</logic:iterate>
 							</select>
 						</div>
-						<div class="formItem">
-							<label for="url" class="control-label">
-								<strong class="labelVisu">
-									<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr>
-									<bean:message key="report.config.plantillas.filter.segmentos" />
-								</strong>
-							</label>
-							<select required name="<%=Constants.ID_SEGMENT_TEMPLATE%>">
-								<option value=""></option>
-								<logic:iterate name="plantillas" id="plantilla">
-									<option value="<bean:write name="plantilla" property="id" />"><bean:write name="plantilla"
-											property="nombre" /></option>
-								</logic:iterate>
-							</select>
-							<p class="alert alert-info">
-								<span class="glyphicon glyphicon-info-sign"></span>
-								<em>
-									<bean:message key="nueva.semilla.webs.informacion" />
-								</em>
-								:
-								<bean:message key="report.config.plantillas.filter.segmentos.info" />
-							</p>
-						</div>
-						<div class="formItem">
-							<label for="url" class="control-label">
-								<strong class="labelVisu">
-									<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr>
-									<bean:message key="report.config.plantillas.filter.complejidades" />
-								</strong>
-							</label>
-							<select required name="<%=Constants.ID_COMPLEXITY_TEMPLATE%>">
-								<option value=""></option>
-								<logic:iterate name="plantillas" id="plantilla">
-									<option value="<bean:write name="plantilla" property="id" />"><bean:write name="plantilla"
-											property="nombre" /></option>
-								</logic:iterate>
-							</select>
-							<p class="alert alert-info">
-								<span class="glyphicon glyphicon-info-sign"></span>
-								<em>
-									<bean:message key="nueva.semilla.webs.informacion" />
-								</em>
-								:
-								<bean:message key="report.config.plantillas.filter.complejidades.info" />
-							</p>
-						</div>
-						<div class="formItem">
-							<label for="url" class="control-label">
-								<strong class="labelVisu">
-									<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr>
-									<bean:message key="report.config.plantillas.filter.evol.segmentos" />
-								</strong>
-							</label>
-							<select required name="<%=Constants.ID_SEGMENT_EVOL_TEMPLATE%>">
-								<option value=""></option>
-								<logic:iterate name="plantillas" id="plantilla">
-									<option value="<bean:write name="plantilla" property="id" />"><bean:write name="plantilla"
-											property="nombre" /></option>
-								</logic:iterate>
-							</select>
-							<p class="alert alert-info">
-								<span class="glyphicon glyphicon-info-sign"></span>
-								<em>
-									<bean:message key="nueva.semilla.webs.informacion" />
-								</em>
-								:
-								<bean:message key="report.config.plantillas.filter.evol.segmentos.info" />
-							</p>
-						</div>
+						<logic:equal name="<%=Constants.APPLICATION%>" value="<%=Constants.NORMATIVA_UNE_EN2019%>">
+							<div class="formItem">
+								<label for="url" class="control-label">
+									<strong class="labelVisu">
+										<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr>
+										<bean:message key="report.config.plantillas.filter.segmentos" />
+									</strong>
+								</label>
+								<select required name="<%=Constants.ID_SEGMENT_TEMPLATE%>">
+									<option value=""></option>
+									<logic:iterate name="plantillas" id="plantilla">
+										<option value="<bean:write name="plantilla" property="id" />"><bean:write name="plantilla"
+												property="nombre" /></option>
+									</logic:iterate>
+								</select>
+								<p class="alert alert-info">
+									<span class="glyphicon glyphicon-info-sign"></span>
+									<em>
+										<bean:message key="nueva.semilla.webs.informacion" />
+									</em>
+									:
+									<bean:message key="report.config.plantillas.filter.segmentos.info" />
+								</p>
+							</div>
+						</logic:equal>
+						<logic:equal name="<%=Constants.APPLICATION%>" value="<%=Constants.NORMATIVA_UNE_EN2019%>">
+							<div class="formItem">
+								<label for="url" class="control-label">
+									<strong class="labelVisu">
+										<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr>
+										<bean:message key="report.config.plantillas.filter.complejidades" />
+									</strong>
+								</label>
+								<select required name="<%=Constants.ID_COMPLEXITY_TEMPLATE%>">
+									<option value=""></option>
+									<logic:iterate name="plantillas" id="plantilla">
+										<option value="<bean:write name="plantilla" property="id" />"><bean:write name="plantilla"
+												property="nombre" /></option>
+									</logic:iterate>
+								</select>
+								<p class="alert alert-info">
+									<span class="glyphicon glyphicon-info-sign"></span>
+									<em>
+										<bean:message key="nueva.semilla.webs.informacion" />
+									</em>
+									:
+									<bean:message key="report.config.plantillas.filter.complejidades.info" />
+								</p>
+							</div>
+						</logic:equal>
+						<logic:equal name="<%=Constants.APPLICATION%>" value="<%=Constants.NORMATIVA_UNE_EN2019%>">
+							<div class="formItem">
+								<label for="url" class="control-label">
+									<strong class="labelVisu">
+										<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr>
+										<bean:message key="report.config.plantillas.filter.evol.segmentos" />
+									</strong>
+								</label>
+								<select required name="<%=Constants.ID_SEGMENT_EVOL_TEMPLATE%>">
+									<option value=""></option>
+									<logic:iterate name="plantillas" id="plantilla">
+										<option value="<bean:write name="plantilla" property="id" />"><bean:write name="plantilla"
+												property="nombre" /></option>
+									</logic:iterate>
+								</select>
+								<p class="alert alert-info">
+									<span class="glyphicon glyphicon-info-sign"></span>
+									<em>
+										<bean:message key="nueva.semilla.webs.informacion" />
+									</em>
+									:
+									<bean:message key="report.config.plantillas.filter.evol.segmentos.info" />
+								</p>
+							</div>
+						</logic:equal>
 					</fieldset>
+					<input type="hidden" name="application" value="<c:out value="${application}"/>" />
 					<input type="hidden" name="esPrimera" value="true" />
 					<input type="hidden" name="isPrimary" value="false" />
 					<input type="hidden" name="idCartucho" value="<c:out value="${param.idCartucho}"/>" />

@@ -36,8 +36,6 @@ import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 
 /**
  * EstadoObservatorioAction. {@link Action} Estado de un observatorio.
- *
- * @author alvaro.pelaez
  */
 public class EstadoObservatorioAction extends Action {
 	/**
@@ -63,13 +61,13 @@ public class EstadoObservatorioAction extends Action {
 		final Integer idCartucho = Integer.valueOf(request.getParameter(Constants.ID_CARTUCHO));
 		try (Connection c = DataBaseManager.getConnection()) {
 			ObservatorySummary estado = EstadoObservatorioDAO.getObservatorySummary(c, idObservatory, idEjecucionObservatorio);
-			// Estado del último análisis hecho/análisis en curso
+			// Last
 			ObservatoryStatus estadoObservatorio = EstadoObservatorioDAO.findEstadoObservatorio(c, idObservatory, idEjecucionObservatorio);
-			// Semillas sin analizar aún
+			// Not crawled yet
 			List<SemillaForm> notCrawledSeedsYet = RastreoDAO.getFinishCrawlerFromSeedAndObservatoryNotCrawledYet(c, idObservatory.longValue(), idEjecucionObservatorio.longValue());
-			// Semillas sin analizar aún
+			// Not crawled (errors, etc)
 			List<SemillaForm> notCrawledSeeds = RastreoDAO.getFinishCrawlerFromSeedAndObservatoryNotCrawled(c, idObservatory.longValue(), idEjecucionObservatorio.longValue());
-			// List<SemillaForm> finishWithoutResults = RastreoDAO.getFinishCrawlerFromSeedAndObservatoryWithoutAnalisis(c, idObservatory.longValue(), idEjecucionObservatorio.longValue());
+			// Without results
 			List<Long> finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis(c, idObservatory.longValue(),
 					idEjecucionObservatorio.longValue());
 			List<ResultadoSemillaFullForm> finishWithoutResults = new ArrayList<ResultadoSemillaFullForm>();
@@ -77,7 +75,12 @@ public class EstadoObservatorioAction extends Action {
 				finishWithoutResults = ObservatorioDAO.getResultSeedsFullFromObservatoryByIds(c, new SemillaForm(), idEjecucionObservatorio.longValue(), 0l, -1,
 						finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis);
 			}
-			// Datos del observatorio
+			// Less configured treshold
+			List<Long> lessThresholdIds = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(c, (long) idEjecucionObservatorio);
+			List<ResultadoSemillaFullForm> finishLessThreshold = new ArrayList<ResultadoSemillaFullForm>();
+			if (lessThresholdIds != null && !lessThresholdIds.isEmpty()) {
+				finishLessThreshold = ObservatorioDAO.getResultSeedsFullFromObservatoryByIds(c, new SemillaForm(), idEjecucionObservatorio.longValue(), 0l, -1, lessThresholdIds);
+			}
 			request.setAttribute("idCartucho", idCartucho);
 			request.setAttribute("idObservatory", idObservatory);
 			request.setAttribute("idExecutedObservatorio", idEjecucionObservatorio);
@@ -86,6 +89,7 @@ public class EstadoObservatorioAction extends Action {
 			request.setAttribute("notCrawledSeedsYet", notCrawledSeedsYet);
 			request.setAttribute("notCrawledSeeds", notCrawledSeeds);
 			request.setAttribute("finishWithoutResults", finishWithoutResults);
+			request.setAttribute("finishLessThreshold", finishLessThreshold);
 		}
 		return mapping.findForward(Constants.EXITO);
 	}

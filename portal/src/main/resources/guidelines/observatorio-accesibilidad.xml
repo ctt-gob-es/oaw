@@ -60,6 +60,13 @@
 					<check id="487" relatedWith="485" />
 				</checks>
 			</subgroup>
+			<subgroup aspect="observatory.aspect.general">
+				<!-- Preparación de la declaración de accesibilidad -->
+				<name>minhap.observatory.5_0.subgroup.3.5</name>
+				<checks>
+					<check id="491" relatedWith="126" />
+				</checks>
+			</subgroup>
 		</suitability>
 	</group>
 

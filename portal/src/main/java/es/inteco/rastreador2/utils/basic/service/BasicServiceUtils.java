@@ -32,12 +32,12 @@ import org.apache.struts.Globals;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessage;
 import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerFactory;
-import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
+import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.triggers.SimpleTriggerImpl;
 
 import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 
@@ -315,14 +315,14 @@ public final class BasicServiceUtils {
 		final SchedulerFactory schedulerFactory = new StdSchedulerFactory();
 		final Scheduler scheduler = schedulerFactory.getScheduler();
 		scheduler.start();
-		final JobDetail jobDetail = new JobDetail("CrawlerWSJob_" + System.currentTimeMillis(), "CrawlerWSJob", CrawlerWSJob.class);
+		final JobDetailImpl jobDetail = new JobDetailImpl("CrawlerWSJob_" + System.currentTimeMillis(), "CrawlerWSJob", CrawlerWSJob.class);
 		if (basicServiceForm.getId() == 0) {
 			basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, es.inteco.common.Constants.BASIC_SERVICE_STATUS_SCHEDULED));
 		}
 		final JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put(es.inteco.rastreador2.ws.commons.Constants.BASIC_SERVICE_FORM, basicServiceForm);
 		jobDetail.setJobDataMap(jobDataMap);
-		final Trigger trigger = new SimpleTrigger("CrawlerWSTrigger", "CrawlerWSGroup", basicServiceForm.getSchedulingDate());
+		final Trigger trigger = new SimpleTriggerImpl("CrawlerWSTrigger", "CrawlerWSGroup", basicServiceForm.getSchedulingDate());
 		scheduler.scheduleJob(jobDetail, trigger);
 	}
 

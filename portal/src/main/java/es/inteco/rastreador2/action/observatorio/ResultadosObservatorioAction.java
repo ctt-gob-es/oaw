@@ -40,6 +40,7 @@ import es.inteco.crawler.job.CrawlerJob;
 import es.inteco.crawler.job.CrawlerJobManager;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaFullForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
@@ -102,8 +103,16 @@ public class ResultadosObservatorioAction extends Action {
 						request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
 						return regenerateResults(mapping, form, request);
 					} else if (action.equalsIgnoreCase(Constants.STOP_CRAWL)) {
-						request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
-						return stop(mapping, form, request);
+						if (request.getParameter(Constants.CONFIRMACION) != null && request.getParameter(Constants.CONFIRMACION).equals(Constants.CONF_SI)) {
+							request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
+							return stop(mapping, form, request);
+						} else {
+							ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(DataBaseManager.getConnection(), Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
+							request.setAttribute(Constants.OBSERVATORY_FORM, observatorioForm);
+							request.setAttribute(Constants.ID_OBSERVATORIO, request.getParameter(Constants.ID_OBSERVATORIO));
+							request.setAttribute(Constants.ID_EX_OBS, request.getParameter(Constants.ID_EX_OBS));
+							return mapping.findForward("confirmarPararObservatorio");
+						}
 					} else if (action.equalsIgnoreCase(Constants.ADD_SEDD_OBS)) {
 						request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
 						return addSeed(mapping, form, request);
@@ -450,8 +459,16 @@ public class ResultadosObservatorioAction extends Action {
 	 * @throws Exception the exception
 	 */
 	private ActionForward stop(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
-		CrawlerJobManager.endJob(Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
-		return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
+		CrawlerJobManager.endJob(Long.parseLong(request.getParameter(Constants.ID_EX_OBS)), Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
+		try (Connection c = DataBaseManager.getConnection()) {
+			ObservatorioDAO.updateObservatoryStatus(c, Long.parseLong(request.getParameter(Constants.ID_EX_OBS)), es.inteco.crawler.common.Constants.STOPPED_OBSERVATORY_STATUS);
+			DataBaseManager.closeConnection(c);
+		}
+		final PropertiesManager pmgr = new PropertiesManager();
+		request.setAttribute("mensajeExito", getResources(request).getMessage("observatory.stop.success.message"));
+		final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
+		request.setAttribute("accionVolver", pmgr.getValue("returnPaths.properties", "volver.lista.observatorios.realizados.primarios").replace("{0}", idObservatory.toString()));
+		return mapping.findForward(Constants.EXITO2);
 	}
 
 	/**
@@ -470,17 +487,11 @@ public class ResultadosObservatorioAction extends Action {
 		final Long idCartucho = Long.parseLong(request.getParameter(Constants.ID_CARTUCHO));
 		try (Connection c = DataBaseManager.getConnection()) {
 			ObservatorioDAO.addSeedObservatory(c, idObservatory, idExObs, idSeed, idCartucho);
+			ObservatorioDAO.addSeedObservatory(c, idObservatory, idExObs, idSeed, idCartucho);
 		} catch (Exception e) {
 			Logger.putLog("Error al cargar el formulario para crear un nuevo rastreo de cliente", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 			throw new Exception(e);
 		}
-		// TODO GO TO http://localhost:8080/oaw/secure/ResultadosObservatorio.do?action=getSeeds&id_observatorio=46&idExObs=244&idCartucho=9
 		return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
-//		ActionRedirect redirect = new ActionRedirect(mapping.findForward(Constants.OBSERVATORY_SEED_LIST));
-//		redirect.addParameter("action", "getSeeds");
-//		redirect.addParameter("id_observatorio", idObservatory);
-//		redirect.addParameter("idExObs", idExObs);
-//		redirect.addParameter("idCartucho", idCartucho);
-//		return redirect;
 	}
 }

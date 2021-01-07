@@ -48,6 +48,6 @@ Thumbs.db
 *.mov
 *.wmv
 
-.history/
-.tmp/
-.sass-cache/
+.history/**
+.tmp/**
+.sass-cache/**

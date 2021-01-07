@@ -34,17 +34,22 @@ import es.inteco.rastreador2.utils.CrawlerUtils;
  * RelanzarObservatorioAction. Action para relanzar un observatorio incompleto.
  */
 public class RelanzarObservatorioAction extends Action {
-
+	/**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action.
-	 * ActionMapping, org.apache.struts.action.ActionForm,
-	 * javax.servlet.http.HttpServletRequest,
+	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action. ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest,
 	 * javax.servlet.http.HttpServletResponse)
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-
 		try {
 			if (CrawlerUtils.hasAccess(request, "delete.observatory")) {
 				if ("confirm".equals(request.getParameter(Constants.ACTION))) {
@@ -58,7 +63,6 @@ public class RelanzarObservatorioAction extends Action {
 				} else {
 					return mapping.findForward(Constants.VOLVER);
 				}
-
 			} else {
 				return mapping.findForward(Constants.NO_PERMISSION);
 			}
@@ -66,19 +70,15 @@ public class RelanzarObservatorioAction extends Action {
 			CrawlerUtils.warnAdministrators(e, this.getClass());
 			return mapping.findForward(Constants.ERROR_PAGE);
 		}
-
 	}
 
 	/**
 	 * Confirmar la acción.
 	 *
-	 * @param mapping
-	 *            the mapping
-	 * @param request
-	 *            the request
+	 * @param mapping the mapping
+	 * @param request the request
 	 * @return the action forward
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
 	private ActionForward confirm(ActionMapping mapping, HttpServletRequest request) throws Exception {
 		final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
@@ -87,34 +87,27 @@ public class RelanzarObservatorioAction extends Action {
 			request.setAttribute(Constants.OBSERVATORY_FORM, observatorioForm);
 			request.setAttribute(Constants.ID_EX_OBS, request.getParameter(Constants.ID_EX_OBS));
 		}
-
 		return mapping.findForward(Constants.CONFIRMACION_RELANZAR);
 	}
 
 	/**
 	 * Lanzar rastreos pendientes.
 	 *
-	 * @param mapping
-	 *            the mapping
-	 * @param request
-	 *            the request
+	 * @param mapping the mapping
+	 * @param request the request
 	 * @return the action forward
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
 	private ActionForward lanzarRastreosPendientes(ActionMapping mapping, HttpServletRequest request) throws Exception {
-
 		String idObservatorio = request.getParameter(Constants.ID_OBSERVATORIO);
 		String idEjecucionObservatorio = request.getParameter(Constants.ID_EX_OBS);
 		// Lanzar en un hilo nuevo para acabar la acción
-
-		new RelanzarObservatorioThread(idObservatorio, idEjecucionObservatorio).start();
-
+		RelanzarObservatorioThread t = new RelanzarObservatorioThread(idObservatorio, idEjecucionObservatorio, null);
+		t.setName("RelanzarObservatorioThread_" + idEjecucionObservatorio);
+		t.start();
 		final PropertiesManager pmgr = new PropertiesManager();
 		request.setAttribute("mensajeExito", getResources(request).getMessage("mensaje.exito.relanzar.observatorio"));
 		request.setAttribute("accionVolver", pmgr.getValue("returnPaths.properties", "volver.carga.observatorio"));
-
 		return mapping.findForward(Constants.EXITO);
 	}
-
 }
