@@ -1009,21 +1009,41 @@ public final class AnnexUtils {
                         String columnSecondLetter = GetExcelColumnNameForNumber(5 + (3 * numberOfDate));
 
                         // "NV_" + date
-                        cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate));
+                        cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate));
                         cell.setCellType(CellType.NUMERIC);
                         cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No Válido\",$" + columnSecondLetter + (i + 1) + ",0)");
                         cell.setCellStyle(shadowStyle);
 
                         // "A_" + date
-                        cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 1);
+                        cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 1);
                         cell.setCellType(CellType.NUMERIC);
                         cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"A\",$" + columnSecondLetter + (i + 1) + ",0)");
                         cell.setCellStyle(shadowStyle);
 
                         // "AA_" + date
-                        cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 2);
+                        cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 2);
                         cell.setCellType(CellType.NUMERIC);
                         cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"AA\",$" + columnSecondLetter + (i + 1) + ",0)");
+                        cell.setCellStyle(shadowStyle);
+
+                        columnFirstLetter = GetExcelColumnNameForNumber(6 + (3 * numberOfDate) + 1);
+
+                        // "NC_" + date
+                        cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
+                        cell.setCellType(CellType.NUMERIC);
+                        cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
+                        cell.setCellStyle(shadowStyle);
+
+                        // "PC_" + date
+                        cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 4);
+                        cell.setCellType(CellType.NUMERIC);
+                        cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
+                        cell.setCellStyle(shadowStyle);
+
+                        // "PC_" + date
+                        cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 5);
+                        cell.setCellType(CellType.NUMERIC);
+                        cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
                         cell.setCellStyle(shadowStyle);
                     }
                 }
