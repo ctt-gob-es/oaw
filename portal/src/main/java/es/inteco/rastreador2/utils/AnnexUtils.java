@@ -832,7 +832,7 @@ public final class AnnexUtils {
                             String columnSecondLetter = GetExcelColumnNameForNumber(6 + (3 * executionDates.size() - 3));
 
                             cell = row.createCell(ColumnNames.size() - 1);
-                            String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))";
+                            String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Prioridad 1\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Prioridad 1\",1,3))";
                             cell.setCellFormula(formula);
                             cell.setCellStyle(shadowStyle);
                         }
@@ -1055,8 +1055,10 @@ public final class AnnexUtils {
 
                 XSSFSheet currentSheet = wb.createSheet("Grafica Adecuación");
 
-                InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, true);
-                InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, false);
+                if (rowIndex > 1) {
+                    InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, true);
+                    InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, false);
+                }
 
                 XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
                 wb.write(writer);
