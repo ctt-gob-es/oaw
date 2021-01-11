@@ -156,7 +156,10 @@ angular.module('wcagReporter')
         'description',
         'source',
         'title',
-        'tested'
+        'tested',
+        'pageType',
+        'breadcrumb',
+        'elements'
       ];
 
       // For both samples
