@@ -29,14 +29,17 @@ angular.module('wcagReporter')
         basicFunctionality: '',
         revisionDate: '',
         territorialScope: '',
-        url: ''
+        url: '',
+        evaluationType: '',
+        evaluationCompany: '',
+        observations: ''
       },
       thematicScopes: thematicScopes,
       accessibilitySupportBaseline: '',
-      reliedUponThematic : []
+      reliedUponThematic: []
     };
 
-  
+
 
     scopeModel.exportData = function () {
       return {
@@ -59,7 +62,10 @@ angular.module('wcagReporter')
           basicFunctionality: scopeModel.website.basicFunctionality,
           revisionDate: scopeModel.website.revisionDate,
           territorialScope: scopeModel.website.territorialScope,
-          url: scopeModel.website.url
+          url: scopeModel.website.url,
+          evaluationType: scopeModel.website.evaluationType,
+          evaluationCompany: scopeModel.website.evaluationCompany,
+          observations: scopeModel.website.observations,
         },
         accessibilitySupportBaseline: scopeModel.accessibilitySupportBaseline,
         reliedUponThematic: scopeModel.reliedUponThematic
@@ -93,6 +99,12 @@ angular.module('wcagReporter')
       'wai:WCAG2A-Conformance',
       'wai:WCAG2AA-Conformance',
       'wai:WCAG2AAA-Conformance'
+    ];
+
+    scopeModel.evaluationTypeOptions = [
+      'EVALUATION_TYPE_1',
+      'EVALUATION_TYPE_2',
+      'EVALUATION_TYPE_3'
     ];
 
     /**

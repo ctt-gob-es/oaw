@@ -28,6 +28,14 @@ angular.module('wcagReporter')
           return keys;
         }, {});
 
+
+      $scope.evaluationTypeOptions = evalScopeModel.evaluationTypeOptions
+        .reduce(function (keys, key) {
+          var translateKey = 'SCOPE.' + key;
+          keys[key] = $filter('translate')(translateKey);
+          return keys;
+        }, {});
+
       $scope.territorialScopeOptions = evalScopeModel.territorialScopeOptions
         .reduce(function (keys, key) {
           var translateKey = 'SCOPE.' + key;
@@ -86,6 +94,6 @@ angular.module('wcagReporter')
               $scope.thematicScopes[index].checked = true;
             }
           });
-      },1000);
+      }, 1000);
     }
   );

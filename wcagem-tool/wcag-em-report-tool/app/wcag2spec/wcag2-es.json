@@ -899,7 +899,7 @@
 								{
 									"type":"note",
 									"handle":"Nota:",
-									"text":"Este criterio de conformidad ayuda a garantizar que los usuarios pueden completar las tareas sin inesperados cambios en el contenido o contexto en el que son el resultado de un límite de tiempo. Este criterio debe ser considerado conjuntamente con el criterio de conformidad 3.2.1, que pone límites a los cambios de contenido o el contexto, como resultado de una acción del usuario."
+									"text":"Este criterio de conformidad ayuda a garantizar que los usuarios pueden completar las tareas sin cambios inesperados en el contenido o contexto que son el resultado de un límite de tiempo. Este criterio debe ser considerado conjuntamente con el criterio de conformidad 3.2.1, que pone límites a los cambios de contenido o el contexto, como resultado de una acción del usuario."
 								}
 							]
 						},
@@ -1170,7 +1170,7 @@
 								{
 									"type":"note",
 									"handle":"Nota:",
-									"text":"Los títulos y las etiquetas deben determinarse mediante programación, según el criterio de conformidad 1.3.1."
+									"text":"Los encabezados y etiquetas deben determinarse mediante programación, según el criterio de conformidad 1.3.1."
 								}
 							]
 						},
@@ -1232,12 +1232,12 @@
 							"details":[
 								{
 									"type":"note",
-									"handle":"Nota 1:",
+									"handle":"Nota 1",
 									"text":"\"Encabezados\" se usa en sentido general e incluye los títulos y otras formas de agregar encabezados a las distintos tipos de contenido."
 								},
 								{
 									"type":"note",
-									"handle":"Nota 2:",
+									"handle":"Nota 2",
 									"text":"Este criterio de conformidad se refiere al contenido propiamente dicho, no a los componentes de la interfaz de usuario. Los componentes de la interfaz de usuario se tratan en el Criterio de Conformidad 4.1.2."
 								}
 							]
@@ -1533,14 +1533,7 @@
 							],
 							"level":"A",
 							"handle":"Al recibir el foco",
-							"text":"Cuando cualquier componente recibe el foco, no inicia ningún cambio en el contexto. (Nivel A)",
-							"details":[
-								{
-									"type":"note",
-									"handle":"Nota:",
-									"text":"Un cambio de contenido no es siempre un cambio de contexto. Este criterio de conformidad se cumple automáticamente si los cambios de contenido no son también cambios de contexto."
-								}
-							]
+							"text":"Cuando cualquier componente recibe el foco, no inicia ningún cambio en el contexto. (Nivel A)"
 						},
 						{
 							"id":"WCAG2:on-input",
@@ -1554,14 +1547,7 @@
 							],
 							"level":"A",
 							"handle":"Al recibir entradas",
-							"text":"El cambio de estado en cualquier componente de la interfaz de usuario no provoca automáticamente un cambio en el contexto a menos que el usuario haya sido advertido de ese comportamiento antes de usar el componente. (Nivel A)",
-							"details":[
-								{
-									"type":"note",
-									"handle":"Nota:",
-									"text":"Un cambio de contenido no es siempre un cambio de contexto. Este criterio de conformidad se cumple automáticamente si los cambios de contenido no son también cambios de contexto."
-								}
-							]
+							"text":"El cambio de estado en cualquier componente de la interfaz de usuario no provoca automáticamente un cambio en el contexto a menos que el usuario haya sido advertido de ese comportamiento antes de usar el componente. (Nivel A)"
 						},
 						{
 							"id":"WCAG2:consistent-navigation",
@@ -1658,14 +1644,7 @@
 							],
 							"level":"A",
 							"handle":"Etiquetas o instrucciones",
-							"text":"Se proporcionan etiquetas o instrucciones cuando el contenido requiere la introducción de datos por parte del usuario. (Nivel A)",
-							"details":[
-								{
-									"type":"note",
-									"handle":"Nota:",
-									"text":"Las técnicas al final de la lista anterior deben considerarse como \"último recurso\" y solo deben usarse cuando las otras técnicas no se pueden aplicar a la página. Se prefieren las técnicas anteriores porque aumentan la accesibilidad a un grupo de usuarios más amplio."
-								}
-							]
+							"text":"Se proporcionan etiquetas o instrucciones cuando el contenido requiere la introducción de datos por parte del usuario. (Nivel A)"
 						},
 						{
 							"id":"WCAG2:error-suggestion",
