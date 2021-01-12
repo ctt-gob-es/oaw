@@ -32,10 +32,11 @@ angular.module('wcagReporter')
         url: ''
       },
       thematicScopes: thematicScopes,
-      accessibilitySupportBaseline: ''
+      accessibilitySupportBaseline: '',
+      reliedUponThematic : []
     };
 
-    scopeModel.reliedUponThematic = [];
+  
 
     scopeModel.exportData = function () {
       return {
@@ -66,10 +67,7 @@ angular.module('wcagReporter')
     };
 
     scopeModel.importData = function (evalData) {
-      if (!angular.isArray(evalData.reliedUponThematic)) {
-        evalData.reliedUponTechnology = evalData.reliedUponThematic;
-      }
-      scopeModel.reliedUponThematic = evalData.reliedUponThematic
+      scopeModel.reliedUponThematic = evalData.evaluationScope.reliedUponThematic;
     };
 
     scopeModel.wcagVersionOptions = [

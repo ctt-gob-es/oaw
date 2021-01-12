@@ -8,6 +8,7 @@ angular.module('wcagReporter')
       appState,
       evalScopeModel,
       evalReportModel,
+      $timeout,
       $filter
     ) {
       $scope.state = appState.moveToState('scope');
@@ -66,25 +67,25 @@ angular.module('wcagReporter')
         }
       });
 
+      $timeout(function () {
+        // set relied upon technologies in the right field
+        $scope.scopeModel.reliedUponThematic
+          .forEach(function (thematic) {
+            var index = $scope.thematicScopes
+              // Find exact matching index in thematic of reliedUponThematic
+              // it will be an user defined technology otherwise
+              .reduce(function (index, currThematic, currIndex) {
+                if (currThematic.id === thematic.id && currThematic.title === thematic.title) {
+                  return currIndex;
+                }
+                return index;
+              }, -1);
 
-      // set relied upon technologies in the right field
-      evalScopeModel.reliedUponThematic
-        .forEach(function (thematic) {
-          console.log(thematic);
-          var index = $scope.thematicScopes
-            // Find exact matching index in thematic of reliedUponThematic
-            // it will be an user defined technology otherwise
-            .reduce(function (index, currThematic, currIndex) {
-              if (currThematic.id === thematic.id && currThematic.title === thematic.title) {
-                return currIndex;
-              }
-              return index;
-            }, -1);
-
-          // Set checkboxes for known fields
-          if (index !== -1) {
-            $scope.thematicScopes[index].checked = true;
-          }
-        });
+            // Set checkboxes for known fields
+            if (index !== -1) {
+              $scope.thematicScopes[index].checked = true;
+            }
+          });
+      },1000);
     }
   );

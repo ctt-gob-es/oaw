@@ -93,12 +93,12 @@ angular
 
       evalModel.id = evalData.id;
       evalModel.type = evalData.type;
-      evalModel.scopeModel.importData(evalData);
       evalModel.sampleModel.importData(evalData);
       evalModel.reportModel.importData(evalData);
       evalModel.auditModel.importData(evalData);
       evalModel.exploreModel.importData(evalData);
       evalModel.otherData = evalData.otherData;
+      //evalModel.scopeModel.importData(evalData);
     }
 
     var importModel = {
