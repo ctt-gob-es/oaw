@@ -1170,7 +1170,7 @@
 								{
 									"type":"note",
 									"handle":"Nota:",
-									"text":"Los títulos y las etiquetas deben determinarse mediante programación, según el <a href='#content-structure-separation-programmatic'>criterio de conformidad 1.3.1</a>."
+									"text":"Los títulos y las etiquetas deben determinarse mediante programación, según el criterio de conformidad 1.3.1."
 								}
 							]
 						},
@@ -1232,12 +1232,12 @@
 							"details":[
 								{
 									"type":"note",
-									"handle":"Nota 1",
+									"handle":"Nota 1:",
 									"text":"\"Encabezados\" se usa en sentido general e incluye los títulos y otras formas de agregar encabezados a las distintos tipos de contenido."
 								},
 								{
 									"type":"note",
-									"handle":"Nota 2",
+									"handle":"Nota 2:",
 									"text":"Este criterio de conformidad se refiere al contenido propiamente dicho, no a los componentes de la interfaz de usuario. Los componentes de la interfaz de usuario se tratan en el Criterio de Conformidad 4.1.2."
 								}
 							]
