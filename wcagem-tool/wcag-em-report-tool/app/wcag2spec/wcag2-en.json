@@ -153,8 +153,12 @@
                             "level": "AA",
                             "handle": "Captions (Live)",
                             "text": "Captions are provided for all live audio content in synchronized media.",
-                            "sufficientNotes": [
-                                "Captions may be generated using real-time text translation service."
+							"details":[
+								{
+									"type":"note",
+									"handle":"Note:",
+									"text":"Captions may be generated using real-time text translation service."
+								}
                             ]
                         },
                         {
@@ -286,7 +290,7 @@
                             "details": [
                                 {
                                     "type": "note",
-                                    "handle": "Note 1",
+                                    "handle": "Note:",
                                     "text": "For requirements related to color, refer to Guideline 1.4."
                                 }
                             ]
@@ -368,7 +372,7 @@
                             "details": [
                                 {
                                     "type": "note",
-                                    "handle": "Note 1",
+                                    "handle": "Note:",
                                     "text": "This success criterion addresses color perception specifically. Other forms of perception are covered in Guideline 1.3 including programmatic access to color and other visual presentation coding."
                                 }
                             ]
@@ -389,7 +393,7 @@
                             "details": [
                                 {
                                     "type": "note",
-                                    "handle": "Note 1",
+                                    "handle": "Note:",
                                     "text": "Since any content that does not meet this success criterion can interfere with a user's ability to use the whole page, all content on the Web page (whether or not it is used to meet other success criteria) must meet this success criterion. See Conformance Requirement 5: Non-Interference."
                                 }
                             ]
@@ -470,7 +474,7 @@
                                 },
                                 {
                                     "type": "note",
-                                    "handle": "Note 1",
+                                    "handle": "Note:",
                                     "text": "Logotypes (text that is part of a logo or brand name) are considered essential."
                                 }
                             ]
@@ -598,7 +602,7 @@
                             "details": [
                                 {
                                     "type": "note",
-                                    "handle": "Note 1",
+                                    "handle": "Note:",
                                     "text": "Logotypes (text that is part of a logo or brand name) are considered essential."
                                 }
                             ]
@@ -760,12 +764,12 @@
                             "details": [
                                 {
                                     "type": "note",
-                                    "handle": "Note 1",
+                                    "handle": "Note 1:",
                                     "text": "This exception relates to the underlying function, not the input technique. For example, if using handwriting to enter text, the input technique (handwriting) requires path-dependent input but the underlying function (text input) does not."
                                 },
                                 {
                                     "type": "note",
-                                    "handle": "Note 2",
+                                    "handle": "Note 2:",
                                     "text": "This does not forbid and should not discourage providing mouse input or other input methods in addition to keyboard operation."
                                 }
                             ]
@@ -786,7 +790,7 @@
                             "details": [
                                 {
                                     "type": "note",
-                                    "handle": "Note 1",
+                                    "handle": "Note:",
                                     "text": "Since any content that does not meet this success criterion can interfere with a user's ability to use the whole page, all content on the Web page (whether it is used to meet other success criteria or not) must meet this success criterion. See Conformance Requirement 5: Non-Interference."
                                 }
                             ]
@@ -895,7 +899,7 @@
                                 },
                                 {
                                     "type": "note",
-                                    "handle": "Note 1",
+                                    "handle": "Note:",
                                     "text": "This success criterion helps ensure that users can complete tasks without unexpected changes in content or context that are a result of a time limit. This success criterion should be considered in conjunction with Success Criterion 3.2.1, which puts limits on changes of content or context as a result of user action."
                                 }
                             ]
@@ -929,22 +933,22 @@
                                 },
                                 {
                                     "type": "note",
-                                    "handle": "Note 1",
+                                    "handle": "Note 1:",
                                     "text": "For requirements related to flickering or flashing content, refer to Guideline 2.3."
                                 },
                                 {
                                     "type": "note",
-                                    "handle": "Note 2",
+                                    "handle": "Note 2:",
                                     "text": "Since any content that does not meet this success criterion can interfere with a user's ability to use the whole page, all content on the Web page (whether it is used to meet other success criteria or not) must meet this success criterion. See Conformance Requirement 5: Non-Interference."
                                 },
                                 {
                                     "type": "note",
-                                    "handle": "Note 3",
+                                    "handle": "Note 3:",
                                     "text": "Content that is updated periodically by software or that is streamed to the user agent is not required to preserve or present information that is generated or received between the initiation of the pause and resuming presentation, as this may not be technically possible, and in many situations could be misleading to do so."
                                 },
                                 {
                                     "type": "note",
-                                    "handle": "Note 4",
+                                    "handle": "Note 4:",
                                     "text": "An animation that occurs as part of a preload phase or similar situation can be considered essential if interaction cannot occur during that phase for all users and if not indicating progress could confuse users or cause them to think that content was frozen or broken."
                                 }
                             ]
@@ -1033,7 +1037,7 @@
                             "details": [
                                 {
                                     "type": "note",
-                                    "handle": "Note 1",
+                                    "handle": "Note:",
                                     "text": "Since any content that does not meet this success criterion can interfere with a user's ability to use the whole page, all content on the Web page (whether it is used to meet other success criteria or not) must meet this success criterion. See Conformance Requirement 5: Non-Interference."
                                 }
                             ]
@@ -1161,8 +1165,12 @@
                             "level": "AA",
                             "handle": "Headings and Labels",
                             "text": "Headings and labels describe topic or purpose.",
-                            "sufficientNotes": [
-                                "Headings and labels must be programmatically determined, per <a href='#content-structure-separation-programmatic'>Success Criterion 1.3.1</a>."
+							"details":[
+								{
+									"type":"note",
+									"handle":"Note:",
+									"text":"Headings and labels must be programmatically determined, per <a href='#content-structure-separation-programmatic'>Success Criterion 1.3.1</a>."
+								}
                             ]
                         },
                         {
@@ -1223,12 +1231,12 @@
                             "details": [
                                 {
                                     "type": "note",
-                                    "handle": "Note 1",
+                                    "handle": "Note 1:",
                                     "text": "\"Heading\" is used in its general sense and includes titles and other ways to add a heading to different types of content."
                                 },
                                 {
                                     "type": "note",
-                                    "handle": "Note 2",
+                                    "handle": "Note 2:",
                                     "text": "This success criterion covers sections within writing, not user interface components. User Interface components are covered under Success Criterion 4.1.2."
                                 }
                             ]
@@ -1468,8 +1476,12 @@
                             "level": "AAA",
                             "handle": "Reading Level",
                             "text": "When text requires reading ability more advanced than the lower secondary education level after removal of proper names and titles, supplemental content, or a version that does not require reading ability more advanced than the lower secondary education level, is available.",
-                            "sufficientNotes": [
-                                "Different sites may address this Success Criterion in different ways. An audio version of the content may be helpful to some users. For some people who are deaf, a sign language version of the page may be easier to understand than a written language version since sign language may be their first language. Some sites may decide to do both or other combinations. No technique will help all users who have difficulty. So different techniques are provided as sufficient techniques here for authors trying to make their sites more accessible. Any numbered technique or combination above can be used by a particular site and it is considered sufficient by the Working Group."
+							"details":[
+								{
+									"type":"note",
+									"handle":"Note:",
+									"text":"Different sites may address this Success Criterion in different ways. An audio version of the content may be helpful to some users. For some people who are deaf, a sign language version of the page may be easier to understand than a written language version since sign language may be their first language. Some sites may decide to do both or other combinations. No technique will help all users who have difficulty. So different techniques are provided as sufficient techniques here for authors trying to make their sites more accessible. Any numbered technique or combination above can be used by a particular site and it is considered sufficient by the Working Group."
+								}
                             ]
                         },
                         {
@@ -1514,8 +1526,12 @@
                             "level": "A",
                             "handle": "On Focus",
                             "text": "When any component receives focus, it does not initiate a change of context.",
-                            "sufficientNotes": [
-                                "A change of content is not always a change of context. This success criterion is automatically met if changes in content are not also changes of context."
+							"details":[
+								{
+									"type":"note",
+									"handle":"Note:",
+									"text":"A change of content is not always a change of context. This success criterion is automatically met if changes in content are not also changes of context."
+								}
                             ]
                         },
                         {
@@ -1531,8 +1547,12 @@
                             "level": "A",
                             "handle": "On Input",
                             "text": "Changing the setting of any user interface component does not automatically cause a change of context unless the user has been advised of the behavior before using the component.",
-                            "sufficientNotes": [
-                                "A change of content is not always a change of context. This success criterion is automatically met if changes in content are not also changes of context."
+                            "details":[
+								{
+									"type":"note",
+									"handle":"Note:",
+									"text":"A change of content is not always a change of context. This success criterion is automatically met if changes in content are not also changes of context."
+								}
                             ]
                         },
                         {
@@ -1562,9 +1582,17 @@
                             "level": "AA",
                             "handle": "Consistent Identification",
                             "text": "Components that have the same functionality within a set of Web pages are identified consistently.",
-                            "sufficientNotes": [
-                                "Text alternatives that are “consistent” are not always “identical.” For instance, you may have an graphical arrow at the bottom of a Web page that links to the next Web page. The text alternative may say “Go to page 4.” Naturally, it would not be appropriate to repeat this exact text alternative on the next Web page. It would be more appropriate to say “Go to page 5”. Although these text alternatives would not be identical, they would be consistent, and therefore would satisfy this Success Criterion.",
-                                "A single non-text-content-item may be used to serve different functions. In such cases, different text alternatives are necessary and should be used. Examples can be commonly found with the use of icons such as check marks, cross marks, and traffic signs. Their functions can be different depending on the context of the Web page. A check mark icon may function as “approved”, “completed”, or “included”, to name a few, depending on the situation. Using “check mark” as text alternative across all Web pages does not help users understand the function of the icon. Different text alternatives can be used when the same non-text content serves multiple functions."
+							"details":[
+								{
+									"type":"note",
+									"handle":"Note 1:",
+									"text":"Text alternatives that are “consistent” are not always “identical.” For instance, you may have an graphical arrow at the bottom of a Web page that links to the next Web page. The text alternative may say “Go to page 4.” Naturally, it would not be appropriate to repeat this exact text alternative on the next Web page. It would be more appropriate to say “Go to page 5”. Although these text alternatives would not be identical, they would be consistent, and therefore would satisfy this Success Criterion."
+								},
+								{
+									"type":"note",
+									"handle":"Note 2:",
+									"text":"A single non-text-content-item may be used to serve different functions. In such cases, different text alternatives are necessary and should be used. Examples can be commonly found with the use of icons such as check marks, cross marks, and traffic signs. Their functions can be different depending on the context of the Web page. A check mark icon may function as “approved”, “completed”, or “included”, to name a few, depending on the situation. Using “check mark” as text alternative across all Web pages does not help users understand the function of the icon. Different text alternatives can be used when the same non-text content serves multiple functions."
+								}
                             ]
                         },
                         {
@@ -1623,8 +1651,12 @@
                             "level": "A",
                             "handle": "Labels or Instructions",
                             "text": "Labels or instructions are provided when content requires user input.",
-                            "sufficientNotes": [
-                                "The techniques at the end of the above list should be considered “last resort” and only used when the other techniques cannot be applied to the page. The earlier techniques are preferred because they increase accessibility to a wider user group."
+							"details":[
+								{
+									"type":"note",
+									"handle":"Note:",
+									"text":"The techniques at the end of the above list should be considered “last resort” and only used when the other techniques cannot be applied to the page. The earlier techniques are preferred because they increase accessibility to a wider user group."
+								}
                             ]
                         },
                         {
@@ -1764,7 +1796,7 @@
                             "details": [
                                 {
                                     "type": "note",
-                                    "handle": "Note 1",
+                                    "handle": "Note:",
                                     "text": "Start and end tags that are missing a critical character in their formation, such as a closing angle bracket or a mismatched attribute value quotation mark are not complete."
                                 }
                             ]
@@ -1785,7 +1817,7 @@
                             "details": [
                                 {
                                     "type": "note",
-                                    "handle": "Note 1",
+                                    "handle": "Note:",
                                     "text": "This success criterion is primarily for Web authors who develop or script their own user interface components. For example, standard HTML controls already meet this success criterion when used according to specification."
                                 }
                             ]

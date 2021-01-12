@@ -157,7 +157,7 @@
 								{
 									"type":"note",
 									"handle":"Nota:",
-									"text":"Los subtítulos pueden ser generados en tiempo real mediante la traducción de textos."
+									"text":"Los subtítulos pueden ser generados utilizando el servicio de traducción de textos en tiempo real."
 								}
 							]
 						},
@@ -290,7 +290,7 @@
 							"details":[
 								{
 									"type":"note",
-									"handle":"Nota 1:",
+									"handle":"Nota:",
 									"text":"Para los requisitos relacionados con el color, véase la Pauta 1.4."
 								}
 							]
@@ -899,7 +899,7 @@
 								{
 									"type":"note",
 									"handle":"Nota:",
-									"text":"Este criterio de éxito ayuda a garantizar que los usuarios pueden completar las tareas sin inesperados cambios en el contenido o contexto en el que son el resultado de un límite de tiempo. Este criterio de éxito debe ser considerado conjuntamente con el Criterio de Éxito 3.2.1, que pone límites a los cambios de contenido o el contexto, como resultado de una acción del usuario."
+									"text":"Este criterio de conformidad ayuda a garantizar que los usuarios pueden completar las tareas sin inesperados cambios en el contenido o contexto en el que son el resultado de un límite de tiempo. Este criterio debe ser considerado conjuntamente con el criterio de conformidad 3.2.1, que pone límites a los cambios de contenido o el contexto, como resultado de una acción del usuario."
 								}
 							]
 						},
@@ -948,7 +948,7 @@
 								{
 									"type":"note",
 									"handle":"Nota 4:",
-									"text":"Una animación que ocurre como parte de una fase de precarga de un contenido o una situación similar puede ser considerada esencial si no se permite interacción a ningún usuario durante esa fase, y si el hecho de no indicar el progreso pudiera confundir a los usuarios y hacerles creer que ha habido un fallo en el contenido.\n\nCómo cumplir 2.2.2 |Comprender 2.2.2\n\n"
+									"text":"Una animación que ocurre como parte de una fase de precarga de un contenido o una situación similar puede ser considerada esencial si no se permite interacción a ningún usuario durante esa fase, y si el hecho de no indicar el progreso pudiera confundir a los usuarios y hacerles creer que ha habido un fallo en el contenido."
 								}
 							]
 						},
@@ -1170,7 +1170,7 @@
 								{
 									"type":"note",
 									"handle":"Nota:",
-									"text":"Los encabezados y etiquetas deben ser de programación determinado, por <a href='#contenido-estructura-separación-programático'>Criterio de Éxito 1.3.1</a>."
+									"text":"Los títulos y las etiquetas deben determinarse mediante programación, según el <a href='#content-structure-separation-programmatic'>criterio de conformidad 1.3.1</a>."
 								}
 							]
 						},
@@ -1488,8 +1488,8 @@
 								{
 									"type":"note",
 									"handle":"Nota:",
-									"text":"Diferentes sitios pueden abordar este criterio de conformidad de diferentes maneras. Una versión de audio del contenido puede ser útil para algunos usuarios. Para algunas personas sordas, una versión en lenguaje de señas de la página puede ser más fácil de entender que una versión en lenguaje escrito, ya que el lenguaje de señas puede ser su primera lengua. Algunos sitios pueden decidir hacer ambas o bien otras combinaciones. Ninguna técnica ayudará a todos los usuarios que tengan dificultades. Por lo tanto, se proporcionan diferentes técnicas como suficientes aquí para los autores que tratan de hacer sus sitios más accesibles. Cualquier técnica o combinación numerada de las anteriores puede ser utilizada por un sitio determinado y el Grupo de Trabajo la considera suficiente."
-								}
+									"text":"Diferentes sitios pueden abordar este criterio de conformidad de diferentes maneras. Una versión de audio del contenido puede ser útil para algunos usuarios. Para algunas personas sordas, una versión en lenguaje de signos de la página puede ser más fácil de entender que una versión en lenguaje escrito, ya que el lenguaje de signos puede ser su primera lengua. Algunos sitios pueden decidir hacer ambas o bien otras combinaciones. Ninguna técnica ayudará a todos los usuarios que tengan dificultades. Por lo tanto, aquí se proporcionan diferentes técnicas como técnicas suficientes para los autores que intentan hacer que sus sitios sean más accesibles. Cualquier técnica o combinación de las numeradas anteriormente puede ser utilizada por un sitio web determinado. El grupo de trabajo de W3C así lo considera suficiente."
+								}	
 							]
 						},
 						{
@@ -1538,7 +1538,7 @@
 								{
 									"type":"note",
 									"handle":"Nota:",
-									"text":"Un cambio de contenido no es siempre un cambio de contexto. Este criterio de éxito es automáticamente se reunió si los cambios en los contenidos no son también los cambios de contexto."
+									"text":"Un cambio de contenido no es siempre un cambio de contexto. Este criterio de conformidad se cumple automáticamente si los cambios de contenido no son también cambios de contexto."
 								}
 							]
 						},
@@ -1559,7 +1559,7 @@
 								{
 									"type":"note",
 									"handle":"Nota:",
-									"text":"Un cambio de contenido no es siempre un cambio de contexto. Este criterio de éxito es automáticamente se reunió si los cambios en los contenidos no son también los cambios de contexto."
+									"text":"Un cambio de contenido no es siempre un cambio de contexto. Este criterio de conformidad se cumple automáticamente si los cambios de contenido no son también cambios de contexto."
 								}
 							]
 						},
@@ -1593,8 +1593,13 @@
 							"details":[
 								{
 									"type":"note",
-									"handle":"Nota:",
-									"text":"Alternativas de texto que son \"consistentes\", no siempre son \"idénticos\". Por ejemplo, usted puede tener una gráfica de flecha en la parte inferior de una página Web que enlace a la siguiente página Web. El texto alternativo puede decir \"Ir a la página 4.\" Naturalmente, no sería conveniente repetir este texto exacto alternativa en la siguiente página Web. Sería más apropiado decir \"Ir a la página 5\". Aunque estas alternativas de texto no sería idéntico, que sea consistente, y por lo tanto satisfacer este Criterio de Éxito. Una sola no-texto-contenido-objeto puede ser utilizado para servir a diferentes funciones. En tales casos, las diferentes alternativas de texto son necesarios y deben ser utilizados. Ejemplos pueden ser encontrados comúnmente con el uso de iconos, tales como marcas de verificación, cruz marcas y señales de tráfico. Sus funciones pueden ser diferentes dependiendo del contexto de la página Web. Un icono de marca de verificación puede funcionar como \"aprobado\", \"terminada\", o \"incluido\", para nombrar unos pocos, dependiendo de la situación. El uso de \"marca de verificación\" como texto alternativo en todas las páginas Web no ayuda a los usuarios a comprender la función del icono. Diferentes alternativas de texto puede ser utilizado cuando el mismo contenido no textual que sirve para múltiples funciones."
+									"handle":"Nota 1:",
+									"text":"Las alternativas textuales que son \"conherentes\", no siempre son \"idénticas\". Por ejemplo, usted puede tener una imagen de una flecha en la parte inferior de una página web que enlace a la siguiente página. El texto alternativo puede decir: \"Ir a la página 4\". Naturalmente, no sería conveniente repetir este texto alternativ exacto en la siguiente página. Sería más apropiado decir: \"Ir a la página 5\". Aunque estas alternativas textuales no serían idénticas, serían consistentes y, por lo tanto, cumplirían con este criterio de conformidad."
+								},
+								{								
+									"type":"note",
+									"handle":"Nota 2:",
+									"text":"Se puede utilizar un único elemento sin contenido de texto para cumplir funciones diferentes. En tales casos, son necesarias y deben usarse diferentes alternativas textuales. Los ejemplos se pueden encontrar comúnmente con el uso de iconos como marcas de verificación, cruces y señales de tráfico. Sus funciones pueden ser diferentes según el contexto de la página web. Un icono de marca de verificación puede funcionar como \"aprobado\", \"terminada\", o \"incluido\", para nombrar unos pocos, dependiendo de la situación. El uso de \"marca de verificación\" como texto alternativo en todas las páginas web no ayuda a los usuarios a comprender la función del icono. Se pueden usar diferentes alternativas de texto cuando el mismo contenido que no es de texto cumple múltiples funciones."
 								}
 							]
 						},
@@ -1658,7 +1663,7 @@
 								{
 									"type":"note",
 									"handle":"Nota:",
-									"text":"Las técnicas al final de la lista anterior debe ser considerado como \"último recurso\" y sólo se utilizan cuando las otras técnicas no pueden ser aplicados a la página. Las anteriores técnicas son las preferidas porque a aumentar la accesibilidad a un amplio grupo de usuarios."
+									"text":"Las técnicas al final de la lista anterior deben considerarse como \"último recurso\" y solo deben usarse cuando las otras técnicas no se pueden aplicar a la página. Se prefieren las técnicas anteriores porque aumentan la accesibilidad a un grupo de usuarios más amplio."
 								}
 							]
 						},
