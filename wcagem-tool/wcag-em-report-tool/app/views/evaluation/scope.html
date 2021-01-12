@@ -29,7 +29,7 @@
 
       <label for="ura-dir3">
         {{ 'SCOPE.URA_DIR3_LABEL' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
-          target="ura_scope" title="{{ 'SCOPE.URA_DIR3_LABEL' | translate }}"></info-button>
+          target="ura_dir3" title="{{ 'SCOPE.URA_DIR3_LABEL' | translate }}"></info-button>
       </label>
 
       <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" exitto="ura-dir3" ref="ura_dir3">
@@ -43,7 +43,7 @@
     <div class="form-group">
       <label for="ura-dir3">
         {{ 'SCOPE.URA_SCOPE_LABEL' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
-          target="ura_dir3" title="{{ 'SCOPE.URA_SCOPE_LABEL' | translate }}"></info-button>
+          target="ura_scope" title="{{ 'SCOPE.URA_SCOPE_LABEL' | translate }}"></info-button>
       </label>
 
       <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" exitto="ura-scope" ref="ura_scope">
@@ -273,8 +273,15 @@
 
     <div class="form-group">
       <label for="territorialScope">
-        {{ 'SCOPE.THEMATIC_SCOPE_LABEL' | translate }}
+        {{ 'SCOPE.THEMATIC_SCOPE_LABEL' | translate }}        <info-button label="{{'COMMON.BTN_INFO' | translate}}" target="thematic_info"
+        title="{{ 'SCOPE.LABEL_VERSION' | translate }}"></info-button>
       </label>
+
+
+      <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}"  ref="thematic_info">
+        <p ng-bind-html="'SCOPE.THEMATIC_SCOPE_INFO' | translate"></p>
+      </info-field>
+
       <div class="row">
         <ul class="col-sm-12 known-tech">
           <li ng-repeat="thematic in thematicScopes">
@@ -289,7 +296,43 @@
     </div>
 
 
+    <div class="form-group">
+      <label for="evaluationType">
+        {{ 'SCOPE.EVALUATION_TYPE_LABEL' | translate }}
+      </label>
 
+      <select id="evaluationType" class="form-control" ng-options="key as value for (key,value) in evaluationTypeOptions"
+        ng-model="scopeModel.website.evaluationType"></select>
+    </div>
+
+
+    <div class="form-group">
+      <label for="evaluationCompany">
+        {{ 'SCOPE.EVALUATION_COMPANY_LABEL' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+          target="inf_evaluationCompany" title="{{ 'SCOPE.EVALUATION_COMPANY_LABEL' | translate }}">
+        </info-button>
+      </label>
+
+      <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" ref="inf_evaluationCompany" exitto="evaluationCompany">
+        <p>{{ 'SCOPE.EVALUATION_COMPANY_INFO' | translate }}</p>
+      </info-field>
+      <input type="text" ng-model="scopeModel.website.evaluationCompany" class="form-control date" id="evaluationCompany" />
+    </div>
+
+
+
+    <div class="form-group">
+      <label for="observations" class="">
+        {{ 'SCOPE.OBSERVATIONS_LABEL' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+          target="inf_observations" title="{{ 'SCOPE.OBSERVATIONS_LABEL' | translate }}"></info-button>
+      </label>
+      <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" ref="inf_observations" exitto="observations">
+        <p>{{ 'SCOPE.OBSERVATIONS_LABEL_INFO' | translate }}</p>
+      </info-field>
+
+      <textarea ng-model="scopeModel.website.observations" id="observations" class="form-control" auto-resize
+        cols="40" rows="5"></textarea>
+    </div>
 
     <div class="form-group">
       <label for="additional_requirements">

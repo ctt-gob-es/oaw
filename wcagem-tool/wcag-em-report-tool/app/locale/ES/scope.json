@@ -48,7 +48,7 @@
     "TERRITORIAL_SCOPE_LABEL": "Ámbito territorial",
     "TERRITORIAL_SCOPE_INFO": "",
     "THEMATIC_SCOPE_LABEL": "Ámbito temático",
-    "THEMATIC_SCOPE_INFO": "",
+    "THEMATIC_SCOPE_INFO": "Los ámbitos temáticos que se muestran a continuación son los indicados en la Decisión de ejecución 2018/1524",
     "TERRITORIAL_AGE":"AGE",
     "TERRITORIAL_CCAA":"CCAA",
     "TERRITORIAL_EELL":"EELL",
@@ -65,5 +65,14 @@
     "THEMATIC_10": "Transporte",
     "THEMATIC_11": "Vivienda",
     "LABEL_SITE_URL": "URL del Sitio web",
-    "SCOPE.INF_SITE_URL": "Identifica la URL del sitio web"
+    "INF_SITE_URL": "Identifica la URL del sitio web",
+    "EVALUATION_TYPE_1":"Autoevaluación con recursos propios",
+    "EVALUATION_TYPE_2":"Autoevaluación con recursos externos",
+    "EVALUATION_TYPE_3":"Inspección acreditada por ENAC",
+    "EVALUATION_TYPE_LABEL":"Tipo de evaluación",
+    "EVALUATION_COMPANY_LABEL":"Nombre de empresa",
+    "EVALUATION_COMPANY_INFO":"Nombre de la empresa que ha realizado la evaluación",
+    "OBSERVATIONS_LABEL":"Observaciones",
+    "OBSERVATIONS_LABEL_INFO":"Datos relacionados con la revisión"
+
 }

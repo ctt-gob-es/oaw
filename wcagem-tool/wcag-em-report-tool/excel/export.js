@@ -131,80 +131,89 @@ app.post('/ods', function (request, response) {
             var website = report.data['@graph'][0].evaluationScope.website;
 
             var titleElm = doc.createElement("text:p");
-            var text = doc.createTextNode(website.uraName);
+            var text = doc.createTextNode(website.uraName?website.uraName:"");
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[7]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
-            text = doc.createTextNode(website.uraDIR3);
+            text = doc.createTextNode(website.uraDIR3?website.uraDIR3:"");
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[9]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
-            text = doc.createTextNode(website.uraScope);
+            text = doc.createTextNode(website.uraScope?website.uraScope:"");
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[11]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
-            text = doc.createTextNode(website.scopeDIR3);
+            text = doc.createTextNode(website.scopeDIR3?website.scopeDIR3:"");
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[13]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
-            text = doc.createTextNode(website.responsibleEntity);
+            text = doc.createTextNode(website.responsibleEntity?website.responsibleEntity:"");
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[17]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
-            text = doc.createTextNode(website.responsibleEntityDIR3);
+            text = doc.createTextNode(website.responsibleEntityDIR3?website.responsibleEntityDIR3:"");
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[19]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
-            text = doc.createTextNode(website.responsiblePerson);
+            text = doc.createTextNode(website.responsiblePerson?website.responsiblePerson:"");
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[21]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
-            text = doc.createTextNode(website.typology);
+
+
+            var typologyText="";
+            switch (website.typology) {
+                case "TYPO1": typologyText = "Mayoritariamente estáctico"; break;
+                case "TYPO2": typologyText = "Servicio electrónico"; break;
+            }
+
+
+            text = doc.createTextNode(typologyText);
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[25]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
-            text = doc.createTextNode(website.siteName);
+            text = doc.createTextNode(website.siteName?website.siteName:"");
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[27]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
-            text = doc.createTextNode(website.url);
+            text = doc.createTextNode(website.url?website.url:"");
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[29]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
-            text = doc.createTextNode(website.siteScope);
+            text = doc.createTextNode(website.siteScope?website.siteScope:"");
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[31]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
-            text = doc.createTextNode(website.basicFunctionality);
+            text = doc.createTextNode(website.basicFunctionality?website.basicFunctionality:"");
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[33]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
-            text = doc.createTextNode(website.revisionDate);
+            text = doc.createTextNode(website.revisionDate?website.revisionDate:"");
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[35]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             var accessibilitySupportBaseline = report.data['@graph'][0].evaluationScope.accessibilitySupportBaseline;
 
             titleElm = doc.createElement("text:p");
-            text = doc.createTextNode(accessibilitySupportBaseline);
+            text = doc.createTextNode(accessibilitySupportBaseline?accessibilitySupportBaseline:"");
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[41]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
-            titleElm = doc.createElement("text:p");
 
-            var territorialScopeText;
+
+            var territorialScopeText = "";
             switch (website.territorialScope) {
                 case "TERRITORIAL_AGE": territorialScopeText = "AGE"; break;
                 case "TERRITORIAL_CCAA": territorialScopeText = "CCAA"; break;
@@ -212,7 +221,7 @@ app.post('/ods', function (request, response) {
                 case "TERRITORIAL_OTHER": territorialScopeText = "Otros"; break;
             }
 
-
+            titleElm = doc.createElement("text:p");
             text = doc.createTextNode(territorialScopeText);
             titleElm.appendChild(text);
             select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[45]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
@@ -242,6 +251,30 @@ app.post('/ods', function (request, response) {
                 var oldNode = select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[${cellRow}]/table:table-cell[4]/text:p`, doc)[0];
                 select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[${cellRow}]/table:table-cell[3]`, doc)[0].replaceChild(titleElm, oldNode);
             }
+
+
+
+            var evaluationTypeText = "";
+            switch (website.evaluationType) {
+                case "EVALUATION_TYPE_1": evaluationTypeText = "Autoevaluación con recursos propios"; break;
+                case "EVALUATION_TYPE_2": evaluationTypeText = "Autoevaluación con recursos externos"; break;
+                case "EVALUATION_TYPE_3": evaluationTypeText = "Inspección acreditada por ENAC"; break;
+            }
+
+            titleElm = doc.createElement("text:p");
+            text = doc.createTextNode(evaluationTypeText);
+            titleElm.appendChild(text);
+            select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[61]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
+
+            titleElm = doc.createElement("text:p");
+            text = doc.createTextNode(website.evaluationCompany?website.evaluationCompany:"");
+            titleElm.appendChild(text);
+            select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[63]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
+
+            titleElm = doc.createElement("text:p");
+            text = doc.createTextNode(website.observations?website.observations:"");
+            titleElm.appendChild(text);
+            select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[65]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             //checking technologies [02]
             console.log("Procesando tecnologías...");
@@ -371,10 +404,7 @@ app.post('/ods', function (request, response) {
                 var text = doc.createTextNode(webpages[i].title);
                 titleElm.appendChild(text);
                 //Page type
-                var pageTypeElm = doc.createElement("text:p");
-
-
-                var pageTypeOption;
+                var pageTypeOption = "";
                 switch (webpages[i].pageType) {
                     case "PAGE_TYPE_1": pageTypeOption = "Página inicio"; break;
                     case "PAGE_TYPE_2": pageTypeOption = "Inicio de sesión"; break;
@@ -391,23 +421,24 @@ app.post('/ods', function (request, response) {
                     case "PAGE_TYPE_13": pageTypeOption = "Documento descargable"; break;
                     case "PAGE_TYPE_14": pageTypeOption = "Aleatoria"; break;
                 }
+                var pageTypeElm = doc.createElement("text:p");
                 var pageTypeText = doc.createTextNode(pageTypeOption);
                 pageTypeElm.appendChild(pageTypeText);
 
 
                 //Page URL
                 var urlElm = doc.createElement("text:p");
-                var url = doc.createTextNode(webpages[i].source ? webpages[i].source : webpages[i].description);
+                var url = doc.createTextNode(webpages[i].source ? webpages[i].source : (webpages[i].description?webpages[i].description:""));
                 urlElm.appendChild(url);
 
                 //breadcrumb
                 var breadcrumbElm = doc.createElement("text:p");
-                var breadcrumbUrl = doc.createTextNode(webpages[i].breadcrumb);
+                var breadcrumbUrl = doc.createTextNode(webpages[i].breadcrumb ? webpages[i].breadcrumb : "");
                 breadcrumbElm.appendChild(breadcrumbUrl);
 
                 //elements
                 var elementsElm = doc.createElement("text:p");
-                var elementsText = doc.createTextNode(webpages[i].elements);
+                var elementsText = doc.createTextNode(webpages[i].elements ? webpages[i].elements : "");
                 elementsElm.appendChild(elementsText);
 
                 select(`//office:spreadsheet/table:table[@table:name='03.Muestra']/table:table-row[${row}]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
@@ -747,7 +778,7 @@ app.post('/ods', function (request, response) {
 
 app.post('/xlsx', function (request, response) {
 
-    const sourceFile = path.resolve(__dirname) + '/xlsx/IRA.xlsx';
+    const sourceFile = path.resolve(__dirname) + '/xlsx/Informe_Revision_Profunidad_v1.xlsx';
 
     // Load an existing workbook
     xlsxPopulate.fromFileAsync(sourceFile)
@@ -845,7 +876,17 @@ app.post('/xlsx', function (request, response) {
             workbook.sheet("01.Definición de ámbito").cell("C17").value(website.responsibleEntity);
             workbook.sheet("01.Definición de ámbito").cell("C19").value(website.responsibleEntityDIR3);
             workbook.sheet("01.Definición de ámbito").cell("C21").value(website.responsiblePerson);
-            workbook.sheet("01.Definición de ámbito").cell("C25").value(website.typology);
+
+
+            var typologyText;
+            switch (website.typology) {
+                case "TYPO1": typologyText = "Mayoritariamente estáctico"; break;
+                case "TYPO2": typologyText = "Servicio electrónico"; break;
+            }
+
+            workbook.sheet("01.Definición de ámbito").cell("C25").value(typologyText);
+
+
             workbook.sheet("01.Definición de ámbito").cell("C27").value(website.siteName);
             workbook.sheet("01.Definición de ámbito").cell("C29").value(website.url);
             workbook.sheet("01.Definición de ámbito").cell("C31").value(website.siteScope);
@@ -886,6 +927,20 @@ app.post('/xlsx', function (request, response) {
                 // exists one line less in xlsx vs ods
                 workbook.sheet("01.Definición de ámbito").cell("D" + (cellRow - 1)).value("Sí");
             }
+
+
+            var evaluationTypeText;
+            switch (website.evaluationType) {
+                case "EVALUATION_TYPE_1": evaluationTypeText = "Autoevaluación con recursos propios"; break;
+                case "EVALUATION_TYPE_2": evaluationTypeText = "Autoevaluación con recursos externos"; break;
+                case "EVALUATION_TYPE_3": evaluationTypeText = "Inspección acreditada por ENAC"; break;
+            }
+            workbook.sheet("01.Definición de ámbito").cell("C60").value(evaluationTypeText);
+            workbook.sheet("01.Definición de ámbito").cell("C62").value(website.evaluationCompany);
+            workbook.sheet("01.Definición de ámbito").cell("C64").value(website.observations);
+
+
+
 
             //checking technologies [02]
             console.log("Procesando tecnologías...");
@@ -933,7 +988,7 @@ app.post('/xlsx', function (request, response) {
             for (var i = 0; i < webpages.length && i < 35; i++) {
                 workbook.sheet("03.Muestra").cell("C" + row).value(webpages[i].title);
 
-                var pageTypeOption;
+                var pageTypeOption = "";
                 switch (webpages[i].pageType) {
                     case "PAGE_TYPE_1": pageTypeOption = "Página inicio"; break;
                     case "PAGE_TYPE_2": pageTypeOption = "Inicio de sesión"; break;
@@ -953,8 +1008,8 @@ app.post('/xlsx', function (request, response) {
 
                 workbook.sheet("03.Muestra").cell("D" + row).value(pageTypeOption);
                 workbook.sheet("03.Muestra").cell("E" + row).value(webpages[i].source ? webpages[i].source : webpages[i].description);
-                workbook.sheet("03.Muestra").cell("F" + row).value(webpages[i].breadcrumb);
-                workbook.sheet("03.Muestra").cell("G" + row).value(webpages[i].elements);
+                workbook.sheet("03.Muestra").cell("F" + row).value(webpages[i].breadcrumb ? webpages[i].breadcrumb : "");
+                workbook.sheet("03.Muestra").cell("G" + row).value(webpages[i].elements ? webpages[i].elements : "");
                 row++;
             }
 

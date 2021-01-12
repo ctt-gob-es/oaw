@@ -1525,14 +1525,7 @@
                             ],
                             "level": "A",
                             "handle": "On Focus",
-                            "text": "When any component receives focus, it does not initiate a change of context.",
-							"details":[
-								{
-									"type":"note",
-									"handle":"Note:",
-									"text":"A change of content is not always a change of context. This success criterion is automatically met if changes in content are not also changes of context."
-								}
-                            ]
+                            "text": "When any component receives focus, it does not initiate a change of context."
                         },
                         {
                             "id": "WCAG2:on-input",
@@ -1546,14 +1539,7 @@
                             ],
                             "level": "A",
                             "handle": "On Input",
-                            "text": "Changing the setting of any user interface component does not automatically cause a change of context unless the user has been advised of the behavior before using the component.",
-                            "details":[
-								{
-									"type":"note",
-									"handle":"Note:",
-									"text":"A change of content is not always a change of context. This success criterion is automatically met if changes in content are not also changes of context."
-								}
-                            ]
+                            "text": "Changing the setting of any user interface component does not automatically cause a change of context unless the user has been advised of the behavior before using the component."
                         },
                         {
                             "id": "WCAG2:consistent-navigation",
@@ -1650,14 +1636,7 @@
                             ],
                             "level": "A",
                             "handle": "Labels or Instructions",
-                            "text": "Labels or instructions are provided when content requires user input.",
-							"details":[
-								{
-									"type":"note",
-									"handle":"Note:",
-									"text":"The techniques at the end of the above list should be considered “last resort” and only used when the other techniques cannot be applied to the page. The earlier techniques are preferred because they increase accessibility to a wider user group."
-								}
-                            ]
+                            "text": "Labels or instructions are provided when content requires user input."
                         },
                         {
                             "id": "WCAG2:error-suggestion",
