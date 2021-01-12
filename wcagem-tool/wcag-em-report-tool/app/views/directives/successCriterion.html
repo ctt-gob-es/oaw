@@ -35,7 +35,7 @@ ng-class="getClassName(assert.result.outcome)">
           </li>
         </ol>
         <p ng-if="detail.type === 'note'">
-          <em>{{ "AUDIT.NOTE" | translate }}:</em> {{ detail.text}}
+          <em>{{ detail.handle }}</em> <span ng-bind-html='detail.text'></span>
         </p>
       </div>
       <p>
