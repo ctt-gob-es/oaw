@@ -12,5 +12,6 @@ INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES (
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Timeout relanzamiento (ms)','timemout', '60');
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Anchura relanzamiento (niveles)','width', '10');
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Profundidad relanzamiento (niveles)','depth', '10');
+INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Relanzamientos automáticos','autorelaunch', '0');
 
 ALTER TABLE `tanalisis_accesibilidad` ADD `COD_FUENTE` MEDIUMTEXT;

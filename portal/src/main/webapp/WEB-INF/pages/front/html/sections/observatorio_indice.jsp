@@ -76,7 +76,75 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 var colNameName = '<bean:message key="observatory.extra.config.name"/>';
 var colNameValue = '<bean:message key="observatory.extra.config.value"/>';
 
+var yesText = '<bean:message key="select.yes"/>';
+var noText = '<bean:message key="select.no"/>';
+
 var $jq = $.noConflict();
+
+
+//Formatters de celdas
+function valueFormatter(cellvalue, options, rowObject) {
+	if (cellvalue =="true" || cellvalue =="false") {
+		if(cellvalue =="true"){
+			return '<select><option value=true selected>'+yesText+'</option><option value=false>'+noText+'</option></select>'
+		} else {
+			return '<select><option value=true>'+yesText+'</option><option value=false selected>'+noText+'</option></select>'
+		}
+
+		
+	} else {
+		return cellvalue;
+	}
+}
+
+
+function complexityEdit(cellvalue, options, rowObject) {
+	
+	var element = document.createElement('select');
+
+
+// 	if (cellvalue =="true" || cellvalue =="false") {
+// 		if(cellvalue =="true"){
+// 			return '<select><option value=true selected>'+yesText+'</option><option value=false>'+noText+'</option></select>'
+// 		} else {
+// 			return '<select><option value=true>'+yesText+'</option><option value=false selected>'+noText+'</option></select>'
+// 		}
+
+		
+// 	} else {
+// 		return cellvalue;
+// 	}
+
+return element;
+
+}
+
+function complexityEditValue(elem, operation, cellvalue) {
+
+// 	if (operation === 'get') {
+// 		if (cellvalue =="true" || cellvalue =="false") {
+// 			if(cellvalue =="true"){
+// 				return '<select><option value=true selected>'+yesText+'</option><option value=false>'+noText+'</option></select>'
+// 			} else {
+// 				return '<select><option value=true>'+yesText+'</option><option value=false selected>'+noText+'</option></select>'
+// 			}
+
+			
+// 		} else {
+// 			return cellvalue;
+// 		}
+// 	} else if (operation === 'set') {
+// 		$('input', elem).val(cellvalue);
+// 	}
+
+if (operation === 'get') {
+		return $(elem).val();
+	} else if (operation === 'set') {
+		$('select', elem).val(value);
+	}
+
+}
+
 
 	var scroll;
 	function reloadGrid(path) {
@@ -128,8 +196,13 @@ var $jq = $.noConflict();
 														{
 															name : "value",
 															width : 40,
-															editrules : {
-																required : true
+															formatter: valueFormatter,
+// 															editrules : {
+// 																required : true
+// 															},
+															editoptions : {
+																custom_element : complexityEdit,
+																custom_value : complexityEditValue
 															},
 															sortable : false,
 															align : "left"
