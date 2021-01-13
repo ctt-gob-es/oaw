@@ -14,5 +14,8 @@
     "INF_SUMMARY": "Proporcione un breve resumen de los resultados de la revisión para dar una visión general de los resultados. Por ejemplo, describa la accesibilidad general del sitio web y las principales observaciones que haya hecho durante la revisión, como los problemas y errores que se produzcan con frecuencia.",
     "LABEL_SPECIFICS": "Registro de los detalles de la revisión (opcional)",
     "INF_SPECIFICS": "WCAG-EM le sugiere que archive las páginas web auditadas. Para más información, acceda a <a href={{link_em_5b}} hreflang='en' title='WCAG-EM Paso 5.b: Registrar los detalles de la revisión (abre en nueva ventana)'>WCAG-EM Paso 5.b: Registrar los detalles de la revisión</a>. Puede utilizar este campo de texto para registrar las herramientas de revisión, los navegadores web, las tecnologías de asistencia, otros programas informáticos y los métodos utilizados para la revisión. Lo que introduzca aquí será incluido en el informe generado. Después de descargar el informe, podrá borrar o editar esta información en el archivo HTML antes de enviar el informe.",
-    "HD_CRITERIA_REPORT": "Resultados detallados de la auditoría"
+    "HD_CRITERIA_REPORT": "Resultados detallados de la auditoría",
+    "REPORT_FINISHED": "<strong>Revisión finalizada:</strong> Sí",
+    "REPORT_UNFINISHED": "<strong>Revisión finalizada:</strong> NO",
+    "REPORT_UNFINISHED_INFO": "Existen criterios de validación marcados como 'No testeado' o 'No decide'."
 }
