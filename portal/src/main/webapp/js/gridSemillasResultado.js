@@ -33,11 +33,17 @@ function ambitoFormatter(cellvalue, options, rowObject) {
 		return "";
 	}
 }
-function complejidadFormatter(cellvalue, options, rowObject) {
 
-		return "--complejidad--";
-	
+function scoreFormatter(cellvalue, options, rowObject) {
+	if (rowObject.score != null) {
+
+		return rowObject.score;
+
+	} else {
+		return "";
+	}
 }
+
 
 function complejidadFormatter(cellvalue, options, rowObject) {
 	if (rowObject.complejidad.name != null) {
@@ -239,6 +245,7 @@ function reloadGrid(originalPath, col, direction) {
 //													"Resultados", "Informe",
 //													"Relanzar", "Eliminar", "Observaciones" ],
 											colNames : translatedColNames,
+											multiSort: false,
 											colModel : [
 													{
 														name : "id",
@@ -728,6 +735,8 @@ function reloadGrid(originalPath, col, direction) {
 														align : "center",
 														width : 10,
 														editable : false,
+														template: "numberStr",
+														formatter: scoreFormatter, 
 													},
 													{
 														name : 'nivel',
@@ -842,7 +851,7 @@ function reloadGrid(originalPath, col, direction) {
 
 						// Recargar el grid
 						$('#grid').jqGrid('setGridParam', {
-							data : JSON.parse(ajaxJson)
+							data : JSON.parse(ajaxJson),
 						}).trigger('reloadGrid');
 						
 						

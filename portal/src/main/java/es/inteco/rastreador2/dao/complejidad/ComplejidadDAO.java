@@ -118,6 +118,58 @@ public final class ComplejidadDAO {
 	}
 
 	/**
+	 * Gets the complejidades obs.
+	 *
+	 * @param c           the c
+	 * @param tagsToFiler the tags to filer
+	 * @param exObsIds    the ex obs ids
+	 * @return the complejidades obs
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<ComplejidadForm> getComplejidadesObs(Connection c, String[] tagsToFiler, String[] exObsIds) throws SQLException {
+		final List<ComplejidadForm> results = new ArrayList<>();
+		String query = "SELECT DISTINCT cx.id_complejidad, cx.nombre, cx.profundidad, cx.amplitud FROM complejidades_lista cx JOIN lista l ON cx.id_complejidad = l.id_complejidad JOIN rastreo r ON r.semillas=l.id_lista LEFT JOIN semilla_etiqueta se ON se.id_lista=l.id_lista JOIN rastreos_realizados rr ON rr.id_rastreo = r.id_rastreo  ";
+		if (exObsIds != null && exObsIds.length > 0) {
+			query = query + "AND id_obs_realizado IN (" + exObsIds[0];
+			for (int i = 1; i < exObsIds.length; i++) {
+				query = query + "," + exObsIds[i];
+			}
+			query = query + ")";
+		}
+		if (tagsToFiler != null && tagsToFiler.length > 0) {
+			query = query + " AND ( 1=1 ";
+			for (int i = 0; i < tagsToFiler.length; i++) {
+				query = query + " OR se.id_etiqueta= ?";
+			}
+			query = query + ")";
+		}
+		query += "ORDER BY UPPER(cx.id_complejidad) ASC ";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			int paramNumber = 1;
+			if (tagsToFiler != null && tagsToFiler.length > 0) {
+				for (int i = 0; i < tagsToFiler.length; i++) {
+					ps.setLong(paramNumber, Long.parseLong(tagsToFiler[i]));
+					paramNumber++;
+				}
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					ComplejidadForm complejidadForm = new ComplejidadForm();
+					complejidadForm.setId(rs.getString("cx.id_complejidad"));
+					complejidadForm.setName(rs.getString("cx.nombre"));
+					complejidadForm.setProfundidad(rs.getInt("cx.profundidad"));
+					complejidadForm.setAmplitud(rs.getInt("cx.amplitud"));
+					results.add(complejidadForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ComplejidadDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return results;
+	}
+
+	/**
 	 * Exists complejidad.
 	 *
 	 * @param c           the c
@@ -256,8 +308,8 @@ public final class ComplejidadDAO {
 	/**
 	 * Gets the complexity by id.
 	 *
-	 * @param c              the c
-	 * @param complexityName the complexity name
+	 * @param c            the c
+	 * @param complexityId the complexity id
 	 * @return the complexity by id
 	 * @throws Exception the exception
 	 */

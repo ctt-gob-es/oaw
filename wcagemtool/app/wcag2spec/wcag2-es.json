@@ -41,27 +41,27 @@
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Controles, Entrada de datos",
+											"handle":"Controles, Entrada de datos:",
 											"text":"Si el contenido no textual es un control o acepta datos introducidos por el usuario, entonces tiene un nombre que describe su propósito. (Véase la Pauta 4.1 para requisitos adicionales sobre los controles y el contenido que aceptan entrada de datos)."
 										},
 										{
-											"handle":"Contenido multimedia tempodependiente",
-											"text":"i el contenido no textual es una presentación multimedia con desarrollo temporal, entonces las alternativas textuales proporcionan al menos una identificación descriptiva del contenido no textual. (Véase la Pauta 1.2 para requisitos adicionales sobre contenido multimedia)."
+											"handle":"Contenido multimedia tempodependiente:",
+											"text":"Si el contenido no textual es una presentación multimedia con desarrollo temporal, entonces las alternativas textuales proporcionan al menos una identificación descriptiva del contenido no textual. (Véase la Pauta 1.2 para requisitos adicionales sobre contenido multimedia)."
 										},
 										{
-											"handle":"Pruebas",
+											"handle":"Pruebas:",
 											"text":"Si el contenido no textual es una prueba o un ejercicio que no sería válido si se presentara en forma de texto, entonces las alternativas textuales proporcionan al menos una identificación descriptiva del contenido no textual."
 										},
 										{
-											"handle":"Sensorial",
+											"handle":"Sensorial:",
 											"text":"Si el contenido no textual tiene como objetivo principal el crear una experiencia sensorial específica, entonces las alternativas textuales proporcionan al menos una identificación descriptiva del contenido no textual."
 										},
 										{
-											"handle":"CAPTCHA",
+											"handle":"CAPTCHA:",
 											"text":"Si el propósito del contenido no textual es confirmar que quien está accediendo al contenido es una persona y no una computadora, entonces se proporcionan alternativas textuales que identifican y describen el propósito del contenido no textual y se proporcionan formas alternativas de CAPTCHA con modos de salida para distintos tipos de percepciones sensoriales, con el fin de acomodarse a las diferentes discapacidades"
 										},
 										{
-											"handle":"Decoración, Formato, Invisible",
+											"handle":"Decoración, Formato, Invisible:",
 											"text":"Si el contenido no textual es simple decoración, se utiliza únicamente para definir el formato visual o no se presenta a los usuarios, entonces se implementa de forma que pueda ser ignorado por las ayudas técnicas."
 										}
 									]
@@ -101,11 +101,11 @@
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Sólo audio grabado",
+											"handle":"Sólo audio grabado:",
 											"text":"Se proporciona una alternativa para los medios tempodependientes que presenta información equivalente para el contenido sólo audio grabado"
 										},
 										{
-											"handle":"Sólo vídeo grabado",
+											"handle":"Sólo vídeo grabado:",
 											"text":"Se proporciona una alternativa para los medios tempodependientes o se proporciona una pista sonora que presenta información equivalente al contenido del medio de sólo vídeo grabado."
 										}
 									]
@@ -153,8 +153,12 @@
 							"level":"AA",
 							"handle":"Subtítulos (en directo)",
 							"text":"Se proporcionan subtítulos para todo el contenido de audio en directo de los multimedia sincronizados.",
-							"sufficientNotes":[
-								"Los subtítulos pueden ser generados en tiempo real mediante la traducción de textos."
+							"details":[
+								{
+									"type":"note",
+									"handle":"Nota:",
+									"text":"Los subtítulos pueden ser generados utilizando el servicio de traducción de textos en tiempo real."
+								}
 							]
 						},
 						{
@@ -282,11 +286,11 @@
 							],
 							"level":"A",
 							"handle":"Características sensoriales",
-							"text":"Las instrucciones proporcionadas para entender y operar el contenido no dependen exclusivamente en las características sensoriales de los componentes como su forma, tamaño, ubicación visual, orientación o sonido. (Nivel A)\n\n",
+							"text":"Las instrucciones proporcionadas para entender y operar el contenido no dependen exclusivamente en las características sensoriales de los componentes como su forma, tamaño, ubicación visual, orientación o sonido. (Nivel A)",
 							"details":[
 								{
-									"type":"nota",
-									"handle":"Nota 1",
+									"type":"note",
+									"handle":"Nota:",
 									"text":"Para los requisitos relacionados con el color, véase la Pauta 1.4."
 								}
 							]
@@ -370,8 +374,8 @@
 							"text":"El color no se usa como único medio visual para transmitir la información, indicar una acción, solicitar una respuesta o distinguir un elemento visual. (Nivel A)",
 							"details":[
 								{
-									"type":"nota",
-									"handle":"Nota 1",
+									"type":"note",
+									"handle":"Nota:",
 									"text":"Este criterio de conformidad trata específicamente acerca de la percepción del color. En la Pauta 1.3 se recogen otras formas de percepción, incluyendo el acceso por software al color y a otros códigos de presentación visual."
 								}
 							]
@@ -391,8 +395,8 @@
 							"text":"Si el audio de una página web suena automáticamente durante más de 3 segundos, se proporciona ya sea un mecanismo para pausar o detener el audio, o un mecanismo para controlar el volumen del sonido que es independiente del nivel de volumen global del sistema. (Nivel A)",
 							"details":[
 								{
-									"type":"nota",
-									"handle":"Nota 1",
+									"type":"note",
+									"handle":"Nota:",
 									"text":"En la medida en que cualquier contenido que no satisfaga este criterio puede interferir con la capacidad del usuario de emplear la página en su conjunto, todo contenido de la página web (tanto si satisface o no otros criterios de conformidad) debe satisfacer este criterio. Véase Requisito de Conformidad 5: Sin interferencia."
 								}
 							]
@@ -415,15 +419,15 @@
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Texto Grande",
+											"handle":"Texto Grande:",
 											"text":"El texto y las imágenes a gran escala de texto a gran escala tienen una relación de contraste de al menos 3:1;"
 										},
 										{
-											"handle":"Incidental",
+											"handle":"Incidental:",
 											"text":"El texto o las imágenes de texto que forman parte de un componente inactivo de la interfaz de usuario, que son pura decoración, que no son visibles para nadie, o que forman parte de una imagen que contiene otro contenido visual significativo, no tienen requisitos de contraste."
 										},
 										{
-											"handle":"Logotipos",
+											"handle":"Logotipos:",
 											"text":"El texto que forma parte de un logotipo o marca no tiene un requisito de contraste mínimo."
 										}
 									]
@@ -462,18 +466,18 @@
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Personalizable",
+											"handle":"Personalizable:",
 											"text":"La imagen del texto se puede personalizar visualmente según las necesidades del usuario;"
 										},
 										{
-											"handle":"Esencial",
+											"handle":"Esencial:",
 											"text":"Una presentación particular del texto es esencial para la información que se transmite."
 										}
 									]
 								},
 								{
-									"type":"nota",
-									"handle":"Nota 1",
+									"type":"note",
+									"handle":"Nota:",
 									"text":"Los logotipos (texto que forma parte de un logotipo o marca) se consideran esenciales."
 								}
 							]
@@ -496,15 +500,15 @@
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Textos grandes",
+											"handle":"Textos grandes:",
 											"text":"Los textos de gran tamaño y las imágenes de texto de gran tamaño tienen una relación de contraste de, al menos, 4.5:1."
 										},
 										{
-											"handle":"Incidental",
+											"handle":"Incidental:",
 											"text":"Los textos o imágenes de texto que forman parte de un componente de la interfaz de usuario inactivo, que son simple decoración, que no resultan visibles para nadie o forman parte de una imagen que contiene otros elementos visuales significativos, no tienen requisitos de contraste."
 										},
 										{
-											"handle":"Logotipos",
+											"handle":"Logotipos:",
 											"text":"El texto que forma parte de un logo o nombre de marca no tiene requisitos de contraste mínimo."
 										}
 									]
@@ -529,15 +533,15 @@
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Ningún sonido de fondo",
+											"handle":"Ningún sonido de fondo:",
 											"text":"El audio no contiene sonidos de fondo."
 										},
 										{
-											"handle":"Apagar",
+											"handle":"Apagar:",
 											"text":"Los sonidos de fondo pueden ser apagados."
 										},
 										{
-											"handle":"20 dB",
+											"handle":"20 dB:",
 											"text":"Los sonidos de fondo son, al menos, 20 decibelios más bajos que el discurso en primer plano, con la excepción de sonidos ocasionales que duran solamente uno o dos segundos."
 										}
 									]
@@ -562,23 +566,18 @@
 									"type":"olist",
 									"items":[
 										{
-											"handle":"",
 											"text":"Los colores de fondo y primer plano pueden ser elegidos por el usuario."
 										},
 										{
-											"handle":"",
 											"text":"El ancho no es mayor de 80 caracteres o signos (40 si es CJK)."
 										},
 										{
-											"handle":"",
 											"text":"El texto no está justificado (alineado a los márgenes izquierdo y derecho a la vez)."
 										},
 										{
-											"handle":"",
 											"text":"El espacio entre líneas (interlineado) es de, al menos, un espacio y medio dentro de los párrafos y el espacio entre párrafos es, al menos, 1.5 veces mayor que el espacio entre líneas."
 										},
 										{
-											"handle":"",
 											"text":"El texto se ajusta sin ayudas técnicas hasta un 200 por ciento de modo tal que no requiere un desplazamiento horizontal para leer una línea de texto en una ventana a pantalla completa."
 										}
 									]
@@ -600,8 +599,8 @@
 							"text":"Las imágenes de texto sólo se utilizan como simple decoración o cuando una forma de presentación particular del texto resulta esencial para la información transmitida. (Nivel AAA)",
 							"details":[
 								{
-									"type":"nota",
-									"handle":"Nota 1",
+									"type":"note",
+									"handle":"Nota:",
 									"text":"Los logotipos (textos que son parte de un logo o de un nombre de marca) se consideran esenciales."
 								}
 							]
@@ -626,12 +625,11 @@
 										},
 										{
 											"text":"Contenido de desplazamiento horizontal a una altura equivalente a 256 píxeles CSS;"
+										},
+										{
+											"text":"Excepto para partes del contenido que requieren un diseño bidimensional para su uso o significado."
 										}
 									]
-								},
-								{
-									"type":"p",
-									"text":"Excepto para partes del contenido que requieren un diseño bidimensional para su uso o significado."
 								}
 							]
 						},
@@ -651,11 +649,11 @@
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Componentes de la interfaz de usuario",
+											"handle":"Componentes de la interfaz de usuario:",
 											"text":"Información visual necesaria para identificar los componentes y estados de la interfaz de usuario, excepto en el caso de los componentes inactivos o cuando la apariencia del componente es determinada por el agente de usuario y no modificada por el autor;"
 										},
 										{
-											"handle":"Objetos gráficos",
+											"handle":"Objetos gráficos:",
 											"text":"Partes de los gráficos necesarios para comprender"
 										}
 									]
@@ -709,15 +707,15 @@
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Puede retirarse",
+											"handle":"Puede retirarse:",
 											"text":"Un mecanismo está disponible para descartar el contenido adicional sin mover el puntero o el foco del teclado, a menos que el contenido adicional comunique un error de entrada o no oscurezca o reemplace otro contenido;"
 										},
 										{
-											"handle":"Hoverable",
+											"handle":"Hoverable:",
 											"text":"Si el puntero puede activar el contenido adicional, entonces el puntero puede moverse sobre el contenido adicional sin que el contenido adicional desaparezca;"
 										},
 										{
-											"handle":"Persistente",
+											"handle":"Persistente:",
 											"text":"El contenido adicional permanece visible hasta que se elimina el cursor o el disparador de enfoque, el usuario lo despide o su información deja de ser válida."
 										}
 									]
@@ -766,13 +764,13 @@
 							"text":"Toda la funcionalidad del contenido es operable a través de una interfaz de teclado sin que se requiera una determinada velocidad para cada pulsación individual de las teclas, excepto cuando la función interna requiere de una entrada que depende del trayecto de los movimientos del usuario y no sólo de los puntos inicial y final. (Nivel A)",
 							"details":[
 								{
-									"type":"nota",
-									"handle":"Nota 1",
+									"type":"note",
+									"handle":"Nota 1:",
 									"text":"Esta excepción se refiere a la función subyacente, no a la técnica de entrada de datos. Por ejemplo, si la entrada de texto se hace por medio de escritura a mano, la técnica de entrada (escritura a mano) depende del trazo (ruta trazada) pero la función interna (introducir texto) no."
 								},
 								{
-									"type":"nota",
-									"handle":"Nota 2",
+									"type":"note",
+									"handle":"Nota 2:",
 									"text":"Esto no prohíbe ni debería desanimar a los autores a proporcionar entrada de ratón u otros métodos de entrada de datos adicionales a la operabilidad a través del teclado."
 								}
 							]
@@ -792,8 +790,8 @@
 							"text":"Si es posible mover el foco a un componente de la página usando una interfaz de teclado, entonces el foco se puede quitar de ese componente usando sólo la interfaz de teclado y, si se requiere algo más que las teclas de dirección o de tabulación, se informa al usuario el método apropiado para mover el foco. (Nivel A)",
 							"details":[
 								{
-									"type":"nota",
-									"handle":"Nota 1",
+									"type":"note",
+									"handle":"Nota:",
 									"text":"En la medida en que cualquier contenido que no satisfaga este criterio puede interferir con la capacidad del usuario para emplear la página por completo, todo contenido de la página web (tanto si satisface o no otros criterios de conformidad) debe satisfacer este criterio. Véase Requisito de Conformidad 5: Sin interferencia."
 								}
 							]
@@ -821,22 +819,19 @@
 								"2.1"
 							],
 							"level":"A",
-							"handle":"Atajos con teclas de carcteres",
+							"handle":"Atajos con teclas de caracteres",
 							"text":"En el caso de que para activar los elementos de interacción (enlaces, botones, etc.) se empleen atajos de teclado usando una única letra, signo de puntuación, número o símbolo entonces se debe cumplir al menos una de las siguientes condiciones:",
 							"details":[
 								{
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Apague",
 											"text":"Existe un mecanismo que permite desactivar el atajo de teclado"
 										},
 										{
-											"handle":"Reasignación de",
 											"text":"Existe un mecanismo que permite reasignar el atajo de teclado para emplear en su lugar otra tecla no imprimible (ej, Ctrl, Alt, etc.)"
 										},
 										{
-											"handle":"Activo sólo en el foco",
 											"text":"El atajo de teclado sólo se puede activar cuando el componente tiene el foco del teclado."
 										}
 									]
@@ -876,35 +871,35 @@
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Apagar",
+											"handle":"Apagar:",
 											"text":"El usuario puede desactivar el límite de tiempo antes de encontrarse con ella; o"
 										},
 										{
-											"handle":"Ajustar",
+											"handle":"Ajustar:",
 											"text":"El usuario puede ajustar el límite de tiempo antes de alcanzar dicho límite en un rango amplio que es, al menos, diez veces"
 										},
 										{
-											"handle":"Extender",
-											"text":"e advierte al usuario antes de que el tiempo expire y se le conceden al menos 20 segundos para extender el límite temporal con una acción simple (por ejemplo, \"presione la barra de espacio\") y el usuario puede extender ese límite de tiempo al menos diez veces; o"
+											"handle":"Extender:",
+											"text":"Se advierte al usuario antes de que el tiempo expire y se le conceden al menos 20 segundos para extender el límite temporal con una acción simple (por ejemplo, \"presione la barra de espacio\") y el usuario puede extender ese límite de tiempo al menos diez veces; o"
 										},
 										{
-											"handle":"De excepciones en tiempo Real",
+											"handle":"De excepciones en tiempo Real:",
 											"text":"El límite de tiempo es una parte necesaria de eventos en tiempo real (por ejemplo, una subasta), y no hay alternativa para el límite de tiempo es posible; o"
 										},
 										{
-											"handle":"Excepción",
+											"handle":"Excepción:",
 											"text":"El límite de tiempo es esencial y la ampliación de invalidaría la actividad; o"
 										},
 										{
-											"handle":"Excepción de 20 horas",
+											"handle":"Excepción de 20 horas:",
 											"text":"El límite de tiempo es de más de 20 horas."
 										}
-									]
+									]	
 								},
 								{
-									"type":"nota",
-									"handle":"Nota 1",
-									"text":"Este criterio de éxito ayuda a garantizar que los usuarios pueden completar las tareas sin inesperados cambios en el contenido o contexto en el que son el resultado de un límite de tiempo. Este criterio de éxito debe ser considerado conjuntamente con el Criterio de Éxito 3.2.1, que pone límites a los cambios de contenido o el contexto, como resultado de una acción del usuario."
+									"type":"note",
+									"handle":"Nota:",
+									"text":"Este criterio de conformidad ayuda a garantizar que los usuarios pueden completar las tareas sin cambios inesperados en el contenido o contexto que son el resultado de un límite de tiempo. Este criterio debe ser considerado conjuntamente con el criterio de conformidad 3.2.1, que pone límites a los cambios de contenido o el contexto, como resultado de una acción del usuario."
 								}
 							]
 						},
@@ -926,34 +921,34 @@
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Movimiento, parpadeo, desplazamiento",
+											"handle":"Movimiento, parpadeo, desplazamiento:",
 											"text":"Para toda información que se mueve, parpadea o se desplaza, que (1) comienza automáticamente, (2) dura más de cinco segundos y (3) se presenta en paralelo con otro contenido, existe un mecanismo para que el usuario la pueda poner en pausa, detener u ocultar, a menos que el movimiento, parpadeo o desplazamiento sea parte esencial de una actividad; y"
 										},
 										{
-											"handle":"Actualización automática",
+											"handle":"Actualización automática:",
 											"text":"Para toda información que se actualiza automáticamente, que (1) se inicia automáticamente y (2) se presenta …"
 										}
 									]
 								},
 								{
-									"type":"nota",
-									"handle":"Nota 1",
+									"type":"note",
+									"handle":"Nota 1:",
 									"text":"Para los requisitos relacionados con el parpadeo o el destello de contenido, véase la Pauta 2.3"
 								},
 								{
-									"type":"nota",
-									"handle":"Nota 2",
+									"type":"note",
+									"handle":"Nota 2:",
 									"text":"En la medida en que cualquier contenido que no satisfaga este criterio puede interferir con la capacidad del usuario para emplear la página como un todo, todo contenido de la página web (tanto si satisface o no otros criterios de conformidad) debe satisfacer este criterio. Véase Requisito de Conformidad 5: Sin interferencia."
 								},
 								{
-									"type":"nota",
-									"handle":"Nota 3",
+									"type":"note",
+									"handle":"Nota 3:",
 									"text":"Para el contenido que es actualizado periódicamente por medio de un software, o que se sirve a la aplicación de usuario por medio de streaming, no hay obligación de preservar o presentar la información que ha sido generada o recibida entre el inicio de la pausa y el reinicio de la presentación; no sólo podría no ser técnicamente posible, sino que además en muchas ocasiones podría ser erróneo o engañoso hacerlo."
 								},
 								{
-									"type":"nota",
-									"handle":"Nota 4",
-									"text":"Una animación que ocurre como parte de una fase de precarga de un contenido o una situación similar puede ser considerada esencial si no se permite interacción a ningún usuario durante esa fase, y si el hecho de no indicar el progreso pudiera confundir a los usuarios y hacerles creer que ha habido un fallo en el contenido.\n\nCómo cumplir 2.2.2 |Comprender 2.2.2\n\n"
+									"type":"note",
+									"handle":"Nota 4:",
+									"text":"Una animación que ocurre como parte de una fase de precarga de un contenido o una situación similar puede ser considerada esencial si no se permite interacción a ningún usuario durante esa fase, y si el hecho de no indicar el progreso pudiera confundir a los usuarios y hacerles creer que ha habido un fallo en el contenido."
 								}
 							]
 						},
@@ -1041,8 +1036,8 @@
 							"text":"Las páginas web no contienen nada que destelle más de tres veces en un segundo, o el destello está por debajo del umbral de destello general y de destello rojo. (Nivel A)",
 							"details":[
 								{
-									"type":"nota",
-									"handle":"Nota 1",
+									"type":"note",
+									"handle":"Nota:",
 									"text":"En la medida en que cualquier contenido que no satisfaga este criterio puede interferir con la capacidad del usuario para emplear la página como un todo, todo contenido de la página web (tanto si satisface o no otros criterios de conformidad) debe satisfacer este criterio. Véase Requisito de Conformidad 5: Sin interferencia."
 								}
 							]
@@ -1171,8 +1166,12 @@
 							"level":"AA",
 							"handle":"Encabezados y etiquetas",
 							"text":"Los encabezados y etiquetas describen el tema o propósito. (Nivel AA)",
-							"sufficientNotes":[
-								"Los encabezados y etiquetas deben ser de programación determinado, por <a href='#contenido-estructura-separación-programático'>Criterio de Éxito 1.3.1</a>."
+							"details":[
+								{
+									"type":"note",
+									"handle":"Nota:",
+									"text":"Los encabezados y etiquetas deben determinarse mediante programación, según el criterio de conformidad 1.3.1."
+								}
 							]
 						},
 						{
@@ -1232,12 +1231,12 @@
 							"text":"Se usan encabezados de sección para organizar el contenido. (Nivel AAA)",
 							"details":[
 								{
-									"type":"nota",
+									"type":"note",
 									"handle":"Nota 1",
 									"text":"\"Encabezados\" se usa en sentido general e incluye los títulos y otras formas de agregar encabezados a las distintos tipos de contenido."
 								},
 								{
-									"type":"nota",
+									"type":"note",
 									"handle":"Nota 2",
 									"text":"Este criterio de conformidad se refiere al contenido propiamente dicho, no a los componentes de la interfaz de usuario. Los componentes de la interfaz de usuario se tratan en el Criterio de Conformidad 4.1.2."
 								}
@@ -1284,20 +1283,20 @@
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Sin evento descendente",
-											"text":"el evento descendente del puntero no se utiliza para ejecutar ninguna parte de la función;"
+											"handle":"Sin evento descendente:",
+											"text":"El evento descendente del puntero no se utiliza para ejecutar ninguna parte de la función;"
 										},
 										{
-											"handle":"Abortar o Deshacer",
-											"text":"la finalización de la función está en el evento up, y hay un mecanismo disponible para abortar la función antes de que se complete o para deshacer la función después de que se complete;"
+											"handle":"Abortar o Deshacer:",
+											"text":"La finalización de la función está en el evento up, y hay un mecanismo disponible para abortar la función antes de que se complete o para deshacer la función después de que se complete;"
 										},
 										{
-											"handle":"Inversión ascendente",
-											"text":"el evento ascendente invierte cualquier resultado del evento descendente anterior;"
+											"handle":"Inversión ascendente:",
+											"text":"El evento ascendente invierte cualquier resultado del evento descendente anterior;"
 										},
 										{
-											"handle":"Esencial",
-											"text":"completar la función en el evento descendente es esencial."
+											"handle":"Esencial:",
+											"text":"Completar la función en el evento descendente es esencial."
 										}
 									]
 								}
@@ -1331,12 +1330,12 @@
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Interfaz compatible",
-											"text":"el movimiento se utiliza para operar la funcionalidad a través de una interfaz compatible de accesibilidad;"
+											"handle":"Interfaz compatible:",
+											"text":"El movimiento se utiliza para operar la funcionalidad a través de una interfaz compatible de accesibilidad;"
 										},
 										{
-											"handle":"Esencial",
-											"text":"el movimiento es esencial para la función y hacerlo invalidaría la actividad."
+											"handle":"Esencial:",
+											"text":"El movimiento es esencial para la función y hacerlo invalidaría la actividad."
 										}
 									]
 								}
@@ -1358,19 +1357,19 @@
 									"type":"ulist",
 									"items":[
 										{
-											"handle":"Equivalente",
+											"handle":"Equivalente:",
 											"text":"El objetivo está disponible a través de un enlace o control equivalente en la misma página que tiene al menos 44 por 44 píxeles CSS;"
 										},
 										{
-											"handle":"En línea",
+											"handle":"En línea:",
 											"text":"El objetivo está en una frase o bloque de texto;"
 										},
 										{
-											"handle":"Control del agente de usuario",
+											"handle":"Control del agente de usuario:",
 											"text":"El tamaño del objetivo es determinado por el agente usuario y no es modificado por el autor;"
 										},
 										{
-											"handle":"Esencial",
+											"handle":"Esencial:",
 											"text":"Una presentación particular del objetivo es esencial para la información que se transmite."
 										}
 									]
@@ -1485,8 +1484,12 @@
 							"level":"AAA",
 							"handle":"Nivel de lectura",
 							"text":"Cuando un texto requiere un nivel de lectura más avanzado que el nivel mínimo de educación secundaria una vez que se han eliminado nombres propios y títulos, se proporciona un contenido suplementario o una versión que no requiere un nivel de lectura mayor a ese nivel educativo. (Nivel AAA)",
-							"sufficientNotes":[
-								"Diferentes sitios de mayo de dirección de este Criterio de Éxito de diferentes maneras. Una versión en audio del contenido puede ser útil para algunos usuarios. Para algunas personas que son sordas, una versión en lenguaje de signos de la página puede ser más fácil de comprender que el lenguaje escrito, versión, ya que la lengua de señas puede ser su primer idioma. Algunos sitios pueden decidir hacer ambas cosas u otras combinaciones. Una técnica que ayudará a todos los usuarios que tienen dificultad. Tan diferentes técnicas se proporcionan suficiente de las técnicas aquí para los autores, tratando de hacer que sus sitios sean más accesibles. Cualquier numeradas de la técnica o la combinación puede ser utilizada por un sitio en particular y es considerada suficiente por el Grupo de Trabajo."
+							"details":[
+								{
+									"type":"note",
+									"handle":"Nota:",
+									"text":"Diferentes sitios pueden abordar este criterio de conformidad de diferentes maneras. Una versión de audio del contenido puede ser útil para algunos usuarios. Para algunas personas sordas, una versión en lenguaje de signos de la página puede ser más fácil de entender que una versión en lenguaje escrito, ya que el lenguaje de signos puede ser su primera lengua. Algunos sitios pueden decidir hacer ambas o bien otras combinaciones. Ninguna técnica ayudará a todos los usuarios que tengan dificultades. Por lo tanto, aquí se proporcionan diferentes técnicas como técnicas suficientes para los autores que intentan hacer que sus sitios sean más accesibles. Cualquier técnica o combinación de las numeradas anteriormente puede ser utilizada por un sitio web determinado. El grupo de trabajo de W3C así lo considera suficiente."
+								}	
 							]
 						},
 						{
@@ -1530,10 +1533,7 @@
 							],
 							"level":"A",
 							"handle":"Al recibir el foco",
-							"text":"Cuando cualquier componente recibe el foco, no inicia ningún cambio en el contexto. (Nivel A)",
-							"sufficientNotes":[
-								"Un cambio de contenido no es siempre un cambio de contexto. Este criterio de éxito es automáticamente se reunió si los cambios en los contenidos no son también los cambios de contexto."
-							]
+							"text":"Cuando cualquier componente recibe el foco, no inicia ningún cambio en el contexto. (Nivel A)"
 						},
 						{
 							"id":"WCAG2:on-input",
@@ -1547,10 +1547,7 @@
 							],
 							"level":"A",
 							"handle":"Al recibir entradas",
-							"text":"El cambio de estado en cualquier componente de la interfaz de usuario no provoca automáticamente un cambio en el contexto a menos que el usuario haya sido advertido de ese comportamiento antes de usar el componente. (Nivel A)",
-							"sufficientNotes":[
-								"Un cambio de contenido no es siempre un cambio de contexto. Este criterio de éxito es automáticamente se reunió si los cambios en los contenidos no son también los cambios de contexto."
-							]
+							"text":"El cambio de estado en cualquier componente de la interfaz de usuario no provoca automáticamente un cambio en el contexto a menos que el usuario haya sido advertido de ese comportamiento antes de usar el componente. (Nivel A)"
 						},
 						{
 							"id":"WCAG2:consistent-navigation",
@@ -1579,9 +1576,17 @@
 							"level":"AA",
 							"handle":"Identificación coherente",
 							"text":"Los componentes que tienen la misma funcionalidad dentro de un conjunto de páginas web son identificados de manera coherente. (Nivel AA)",
-							"sufficientNotes":[
-								"Alternativas de texto que son \"consistentes\", no siempre son \"idénticos\". Por ejemplo, usted puede tener una gráfica de flecha en la parte inferior de una página Web que enlace a la siguiente página Web. El texto alternativo puede decir \"Ir a la página 4.\" Naturalmente, no sería conveniente repetir este texto exacto alternativa en la siguiente página Web. Sería más apropiado decir \"Ir a la página 5\". Aunque estas alternativas de texto no sería idéntico, que sea consistente, y por lo tanto satisfacer este Criterio de Éxito.",
-								"Una sola no-texto-contenido-objeto puede ser utilizado para servir a diferentes funciones. En tales casos, las diferentes alternativas de texto son necesarios y deben ser utilizados. Ejemplos pueden ser encontrados comúnmente con el uso de iconos, tales como marcas de verificación, cruz marcas y señales de tráfico. Sus funciones pueden ser diferentes dependiendo del contexto de la página Web. Un icono de marca de verificación puede funcionar como \"aprobado\", \"terminada\", o \"incluido\", para nombrar unos pocos, dependiendo de la situación. El uso de \"marca de verificación\" como texto alternativo en todas las páginas Web no ayuda a los usuarios a comprender la función del icono. Diferentes alternativas de texto puede ser utilizado cuando el mismo contenido no textual que sirve para múltiples funciones."
+							"details":[
+								{
+									"type":"note",
+									"handle":"Nota 1:",
+									"text":"Las alternativas textuales que son \"conherentes\", no siempre son \"idénticas\". Por ejemplo, usted puede tener una imagen de una flecha en la parte inferior de una página web que enlace a la siguiente página. El texto alternativo puede decir: \"Ir a la página 4\". Naturalmente, no sería conveniente repetir este texto alternativ exacto en la siguiente página. Sería más apropiado decir: \"Ir a la página 5\". Aunque estas alternativas textuales no serían idénticas, serían consistentes y, por lo tanto, cumplirían con este criterio de conformidad."
+								},
+								{								
+									"type":"note",
+									"handle":"Nota 2:",
+									"text":"Se puede utilizar un único elemento sin contenido de texto para cumplir funciones diferentes. En tales casos, son necesarias y deben usarse diferentes alternativas textuales. Los ejemplos se pueden encontrar comúnmente con el uso de iconos como marcas de verificación, cruces y señales de tráfico. Sus funciones pueden ser diferentes según el contexto de la página web. Un icono de marca de verificación puede funcionar como \"aprobado\", \"terminada\", o \"incluido\", para nombrar unos pocos, dependiendo de la situación. El uso de \"marca de verificación\" como texto alternativo en todas las páginas web no ayuda a los usuarios a comprender la función del icono. Se pueden usar diferentes alternativas de texto cuando el mismo contenido que no es de texto cumple múltiples funciones."
+								}
 							]
 						},
 						{
@@ -1639,10 +1644,7 @@
 							],
 							"level":"A",
 							"handle":"Etiquetas o instrucciones",
-							"text":"Se proporcionan etiquetas o instrucciones cuando el contenido requiere la introducción de datos por parte del usuario. (Nivel A)",
-							"sufficientNotes":[
-								"Las técnicas al final de la lista anterior debe ser considerado como \"último recurso\" y sólo se utilizan cuando las otras técnicas no pueden ser aplicados a la página. Las anteriores técnicas son las preferidas porque a aumentar la accesibilidad a un amplio grupo de usuarios."
-							]
+							"text":"Se proporcionan etiquetas o instrucciones cuando el contenido requiere la introducción de datos por parte del usuario. (Nivel A)"
 						},
 						{
 							"id":"WCAG2:error-suggestion",
@@ -1676,15 +1678,15 @@
 									"type":"olist",
 									"items":[
 										{
-											"handle":"Reversible",
+											"handle":"Reversible:",
 											"text":"El envío es reversible."
 										},
 										{
-											"handle":"Revisado",
+											"handle":"Revisado:",
 											"text":"Se verifica la información para detectar errores en la entrada de datos y se proporciona al usuario una oportunidad de corregirlos."
 										},
 										{
-											"handle":"Confirmado",
+											"handle":"Confirmado:",
 											"text":"Se proporciona un mecanismo para revisar, confirmar y corregir la información antes de finalizar el envío de los datos."
 										}
 									]
@@ -1723,15 +1725,15 @@
 									"type":"olist",
 									"items":[
 										{
-											"handle":"Reversible",
+											"handle":"Reversible:",
 											"text":"El envío es reversible."
 										},
 										{
-											"handle":"Revisado",
+											"handle":"Revisado:",
 											"text":"Se verifica la información para detectar errores en la entrada de datos y se proporciona al usuario una oportunidad de corregirlos."
 										},
 										{
-											"handle":"Confirmado",
+											"handle":"Confirmado:",
 											"text":"Se proporciona un mecanismo para revisar, confirmar y corregir la información antes de finalizar el envío de los datos."
 										}
 									]
@@ -1780,8 +1782,8 @@
 							"text":"En los contenidos implementados mediante el uso de lenguajes de marcas, los elementos tienen las etiquetas de apertura y cierre completas; los elementos están anidados de acuerdo a sus especificaciones; los elementos no contienen atributos duplicados y los ID son únicos, excepto cuando las especificaciones permitan estas características. (Nivel A)",
 							"details":[
 								{
-									"type":"nota",
-									"handle":"Nota 1",
+									"type":"note",
+									"handle":"Nota:",
 									"text":"Las etiquetas de apertura y cierre a las que les falte un carácter crítico para su formación, como un signo de \"mayor qué\", o en las que falten las comillas de apertura o cierre en el valor de un atributo, no se consideran completas."
 								}
 							]
@@ -1801,8 +1803,8 @@
 							"text":"Para todos los componentes de la interfaz de usuario (incluyendo pero no limitado a: elementos de formulario, enlaces y componentes generados por scripts), el nombre y la función pueden ser determinados por software; los estados, propiedades y valores que pueden ser asignados por el usuario pueden ser especificados por software; y los cambios en estos elementos se encuentran disponibles para su consulta por las aplicaciones de usuario, incluyendo las ayudas técnicas. (Nivel A)",
 							"details":[
 								{
-									"type":"nota",
-									"handle":"Nota 1",
+									"type":"note",
+									"handle":"Nota:",
 									"text":"Este criterio de conformidad se dirige principalmente a los autores web que desarrollan o programan sus propios componentes de interfaz de usuario. Por ejemplo, los controles estándar de HTML satisfacen automáticamente este criterio cuando se emplean de acuerdo con su especificación."
 								}
 							]

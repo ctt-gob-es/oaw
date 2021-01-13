@@ -42,6 +42,9 @@ angular.module('wcagReporter')
       id: '',
       description: undefined,
       title: '',
+      pageType : '',
+      breadcrumb: '',
+      elements:'',
       tested: false,
       selected: false,
       displayTitle: function () {

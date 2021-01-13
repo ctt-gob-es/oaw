@@ -9,3 +9,7 @@
 **/.metadata
 **/.sts4-cache
 **/.history
+**/.vscode
+**/.attach_*
+update-code.sh
+profiles/

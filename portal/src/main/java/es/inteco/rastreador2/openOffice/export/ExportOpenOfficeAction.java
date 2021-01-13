@@ -87,11 +87,27 @@ public class ExportOpenOfficeAction extends Action {
 					} else {
 						request.setAttribute("ambito", "");
 					}
+					request.setAttribute(Constants.APPLICATION, application);
 					request.setAttribute("plantillas", PlantillaDAO.findAll(connection, -1));
 					request.setAttribute(Constants.ID_OBSERVATORIO, request.getParameter(Constants.ID_OBSERVATORIO));
 					request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null));
 					request.setAttribute(Constants.ID_CARTUCHO, idCartucho);
 					return mapping.findForward(Constants.CONFIGURAR_FILTROS_AGREGADOS);
+				} else if (Constants.NORMATIVA_ACCESIBILIDAD.equals(application)) {
+					// TODO
+					AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryId(connection, idObservatory);
+					if (ambito != null) {
+						request.setAttribute("ambito", ambito.getDescripcion());
+					} else {
+						request.setAttribute("ambito", "");
+					}
+					request.setAttribute(Constants.APPLICATION, application);
+					request.setAttribute("plantillas", PlantillaDAO.findAll(connection, -1));
+					request.setAttribute(Constants.ID_OBSERVATORIO, request.getParameter(Constants.ID_OBSERVATORIO));
+					request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null));
+					request.setAttribute(Constants.ID_CARTUCHO, idCartucho);
+					return mapping.findForward(Constants.CONFIGURAR_FILTROS_AGREGADOS);
+					// TODO VALORATE ALTERNATIVE FORWRADreturn mapping.findForward(Constants.CONFIGURAR_FILTROS_AGREGADOS_ACC);
 				} else {
 					return generateReportWithoutFilters(mapping, request, response, idExecution, idObservatory);
 				}

@@ -120,4 +120,51 @@ public class AmbitoDAO {
 		}
 		return results;
 	}
+
+	/**
+	 * Gets the ambitos primarios.
+	 *
+	 * @param c      the c
+	 * @param nombre the nombre
+	 * @param page   the page
+	 * @return the ambitos primarios
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<AmbitoForm> getAmbitosPrimarios(Connection c, String nombre, int page) throws SQLException {
+		final List<AmbitoForm> results = new ArrayList<>();
+		String query = "SELECT a.id_ambito, a.nombre, a.descripcion FROM ambitos_lista a WHERE 1=1 ";
+		if (StringUtils.isNotEmpty(nombre)) {
+			query += " AND UPPER(a.nombre) like UPPER(?) ";
+		}
+		query += "ORDER BY UPPER(a.id_ambito) ASC ";
+		if (page != Constants.NO_PAGINACION) {
+			query += "LIMIT ? OFFSET ?";
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			int count = 1;
+			if (StringUtils.isNotEmpty(nombre)) {
+				ps.setString(count++, "%" + nombre + "%");
+			}
+			if (page != Constants.NO_PAGINACION) {
+				PropertiesManager pmgr = new PropertiesManager();
+				int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
+				int resultFrom = pagSize * page;
+				ps.setInt(count++, pagSize);
+				ps.setInt(count, resultFrom);
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					AmbitoForm ambitoForm = new AmbitoForm();
+					ambitoForm.setId(rs.getString("a.id_ambito"));
+					ambitoForm.setName(rs.getString("a.nombre"));
+					ambitoForm.setDescripcion(rs.getString("a.descripcion"));
+					results.add(ambitoForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ComplejidadDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return results;
+	}
 }

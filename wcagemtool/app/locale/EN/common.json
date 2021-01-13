@@ -12,5 +12,5 @@
     "TO_TOP": "Back to top",
     "ACTIVE": "Active",
     "FOOTER_OAW_COPYRIGHT": "Observatorio de Accesibilidad Web - Ministerio de Asuntos Económicos y Transformación Digital · Secretaría General de Administración Digital",
-    "FOOTER_OAW_BASED": "Based on <a href={{url1}}>report tool</a> of <a href={{url2}}>W3C</a> and <a href={{url3}}>WAI</a> initiative"
+    "FOOTER_OAW_BASED": "Based on <a href={{url1}} title='report tool (opens in new window)'>report tool</a> of <a href={{url2}}>W3C</a> and <a href={{url3}} title='WAI (opens in new window)'>WAI</a> initiative"
 }

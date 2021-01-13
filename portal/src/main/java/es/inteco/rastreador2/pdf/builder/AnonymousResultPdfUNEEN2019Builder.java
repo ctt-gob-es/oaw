@@ -58,7 +58,7 @@ public class AnonymousResultPdfUNEEN2019Builder extends AnonymousResultPdfBuilde
 	 */
 	@Override
 	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, final String observatoryId, String filePath) throws Exception {
-		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true, null, null);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true, null, null, null);
 	}
 
 	/**
@@ -75,9 +75,9 @@ public class AnonymousResultPdfUNEEN2019Builder extends AnonymousResultPdfBuilde
 	 */
 	@Override
 	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, final String observatoryId, String filePath, String[] tagsFilter,
-			String[] exObsIds) throws Exception {
+			final String[] tagsFilterFixed, String[] exObsIds) throws Exception {
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true, tagsFilter,
-				exObsIds);
+				tagsFilterFixed, exObsIds);
 	}
 
 	/**

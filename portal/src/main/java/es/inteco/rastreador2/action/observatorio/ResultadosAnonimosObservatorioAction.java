@@ -292,7 +292,7 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 				if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
 					final Map<String, Object> graphics = ResultadosAnonimosObservatorioAccesibilidadUtils.generateGlobalGraphics(
 							MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), request.getParameter(Constants.ID), graphicsPath, categories,
-							pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+							pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false, null, null);
 					haveResults = graphics.size();
 					for (Map.Entry<String, Object> graphicEntry : graphics.entrySet()) {
 						request.setAttribute(graphicEntry.getKey(), graphicEntry.getValue());

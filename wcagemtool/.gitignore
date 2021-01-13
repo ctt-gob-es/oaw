@@ -51,4 +51,6 @@ Thumbs.db
 *.mov
 *.wmv
 
-.history
+.history/**
+.tmp/**
+.sass-cache/**
