@@ -8,19 +8,55 @@ angular.module('wcagReporter')
       appState,
       evalScopeModel,
       evalReportModel,
+      $timeout,
       $filter
     ) {
       $scope.state = appState.moveToState('scope');
       $scope.scopeModel = evalScopeModel;
 
       $scope.wcagVersionOptions = evalScopeModel.wcagVersionOptions
-        .reduce(function (versions, version) {
-          var translateKey = 'SCOPE.' + version;
-
-          versions[version] = $filter('translate')(translateKey);
-
-          return versions;
+        .reduce(function (keys, key) {
+          var translateKey = 'SCOPE.' + key;
+          keys[key] = $filter('translate')(translateKey);
+          return keys;
         }, {});
+
+      $scope.typologyOptions = evalScopeModel.typologyOptions
+        .reduce(function (keys, key) {
+          var translateKey = 'SCOPE.' + key;
+          keys[key] = $filter('translate')(translateKey);
+          return keys;
+        }, {});
+
+
+      $scope.evaluationTypeOptions = evalScopeModel.evaluationTypeOptions
+        .reduce(function (keys, key) {
+          var translateKey = 'SCOPE.' + key;
+          keys[key] = $filter('translate')(translateKey);
+          return keys;
+        }, {});
+
+      $scope.territorialScopeOptions = evalScopeModel.territorialScopeOptions
+        .reduce(function (keys, key) {
+          var translateKey = 'SCOPE.' + key;
+          keys[key] = $filter('translate')(translateKey);
+          return keys;
+        }, {});
+
+      $scope.thematicScopes = angular.copy(evalScopeModel.thematicScopes);
+
+      $scope.changeThematic = function (thematic) {
+        if (thematic.checked) {
+          var newThematic = angular.extend({}, thematic);
+          delete newThematic.checked;
+          evalScopeModel.reliedUponThematic.push(newThematic);
+        } else {
+          evalScopeModel.reliedUponThematic = evalScopeModel.reliedUponThematic
+            .filter(function (item) {
+              return item.title !== thematic.title && item.id !== thematic.id;
+            });
+        }
+      };
 
       $scope.conformanceOptions = evalScopeModel.conformanceOptions
         .reduce(function (tgt, lvl) {
@@ -38,5 +74,26 @@ angular.module('wcagReporter')
           evalReportModel.setDefaultTitle(siteName);
         }
       });
+
+      $timeout(function () {
+        // set relied upon technologies in the right field
+        $scope.scopeModel.reliedUponThematic
+          .forEach(function (thematic) {
+            var index = $scope.thematicScopes
+              // Find exact matching index in thematic of reliedUponThematic
+              // it will be an user defined technology otherwise
+              .reduce(function (index, currThematic, currIndex) {
+                if (currThematic.id === thematic.id && currThematic.title === thematic.title) {
+                  return currIndex;
+                }
+                return index;
+              }, -1);
+
+            // Set checkboxes for known fields
+            if (index !== -1) {
+              $scope.thematicScopes[index].checked = true;
+            }
+          });
+      }, 1000);
     }
   );
