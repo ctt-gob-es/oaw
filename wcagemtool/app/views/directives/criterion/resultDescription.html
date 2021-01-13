@@ -1,0 +1,7 @@
+<div ng-init='focused = false'>
+  <label class="sr-only" for="assert_desc_{{$id}}">{{'AUDIT.LABEL_DESCR' | translate }}</label>
+  <div text-angular ta-text-editor-class="form-control small-texteditor"
+    ta-html-editor-class="form-control small-texteditor" ta-toolbar-button-class="btn btn-default btn-sm"
+    ta-toolbar-group-class="btn-group" ta-toolbar-class="btn-toolbar mb-05" class="assert_description"
+    id="assert_desc_{{$id}}" ng-model="value"  ng-change="updateMetadata()" ></div>
+</div>

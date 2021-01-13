@@ -1,0 +1,20 @@
+<footer lang="en" ng-controller="FooterCtrl" aria-label="Document info" class="page-footer">
+  <div>
+    <!-- <p><strong>Feedback: We welcome ideas, bug reports, and comments</strong> via <a href="https://github.com/w3c/wcag-em-report-tool/issues">GitHub</a> or e-mail to <a href="mailto:wai-eo-editors@w3.org">wai-eo-editors@w3.org</a> (a publicly archived list) or <a href="mailto:wai@w3.org">wai@w3.org</a> (a WAI staff-only list).</p>
+    <p><strong>Status:</strong> Version {{pkg.version}}, {{pkg.buildDate}}</p>
+    <p><strong>Development Team:</strong> Shadi Abou-Zahra, W3C/WAI (Project Lead) and Roel Antonisse, <a href="https://www.accessibility.nl/english">accessibility.nl</a> (Development). Previously Wilco Fiers (Design and development). <strong>Contributors:</strong> <a href="http://www.w3.org/People/Shawn/">Shawn Lawton Henry</a> and the <a href="http://www.w3.org/WAI/EO/">Education and Outreach Working Group</a>.</p>
+    <p>Initially developed with support from the <a href="http://www.w3.org/WAI/ACT/">WAI-ACT Project</a>, and updated with support of the <a href="http://www.w3.org/WAI/Tools/">WAI-Tools Project</a>, co-funded by the European Commission (EC).</p>
+    <div class="footer-nav">
+      <p>[<a href="http://www.w3.org/WAI/sitemap.html">WAI Site Map</a>] [<a href="http://www.w3.org/WAI/sitehelp.html">Help with WAI Website</a>] [<a href="http://www.w3.org/WAI/search.php">Search</a>] [<a href="/WAI/contacts">Contacting WAI</a>]</p>
+    </div> -->
+    <div class="copyright">
+      <p>© {{'COMMON.FOOTER_OAW_COPYRIGHT' | translate }}</p> 
+      
+      <p ng-bind-html="'COMMON.FOOTER_OAW_BASED' | translate: {
+        url1: 'http://www.w3.org/WAI/eval/report-tool/#!/',
+        url2: 'http://www.w3.org/',
+        url3: 'http://www.w3.org/WAI',
+      }"></p>
+    </div><!-- ends copyright -->
+  </div>
+</footer>

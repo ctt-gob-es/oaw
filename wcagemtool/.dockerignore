@@ -1,0 +1,9 @@
+docker/
+node_modules/
+.tmp/
+.sass-cache/
+.git/
+.history/
+Dockerfile
+docker-compose.yml
+nginx_conf.conf
