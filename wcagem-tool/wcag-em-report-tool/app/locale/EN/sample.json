@@ -19,5 +19,25 @@
     "BTN_REMOVE_PAGE": "Remove page",
     "STRUCTURED_PAGE": "Structured page",
     "RANDOM_PAGE": "Random page",
-    "SAMPLE_PAGE": "Sample page"
+    "SAMPLE_PAGE": "Sample page",
+    "LABEL_TYPE": "Type",
+    "LABEL_BREADCRUMB": "Alternative addressing (crumbs)",
+    "PLH_BREADCRUMB": "E.g. Home > Services > List of objects",
+    "LABEL_ELEMENTS": "Type of elements",
+    "PLH_ELEMENTS": "E.g. images, tables, lists, multimedia, forms, X template, Y template",
+    "PAGE_TYPE_1": "Home page",
+    "PAGE_TYPE_2": "Login",
+    "PAGE_TYPE_3": "Site map",
+    "PAGE_TYPE_4": "Contact",
+    "PAGE_TYPE_5": "Help",
+    "PAGE_TYPE_6": "Legal",
+    "PAGE_TYPE_7": "Service / Process",
+    "PAGE_TYPE_8": "Search",
+    "PAGE_TYPE_9": "Accessibility statement",
+    "PAGE_TYPE_10": "Communication mechanism",
+    "PAGE_TYPE_11": "Typical page",
+    "PAGE_TYPE_12": "Other pages",
+    "PAGE_TYPE_13": "Downloadable document",
+    "PAGE_TYPE_14": "Random"
+
 }
