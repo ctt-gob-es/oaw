@@ -27,8 +27,8 @@ angular.module('wcagReporter')
 
         $http.get($scope.exportJsonUrl, {}).then(function onSuccess(response) {
           $http({
-            url: 'http://localhost:9001/ods',
-            //url: $location.protocol() + "://" + $location.host() + ':' + $location.port() + "/ods",
+            //            url: 'http://localhost:9001/ods',
+            url: $location.protocol() + "://" + $location.host() + ':' + $location.port() + "/ods",
             method: "POST",
             data: response,
             responseType: 'blob'
@@ -38,6 +38,12 @@ angular.module('wcagReporter')
             document.body.appendChild(a);
 
             var file = new Blob([data], { type: 'application/vnd.oasis.opendocument.spreadsheet' });
+
+            if (navigator.msSaveBlob) { // IE10+ : (has Blob, but not a[download] or URL)
+              $scope.loading = false;
+              return navigator.msSaveBlob(file, 'Informe_Revision_Profunidad_v1.ods');
+            }
+
             var fileURL = window.URL.createObjectURL(file);
             a.href = fileURL;
             a.download = 'Informe_Revision_Profunidad_v1.ods';
@@ -121,8 +127,8 @@ angular.module('wcagReporter')
         //Load JSON
         $http.get($scope.exportJsonUrl, {}).then(function onSuccess(response) {
           $http({
-            url: 'http://localhost:9001/xlsx',
-            //url: $location.protocol() + "://" + $location.host() + ':' + $location.port() + "/xlsx",
+            //url: 'http://localhost:9001/xlsx',
+            url: $location.protocol() + "://" + $location.host() + ':' + $location.port() + "/xlsx",
             method: "POST",
             data: response,
             responseType: 'blob'
@@ -132,6 +138,12 @@ angular.module('wcagReporter')
             document.body.appendChild(a);
 
             var file = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+            if (navigator.msSaveBlob) { // IE10+ : (has Blob, but not a[download] or URL)
+              $scope.loadingxlsx = false;
+              return navigator.msSaveBlob(file, 'Informe_Revision_Profunidad_v1.xlsx');
+            }
+
             var fileURL = window.URL.createObjectURL(file);
             a.href = fileURL;
             a.download = 'Informe_Revision_Profunidad_v1.xlsx';
