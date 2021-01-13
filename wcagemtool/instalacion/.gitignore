@@ -1,0 +1,4 @@
+imagenes/*
+*.rpm
+docker-compose
+ssh

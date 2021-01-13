@@ -1,0 +1,8 @@
+{
+    "TITLE": "¡Uy! Algo salió mal.",
+    "INTRO": "Esta no es la página que está buscando. Intente una de estas soluciones para resolver el problema:",
+    "SUGGESTION1": "Si ha escrito la URL, asegúrese de que es exactamente la que debería ser.",
+    "SUGGESTION2": "Vuelva a la <a href={{link_back}}>página anterior</a> e inténtelo de nuevo.",
+    "SUGGESTION3": "Asegúrese de que los archivos con los que trabaja siguen el formato <a href={{link_format}} hreflang='en' title='WCAG-EM (abre en nueva ventana)'>WCAG-EM</a>.",
+    "BUG_REPORT": "Para informar de cualquier error o sugerencia, por favor, deje su comentario en nuestro <a href={{link_github}} hreflang='en' title='proyecto de Github (abre en nueva ventana)'>proyecto de Github</a>."
+}

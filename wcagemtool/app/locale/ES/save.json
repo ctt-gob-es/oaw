@@ -1,0 +1,6 @@
+{
+    "TITLE":"Guardar el informe de revisión",
+    "INTRO": "Use el enlace de abajo para guardar localmente la información del informe de revisión que ha ido añadiendo en un archivo de datos JSON.",
+    "BTN_DOWNLOAD_DATA_FILE": "Guarde el archivo de datos localmente en su dispositivo.",
+    "TIPS": "Puede guardar informes parcialmente completos (y notas) y trabajar con ellos más tarde. Puede abrirlos desde cualquier navegador web y puede transferir el archivo de datos a otro dispositivo.<br>Puede guardar los datos periódicamente mientras trabaja para evitar su pérdida, en el caso de que su navegador web se cierre. Puede usar las teclas de atajo de Windows Ctrl+S o las teclas de atajo de Mac ⌘S para abrir el cuadro de diálogo Guardar (o guardarlo automáticamente en su carpeta de descargas dependiendo de la configuración de su navegador web).<br>Cuando termine de introducir la información de su informe de revisión, puede descargar un archivo HTML del informe completo desde la página <a href={{link_report}}>Ver Informe</a>"
+}
