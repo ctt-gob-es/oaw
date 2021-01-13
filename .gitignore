@@ -74,3 +74,12 @@ target/
 **.tmp/**
 **.sass-cache/**
 
+**/.vscode
+**/.attach_*
+update-code.sh
+profiles/
+
+int-start-and-log.sh
+int-stop-and-clean.sh
+
+**/bower_components/**
