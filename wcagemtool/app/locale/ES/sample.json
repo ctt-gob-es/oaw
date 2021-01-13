@@ -39,6 +39,12 @@
     "PAGE_TYPE_11": "Pagina tipo",
     "PAGE_TYPE_12": "Otras páginas",
     "PAGE_TYPE_13": "Documento descargable",
-    "PAGE_TYPE_14": "Aleatoria"
+    "PAGE_TYPE_14": "Aleatoria",
+    "SAMPLE_CORRECT": "<strong>Muestra correcta:</strong> Sí",
+    "SAMPLE_INCORRECT": "<strong>Muestra correcta:</strong> No",
+    "SAMPLE_INCORRECT_INFO":"Para que la muestra sea correcta debe cumplir lo siguiente:",
+    "SAMPLE_INCORRECT_MANDATORY_TYPES": "Contener al menos una página de tipo 'Página de Inicio' y otra de 'Declaración de accesibilidad'.",
+    "SAMPLE_INCORRECT_MINIMUN_RANDOM": "El número de páginas aleatorias debe ser al menos el 10% de la muestra."
+
 
 }

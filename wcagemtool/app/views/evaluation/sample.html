@@ -75,6 +75,27 @@
       </input-pages>
 
   </form>
+
+  <div class="alert alert-success" ng-if="hasAtleastOneType() && hasMinimumRandom()">
+    <p ng-bind-html="'SAMPLE.SAMPLE_CORRECT'|translate"></p>
+  </div>
+  
+  <div class="alert alert-danger" ng-if="!hasAtleastOneType() || !hasMinimumRandom()">
+    <p ng-bind-html="'SAMPLE.SAMPLE_INCORRECT'|translate"></p>
+    <p>
+      {{'SAMPLE.SAMPLE_INCORRECT_INFO' | translate}}
+    </p>
+    <ul>
+
+      <li ng-if="!hasAtleastOneType()">
+        {{'SAMPLE.SAMPLE_INCORRECT_MANDATORY_TYPES' | translate}}
+      </li>
+      <li ng-if="!hasMinimumRandom()">
+        {{'SAMPLE.SAMPLE_INCORRECT_MINIMUN_RANDOM' | translate}}
+      </li>
+    </ul>
+  </div>
+
 </main>
 
 <nav ng-include src="'views/step-buttons.html'"></nav>

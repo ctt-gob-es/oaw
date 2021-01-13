@@ -71,5 +71,36 @@ angular.module('wcagReporter')
         return Math
           .ceil($scope.structuredSample.webpage.length / 10);
       };
+
+
+      $scope.hasMinimumRandom = function () {
+        return $scope.randomSample.webpage.length >= $scope.structuredSample.webpage.length / 10
+      }
+      
+      $scope.hasAtleastOneType = function () {
+
+        
+        var hasHomePage = false;
+        var hasAccesibilityDeclarationPage = false;
+
+        $scope.structuredSample.webpage.forEach(function (page) {
+          if(page.pageType == "PAGE_TYPE_1"){
+            hasHomePage = true;
+          }
+          if(page.pageType == "PAGE_TYPE_9"){
+            hasAccesibilityDeclarationPage = true;
+          }
+        });
+
+        $scope.randomSample.webpage.forEach(function (page) {
+          if(page.pageType == "PAGE_TYPE_1"){
+            hasHomePage = true;
+          }
+          if(page.pageType == "PAGE_TYPE_9"){
+            hasAccesibilityDeclarationPage = true;
+          }
+        });
+        return hasHomePage && hasAccesibilityDeclarationPage;
+      };
     }
   );
