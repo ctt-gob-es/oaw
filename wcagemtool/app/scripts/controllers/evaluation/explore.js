@@ -37,7 +37,7 @@ angular
         if (index !== -1) {
           $scope.knownTech[index].checked = true;
         } else {
-        // Push the tech to the other tech field (it is user defined)
+          // Push the tech to the other tech field (it is user defined)
           $scope.otherTech.push(tech);
         }
       });

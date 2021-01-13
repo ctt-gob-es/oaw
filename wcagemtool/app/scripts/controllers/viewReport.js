@@ -24,10 +24,10 @@ angular.module('wcagReporter')
 
         $scope.loading = true;
         $scope.clickDownload = true;
-      
+
         $http.get($scope.exportJsonUrl, {}).then(function onSuccess(response) {
           $http({
-            //url: 'http://localhost:9001/ods',
+            //            url: 'http://localhost:9001/ods',
             url: $location.protocol() + "://" + $location.host() + ':' + $location.port() + "/ods",
             method: "POST",
             data: response,
@@ -38,6 +38,12 @@ angular.module('wcagReporter')
             document.body.appendChild(a);
 
             var file = new Blob([data], { type: 'application/vnd.oasis.opendocument.spreadsheet' });
+
+            if (navigator.msSaveBlob) { // IE10+ : (has Blob, but not a[download] or URL)
+              $scope.loading = false;
+              return navigator.msSaveBlob(file, 'Informe_Revision_Profunidad_v1.ods');
+            }
+
             var fileURL = window.URL.createObjectURL(file);
             a.href = fileURL;
             a.download = 'Informe_Revision_Profunidad_v1.ods';
@@ -46,7 +52,6 @@ angular.module('wcagReporter')
             $scope.loading = false;
           }).catch(function (response) {
             $scope.loading = false;
-            console.log('Unable to download the file')
           });
 
         });
@@ -67,8 +72,6 @@ angular.module('wcagReporter')
         return buf;
       }
     }
-    //-----------------------------------------------------------------------------------------
-
 
     $scope.filledPages = function () {
       return evalModel.sampleModel.getFilledPages();
@@ -121,13 +124,8 @@ angular.module('wcagReporter')
 
         $scope.loadingxlsx = true;
 
-        //console.log(doc);
-        //console.log($scope);
         //Load JSON
-
-
         $http.get($scope.exportJsonUrl, {}).then(function onSuccess(response) {
-          //console.log(response.data);
           $http({
             //url: 'http://localhost:9001/xlsx',
             url: $location.protocol() + "://" + $location.host() + ':' + $location.port() + "/xlsx",
@@ -140,6 +138,12 @@ angular.module('wcagReporter')
             document.body.appendChild(a);
 
             var file = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+            if (navigator.msSaveBlob) { // IE10+ : (has Blob, but not a[download] or URL)
+              $scope.loadingxlsx = false;
+              return navigator.msSaveBlob(file, 'Informe_Revision_Profunidad_v1.xlsx');
+            }
+
             var fileURL = window.URL.createObjectURL(file);
             a.href = fileURL;
             a.download = 'Informe_Revision_Profunidad_v1.xlsx';
@@ -148,7 +152,6 @@ angular.module('wcagReporter')
             $scope.loadingxlsx = false;
           }).catch(function (response) {
             $scope.loadingxlsx = false;
-            console.log('Unable to download the file')
           });
 
         });

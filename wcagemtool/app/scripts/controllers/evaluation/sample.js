@@ -8,7 +8,8 @@ angular.module('wcagReporter')
       appState,
       evalExploreModel,
       evalSampleModel,
-      evalAuditModel
+      evalAuditModel,
+      $filter
     ) {
       $scope.state = appState.moveToState('sample');
 
@@ -59,12 +60,8 @@ angular.module('wcagReporter')
         return function (index) {
           //remove page from current sample
           var originPage = evalSampleModel.removePage(originSample, index);
-          console.log("Origin page: " + originPage.id);
-
           //add page to destiny sample
-          var destinyPage = evalSampleModel.insertPage(destinySample,originPage);
-          console.log("Destiny page: " + originPage.id);
-
+          var destinyPage = evalSampleModel.insertPage(destinySample, originPage);
           //update audit references
           evalAuditModel.updatePageFromAsserts(originPage, destinyPage.id);
         };
