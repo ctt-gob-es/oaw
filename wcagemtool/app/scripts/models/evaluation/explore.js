@@ -24,7 +24,7 @@ angular
       });
 
     exploreModel.reliedUponTechnology = [];
-
+    
     exploreModel.importData = function (evalData) {
       if (!angular.isArray(evalData.reliedUponTechnology)) {
         evalData.reliedUponTechnology = [evalData.reliedUponTechnology];

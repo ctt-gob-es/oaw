@@ -441,6 +441,34 @@ public final class ObservatorioDAO {
 	}
 
 	/**
+	 * Gets the ambit by observatory ex id.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @return the ambit by observatory ex id
+	 * @throws SQLException the SQL exception
+	 */
+	public static AmbitoForm getAmbitByObservatoryExId(final Connection c, final Long idObservatory) throws SQLException {
+		AmbitoForm ambit = null;
+		try (PreparedStatement ps = c.prepareStatement(
+				"SELECT al.* FROM ambitos_lista al JOIN observatorio o ON o.id_ambito= al.id_ambito JOIN observatorios_realizados ore ON o.id_observatorio=ore.id_observatorio WHERE ore.id = ? ORDER BY id_ambito ASC")) {
+			ps.setLong(1, idObservatory);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					ambit = new AmbitoForm();
+					ambit.setId(String.valueOf(rs.getLong("id_ambito")));
+					ambit.setName(rs.getString("nombre"));
+					ambit.setDescripcion(rs.getString("descripcion"));
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return ambit;
+	}
+
+	/**
 	 * Gets the complexity by id.
 	 *
 	 * @param c  the c
@@ -1270,10 +1298,6 @@ public final class ObservatorioDAO {
 		String numCrawlQuery = "(SELECT count(ta.cod_url) "
 				+ "FROM tanalisis ta, rastreos_realizados rr3, rastreo r2, lista l2 WHERE ta.cod_rastreo = rr3.id  and rr3.id_rastreo = r2.id_rastreo and r2.semillas = l2.id_lista  "
 				+ "and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado=" + idObservatorio + ") and rr3.id = rr.id) as numCrawls";
-//		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre as categoriaNombre, cl.orden , r.id_rastreo, l.id_categoria, l.id_ambito, l.id_complejidad, rr.id, al.nombre, cxl.nombre, cxl.profundidad, cxl.amplitud, rr.score, rr.level as nivel, l.observaciones FROM lista l "
-//				+ "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) "
-//				+ "LEFT JOIN complejidades_lista cxl ON(l.id_complejidad = cxl.id_complejidad) " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
-//				+ "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";		
 		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre as categoriaNombre, cl.orden , r.id_rastreo, "
 				+ "l.id_categoria, l.id_ambito, l.id_complejidad, rr.id, al.nombre, cxl.nombre, cxl.profundidad, cxl.amplitud, rr.score, rr.level as nivel, l.observaciones,  " + numCrawlQuery
 				+ " FROM lista l " + "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) "
@@ -1290,7 +1314,13 @@ public final class ObservatorioDAO {
 		}
 		// Ordernar los resultados por categoría y nombre
 		if (StringUtils.isNotEmpty(searchForm.getSortCol()) && StringUtils.isNotEmpty(searchForm.getSortOrder())) {
-			query += " ORDER BY " + searchForm.getSortCol() + " " + searchForm.getSortOrder() + ", l.id_lista";
+			if ("complejidad".equalsIgnoreCase(searchForm.getSortCol())) {
+				query += " ORDER BY cxl.nombre " + searchForm.getSortOrder() + ", l.id_lista";
+			} else if ("score".equalsIgnoreCase(searchForm.getSortCol())) {
+				query += " ORDER BY cast(rr.score as DECIMAL(10,5)) " + searchForm.getSortOrder() + ", l.id_lista";
+			} else {
+				query += " ORDER BY " + searchForm.getSortCol() + " " + searchForm.getSortOrder() + ", l.id_lista";
+			}
 		} else {
 			query += " ORDER BY l.id_categoria ASC, l.nombre ASC";
 		}
@@ -1435,10 +1465,15 @@ public final class ObservatorioDAO {
 		final List<Long> crawlerIds = new ArrayList<>();
 		// Union de rastreos no realizados y rastreos empezados pero no
 		// terminados (<> estado 4)
+//		String query = "SELECT DISTINCT u.id_rastreo  FROM ("
+//				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo NOT IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ? ) AND r.activo = 1 AND r.estado <> 4) "
+//				+ "UNION ALL "
+//				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE rr.id_obs_realizado = ? AND rr.id not IN (select ta.cod_rastreo as id_rastreo from tanalisis ta)))"
+//				+ ") u ORDER BY u.id_rastreo ASC";
 		String query = "SELECT DISTINCT u.id_rastreo  FROM ("
-				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo  IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ? ) AND r.activo = 1 AND r.estado = 3 ) "
+				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo NOT IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ? ) AND r.activo = 1) "
 				+ "UNION ALL "
-				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo  IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE rr.id_obs_realizado = ? AND rr.id not IN (select ta.cod_rastreo as id_rastreo from tanalisis ta))    AND r.activo = 1  )"
+				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE rr.id_obs_realizado = ? AND rr.id not IN (select ta.cod_rastreo as id_rastreo from tanalisis ta)))"
 				+ ") u ORDER BY u.id_rastreo ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idObservatory);
@@ -2296,6 +2331,39 @@ public final class ObservatorioDAO {
 	}
 
 	/**
+	 * Gets the execution observatory categories ambit.
+	 *
+	 * @param c                      the c
+	 * @param idExecutionObservatory the id execution observatory
+	 * @param idAmbit                the id ambit
+	 * @return the execution observatory categories ambit
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<CategoriaForm> getExecutionObservatoryPrinmayCategoriesAmbit(final Connection c, final Long idExecutionObservatory, final Long idAmbit) throws SQLException {
+		final List<CategoriaForm> observatoryCategories = new ArrayList<>();
+		try (PreparedStatement ps = c.prepareStatement("SELECT cl.nombre, cl.id_categoria, cl.orden FROM rastreos_realizados rr " + "JOIN lista l ON (l.id_lista = rr.id_lista) "
+				+ "JOIN observatorio_categoria oc ON (l.id_categoria = oc.id_categoria) " + "JOIN categorias_lista cl ON (oc.id_categoria = cl.id_categoria) "
+				+ " JOIN rastreo r ON r.id_rastreo = rr.id_rastreo JOIN observatorio o ON r.id_observatorio=o.id_observatorio JOIN ambitos_lista al ON al.id_ambito = o.id_ambito "
+				+ " WHERE rr.id_obs_realizado = ?  AND o.id_ambito = ? AND cl.principal = 1 GROUP BY cl.id_categoria ORDER BY cl.orden, cl.nombre;")) {
+			ps.setLong(1, idExecutionObservatory);
+			ps.setLong(2, idAmbit);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					final CategoriaForm categoriaForm = new CategoriaForm();
+					categoriaForm.setId(rs.getString("cl.id_categoria"));
+					categoriaForm.setName(rs.getString("cl.nombre"));
+					categoriaForm.setOrden(rs.getInt("cl.orden"));
+					observatoryCategories.add(categoriaForm);
+				}
+			}
+			return observatoryCategories;
+		} catch (Exception e) {
+			Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
 	 * Save methodology.
 	 *
 	 * @param c           the c
@@ -2441,11 +2509,15 @@ public final class ObservatorioDAO {
 						psCR.executeUpdate();
 						addFullfilledCrawl(c, idExObs, id, idSeed);
 					} catch (Exception e) {
+						Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						// Remove prevoius insert
 						try (PreparedStatement psCR = c.prepareStatement("DELETE FROM cartucho_rastreo WHERE id_cartucho=? AND id_rastreo = ?")) {
 							psCR.setLong(1, idCartucho);
 							psCR.setLong(2, id);
 							psCR.executeUpdate();
+							addFullfilledCrawl(c, idExObs, id, idSeed);
+						} catch (Exception e2) {
+							Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e2);
 						}
 					}
 				} else {
@@ -2477,24 +2549,40 @@ public final class ObservatorioDAO {
 							// Saved
 							Long id = rsR.getLong(1);
 							// Insert into cartucho_rastreo id_cartucho
-							try (PreparedStatement psCR = c.prepareStatement("INSERT INTO cartucho_rastreo(id_cartucho, id_rastreo) VALUES(?,?)")) {
+							try (PreparedStatement psCR = c.prepareStatement("INSERT INTO cartucho_rastreo(id_cartucho, id_rastreo) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS)) {
 								psCR.setLong(1, idCartucho);
 								psCR.setLong(2, id);
 								psCR.executeUpdate();
-								addFullfilledCrawl(c, idExObs, id, idSeed);
+								try (ResultSet rsCR = psCR.getGeneratedKeys()) {
+									if (rsCR.next()) {
+										addFullfilledCrawl(c, idExObs, id, idSeed);
+									} else {
+										Logger.putLog("e: " + psCR, ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR);
+									}
+								} catch (Exception e) {
+									Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+								}
 							} catch (Exception e) {
+								Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 								// Remove prevoius insert
 								try (PreparedStatement psCR = c.prepareStatement("DELETE FROM cartucho_rastreo WHERE id_cartucho=? AND id_rastreo = ?")) {
 									psCR.setLong(1, idCartucho);
 									psCR.setLong(2, id);
 									psCR.executeUpdate();
+									addFullfilledCrawl(c, idExObs, id, idSeed);
+								} catch (Exception e2) {
+									Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e2);
 								}
 							}
 						} else {
 							// error??
 						}
+					} catch (Exception e) {
+						Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 					}
 				}
+			} catch (Exception e) {
+				Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			}
 		} catch (Exception e) {
 			Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -2528,5 +2616,44 @@ public final class ObservatorioDAO {
 		}
 		final DatosForm userData = LoginDAO.getUserDataByName(c, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"));
 		final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, idExObs, Long.valueOf(userData.getId()));
+	}
+
+	/**
+	 * Gets the obserbatories dates.
+	 *
+	 * @param c        the c
+	 * @param exObsIds the ex obs ids
+	 * @return the obserbatories dates
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<ObservatorioRealizadoForm> getObserbatoriesDates(Connection c, final String[] exObsIds) throws SQLException {
+		List<ObservatorioRealizadoForm> list = new ArrayList<>();
+		String query = "SELECT a.nombre,obr.fecha FROM observatorios_realizados obr JOIN observatorio o ON obr.id_observatorio=o.id_observatorio JOIN ambitos_lista a ON a.id_ambito=o.id_ambito\n"
+				+ "WHERE  1=1 ";
+		// Cargamos los rastreos realizados
+		if (exObsIds != null && exObsIds.length > 0) {
+			query = query + "AND obr.id IN (" + exObsIds[0];
+			for (int i = 1; i < exObsIds.length; i++) {
+				query = query + "," + exObsIds[i];
+			}
+			query = query + ")";
+		}
+		query = query + "ORDER BY o.id_ambito ASC";
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					ObservatorioRealizadoForm obs = new ObservatorioRealizadoForm();
+					obs.setAmbito(rs.getString("a.nombre"));
+					obs.setFechaStr(df.format(rs.getTimestamp("fecha")));
+					list.add(obs);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return list;
 	}
 }

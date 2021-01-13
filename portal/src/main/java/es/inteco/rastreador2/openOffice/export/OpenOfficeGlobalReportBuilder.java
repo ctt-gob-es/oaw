@@ -64,8 +64,10 @@ import es.inteco.intav.form.SeedForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ComplianceComparisonForm;
+import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
+import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.PlantillaForm;
 import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
@@ -270,7 +272,8 @@ public final class OpenOfficeGlobalReportBuilder {
 					final OdfTextDocument odt = getOdfTemplate(idBaseTemplate);
 					final OdfFileDom odfFileContent = odt.getContentDom();
 					final OdfFileDom odfStyles = odt.getStylesDom();
-					final List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+					// final List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+					final List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidadesObs(DataBaseManager.getConnection(), tagsToFilter, exObsIds);
 					final List<AmbitoForm> ambits = AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1);
 					replaceText(odt, odfFileContent, FECHA_BOOKMARK, df.format(new Date()));
 					replaceText(odt, odfStyles, FECHA_BOOKMARK, df.format(new Date()), TEXT_SPAN_NODE);
@@ -279,13 +282,23 @@ public final class OpenOfficeGlobalReportBuilder {
 					// Global sections
 					replaceGlobalSection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, complexitivities, ambits, tagsToFilter, exObsIds);
 					List<ObservatoryEvaluationForm> onlyPrimarys = new ArrayList<ObservatoryEvaluationForm>();
+					// final List<AmbitoForm> primaryAmbits = AmbitoDAO.getAmbitosPrimarios(DataBaseManager.getConnection(), null, -1);
+					final List<AmbitoForm> primaryAmbits = new ArrayList<>();
 					for (int i = 0; i < exObsIds.length; i++) {
-						onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 65));
-						onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 79));
-						onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 45));
-						onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 71));
+						AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryExId(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]));
+						if (ambito != null) {
+							final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryPrinmayCategoriesAmbit(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]),
+									Long.parseLong(ambito.getId()));
+							if (categories != null && !categories.isEmpty()) {
+								primaryAmbits.add(ambito);
+								for (CategoriaForm cat : categories) {
+									onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), Long.parseLong(cat.getId())));
+								}
+							}
+						}
 					}
-					replaceAmbitPrimarySection(graphicPath, onlyPrimarys, messageResources, odt, odfFileContent, complexitivities, ambits, tagsToFilter, exObsIds);
+//					final List<AmbitoForm> primaryAmbits = AmbitoDAO.getAmbitosPrimarios(DataBaseManager.getConnection(), null, -1);
+					replaceAmbitPrimarySection(graphicPath, onlyPrimarys, messageResources, odt, odfFileContent, complexitivities, primaryAmbits, tagsToFilter, exObsIds);
 					finishDocumentConfiguration(odt, odfFileContent, reportTitle);
 					// Lists all files in folder
 					File folder = new File("/tmp");
@@ -311,7 +324,7 @@ public final class OpenOfficeGlobalReportBuilder {
 					final MailService mailService = new MailService();
 					List<String> mailsTo = new ArrayList<>();
 					mailsTo.add(userData.getEmail());
-					mailsTo.add("alvaro.pelaez@ctic.es");
+					mailsTo.add("alvaro.pelaez@fundacionctic.org");
 					mailService.sendMail(mailsTo, "Generación de informe global completado", mailBody.toString(), true);
 				} catch (Exception e) {
 					Logger.putLog("Error", OpenOfficeGlobalReportBuilder.class, Logger.LOG_LEVEL_ERROR, e);
@@ -336,6 +349,8 @@ public final class OpenOfficeGlobalReportBuilder {
 	private static void replaceGlobalReportStatisticsSection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final MessageResources messageResources,
 			final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsToFiler, final String[] exObsIds) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
+			// Dates of observatories
+			generateDatesSummaryTable(odt, odfFileContent, tagsToFiler, exObsIds, c);
 			// Todo total
 			generateClasificationStatiticsTableGlobal(odt, odfFileContent, tagsToFiler, exObsIds, c, "Discapacidad");
 			// TODO Generate Distribution
@@ -354,6 +369,74 @@ public final class OpenOfficeGlobalReportBuilder {
 			Logger.putLog("Error en getGlobalResultData", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+	}
+
+	/**
+	 * Generate dates summary table.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param tagsToFiler    the tags to filer
+	 * @param exObsIds       the ex obs ids
+	 * @param c              the c
+	 * @throws Exception                    the exception
+	 * @throws SAXException                 the SAX exception
+	 * @throws IOException                  Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 */
+	private static void generateDatesSummaryTable(final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsToFiler, final String[] exObsIds, Connection c)
+			throws Exception, SAXException, IOException, ParserConfigurationException {
+		List<ObservatorioRealizadoForm> list = ObservatorioDAO.getObserbatoriesDates(c, exObsIds);
+		if (list != null && !list.isEmpty()) {
+			String header0 = messageResources.getMessage(HEADER_AMBITO);
+			String header1 = "Fecha del seguimiento";
+			// For each clasification a table
+			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Fecha de realización del seguimiento</text:p>";
+			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
+			appendNodeAtMarkerPosition(odt, odfFileContent, title, "tablascriterios");
+			StringBuilder sb = generateObservatoriesDatesTable(header0, header1, list);
+			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+			appendNodeAtMarkerPosition(odt, odfFileContent, node, "tablascriterios");
+			appendParagraphToMarker(odt, odfFileContent, "tablascriterios");
+		}
+	}
+
+	/**
+	 * Generate observatories dates table.
+	 *
+	 * @param header0 the header 0
+	 * @param header1 the header 1
+	 * @param obs     the obs
+	 * @return the string builder
+	 */
+	private static StringBuilder generateObservatoriesDatesTable(final String header0, final String header1, final List<ObservatorioRealizadoForm> obs) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<table:table table:name='Table_Statics_").append("Segments").append("' table:style-name='TableGraphic'>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn2'/>");
+		// Header row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header0).append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header1).append("</text:p>");
+		sb.append("</table:table-cell>");
+		sb.append("</table:table-row>");
+		// Rows
+		for (int i = 0; i < obs.size(); i++) {
+			sb.append("<table:table-row>");
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(obs.get(i).getAmbito()).append("</text:p>");
+			sb.append("</table:table-cell>");
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(obs.get(i).getFechaStr());
+			sb.append("</text:p>");
+			sb.append("</table:table-cell>");
+			sb.append("</table:table-row>");
+		}
+		sb.append("</table:table>");
+		return sb;
 	}
 
 	/**
@@ -379,37 +462,6 @@ public final class OpenOfficeGlobalReportBuilder {
 			// For each clasification a table
 			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>"
 					+ messageResources.getMessage("global.report.criteria.table.title", gre.get(0).getNombreClasificacion()) + "</text:p>";
-			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, title, "tablascriterios");
-			StringBuilder sb = generateStatisticsTable(header0, header1, gre);
-			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
-			appendNodeAtMarkerPosition(odt, odfFileContent, node, "tablascriterios");
-			appendParagraphToMarker(odt, odfFileContent, "tablascriterios");
-		}
-	}
-
-	/**
-	 * Generate clasification statitics table.
-	 *
-	 * @param odt            the odt
-	 * @param odfFileContent the odf file content
-	 * @param tagsToFiler    the tags to filer
-	 * @param exObsIds       the ex obs ids
-	 * @param c              the c
-	 * @param tagName        the tag name
-	 * @throws Exception                    the exception
-	 * @throws SAXException                 the SAX exception
-	 * @throws IOException                  Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException the parser configuration exception
-	 */
-	private static void generateClasificationStatiticsTable(final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsToFiler, final String[] exObsIds, Connection c, String tagName)
-			throws Exception, SAXException, IOException, ParserConfigurationException {
-		List<GlobalReportStatistics> gre = RastreoDAO.getGlobalReportStatisticsByTag(c, tagsToFiler, exObsIds, tagName);
-		if (gre != null && !gre.isEmpty()) {
-			String header0 = messageResources.getMessage(HEADER_ETIQUETA);
-			String header1 = messageResources.getMessage(HEADER_NUM_SITIOS_WEB);
-			// For each clasification a table
-			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + messageResources.getMessage("global.report.criteria.table.title", tagName) + "</text:p>";
 			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
 			appendNodeAtMarkerPosition(odt, odfFileContent, title, "tablascriterios");
 			StringBuilder sb = generateStatisticsTable(header0, header1, gre);
@@ -534,7 +586,7 @@ public final class OpenOfficeGlobalReportBuilder {
 			throws Exception, SAXException, IOException, ParserConfigurationException {
 		List<GlobalReportStatistics> gre = RastreoDAO.getGlobalReportStatisticsByComplex(c, tagsToFiler, exObsIds);
 		if (gre != null && !gre.isEmpty()) {
-			String header0 = messageResources.getMessage(HEADER_AMBITO);
+			String header0 = messageResources.getMessage(HEADER_COMPLEJIDAD);
 			String header1 = messageResources.getMessage(HEADER_NUM_SITIOS_WEB);
 			// For each clasification a table
 			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>" + "Número de sitios web por complejidad" + "</text:p>";
@@ -792,7 +844,8 @@ public final class OpenOfficeGlobalReportBuilder {
 		final Map<String, Object> globalGraphics = new HashMap<>();
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final String noDataMess = messageResources.getMessage(GRAFICA_SIN_DATOS);
-			List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+			// List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+			final List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidadesObs(DataBaseManager.getConnection(), tagsFilter, exObsIds);
 			List<AmbitoForm> ambitos = AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1);
 			// Distribución del nivel de adecuación estimado global
 			String file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_ACCESSIBILITY_LEVEL_ALLOCATION_NAME) + JPG_EXTENSION;
@@ -830,21 +883,30 @@ public final class OpenOfficeGlobalReportBuilder {
 			/**
 			 * Primarys
 			 */
-			List<ObservatoryEvaluationForm> onlyPrimarys = new ArrayList<ObservatoryEvaluationForm>();
+			final List<ObservatoryEvaluationForm> onlyPrimarys = new ArrayList<ObservatoryEvaluationForm>();
+			final List<AmbitoForm> primaryAmbits = new ArrayList<>();
 			for (int i = 0; i < exObsIds.length; i++) {
-				onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 65));
-				onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 79));
-				onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 45));
-				onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), 71));
+				AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryExId(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]));
+				if (ambito != null) {
+					final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryPrinmayCategoriesAmbit(DataBaseManager.getConnection(), Long.parseLong(exObsIds[i]),
+							Long.parseLong(ambito.getId()));
+					if (categories != null && !categories.isEmpty()) {
+						primaryAmbits.add(ambito);
+						for (CategoriaForm cat : categories) {
+							onlyPrimarys.addAll(filterObservatoriesByCategory(pageExecutionList, Long.parseLong(exObsIds[i]), Long.parseLong(cat.getId())));
+						}
+					}
+				}
 			}
+			// final List<AmbitoForm> primaryAmbits = AmbitoDAO.getAmbitosPrimarios(DataBaseManager.getConnection(), null, -1);
 			// ALLOCATION BY AMBIT
 			title = messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_PRIMARY_MARK_TITLE);
 			file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_ALLOCATION_AMBIT_PRIMARY_MARK_NAME) + JPG_EXTENSION;
-			getGloballAllocationByAmbit(messageResources, globalGraphics, file, noDataMess, onlyPrimarys, ambitos, regenerate, tagsFilter, title, exObsIds);
+			getGloballAllocationByAmbit(messageResources, globalGraphics, file, noDataMess, onlyPrimarys, primaryAmbits, regenerate, tagsFilter, title, exObsIds);
 			// Compliance by ambit
 			title = messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPLIANCE_AMBIT_PRIMARY_MARK_TITLE);
 			file = filePath + messageResources.getMessage(OBSERVATORY_GRAPHIC_GLOBAL_PUNTUATION_COMPILANCE_AMBIT_PRIMARY_MARK_NAME) + JPG_EXTENSION;
-			getGloballComplianceByAmbit(messageResources, globalGraphics, file, noDataMess, onlyPrimarys, ambitos, regenerate, tagsFilter, title, exObsIds);
+			getGloballComplianceByAmbit(messageResources, globalGraphics, file, noDataMess, onlyPrimarys, primaryAmbits, regenerate, tagsFilter, title, exObsIds);
 		}
 		return globalGraphics;
 	}
@@ -1753,6 +1815,12 @@ public final class OpenOfficeGlobalReportBuilder {
 	private static StringBuilder generateTableRowAmbit(final String tableName, final String header0, String columna1, String columna2, String columna3, final List<AmbitoForm> ambits,
 			final Map<AmbitoForm, Map<String, BigDecimal>> res, final MessageResources messageResources, final String resultsType, final boolean isPercentaje) throws Exception {
 		StringBuilder sb = generateTableHeader(columna1, columna2, columna3, header0, tableName);
+		ambits.sort(new Comparator<AmbitoForm>() {
+			@Override
+			public int compare(AmbitoForm o1, AmbitoForm o2) {
+				return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
+			}
+		});
 		for (AmbitoForm ambit : ambits) {
 			List<LabelValueBean> results = null;
 			switch (resultsType) {

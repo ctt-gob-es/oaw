@@ -1946,6 +1946,7 @@ public final class SemillaDAO {
 					categoriaForm.setName(rs.getString(NOMBRE));
 					categoriaForm.setOrden(rs.getInt(ORDEN));
 					categoriaForm.setKey(rs.getString(CLAVE));
+					categoriaForm.setPrincipal(rs.getBoolean("principal"));
 					categories.add(categoriaForm);
 				}
 			}
@@ -1974,6 +1975,7 @@ public final class SemillaDAO {
 					categoriaForm.setName(rs.getString(NOMBRE));
 					categoriaForm.setOrden(rs.getInt(ORDEN));
 					categoriaForm.setKey(rs.getString(CLAVE));
+					categoriaForm.setPrincipal(rs.getBoolean("principal"));
 					return categoriaForm;
 				}
 			}
@@ -2309,10 +2311,11 @@ public final class SemillaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static long createSeedCategory(final Connection c, final CategoriaForm categoriaForm) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("INSERT INTO categorias_lista (nombre, orden, clave) VALUES (?,?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement ps = c.prepareStatement("INSERT INTO categorias_lista (nombre, orden, clave,principal) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, categoriaForm.getName());
 			ps.setInt(2, categoriaForm.getOrden());
 			ps.setString(3, !org.apache.commons.lang3.StringUtils.isEmpty(categoriaForm.getKey()) ? categoriaForm.getKey() : null);
+			ps.setBoolean(4, categoriaForm.isPrincipal());
 			ps.executeUpdate();
 			try (ResultSet rs = ps.getGeneratedKeys()) {
 				if (rs.next()) {
@@ -2334,11 +2337,12 @@ public final class SemillaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static void updateSeedCategory(Connection c, CategoriaForm categoriaForm) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("UPDATE categorias_lista SET nombre = ?, orden=?, clave = ? WHERE id_categoria = ?")) {
+		try (PreparedStatement ps = c.prepareStatement("UPDATE categorias_lista SET nombre = ?, orden=?, clave = ?, principal = ? WHERE id_categoria = ?")) {
 			ps.setString(1, categoriaForm.getName());
 			ps.setInt(2, categoriaForm.getOrden());
 			ps.setString(3, !org.apache.commons.lang3.StringUtils.isEmpty(categoriaForm.getKey()) ? categoriaForm.getKey() : null);
-			ps.setString(4, categoriaForm.getId());
+			ps.setBoolean(4, categoriaForm.isPrincipal());
+			ps.setString(5, categoriaForm.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -2713,9 +2717,10 @@ public final class SemillaDAO {
 		// String query = "select * from lista where id_lista not in (select semillas from rastreo where id_observatorio = ?) or id_lista not in (select id_lista from rastreos_realizados where
 		// id_obs_realizado = ?) and eliminar = 0 and activa = 1";
 		String query = "select * from lista where eliminar = 0 and activa = 1 and id_categoria in (select id_categoria from observatorio_categoria where id_observatorio= ?)"
-				+ "and id_ambito = (select id_ambito from  observatorio where id_observatorio = ?)" + "and id_lista in (select id_lista from semilla_etiqueta where id_etiqueta in"
+				+ "and (id_ambito = (select o.id_ambito from  observatorio o where o.id_observatorio = ? and o.id_ambito <> 0) OR 1=1)"
+				+ "and id_lista in (select id_lista from semilla_etiqueta where id_etiqueta in"
 				+ "(select id_etiqueta from etiqueta where id_clasificacion = 3 and find_in_set(id_etiqueta, (select tags from observatorio where id_observatorio = ?))))"
-				+ "and (id_lista not in  (select semillas from rastreo where id_observatorio = ? and activo = 1)"
+				+ "and (id_lista not in  (select semillas from rastreo where id_observatorio = ? )"
 				+ "or id_lista not in (select id_lista from rastreos_realizados where id_obs_realizado = ?) ) order by nombre";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idObservatorio);

@@ -277,7 +277,7 @@ public final class GraphicsUtils {
 	 * @param withLegend       the with legend
 	 * @param percentage       the percentage
 	 * @param labelRotated     the label rotated
-	 * @param filePaths        the file paths
+	 * @param filePath         the file path
 	 * @param noDataMessage    the no data message
 	 * @param messageResources the message resources
 	 * @param x                the x
@@ -357,7 +357,7 @@ public final class GraphicsUtils {
 					} else if (verficationC.endsWith(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX)) {
 						verificacionPoint = verficationC.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "");
 						// PENDING Checks this strings
-						verificationText = Constants.OBS_COMPILANCE_NONE;
+						verificationText = Constants.OBS_COMPILANCE_NA;
 //						dataSet.addValue(valueC, date + " " + verificationText, verificacionPoint);
 						// TODO Check if dataset contains value to add
 						try {
@@ -752,6 +752,8 @@ public final class GraphicsUtils {
 				dateText = dataset.getRowKeys().get(0).toString().replace(Constants.OBS_COMPILANCE, "");
 			} else if (dataset.getRowKeys().get(0).toString().endsWith(Constants.OBS_COMPILANCE_NONE)) {
 				dateText = dataset.getRowKeys().get(0).toString().replace(Constants.OBS_COMPILANCE_NONE, "");
+			} else if (dataset.getRowKeys().get(0).toString().endsWith(Constants.OBS_COMPILANCE_NA)) {
+				dateText = dataset.getRowKeys().get(0).toString().replace(Constants.OBS_COMPILANCE_NA, "");
 			}
 		}
 		KeyToGroupMap map = new KeyToGroupMap(dateText);
@@ -763,49 +765,56 @@ public final class GraphicsUtils {
 					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE, "");
 				} else if (dateText.trim().endsWith(Constants.OBS_COMPILANCE_NONE)) {
 					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_NONE, "");
+				} else if (dataset.getRowKeys().get(0).toString().endsWith(Constants.OBS_COMPILANCE_NA)) {
+					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_NA, "");
 				}
 			}
 			map.mapKeyToGroup(dataset.getRowKeys().get(j).toString(), dateText);
 		}
 		renderer.setSeriesToGroupMap(map);
 		renderer.setItemMargin(0.0);
-		renderer.setItemMargin(0.0);
-		Paint p1 = new Color(225, 18, 13);// red
-		Paint p2 = new Color(38, 187, 8); // green
-		// Paint p3 = new Color(22, 220, 220);// gris
+		// {220,220,220},{225,18,13},{38,187,8}
+//		Paint p1 = new Color(225, 18, 13);// red
+//		Paint p2 = new Color(38, 187, 8); // green
+//		Paint p3 = new Color(220, 220, 220);// gris
+		Paint p1 = new Color(220, 220, 220);// gray
+		Paint p2 = new Color(225, 18, 13); // red
+		Paint p3 = new Color(38, 187, 8);// green
 		List<Paint> colors = new ArrayList<Paint>();
 		colors.add(p1);
 		colors.add(p2);
-		// colors.add(p3);
-		for (int i = 0; i < 40; i += 2) {
+		colors.add(p3);
+		for (int i = 0; i < 40; i += 3) {
 			renderer.setSeriesPaint(i, p1);
 		}
-		for (int i = 1; i < 40; i += 2) {
+		for (int i = 1; i < 40; i += 3) {
 			renderer.setSeriesPaint(i, p2);
 		}
-//		for (int i = 2; i < 40; i += 3) {
-//			renderer.setSeriesPaint(i, p3);
-//		}
+		for (int i = 2; i < 40; i += 3) {
+			renderer.setSeriesPaint(i, p3);
+		}
 		SubCategoryAxis domainAxis = new SubCategoryAxis("Verificación / Fecha");
 		domainAxis.setCategoryMargin(0.15);
 		List<String> datesText = new ArrayList<>();
 		for (int j = 0; j < dataset.getRowKeys().size(); j++) {
-//			dateText = "";
-//			if (dataset.getRowKeys().get(j) != null) {
-//				if (dataset.getRowKeys().get(j).toString().endsWith(Constants.OBS_COMPILANCE_FULL)) {
-//					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_FULL, "");
-//				} else if (dataset.getRowKeys().get(j).toString().endsWith(Constants.OBS_COMPILANCE_PARTIAL)) {
-//					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_PARTIAL, "");
-//				} else if (dataset.getRowKeys().get(j).toString().endsWith(Constants.OBS_COMPILANCE_NONE)) {
-//					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_NONE, "");
-//				}
-//			}
+			dateText = "";
+			if (dataset.getRowKeys().get(j) != null) {
+				if (dataset.getRowKeys().get(0).toString().endsWith(Constants.OBS_COMPILANCE)) {
+					dateText = dataset.getRowKeys().get(0).toString().replace(Constants.OBS_COMPILANCE, "");
+				} else if (dataset.getRowKeys().get(0).toString().endsWith(Constants.OBS_COMPILANCE_NONE)) {
+					dateText = dataset.getRowKeys().get(0).toString().replace(Constants.OBS_COMPILANCE_NONE, "");
+				} else if (dataset.getRowKeys().get(0).toString().endsWith(Constants.OBS_COMPILANCE_NA)) {
+					dateText = dataset.getRowKeys().get(0).toString().replace(Constants.OBS_COMPILANCE_NA, "");
+				}
+			}
 			dateText = dataset.getRowKeys().get(j).toString();
 			if (!org.apache.commons.lang3.StringUtils.isEmpty(dateText)) {
 				if (dateText.trim().endsWith(Constants.OBS_COMPILANCE)) {
 					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE, "");
 				} else if (dateText.trim().endsWith(Constants.OBS_COMPILANCE_NONE)) {
 					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_NONE, "");
+				} else if (dataset.getRowKeys().get(0).toString().endsWith(Constants.OBS_COMPILANCE_NA)) {
+					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_NA, "");
 				}
 			}
 			map.mapKeyToGroup(dataset.getRowKeys().get(j).toString(), dateText);
@@ -822,127 +831,12 @@ public final class GraphicsUtils {
 		domainAxis.setSubLabelFont((Font) domainAxis.getSubLabelFont().deriveFont(1, trans));
 		plot.setDomainAxis(domainAxis);
 		plot.setRenderer(renderer);
+		final String[] legendLabels = new String[] { Constants.OBS_COMPILANCE_NA, Constants.OBS_COMPILANCE_NONE, Constants.OBS_COMPILANCE };
 		if (observatoryGraphicsForm.isPrintLegend()) {
-			plot.setFixedLegendItems(generateLegendG(colors, plot));
+			plot.setFixedLegendItems(generateLegendG(colors, plot, legendLabels));
 		}
 		saveChartToFile(filePath, chart, observatoryGraphicsForm.getX(), observatoryGraphicsForm.getY());
 	}
-//	public static void createStandardGroupedBarChart(ChartForm observatoryGraphicsForm, String filePath, String noDataMess, MessageResources messageResources, boolean withRange) throws IOException {
-//		final JFreeChart chart;
-//		if (observatoryGraphicsForm.isTridimensional()) {
-//			chart = ChartFactory.createStackedBarChart3D(observatoryGraphicsForm.getTitle(), observatoryGraphicsForm.getColumnTitle(), observatoryGraphicsForm.getRowTitle(),
-//					observatoryGraphicsForm.getDataSet(), PlotOrientation.VERTICAL, observatoryGraphicsForm.isPrintLegend(), true, false);
-//		} else {
-//			chart = ChartFactory.createStackedBarChart(observatoryGraphicsForm.getTitle(), observatoryGraphicsForm.getColumnTitle(), observatoryGraphicsForm.getRowTitle(),
-//					observatoryGraphicsForm.getDataSet(), PlotOrientation.VERTICAL, observatoryGraphicsForm.isPrintLegend(), true, false);
-//		}
-//		chart.getTitle().setFont(TITLE_FONT);
-//		if (observatoryGraphicsForm.isPrintLegend()) {
-//			formatLegend(chart);
-//		}
-//		CategoryPlot plot = chart.getCategoryPlot();
-//		plot.setNoDataMessage(noDataMess);
-//		configNoDataMessage(plot);
-//		plot.setBackgroundPaint(Color.WHITE);
-//		// Elimina la transparencia de las gráficas
-//		plot.setForegroundAlpha(1.0f);
-//		/**
-//		 * 
-//		 * 
-//		 */
-//		GroupedStackedBarRenderer renderer = new GroupedStackedBarRenderer();
-//		renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER));
-//		renderer.setBaseItemLabelsVisible(true);
-//		renderer.setDrawBarOutline(true);
-//		renderer.setBaseOutlinePaint(Color.BLACK);
-//		renderer.setBarPainter(new StandardBarPainter());
-//		renderer.setRenderAsPercentages(true);
-//		renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER));
-//		renderer.setBaseItemLabelFont(ITEM_LABEL_FONT);
-//		renderer.setBaseItemLabelsVisible(true);
-//		renderer.setDrawBarOutline(true);
-//		renderer.setBaseItemLabelsVisible(true);
-//		renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-//		renderer.setBaseToolTipGenerator(new StandardCategoryToolTipGenerator());
-//		DefaultCategoryDataset dataset = observatoryGraphicsForm.getDataSet();
-//		/*
-//		 * 
-//		 */
-//		String dateText = "";
-//		if (dataset.getRowKeys().get(0) != null) {
-//			if (dataset.getRowKeys().get(0).toString().endsWith(Constants.OBS_COMPILANCE_FULL)) {
-//				dateText = dataset.getRowKeys().get(0).toString().replace(Constants.OBS_COMPILANCE_FULL, "");
-//			} else if (dataset.getRowKeys().get(0).toString().endsWith(Constants.OBS_COMPILANCE_PARTIAL)) {
-//				dateText = dataset.getRowKeys().get(0).toString().replace(Constants.OBS_COMPILANCE_PARTIAL, "");
-//			} else if (dataset.getRowKeys().get(0).toString().endsWith(Constants.OBS_COMPILANCE_NONE)) {
-//				dateText = dataset.getRowKeys().get(0).toString().replace(Constants.OBS_COMPILANCE_NONE, "");
-//			}
-//		}
-//		KeyToGroupMap map = new KeyToGroupMap(dateText);
-//		// TODO Review keys
-//		for (int j = 0; j < dataset.getRowKeys().size(); j++) {
-//			dateText = dataset.getRowKeys().get(j).toString();
-//			if (!org.apache.commons.lang3.StringUtils.isEmpty(dateText)) {
-//				if (dateText.trim().endsWith(Constants.OBS_COMPILANCE_FULL)) {
-//					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_FULL, "");
-//				} else if (dateText.trim().endsWith(Constants.OBS_COMPILANCE_PARTIAL)) {
-//					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_PARTIAL, "");
-//				} else if (dateText.trim().endsWith(Constants.OBS_COMPILANCE_NONE)) {
-//					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_NONE, "");
-//				}
-//			}
-//			map.mapKeyToGroup(dataset.getRowKeys().get(j).toString(), dateText);
-//		}
-//		renderer.setSeriesToGroupMap(map);
-//		renderer.setItemMargin(0.0);
-//		renderer.setItemMargin(0.0);
-//		Paint p1 = new Color(225, 18, 13);// red
-//		Paint p2 = new Color(38, 187, 8); // green
-//		Paint p3 = new Color(22, 220, 220);// gris
-//		List<Paint> colors = new ArrayList<Paint>();
-//		colors.add(p1);
-//		colors.add(p2);
-//		colors.add(p3);
-//		for (int i = 0; i < 40; i += 2) {
-//			renderer.setSeriesPaint(i, p1);
-//		}
-//		for (int i = 1; i < 40; i += 2) {
-//			renderer.setSeriesPaint(i, p2);
-//		}
-//		for (int i = 2; i < 40; i += 3) {
-//			renderer.setSeriesPaint(i, p3);
-//		}
-//		SubCategoryAxis domainAxis = new SubCategoryAxis("Verificación / Fecha");
-//		domainAxis.setCategoryMargin(0.15);
-//		List<String> datesText = new ArrayList<>();
-//		for (int j = 0; j < dataset.getRowKeys().size(); j++) {
-//			dateText = "";
-//			if (dataset.getRowKeys().get(j) != null) {
-//				if (dataset.getRowKeys().get(j).toString().endsWith(Constants.OBS_COMPILANCE_FULL)) {
-//					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_FULL, "");
-//				} else if (dataset.getRowKeys().get(j).toString().endsWith(Constants.OBS_COMPILANCE_PARTIAL)) {
-//					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_PARTIAL, "");
-//				} else if (dataset.getRowKeys().get(j).toString().endsWith(Constants.OBS_COMPILANCE_NONE)) {
-//					dateText = dataset.getRowKeys().get(j).toString().replace(Constants.OBS_COMPILANCE_NONE, "");
-//				}
-//			}
-//			if (!datesText.contains(dateText)) {
-//				datesText.add(dateText);
-//				domainAxis.addSubCategory(dateText);
-//			}
-//		}
-//		domainAxis.setCategoryLabelPositionOffset(55);
-//		// apply the affine trasnform with a rotation and a translate
-//		AffineTransform trans = AffineTransform.getTranslateInstance(-15, 45);
-//		trans.concatenate(AffineTransform.getRotateInstance(-Math.PI / 4));
-//		domainAxis.setSubLabelFont((Font) domainAxis.getSubLabelFont().deriveFont(1, trans));
-//		plot.setDomainAxis(domainAxis);
-//		plot.setRenderer(renderer);
-//		if (observatoryGraphicsForm.isPrintLegend()) {
-//			plot.setFixedLegendItems(generateLegendG(colors, plot));
-//		}
-//		saveChartToFile(filePath, chart, observatoryGraphicsForm.getX(), observatoryGraphicsForm.getY());
-//	}
 
 	/**
 	 * The Class CstmStandardCategoryItemLabelGenerator.
@@ -1140,9 +1034,8 @@ public final class GraphicsUtils {
 	 * @param plot   the plot
 	 * @return the legend item collection
 	 */
-	private static LegendItemCollection generateLegendG(List<Paint> colors, CategoryPlot plot) {
+	private static LegendItemCollection generateLegendG(List<Paint> colors, CategoryPlot plot, final String[] legendLabels) {
 		LegendItemCollection newLegend = new LegendItemCollection();
-		final String[] legendLabels = new String[] { "No conforme", "Conforme" };
 		Shape shape = new Rectangle(15, 15);
 		BasicStroke stroke = new BasicStroke();
 		for (int i = 0; i < legendLabels.length; i++) {
