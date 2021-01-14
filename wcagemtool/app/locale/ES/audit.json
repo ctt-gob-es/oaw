@@ -29,5 +29,6 @@
     "TITLE": "Paso 4: Auditar la muestra seleccionada",
     "UNDERSTAND": "Comprender el criterio",
     "UNTESTED": "{{critCount}} No Testeado",
-    "LABEL_DESCR": "Descripción"
+    "LABEL_DESCR": "Descripción",
+    "REQUIRED_FIELD_INFO": "* Campo obligatorio"
 }

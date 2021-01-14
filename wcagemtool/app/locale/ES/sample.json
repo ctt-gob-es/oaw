@@ -10,11 +10,11 @@
     "INF_RAND_SAMPLE": "Seleccione, al menos, un 10% de páginas web aleatorias en la muestra. En el tercer apartado del anexo I de la <a href='https://eur-lex.europa.eu/legal-content/ES/ALL/?uri=CELEX:32018D1524' title='Decisión de Ejecución (UE) 2018/1524 (abre en nueva ventana)'>Decisión de Ejecución (UE) 2018/1524</a> se exige que al menos, un 10% de las páginas de la muestra sean aleatorias. Para más información vaya a <a href={{link_em_3b}} hreflang='en' title='WCAG-EM Paso 3.b: Incluir una muestra seleccionada aleatoriamente (abre en nueva ventana)'>WCAG-EM Paso 3.b: Incluir una muestra seleccionada aleatoriamente</a>.<br><strong>Nota:</strong> Las 'páginas web' incluyen diferentes 'estados de páginas web' (véase la definición de <a href={{link_em_state}} hreflang='en' title='estados de páginas web (abre en nueva ventana)'>estados de páginas web</a>).",
     "RAND_SAMPLE_LENGTH": "Basándose en su muestra estructurada de {{total}} páginas web, debe añadir, al menos, {{count}} páginas web seleccionadas aleatoriamente (para cumplir con el requisito de ese 10% (<a href='https://eur-lex.europa.eu/legal-content/ES/ALL/?uri=CELEX:32018D1524' title='Decisión de Ejecución (UE) 2018/1524 (abre en nueva ventana)'>Decisión de Ejecución (UE) 2018/1524</a>).",
     "LABEL_HANDLE": "Nombre corto",
-    "LABEL_PAGE": "Dirección (URL) o descripción",
+    "LABEL_PAGE": "URL de la página",
     "NO_PAGES_DEFINED": "No hay páginas definidas para esta lista",
     "ITEM": "Página web",
     "PLH_TITLE": "Identificador para la página web",
-    "PLH_PAGE_URL": "Dirección (URL) o descripción de cómo llegar",
+    "PLH_PAGE_URL": "URL de la página",
     "BTN_ADD_PAGE": "Añadir página web",
     "BTN_REMOVE_PAGE": "Eliminar página web",
     "BTN_UPDATE_PAGE_TYPE":"Cambiar a página estructurada/aleatoria",
@@ -44,7 +44,17 @@
     "SAMPLE_INCORRECT": "<strong>Muestra correcta:</strong> No",
     "SAMPLE_INCORRECT_INFO":"Para que la muestra sea correcta debe cumplir lo siguiente:",
     "SAMPLE_INCORRECT_MANDATORY_TYPES": "Contener al menos una página de tipo 'Página de Inicio' y otra de 'Declaración de accesibilidad'.",
-    "SAMPLE_INCORRECT_MINIMUN_RANDOM": "El número de páginas aleatorias debe ser al menos el 10% de la muestra."
+    "SAMPLE_INCORRECT_MINIMUN_RANDOM": "El número de páginas aleatorias debe ser al menos el 10% de la muestra.",
+    "REQUIRED_FIELDS": "Rellene todos los campos obligatorios",
+    "REQUIRED_FIELD": "Campo obligatorio",
+    "PAGE_TYPE_INFO":" Tipo de la página añadida (de acuerdo con la Decisión de Ejecución 2018/1524)",
+    "PAGE_BREADCRUMB_INFO_1":"Cuando la página NO forme parte de un PROCESO, indicar separados por '>' la navegación que hay que hacer por el sitio web",
+    "PAGE_BREADCRUMB_INFO_2": "Cuando la página SI forme parte de un PROCESO, para guiar el mismo,  indicar los nombres cortos dados en las páginas previas del proceso separados por '>' e indicar entre paréntesis la acción que hay que realizar para pasar al siguiente paso del proceso. <p>Ej:<ul><li>Provincia (Elegir Madrid)</li><li>Provincia > Trámite (Elegir Trámite X)</li><li>Provincia > Trámite > Descripción (Entrar)</li></ul></p>"
+    
+    
+    
+                                                              
 
-
+    
+                                                             
 }

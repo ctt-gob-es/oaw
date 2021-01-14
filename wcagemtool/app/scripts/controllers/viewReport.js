@@ -11,13 +11,64 @@ angular.module('wcagReporter')
     evalModel,
     appState,
     wcagReporterExport,
-    toggleCriterionText
+    toggleCriterionText,
+    evalSampleModel,
+    evalAuditModel
   ) {
     var htmlBlob;
 
     $scope.state = appState.moveToState('viewReport');
     $scope.scope = evalModel.scopeModel;
     $scope.explore = evalModel.exploreModel;
+
+
+    $scope.criteria = evalAuditModel.getCriteriaSorted();
+
+    $scope.allVerifications = function () {
+      for (var i = 0; i < $scope.criteria.length; i++) {
+        for (var j = 0; j < $scope.criteria[i].hasPart.length; j++) {
+          if ($scope.criteria[i].hasPart[j].result.outcome == "earl:cantTell"
+            || $scope.criteria[i].hasPart[j].result.outcome == "earl:untested") {
+            return false;
+          }
+        }
+      }
+
+      return true;
+    }
+
+    $scope.structuredSample = evalSampleModel.structuredSample;
+    $scope.randomSample = evalSampleModel.randomSample;
+
+    $scope.hasMinimumRandom = function () {
+      return $scope.randomSample.webpage.length >= $scope.structuredSample.webpage.length / 10
+    }
+
+    $scope.hasAtleastOneType = function () {
+
+
+      var hasHomePage = false;
+      var hasAccesibilityDeclarationPage = false;
+
+      $scope.structuredSample.webpage.forEach(function (page) {
+        if (page.pageType == "PAGE_TYPE_1") {
+          hasHomePage = true;
+        }
+        if (page.pageType == "PAGE_TYPE_9") {
+          hasAccesibilityDeclarationPage = true;
+        }
+      });
+
+      $scope.randomSample.webpage.forEach(function (page) {
+        if (page.pageType == "PAGE_TYPE_1") {
+          hasHomePage = true;
+        }
+        if (page.pageType == "PAGE_TYPE_9") {
+          hasAccesibilityDeclarationPage = true;
+        }
+      });
+      return hasHomePage && hasAccesibilityDeclarationPage;
+    };
 
     $scope.saveAsXlsx = function () {
       try {

@@ -33,12 +33,11 @@
       </label>
 
       <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" exitto="ura-dir3" ref="ura_dir3">
-        <p ng-bind-html="'SCOPE.URA_SCOPE_INFO' | translate"></p>
+        <p ng-bind-html="'SCOPE.URA_DIR3_INFO' | translate"></p>
       </info-field>
 
       <input ng-model="scopeModel.website.uraDIR3" type="text" class="form-control" id="ura-dir3">
     </div>
-
 
     <div class="form-group">
       <label for="ura-dir3">
@@ -47,7 +46,7 @@
       </label>
 
       <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" exitto="ura-scope" ref="ura_scope">
-        <p ng-bind-html="'SCOPE.URA_DIR3_INFO' | translate"></p>
+        <p ng-bind-html="'SCOPE.URA_SCOPE_INFO' | translate"></p>
       </info-field>
 
       <input ng-model="scopeModel.website.uraScope" type="text" class="form-control" id="ura-scope">
@@ -161,8 +160,19 @@
         <p>{{ 'SCOPE.INF_SITE_SCOPE_0' | translate }}</p>
         <ul>
           <li>{{ 'SCOPE.INF_SITE_SCOPE_LI0' | translate }}</li>
-          <li>{{ 'SCOPE.INF_SITE_SCOPE_LI1' | translate }}</li>
-          <li>{{ 'SCOPE.INF_SITE_SCOPE_LI2' | translate }}</li>
+          <li>{{ 'SCOPE.INF_SITE_SCOPE_LI1' | translate }}
+            <ul>
+              <li>{{ 'SCOPE.INF_SITE_SCOPE_LI1_1' | translate }}</li>
+              <li>{{ 'SCOPE.INF_SITE_SCOPE_LI1_2' | translate }}</li>
+          </li>
+        </ul>
+
+        
+        {{ 'SCOPE.INF_SITE_SCOPE_LI1_INFO' | translate }}
+        </li>
+
+        <!-- <li>{{ 'SCOPE.INF_SITE_SCOPE_LI1' | translate }}</li>
+        <li>{{ 'SCOPE.INF_SITE_SCOPE_LI2' | translate }}</li> -->
         </ul>
         <p ng-bind-html="'COMMON.MORE_INFO_1' | translate: {
         url: 'http://www.w3.org/TR/WCAG-EM/#step1a',
@@ -273,12 +283,12 @@
 
     <div class="form-group">
       <label for="territorialScope">
-        {{ 'SCOPE.THEMATIC_SCOPE_LABEL' | translate }}        <info-button label="{{'COMMON.BTN_INFO' | translate}}" target="thematic_info"
-        title="{{ 'SCOPE.LABEL_VERSION' | translate }}"></info-button>
+        {{ 'SCOPE.THEMATIC_SCOPE_LABEL' | translate }} <info-button label="{{'COMMON.BTN_INFO' | translate}}"
+          target="thematic_info" title="{{ 'SCOPE.LABEL_VERSION' | translate }}"></info-button>
       </label>
 
 
-      <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}"  ref="thematic_info">
+      <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" ref="thematic_info">
         <p ng-bind-html="'SCOPE.THEMATIC_SCOPE_INFO' | translate"></p>
       </info-field>
 
@@ -301,7 +311,8 @@
         {{ 'SCOPE.EVALUATION_TYPE_LABEL' | translate }}
       </label>
 
-      <select id="evaluationType" class="form-control" ng-options="key as value for (key,value) in evaluationTypeOptions"
+      <select id="evaluationType" class="form-control"
+        ng-options="key as value for (key,value) in evaluationTypeOptions"
         ng-model="scopeModel.website.evaluationType"></select>
     </div>
 
@@ -313,10 +324,12 @@
         </info-button>
       </label>
 
-      <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" ref="inf_evaluationCompany" exitto="evaluationCompany">
+      <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" ref="inf_evaluationCompany"
+        exitto="evaluationCompany">
         <p>{{ 'SCOPE.EVALUATION_COMPANY_INFO' | translate }}</p>
       </info-field>
-      <input type="text" ng-model="scopeModel.website.evaluationCompany" class="form-control date" id="evaluationCompany" />
+      <input type="text" ng-model="scopeModel.website.evaluationCompany" class="form-control date"
+        id="evaluationCompany" />
     </div>
 
 
@@ -330,8 +343,8 @@
         <p>{{ 'SCOPE.OBSERVATIONS_LABEL_INFO' | translate }}</p>
       </info-field>
 
-      <textarea ng-model="scopeModel.website.observations" id="observations" class="form-control" auto-resize
-        cols="40" rows="5"></textarea>
+      <textarea ng-model="scopeModel.website.observations" id="observations" class="form-control" auto-resize cols="40"
+        rows="5"></textarea>
     </div>
 
     <div class="form-group">

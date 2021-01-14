@@ -8,50 +8,88 @@
 
 
   <p ng-bind-html="'DOWNLOAD.INFO_DOWNLOAD_REPORT' | translate"></p>
+  <div class="col-sm-12">
+    <div class="col-sm-6">
 
-  <div class="container save-panel">
-    <div class="panel panel-default">
-      
-      <div class="panel-heading">
-        {{ 'DOWNLOAD.DOWNLOAD_REPORT' | translate}}
-
+      <div class="alert alert-success" ng-if="hasAtleastOneType() && hasMinimumRandom()">
+        <p ng-bind-html="'SAMPLE.SAMPLE_CORRECT'|translate"></p>
       </div>
-      <ul class="list-group">
-        <li class="list-group-item"><a download="{{exportHtmlFile}}" ng-click="saveHtmlBlobIE()" target="_blank"
-            id="html_download_link">
-            {{ 'DOWNLOAD.BTN_SAVE_HTML' | translate}}
-          </a></li>
-        <li class="list-group-item"><a download="report.css" href="styles/report.css" target="_blank">
-            {{ 'DOWNLOAD.BTN_SAVE_CSS' | translate}}
-          </a></li>
-        <li class="list-group-item"><a download="{{exportJsonFile}}" ng-click="downloadJsonStart()" target="_blank"
-            href="{{exportJsonUrl}}">
-            {{ 'DOWNLOAD.BTN_SAVE_JSON' | translate}}
-          </a></li>
-        <li class="list-group-item"><a ng-click="saveAsXlsx()" ng-show="loading != true" target="_blank" href="">
-            {{ 'DOWNLOAD.BTN_SAVE_ODS' | translate}}
-          </a>
 
-          <span ng-show="loading == true">
-            <i class="glyphicon glyphicon-refresh spinning"></i> {{ 'DOWNLOAD.BTN_SAVE_ODS_LOAD' | translate}}
-          </span>
-          <div ng-show="clickDownload == true" class="alert alert-info infobox text-justify"
-            ng-bind-html="'DOWNLOAD.BTN_SAVE_ODS_INFO' | translate"></div>
+      <div class="alert alert-danger" ng-if="!hasAtleastOneType() || !hasMinimumRandom()">
+        <p ng-bind-html="'SAMPLE.SAMPLE_INCORRECT'|translate"></p>
+        <p>
+          {{'SAMPLE.SAMPLE_INCORRECT_INFO' | translate}}
+        </p>
+        <ul>
 
-        </li>
+          <li ng-if="!hasAtleastOneType()">
+            {{'SAMPLE.SAMPLE_INCORRECT_MANDATORY_TYPES' | translate}}
+          </li>
+          <li ng-if="!hasMinimumRandom()">
+            {{'SAMPLE.SAMPLE_INCORRECT_MINIMUN_RANDOM' | translate}}
+          </li>
+        </ul>
+      </div>
 
-        <li class="list-group-item"><a ng-click="saveAsXlsx2()" ng-show="loadingxlsx != true" target="_blank" href="">
-            {{ 'DOWNLOAD.BTN_SAVE_XLSX' | translate}}
-          </a>
 
-          <span ng-show="loadingxlsx == true">
-            <i class="glyphicon glyphicon-refresh spinning"></i> {{ 'DOWNLOAD.BTN_SAVE_XLSX_LOAD' | translate}}
-          </span>
-        </li>
-      </ul>
+      <div class="alert alert-success" ng-if="allVerifications()">
+        <p ng-bind-html="'REPORT.REPORT_FINISHED'|translate"></p>
+      </div>
+
+      <div class="alert alert-danger" ng-if="!allVerifications()">
+        <p ng-bind-html="'REPORT.REPORT_UNFINISHED'|translate"></p>
+        <ul>
+          <li>{{'REPORT.REPORT_UNFINISHED_INFO' | translate}}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container save-panel col-sm-6">
+
+      <div class="panel panel-default">
+
+        <div class="panel-heading">
+          {{ 'DOWNLOAD.DOWNLOAD_REPORT' | translate}}
+
+        </div>
+        <ul class="list-group">
+          <li class="list-group-item"><a download="{{exportHtmlFile}}" ng-click="saveHtmlBlobIE()" target="_blank"
+              id="html_download_link">
+              {{ 'DOWNLOAD.BTN_SAVE_HTML' | translate}}
+            </a></li>
+          <li class="list-group-item"><a download="report.css" href="styles/report.css" target="_blank">
+              {{ 'DOWNLOAD.BTN_SAVE_CSS' | translate}}
+            </a></li>
+          <li class="list-group-item"><a download="{{exportJsonFile}}" ng-click="downloadJsonStart()" target="_blank"
+              href="{{exportJsonUrl}}">
+              {{ 'DOWNLOAD.BTN_SAVE_JSON' | translate}}
+            </a></li>
+          <li class="list-group-item"><a ng-click="saveAsXlsx()" ng-show="loading != true" target="_blank" href="">
+              {{ 'DOWNLOAD.BTN_SAVE_ODS' | translate}}
+            </a>
+
+            <span ng-show="loading == true">
+              <i class="glyphicon glyphicon-refresh spinning"></i> {{ 'DOWNLOAD.BTN_SAVE_ODS_LOAD' | translate}}
+            </span>
+            <div ng-show="clickDownload == true" class="alert alert-info infobox text-justify"
+              ng-bind-html="'DOWNLOAD.BTN_SAVE_ODS_INFO' | translate"></div>
+
+          </li>
+
+          <li class="list-group-item"><a ng-click="saveAsXlsx2()" ng-show="loadingxlsx != true" target="_blank" href="">
+              {{ 'DOWNLOAD.BTN_SAVE_XLSX' | translate}}
+            </a>
+
+            <span ng-show="loadingxlsx == true">
+              <i class="glyphicon glyphicon-refresh spinning"></i> {{ 'DOWNLOAD.BTN_SAVE_XLSX_LOAD' | translate}}
+            </span>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
-
-  <full-report ng-if="wcag2specReady"></full-report>
+  <div class="col-sm-12">
+    <full-report ng-if="wcag2specReady"></full-report>
+  </div>
 
 </main>
