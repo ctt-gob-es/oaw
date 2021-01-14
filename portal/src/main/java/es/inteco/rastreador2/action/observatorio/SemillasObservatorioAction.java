@@ -171,7 +171,7 @@ public class SemillasObservatorioAction extends Action {
 					} else {
 						SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA_OBSERVATORIO, semillaForm.getNombre(),
 								semillaForm.getListaUrlsString(), semillaForm.getCategoria().getId(), null, null,null,
-								semillaForm.getAcronimo(), null, semillaForm.isActiva(), semillaForm.isInDirectory());
+								semillaForm.getAcronimo(), semillaForm.isActiva(), semillaForm.isInDirectory());
 						ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.semilla.creada",
 								"volver.listado.semillas.observatorio");
 						return mapping.findForward(Constants.EXITO2);

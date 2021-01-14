@@ -164,13 +164,11 @@ public final class SemillaDAO {
 	 * @param complejidad   the complejidad
 	 * @param etiquetas     the etiquetas
 	 * @param acronimo      the acronimo
-	 * @param dependencia   the dependencia
 	 * @return the long
 	 * @throws Exception the exception
 	 */
-	public static Long insertList(Connection c, long tipoLista, String nombreSemilla, String listaUrls, String categoria, String ambito, String complejidad, String etiquetas, String acronimo,
-			String dependencia) throws Exception {
-		return insertList(c, tipoLista, nombreSemilla, listaUrls, categoria, ambito, complejidad, etiquetas, acronimo, dependencia, true, false);
+	public static Long insertList(Connection c, long tipoLista, String nombreSemilla, String listaUrls, String categoria, String ambito, String complejidad, String etiquetas, String acronimo) throws Exception {
+		return insertList(c, tipoLista, nombreSemilla, listaUrls, categoria, ambito, complejidad, etiquetas, acronimo, true, false);
 	}
 
 	/**
@@ -185,16 +183,15 @@ public final class SemillaDAO {
 	 * @param complejidad   the complejidad
 	 * @param etiquetas     the etiquetas
 	 * @param acronimo      the acronimo
-	 * @param dependencia   the dependencia
 	 * @param activa        the activa
 	 * @param inDirectory   the in directory
 	 * @return the long
 	 * @throws SQLException the SQL exception
 	 */
 	public static Long insertList(Connection c, long tipoLista, String nombreSemilla, String listaUrls, String categoria, String ambito, String complejidad, String etiquetas, String acronimo,
-			String dependencia, boolean activa, boolean inDirectory) throws SQLException {
+			boolean activa, boolean inDirectory) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement(
-				"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, id_ambito, id_complejidad, acronimo, dependencia, activa, in_directory) VALUES (?,?,?,?,?,?,?,?,?,?)",
+				"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, id_ambito, id_complejidad, acronimo, activa, in_directory) VALUES (?,?,?,?,?,?,?,?,?)",
 				Statement.RETURN_GENERATED_KEYS)) {
 			ps.setLong(1, tipoLista);
 			ps.setString(2, nombreSemilla);
@@ -219,13 +216,8 @@ public final class SemillaDAO {
 			} else {
 				ps.setString(7, null);
 			}
-			if (StringUtils.isNotEmpty(dependencia)) {
-				ps.setString(8, dependencia);
-			} else {
-				ps.setString(8, null);
-			}
-			ps.setBoolean(9, activa);
-			ps.setBoolean(10, inDirectory);
+			ps.setBoolean(8, activa);
+			ps.setBoolean(9, inDirectory);
 			ps.executeUpdate();
 			try (ResultSet rs = ps.getGeneratedKeys()) {
 				if (rs.next()) {
@@ -1420,7 +1412,7 @@ public final class SemillaDAO {
 		if (updateListDataForm.getListaRastreable() != null && !updateListDataForm.getListaRastreable().isEmpty()) {
 			if (updateListDataForm.getIdListaRastreable() == 0) {
 				// Guardamos la lista Rastreable
-				insertList(c, Constants.ID_LISTA_RASTREABLE, updateListDataForm.getNombre() + "-Rastreable", updateListDataForm.getListaRastreable(), null, null, null, null, null, null);
+				insertList(c, Constants.ID_LISTA_RASTREABLE, updateListDataForm.getNombre() + "-Rastreable", updateListDataForm.getListaRastreable(), null, null, null, null, null);
 				final long idCrawlableList = SemillaDAO.getIdList(c, updateListDataForm.getNombre() + "-Rastreable", null);
 				updateListDataForm.setIdListaRastreable(idCrawlableList);
 			} else {
@@ -1436,7 +1428,7 @@ public final class SemillaDAO {
 		if (updateListDataForm.getListaNoRastreable() != null && !updateListDataForm.getListaNoRastreable().isEmpty()) {
 			if (updateListDataForm.getIdListaNoRastreable() == 0) {
 				// Guardamos la lista no Rastreable
-				insertList(c, Constants.ID_LISTA_NO_RASTREABLE, updateListDataForm.getNombre() + "-NoRastreable", updateListDataForm.getListaNoRastreable(), null, null, null, null, null, null);
+				insertList(c, Constants.ID_LISTA_NO_RASTREABLE, updateListDataForm.getNombre() + "-NoRastreable", updateListDataForm.getListaNoRastreable(), null, null, null, null, null);
 				Long idNoCrawlableList = SemillaDAO.getIdList(c, updateListDataForm.getNombre() + "-NoRastreable", null);
 				updateListDataForm.setIdListaNoRastreable(idNoCrawlableList);
 			} else {
