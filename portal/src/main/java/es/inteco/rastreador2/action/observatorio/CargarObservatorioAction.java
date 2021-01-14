@@ -81,17 +81,32 @@ public class CargarObservatorioAction extends Action {
 					Logger.putLog("Error: ", CargarObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 				return null;
-			} else if ("saveConfig".equalsIgnoreCase(action)) {
-				String[] keys = request.getParameterValues("key");
-				String[] values = request.getParameterValues("value");
-				List<ExtraConfigurationForm> extraConfig = new ArrayList<>();
-				if (keys != null) {
-					for (int i = 0; i < keys.length; i++) {
-						ExtraConfigurationForm config = new ExtraConfigurationForm();
-						config.setKey(keys[i]);
-						config.setValue(values[i]);
-						extraConfig.add(config);
-					}
+			}
+//			else if ("saveConfig".equalsIgnoreCase(action)) {
+//				String[] keys = request.getParameterValues("key");
+//				String[] values = request.getParameterValues("value");
+//				List<ExtraConfigurationForm> extraConfig = new ArrayList<>();
+//				if (keys != null) {
+//					for (int i = 0; i < keys.length; i++) {
+//						ExtraConfigurationForm config = new ExtraConfigurationForm();
+//						config.setKey(keys[i]);
+//						config.setValue(values[i]);
+//						extraConfig.add(config);
+//					}
+//				}
+//				return null;
+//			} 
+			else if ("getExtraConfig".equalsIgnoreCase(action)) {
+				try {
+					List<ExtraConfigurationForm> listConfigs = ObservatorioDAO.getExtraConfiguration(DataBaseManager.getConnection(), request.getParameter("key"));
+					response.setContentType("text/json");
+					String jsonConfigs = new Gson().toJson(listConfigs);
+					PrintWriter pw = response.getWriter();
+					pw.write("{\"configs\": " + jsonConfigs.toString() + ",\"paginador\": {\"total\":" + listConfigs.size() + "}, \"paginas\": 1}");
+					pw.flush();
+					pw.close();
+				} catch (Exception e) {
+					Logger.putLog("Error: ", CargarObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 				return null;
 			} else {

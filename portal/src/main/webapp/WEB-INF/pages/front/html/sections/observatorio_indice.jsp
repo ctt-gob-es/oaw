@@ -72,79 +72,31 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 }
 </style>
 <script type="text/javascript">
+	var colNameName = '<bean:message key="observatory.extra.config.name"/>';
+	var colNameValue = '<bean:message key="observatory.extra.config.value"/>';
 
-var colNameName = '<bean:message key="observatory.extra.config.name"/>';
-var colNameValue = '<bean:message key="observatory.extra.config.value"/>';
+	var yesText = '<bean:message key="select.yes"/>';
+	var noText = '<bean:message key="select.no"/>';
 
-var yesText = '<bean:message key="select.yes"/>';
-var noText = '<bean:message key="select.no"/>';
+	var $jq = $.noConflict();
 
-var $jq = $.noConflict();
+	//Formatters de celdas
+	function valueFormatter(cellvalue, options, rowObject) {
+		if (cellvalue == "true" || cellvalue == "false") {
+			if (cellvalue == "true") {
+				return '<select><option value=true selected>' + yesText
+						+ '</option><option value=false>' + noText
+						+ '</option></select>'
+			} else {
+				return '<select><option value=true>' + yesText
+						+ '</option><option value=false selected>' + noText
+						+ '</option></select>'
+			}
 
-
-//Formatters de celdas
-function valueFormatter(cellvalue, options, rowObject) {
-	if (cellvalue =="true" || cellvalue =="false") {
-		if(cellvalue =="true"){
-			return '<select><option value=true selected>'+yesText+'</option><option value=false>'+noText+'</option></select>'
 		} else {
-			return '<select><option value=true>'+yesText+'</option><option value=false selected>'+noText+'</option></select>'
+			return cellvalue;
 		}
-
-		
-	} else {
-		return cellvalue;
 	}
-}
-
-
-function complexityEdit(cellvalue, options, rowObject) {
-	
-	var element = document.createElement('select');
-
-
-// 	if (cellvalue =="true" || cellvalue =="false") {
-// 		if(cellvalue =="true"){
-// 			return '<select><option value=true selected>'+yesText+'</option><option value=false>'+noText+'</option></select>'
-// 		} else {
-// 			return '<select><option value=true>'+yesText+'</option><option value=false selected>'+noText+'</option></select>'
-// 		}
-
-		
-// 	} else {
-// 		return cellvalue;
-// 	}
-
-return element;
-
-}
-
-function complexityEditValue(elem, operation, cellvalue) {
-
-// 	if (operation === 'get') {
-// 		if (cellvalue =="true" || cellvalue =="false") {
-// 			if(cellvalue =="true"){
-// 				return '<select><option value=true selected>'+yesText+'</option><option value=false>'+noText+'</option></select>'
-// 			} else {
-// 				return '<select><option value=true>'+yesText+'</option><option value=false selected>'+noText+'</option></select>'
-// 			}
-
-			
-// 		} else {
-// 			return cellvalue;
-// 		}
-// 	} else if (operation === 'set') {
-// 		$('input', elem).val(cellvalue);
-// 	}
-
-if (operation === 'get') {
-		return $(elem).val();
-	} else if (operation === 'set') {
-		$('select', elem).val(value);
-	}
-
-}
-
 
 	var scroll;
 	function reloadGrid(path) {
@@ -173,40 +125,33 @@ if (operation === 'get') {
 									.jqGrid(
 											{
 												editUrl : '/oaw/secure/CargarObservatorio.do?action=loadConfig',
-												colNames : [ "id", "key", colNameName,
-													colNameValue ],
-												colModel : [
-														{
-															name : "id",
-															hidden : true,
-															sortable : false
-														},
-														{
-															name : "key",
-															hidden : true,
-															sortable : false
-														},
-														{
-															name : "name",
-															width : 60,
-															sortable : false,
-															align : "left",
-															editable : false
-														},
-														{
-															name : "value",
-															width : 40,
-															formatter: valueFormatter,
-// 															editrules : {
-// 																required : true
-// 															},
-															editoptions : {
-																custom_element : complexityEdit,
-																custom_value : complexityEditValue
-															},
-															sortable : false,
-															align : "left"
-														},
+												colNames : [ "id", "key",
+														colNameName,
+														colNameValue ],
+												colModel : [ {
+													name : "id",
+													hidden : true,
+													sortable : false
+												}, {
+													name : "key",
+													hidden : true,
+													sortable : false
+												}, {
+													name : "name",
+													width : 60,
+													sortable : false,
+													align : "left",
+													editable : false
+												}, {
+													name : "value",
+													width : 40,
+													formatter : valueFormatter,
+													editrules : {
+														required : false
+													},
+													sortable : false,
+													align : "left"
+												},
 
 												],
 												inlineEditing : {
@@ -298,7 +243,8 @@ if (operation === 'get') {
 												},
 												gridComplete : function() {
 													// restore scroll
-													$jq(window).scrollTop(scroll);
+													$jq(window).scrollTop(
+															scroll);
 												}
 											}).jqGrid("inlineNav");
 
@@ -327,83 +273,68 @@ if (operation === 'get') {
 				});
 	}
 
+	var dialog;
 
-var dialog;
+	var windowWidth = $jq(window).width() * 0.3;
+	var windowHeight = $jq(window).height() * 0.3;
 
+	function extraConfigDialog() {
 
+		window.scrollTo(0, 0);
+		var windowTitle = '<bean:message key="observatory.extra.config.title"/>';
+		var saveButton = '<bean:message key="boton.guardar"/>';
+		var cancelButton = '<bean:message key="boton.cancelar"/>';
 
-var windowWidth = $jq(window).width() * 0.3;
-var windowHeight = $jq(window).height() * 0.3;
+		$jq('#errorExtraConfig').hide();
 
-function extraConfigDialog() {
+		dialog = $jq("#extraConfigDialog")
+				.dialog(
+						{
+							height : 'auto',
+							width : windowWidth,
+							modal : true,
+							title : windowTitle,
+							open : function() {
+								getAutorelaunch();
+								reloadGrid('/oaw/secure/CargarObservatorio.do?action=loadConfig');
+							}
+						});
+	}
 
-	window.scrollTo(0, 0);
-	var windowTitle = '<bean:message key="observatory.extra.config.title"/>';
-	var saveButton = '<bean:message key="boton.guardar"/>';
-	var cancelButton = '<bean:message key="boton.cancelar"/>';
-	
-	$jq('#errorExtraConfig').hide();
+	function getAutorelaunch() {
 
-	dialog = $jq("#extraConfigDialog").dialog({
-		height : 'auto',
-		width : windowWidth,
-		modal : true,
-		title : windowTitle,
-		open: function(){
-			reloadGrid('/oaw/secure/CargarObservatorio.do?action=loadConfig');
-		}
-	});
-}
+		var guardado = $
+				.ajax(
+						{
+							url : '/oaw/secure/CargarObservatorio.do?action=getExtraConfig&key=autorelaunch',
+							processData : false,
+							contentType : false,
+							method : 'POST',
+							cache : false
+						}).success(function(response) {
+							$jq('#autorelaunch').val(response.configs[0].value)
+							
+							$('#autorelaunch').on('change', function() {
+								
+								$
+								.ajax(
+										{
+											url : '/oaw/secure/CargarObservatorio.do?action=update&key=autorelaunch&value='+this.value,
+											processData : false,
+											contentType : false,
+											method : 'POST',
+											cache : false
+										});
+								});
 
-function updateConfig(){
-	//editExtraConfigForm
-	
-	var guardado = $.ajax({
-		url : '/oaw/secure/CargarObservatorio.do?action=saveConfig',
-		//data : $jq('#editExtraConfigForm').serialize(),
-		data: new FormData($jq("#editExtraConfigForm")[0]),
-    	processData: false, 
-    	contentType: false, 
-		method : 'POST',
-		cache : false
-	}).success(
-			function(response) {
-				$jq('#loading_cover_div').fadeOut(1000);
-				$jq('#existosPlantilla').addClass('alert alert-success');
-				$jq('#existosPlantilla').append("<ul>");
+				}).error(function(response) {
 
-				$.each(JSON.parse(response), function(index, value) {
-					$jq('#existosPlantilla').append(
-							'<li>' + value.message + '</li>');
-				});
+				}
 
-				$jq('#existosPlantilla').append("</ul>");
-				$jq('#existosPlantilla').show();
-				dialog.dialog("close");
-				reloadGrid(lastUrl);
+				);
 
-			}).error(
-			function(response) {
-				$jq('#loading_cover_div').fadeOut(1000);
-				$jq('#erroresPlantilla').addClass('alert alert-danger');
-				$jq('#erroresPlantilla').append("<ul>");
-
-				$.each(JSON.parse(response.responseText), function(index,
-						value) {
-					$jq('#erroresPlantilla').append(
-							'<li>' + value.message + '</li>');
-				});
-
-				$jq('#erroresPlantilla').append("</ul>");
-				$jq('#erroresPlantilla').show();
-
-			}
-
-	);
-
-	return guardado;
-	
-}
+		return guardado
+	}
 
 </script>
 <bean:define id="rolObservatory">
@@ -420,6 +351,15 @@ function updateConfig(){
 			<p>
 				<bean:message key="observatory.extra.config.info" />
 			</p>
+			<div id="getExtraConfig">
+				<label for="autorelaunch">
+					<bean:message key="observatory.extra.config.autorelaunch" />
+				</label>
+				<select name="autorelaunch" id="autorelaunch">
+					<option value="0"><bean:message key="select.no" /></option>
+					<option value="1"><bean:message key="select.yes" /></option>
+				</select>
+			</div>
 			<table id="grid">
 			</table>
 		</div>

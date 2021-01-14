@@ -2691,7 +2691,36 @@ public final class ObservatorioDAO {
 	 */
 	public static List<ExtraConfigurationForm> loadExtraConfiguration(Connection c) throws SQLException {
 		List<ExtraConfigurationForm> extraConfig = new ArrayList<>();
-		final String query = "SELECT `id` AS C_ID,`name` AS N_ID, `key` AS K_ID,`value` AS V_ID FROM `observatorio_extra_configuration` ORDER BY `id`";
+		final String query = "SELECT `id` AS C_ID,`name` AS N_ID, `key` AS K_ID,`value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` <> 'autorelaunch' ORDER BY `id`";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					ExtraConfigurationForm config = new ExtraConfigurationForm();
+					config.setId(rs.getLong("C_ID"));
+					config.setKey(rs.getString("K_ID"));
+					config.setValue(rs.getString("V_ID"));
+					config.setName(rs.getString("N_ID"));
+					extraConfig.add(config);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return extraConfig;
+	}
+
+	/**
+	 * Gets the extra configuration.
+	 *
+	 * @param c   the c
+	 * @param key the key
+	 * @return the extra configuration
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<ExtraConfigurationForm> getExtraConfiguration(Connection c, final String key) throws SQLException {
+		List<ExtraConfigurationForm> extraConfig = new ArrayList<>();
+		final String query = "SELECT `id` AS C_ID,`name` AS N_ID, `key` AS K_ID,`value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = '" + key + "' ORDER BY `id`";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
@@ -2816,6 +2845,25 @@ public final class ObservatorioDAO {
 					throw e;
 				}
 			}
+		}
+	}
+
+	/**
+	 * Save extra configuration.
+	 *
+	 * @param c     the c
+	 * @param key   the key
+	 * @param value the value
+	 * @throws SQLException the SQL exception
+	 */
+	public static void saveExtraConfiguration(Connection c, final String key, final String value) throws SQLException {
+		try (PreparedStatement ps = c.prepareStatement("UPDATE observatorio_extra_configuration SET `value` = ? WHERE `key` = ?")) {
+			ps.setString(1, value);
+			ps.setString(2, key);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
 		}
 	}
 }
