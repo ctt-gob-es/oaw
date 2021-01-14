@@ -7,7 +7,7 @@
     "LABEL_SITE_SCOPE": "Alcance del sitio web",
     "LABEL_CONFORMANCE_TGT": "Nivel de conformidad analizado",
     "LABEL_EXTRA_REQUIREMENTS": "Requisitos adicionales de la revisión",
-    "LABEL_SUPPORT_BASE": "Base de apoyo a la accesibilidad",
+    "LABEL_SUPPORT_BASE": "Soporte de accesibilidad mínimo",
     "LABEL_RELIEDUP_TECH": "Tecnologías utilizadas",
     "HD_SCORE": "Resumen de los resultados de la auditoría",
     "RESULTS_OF": "Resultados de",
