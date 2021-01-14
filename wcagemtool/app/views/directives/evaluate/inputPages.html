@@ -1,7 +1,7 @@
 <div class="input-page key-value-group" ng-init="col0 = 'visible-xs col-xs-12';
-              col1 = 'col-xs-9 col-sm-3 col-md-3 form-block right-col';
+              col1 = 'col-xs-9 col-sm-3 col-md-2 form-block right-col';
               col2 = 'col-xs-9 col-sm-2 col-md-2 form-block right-col';
-              col3 = 'col-xs-9 col-sm-2 col-md-2 form-block right-col';
+              col3 = 'col-xs-9 col-sm-2 col-md-3 form-block right-col';
               col4 = 'col-xs-9 col-sm-2 col-md-2 form-block right-col';
               col5 = 'col-xs-9 col-sm-2 col-md-2 form-block right-col';
               col6 = 'col-sm-1 form-block remove-button';
@@ -26,7 +26,7 @@
       {{ 'SAMPLE.LABEL_ELEMENTS' | translate}}</div>
   </header>
 
-  <p ng-if="pages.length === 0" class="appear no-selection"><em>
+  <p ng-if="pages.length === 0" class="appear no-selection alert alert-info"><em>
       {{ 'SAMPLE.NO_PAGES_DEFINED' | translate}}
     </em></p>
 
@@ -79,7 +79,7 @@
         <option value="PAGE_TYPE_12">{{'SAMPLE.PAGE_TYPE_12' | translate}}</option>
         <option value="PAGE_TYPE_13">{{'SAMPLE.PAGE_TYPE_13' | translate}}</option>
         <option value="PAGE_TYPE_14">{{'SAMPLE.PAGE_TYPE_14' | translate}}</option>
-      </select><br>
+      </select>
       <div class="invalid-feedback" ng-if="!isValid(page.pageType)">
         {{'SAMPLE.REQUIRED_FIELD' | translate}}
       </div>

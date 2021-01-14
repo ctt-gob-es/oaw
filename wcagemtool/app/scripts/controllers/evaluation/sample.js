@@ -9,8 +9,7 @@ angular.module('wcagReporter')
       evalExploreModel,
       evalSampleModel,
       evalAuditModel,
-      $filter,
-      $rootScope
+      $filter
     ) {
       $scope.state = appState.moveToState('sample');
 
@@ -19,17 +18,17 @@ angular.module('wcagReporter')
 
       $scope.exploreModel = evalExploreModel;
 
-      if ($scope.structuredSample &&
-        $scope.structuredSample.webpage.length === 0) {
-        var strPage = evalSampleModel.addNewStructuredPage();
-        evalAuditModel.addPageForAsserts(strPage);
+      // if ($scope.structuredSample &&
+      //   $scope.structuredSample.webpage.length === 0) {
+      //   var strPage = evalSampleModel.addNewStructuredPage();
+      //   evalAuditModel.addPageForAsserts(strPage);
 
-        if ($scope.randomSample &&
-          $scope.randomSample.webpage.length === 0) {
-          var rndPage = evalSampleModel.addNewRandomPage();
-          evalAuditModel.addPageForAsserts(rndPage);
-        }
-      }
+      //   if ($scope.randomSample &&
+      //     $scope.randomSample.webpage.length === 0) {
+      //     var rndPage = evalSampleModel.addNewRandomPage();
+      //     evalAuditModel.addPageForAsserts(rndPage);
+      //   }
+      // }
 
       $scope.getPageAdder = function (sample) {
         return function () {
@@ -113,9 +112,5 @@ angular.module('wcagReporter')
         }
       });
 
-      // $scope.isValid = function (fieldName) {
-      //   console.log($scope['formSample'][fieldName].$valid)
-      //   return $scope['formSample'][fieldName].$valid;
-      // }
     }
   );
