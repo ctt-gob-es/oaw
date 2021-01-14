@@ -77,6 +77,7 @@ angular.module('wcagReporter')
 
       sample.webpage.push(page);
       page.id = '_:struct_' + num;
+      page.pageType = '';
       return page;
     };
 
@@ -84,6 +85,7 @@ angular.module('wcagReporter')
       var num = getAvailablePageNum(sampleModel.randomSample);
       sampleModel.randomSample.webpage.push(page);
       page.id = '_:rand_' + num;
+      page.pageType = 'PAGE_TYPE_14';
       return page;
     };
 
