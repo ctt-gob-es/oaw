@@ -2866,4 +2866,33 @@ public final class ObservatorioDAO {
 			throw e;
 		}
 	}
+
+	/**
+	 * Gets the autorelaunch from config.
+	 *
+	 * @param c the c
+	 * @return the autorelaunch from config
+	 * @throws SQLException the SQL exception
+	 */
+	public static int getAutorelaunchFromConfig(Connection c) throws SQLException {
+		int autorelaunch = 0;
+		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'autorelaunch'";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					String value = rs.getString("V_ID");
+					try {
+						autorelaunch = Integer.parseInt(value);
+						return autorelaunch;
+					} catch (Exception e) {
+						return 0;
+					}
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return autorelaunch;
+	}
 }

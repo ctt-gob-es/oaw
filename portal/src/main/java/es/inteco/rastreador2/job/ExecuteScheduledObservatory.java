@@ -153,14 +153,16 @@ public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJo
 						c = DataBaseManager.getConnection();
 					}
 					// TODO Relaunch not crawled seeds
-					List<Long> finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis(c, observatoryId,
-							idFulfilledObservatory);
-					// TODO Get seed less pages umbral
-					List<Long> lessThreshbold = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(c, idFulfilledObservatory);
-					List<Long> allToRelaunch = new ArrayList<Long>();
-					allToRelaunch.addAll(finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis);
-					allToRelaunch.addAll(lessThreshbold);
-					relaunchUnfinished(allToRelaunch, observatoryId, idFulfilledObservatory);
+					if (ObservatorioDAO.getAutorelaunchFromConfig(c) == 1) {
+						List<Long> finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis(c, observatoryId,
+								idFulfilledObservatory);
+						// TODO Get seed less pages umbral
+						List<Long> lessThreshbold = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(c, idFulfilledObservatory);
+						List<Long> allToRelaunch = new ArrayList<Long>();
+						allToRelaunch.addAll(finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis);
+						allToRelaunch.addAll(lessThreshbold);
+						relaunchUnfinished(allToRelaunch, observatoryId, idFulfilledObservatory);
+					}
 					// Mark as finished
 					ObservatorioDAO.updateObservatoryStatus(c, idFulfilledObservatory, Constants.FINISHED_OBSERVATORY_STATUS);
 					// Generate cache add observatory ends
