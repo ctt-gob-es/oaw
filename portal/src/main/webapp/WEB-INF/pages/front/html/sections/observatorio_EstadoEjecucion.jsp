@@ -33,14 +33,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	var colNameName = '<bean:message key="colname.name"/>';
 	var colNameComplex ='<bean:message key="colname.complex" />';
 	var colNameUrls='<bean:message key="colname.total.url" />';
-	var colNamePercent='%<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" title="<bean:message key="observatory.status.percent.threshold" />"></span><span class="sr-only"><bean:message key="observatory.status.percent.threshold" /></span>';
+	var colNamePercent='%&nbsp;<span class="glyphicon glyphicon-info-sign" style="color:#fff !important;" aria-hidden="true" data-toggle="tooltip" title="<bean:message key="observatory.status.percent.threshold" />"></span><span class="sr-only"><bean:message key="observatory.status.percent.threshold" /></span>';
 	var colNameRelaunch='<bean:message key="observatory.status.no.results.relaunch"/>';
 	var colNameObs='<bean:message key="nueva.semilla.observatorio.observaciones" />';
 	
-	
-	
-	//Recarga el grid. Recibe como parámetro la url de la acción con la información
-	//de paginación.
 	function reloadGrid(path) {
 
 		lastUrl = path;
@@ -177,10 +173,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															"td"), iCol = $ja.jgrid
 															.getCellIndex($td[0]);
 
-													// En la columna
-													// eliminar desactivamos la
-													// selección para evitar que se
-													// active la edidion
 													if (this.p.colModel[iCol].name === "relaunch") {
 														return false;
 													}
@@ -190,8 +182,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															"savedRow");
 													for (i = 0; i < savedRows.length; i++) {
 														if (savedRows[i].id !== rowid) {
-															// save currently
-															// editing row
 															$self
 																	.jqGrid(
 																			'saveRow',
@@ -223,7 +213,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												mtype : 'POST'
 											}).jqGrid("inlineNav");
 
-							// Recargar el grid
 							$ja('#grid').jqGrid('setGridParam', {
 								data : JSON.parse(ajaxJson)
 							}).trigger('reloadGrid');
@@ -232,7 +221,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							
 							$ja('#finishLessThresholdSizeText').text(total);
 							
-							// Mostrar sin resultados
 							if (total == 0) {
 								$ja('#grid')
 										.append(
@@ -275,7 +263,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 				var lastUrl;
 
-				//Primera carga del grid el grid
 				$jq(document)
 						.ready(
 								function() {
@@ -354,13 +341,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 				
 				$jq("#exportTreshold").on("click", function(){
-					//$jq("#grid").jqGrid("excelExport",{});
-					DownloadJSON2CSV($ja('#grid').jqGrid('getRowData'));
+					downloadResultsCSV($ja('#grid').jqGrid('getRowData'));
 				})
 
 			});
 	
-	   function DownloadJSON2CSV(objArray)
+	   function downloadResultsCSV(objArray)
 	    {
 	        var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
 
@@ -370,14 +356,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	            var line = '';
 
 	            for (var index in array[i]) {
-	            	if("id"!=index && "relaunch"!=index)
+	            	if("id"!=index && "relaunch"!=index){
+	            		
 	                line += array[i][index] + ',';
+	            	}
 	            }
-
-	            // Here is an example where you would wrap the values in double quotes
-	            // for (var index in array[i]) {
-	            //    line += '"' + array[i][index] + '",';
-	            // }
 
 	            line.slice(0,line.Length-1); 
 
@@ -405,9 +388,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	<inteco:properties key="role.administrator.id" file="crawler.properties" />
 </bean:define>
 <div id="main">
-	<%-- 	<input type="hidden" name="<%=Constants.ID_EX_OBS%>" value="<bean:write name="idExecutedObservatorio"/>" /> --%>
-	<%-- 	<input type="hidden" name="<%=Constants.ID_OBSERVATORIO%>" value="<bean:write name="idObservatory"/>" /> --%>
-	<%-- 	<input type="hidden" name="<%=Constants.ID_CARTUCHO%>" value="<bean:write name="idCartucho"/>" /> --%>
 	<div id="container_menu_izq">
 		<jsp:include page="menu.jsp" />
 	</div>
@@ -550,6 +530,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tr>
 				</tbody>
 			</table>
+			<br/>
 			<h2>
 				<bean:message key="observatory.status.summary" />
 			</h2>
@@ -625,6 +606,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tr>
 				</tbody>
 			</table>
+			<br/>
 			<logic:notEqual name="estado" property="idEstado" value="0">
 				<h2>
 					<bean:message key="observatory.status.last.title" />
@@ -761,13 +743,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tbody>
 				</table>
 			</logic:notEqual>
+			<br/>
 			<!-- Less Threshold -->
 			<h2>
 				<bean:size id="finishLessThresholdSize" name="finishLessThreshold" />
 				<bean:message key="observatory.status.less.threshold.title" />
 				&nbsp; (
-<%-- 				<bean:write name="finishLessThresholdSize" /> --%>
-<span id="finishLessThresholdSizeText"></span>
+				<%-- 				<bean:write name="finishLessThresholdSize" /> --%>
+				<span id="finishLessThresholdSizeText"></span>
 				)
 			</h2>
 			<div id="filterResultsThreshold">
@@ -776,13 +759,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<label for="percentLess">
 							<bean:message key="observatory.status.percent.threshold.filter.percent" />
 						</label>
-						<input type="number" class="form-control" id="percentLess"/>
+						<input type="number" class="form-control" id="percentLess" />
 					</div>
 					<div class="form-group">
 						<label for="seedCrawledLess">
 							<bean:message key="observatory.status.percent.threshold.filter.number" />
 						</label>
-						<input type="number" class="form-control" id="seedCrawledLess"/>
+						<input type="number" class="form-control" id="seedCrawledLess" />
 					</div>
 					<button type="submit" class="btn btn-default" id="filterResultsThresholdButton">
 						<bean:message key="boton.buscar" />
@@ -797,9 +780,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<input type="hidden" name="<%=Constants.ID_OBSERVATORIO%>" value="<bean:write name="idObservatory"/>" />
 				<input type="hidden" name="<%=Constants.ID_CARTUCHO%>" value="<bean:write name="idCartucho"/>" />
 				<table id="grid" class="gridTable table table-stripped table-bordered table-hover table-console"></table>
-				
 			</form>
-			
+			<br/>
 			<!-- Not finished -->
 			<h2 style="margin-top: 15px">
 				<bean:size id="finishWithoutResultsSize" name="finishWithoutResults" />
@@ -889,6 +871,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<input type="hidden" name='idExObs' <c:out value='value=${idExecutedObservatorio}' />>
 			</form>
 			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+			<br/>
 			<h2>
 				<bean:message key="observatory.status.notes.title" />
 			</h2>
