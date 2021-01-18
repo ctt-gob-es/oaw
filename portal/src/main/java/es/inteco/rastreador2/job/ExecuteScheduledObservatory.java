@@ -157,7 +157,7 @@ public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJo
 						List<Long> finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis(c, observatoryId,
 								idFulfilledObservatory);
 						// TODO Get seed less pages umbral
-						List<Long> lessThreshbold = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(c, idFulfilledObservatory);
+						List<Long> lessThreshbold = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(c, idFulfilledObservatory, null, null);
 						List<Long> allToRelaunch = new ArrayList<Long>();
 						allToRelaunch.addAll(finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis);
 						allToRelaunch.addAll(lessThreshbold);
