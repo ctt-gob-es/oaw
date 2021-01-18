@@ -1766,6 +1766,24 @@ public final class SemillaDAO {
 	}
 
 	/**
+	 * Update seed ambito.
+	 *
+	 * @param c          the c
+	 * @param ambitoForm the ambito form
+	 * @throws SQLException the SQL exception
+	 */
+	public static void updateSeedObservations(Connection c, final Integer idSeed, final String observations) throws SQLException {
+		try (PreparedStatement ps = c.prepareStatement("UPDATE lista SET observaciones = ? WHERE id_lista = ?")) {
+			ps.setString(1, observations);
+			ps.setInt(2, idSeed);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
 	 * Save seeds ambit.
 	 *
 	 * @param c        the c

@@ -97,6 +97,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			return cellvalue;
 		}
 	}
+	
+	
+	function nameFormatter(cellvalue, options, rowObject) {
+		return '<strong style="color: #000 !important;">'+cellvalue+'</strong>';
+	}
 
 	var scroll;
 	function reloadGrid(path) {
@@ -141,7 +146,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 													width : 60,
 													sortable : false,
 													align : "left",
-													editable : false
+													editable : false,
+													formatter: nameFormatter
 												}, {
 													name : "value",
 													width : 40,
@@ -168,7 +174,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												pgtext : false,
 												pginput : false,
 												hidegrid : false,
-												altRows : true,
+												altRows : false,
 												mtype : 'POST',
 
 												onSelectRow : function(rowid,

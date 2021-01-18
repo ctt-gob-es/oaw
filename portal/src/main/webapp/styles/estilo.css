@@ -1348,3 +1348,20 @@ to {
 .seedImportErrorList > li+li::before{
 	    content: "" !important;
 }
+
+#filterResultsThreshold{
+    padding: 5px;
+    width: 100%;
+    float: left;
+    clear: both;
+    margin-bottom: 10px;
+}
+
+#filterResultsThreshold .form-group {
+	display: inline-block;
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+#filterResultsThreshold input {
+	margin-right:15px;
+}
