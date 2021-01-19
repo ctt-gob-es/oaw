@@ -25,6 +25,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -70,14 +71,30 @@ public class DatabaseExportAction extends Action {
 	 * @return the action forward
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+		long idObservatory = 0;
+		if (request.getParameter(Constants.ID_OBSERVATORIO) != null) {
+			idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
+		}
 		if (CrawlerUtils.hasAccess(request, "export.observatory.results")) {
 			try {
 				if (request.getParameter(Constants.ACTION) != null) {
 					if (request.getParameter(Constants.ACTION).equals(Constants.EXPORT)) {
-						// return
+						String[] tagsToFilter = null;
+						if (request.getParameter("tags") != null && !StringUtils.isEmpty(request.getParameter("tags"))) {
+							tagsToFilter = request.getParameter("tags").split(",");
+						}
+						// Evol executions ids
+						String[] exObsIds = request.getParameterValues("evol");
+						if (exObsIds == null) {
+							exObsIds = new String[] { request.getParameter(Constants.ID_EX_OBS) };
+						}
+						// Export all??
 						export(mapping, request);
-						getAnnexes(mapping, request, response);
+						getAnnexes(mapping, request, response, tagsToFilter, exObsIds);
 					} else if (request.getParameter(Constants.ACTION).equals(Constants.CONFIRM)) {
+						Connection connection = DataBaseManager.getConnection();
+						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
+						DataBaseManager.closeConnection(connection);
 						return confirm(mapping, request);
 					}
 				}
@@ -106,25 +123,21 @@ public class DatabaseExportAction extends Action {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final ObservatorioRealizadoForm fulfilledObservatory = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExObservatory);
 			if (CartuchoDAO.isCartuchoAccesibilidad(c, fulfilledObservatory.getCartucho().getId())) {
-				// TODO idCartucho
 				final String application = CartuchoDAO.getApplication(DataBaseManager.getConnection(), idCartucho);
-				// TODO GENERATE DATA??
-				final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, idObservatory, Constants.NO_PAGINACION, fulfilledObservatory.getFecha(), false);
+				final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, idObservatory, Constants.NO_PAGINACION, fulfilledObservatory.getFecha(), false,
+						null);
 				if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
 					for (ObservatorioRealizadoForm obsRealizado : observatoriesList) {
 						if (ObservatoryExportManager.getObservatory(obsRealizado.getId()) == null) {
 							exportResultadosAccesibilidad(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), idObservatory, c, obsRealizado);
 						}
 					}
-					// exportResultadosAccesibilidad(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), idObservatory, c, fulfilledObservatory);
 				} else {
-					// TODO GENERATE DATA??
 					for (ObservatorioRealizadoForm obsRealizado : observatoriesList) {
 						if (ObservatoryExportManager.getObservatory(obsRealizado.getId()) == null) {
 							exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, obsRealizado);
 						}
 					}
-					// exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, fulfilledObservatory);
 				}
 			} else {
 				return mapping.findForward(Constants.ERROR);
@@ -196,7 +209,8 @@ public class DatabaseExportAction extends Action {
 	 * @return the annexes
 	 * @throws Exception the exception
 	 */
-	private ActionForward getAnnexes(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+	private ActionForward getAnnexes(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
 		try {
 			final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 			final Long idOperation = System.currentTimeMillis();
@@ -208,12 +222,13 @@ public class DatabaseExportAction extends Action {
 			} else if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
 				resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 			}
-			AnnexUtils.createAnnexPaginas(resources, idObsExecution, idOperation);
-			AnnexUtils.createAnnexPortales(resources, idObsExecution, idOperation);
-			AnnexUtils.createAnnexXLSX(resources, idObsExecution, idOperation);
-			AnnexUtils.createAnnexXLSX_Evolution(resources, idObsExecution, idOperation);
-			AnnexUtils.createAnnexXLSX_PerDependency(idOperation);
-			AnnexUtils.createComparativeSuitabilitieXLSX(resources, idObsExecution, idOperation);
+			AnnexUtils.generateAllAnnex(resources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+//			AnnexUtils.createAnnexPaginas(resources, idObsExecution, idOperation);
+//			AnnexUtils.createAnnexPortales(resources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+//			AnnexUtils.createAnnexXLSX(resources, idObsExecution, idOperation);
+//			AnnexUtils.createAnnexXLSX_Evolution(resources, idObsExecution, idOperation);
+//			AnnexUtils.createAnnexXLSX_PerDependency(idOperation);
+//			AnnexUtils.createComparativeSuitabilitieXLSX(resources, idObsExecution, idOperation);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
 			final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";

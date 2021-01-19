@@ -17,6 +17,57 @@ Email: observ.accesibilidad@correo.gob.es
 <%@page import="es.inteco.common.Constants"%>
 <%@page import="java.util.HashMap"%>
 <html:xhtml />
+<link rel="stylesheet" href="/oaw/js/tagbox/tagbox.css">
+<style>
+/* Make sure you reset e'erything beforehand. */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/* Although you can't see the box here, so add some padding. */
+.tagbox-item .name, .tagbox-item .email {
+	/* The name and email within the dropdown */
+	display: block;
+	float: left;
+	width: 35%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.tagbox-item .email {
+	float: right;
+	width: 65%;
+}
+
+.tagbox-wrapper input {
+	display: block;
+	width: 100% !important;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	border: none !important;
+}
+
+.tagbox-wrapper {
+	width: 100% !important;
+	border: none !important;
+	text-align: left !important;
+	box-shadow: none !important;
+}
+}
+</style>
 <inteco:sesion action="ifConfigAdmin">
 	<bean:define id="idCartridgeMalware">
 		<inteco:properties key="cartridge.malware.id" file="crawler.properties" />
@@ -73,6 +124,9 @@ Email: observ.accesibilidad@correo.gob.es
 									<bean:message key="resultado.observatorio.rastreo.realizado.cartucho.asociado" />
 								</th>
 								<th>
+									<bean:message key="indice.observatorio.etiquetas" />
+								</th>
+								<th>
 									<bean:message key="resultado.observatorio.rastreo.realizado.estado" />
 								</th>
 								<th class="accion">
@@ -107,6 +161,22 @@ Email: observ.accesibilidad@correo.gob.es
 									</td>
 									<td>
 										<bean:write name="fulfilledObservatory" property="cartucho.name" />
+									</td>
+									<td>
+										<div class='tagbox-wrapper'>
+											<logic:iterate name="fulfilledObservatory" property="tags" id="etiqueta">
+												<c:if test="${etiqueta!= null}">
+													<div class='tagbox-token'>
+														<span>
+															<bean:write name="etiqueta" />
+														</span>
+													</div>
+												</c:if>
+												<c:if test="${etiqueta == null}">
+										-
+									</c:if>
+											</logic:iterate>
+										</div>
 									</td>
 									<td><jsp:useBean id="paramsRelanzar" class="java.util.HashMap" />
 										<c:set target="${paramsRelanzar}" property="action" value="confirm" />
@@ -147,7 +217,8 @@ Email: observ.accesibilidad@correo.gob.es
 												</span>
 											</html:link> --%>
 											<html:link forward="stopObservatorio" name="params">
-												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip" title="<bean:message key='tooltip.status.stop' />"></span>
+												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip"
+													title="<bean:message key='tooltip.status.stop' />"></span>
 												<span class="sr-only">
 													<bean:message key='tooltip.status.stop' />
 												</span>

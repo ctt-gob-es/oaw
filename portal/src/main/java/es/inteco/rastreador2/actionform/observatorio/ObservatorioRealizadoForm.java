@@ -16,6 +16,7 @@
 package es.inteco.rastreador2.actionform.observatorio;
 
 import java.util.Date;
+import java.util.List;
 
 import es.inteco.rastreador2.dao.login.CartuchoForm;
 
@@ -35,6 +36,7 @@ public class ObservatorioRealizadoForm {
 	private String fechaStr;
 	/** The ambito. */
 	private String ambito;
+	private List<String> tags;
 
 	/**
 	 * Gets the ambito.
@@ -142,5 +144,19 @@ public class ObservatorioRealizadoForm {
 	 */
 	public void setCartucho(CartuchoForm cartucho) {
 		this.cartucho = cartucho;
+	}
+
+	/**
+	 * @return the tags
+	 */
+	public List<String> getTags() {
+		return tags;
+	}
+
+	/**
+	 * @param tags the tags to set
+	 */
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 }

@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.CheckAccessibility;
@@ -31,7 +31,6 @@ import es.inteco.intav.TestUtils;
  * The Class Check_1_9.
  */
 public final class Check_1_9 extends EvaluateCheck {
-
 	/** The check accessibility. */
 	private CheckAccessibility checkAccessibility;
 
@@ -46,18 +45,15 @@ public final class Check_1_9 extends EvaluateCheck {
 		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.naming.java.javaURLContextFactory");
 		System.setProperty(Context.URL_PKG_PREFIXES, "org.apache.naming");
 		final InitialContext ic = new InitialContext();
-
 		ic.createSubcontext("java:");
 		ic.createSubcontext("java:/comp");
 		ic.createSubcontext("java:/comp/env");
 		ic.createSubcontext("java:/comp/env/jdbc");
-
 		// Construct DataSource
 		final MysqlConnectionPoolDataSource mysqlDataSource = new MysqlConnectionPoolDataSource();
 		mysqlDataSource.setURL("jdbc:mysql://localhost:3306/oaw_js");
 		mysqlDataSource.setUser("root");
 		mysqlDataSource.setPassword("root");
-
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
 	}
 
@@ -79,18 +75,9 @@ public final class Check_1_9 extends EvaluateCheck {
 	 */
 	@Test
 	public void evaluateMatchAriaLabelWithLabel() throws Exception {
-
-		checkAccessibility.setContent(
-				"<html>" + "<body><label for=\"example\">Match</label><input type=\"text\" id=\"example\" aria-label=\"Match\"/></body> "
-						+ "</html>");
-
+		checkAccessibility.setContent("<html>" + "<body><label for=\"example\">Match</label><input type=\"text\" id=\"example\" aria-label=\"Match\"/></body> " + "</html>");
 		Assert.assertEquals(0, getNumProblems(checkAccessibility, 476));
-
-		checkAccessibility.setContent(
-				"<html>" + "<body><label for=\"example\">Match</label><input type=\"text\" id=\"example\" aria-label=\"NoMatch\"/></body> "
-						+ "</html>");
-
+		checkAccessibility.setContent("<html>" + "<body><label for=\"example\">Match</label><input type=\"text\" id=\"example\" aria-label=\"NoMatch\"/></body> " + "</html>");
 		Assert.assertEquals(1, getNumProblems(checkAccessibility, 476));
 	}
-
 }

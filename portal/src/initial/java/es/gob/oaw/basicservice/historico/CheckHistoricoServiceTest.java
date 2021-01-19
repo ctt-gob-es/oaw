@@ -1,45 +1,41 @@
 package es.gob.oaw.basicservice.historico;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import es.gob.oaw.basicservice.historico.BasicServiceResultado;
-import es.gob.oaw.basicservice.historico.CheckHistoricoService;
-import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
+
+import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 
 /**
  * Created by mikunis on 1/16/17.
  */
 public class CheckHistoricoServiceTest {
-
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		// Create initial context
 		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.naming.java.javaURLContextFactory");
 		System.setProperty(Context.URL_PKG_PREFIXES, "org.apache.naming");
 		final InitialContext ic = new InitialContext();
-
 		ic.createSubcontext("java:");
 		ic.createSubcontext("java:/comp");
 		ic.createSubcontext("java:/comp/env");
 		ic.createSubcontext("java:/comp/env/jdbc");
-
 		// Construct DataSource
 		final MysqlConnectionPoolDataSource mysqlDataSource = new MysqlConnectionPoolDataSource();
 		mysqlDataSource.setURL("jdbc:mysql://localhost:3306/OAW");
 		mysqlDataSource.setUser("root");
 		mysqlDataSource.setPassword("root");
-
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
 	}
 
@@ -72,5 +68,4 @@ public class CheckHistoricoServiceTest {
 		final List<BasicServiceResultado> historicoResultados = checkHistoricoService.getHistoricoResultados(urls, BasicServiceAnalysisType.LISTA_URLS, "4", "4", "observatorio-2");
 		assertFalse(historicoResultados.isEmpty());
 	}
-
 }

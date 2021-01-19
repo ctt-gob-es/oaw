@@ -1524,10 +1524,13 @@ public final class RastreoDAO {
 	 * @throws Exception the exception
 	 */
 	public static Long addFulfilledObservatory(Connection conn, Long idObservatory, Long idCartridge) throws Exception {
-		try (PreparedStatement pst = conn.prepareStatement("INSERT INTO observatorios_realizados (id_observatorio, fecha, id_cartucho) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement pst = conn.prepareStatement(
+				"INSERT INTO observatorios_realizados (id_observatorio, fecha, id_cartucho, tags) VALUES (?,?,?, (select tags from observatorio where id_observatorio = ?))",
+				Statement.RETURN_GENERATED_KEYS)) {
 			pst.setLong(1, idObservatory);
 			pst.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
 			pst.setLong(3, idCartridge);
+			pst.setLong(4, idObservatory);
 			pst.executeUpdate();
 			try (ResultSet rs = pst.getGeneratedKeys()) {
 				if (rs.next()) {

@@ -90,7 +90,7 @@ public class ExportOpenOfficeAction extends Action {
 					request.setAttribute(Constants.APPLICATION, application);
 					request.setAttribute("plantillas", PlantillaDAO.findAll(connection, -1));
 					request.setAttribute(Constants.ID_OBSERVATORIO, request.getParameter(Constants.ID_OBSERVATORIO));
-					request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null));
+					request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
 					request.setAttribute(Constants.ID_CARTUCHO, idCartucho);
 					return mapping.findForward(Constants.CONFIGURAR_FILTROS_AGREGADOS);
 				} else if (Constants.NORMATIVA_ACCESIBILIDAD.equals(application)) {
@@ -104,7 +104,7 @@ public class ExportOpenOfficeAction extends Action {
 					request.setAttribute(Constants.APPLICATION, application);
 					request.setAttribute("plantillas", PlantillaDAO.findAll(connection, -1));
 					request.setAttribute(Constants.ID_OBSERVATORIO, request.getParameter(Constants.ID_OBSERVATORIO));
-					request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null));
+					request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
 					request.setAttribute(Constants.ID_CARTUCHO, idCartucho);
 					return mapping.findForward(Constants.CONFIGURAR_FILTROS_AGREGADOS);
 					// TODO VALORATE ALTERNATIVE FORWRADreturn mapping.findForward(Constants.CONFIGURAR_FILTROS_AGREGADOS_ACC);
@@ -139,8 +139,8 @@ public class ExportOpenOfficeAction extends Action {
 			final ObservatorioRealizadoForm observatoryFFForm = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExecution);
 			filePath = basePath + PDFUtils.formatSeedName(observatoryForm.getNombre()) + ".odt";
 			final String graphicPath = basePath + "temp" + File.separator;
-			final int numObs = ObservatorioDAO.getFulfilledObservatories(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)), Constants.NO_PAGINACION, observatoryFFForm.getFecha())
-					.size();
+			final int numObs = ObservatorioDAO
+					.getFulfilledObservatories(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)), Constants.NO_PAGINACION, observatoryFFForm.getFecha(), null).size();
 			ExportOpenOfficeUtils.createOpenOfficeDocument(request, filePath, graphicPath, df.format(observatoryFFForm.getFecha()), observatoryForm.getTipo(), numObs);
 			FileUtils.deleteDir(new File(graphicPath));
 		} catch (Exception e) {
