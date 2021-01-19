@@ -211,6 +211,7 @@ public final class AnnexUtils {
 				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
 				if (semillaForm.getId() != 0) {
 					hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
+					writeTag(hd, Constants.XML_ID, String.valueOf(semillaForm.getId()));
 					writeTag(hd, NOMBRE_ELEMENT, semillaForm.getNombre());
 					writeTag(hd, CATEGORY_NAME, semillaForm.getCategoria().getName());
 					// Multidependencia
@@ -370,6 +371,7 @@ public final class AnnexUtils {
 							StringBuilder dependencias = new StringBuilder();
 							if (semillaForm.getDependencias() != null) {
 								for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+									dependencias.append(semillaForm.getDependencias().get(i).getName());
 									if (i < semillaForm.getDependencias().size() - 1) {
 										dependencias.append("\n");
 									}
@@ -457,8 +459,8 @@ public final class AnnexUtils {
 						String currentCategory = categoryForm.getName().substring(0, Math.min(categoryForm.getName().length(), 31));
 						if (wb.getSheet(currentCategory) == null) {
 							wb.createSheet(currentCategory);
-							InsertGraphIntoSheet(wb, wb.getSheet(currentCategory), categoryStarts, rowIndex, true);
-							InsertGraphIntoSheet(wb, wb.getSheet(currentCategory), categoryStarts, rowIndex, false);
+							InsertGraphIntoSheetByCategory(wb, wb.getSheet(currentCategory), categoryStarts, rowIndex, true);
+							InsertGraphIntoSheetByCategory(wb, wb.getSheet(currentCategory), categoryStarts, rowIndex, false);
 						}
 					}
 				}
@@ -660,7 +662,7 @@ public final class AnnexUtils {
 								cellInHeader.setCellValue("NV_" + date);
 								cellInHeader.setCellStyle(headerStyle);
 							}
-							cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate));
+							cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
@@ -673,7 +675,7 @@ public final class AnnexUtils {
 								cellInHeader.setCellValue("A_" + date);
 								cellInHeader.setCellStyle(headerStyle);
 							}
-							cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 1);
+							cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 1);
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"A\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
@@ -686,9 +688,49 @@ public final class AnnexUtils {
 								cellInHeader.setCellValue("AA_" + date);
 								cellInHeader.setCellStyle(headerStyle);
 							}
-							cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 2);
+							cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 2);
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							columnFirstLetter = GetExcelColumnNameForNumber(7 + (3 * executionDates.indexOf(date)));
+							// "NC_" + date
+							// Add header if it is not already created
+							if (!ColumnNames.contains("NC_" + date)) {
+								ColumnNames.add("NC_" + date);
+								XSSFRow headerRow = sheet.getRow(0);
+								XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+								cellInHeader.setCellValue("NC_" + date);
+								cellInHeader.setCellStyle(headerStyle);
+							}
+							cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// "PC_" + date
+							// Add header if it is not already created
+							if (!ColumnNames.contains("PC_" + date)) {
+								ColumnNames.add("PC_" + date);
+								XSSFRow headerRow = sheet.getRow(0);
+								XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+								cellInHeader.setCellValue("PC_" + date);
+								cellInHeader.setCellStyle(headerStyle);
+							}
+							cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 4);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// "TC_" + date
+							// Add header if it is not already created
+							if (!ColumnNames.contains("TC_" + date)) {
+								ColumnNames.add("TC_" + date);
+								XSSFRow headerRow = sheet.getRow(0);
+								XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+								cellInHeader.setCellValue("TC_" + date);
+								cellInHeader.setCellStyle(headerStyle);
+							}
+							cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 5);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
 							numberOfDate++;
 						}
@@ -743,9 +785,9 @@ public final class AnnexUtils {
 							String columnFirstLetter = GetExcelColumnNameForNumber(6);
 							String columnSecondLetter = GetExcelColumnNameForNumber(6 + (3 * executionDates.size() - 3));
 							cell = row.createCell(ColumnNames.size() - 1);
-							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
-									+ columnSecondLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
-									+ "$419=\"No Válido\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + annexmap.entrySet().size() + "=\"Prioridad 1\",1,3))";
+							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
+									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Prioridad 1\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
+									+ "$419=\"No Válido\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Prioridad 1\",1,3))";
 							cell.setCellFormula(formula);
 							cell.setCellStyle(shadowStyle);
 						}
@@ -754,7 +796,7 @@ public final class AnnexUtils {
 				rowIndex++;
 			}
 			int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
-			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex);
+			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.size() - 1);
 			// Insert graph sheets per category
 			for (String category : categories) {
 				/*
@@ -780,71 +822,8 @@ public final class AnnexUtils {
 				if (wb.getSheet(categorySheetName) == null && categoryFirstRow != 0 && categoryLastRow != 0) {
 					wb.createSheet(categorySheetName);
 					XSSFSheet currentSheet = wb.getSheet(categorySheetName);
-					XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
-					XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, 4, Math.max(categoryLastRow - categoryFirstRow, 16), 40);
-					XSSFChart chart = drawing.createChart(anchor);
-					chart.setTitleText("Evolución de la adecuación");
-					chart.setTitleOverlay(false);
-					XDDFChartLegend legend = chart.getOrAddLegend();
-					legend.setPosition(LegendPosition.LEFT);
-					XDDFCategoryAxis bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
-					XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
-					XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
-					bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-					leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-					bottomAxis.setTickLabelPosition(AxisTickLabelPosition.LOW);
-					bottomAxis.setMajorTickMark(AxisTickMark.NONE);
-					bottomAxis.setPosition(AxisPosition.RIGHT);
-					CTPlotArea plotArea = chart.getCTChart().getPlotArea();
-					plotArea.getValAxArray()[0].addNewMajorGridlines();
-					// Get agency names
-					XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 0, 0));
-					// Iterate through the executions
-					for (String date : executionDates) {
-						int firstSerieColumn = 4 + (executionDates.size() * 3) + (3 * executionDates.indexOf(date));
-						// First serie ("No válido" / "No Conforme")
-						FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn);
-						XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-								new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn, firstSerieColumn));
-						XDDFChartData.Series series1 = data.addSeries(agencies, values1);
-						series1.setTitle("NV_" + date, null);
-						// Set series color
-						XDDFShapeProperties properties1 = series1.getShapeProperties();
-						if (properties1 == null) {
-							properties1 = new XDDFShapeProperties();
-						}
-						properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
-						series1.setShapeProperties(properties1);
-						// Second serie ("A" / "Parcialmente conforme")
-						FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + 1);
-						XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-								new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + 1, firstSerieColumn + 1));
-						XDDFChartData.Series series2 = data.addSeries(agencies, values2);
-						series2.setTitle("A_" + date, null);
-						// Set series color
-						XDDFShapeProperties properties2 = series2.getShapeProperties();
-						if (properties2 == null) {
-							properties2 = new XDDFShapeProperties();
-						}
-						properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
-						series2.setShapeProperties(properties2);
-						// Third serie ("AA" / "Plenamente conforme")
-						FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + 2);
-						XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-								new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + 2, firstSerieColumn + 2));
-						XDDFChartData.Series series3 = data.addSeries(agencies, values3);
-						series3.setTitle("AA_" + date, null);
-						// Set series color
-						XDDFShapeProperties properties3 = series3.getShapeProperties();
-						if (properties3 == null) {
-							properties3 = new XDDFShapeProperties();
-						}
-						properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
-						series3.setShapeProperties(properties3);
-					}
-					chart.plot(data);
-					XDDFBarChartData bar = (XDDFBarChartData) data;
-					bar.setBarDirection(BarDirection.COL);
+					InsertGraphIntoSheetByEvolution(wb, currentSheet, categoryFirstRow, categoryLastRow, true);
+					InsertGraphIntoSheetByEvolution(wb, currentSheet, categoryFirstRow, categoryLastRow, false);
 				}
 			}
 			// Increase width of columns to match content
@@ -947,19 +926,35 @@ public final class AnnexUtils {
 						String columnFirstLetter = GetExcelColumnNameForNumber(6 + (3 * numberOfDate));
 						String columnSecondLetter = GetExcelColumnNameForNumber(5 + (3 * numberOfDate));
 						// "NV_" + date
-						cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate));
+						cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate));
 						cell.setCellType(CellType.NUMERIC);
 						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No Válido\",$" + columnSecondLetter + (i + 1) + ",0)");
 						cell.setCellStyle(shadowStyle);
 						// "A_" + date
-						cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 1);
+						cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 1);
 						cell.setCellType(CellType.NUMERIC);
 						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"A\",$" + columnSecondLetter + (i + 1) + ",0)");
 						cell.setCellStyle(shadowStyle);
 						// "AA_" + date
-						cell = row.createCell(4 + (3 * executionDates.size()) + (3 * numberOfDate) + 2);
+						cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 2);
 						cell.setCellType(CellType.NUMERIC);
 						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"AA\",$" + columnSecondLetter + (i + 1) + ",0)");
+						cell.setCellStyle(shadowStyle);
+						columnFirstLetter = GetExcelColumnNameForNumber(6 + (3 * numberOfDate) + 1);
+						// "NC_" + date
+						cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
+						cell.setCellType(CellType.NUMERIC);
+						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
+						cell.setCellStyle(shadowStyle);
+						// "PC_" + date
+						cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 4);
+						cell.setCellType(CellType.NUMERIC);
+						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
+						cell.setCellStyle(shadowStyle);
+						// "PC_" + date
+						cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 5);
+						cell.setCellType(CellType.NUMERIC);
+						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
 						cell.setCellStyle(shadowStyle);
 					}
 				}
@@ -968,70 +963,10 @@ public final class AnnexUtils {
 					sheet.autoSizeColumn(i);
 				}
 				XSSFSheet currentSheet = wb.createSheet("Grafica Adecuación");
-				XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
-				XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, 4, Math.max(rowIndex, 16), 40);
-				XSSFChart chart = drawing.createChart(anchor);
-				chart.setTitleText("Evolución de la adecuación");
-				chart.setTitleOverlay(false);
-				XDDFChartLegend legend = chart.getOrAddLegend();
-				legend.setPosition(LegendPosition.LEFT);
-				XDDFCategoryAxis bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
-				XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
-				XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
-				bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-				leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-				bottomAxis.setTickLabelPosition(AxisTickLabelPosition.LOW);
-				bottomAxis.setMajorTickMark(AxisTickMark.NONE);
-				bottomAxis.setPosition(AxisPosition.RIGHT);
-				CTPlotArea plotArea = chart.getCTChart().getPlotArea();
-				plotArea.getValAxArray()[0].addNewMajorGridlines();
-				// Get agency names
-				XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(1, rowIndex - 1, 0, 0));
-				// Iterate through the executions
-				for (String date : executionDates) {
-					int firstSerieColumn = 4 + (executionDates.size() * 3) + (3 * executionDates.indexOf(date));
-					// First serie ("No válido" / "No Conforme")
-					FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn);
-					XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0), new CellRangeAddress(1, rowIndex - 1, firstSerieColumn, firstSerieColumn));
-					XDDFChartData.Series series1 = data.addSeries(agencies, values1);
-					series1.setTitle("NV_" + date, null);
-					// Set series color
-					XDDFShapeProperties properties1 = series1.getShapeProperties();
-					if (properties1 == null) {
-						properties1 = new XDDFShapeProperties();
-					}
-					properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
-					series1.setShapeProperties(properties1);
-					// Second serie ("A" / "Parcialmente conforme")
-					FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + 1);
-					XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-							new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + 1, firstSerieColumn + 1));
-					XDDFChartData.Series series2 = data.addSeries(agencies, values2);
-					series2.setTitle("A_" + date, null);
-					// Set series color
-					XDDFShapeProperties properties2 = series2.getShapeProperties();
-					if (properties2 == null) {
-						properties2 = new XDDFShapeProperties();
-					}
-					properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
-					series2.setShapeProperties(properties2);
-					// Third serie ("AA" / "Plenamente conforme")
-					FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + 2);
-					XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-							new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + 2, firstSerieColumn + 2));
-					XDDFChartData.Series series3 = data.addSeries(agencies, values3);
-					series3.setTitle("AA_" + date, null);
-					// Set series color
-					XDDFShapeProperties properties3 = series3.getShapeProperties();
-					if (properties3 == null) {
-						properties3 = new XDDFShapeProperties();
-					}
-					properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
-					series3.setShapeProperties(properties3);
+				if (rowIndex > 1) {
+					InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, true);
+					InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, false);
 				}
-				chart.plot(data);
-				XDDFBarChartData bar = (XDDFBarChartData) data;
-				bar.setBarDirection(BarDirection.COL);
 				XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
 				wb.write(writer);
 				wb.close();
@@ -1042,14 +977,6 @@ public final class AnnexUtils {
 		}
 	}
 
-	/**
-	 * Fill null cell in range.
-	 *
-	 * @param sheetAt          the sheet at
-	 * @param categoryFirstRow the category first row
-	 * @param categoryLastRow  the category last row
-	 * @param firstSerieColumn the first serie column
-	 */
 	private static void FillNullCellInRange(XSSFSheet sheetAt, int categoryFirstRow, int categoryLastRow, int firstSerieColumn) {
 		for (int i = categoryFirstRow; i <= categoryLastRow; i++) {
 			XSSFRow row = sheetAt.getRow(i);
@@ -1063,16 +990,6 @@ public final class AnnexUtils {
 		}
 	}
 
-	/**
-	 * Insert summary table.
-	 *
-	 * @param sheet            the sheet
-	 * @param RowStartPosition the row start position
-	 * @param ColumnNames      the column names
-	 * @param headerStyle      the header style
-	 * @param shadowStyle      the shadow style
-	 * @return the int
-	 */
 	private static int InsertSummaryTable(XSSFSheet sheet, int RowStartPosition, List<String> ColumnNames, CellStyle headerStyle, CellStyle shadowStyle) {
 		XSSFCell cell;
 		XSSFRow row;
@@ -1134,18 +1051,7 @@ public final class AnnexUtils {
 		return RowStartPosition + 7;
 	}
 
-	/**
-	 * Insert categories table.
-	 *
-	 * @param sheet            the sheet
-	 * @param RowStartPosition the row start position
-	 * @param categories       the categories
-	 * @param headerStyle      the header style
-	 * @param shadowStyle      the shadow style
-	 * @param lastDataRow      the last data row
-	 * @return the int
-	 */
-	private static int InsertCategoriesTable(XSSFSheet sheet, int RowStartPosition, List<String> categories, CellStyle headerStyle, CellStyle shadowStyle, int lastDataRow) {
+	private static int InsertCategoriesTable(XSSFSheet sheet, int RowStartPosition, List<String> categories, CellStyle headerStyle, CellStyle shadowStyle, int lastDataRow, int columnSourceData) {
 		XSSFCell cell;
 		XSSFRow row;
 		// Insert Summary table.
@@ -1168,6 +1074,7 @@ public final class AnnexUtils {
 		cell.setCellValue("Se mantiene");
 		cell = row.createCell(4);
 		cell.setCellStyle(headerStyle);
+		String dataColumn = GetExcelColumnNameForNumber(columnSourceData);
 		for (int i = 0; i < categories.size(); i++) {
 			row = sheet.createRow(RowStartPosition + i + 2);
 			cell = row.createCell(0);
@@ -1175,16 +1082,13 @@ public final class AnnexUtils {
 			cell.setCellValue(categories.get(i));
 			cell = row.createCell(1);
 			cell.setCellStyle(shadowStyle);
-			cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"EMPEORA\")");
+			cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"EMPEORA\")");
 			cell = row.createCell(2);
 			cell.setCellStyle(shadowStyle);
-			cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"MEJORA\")");
+			cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"MEJORA\")");
 			cell = row.createCell(3);
 			cell.setCellStyle(shadowStyle);
-			cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"SE MANTIENE\")");
-			cell = row.createCell(4);
-			cell.setCellStyle(shadowStyle);
-			cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$Q$2:$Q$" + lastDataRow + ",\"SE MANTIENE\")");
+			cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"SE MANTIENE\")");
 		}
 		// TOTAL row
 		row = sheet.createRow(RowStartPosition + categories.size() + 2);
@@ -1202,16 +1106,10 @@ public final class AnnexUtils {
 		cell.setCellFormula("SUM(D" + (RowStartPosition + 3) + ":D" + (RowStartPosition + categories.size() + 2) + ")");
 		cell = row.createCell(4);
 		cell.setCellStyle(headerStyle);
-		cell.setCellFormula("SUM(E" + (RowStartPosition + 3) + ":E" + (RowStartPosition + categories.size() + 2) + ")");
+		cell.setCellFormula("SUM(B" + (RowStartPosition + categories.size() + 3) + ":D" + (RowStartPosition + categories.size() + 3) + ")");
 		return 1;
 	}
 
-	/**
-	 * Gets the excel column name for number.
-	 *
-	 * @param number the number
-	 * @return the string
-	 */
 	public static String GetExcelColumnNameForNumber(int number) {
 		StringBuilder sb = new StringBuilder();
 		int num = number - 1;
@@ -1223,16 +1121,7 @@ public final class AnnexUtils {
 		return sb.reverse().toString();
 	}
 
-	/**
-	 * Insert graph into sheet.
-	 *
-	 * @param wb               the wb
-	 * @param sheet            the sheet
-	 * @param categoryFirstRow the category first row
-	 * @param categoryLastRow  the category last row
-	 * @param isFirst          the is first
-	 */
-	private static void InsertGraphIntoSheet(XSSFWorkbook wb, XSSFSheet sheet, int categoryFirstRow, int categoryLastRow, boolean isFirst) {
+	private static void InsertGraphIntoSheetByCategory(XSSFWorkbook wb, XSSFSheet sheet, int categoryFirstRow, int categoryLastRow, boolean isFirst) {
 		if (sheet != null) {
 			XSSFDrawing drawing = sheet.createDrawingPatriarch();
 			XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(categoryLastRow - categoryFirstRow, 16), isFirst ? 40 : 85);
@@ -1252,7 +1141,7 @@ public final class AnnexUtils {
 			CTPlotArea plotArea = chart.getCTChart().getPlotArea();
 			plotArea.getValAxArray()[0].addNewMajorGridlines();
 			// Get agency names
-			XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 2, 2));
+			XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 0, 0));
 			// First serie ("No válido" / "No Conforme")
 			XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
 					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, isFirst ? 7 : 10, isFirst ? 7 : 10));
@@ -1293,6 +1182,142 @@ public final class AnnexUtils {
 			XDDFBarChartData bar = (XDDFBarChartData) data;
 			bar.setBarDirection(BarDirection.COL);
 		}
+	}
+
+	private static void InsertGraphIntoSheetByEvolution(XSSFWorkbook wb, XSSFSheet currentSheet, int categoryFirstRow, int categoryLastRow, boolean isFirst) {
+		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
+		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(categoryLastRow - categoryFirstRow, 16), isFirst ? 40 : 85);
+		XSSFChart chart = drawing.createChart(anchor);
+		chart.setTitleText(isFirst ? "Evolución de la adecuación" : "Evolución del cumplimiento estimado");
+		chart.setTitleOverlay(false);
+		XDDFChartLegend legend = chart.getOrAddLegend();
+		legend.setPosition(LegendPosition.LEFT);
+		XDDFCategoryAxis bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+		XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
+		XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
+		bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+		leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+		bottomAxis.setTickLabelPosition(AxisTickLabelPosition.LOW);
+		bottomAxis.setMajorTickMark(AxisTickMark.NONE);
+		bottomAxis.setPosition(AxisPosition.RIGHT);
+		CTPlotArea plotArea = chart.getCTChart().getPlotArea();
+		plotArea.getValAxArray()[0].addNewMajorGridlines();
+		// Get agency names
+		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 0, 0));
+		// Iterate through the executions
+		for (String date : executionDates) {
+			int firstSerieColumn = 4 + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
+			// First serie ("No válido" / "No Conforme")
+			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 0 : 3));
+			XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 0 : 3), firstSerieColumn + (isFirst ? 0 : 3)));
+			XDDFChartData.Series series1 = data.addSeries(agencies, values1);
+			series1.setTitle((isFirst ? "NV_" : "NC_") + date, null);
+			// Set series color
+			XDDFShapeProperties properties1 = series1.getShapeProperties();
+			if (properties1 == null) {
+				properties1 = new XDDFShapeProperties();
+			}
+			properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
+			series1.setShapeProperties(properties1);
+			// Second serie ("A" / "Parcialmente conforme")
+			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 1 : 4));
+			XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 1 : 4), firstSerieColumn + (isFirst ? 1 : 4)));
+			XDDFChartData.Series series2 = data.addSeries(agencies, values2);
+			series2.setTitle((isFirst ? "A_" : "PC_") + date, null);
+			// Set series color
+			XDDFShapeProperties properties2 = series2.getShapeProperties();
+			if (properties2 == null) {
+				properties2 = new XDDFShapeProperties();
+			}
+			properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
+			series2.setShapeProperties(properties2);
+			// Third serie ("AA" / "Plenamente conforme")
+			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 2 : 5));
+			XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 2 : 5), firstSerieColumn + (isFirst ? 2 : 5)));
+			XDDFChartData.Series series3 = data.addSeries(agencies, values3);
+			series3.setTitle((isFirst ? "AA_" : "TC_") + date, null);
+			// Set series color
+			XDDFShapeProperties properties3 = series3.getShapeProperties();
+			if (properties3 == null) {
+				properties3 = new XDDFShapeProperties();
+			}
+			properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
+			series3.setShapeProperties(properties3);
+		}
+		chart.plot(data);
+		XDDFBarChartData bar = (XDDFBarChartData) data;
+		bar.setBarDirection(BarDirection.COL);
+	}
+
+	private static void InsertGraphIntoSheetByDependency(XSSFWorkbook wb, XSSFSheet currentSheet, int rowIndex, boolean isFirst) {
+		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
+		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(rowIndex, 16), isFirst ? 40 : 85);
+		XSSFChart chart = drawing.createChart(anchor);
+		chart.setTitleText(isFirst ? "Evolución de la adecuación" : "Evolución del cumplimiento estimado");
+		chart.setTitleOverlay(false);
+		XDDFChartLegend legend = chart.getOrAddLegend();
+		legend.setPosition(LegendPosition.LEFT);
+		XDDFCategoryAxis bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+		XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
+		XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
+		bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+		leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+		bottomAxis.setTickLabelPosition(AxisTickLabelPosition.LOW);
+		bottomAxis.setMajorTickMark(AxisTickMark.NONE);
+		bottomAxis.setPosition(AxisPosition.RIGHT);
+		CTPlotArea plotArea = chart.getCTChart().getPlotArea();
+		plotArea.getValAxArray()[0].addNewMajorGridlines();
+		// Get agency names
+		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(1, rowIndex - 1, 0, 0));
+		// Iterate through the executions
+		for (String date : executionDates) {
+			int firstSerieColumn = 4 + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
+			// First serie ("No válido" / "No Conforme")
+			FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 0 : 3));
+			XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+					new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 0 : 3), firstSerieColumn + (isFirst ? 0 : 3)));
+			XDDFChartData.Series series1 = data.addSeries(agencies, values1);
+			series1.setTitle((isFirst ? "NV_" : "NC_") + date, null);
+			// Set series color
+			XDDFShapeProperties properties1 = series1.getShapeProperties();
+			if (properties1 == null) {
+				properties1 = new XDDFShapeProperties();
+			}
+			properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
+			series1.setShapeProperties(properties1);
+			// Second serie ("A" / "Parcialmente conforme")
+			FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 1 : 4));
+			XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+					new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 1 : 4), firstSerieColumn + (isFirst ? 1 : 4)));
+			XDDFChartData.Series series2 = data.addSeries(agencies, values2);
+			series2.setTitle((isFirst ? "A_" : "PC_") + date, null);
+			// Set series color
+			XDDFShapeProperties properties2 = series2.getShapeProperties();
+			if (properties2 == null) {
+				properties2 = new XDDFShapeProperties();
+			}
+			properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
+			series2.setShapeProperties(properties2);
+			// Third serie ("AA" / "Plenamente conforme")
+			FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 2 : 5));
+			XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+					new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 2 : 5), firstSerieColumn + (isFirst ? 2 : 5)));
+			XDDFChartData.Series series3 = data.addSeries(agencies, values3);
+			series3.setTitle((isFirst ? "AA_" : "TC_") + date, null);
+			// Set series color
+			XDDFShapeProperties properties3 = series3.getShapeProperties();
+			if (properties3 == null) {
+				properties3 = new XDDFShapeProperties();
+			}
+			properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
+			series3.setShapeProperties(properties3);
+		}
+		chart.plot(data);
+		XDDFBarChartData bar = (XDDFBarChartData) data;
+		bar.setBarDirection(BarDirection.COL);
 	}
 
 	/**
@@ -1415,13 +1440,6 @@ public final class AnnexUtils {
 		 */
 	}
 
-	/**
-	 * Solid fill series.
-	 *
-	 * @param data  the data
-	 * @param index the index
-	 * @param color the color
-	 */
 	private static void solidFillSeries(XDDFChartData data, int index, PresetColor color) {
 		XDDFSolidFillProperties fill = new XDDFSolidFillProperties(XDDFColor.from(color));
 		XDDFChartData.Series series = data.getSeries().get(index);
@@ -1433,13 +1451,6 @@ public final class AnnexUtils {
 		series.setShapeProperties(properties);
 	}
 
-	/**
-	 * Solid line series.
-	 *
-	 * @param data  the data
-	 * @param index the index
-	 * @param color the color
-	 */
 	private static void solidLineSeries(XDDFChartData data, int index, PresetColor color) {
 		XDDFSolidFillProperties fill = new XDDFSolidFillProperties(XDDFColor.from(color));
 		XDDFLineProperties line = new XDDFLineProperties();
@@ -1577,110 +1588,50 @@ public final class AnnexUtils {
 		}
 	}
 
-	/**
-	 * The Class ExcelLine.
-	 */
 	private static class ExcelLine {
-		/** The nombre. */
 		private String nombre;
-		/** The namecat. */
 		private String namecat;
-		/** The depende de. */
 		private String depende_de;
-		/** The semilla. */
 		private String semilla;
-		/** The row index. */
 		private Integer rowIndex;
-		/** The executions. */
 		private List<ExcelExecution> executions = new ArrayList<>();
 
-		/**
-		 * Gets the nombre.
-		 *
-		 * @return the nombre
-		 */
 		public String getNombre() {
 			return nombre;
 		}
 
-		/**
-		 * Sets the nombre.
-		 *
-		 * @param nombre the new nombre
-		 */
 		public void setNombre(String nombre) {
 			this.nombre = nombre;
 		}
 
-		/**
-		 * Gets the namecat.
-		 *
-		 * @return the namecat
-		 */
 		public String getNamecat() {
 			return namecat;
 		}
 
-		/**
-		 * Sets the namecat.
-		 *
-		 * @param namecat the new namecat
-		 */
 		public void setNamecat(String namecat) {
 			this.namecat = namecat;
 		}
 
-		/**
-		 * Gets the depende de.
-		 *
-		 * @return the depende de
-		 */
 		public String getDepende_de() {
 			return depende_de;
 		}
 
-		/**
-		 * Sets the depende de.
-		 *
-		 * @param depende_de the new depende de
-		 */
 		public void setDepende_de(String depende_de) {
 			this.depende_de = depende_de;
 		}
 
-		/**
-		 * Gets the semilla.
-		 *
-		 * @return the semilla
-		 */
 		public String getSemilla() {
 			return semilla;
 		}
 
-		/**
-		 * Sets the semilla.
-		 *
-		 * @param semilla the new semilla
-		 */
 		public void setSemilla(String semilla) {
 			this.semilla = semilla;
 		}
 
-		/**
-		 * Gets the executions.
-		 *
-		 * @return the executions
-		 */
 		public List<ExcelExecution> getExecutions() {
 			return executions;
 		}
 
-		/**
-		 * Checks for date.
-		 *
-		 * @param dateToSearch the date to search
-		 * @return true, if successful
-		 */
 		public boolean HasDate(String dateToSearch) {
 			for (ExcelExecution e : executions) {
 				if (e.date.equals(dateToSearch)) {
@@ -1690,12 +1641,6 @@ public final class AnnexUtils {
 			return false;
 		}
 
-		/**
-		 * Gets the execution by date.
-		 *
-		 * @param dateToSearch the date to search
-		 * @return the excel execution
-		 */
 		public ExcelExecution GetExecutionByDate(String dateToSearch) {
 			for (ExcelExecution e : executions) {
 				if (e.date.equals(dateToSearch)) {
@@ -1705,115 +1650,53 @@ public final class AnnexUtils {
 			return null;
 		}
 
-		/**
-		 * Adds the execution.
-		 *
-		 * @param execution the execution
-		 */
 		public void addExecution(ExcelExecution execution) {
 			this.executions.add(execution);
 		}
 
-		/**
-		 * Gets the row index.
-		 *
-		 * @return the row index
-		 */
 		public Integer getRowIndex() {
 			return rowIndex;
 		}
 
-		/**
-		 * Sets the row index.
-		 *
-		 * @param rowIndex the new row index
-		 */
 		public void setRowIndex(Integer rowIndex) {
 			this.rowIndex = rowIndex;
 		}
 	}
 
-	/**
-	 * The Class ExcelExecution.
-	 */
 	private static class ExcelExecution {
-		/** The date. */
 		private String date;
-		/** The score. */
 		private Double score;
-		/** The adequacy. */
 		private String adequacy;
-		/** The compliance. */
 		private String compliance;
 
-		/**
-		 * Gets the date.
-		 *
-		 * @return the date
-		 */
 		public String getDate() {
 			return date;
 		}
 
-		/**
-		 * Sets the date.
-		 *
-		 * @param date the new date
-		 */
 		public void setDate(String date) {
 			this.date = date;
 		}
 
-		/**
-		 * Gets the score.
-		 *
-		 * @return the score
-		 */
 		public Double getScore() {
 			return score;
 		}
 
-		/**
-		 * Sets the score.
-		 *
-		 * @param score the new score
-		 */
 		public void setScore(Double score) {
 			this.score = score;
 		}
 
-		/**
-		 * Gets the adequacy.
-		 *
-		 * @return the adequacy
-		 */
 		public String getAdequacy() {
 			return adequacy;
 		}
 
-		/**
-		 * Sets the adequacy.
-		 *
-		 * @param adequacy the new adequacy
-		 */
 		public void setAdequacy(String adequacy) {
 			this.adequacy = adequacy;
 		}
 
-		/**
-		 * Gets the compliance.
-		 *
-		 * @return the compliance
-		 */
 		public String getCompliance() {
 			return compliance;
 		}
 
-		/**
-		 * Sets the compliance.
-		 *
-		 * @param compliance the new compliance
-		 */
 		public void setCompliance(String compliance) {
 			this.compliance = compliance;
 		}
