@@ -130,11 +130,12 @@ public final class ObservatorioDAO {
 	 * @param idObservatory the id observatory
 	 * @param page          the page
 	 * @param date          the date
+	 * @param exObsIds      the ex obs ids
 	 * @return the fulfilled observatories
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<ObservatorioRealizadoForm> getFulfilledObservatories(Connection c, long idObservatory, int page, Date date) throws SQLException {
-		return getFulfilledObservatories(c, idObservatory, page, date, true);
+	public static List<ObservatorioRealizadoForm> getFulfilledObservatories(Connection c, long idObservatory, int page, Date date, final String[] exObsIds) throws SQLException {
+		return getFulfilledObservatories(c, idObservatory, page, date, true, exObsIds);
 	}
 
 	/**
@@ -148,7 +149,7 @@ public final class ObservatorioDAO {
 	 * @return the fulfilled observatories
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<ObservatorioRealizadoForm> getFulfilledObservatories(Connection c, long idObservatory, int page, Date date, boolean desc) throws SQLException {
+	public static List<ObservatorioRealizadoForm> getFulfilledObservatories(Connection c, long idObservatory, int page, Date date, boolean desc, final String[] exObsIds) throws SQLException {
 		List<ObservatorioRealizadoForm> results = new ArrayList<>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -185,20 +186,18 @@ public final class ObservatorioDAO {
 			}
 			ps.setLong(1, idObservatory);
 			rs = ps.executeQuery();
+			List<String> tmp = null;
+			if (exObsIds != null) {
+				tmp = Arrays.asList(exObsIds);
+			}
 			while (rs.next()) {
-				ObservatorioRealizadoForm observatorioRealizadoForm = new ObservatorioRealizadoForm();
-				observatorioRealizadoForm.setId(rs.getLong("id"));
-				observatorioRealizadoForm.setFecha(rs.getTimestamp("fecha"));
-				observatorioRealizadoForm.setFechaStr(df.format(rs.getTimestamp("fecha")));
-				ObservatorioForm observatorio = new ObservatorioForm();
-				observatorio.setEstado(rs.getInt("estado"));
-				observatorio.setNombre(rs.getString("ob.nombre"));
-				observatorioRealizadoForm.setObservatorio(observatorio);
-				CartuchoForm cartucho = new CartuchoForm();
-				cartucho.setId(rs.getLong("id_cartucho"));
-				cartucho.setName(rs.getString("aplicacion"));
-				observatorioRealizadoForm.setCartucho(cartucho);
-				results.add(observatorioRealizadoForm);
+				if (tmp != null && !tmp.isEmpty()) {
+					if (tmp.contains(String.valueOf(rs.getLong("o.id")))) {
+						getExecutedObservatoriesFromResult(c, results, rs, df);
+					}
+				} else {
+					getExecutedObservatoriesFromResult(c, results, rs, df);
+				}
 			}
 		} catch (SQLException e) {
 			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -207,6 +206,45 @@ public final class ObservatorioDAO {
 			DAOUtils.closeQueries(ps, rs);
 		}
 		return results;
+	}
+
+	private static void getExecutedObservatoriesFromResult(Connection c, List<ObservatorioRealizadoForm> results, ResultSet rs, DateFormat df) throws SQLException {
+		ObservatorioRealizadoForm observatorioRealizadoForm = new ObservatorioRealizadoForm();
+		observatorioRealizadoForm.setId(rs.getLong("id"));
+		observatorioRealizadoForm.setFecha(rs.getTimestamp("fecha"));
+		observatorioRealizadoForm.setFechaStr(df.format(rs.getTimestamp("fecha")));
+		String etiquetasAux = rs.getString("tags");
+		List<String> tagList = new ArrayList<String>();
+		if (rs.getString("tags") != null && rs.getString("tags").length() > 0) {
+			String statement = "SELECT nombre FROM etiqueta WHERE id_etiqueta = ";
+			etiquetasAux = etiquetasAux.replace('[', ' ');
+			etiquetasAux = etiquetasAux.replace(']', ' ');
+			etiquetasAux = etiquetasAux.replace(",", " OR id_etiqueta = ");
+			statement = statement + etiquetasAux;
+			try (PreparedStatement ps2 = c.prepareStatement(statement)) {
+				try (ResultSet rs2 = ps2.executeQuery()) {
+					while (rs2.next()) {
+						tagList.add(rs2.getString("nombre"));
+					}
+				} catch (SQLException e) {
+					Logger.putLog("Error ", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+					throw e;
+				}
+			} catch (SQLException e) {
+				Logger.putLog("Error ", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+				throw e;
+			}
+		}
+		observatorioRealizadoForm.setTags(tagList);
+		ObservatorioForm observatorio = new ObservatorioForm();
+		observatorio.setEstado(rs.getInt("estado"));
+		observatorio.setNombre(rs.getString("ob.nombre"));
+		observatorioRealizadoForm.setObservatorio(observatorio);
+		CartuchoForm cartucho = new CartuchoForm();
+		cartucho.setId(rs.getLong("id_cartucho"));
+		cartucho.setName(rs.getString("aplicacion"));
+		observatorioRealizadoForm.setCartucho(cartucho);
+		results.add(observatorioRealizadoForm);
 	}
 
 	/**
@@ -1474,6 +1512,8 @@ public final class ObservatorioDAO {
 	 *
 	 * @param c              the c
 	 * @param idObsRealizado the id obs realizado
+	 * @param percent        the percent
+	 * @param seeds          the seeds
 	 * @return the finish crawler ids from seed and observatory with less results threshold
 	 * @throws Exception the exception
 	 */
@@ -2914,5 +2954,38 @@ public final class ObservatorioDAO {
 			throw e;
 		}
 		return autorelaunch;
+	}
+
+	/**
+	 * Gets the num crawls.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @param idSeed        the id seed
+	 * @return the num crawls
+	 * @throws SQLException the SQL exception
+	 */
+	public static int getNumCrawls(Connection c, final Long idObservatory, final Long idSeed) throws SQLException {
+		int numCrawls = 0;
+		// Count URL crawled
+		String numCrawlQuery = "SELECT count(ta.cod_url) as numCrawls  "
+				+ "FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l WHERE ta.cod_rastreo = rr.id  and rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista  "
+				+ "and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado=?) and rr.id_lista = ?";
+		PreparedStatement psCrawls = c.prepareStatement(numCrawlQuery);
+		psCrawls.setLong(1, idObservatory);
+		psCrawls.setLong(2, idSeed);
+		ResultSet rsCrawls = null;
+		try {
+			rsCrawls = psCrawls.executeQuery();
+			if (rsCrawls.next()) {
+				numCrawls = rsCrawls.getInt("numCrawls");
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(psCrawls, rsCrawls);
+		}
+		return numCrawls;
 	}
 }

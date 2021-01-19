@@ -15,3 +15,5 @@ INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES (
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('Relanzamientos automáticos','autorelaunch', '0');
 
 ALTER TABLE `tanalisis_accesibilidad` ADD `COD_FUENTE` MEDIUMTEXT;
+
+ALTER TABLE `observatorios_realizados` ADD `tags` TEXT NULL;

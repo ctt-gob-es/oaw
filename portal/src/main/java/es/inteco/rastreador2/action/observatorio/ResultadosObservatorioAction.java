@@ -370,7 +370,7 @@ public class ResultadosObservatorioAction extends Action {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final int numResult = ObservatorioDAO.countFulfilledObservatories(c, observatoryId);
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
-			request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(c, observatoryId, (pagina - 1), null));
+			request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(c, observatoryId, (pagina - 1), null, null));
 			request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, numResult, pagina));
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
@@ -398,8 +398,8 @@ public class ResultadosObservatorioAction extends Action {
 			if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
 				resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 			}
-			AnnexUtils.createAnnexPaginas(resources, idObsExecution, idOperation);
-			AnnexUtils.createAnnexPortales(resources, idObsExecution, idOperation);
+			AnnexUtils.createAnnexPaginas(resources, idObsExecution, idOperation, null, null);
+			AnnexUtils.createAnnexPortales(resources, idObsExecution, idOperation, null, null);
 			AnnexUtils.createAnnexXLSX(resources, idObsExecution, idOperation);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");

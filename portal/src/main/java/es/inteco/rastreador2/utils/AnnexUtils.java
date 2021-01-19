@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -94,6 +95,7 @@ import es.inteco.rastreador2.manager.ObservatoryExportManager;
 /**
  * The Class AnnexUtils.
  */
+@SuppressWarnings("deprecation")
 public final class AnnexUtils {
 	/**
 	 * The Constant EMPTY_STRING.
@@ -135,6 +137,29 @@ public final class AnnexUtils {
 	 * Dependency names list created by generation Evolution and reused generating PerDependency annex.
 	 */
 	private static List<String> dependencies = new ArrayList<>();
+	/** The annexmap. */
+	private static Map<Long, TreeMap<String, ScoreForm>> annexmap;
+
+	/**
+	 * Generate all annex.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void generateAllAnnex(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		annexmap = createAnnexMap(idObsExecution, tagsToFilter, exObsIds);
+		createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+		createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+		createAnnexXLSX(messageResources, idObsExecution, idOperation);
+		createAnnexXLSX_Evolution(messageResources, idObsExecution, idOperation);
+		createAnnexXLSX_PerDependency(idOperation);
+		createComparativeSuitabilitieXLSX(messageResources, idObsExecution, idOperation);
+	}
 
 	/**
 	 * Creates the annex paginas.
@@ -144,7 +169,8 @@ public final class AnnexUtils {
 	 * @param idOperation      the id operation
 	 * @throws Exception the exception
 	 */
-	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_paginas.xml")) {
 			final ContentHandler hd = getContentHandler(writer);
 			hd.startDocument();
@@ -154,33 +180,126 @@ public final class AnnexUtils {
 				if (categoryForm != null) {
 					for (SiteForm siteForm : categoryForm.getSiteFormList()) {
 						if (siteForm != null) {
-							hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
 							final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(siteForm.getIdCrawlerSeed()));
-							writeTag(hd, NOMBRE_ELEMENT, siteForm.getName());
-							writeTag(hd, CATEGORIA_ELEMENT, semillaForm.getCategoria().getName());
-							// Multidependencia
-							StringBuilder dependencias = new StringBuilder();
-							if (semillaForm.getDependencias() != null) {
-								for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-									dependencias.append(semillaForm.getDependencias().get(i).getName());
-									if (i < semillaForm.getDependencias().size() - 1) {
-										dependencias.append("\n");
+							// Filter by tags
+							List<String> tagList = null;
+							if (tagsToFilter != null) {
+								tagList = Arrays.asList(tagsToFilter);
+							}
+							boolean hasTags = tagList != null ? false : true;
+							if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty() && tagList != null) {
+								for (EtiquetaForm tag : semillaForm.getEtiquetas()) {
+									if (tagList.contains(String.valueOf(tag.getId()))) {
+										hasTags = true;
+										break;
 									}
 								}
 							}
-							writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
-							hd.startElement(EMPTY_STRING, EMPTY_STRING, "paginas", null);
-							for (PageForm pageForm : siteForm.getPageList()) {
-								if (pageForm != null) {
-									hd.startElement(EMPTY_STRING, EMPTY_STRING, "pagina", null);
-									writeTag(hd, "url", pageForm.getUrl());
-									writeTag(hd, "puntuacion", pageForm.getScore());
-									writeTag(hd, "adecuacion", ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
-									hd.endElement(EMPTY_STRING, EMPTY_STRING, "pagina");
+							if (hasTags) {
+								hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
+								writeTag(hd, Constants.XML_ID, String.valueOf(semillaForm.getId()));
+								writeTag(hd, NOMBRE_ELEMENT, siteForm.getName());
+								writeTag(hd, CATEGORIA_ELEMENT, semillaForm.getCategoria().getName());
+								// Multidependencia
+								StringBuilder dependencias = new StringBuilder();
+								if (semillaForm.getDependencias() != null) {
+									for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+										dependencias.append(semillaForm.getDependencias().get(i).getName());
+										if (i < semillaForm.getDependencias().size() - 1) {
+											dependencias.append("\n");
+										}
+									}
 								}
+								writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
+								writeTag(hd, Constants.XML_AMBITO, semillaForm.getAmbito().getName());
+								writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
+								// Seed tags
+								List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+								List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+								List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+								List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+								List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+								if (etiquetas != null && !etiquetas.isEmpty()) {
+									for (EtiquetaForm tmp : etiquetas) {
+										if (tmp.getClasificacion() != null) {
+											switch (tmp.getClasificacion().getId()) {
+											case "1":
+												tagsTematica.add(tmp);
+												break;
+											case "2":
+												tagsDistribucion.add(tmp);
+												break;
+											case "3":
+												tagsRecurrencia.add(tmp);
+												break;
+											case "4":
+												tagsOtros.add(tmp);
+												break;
+											default:
+												break;
+											}
+										}
+									}
+								}
+								// 1
+								hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
+								if (!tagsTematica.isEmpty()) {
+									for (int i = 0; i < tagsTematica.size(); i++) {
+										hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
+										if (i < tagsTematica.size() - 1) {
+											hd.characters("\n".toCharArray(), 0, "\n".length());
+										}
+									}
+								}
+								hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
+								// 2
+								hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
+								if (!tagsDistribucion.isEmpty()) {
+									for (int i = 0; i < tagsDistribucion.size(); i++) {
+										hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
+										if (i < tagsDistribucion.size() - 1) {
+											hd.characters("\n".toCharArray(), 0, "\n".length());
+										}
+									}
+								}
+								hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
+								// 3
+								hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
+								if (!tagsRecurrencia.isEmpty()) {
+									for (int i = 0; i < tagsRecurrencia.size(); i++) {
+										hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
+										if (i < tagsRecurrencia.size() - 1) {
+											hd.characters("\n".toCharArray(), 0, "\n".length());
+										}
+									}
+								}
+								hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
+								// 4
+								hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
+								if (!tagsOtros.isEmpty()) {
+									for (int i = 0; i < tagsOtros.size(); i++) {
+										hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
+										if (i < tagsOtros.size() - 1) {
+											hd.characters("\n".toCharArray(), 0, "\n".length());
+										}
+									}
+								}
+								hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
+								// Num crawls
+								writeTag(hd, "paginas", String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
+								hd.startElement(EMPTY_STRING, EMPTY_STRING, "paginas", null);
+								for (PageForm pageForm : siteForm.getPageList()) {
+									if (pageForm != null) {
+										hd.startElement(EMPTY_STRING, EMPTY_STRING, "pagina", null);
+										writeTag(hd, "url", pageForm.getUrl());
+										writeTag(hd, "puntuacion", pageForm.getScore());
+										writeTag(hd, "adecuacion", ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
+										hd.endElement(EMPTY_STRING, EMPTY_STRING, "pagina");
+									}
+								}
+								hd.endElement(EMPTY_STRING, EMPTY_STRING, "paginas");
+								hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 							}
-							hd.endElement(EMPTY_STRING, EMPTY_STRING, "paginas");
-							hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 						}
 					}
 				}
@@ -199,112 +318,136 @@ public final class AnnexUtils {
 	 * @param messageResources the message resources
 	 * @param idObsExecution   the id obs execution
 	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
 	 * @throws Exception the exception
 	 */
-	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_portales.xml")) {
 			final ContentHandler hd = getContentHandler(writer);
 			hd.startDocument();
 			hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
-			final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution);
+			// final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution, tagsToFilter, exObsIds);
 			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
 				if (semillaForm.getId() != 0) {
-					hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
-					writeTag(hd, Constants.XML_ID, String.valueOf(semillaForm.getId()));
-					writeTag(hd, NOMBRE_ELEMENT, semillaForm.getNombre());
-					writeTag(hd, CATEGORY_NAME, semillaForm.getCategoria().getName());
-					// Multidependencia
-					StringBuilder dependencias = new StringBuilder();
-					if (semillaForm.getDependencias() != null) {
-						for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-							dependencias.append(semillaForm.getDependencias().get(i).getName());
-							if (i < semillaForm.getDependencias().size() - 1) {
-								dependencias.append("\n");
+					// Filter by tags
+					List<String> tagList = null;
+					if (tagsToFilter != null) {
+						tagList = Arrays.asList(tagsToFilter);
+					}
+					boolean hasTags = tagList != null ? false : true;
+					if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty() && tagList != null) {
+						for (EtiquetaForm tag : semillaForm.getEtiquetas()) {
+							if (tagList.contains(String.valueOf(tag.getId()))) {
+								hasTags = true;
+								break;
 							}
 						}
 					}
-					writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
-					writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
-					for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-						final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
-						writeTag(hd, "puntuacion_" + executionDateAux, entry.getValue().getTotalScore().toString());
-						writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), messageResources));
-						writeTag(hd, "cumplimiento_" + executionDateAux, entry.getValue().getCompliance());
-					}
-					// TODO Add seed tags
-					List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
-					List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
-					List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
-					List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
-					List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
-					if (etiquetas != null && !etiquetas.isEmpty()) {
-						for (EtiquetaForm tmp : etiquetas) {
-							if (tmp.getClasificacion() != null) {
-								switch (tmp.getClasificacion().getId()) {
-								case "1":
-									tagsTematica.add(tmp);
-									break;
-								case "2":
-									tagsDistribucion.add(tmp);
-									break;
-								case "3":
-									tagsRecurrencia.add(tmp);
-									break;
-								case "4":
-									tagsOtros.add(tmp);
-									break;
-								default:
-									break;
+					if (hasTags) {
+						hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
+						writeTag(hd, Constants.XML_ID, String.valueOf(semillaForm.getId()));
+						writeTag(hd, NOMBRE_ELEMENT, semillaForm.getNombre());
+						writeTag(hd, CATEGORY_NAME, semillaForm.getCategoria().getName());
+						// Multidependencia
+						StringBuilder dependencias = new StringBuilder();
+						if (semillaForm.getDependencias() != null) {
+							for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+								dependencias.append(semillaForm.getDependencias().get(i).getName());
+								if (i < semillaForm.getDependencias().size() - 1) {
+									dependencias.append("\n");
 								}
 							}
 						}
-					}
-					// 1
-					hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
-					if (!tagsTematica.isEmpty()) {
-						for (int i = 0; i < tagsTematica.size(); i++) {
-							hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
-							if (i < tagsTematica.size() - 1) {
-								hd.characters("\n".toCharArray(), 0, "\n".length());
+						// ambit
+						writeTag(hd, Constants.XML_AMBITO, semillaForm.getAmbito().getName());
+						writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
+						writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
+						// Seed tags
+						List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+						List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+						List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+						List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+						List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+						if (etiquetas != null && !etiquetas.isEmpty()) {
+							for (EtiquetaForm tmp : etiquetas) {
+								if (tmp.getClasificacion() != null) {
+									switch (tmp.getClasificacion().getId()) {
+									case "1":
+										tagsTematica.add(tmp);
+										break;
+									case "2":
+										tagsDistribucion.add(tmp);
+										break;
+									case "3":
+										tagsRecurrencia.add(tmp);
+										break;
+									case "4":
+										tagsOtros.add(tmp);
+										break;
+									default:
+										break;
+									}
+								}
 							}
 						}
-					}
-					hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
-					// 2
-					hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
-					if (!tagsDistribucion.isEmpty()) {
-						for (int i = 0; i < tagsDistribucion.size(); i++) {
-							hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
-							if (i < tagsDistribucion.size() - 1) {
-								hd.characters("\n".toCharArray(), 0, "\n".length());
+						// 1
+						hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
+						if (!tagsTematica.isEmpty()) {
+							for (int i = 0; i < tagsTematica.size(); i++) {
+								hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
+								if (i < tagsTematica.size() - 1) {
+									hd.characters("\n".toCharArray(), 0, "\n".length());
+								}
 							}
 						}
-					}
-					hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
-					// 3
-					hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
-					if (!tagsRecurrencia.isEmpty()) {
-						for (int i = 0; i < tagsRecurrencia.size(); i++) {
-							hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
-							if (i < tagsRecurrencia.size() - 1) {
-								hd.characters("\n".toCharArray(), 0, "\n".length());
+						hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
+						// 2
+						hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
+						if (!tagsDistribucion.isEmpty()) {
+							for (int i = 0; i < tagsDistribucion.size(); i++) {
+								hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
+								if (i < tagsDistribucion.size() - 1) {
+									hd.characters("\n".toCharArray(), 0, "\n".length());
+								}
 							}
 						}
-					}
-					hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
-					// 4
-					hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
-					if (!tagsOtros.isEmpty()) {
-						for (int i = 0; i < tagsOtros.size(); i++) {
-							hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
-							if (i < tagsOtros.size() - 1) {
-								hd.characters("\n".toCharArray(), 0, "\n".length());
+						hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
+						// 3
+						hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
+						if (!tagsRecurrencia.isEmpty()) {
+							for (int i = 0; i < tagsRecurrencia.size(); i++) {
+								hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
+								if (i < tagsRecurrencia.size() - 1) {
+									hd.characters("\n".toCharArray(), 0, "\n".length());
+								}
 							}
 						}
+						hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
+						// 4
+						hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
+						if (!tagsOtros.isEmpty()) {
+							for (int i = 0; i < tagsOtros.size(); i++) {
+								hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
+								if (i < tagsOtros.size() - 1) {
+									hd.characters("\n".toCharArray(), 0, "\n".length());
+								}
+							}
+						}
+						hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
+						// Num crawls
+						writeTag(hd, "paginas", String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
+						// Scores
+						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+							final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+							writeTag(hd, "puntuacion_" + executionDateAux, entry.getValue().getTotalScore().toString());
+							writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), messageResources));
+							writeTag(hd, "cumplimiento_" + executionDateAux, entry.getValue().getCompliance());
+						}
+						hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 					}
-					hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
-					hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 				}
 			}
 			hd.endElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT);
@@ -521,7 +664,7 @@ public final class AnnexUtils {
 				columnIndex++;
 			}
 			rowIndex++;
-			final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution);
+			// TODO Global varibal final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution, null, null);
 			// Get all category names
 			/*
 			 * Category names list created by generation Evolution and reused generating PerDependency annex.
@@ -977,6 +1120,14 @@ public final class AnnexUtils {
 		}
 	}
 
+	/**
+	 * Fill null cell in range.
+	 *
+	 * @param sheetAt          the sheet at
+	 * @param categoryFirstRow the category first row
+	 * @param categoryLastRow  the category last row
+	 * @param firstSerieColumn the first serie column
+	 */
 	private static void FillNullCellInRange(XSSFSheet sheetAt, int categoryFirstRow, int categoryLastRow, int firstSerieColumn) {
 		for (int i = categoryFirstRow; i <= categoryLastRow; i++) {
 			XSSFRow row = sheetAt.getRow(i);
@@ -990,6 +1141,16 @@ public final class AnnexUtils {
 		}
 	}
 
+	/**
+	 * Insert summary table.
+	 *
+	 * @param sheet            the sheet
+	 * @param RowStartPosition the row start position
+	 * @param ColumnNames      the column names
+	 * @param headerStyle      the header style
+	 * @param shadowStyle      the shadow style
+	 * @return the int
+	 */
 	private static int InsertSummaryTable(XSSFSheet sheet, int RowStartPosition, List<String> ColumnNames, CellStyle headerStyle, CellStyle shadowStyle) {
 		XSSFCell cell;
 		XSSFRow row;
@@ -1051,6 +1212,18 @@ public final class AnnexUtils {
 		return RowStartPosition + 7;
 	}
 
+	/**
+	 * Insert categories table.
+	 *
+	 * @param sheet            the sheet
+	 * @param RowStartPosition the row start position
+	 * @param categories       the categories
+	 * @param headerStyle      the header style
+	 * @param shadowStyle      the shadow style
+	 * @param lastDataRow      the last data row
+	 * @param columnSourceData the column source data
+	 * @return the int
+	 */
 	private static int InsertCategoriesTable(XSSFSheet sheet, int RowStartPosition, List<String> categories, CellStyle headerStyle, CellStyle shadowStyle, int lastDataRow, int columnSourceData) {
 		XSSFCell cell;
 		XSSFRow row;
@@ -1110,6 +1283,12 @@ public final class AnnexUtils {
 		return 1;
 	}
 
+	/**
+	 * Gets the excel column name for number.
+	 *
+	 * @param number the number
+	 * @return the string
+	 */
 	public static String GetExcelColumnNameForNumber(int number) {
 		StringBuilder sb = new StringBuilder();
 		int num = number - 1;
@@ -1121,6 +1300,15 @@ public final class AnnexUtils {
 		return sb.reverse().toString();
 	}
 
+	/**
+	 * Insert graph into sheet by category.
+	 *
+	 * @param wb               the wb
+	 * @param sheet            the sheet
+	 * @param categoryFirstRow the category first row
+	 * @param categoryLastRow  the category last row
+	 * @param isFirst          the is first
+	 */
 	private static void InsertGraphIntoSheetByCategory(XSSFWorkbook wb, XSSFSheet sheet, int categoryFirstRow, int categoryLastRow, boolean isFirst) {
 		if (sheet != null) {
 			XSSFDrawing drawing = sheet.createDrawingPatriarch();
@@ -1184,6 +1372,15 @@ public final class AnnexUtils {
 		}
 	}
 
+	/**
+	 * Insert graph into sheet by evolution.
+	 *
+	 * @param wb               the wb
+	 * @param currentSheet     the current sheet
+	 * @param categoryFirstRow the category first row
+	 * @param categoryLastRow  the category last row
+	 * @param isFirst          the is first
+	 */
 	private static void InsertGraphIntoSheetByEvolution(XSSFWorkbook wb, XSSFSheet currentSheet, int categoryFirstRow, int categoryLastRow, boolean isFirst) {
 		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(categoryLastRow - categoryFirstRow, 16), isFirst ? 40 : 85);
@@ -1252,6 +1449,14 @@ public final class AnnexUtils {
 		bar.setBarDirection(BarDirection.COL);
 	}
 
+	/**
+	 * Insert graph into sheet by dependency.
+	 *
+	 * @param wb           the wb
+	 * @param currentSheet the current sheet
+	 * @param rowIndex     the row index
+	 * @param isFirst      the is first
+	 */
 	private static void InsertGraphIntoSheetByDependency(XSSFWorkbook wb, XSSFSheet currentSheet, int rowIndex, boolean isFirst) {
 		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(rowIndex, 16), isFirst ? 40 : 85);
@@ -1440,6 +1645,13 @@ public final class AnnexUtils {
 		 */
 	}
 
+	/**
+	 * Solid fill series.
+	 *
+	 * @param data  the data
+	 * @param index the index
+	 * @param color the color
+	 */
 	private static void solidFillSeries(XDDFChartData data, int index, PresetColor color) {
 		XDDFSolidFillProperties fill = new XDDFSolidFillProperties(XDDFColor.from(color));
 		XDDFChartData.Series series = data.getSeries().get(index);
@@ -1451,6 +1663,13 @@ public final class AnnexUtils {
 		series.setShapeProperties(properties);
 	}
 
+	/**
+	 * Solid line series.
+	 *
+	 * @param data  the data
+	 * @param index the index
+	 * @param color the color
+	 */
 	private static void solidLineSeries(XDDFChartData data, int index, PresetColor color) {
 		XDDFSolidFillProperties fill = new XDDFSolidFillProperties(XDDFColor.from(color));
 		XDDFLineProperties line = new XDDFLineProperties();
@@ -1530,15 +1749,18 @@ public final class AnnexUtils {
 	 * Creates the annex map.
 	 *
 	 * @param idObsExecution the id obs execution
+	 * @param tagsToFilter   the tags to filter
+	 * @param exObsIds       the ex obs ids
 	 * @return the map
 	 */
-	private static Map<Long, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution) {
+	private static Map<Long, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] tagsToFilter, final String[] exObsIds) {
 		final Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
 		try (Connection c = DataBaseManager.getConnection()) {
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
 			final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
+			// Filter by idObsEx
 			final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(),
-					false);
+					false, exObsIds);
 			final List<ObservatoryForm> observatoryFormList = new ArrayList<>();
 			for (ObservatorioRealizadoForm orForm : observatoriesList) {
 				final ObservatoryForm observatory = ObservatoryExportManager.getObservatory(orForm.getId());
@@ -1558,7 +1780,6 @@ public final class AnnexUtils {
 						}
 						seedInfo.put(observatory.getDate(), scoreForm);
 						seedMap.put(Long.valueOf(siteForm.getIdCrawlerSeed()), seedInfo);
-						// TODO Compliance
 						scoreForm.setCompliance(siteForm.getCompliance());
 					}
 				}
@@ -1588,50 +1809,110 @@ public final class AnnexUtils {
 		}
 	}
 
+	/**
+	 * The Class ExcelLine.
+	 */
 	private static class ExcelLine {
+		/** The nombre. */
 		private String nombre;
+		/** The namecat. */
 		private String namecat;
+		/** The depende de. */
 		private String depende_de;
+		/** The semilla. */
 		private String semilla;
+		/** The row index. */
 		private Integer rowIndex;
+		/** The executions. */
 		private List<ExcelExecution> executions = new ArrayList<>();
 
+		/**
+		 * Gets the nombre.
+		 *
+		 * @return the nombre
+		 */
 		public String getNombre() {
 			return nombre;
 		}
 
+		/**
+		 * Sets the nombre.
+		 *
+		 * @param nombre the new nombre
+		 */
 		public void setNombre(String nombre) {
 			this.nombre = nombre;
 		}
 
+		/**
+		 * Gets the namecat.
+		 *
+		 * @return the namecat
+		 */
 		public String getNamecat() {
 			return namecat;
 		}
 
+		/**
+		 * Sets the namecat.
+		 *
+		 * @param namecat the new namecat
+		 */
 		public void setNamecat(String namecat) {
 			this.namecat = namecat;
 		}
 
+		/**
+		 * Gets the depende de.
+		 *
+		 * @return the depende de
+		 */
 		public String getDepende_de() {
 			return depende_de;
 		}
 
+		/**
+		 * Sets the depende de.
+		 *
+		 * @param depende_de the new depende de
+		 */
 		public void setDepende_de(String depende_de) {
 			this.depende_de = depende_de;
 		}
 
+		/**
+		 * Gets the semilla.
+		 *
+		 * @return the semilla
+		 */
 		public String getSemilla() {
 			return semilla;
 		}
 
+		/**
+		 * Sets the semilla.
+		 *
+		 * @param semilla the new semilla
+		 */
 		public void setSemilla(String semilla) {
 			this.semilla = semilla;
 		}
 
+		/**
+		 * Gets the executions.
+		 *
+		 * @return the executions
+		 */
 		public List<ExcelExecution> getExecutions() {
 			return executions;
 		}
 
+		/**
+		 * Checks for date.
+		 *
+		 * @param dateToSearch the date to search
+		 * @return true, if successful
+		 */
 		public boolean HasDate(String dateToSearch) {
 			for (ExcelExecution e : executions) {
 				if (e.date.equals(dateToSearch)) {
@@ -1641,6 +1922,12 @@ public final class AnnexUtils {
 			return false;
 		}
 
+		/**
+		 * Gets the execution by date.
+		 *
+		 * @param dateToSearch the date to search
+		 * @return the excel execution
+		 */
 		public ExcelExecution GetExecutionByDate(String dateToSearch) {
 			for (ExcelExecution e : executions) {
 				if (e.date.equals(dateToSearch)) {
@@ -1650,53 +1937,115 @@ public final class AnnexUtils {
 			return null;
 		}
 
+		/**
+		 * Adds the execution.
+		 *
+		 * @param execution the execution
+		 */
 		public void addExecution(ExcelExecution execution) {
 			this.executions.add(execution);
 		}
 
+		/**
+		 * Gets the row index.
+		 *
+		 * @return the row index
+		 */
 		public Integer getRowIndex() {
 			return rowIndex;
 		}
 
+		/**
+		 * Sets the row index.
+		 *
+		 * @param rowIndex the new row index
+		 */
 		public void setRowIndex(Integer rowIndex) {
 			this.rowIndex = rowIndex;
 		}
 	}
 
+	/**
+	 * The Class ExcelExecution.
+	 */
 	private static class ExcelExecution {
+		/** The date. */
 		private String date;
+		/** The score. */
 		private Double score;
+		/** The adequacy. */
 		private String adequacy;
+		/** The compliance. */
 		private String compliance;
 
+		/**
+		 * Gets the date.
+		 *
+		 * @return the date
+		 */
 		public String getDate() {
 			return date;
 		}
 
+		/**
+		 * Sets the date.
+		 *
+		 * @param date the new date
+		 */
 		public void setDate(String date) {
 			this.date = date;
 		}
 
+		/**
+		 * Gets the score.
+		 *
+		 * @return the score
+		 */
 		public Double getScore() {
 			return score;
 		}
 
+		/**
+		 * Sets the score.
+		 *
+		 * @param score the new score
+		 */
 		public void setScore(Double score) {
 			this.score = score;
 		}
 
+		/**
+		 * Gets the adequacy.
+		 *
+		 * @return the adequacy
+		 */
 		public String getAdequacy() {
 			return adequacy;
 		}
 
+		/**
+		 * Sets the adequacy.
+		 *
+		 * @param adequacy the new adequacy
+		 */
 		public void setAdequacy(String adequacy) {
 			this.adequacy = adequacy;
 		}
 
+		/**
+		 * Gets the compliance.
+		 *
+		 * @return the compliance
+		 */
 		public String getCompliance() {
 			return compliance;
 		}
 
+		/**
+		 * Sets the compliance.
+		 *
+		 * @param compliance the new compliance
+		 */
 		public void setCompliance(String compliance) {
 			this.compliance = compliance;
 		}

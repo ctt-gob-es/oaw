@@ -516,7 +516,7 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final int numResult = ObservatorioDAO.countFulfilledObservatories(c, observatoryId);
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
-			request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(c, observatoryId, (pagina - 1), null));
+			request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(c, observatoryId, (pagina - 1), null, null));
 			request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, numResult, pagina));
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
