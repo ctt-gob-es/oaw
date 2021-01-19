@@ -363,6 +363,7 @@ public final class AnnexUtils {
 						}
 						// ambit
 						writeTag(hd, Constants.XML_AMBITO, semillaForm.getAmbito().getName());
+						writeTag(hd, Constants.XML_COMPLEJIDAD, semillaForm.getComplejidad().getName());
 						writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
 						writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
 						// Seed tags
