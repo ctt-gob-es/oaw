@@ -89,7 +89,11 @@ public final class AnnexUtils {
 	 * @throws Exception the exception
 	 */
 	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final Long idCartucho) throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_paginas.xml")) {
+		Connection c = null;
+		FileWriter writer = null;
+		try {
+			c = DataBaseManager.getConnection();
+			writer = getFileWriter(idOperation, "anexo_paginas.xml");
 			final ContentHandler hd = getContentHandler(writer);
 			hd.startDocument();
 			hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
@@ -135,6 +139,13 @@ public final class AnnexUtils {
 		} catch (Exception e) {
 			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
+		} finally {
+			try {
+				DataBaseManager.closeConnection(c);
+				writer.close();
+			} catch (Exception e) {
+				Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			}
 		}
 	}
 
@@ -147,7 +158,11 @@ public final class AnnexUtils {
 	 * @throws Exception the exception
 	 */
 	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final Long idCartucho) throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_portales.xml")) {
+		Connection c = null;
+		FileWriter writer = null;
+		try {
+			c = DataBaseManager.getConnection();
+			writer = getFileWriter(idOperation, "anexo_portales.xml");
 			final ContentHandler hd = getContentHandler(writer);
 			hd.startDocument();
 			hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
@@ -262,6 +277,13 @@ public final class AnnexUtils {
 		} catch (Exception e) {
 			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
+		} finally {
+			try {
+				DataBaseManager.closeConnection(c);
+				writer.close();
+			} catch (Exception e) {
+				Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			}
 		}
 	}
 
@@ -318,7 +340,9 @@ public final class AnnexUtils {
 	 */
 	private static Map<Long, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution) {
 		final Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
-		try (Connection c = DataBaseManager.getConnection()) {
+		Connection c = null;
+		try {
+			c = DataBaseManager.getConnection();
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
 			final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
 			final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(),
@@ -349,6 +373,12 @@ public final class AnnexUtils {
 			}
 		} catch (Exception e) {
 			Logger.putLog("Error al recuperar las semillas del Observatorio al crear el anexo", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		} finally {
+			try {
+				DataBaseManager.closeConnection(c);
+			} catch (Exception e) {
+				Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			}
 		}
 		return seedMap;
 	}
