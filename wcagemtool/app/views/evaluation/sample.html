@@ -8,7 +8,10 @@
   link_em_3: 'http://www.w3.org/TR/WCAG-EM/#step3'
 }"></p>
 
-  <form>
+
+
+
+  <form name="formSample">
     <h2>{{'SAMPLE.HD_STRUCT_SAMPLE' | translate }}</h2>
 
     <h3>
@@ -79,7 +82,7 @@
   <div class="alert alert-success" ng-if="hasAtleastOneType() && hasMinimumRandom()">
     <p ng-bind-html="'SAMPLE.SAMPLE_CORRECT'|translate"></p>
   </div>
-  
+
   <div class="alert alert-danger" ng-if="!hasAtleastOneType() || !hasMinimumRandom()">
     <p ng-bind-html="'SAMPLE.SAMPLE_INCORRECT'|translate"></p>
     <p>

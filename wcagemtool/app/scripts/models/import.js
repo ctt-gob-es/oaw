@@ -98,7 +98,6 @@ angular
       evalModel.auditModel.importData(evalData);
       evalModel.exploreModel.importData(evalData);
       evalModel.otherData = evalData.otherData;
-      //evalModel.scopeModel.importData(evalData);
     }
 
     var importModel = {

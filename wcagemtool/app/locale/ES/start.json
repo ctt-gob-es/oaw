@@ -1,5 +1,5 @@
 {
-    "TITLE":"Herramienta de informes de la WCAG-EM",
+    "TITLE":"Herramienta IRA (Informe de Revisión de Accesibilidad)",
     "SUBTITLE": "Generador de Informes de Revisión de la Accesibilidad del sitio web",
     "INTRO_HD": "¿Qué hace esta herramienta?",
     "INTRO_1": "Esta herramienta le ayudará a generar un informe de acuerdo con la <a href={{link_wcagem}} hreflang='en' title='Metodología de Evaluación de Conformidad con la Accesibilidad en sitios Web (WCAG-EM) (abre en nueva ventana)'>Metodología de Evaluación de Conformidad con la Accesibilidad en sitios Web (WCAG-EM)</a> pero <strong>NO realiza ninguna comprobación de accesibilidad</strong>. Le guiará, paso a paso, para generar un <a href={{link_report}}>informe estructurado</a> a partir de la información que usted proporcione. Está especialmente diseñado para evaluadores experimentados que conozcan las <a href={{link_wcag}} hreflang='en' title='Pautas de Accesibilidad al Contenido en la Web (WCAG) (abre en nueva ventana)'> Pautas de Accesibilidad al Contenido en la Web (WCAG)</a> y estén algo familiarizados con WCAG-EM. Si desea un ver una pequeña introducción a las WCAG-EM, visite el <a href={{link_conformance}} hreflang='en' title='Resumen de las WCAG-EM (abre en nueva ventana)'>Resumen de las WCAG-EM</a>.",

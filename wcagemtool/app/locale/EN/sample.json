@@ -38,6 +38,15 @@
     "PAGE_TYPE_11": "Typical page",
     "PAGE_TYPE_12": "Other pages",
     "PAGE_TYPE_13": "Downloadable document",
-    "PAGE_TYPE_14": "Random"
-
+    "PAGE_TYPE_14": "Random",
+    "SAMPLE_CORRECT": "<strong>Correct sample:</strong> Yes",
+    "SAMPLE_INCORRECT": "<strong>Correct sample:</strong> No",
+    "SAMPLE_INCORRECT_INFO": "For the sample to be correct it must comply with the following:",
+    "SAMPLE_INCORRECT_MANDATORY_TYPES": "It must contain at least one 'Home Page' and one 'Accessibility Statement' page",
+    "SAMPLE_INCORRECT_MINIMUN_RANDOM": "The number of random pages must be at least 10% of the sample",
+    "REQUIRED_FIELDS": "Fill in all the required fields",
+    "REQUIRED_FIELD": "Required field",
+    "PAGE_TYPE_INFO":" Type of page added (in accordance with Implementing Decision 2018/1524)",
+    "PAGE_BREADCRUMB_INFO_1": "When the page does NOT form part of a PROCESS, indicate, separated by '>', the navigation to be made through the website",
+    "PAGE_BREADCRUMB_INFO_2": "When the page IS part of a PROCESS, to guide the process, indicate the short names given in the previous pages of the process separated by '>' and indicate in parentheses the action to be carried out to move to the next step of the process. <p>Ej:<ul><li>Province (Choose Madrid)</li>Province > Procedure (Choose Procedure X)</li>Province > Procedure > Description (Enter)</li></ul></p>"
 }

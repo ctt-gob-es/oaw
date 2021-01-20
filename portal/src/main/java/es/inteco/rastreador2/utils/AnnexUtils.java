@@ -1880,7 +1880,9 @@ public final class AnnexUtils {
 	 */
 	private static Map<Long, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] tagsToFilter, final String[] exObsIds) {
 		final Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
-		try (Connection c = DataBaseManager.getConnection()) {
+		Connection c = null;
+		try {
+			c = DataBaseManager.getConnection();
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
 			final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
 			// Filter by idObsEx
@@ -1911,6 +1913,12 @@ public final class AnnexUtils {
 			}
 		} catch (Exception e) {
 			Logger.putLog("Error al recuperar las semillas del Observatorio al crear el anexo", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		} finally {
+			try {
+				DataBaseManager.closeConnection(c);
+			} catch (Exception e) {
+				Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			}
 		}
 		return seedMap;
 	}

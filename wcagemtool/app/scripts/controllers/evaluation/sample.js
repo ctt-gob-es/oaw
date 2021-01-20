@@ -18,17 +18,17 @@ angular.module('wcagReporter')
 
       $scope.exploreModel = evalExploreModel;
 
-      if ($scope.structuredSample &&
-        $scope.structuredSample.webpage.length === 0) {
-        var strPage = evalSampleModel.addNewStructuredPage();
-        evalAuditModel.addPageForAsserts(strPage);
+      // if ($scope.structuredSample &&
+      //   $scope.structuredSample.webpage.length === 0) {
+      //   var strPage = evalSampleModel.addNewStructuredPage();
+      //   evalAuditModel.addPageForAsserts(strPage);
 
-        if ($scope.randomSample &&
-          $scope.randomSample.webpage.length === 0) {
-          var rndPage = evalSampleModel.addNewRandomPage();
-          evalAuditModel.addPageForAsserts(rndPage);
-        }
-      }
+      //   if ($scope.randomSample &&
+      //     $scope.randomSample.webpage.length === 0) {
+      //     var rndPage = evalSampleModel.addNewRandomPage();
+      //     evalAuditModel.addPageForAsserts(rndPage);
+      //   }
+      // }
 
       $scope.getPageAdder = function (sample) {
         return function () {
@@ -73,34 +73,44 @@ angular.module('wcagReporter')
       };
 
 
+      
+
       $scope.hasMinimumRandom = function () {
         return $scope.randomSample.webpage.length >= $scope.structuredSample.webpage.length / 10
       }
-      
+
       $scope.hasAtleastOneType = function () {
 
-        
+
         var hasHomePage = false;
         var hasAccesibilityDeclarationPage = false;
 
         $scope.structuredSample.webpage.forEach(function (page) {
-          if(page.pageType == "PAGE_TYPE_1"){
+          if (page.pageType == "PAGE_TYPE_1") {
             hasHomePage = true;
           }
-          if(page.pageType == "PAGE_TYPE_9"){
+          if (page.pageType == "PAGE_TYPE_9") {
             hasAccesibilityDeclarationPage = true;
           }
         });
 
         $scope.randomSample.webpage.forEach(function (page) {
-          if(page.pageType == "PAGE_TYPE_1"){
+          if (page.pageType == "PAGE_TYPE_1") {
             hasHomePage = true;
           }
-          if(page.pageType == "PAGE_TYPE_9"){
+          if (page.pageType == "PAGE_TYPE_9") {
             hasAccesibilityDeclarationPage = true;
           }
         });
         return hasHomePage && hasAccesibilityDeclarationPage;
       };
+
+      $scope.$on('$locationChangeStart', function (event) {
+        if ($scope.formSample.$invalid) {
+          event.preventDefault();
+          confirm($filter('translate')('SAMPLE.REQUIRED_FIELDS'))
+        }
+      });
+
     }
   );
