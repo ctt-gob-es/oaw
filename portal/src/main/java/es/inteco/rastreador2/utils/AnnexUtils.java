@@ -82,6 +82,8 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
+import es.inteco.intav.form.ObservatorySubgroupForm;
+import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
@@ -103,10 +105,6 @@ import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNEEN2019;
  */
 @SuppressWarnings("deprecation")
 public final class AnnexUtils {
-	/** The Constant LEVEL_I_GROUP_INDEX. */
-	private static final int LEVEL_I_GROUP_INDEX = 0;
-	/** The Constant LEVEL_II_GROUP_INDEX. */
-	private static final int LEVEL_II_GROUP_INDEX = 1;
 	/**
 	 * The Constant EMPTY_STRING.
 	 */
@@ -149,6 +147,12 @@ public final class AnnexUtils {
 	private static List<String> dependencies = new ArrayList<>();
 	/** The annexmap. */
 	private static Map<Long, TreeMap<String, ScoreForm>> annexmap;
+	/** The evaluation ids. */
+	private static List<Long> evaluationIds;
+	/** The observatory manager. */
+	private static es.gob.oaw.rastreador2.observatorio.ObservatoryManager observatoryManager;
+	/** The current evaluation page list. */
+	private static List<ObservatoryEvaluationForm> currentEvaluationPageList;
 
 	/**
 	 * Generate all annex.
@@ -163,7 +167,11 @@ public final class AnnexUtils {
 	public static void generateAllAnnex(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		annexmap = createAnnexMap(idObsExecution, tagsToFilter, exObsIds);
+		evaluationIds = AnalisisDatos.getEvaluationIdsFromExecutedObservatory(idObsExecution);
+		observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
+		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds);
 		createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+		createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexXLSX(messageResources, idObsExecution, idOperation);
@@ -184,15 +192,49 @@ public final class AnnexUtils {
 	 */
 	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_paginas.xml")) {
-			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer);
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas.xml")) {
+			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false);
 		} catch (Exception e) {
 			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
 
-	private static void generateXmlPages(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer)
+	/**
+	 * Creates the annex paginas.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexPaginasVerifications(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas-verificaciones.xml")) {
+			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, true);
+		} catch (Exception e) {
+			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Generate xml pages.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param tagsToFilter     the tags to filter
+	 * @param c                the c
+	 * @param writer           the writer
+	 * @param verifications    the verifications
+	 * @throws IOException  Signals that an I/O exception has occurred.
+	 * @throws SAXException the SAX exception
+	 * @throws Exception    the exception
+	 * @throws SQLException the SQL exception
+	 */
+	private static void generateXmlPages(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications)
 			throws IOException, SAXException, Exception, SQLException {
 		final ContentHandler hd = getContentHandler(writer);
 		hd.startDocument();
@@ -316,6 +358,26 @@ public final class AnnexUtils {
 									writeTag(hd, "url", pageForm.getUrl());
 									writeTag(hd, "puntuacion", pageForm.getScore());
 									writeTag(hd, "adecuacion", ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
+									if (verifications) {
+										ObservatoryEvaluationForm evaluationForm = currentEvaluationPageList.stream().filter(evaluation -> pageForm.getUrl().equals(evaluation.getUrl())).findAny()
+												.orElse(null);
+										if (evaluationForm != null) {
+											for (ObservatorySuitabilityForm suitabilityForm : evaluationForm.getGroups().get(0).getSuitabilityGroups()) {
+												int i = 1;
+												for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
+													writeTag(hd, "V_1_" + i, getModality(subgroupForm.getValue(), messageResources));
+													i++;
+												}
+											}
+											for (ObservatorySuitabilityForm suitabilityForm : evaluationForm.getGroups().get(1).getSuitabilityGroups()) {
+												int i = 1;
+												for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
+													writeTag(hd, "V_2_" + i, getModality(subgroupForm.getValue(), messageResources));
+													i++;
+												}
+											}
+										}
+									}
 									hd.endElement(EMPTY_STRING, EMPTY_STRING, "pagina");
 								}
 							}
@@ -328,6 +390,35 @@ public final class AnnexUtils {
 		}
 		hd.endElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT);
 		hd.endDocument();
+	}
+
+	/**
+	 * Gets the modality.
+	 *
+	 * @param result           the result
+	 * @param messageResources the message resources
+	 * @return the modality
+	 */
+	private static String getModality(final int result, MessageResources messageResources) {
+		final String value;
+		switch (result) {
+		case Constants.OBS_VALUE_NOT_SCORE:
+			value = "-P";
+			break;
+		case Constants.OBS_VALUE_RED_ZERO:
+			value = "0F";
+			break;
+		case Constants.OBS_VALUE_GREEN_ZERO:
+			value = messageResources.getMessage("resultados.observatorio.vista.primaria.valor.cero.pasa") + "P";
+			break;
+		case Constants.OBS_VALUE_GREEN_ONE:
+			value = "1P";
+			break;
+		default:
+			value = "-";
+			break;
+		}
+		return value;
 	}
 
 	/**
@@ -344,6 +435,26 @@ public final class AnnexUtils {
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_portales.xml")) {
 			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, false);
+		} catch (Exception e) {
+			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Creates the annex portals verification.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexPortalsVerification(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_portales_verificaciones.xml")) {
+			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, true, true);
 		} catch (Exception e) {
 			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -496,30 +607,6 @@ public final class AnnexUtils {
 						}
 					}
 					if (verifications) {
-//						ObservatoryEvaluationForm observatoryEvaluationForm = evaList.get(0);
-//						List<ObservatoryLevelForm> groups = observatoryEvaluationForm.getGroups();
-//						if (groups != null && !groups.isEmpty() && groups.size() > groupIndex) {
-//							final ObservatoryLevelForm observatoryLevelForm = groups.get(groupIndex);
-//							final Section section = PDFUtils.createSection(
-//									messageResources.getMessage("resultados.primarios.res.verificacion.tabla.title") + getPriorityName(messageResources, observatoryLevelForm.getName()), pdfTocManager.getIndex(),
-//									ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
-//							final PdfPTable table = createTablaResumenResultadosPorNivelHeader(messageResources, observatoryLevelForm.getSuitabilityGroups());
-//							int contadorPagina = 1;
-//							for (ObservatoryEvaluationForm evaluationForm : evaList) {
-//								table.addCell(PDFUtils.createTableCell(
-//										messageResources.getMessage("observatory.graphic.score.by.page.label", org.apache.commons.lang3.StringUtils.leftPad(String.valueOf(contadorPagina), 2, ' ')), Color.WHITE,
-//										ConstantsFont.ANCHOR_FONT, Element.ALIGN_CENTER, 0, "anchor_resultados_page_" + contadorPagina));
-//								for (ObservatorySuitabilityForm suitabilityForm : evaluationForm.getGroups().get(groupIndex).getSuitabilityGroups()) {
-//									for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
-//										table.addCell(createTablaResumenResultadosPorNivelCeldaValorModalidad(subgroupForm.getValue(), messageResources));
-//									}
-//								}
-//								contadorPagina++;
-//							}
-						final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromExecutedObservatory(idObsExecution);
-						final es.gob.oaw.rastreador2.observatorio.ObservatoryManager observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
-						final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds);
-						// TODO Recycle methods
 						final AnonymousResultExportPdf pdfBuilder = new AnonymousResultExportPdfUNEEN2019();
 						ScoreForm currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
 						ObservatoryEvaluationForm observatoryEvaluationForm = currentEvaluationPageList.get(0);
@@ -540,26 +627,6 @@ public final class AnnexUtils {
 		}
 		hd.endElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT);
 		hd.endDocument();
-	}
-
-	/**
-	 * Creates the annex portals verification.
-	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param idOperation      the id operation
-	 * @param tagsToFilter     the tags to filter
-	 * @param exObsIds         the ex obs ids
-	 * @throws Exception the exception
-	 */
-	public static void createAnnexPortalsVerification(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
-			throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_portales_verificaciones.xml")) {
-			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, true, true);
-		} catch (Exception e) {
-			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
 	}
 
 	/**
