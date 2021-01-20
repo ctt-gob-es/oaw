@@ -433,7 +433,7 @@ public final class AnnexUtils {
 	 */
 	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_portales.xml")) {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales.xml")) {
 			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, false);
 		} catch (Exception e) {
 			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -453,7 +453,7 @@ public final class AnnexUtils {
 	 */
 	public static void createAnnexPortalsVerification(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_portales_verificaciones.xml")) {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales-verificaciones.xml")) {
 			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, true, true);
 		} catch (Exception e) {
 			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
