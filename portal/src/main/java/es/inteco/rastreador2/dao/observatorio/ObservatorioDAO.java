@@ -146,6 +146,7 @@ public final class ObservatorioDAO {
 	 * @param page          the page
 	 * @param date          the date
 	 * @param desc          the desc
+	 * @param exObsIds      the ex obs ids
 	 * @return the fulfilled observatories
 	 * @throws SQLException the SQL exception
 	 */
@@ -208,6 +209,16 @@ public final class ObservatorioDAO {
 		return results;
 	}
 
+	/**
+	 * Gets the executed observatories from result.
+	 *
+	 * @param c       the c
+	 * @param results the results
+	 * @param rs      the rs
+	 * @param df      the df
+	 * @return the executed observatories from result
+	 * @throws SQLException the SQL exception
+	 */
 	private static void getExecutedObservatoriesFromResult(Connection c, List<ObservatorioRealizadoForm> results, ResultSet rs, DateFormat df) throws SQLException {
 		ObservatorioRealizadoForm observatorioRealizadoForm = new ObservatorioRealizadoForm();
 		observatorioRealizadoForm.setId(rs.getLong("id"));
