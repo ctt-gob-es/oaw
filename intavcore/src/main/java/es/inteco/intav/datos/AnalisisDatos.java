@@ -41,10 +41,25 @@ import es.inteco.intav.persistence.Analysis;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 
+/**
+ * The Class AnalisisDatos.
+ */
 public final class AnalisisDatos {
+	/**
+	 * Instantiates a new analisis datos.
+	 */
 	private AnalisisDatos() {
 	}
 
+	/**
+	 * Sets the analisis.
+	 *
+	 * @param connection   the connection
+	 * @param analisis     the analisis
+	 * @param cssResources the css resources
+	 * @return the int
+	 * @throws SQLException the SQL exception
+	 */
 	public static int setAnalisis(final Connection connection, final Analysis analisis, final List<CSSResource> cssResources) throws SQLException {
 		try (PreparedStatement pstmt = connection.prepareStatement(
 				"INSERT INTO tanalisis (fec_analisis, cod_url, num_duracion, nom_entidad, cod_rastreo, cod_guideline, estado, cod_fuente)" + " VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?);",
@@ -83,6 +98,14 @@ public final class AnalisisDatos {
 		}
 	}
 
+	/**
+	 * Save CSS resources.
+	 *
+	 * @param connection     the connection
+	 * @param codigoAnalisis the codigo analisis
+	 * @param cssResources   the css resources
+	 * @throws SQLException the SQL exception
+	 */
 	private static void saveCSSResources(final Connection connection, final int codigoAnalisis, final List<CSSResource> cssResources) throws SQLException {
 		try (PreparedStatement pstmt = connection.prepareStatement("INSERT INTO tanalisis_css (url, codigo, cod_analisis) VALUES (?,?,?);")) {
 			for (CSSResource cssResource : cssResources) {
@@ -105,6 +128,12 @@ public final class AnalisisDatos {
 		}
 	}
 
+	/**
+	 * Sets the analysis error.
+	 *
+	 * @param checkAccessibility the check accessibility
+	 * @return the int
+	 */
 	public static int setAnalysisError(final CheckAccessibility checkAccessibility) {
 		try (Connection conn = DataBaseManager.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(
@@ -130,6 +159,14 @@ public final class AnalisisDatos {
 		}
 	}
 
+	/**
+	 * Gets the cod guideline.
+	 *
+	 * @param connection the connection
+	 * @param guideline  the guideline
+	 * @return the cod guideline
+	 * @throws SQLException the SQL exception
+	 */
 	private static int getCodGuideline(final Connection connection, final String guideline) throws SQLException {
 		try (PreparedStatement pstmt = connection.prepareStatement("SELECT cod_guideline FROM tguidelines WHERE des_guideline = ?;")) {
 			pstmt.setString(1, getGuideline(guideline));
@@ -143,6 +180,12 @@ public final class AnalisisDatos {
 		}
 	}
 
+	/**
+	 * Update checks ejecutados.
+	 *
+	 * @param updatedChecks the updated checks
+	 * @param idAnalisis    the id analisis
+	 */
 	public static void updateChecksEjecutados(final String updatedChecks, final long idAnalisis) {
 		try (Connection conn = DataBaseManager.getConnection(); final PreparedStatement pstmt = conn.prepareStatement("UPDATE tanalisis SET CHECKS_EJECUTADOS = ? WHERE COD_ANALISIS = ?;")) {
 			pstmt.setString(1, updatedChecks);
@@ -153,6 +196,11 @@ public final class AnalisisDatos {
 		}
 	}
 
+	/**
+	 * End analysis success.
+	 *
+	 * @param eval the eval
+	 */
 	public static void endAnalysisSuccess(final Evaluation eval) {
 		try (Connection conn = DataBaseManager.getConnection();
 				final PreparedStatement pstmt = conn.prepareStatement("UPDATE tanalisis SET CHECKS_EJECUTADOS = ?, ESTADO = ? WHERE COD_ANALISIS = ?;")) {
@@ -165,6 +213,13 @@ public final class AnalisisDatos {
 		}
 	}
 
+	/**
+	 * Gets the analisis from id.
+	 *
+	 * @param conn the conn
+	 * @param id   the id
+	 * @return the analisis from id
+	 */
 	public static Analysis getAnalisisFromId(Connection conn, long id) {
 		final Analysis analisis = new Analysis();
 		// Decode base 64 cod_fuente
@@ -198,6 +253,14 @@ public final class AnalisisDatos {
 		}
 	}
 
+	/**
+	 * Gets the analysis by tracking.
+	 *
+	 * @param idTracking the id tracking
+	 * @param pagina     the pagina
+	 * @param request    the request
+	 * @return the analysis by tracking
+	 */
 	public static List<Analysis> getAnalysisByTracking(long idTracking, int pagina, HttpServletRequest request) {
 		final String query;
 		if (pagina == IntavConstants.NO_PAGINATION) {
@@ -223,6 +286,13 @@ public final class AnalisisDatos {
 		}
 	}
 
+	/**
+	 * Gets the analysis ids by tracking.
+	 *
+	 * @param conn       the conn
+	 * @param idTracking the id tracking
+	 * @return the analysis ids by tracking
+	 */
 	public static List<Long> getAnalysisIdsByTracking(final Connection conn, final long idTracking) {
 		final List<Long> results = new ArrayList<>();
 		try (PreparedStatement pstmt = conn.prepareStatement("SELECT cod_analisis FROM tanalisis WHERE cod_rastreo = ? AND checks_ejecutados IS NOT NULL")) {
@@ -238,6 +308,12 @@ public final class AnalisisDatos {
 		return results;
 	}
 
+	/**
+	 * Count analysis by tracking.
+	 *
+	 * @param idTracking the id tracking
+	 * @return the int
+	 */
 	public static int countAnalysisByTracking(long idTracking) {
 		try (Connection conn = DataBaseManager.getConnection(); PreparedStatement pstmt = conn.prepareStatement("SELECT COUNT(*) FROM tanalisis WHERE cod_rastreo = ?")) {
 			pstmt.setLong(1, idTracking);
@@ -252,6 +328,15 @@ public final class AnalisisDatos {
 		return 0;
 	}
 
+	/**
+	 * Gets the analysis list.
+	 *
+	 * @param conn     the conn
+	 * @param rs       the rs
+	 * @param language the language
+	 * @return the analysis list
+	 * @throws SQLException the SQL exception
+	 */
 	private static List<Analysis> getAnalysisList(final Connection conn, final ResultSet rs, final String language) throws SQLException {
 		final List<Analysis> listAnalysis = new ArrayList<>();
 		while (rs.next()) {
@@ -281,10 +366,40 @@ public final class AnalisisDatos {
 		return listAnalysis;
 	}
 
+	/**
+	 * Gets the evaluation ids from rastreo realizado.
+	 *
+	 * @param idRastreoRealizado the id rastreo realizado
+	 * @return the evaluation ids from rastreo realizado
+	 */
 	public static List<Long> getEvaluationIdsFromRastreoRealizado(long idRastreoRealizado) {
 		final List<Long> evaluationIds = new ArrayList<>();
 		try (Connection conn = DataBaseManager.getConnection(); PreparedStatement pstmt = conn.prepareStatement("SELECT cod_analisis FROM tanalisis t WHERE cod_rastreo = ? ORDER by cod_analisis")) {
 			pstmt.setLong(1, idRastreoRealizado);
+			try (ResultSet rs = pstmt.executeQuery()) {
+				while (rs.next()) {
+					evaluationIds.add(rs.getLong(1));
+				}
+			}
+		} catch (Exception ex) {
+			Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
+			return evaluationIds;
+		}
+		return evaluationIds;
+	}
+
+	/**
+	 * TODO Gets the evaluation ids from executed observatory.
+	 *
+	 * @param idExObs the id ex obs
+	 * @return the evaluation ids from executed observatory
+	 */
+	public static List<Long> getEvaluationIdsFromExecutedObservatory(long idExObs) {
+		final List<Long> evaluationIds = new ArrayList<>();
+		try (Connection conn = DataBaseManager.getConnection();
+				PreparedStatement pstmt = conn
+						.prepareStatement("SELECT distinct cod_analisis FROM tanalisis t WHERE cod_rastreo in (select id from rastreos_realizados where id_obs_realizado = ?) ORDER by cod_analisis")) {
+			pstmt.setLong(1, idExObs);
 			try (ResultSet rs = pstmt.executeQuery()) {
 				while (rs.next()) {
 					evaluationIds.add(rs.getLong(1));
@@ -320,6 +435,12 @@ public final class AnalisisDatos {
 		return evaluationIds;
 	}
 
+	/**
+	 * Gets the guideline.
+	 *
+	 * @param guideline the guideline
+	 * @return the guideline
+	 */
 	private static String getGuideline(final String guideline) {
 		if (guideline.contains("-nobroken")) {
 			return guideline.replace("-nobroken", "");

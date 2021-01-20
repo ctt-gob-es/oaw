@@ -127,11 +127,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					<div class="formItem">
 						<label for="url" class="control-label">
 							<strong class="labelVisu">
-								<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr>
+<%-- 								<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr> --%>
 								<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.primera" />
 							</strong>
 						</label>
-						<select required name="compareFixedFirst">
+						<select  name="compareFixedFirst">
 							<option value=""></option>
 							<logic:iterate name="<%=Constants.FULFILLED_OBSERVATORIES%>" id="fulfilledObservatory">
 								<option value="<bean:write name="fulfilledObservatory" property="id" />"><bean:write
@@ -142,11 +142,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					<div class="formItem">
 						<label for="url" class="control-label">
 							<strong class="labelVisu">
-								<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr>
+<%-- 								<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr> --%>
 								<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.anterior" />
 							</strong>
 						</label>
-						<select required name="compareFixedLast">
+						<select  name="compareFixedLast">
 							<option value=""></option>
 							<logic:iterate name="<%=Constants.FULFILLED_OBSERVATORIES%>" id="fulfilledObservatory">
 								<option value="<bean:write name="fulfilledObservatory" property="id" />"><bean:write
@@ -155,18 +155,18 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</select>
 					</div>
 				</fieldset>
-								<fieldset>
+				<fieldset>
 					<legend>
-						<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.variable" arg0="--reemplazar--"/>
+						<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.variable" arg0="--reemplazar--" />
 					</legend>
 					<div class="formItem">
 						<label for="url" class="control-label">
 							<strong class="labelVisu">
-								<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr>
+<%-- 								<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr> --%>
 								<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.primera" />
 							</strong>
 						</label>
-						<select required name="compareFixedFirst">
+						<select name="compareFixedFirst">
 							<option value=""></option>
 							<logic:iterate name="<%=Constants.FULFILLED_OBSERVATORIES%>" id="fulfilledObservatory">
 								<option value="<bean:write name="fulfilledObservatory" property="id" />"><bean:write
@@ -177,11 +177,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					<div class="formItem">
 						<label for="url" class="control-label">
 							<strong class="labelVisu">
-								<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr>
+<%-- 								<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr> --%>
 								<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.anterior" />
 							</strong>
 						</label>
-						<select required name="compareFixedLast">
+						<select name="compareFixedLast">
 							<option value=""></option>
 							<logic:iterate name="<%=Constants.FULFILLED_OBSERVATORIES%>" id="fulfilledObservatory">
 								<option value="<bean:write name="fulfilledObservatory" property="id" />"><bean:write

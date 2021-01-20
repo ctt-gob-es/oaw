@@ -24,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -67,6 +68,7 @@ import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTPlotArea;
 import org.xml.sax.ContentHandler;
@@ -78,6 +80,8 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.intav.datos.AnalisisDatos;
+import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
@@ -91,12 +95,18 @@ import es.inteco.rastreador2.export.database.form.PageForm;
 import es.inteco.rastreador2.export.database.form.SiteForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNEEN2019;
 
 /**
  * The Class AnnexUtils.
  */
 @SuppressWarnings("deprecation")
 public final class AnnexUtils {
+	/** The Constant LEVEL_I_GROUP_INDEX. */
+	private static final int LEVEL_I_GROUP_INDEX = 0;
+	/** The Constant LEVEL_II_GROUP_INDEX. */
+	private static final int LEVEL_II_GROUP_INDEX = 1;
 	/**
 	 * The Constant EMPTY_STRING.
 	 */
@@ -155,6 +165,7 @@ public final class AnnexUtils {
 		annexmap = createAnnexMap(idObsExecution, tagsToFilter, exObsIds);
 		createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+		createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexXLSX(messageResources, idObsExecution, idOperation);
 		createAnnexXLSX_Evolution(messageResources, idObsExecution, idOperation);
 		createAnnexXLSX_PerDependency(idOperation);
@@ -167,149 +178,156 @@ public final class AnnexUtils {
 	 * @param messageResources the message resources
 	 * @param idObsExecution   the id obs execution
 	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
 	 * @throws Exception the exception
 	 */
 	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_paginas.xml")) {
-			final ContentHandler hd = getContentHandler(writer);
-			hd.startDocument();
-			hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
-			final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
-			for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
-				if (categoryForm != null) {
-					for (SiteForm siteForm : categoryForm.getSiteFormList()) {
-						if (siteForm != null) {
-							final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(siteForm.getIdCrawlerSeed()));
-							// Filter by tags
-							List<String> tagList = null;
-							if (tagsToFilter != null) {
-								tagList = Arrays.asList(tagsToFilter);
-							}
-							boolean hasTags = tagList != null ? false : true;
-							if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty() && tagList != null) {
-								for (EtiquetaForm tag : semillaForm.getEtiquetas()) {
-									if (tagList.contains(String.valueOf(tag.getId()))) {
-										hasTags = true;
-										break;
-									}
-								}
-							}
-							if (hasTags) {
-								hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
-								writeTag(hd, Constants.XML_ID, String.valueOf(semillaForm.getId()));
-								writeTag(hd, NOMBRE_ELEMENT, siteForm.getName());
-								writeTag(hd, CATEGORIA_ELEMENT, semillaForm.getCategoria().getName());
-								// Multidependencia
-								StringBuilder dependencias = new StringBuilder();
-								if (semillaForm.getDependencias() != null) {
-									for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-										dependencias.append(semillaForm.getDependencias().get(i).getName());
-										if (i < semillaForm.getDependencias().size() - 1) {
-											dependencias.append("\n");
-										}
-									}
-								}
-								writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
-								writeTag(hd, Constants.XML_AMBITO, semillaForm.getAmbito().getName());
-								writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
-								// Seed tags
-								List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
-								List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
-								List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
-								List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
-								List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
-								if (etiquetas != null && !etiquetas.isEmpty()) {
-									for (EtiquetaForm tmp : etiquetas) {
-										if (tmp.getClasificacion() != null) {
-											switch (tmp.getClasificacion().getId()) {
-											case "1":
-												tagsTematica.add(tmp);
-												break;
-											case "2":
-												tagsDistribucion.add(tmp);
-												break;
-											case "3":
-												tagsRecurrencia.add(tmp);
-												break;
-											case "4":
-												tagsOtros.add(tmp);
-												break;
-											default:
-												break;
-											}
-										}
-									}
-								}
-								// 1
-								hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
-								if (!tagsTematica.isEmpty()) {
-									for (int i = 0; i < tagsTematica.size(); i++) {
-										hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
-										if (i < tagsTematica.size() - 1) {
-											hd.characters("\n".toCharArray(), 0, "\n".length());
-										}
-									}
-								}
-								hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
-								// 2
-								hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
-								if (!tagsDistribucion.isEmpty()) {
-									for (int i = 0; i < tagsDistribucion.size(); i++) {
-										hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
-										if (i < tagsDistribucion.size() - 1) {
-											hd.characters("\n".toCharArray(), 0, "\n".length());
-										}
-									}
-								}
-								hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
-								// 3
-								hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
-								if (!tagsRecurrencia.isEmpty()) {
-									for (int i = 0; i < tagsRecurrencia.size(); i++) {
-										hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
-										if (i < tagsRecurrencia.size() - 1) {
-											hd.characters("\n".toCharArray(), 0, "\n".length());
-										}
-									}
-								}
-								hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
-								// 4
-								hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
-								if (!tagsOtros.isEmpty()) {
-									for (int i = 0; i < tagsOtros.size(); i++) {
-										hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
-										if (i < tagsOtros.size() - 1) {
-											hd.characters("\n".toCharArray(), 0, "\n".length());
-										}
-									}
-								}
-								hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
-								// Num crawls
-								writeTag(hd, "paginas", String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
-								hd.startElement(EMPTY_STRING, EMPTY_STRING, "paginas", null);
-								for (PageForm pageForm : siteForm.getPageList()) {
-									if (pageForm != null) {
-										hd.startElement(EMPTY_STRING, EMPTY_STRING, "pagina", null);
-										writeTag(hd, "url", pageForm.getUrl());
-										writeTag(hd, "puntuacion", pageForm.getScore());
-										writeTag(hd, "adecuacion", ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
-										hd.endElement(EMPTY_STRING, EMPTY_STRING, "pagina");
-									}
-								}
-								hd.endElement(EMPTY_STRING, EMPTY_STRING, "paginas");
-								hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
-							}
-						}
-					}
-				}
-			}
-			hd.endElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT);
-			hd.endDocument();
+			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer);
 		} catch (Exception e) {
 			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+	}
+
+	private static void generateXmlPages(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer)
+			throws IOException, SAXException, Exception, SQLException {
+		final ContentHandler hd = getContentHandler(writer);
+		hd.startDocument();
+		hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
+		final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
+		for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
+			if (categoryForm != null) {
+				for (SiteForm siteForm : categoryForm.getSiteFormList()) {
+					if (siteForm != null) {
+						final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(siteForm.getIdCrawlerSeed()));
+						// Filter by tags
+						List<String> tagList = null;
+						if (tagsToFilter != null) {
+							tagList = Arrays.asList(tagsToFilter);
+						}
+						boolean hasTags = tagList != null ? false : true;
+						if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty() && tagList != null) {
+							for (EtiquetaForm tag : semillaForm.getEtiquetas()) {
+								if (tagList.contains(String.valueOf(tag.getId()))) {
+									hasTags = true;
+									break;
+								}
+							}
+						}
+						if (hasTags) {
+							hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
+							writeTag(hd, Constants.XML_ID, String.valueOf(semillaForm.getId()));
+							writeTag(hd, NOMBRE_ELEMENT, siteForm.getName());
+							writeTag(hd, CATEGORIA_ELEMENT, semillaForm.getCategoria().getName());
+							// Multidependencia
+							StringBuilder dependencias = new StringBuilder();
+							if (semillaForm.getDependencias() != null) {
+								for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+									dependencias.append(semillaForm.getDependencias().get(i).getName());
+									if (i < semillaForm.getDependencias().size() - 1) {
+										dependencias.append("\n");
+									}
+								}
+							}
+							writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
+							writeTag(hd, Constants.XML_AMBITO, semillaForm.getAmbito().getName());
+							writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
+							// Seed tags
+							List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+							List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+							List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+							List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+							List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+							if (etiquetas != null && !etiquetas.isEmpty()) {
+								for (EtiquetaForm tmp : etiquetas) {
+									if (tmp.getClasificacion() != null) {
+										switch (tmp.getClasificacion().getId()) {
+										case "1":
+											tagsTematica.add(tmp);
+											break;
+										case "2":
+											tagsDistribucion.add(tmp);
+											break;
+										case "3":
+											tagsRecurrencia.add(tmp);
+											break;
+										case "4":
+											tagsOtros.add(tmp);
+											break;
+										default:
+											break;
+										}
+									}
+								}
+							}
+							// 1
+							hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
+							if (!tagsTematica.isEmpty()) {
+								for (int i = 0; i < tagsTematica.size(); i++) {
+									hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
+									if (i < tagsTematica.size() - 1) {
+										hd.characters("\n".toCharArray(), 0, "\n".length());
+									}
+								}
+							}
+							hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
+							// 2
+							hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
+							if (!tagsDistribucion.isEmpty()) {
+								for (int i = 0; i < tagsDistribucion.size(); i++) {
+									hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
+									if (i < tagsDistribucion.size() - 1) {
+										hd.characters("\n".toCharArray(), 0, "\n".length());
+									}
+								}
+							}
+							hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
+							// 3
+							hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
+							if (!tagsRecurrencia.isEmpty()) {
+								for (int i = 0; i < tagsRecurrencia.size(); i++) {
+									hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
+									if (i < tagsRecurrencia.size() - 1) {
+										hd.characters("\n".toCharArray(), 0, "\n".length());
+									}
+								}
+							}
+							hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
+							// 4
+							hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
+							if (!tagsOtros.isEmpty()) {
+								for (int i = 0; i < tagsOtros.size(); i++) {
+									hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
+									if (i < tagsOtros.size() - 1) {
+										hd.characters("\n".toCharArray(), 0, "\n".length());
+									}
+								}
+							}
+							hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
+							// Num crawls
+							writeTag(hd, "paginas", String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
+							hd.startElement(EMPTY_STRING, EMPTY_STRING, "paginas", null);
+							for (PageForm pageForm : siteForm.getPageList()) {
+								if (pageForm != null) {
+									hd.startElement(EMPTY_STRING, EMPTY_STRING, "pagina", null);
+									writeTag(hd, "url", pageForm.getUrl());
+									writeTag(hd, "puntuacion", pageForm.getScore());
+									writeTag(hd, "adecuacion", ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
+									hd.endElement(EMPTY_STRING, EMPTY_STRING, "pagina");
+								}
+							}
+							hd.endElement(EMPTY_STRING, EMPTY_STRING, "paginas");
+							hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
+						}
+					}
+				}
+			}
+		}
+		hd.endElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT);
+		hd.endDocument();
 	}
 
 	/**
@@ -325,137 +343,243 @@ public final class AnnexUtils {
 	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_portales.xml")) {
-			final ContentHandler hd = getContentHandler(writer);
-			hd.startDocument();
-			hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
-			// final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution, tagsToFilter, exObsIds);
-			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
-				if (semillaForm.getId() != 0) {
-					// Filter by tags
-					List<String> tagList = null;
-					if (tagsToFilter != null) {
-						tagList = Arrays.asList(tagsToFilter);
-					}
-					boolean hasTags = tagList != null ? false : true;
-					if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty() && tagList != null) {
-						for (EtiquetaForm tag : semillaForm.getEtiquetas()) {
-							if (tagList.contains(String.valueOf(tag.getId()))) {
-								hasTags = true;
-								break;
-							}
+			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, false);
+		} catch (Exception e) {
+			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Generate xml portal.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param tagsToFilter     the tags to filter
+	 * @param c                the c
+	 * @param writer           the writer
+	 * @param verifications    the verifications
+	 * @param onlyLast         the only last
+	 * @throws SQLException the SQL exception
+	 * @throws SAXException the SAX exception
+	 * @throws IOException  Signals that an I/O exception has occurred.
+	 */
+	private static void generateXmlPortal(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications,
+			final boolean onlyLast) throws SQLException, SAXException, IOException {
+		final ContentHandler hd = getContentHandler(writer);
+		hd.startDocument();
+		hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
+		for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+			final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+			if (semillaForm.getId() != 0) {
+				// Filter by tags
+				List<String> tagList = null;
+				if (tagsToFilter != null) {
+					tagList = Arrays.asList(tagsToFilter);
+				}
+				boolean hasTags = tagList != null ? false : true;
+				if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty() && tagList != null) {
+					for (EtiquetaForm tag : semillaForm.getEtiquetas()) {
+						if (tagList.contains(String.valueOf(tag.getId()))) {
+							hasTags = true;
+							break;
 						}
 					}
-					if (hasTags) {
-						hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
-						writeTag(hd, Constants.XML_ID, String.valueOf(semillaForm.getId()));
-						writeTag(hd, NOMBRE_ELEMENT, semillaForm.getNombre());
-						writeTag(hd, CATEGORY_NAME, semillaForm.getCategoria().getName());
-						// Multidependencia
-						StringBuilder dependencias = new StringBuilder();
-						if (semillaForm.getDependencias() != null) {
-							for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-								dependencias.append(semillaForm.getDependencias().get(i).getName());
-								if (i < semillaForm.getDependencias().size() - 1) {
-									dependencias.append("\n");
+				}
+				if (hasTags) {
+					hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
+					writeTag(hd, Constants.XML_ID, String.valueOf(semillaForm.getId()));
+					writeTag(hd, NOMBRE_ELEMENT, semillaForm.getNombre());
+					writeTag(hd, CATEGORY_NAME, semillaForm.getCategoria().getName());
+					// Multidependencia
+					StringBuilder dependencias = new StringBuilder();
+					if (semillaForm.getDependencias() != null) {
+						for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+							dependencias.append(semillaForm.getDependencias().get(i).getName());
+							if (i < semillaForm.getDependencias().size() - 1) {
+								dependencias.append("\n");
+							}
+						}
+					}
+					// ambit
+					writeTag(hd, Constants.XML_AMBITO, semillaForm.getAmbito().getName());
+					writeTag(hd, Constants.XML_COMPLEJIDAD, semillaForm.getComplejidad().getName());
+					writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
+					writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
+					// Seed tags
+					List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+					List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+					List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+					List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+					List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+					if (etiquetas != null && !etiquetas.isEmpty()) {
+						for (EtiquetaForm tmp : etiquetas) {
+							if (tmp.getClasificacion() != null) {
+								switch (tmp.getClasificacion().getId()) {
+								case "1":
+									tagsTematica.add(tmp);
+									break;
+								case "2":
+									tagsDistribucion.add(tmp);
+									break;
+								case "3":
+									tagsRecurrencia.add(tmp);
+									break;
+								case "4":
+									tagsOtros.add(tmp);
+									break;
+								default:
+									break;
 								}
 							}
 						}
-						// ambit
-						writeTag(hd, Constants.XML_AMBITO, semillaForm.getAmbito().getName());
-						writeTag(hd, Constants.XML_COMPLEJIDAD, semillaForm.getComplejidad().getName());
-						writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
-						writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
-						// Seed tags
-						List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
-						List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
-						List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
-						List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
-						List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
-						if (etiquetas != null && !etiquetas.isEmpty()) {
-							for (EtiquetaForm tmp : etiquetas) {
-								if (tmp.getClasificacion() != null) {
-									switch (tmp.getClasificacion().getId()) {
-									case "1":
-										tagsTematica.add(tmp);
-										break;
-									case "2":
-										tagsDistribucion.add(tmp);
-										break;
-									case "3":
-										tagsRecurrencia.add(tmp);
-										break;
-									case "4":
-										tagsOtros.add(tmp);
-										break;
-									default:
-										break;
-									}
-								}
+					}
+					// 1
+					hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
+					if (!tagsTematica.isEmpty()) {
+						for (int i = 0; i < tagsTematica.size(); i++) {
+							hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
+							if (i < tagsTematica.size() - 1) {
+								hd.characters("\n".toCharArray(), 0, "\n".length());
 							}
 						}
-						// 1
-						hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
-						if (!tagsTematica.isEmpty()) {
-							for (int i = 0; i < tagsTematica.size(); i++) {
-								hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
-								if (i < tagsTematica.size() - 1) {
-									hd.characters("\n".toCharArray(), 0, "\n".length());
-								}
+					}
+					hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
+					// 2
+					hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
+					if (!tagsDistribucion.isEmpty()) {
+						for (int i = 0; i < tagsDistribucion.size(); i++) {
+							hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
+							if (i < tagsDistribucion.size() - 1) {
+								hd.characters("\n".toCharArray(), 0, "\n".length());
 							}
 						}
-						hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
-						// 2
-						hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
-						if (!tagsDistribucion.isEmpty()) {
-							for (int i = 0; i < tagsDistribucion.size(); i++) {
-								hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
-								if (i < tagsDistribucion.size() - 1) {
-									hd.characters("\n".toCharArray(), 0, "\n".length());
-								}
+					}
+					hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
+					// 3
+					hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
+					if (!tagsRecurrencia.isEmpty()) {
+						for (int i = 0; i < tagsRecurrencia.size(); i++) {
+							hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
+							if (i < tagsRecurrencia.size() - 1) {
+								hd.characters("\n".toCharArray(), 0, "\n".length());
 							}
 						}
-						hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
-						// 3
-						hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
-						if (!tagsRecurrencia.isEmpty()) {
-							for (int i = 0; i < tagsRecurrencia.size(); i++) {
-								hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
-								if (i < tagsRecurrencia.size() - 1) {
-									hd.characters("\n".toCharArray(), 0, "\n".length());
-								}
+					}
+					hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
+					// 4
+					hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
+					if (!tagsOtros.isEmpty()) {
+						for (int i = 0; i < tagsOtros.size(); i++) {
+							hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
+							if (i < tagsOtros.size() - 1) {
+								hd.characters("\n".toCharArray(), 0, "\n".length());
 							}
 						}
-						hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
-						// 4
-						hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
-						if (!tagsOtros.isEmpty()) {
-							for (int i = 0; i < tagsOtros.size(); i++) {
-								hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
-								if (i < tagsOtros.size() - 1) {
-									hd.characters("\n".toCharArray(), 0, "\n".length());
-								}
-							}
-						}
-						hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
-						// Num crawls
-						writeTag(hd, "paginas", String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
-						// Scores
+					}
+					hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
+					// Num crawls
+					writeTag(hd, "paginas", String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
+					// Scores
+					if (onlyLast) {
+						Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
+						final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+						writeTag(hd, "puntuacion_" + executionDateAux, entry.getValue().getTotalScore().toString());
+						writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), messageResources));
+						writeTag(hd, "cumplimiento_" + executionDateAux, entry.getValue().getCompliance());
+					} else {
 						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
 							final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
 							writeTag(hd, "puntuacion_" + executionDateAux, entry.getValue().getTotalScore().toString());
 							writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), messageResources));
 							writeTag(hd, "cumplimiento_" + executionDateAux, entry.getValue().getCompliance());
 						}
-						hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 					}
+					if (verifications) {
+//						ObservatoryEvaluationForm observatoryEvaluationForm = evaList.get(0);
+//						List<ObservatoryLevelForm> groups = observatoryEvaluationForm.getGroups();
+//						if (groups != null && !groups.isEmpty() && groups.size() > groupIndex) {
+//							final ObservatoryLevelForm observatoryLevelForm = groups.get(groupIndex);
+//							final Section section = PDFUtils.createSection(
+//									messageResources.getMessage("resultados.primarios.res.verificacion.tabla.title") + getPriorityName(messageResources, observatoryLevelForm.getName()), pdfTocManager.getIndex(),
+//									ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
+//							final PdfPTable table = createTablaResumenResultadosPorNivelHeader(messageResources, observatoryLevelForm.getSuitabilityGroups());
+//							int contadorPagina = 1;
+//							for (ObservatoryEvaluationForm evaluationForm : evaList) {
+//								table.addCell(PDFUtils.createTableCell(
+//										messageResources.getMessage("observatory.graphic.score.by.page.label", org.apache.commons.lang3.StringUtils.leftPad(String.valueOf(contadorPagina), 2, ' ')), Color.WHITE,
+//										ConstantsFont.ANCHOR_FONT, Element.ALIGN_CENTER, 0, "anchor_resultados_page_" + contadorPagina));
+//								for (ObservatorySuitabilityForm suitabilityForm : evaluationForm.getGroups().get(groupIndex).getSuitabilityGroups()) {
+//									for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
+//										table.addCell(createTablaResumenResultadosPorNivelCeldaValorModalidad(subgroupForm.getValue(), messageResources));
+//									}
+//								}
+//								contadorPagina++;
+//							}
+						final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromExecutedObservatory(idObsExecution);
+						final es.gob.oaw.rastreador2.observatorio.ObservatoryManager observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
+						final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds);
+						// TODO Recycle methods
+						final AnonymousResultExportPdf pdfBuilder = new AnonymousResultExportPdfUNEEN2019();
+						ScoreForm currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
+						ObservatoryEvaluationForm observatoryEvaluationForm = currentEvaluationPageList.get(0);
+						int i = 1;
+						for (LabelValueBean value : currentScore.getVerifications1()) {
+							writeTag(hd, "V_1_" + i, evaluateCompliance(value));
+							i++;
+						}
+						i = 1;
+						for (LabelValueBean value : currentScore.getVerifications2()) {
+							writeTag(hd, "V_2_" + i, evaluateCompliance(value));
+							i++;
+						}
+					}
+					hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 				}
 			}
-			hd.endElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT);
-			hd.endDocument();
+		}
+		hd.endElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT);
+		hd.endDocument();
+	}
+
+	/**
+	 * Creates the annex portals verification.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexPortalsVerification(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo_portales_verificaciones.xml")) {
+			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, true, true);
 		} catch (Exception e) {
 			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
+		}
+	}
+
+	/**
+	 * Evaluate compliance.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
+	private static String evaluateCompliance(final LabelValueBean value) {
+		try {
+			BigDecimal bigDecimal = new BigDecimal(value.getValue());
+			if (bigDecimal.compareTo(new BigDecimal(9)) >= 0) {
+				return "C";
+			} else if (bigDecimal.compareTo(new BigDecimal(0)) >= 0) {
+				return "NC";
+			} else {
+				return "NA";
+			}
+		} catch (NumberFormatException e) {
+			return "NA";
 		}
 	}
 
