@@ -1,7 +1,7 @@
 <div class="input-page key-value-group" ng-init="col0 = 'visible-xs col-xs-12';
-              col1 = 'col-xs-9 col-sm-3 col-md-3 form-block right-col';
+              col1 = 'col-xs-9 col-sm-3 col-md-2 form-block right-col';
               col2 = 'col-xs-9 col-sm-2 col-md-2 form-block right-col';
-              col3 = 'col-xs-9 col-sm-2 col-md-2 form-block right-col';
+              col3 = 'col-xs-9 col-sm-2 col-md-3 form-block right-col';
               col4 = 'col-xs-9 col-sm-2 col-md-2 form-block right-col';
               col5 = 'col-xs-9 col-sm-2 col-md-2 form-block right-col';
               col6 = 'col-sm-1 form-block remove-button';
@@ -9,23 +9,38 @@
 
   <header class="row hidden-xs form-block-head" aria-hidden="true">
     <div ng-class="col1">
-      {{ 'SAMPLE.LABEL_HANDLE' | translate}}
+      {{ 'SAMPLE.LABEL_HANDLE' | translate}}&nbsp;*
     </div>
     <div ng-class="col2">
-      {{ 'SAMPLE.LABEL_TYPE' | translate}}</div>
+      {{ 'SAMPLE.LABEL_TYPE' | translate}}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+      target="inf_page_type" title="{{ 'SAMPLE.HD_STRUCT_SAMPLE_SUB' | translate }}"></info-button>
+    </div>
     <div ng-class="col3">
-      {{ 'SAMPLE.LABEL_PAGE' | translate}}</div>
+      {{ 'SAMPLE.LABEL_PAGE' | translate}}&nbsp;*
+    </div>
     <div ng-class="col4">
-      {{ 'SAMPLE.LABEL_BREADCRUMB' | translate}}</div>
+      {{ 'SAMPLE.LABEL_BREADCRUMB' | translate}}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+      target="inf_page_breadcrumb" title="{{ 'SAMPLE.HD_STRUCT_SAMPLE_SUB' | translate }}"></info-button>
+    </div>
     <div ng-class="col5">
       {{ 'SAMPLE.LABEL_ELEMENTS' | translate}}</div>
   </header>
 
-  <p ng-if="pages.length === 0" class="appear no-selection"><em>
+  <p ng-if="pages.length === 0" class="appear no-selection alert alert-info"><em>
       {{ 'SAMPLE.NO_PAGES_DEFINED' | translate}}
     </em></p>
 
   <fieldset class="row form-group-inline appear" ng-repeat="page in pages">
+
+    <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" ref="inf_page_type">
+      <p ng-bind-html="'SAMPLE.PAGE_TYPE_INFO' | translate"></p>
+    </info-field>
+
+    <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" ref="inf_page_breadcrumb">
+      <p ng-bind-html="'SAMPLE.PAGE_BREADCRUMB_INFO_1' | translate"></p>
+      <p ng-bind-html="'SAMPLE.PAGE_BREADCRUMB_INFO_2' | translate"></p>
+    </info-field>
+
     <legend ng-class="col0">
       {{ 'SAMPLE.ITEM' | translate }} {{$index+1}}
     </legend>
@@ -35,47 +50,67 @@
       {{ 'SAMPLE.LABEL_PAGE' | translate }}:
     </label>
     <div ng-class="col1">
-      <input type="text" class="form-control" id="struct_{{$index}}_{{$id}}" ng-model="page.title"
-        shy-placeholder="'SAMPLE.PLH_TITLE' | translate">
+      <input type="text" ng-class="!isValid(page.title) ? 'form-control invalid' : 'form-control'" id="struct_{{$index}}_{{$id}}" ng-model="page.title"
+        shy-placeholder="'SAMPLE.PLH_TITLE' | translate" ng-required="true">
+      <div class="invalid-feedback" ng-if="!isValid(page.title)">
+        {{'SAMPLE.REQUIRED_FIELD' | translate}}
+      </div>
     </div>
 
     <label ng-class="colHide" for="struct_{{$index}}_{{$id}}">
-      {{ 'SAMPLE.LABEL_TYPE' | translate }}:
+      {{ 'SAMPLE.LABEL_TYPE' | translate }}: 
     </label>
+
+
     <div ng-class="col2">
-        <select name="pageType" id="pageType" ng-model="page.pageType" class="form-control">
-          <option value=""></option> <!-- not selected / blank option -->
-          <option value="PAGE_TYPE_1">{{'SAMPLE.PAGE_TYPE_1' | translate}}</option>
-          <option value="PAGE_TYPE_2">{{'SAMPLE.PAGE_TYPE_2' | translate}}</option>
-          <option value="PAGE_TYPE_3">{{'SAMPLE.PAGE_TYPE_3' | translate}}</option>
-          <option value="PAGE_TYPE_4">{{'SAMPLE.PAGE_TYPE_4' | translate}}</option>
-          <option value="PAGE_TYPE_5">{{'SAMPLE.PAGE_TYPE_5' | translate}}</option>
-          <option value="PAGE_TYPE_6">{{'SAMPLE.PAGE_TYPE_6' | translate}}</option>
-          <option value="PAGE_TYPE_7">{{'SAMPLE.PAGE_TYPE_7' | translate}}</option>
-          <option value="PAGE_TYPE_8">{{'SAMPLE.PAGE_TYPE_8' | translate}}</option>
-          <option value="PAGE_TYPE_9">{{'SAMPLE.PAGE_TYPE_9' | translate}}</option>
-          <option value="PAGE_TYPE_10">{{'SAMPLE.PAGE_TYPE_10' | translate}}</option>
-          <option value="PAGE_TYPE_11">{{'SAMPLE.PAGE_TYPE_11' | translate}}</option>
-          <option value="PAGE_TYPE_12">{{'SAMPLE.PAGE_TYPE_12' | translate}}</option>
-          <option value="PAGE_TYPE_13">{{'SAMPLE.PAGE_TYPE_13' | translate}}</option>
-          <option value="PAGE_TYPE_14">{{'SAMPLE.PAGE_TYPE_14' | translate}}</option>
-        </select><br>
+      <select name="pageType" id="pageType" ng-model="page.pageType" ng-class="!isValid(page.pageType) ? 'form-control invalid' : 'form-control'" ng-required="true">
+        <option value=""></option> <!-- not selected / blank option -->
+        <option value="PAGE_TYPE_1">{{'SAMPLE.PAGE_TYPE_1' | translate}}</option>
+        <option value="PAGE_TYPE_2">{{'SAMPLE.PAGE_TYPE_2' | translate}}</option>
+        <option value="PAGE_TYPE_3">{{'SAMPLE.PAGE_TYPE_3' | translate}}</option>
+        <option value="PAGE_TYPE_4">{{'SAMPLE.PAGE_TYPE_4' | translate}}</option>
+        <option value="PAGE_TYPE_5">{{'SAMPLE.PAGE_TYPE_5' | translate}}</option>
+        <option value="PAGE_TYPE_6">{{'SAMPLE.PAGE_TYPE_6' | translate}}</option>
+        <option value="PAGE_TYPE_7">{{'SAMPLE.PAGE_TYPE_7' | translate}}</option>
+        <option value="PAGE_TYPE_8">{{'SAMPLE.PAGE_TYPE_8' | translate}}</option>
+        <option value="PAGE_TYPE_9">{{'SAMPLE.PAGE_TYPE_9' | translate}}</option>
+        <option value="PAGE_TYPE_10">{{'SAMPLE.PAGE_TYPE_10' | translate}}</option>
+        <option value="PAGE_TYPE_11">{{'SAMPLE.PAGE_TYPE_11' | translate}}</option>
+        <option value="PAGE_TYPE_12">{{'SAMPLE.PAGE_TYPE_12' | translate}}</option>
+        <option value="PAGE_TYPE_13">{{'SAMPLE.PAGE_TYPE_13' | translate}}</option>
+        <option value="PAGE_TYPE_14">{{'SAMPLE.PAGE_TYPE_14' | translate}}</option>
+      </select>
+      <div class="invalid-feedback" ng-if="!isValid(page.pageType)">
+        {{'SAMPLE.REQUIRED_FIELD' | translate}}
+      </div>
     </div>
+
+
 
     <label ng-class="colHide" for="rand_page_desc_{{$index}}_{{$id}}">
       {{'SAMPLE.LABEL_HANDLE' | translate}}:
     </label>
     <div ng-class="col3">
-      <input type="text" class="form-control" id="rand_page_desc_{{$index}}_{{$id}}" ng-model="page.description"
-        ng-blur="processPage(page)" shy-placeholder="'SAMPLE.PLH_PAGE_URL' | translate">
+      <input type="text" ng-class="!isValid(page.description) ? 'form-control invalid' : 'form-control'" id="rand_page_desc_{{$index}}_{{$id}}"
+        ng-model="page.description" ng-blur="processPage(page)" shy-placeholder="'SAMPLE.PLH_PAGE_URL' | translate"
+        ng-required="true">
+        <div class="invalid-feedback" ng-if="!isValid(page.description)">
+          {{'SAMPLE.REQUIRED_FIELD' | translate}}
+        </div>
     </div>
 
     <label ng-class="colHide" for="rand_page_desc_{{$index}}_{{$id}}">
       {{'SAMPLE.LABEL_BREADCRUMB' | translate}}:
     </label>
+
+
     <div ng-class="col4">
-      <input type="text" class="form-control" id="rand_page_desc_{{$index}}_{{$id}}" ng-model="page.breadcrumb"
-        ng-blur="processPage(page)" shy-placeholder="'SAMPLE.PLH_BREADCRUMB' | translate">
+      <input type="text" ng-class="!isValid(page.breadcrumb) ? 'form-control invalid' : 'form-control'" id="rand_page_desc_{{$index}}_{{$id}}" ng-model="page.breadcrumb"
+         ng-blur="processPage(page)" shy-placeholder="'SAMPLE.PLH_BREADCRUMB' | translate"
+        ng-required="true">
+        <div class="invalid-feedback" ng-if="!isValid(page.breadcrumb)">
+          {{'SAMPLE.REQUIRED_FIELD' | translate}}
+        </div>
     </div>
 
     <label ng-class="colHide" for="rand_page_desc_{{$index}}_{{$id}}">
@@ -97,6 +132,8 @@
       </button>
     </div>
   </fieldset>
+
+  <p>{{ 'AUDIT.REQUIRED_FIELD_INFO' | translate }}</p>
 
   <button ng-click="addPage($event)" class="btn btn-default">
     <span class="glyphicon glyphicon-plus-sign"></span>

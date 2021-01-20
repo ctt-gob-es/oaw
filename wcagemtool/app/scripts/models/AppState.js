@@ -37,11 +37,11 @@ angular.module('wcagReporter')
           route: '/evaluation/audit',
           copmlete: false
         },
-        {
-          name: 'report',
-          route: '/evaluation/report',
-          copmlete: false
-        },
+        // {
+        //   name: 'report',
+        //   route: '/evaluation/report',
+        //   copmlete: false
+        // },
         {
           name: 'viewReport',
           route: '/view_report',

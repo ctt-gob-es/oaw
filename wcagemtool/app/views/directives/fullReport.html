@@ -1,12 +1,12 @@
 <div id="final_report" class="row">
   <h1>{{report.title}}</h1>
-  <p><em>
+  <!-- <p><em>
     {{'HTML_REPORT.BY' | translate }} {{report.creator.name}},
     {{report.date | date: shortDate}}
-  </em></p>
-  <p><em>
+  </em></p> -->
+  <!-- <p><em>
     {{'HTML_REPORT.COMMISION_BY' | translate }} {{report.commissioner}}
-  </em></p>
+  </em></p> -->
 
   <h2>{{'HTML_REPORT.HD_SUMMARY'| translate}}</h2>
   <div data-ng-bind-html="report.summary | txtToHtml"></div>
@@ -14,8 +14,8 @@
   <h2>{{'HTML_REPORT.HD_SCOPE' | translate }}</h2>
   <div data-ng-include data-src="'views/report/scope.html'"></div>
 
-  <h2>{{'HTML_REPORT.HD_SCORE' | translate }}</h2>
-  <div data-ng-include data-src="'views/report/score.html'"></div>
+  <!-- <h2>{{'HTML_REPORT.HD_SCORE' | translate }}</h2>
+  <div data-ng-include data-src="'views/report/score.html'"></div> -->
 
   <h2>{{ 'HTML_REPORT.HD_CRITERIA_REPORT' | translate }}</h2>
   <div data-ng-include data-src="'views/report/findings.html'"></div>

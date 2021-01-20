@@ -19,12 +19,12 @@
     "WZRD_VIEWREPORT": " Ver Informe",
     "PREV_STEP": "Paso previo",
     "NEXT_STEP": "Próximo paso",
-    "STEP_START": "Iniciar",
+    "STEP_START": "Inicio",
     "STEP_SCOPE": "Definir el alcance",
     "STEP_EXPLORE": "Explorar el sitio web",
     "STEP_SAMPLE": "Seleccionar muestra",
-    "STEP_AUDIT": "Muestra",
-    "STEP_REPORT": "Informe",
+    "STEP_AUDIT": "Auditoría de la Muestra",
+    "STEP_REPORT": "Ver informe",
     "STEP_VIEWREPORT": "Ver informe",
     "BTN_BACK_TO_EVAL": "Atrás"
 }

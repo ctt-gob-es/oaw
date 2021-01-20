@@ -2,8 +2,7 @@
 
 angular.module('wcagReporter')
   .service('evalScopeModel', function (
-    thematicScopes,
-    evalSampleModel
+    thematicScopes
   ) {
     var scopeModel = {
       type: 'EvaluationScope',
@@ -70,10 +69,6 @@ angular.module('wcagReporter')
         accessibilitySupportBaseline: scopeModel.accessibilitySupportBaseline,
         reliedUponThematic: scopeModel.reliedUponThematic
       };
-    };
-
-    scopeModel.importData = function (evalData) {
-      scopeModel.reliedUponThematic = evalData.evaluationScope.reliedUponThematic;
     };
 
     scopeModel.wcagVersionOptions = [

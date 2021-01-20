@@ -55,6 +55,13 @@ angular.module('wcagReporter')
               .focus();
           });
         };
+
+        scope.isValid = function(fieldValue){
+          if(typeof fieldValue === 'undefined' || fieldValue.length === 0 ){
+            return false;
+          }
+          return true;
+        }
       },
       templateUrl: 'views/directives/evaluate/inputPages.html'
     });
