@@ -17,3 +17,5 @@ INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES (
 ALTER TABLE `tanalisis_accesibilidad` ADD `COD_FUENTE` MEDIUMTEXT;
 
 ALTER TABLE `observatorios_realizados` ADD `tags` TEXT NULL;
+
+UPDATE observatorios_realizados obr SET obr.tags = (SELECT ob.tags from observatorio ob where ob.id_observatorio = obr.id_observatorio)

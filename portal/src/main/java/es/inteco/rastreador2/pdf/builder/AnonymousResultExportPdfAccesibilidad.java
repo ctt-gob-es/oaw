@@ -221,6 +221,10 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 		boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.bold"));
 		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p1"), boldWords, ConstantsFont.paragraphBoldFont,
 				ConstantsFont.PARAGRAPH, true));
+		final com.itextpdf.text.List listHT = new com.itextpdf.text.List();
+		PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.intro.how.p1.accesibility.list1"), listHT, ConstantsFont.PARAGRAPH, true, true, Paragraph.ALIGN_JUSTIFIED);
+		PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.intro.how.p1.accesibility.list2"), listHT, ConstantsFont.PARAGRAPH, true, true, Paragraph.ALIGN_JUSTIFIED);
+		section.add(listHT);
 		// P2
 		PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p2"), ConstantsFont.PARAGRAPH, section);
 		// P3
