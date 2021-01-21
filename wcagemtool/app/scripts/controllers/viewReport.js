@@ -179,6 +179,7 @@ angular.module('wcagReporter')
         $http.get($scope.exportJsonUrl, {}).then(function onSuccess(response) {
           $http({
             //url: 'http://localhost:9001/xlsx',
+          
             url: $location.protocol() + "://" + $location.host() + ':' + $location.port() + "/xlsx",
             method: "POST",
             data: response,
