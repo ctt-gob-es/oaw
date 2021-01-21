@@ -10,9 +10,10 @@
 
   <form>
 
+
     <div class="form-group">
       <label for="ura-name">
-        {{ 'SCOPE.URA_NAME_LABEL' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+        {{ 'SCOPE.URA_NAME_LABEL' | translate }}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
           target="ura_name" title="{{ 'SCOPE.URA_NAME_LABEL' | translate }}"></info-button>
       </label>
 
@@ -21,14 +22,13 @@
       </info-field>
 
       <input ng-model="scopeModel.website.uraName" type="text" class="form-control" id="ura-name">
+      
     </div>
-
-
 
     <div class="form-group">
 
       <label for="ura-dir3">
-        {{ 'SCOPE.URA_DIR3_LABEL' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+        {{ 'SCOPE.URA_DIR3_LABEL' | translate }}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
           target="ura_dir3" title="{{ 'SCOPE.URA_DIR3_LABEL' | translate }}"></info-button>
       </label>
 
@@ -41,7 +41,7 @@
 
     <div class="form-group">
       <label for="ura-dir3">
-        {{ 'SCOPE.URA_SCOPE_LABEL' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+        {{ 'SCOPE.URA_SCOPE_LABEL' | translate }}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
           target="ura_scope" title="{{ 'SCOPE.URA_SCOPE_LABEL' | translate }}"></info-button>
       </label>
 
@@ -55,7 +55,7 @@
 
     <div class="form-group">
       <label for="ura-dir3">
-        {{ 'SCOPE.URA_SCOPE_DIR3_LABEL' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+        {{ 'SCOPE.URA_SCOPE_DIR3_LABEL' | translate }}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
           target="scope_dir3" title="{{ 'SCOPE.URA_SCOPE_DIR3_LABEL' | translate }}"></info-button>
       </label>
 
@@ -68,7 +68,7 @@
 
     <div class="form-group">
       <label for="ura-dir3">
-        {{ 'SCOPE.RESPONSIVE_ENTIY_LABEL' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+        {{ 'SCOPE.RESPONSIVE_ENTIY_LABEL' | translate }}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
           target="inf_site_responsibleEntity" title="{{ 'SCOPE.RESPONSIVE_ENTIY_LABEL' | translate }}"></info-button>
       </label>
 
@@ -84,7 +84,7 @@
 
     <div class="form-group">
       <label for="ura-dir3">
-        {{ 'SCOPE.RESPONSIVE_ENTIY_DIR3_LABEL' | translate }}&nbsp;<info-button
+        {{ 'SCOPE.RESPONSIVE_ENTIY_DIR3_LABEL' | translate }}&nbsp;*&nbsp;<info-button
           label="{{'COMMON.BTN_INFO' | translate}}" target="inf_site_responsibleEntityDIR3"
           title="{{ 'SCOPE.RESPONSIVE_ENTIY_DIR3_LABEL' | translate }}"></info-button>
       </label>
@@ -100,7 +100,7 @@
 
     <div class="form-group">
       <label for="ura-dir3">
-        {{ 'SCOPE.RESPONSIVE_PERSON_LABEL' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+        {{ 'SCOPE.RESPONSIVE_PERSON_LABEL' | translate }}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
           target="inf_site_responsiblePerson" title="{{ 'SCOPE.RESPONSIVE_PERSON_LABEL' | translate }}"></info-button>
       </label>
 
@@ -115,7 +115,7 @@
 
     <div class="form-group">
       <label for="typology">
-        {{ 'SCOPE.TYPOLOGY_LABEL' | translate }}
+        {{ 'SCOPE.TYPOLOGY_LABEL' | translate }}&nbsp;*
       </label>
 
       <select id="typology" class="form-control" ng-options="key as value for (key,value) in typologyOptions"
@@ -124,7 +124,7 @@
 
     <div class="form-group">
       <label for="site-name">
-        {{ 'SCOPE.LABEL_SITE_NAME' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+        {{ 'SCOPE.LABEL_SITE_NAME' | translate }}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
           target="inf_site_name" title="{{ 'SCOPE.LABEL_SITE_NAME' | translate }}"></info-button>
       </label>
 
@@ -139,7 +139,7 @@
 
     <div class="form-group">
       <label for="site-Identifica la URL del sitio web">
-        {{ 'SCOPE.LABEL_SITE_URL' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+        {{ 'SCOPE.LABEL_SITE_URL' | translate }}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
           target="inf_site_url" title="{{ 'SCOPE.LABEL_SITE_URL' | translate }}"></info-button>
       </label>
 
@@ -152,7 +152,7 @@
 
     <div class="form-group">
       <label for="website_scope">
-        {{ 'SCOPE.LABEL_SITE_SCOPE' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+        {{ 'SCOPE.LABEL_SITE_SCOPE' | translate }}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
           target="inf_site_scope" title="{{ 'SCOPE.LABEL_SITE_SCOPE' | translate }}"></info-button>
       </label>
 
@@ -188,7 +188,7 @@
 
     <div class="form-group">
       <label for="basicFunctionality">
-        {{ 'SCOPE.BASIC_FUNCTIONALITY_LABEL' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+        {{ 'SCOPE.BASIC_FUNCTIONALITY_LABEL' | translate }}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
           target="inf_basicFunctionality" title="{{ 'SCOPE.BASIC_FUNCTIONALITY_LABEL' | translate }}"></info-button>
       </label>
 
@@ -205,7 +205,7 @@
 
     <div class="form-group">
       <label for="revisionDate">
-        {{ 'SCOPE.REVISION_DATE_LABEL' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+        {{ 'SCOPE.REVISION_DATE_LABEL' | translate }}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
           target="inf_revisionDate" title="{{ 'SCOPE.REVISION_DATE_LABEL' | translate }}">
         </info-button>
       </label>
@@ -222,7 +222,7 @@
 
     <div class="form-group">
       <label for="version_target">
-        {{ 'SCOPE.LABEL_WCAG_VERSION' | translate }}
+        {{ 'SCOPE.LABEL_WCAG_VERSION' | translate }}&nbsp;*
         <info-button label="{{'COMMON.BTN_INFO' | translate}}" target="info_wcag_version"
           title="{{ 'SCOPE.LABEL_VERSION' | translate }}"></info-button>
       </label>
@@ -237,7 +237,7 @@
 
     <div class="form-group">
       <label for="conformance_target">
-        {{ 'SCOPE.LABEL_CONFORMANCE_TGT' | translate }}&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
+        {{ 'SCOPE.LABEL_CONFORMANCE_TGT' | translate }}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
           target="inf_conf_tgt" title="{{ 'SCOPE.LABEL_CONFORMANCE_TGT' | translate }}"></info-button>
       </label>
 
@@ -273,7 +273,7 @@
 
     <div class="form-group">
       <label for="territorialScope">
-        {{ 'SCOPE.TERRITORIAL_SCOPE_LABEL' | translate }}
+        {{ 'SCOPE.TERRITORIAL_SCOPE_LABEL' | translate }}&nbsp;*
       </label>
 
       <select id="territorialScope" class="form-control"
@@ -283,7 +283,7 @@
 
     <div class="form-group">
       <label for="territorialScope">
-        {{ 'SCOPE.THEMATIC_SCOPE_LABEL' | translate }} <info-button label="{{'COMMON.BTN_INFO' | translate}}"
+        {{ 'SCOPE.THEMATIC_SCOPE_LABEL' | translate }}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
           target="thematic_info" title="{{ 'SCOPE.LABEL_VERSION' | translate }}"></info-button>
       </label>
 
@@ -308,7 +308,7 @@
 
     <div class="form-group">
       <label for="evaluationType">
-        {{ 'SCOPE.EVALUATION_TYPE_LABEL' | translate }}
+        {{ 'SCOPE.EVALUATION_TYPE_LABEL' | translate }}&nbsp;*
       </label>
 
       <select id="evaluationType" class="form-control"
@@ -369,6 +369,9 @@
       <textarea ng-model="scopeModel.additionalEvalRequirement" id="additional_requirements" class="form-control"
         auto-resize cols="40" rows="5"></textarea>
     </div>
+
+    <p>{{ 'AUDIT.REQUIRED_FIELD_INFO' | translate }}</p>
+
   </form>
 </main>
 
