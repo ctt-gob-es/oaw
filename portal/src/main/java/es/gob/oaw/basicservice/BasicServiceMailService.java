@@ -124,8 +124,10 @@ public class BasicServiceMailService {
 		final String text;
 		String complexName = "";
 		if (basicServiceForm.isContentAnalysis()) {
+			final String irap = "true".equalsIgnoreCase(basicServiceForm.getDepthReport()) ? pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.yes")
+					: pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.no");
 			text = MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory.content"), basicServiceForm.getUser(),
-					reportToString(basicServiceForm.getReport()));
+					reportToString(basicServiceForm.getReport()), irap);
 		} else {
 			if ("0".equals(basicServiceForm.getComplexity())) {
 				basicServiceForm.setAmplitud("-");
