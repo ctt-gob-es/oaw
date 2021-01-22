@@ -125,15 +125,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<bean:message key="report.config.etiquetas.filter.title" />
 					</legend>
 					<div class="formItem">
-						<label for="url" class="control-label">
-							<strong class="labelVisu">
-								<bean:message key="report.config.tags.title" />
-							</strong>
-						</label>
 						<logic:iterate name="tagList" id="tag">
-							<input type="checkbox" value="<c:out value="${tag.id}" />" name="tags" id="check_<c:out value="${tag.id}" />"
-								class="checkTag">
-							<bean:write name="tag" property="name" />
+							<div class="tagList">
+								<input type="checkbox" value="<c:out value="${tag.id}" />" name="tags" id="check_<c:out value="${tag.id}" />"
+									class="checkTag">
+								<bean:write name="tag" property="name" />
+							</div>
 						</logic:iterate>
 					</div>
 					<p class="alert alert-info">
