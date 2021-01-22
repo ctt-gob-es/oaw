@@ -105,12 +105,12 @@ angular.module('wcagReporter')
         return hasHomePage && hasAccesibilityDeclarationPage;
       };
 
-      $scope.$on('$locationChangeStart', function (event) {
+      /*$scope.$on('$locationChangeStart', function (event) {
         if ($scope.formSample.$invalid) {
           event.preventDefault();
           confirm($filter('translate')('SAMPLE.REQUIRED_FIELDS'))
         }
-      });
+      });*/
 
     }
   );
