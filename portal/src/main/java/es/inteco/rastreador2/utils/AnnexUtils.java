@@ -92,6 +92,7 @@ import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.export.database.form.CategoryForm;
+import es.inteco.rastreador2.export.database.form.ComparisionForm;
 import es.inteco.rastreador2.export.database.form.ObservatoryForm;
 import es.inteco.rastreador2.export.database.form.PageForm;
 import es.inteco.rastreador2.export.database.form.SiteForm;
@@ -162,10 +163,11 @@ public final class AnnexUtils {
 	 * @param idOperation      the id operation
 	 * @param tagsToFilter     the tags to filter
 	 * @param exObsIds         the ex obs ids
+	 * @param comparision      the comparision
 	 * @throws Exception the exception
 	 */
-	public static void generateAllAnnex(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
-			throws Exception {
+	public static void generateAllAnnex(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds,
+			final List<ComparisionForm> comparision) throws Exception {
 		annexmap = createAnnexMap(idObsExecution, tagsToFilter, exObsIds);
 		evaluationIds = AnalisisDatos.getEvaluationIdsFromExecutedObservatory(idObsExecution);
 		observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
@@ -174,8 +176,9 @@ public final class AnnexUtils {
 		createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+		// TODO Add comparision
 		createAnnexXLSX(messageResources, idObsExecution, idOperation);
-		createAnnexXLSX_Evolution(messageResources, idObsExecution, idOperation);
+		createAnnexXLSX_Evolution(messageResources, idObsExecution, idOperation, comparision);
 		createAnnexXLSX_PerDependency(idOperation);
 		createComparativeSuitabilitieXLSX(messageResources, idObsExecution, idOperation);
 	}
@@ -815,9 +818,10 @@ public final class AnnexUtils {
 	 * @param messageResources the message resources
 	 * @param idObsExecution   the id obs execution
 	 * @param idOperation      the id operation
+	 * @param comparision      the comparision
 	 * @throws Exception the exception
 	 */
-	public static void createAnnexXLSX_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+	public static void createAnnexXLSX_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision) throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "Adecuación de SW por segmentos con evolutivo.xlsx")) {
 			XSSFWorkbook wb = new XSSFWorkbook();
 			XSSFSheet sheet = wb.createSheet("Resultados");
@@ -1073,6 +1077,8 @@ public final class AnnexUtils {
 				}
 			}
 			// Loop to insert puntuation evolution.
+			// TODO ADD comparision
+			// To select comparision column in comparision object, check if seed has tagId of comparision to select column by date
 			ColumnNames.add("evol_puntuacion_ant");
 			XSSFRow headerRow = sheet.getRow(0);
 			XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
@@ -1102,6 +1108,7 @@ public final class AnnexUtils {
 				rowIndex++;
 			}
 			// Loop to insert adecuation evolution.
+			// TODO ADD comparision
 			ColumnNames.add("evol_adecuacion_ant");
 			headerRow = sheet.getRow(0);
 			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
