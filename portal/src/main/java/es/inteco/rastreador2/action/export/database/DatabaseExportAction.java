@@ -18,8 +18,10 @@ package es.inteco.rastreador2.action.export.database;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,18 +37,24 @@ import org.apache.struts.action.ActionMessages;
 import org.apache.struts.util.MessageResources;
 import org.apache.struts.util.PropertyMessageResources;
 
+import com.google.gson.Gson;
+
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.observatorio.ResultadosObservatorioAction;
+import es.inteco.rastreador2.action.observatorio.SemillasObservatorioAction;
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
+import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.dao.export.database.Category;
 import es.inteco.rastreador2.dao.export.database.Observatory;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
+import es.inteco.rastreador2.export.database.form.ComparisionForm;
 import es.inteco.rastreador2.manager.BaseManager;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
 import es.inteco.rastreador2.manager.export.database.DatabaseExportManager;
@@ -88,14 +96,28 @@ public class DatabaseExportAction extends Action {
 						if (exObsIds == null) {
 							exObsIds = new String[] { request.getParameter(Constants.ID_EX_OBS) };
 						}
+						// if has tags (ids) check if has request params like fisrt_{idtag}, previous_{idtag}
+						List<ComparisionForm> comparision = null;
+						if (tagsToFilter.length > 0) {
+							comparision = new ArrayList<>();
+							for (String tagId : tagsToFilter) {
+								ComparisionForm c = new ComparisionForm();
+								c.setIdTag(Integer.parseInt(tagId));
+								c.setFirst(request.getParameter("first_" + tagId));
+								c.setPrevious(request.getParameter("previous_" + tagId));
+								comparision.add(c);
+							}
+						}
 						// Export all??
 						export(mapping, request);
-						getAnnexes(mapping, request, response, tagsToFilter, exObsIds);
+						getAnnexes(mapping, request, response, tagsToFilter, exObsIds, comparision);
 					} else if (request.getParameter(Constants.ACTION).equals(Constants.CONFIRM)) {
 						Connection connection = DataBaseManager.getConnection();
 						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
 						DataBaseManager.closeConnection(connection);
 						return confirm(mapping, request);
+					} else if (request.getParameter(Constants.ACTION).equals("observatoriesByTag")) {
+						observatoriesByTag(mapping, form, request, response);
 					}
 				}
 			} catch (Exception e) {
@@ -191,8 +213,10 @@ public class DatabaseExportAction extends Action {
 	private ActionForward confirm(ActionMapping mapping, HttpServletRequest request) throws Exception {
 		final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 		try (Connection c = DataBaseManager.getConnection()) {
+			final List<EtiquetaForm> tagList = EtiquetaDAO.getAllEtiquetasClasification(c, 3);
 			final ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
 			request.setAttribute(Constants.OBSERVATORY_FORM, observatorioForm);
+			request.setAttribute("tagList", tagList);
 		} catch (Exception e) {
 			Logger.putLog("Error en la confirmación para exportar los resultados del observatorio: ", DatabaseExportAction.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -203,14 +227,17 @@ public class DatabaseExportAction extends Action {
 	/**
 	 * Gets the annexes.
 	 *
-	 * @param mapping  the mapping
-	 * @param request  the request
-	 * @param response the response
+	 * @param mapping      the mapping
+	 * @param request      the request
+	 * @param response     the response
+	 * @param tagsToFilter the tags to filter
+	 * @param exObsIds     the ex obs ids
+	 * @param comparision  the comparision TODO Apply
 	 * @return the annexes
 	 * @throws Exception the exception
 	 */
-	private ActionForward getAnnexes(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response, final String[] tagsToFilter, final String[] exObsIds)
-			throws Exception {
+	private ActionForward getAnnexes(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response, final String[] tagsToFilter, final String[] exObsIds,
+			final List<ComparisionForm> comparision) throws Exception {
 		try {
 			final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 			final Long idOperation = System.currentTimeMillis();
@@ -223,12 +250,6 @@ public class DatabaseExportAction extends Action {
 				resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 			}
 			AnnexUtils.generateAllAnnex(resources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			AnnexUtils.createAnnexPaginas(resources, idObsExecution, idOperation);
-//			AnnexUtils.createAnnexPortales(resources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			AnnexUtils.createAnnexXLSX(resources, idObsExecution, idOperation);
-//			AnnexUtils.createAnnexXLSX_Evolution(resources, idObsExecution, idOperation);
-//			AnnexUtils.createAnnexXLSX_PerDependency(idOperation);
-//			AnnexUtils.createComparativeSuitabilitieXLSX(resources, idObsExecution, idOperation);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
 			final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";
@@ -244,5 +265,30 @@ public class DatabaseExportAction extends Action {
 			// return getFulfilledObservatories(mapping, request);
 			return mapping.findForward(Constants.ERROR);
 		}
+	}
+
+	/**
+	 * Observatories by tag.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	public ActionForward observatoriesByTag(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		long idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
+		String tagId = request.getParameter("tagId");
+		try (Connection c = DataBaseManager.getConnection()) {
+			String jsonObservatories = new Gson().toJson(ObservatorioDAO.getFulfilledObservatoriesByTag(c, idObservatory, -1, null, false, null, tagId));
+			PrintWriter pw = response.getWriter();
+			pw.write(jsonObservatories);
+			pw.flush();
+			pw.close();
+		} catch (Exception e) {
+			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return null;
 	}
 }

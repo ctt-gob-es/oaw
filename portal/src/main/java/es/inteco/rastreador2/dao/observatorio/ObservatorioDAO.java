@@ -210,6 +210,80 @@ public final class ObservatorioDAO {
 	}
 
 	/**
+	 * Gets the fulfilled observatories by tag.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @param page          the page
+	 * @param date          the date
+	 * @param desc          the desc
+	 * @param exObsIds      the ex obs ids
+	 * @return the fulfilled observatories by tag
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<ObservatorioRealizadoForm> getFulfilledObservatoriesByTag(Connection c, long idObservatory, int page, Date date, boolean desc, final String[] exObsIds, final String tagId)
+			throws SQLException {
+		List<ObservatorioRealizadoForm> results = new ArrayList<>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String order = "DESC";
+		if (!desc) {
+			order = "ASC";
+		}
+		PropertiesManager pmgr = new PropertiesManager();
+		int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
+		int resultFrom = pagSize * page;
+		DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
+		try {
+			if (date == null) {
+				if (page == Constants.NO_PAGINACION) {
+					ps = c.prepareStatement("SELECT o.*, c.aplicacion, ob.* FROM observatorios_realizados o " + "JOIN observatorio ob ON (ob.id_observatorio = o.id_observatorio)"
+							+ "LEFT JOIN cartucho c ON (c.id_cartucho = o.id_cartucho) " + "WHERE o.id_observatorio = ? AND find_in_set(?, o.tags) ORDER BY o.fecha " + order);
+				} else {
+					ps = c.prepareStatement("SELECT o.*, c.aplicacion, ob.* FROM observatorios_realizados o " + "JOIN observatorio ob ON (ob.id_observatorio = o.id_observatorio)"
+							+ "LEFT JOIN cartucho c ON (c.id_cartucho = o.id_cartucho) " + "WHERE o.id_observatorio = ? AND find_in_set(?, o.tags) ORDER BY o.fecha " + order + " LIMIT ? OFFSET ?");
+					ps.setInt(2, pagSize);
+					ps.setInt(3, resultFrom);
+				}
+			} else {
+				if (page == Constants.NO_PAGINACION) {
+					ps = c.prepareStatement("SELECT o.*, c.aplicacion, ob.* FROM observatorios_realizados o " + "JOIN observatorio ob ON (ob.id_observatorio = o.id_observatorio)"
+							+ "LEFT JOIN cartucho c ON (c.id_cartucho = o.id_cartucho) " + "WHERE o.id_observatorio = ? AND find_in_set(?, o.tags) AND o.fecha <= ? ORDER BY o.fecha " + order);
+				} else {
+					ps = c.prepareStatement("SELECT o.*, c.aplicacion, ob.* FROM observatorios_realizados o " + "JOIN observatorio ob ON (ob.id_observatorio = o.id_observatorio)"
+							+ "LEFT JOIN cartucho c ON (c.id_cartucho = o.id_cartucho) " + "WHERE o.id_observatorio = ? AND find_in_set(?, o.tags) AND o.fecha <= ? ORDER BY o.fecha " + order
+							+ " LIMIT ? OFFSET ?");
+					ps.setInt(3, pagSize);
+					ps.setInt(4, resultFrom);
+				}
+				ps.setTimestamp(2, new java.sql.Timestamp(date.getTime()));
+			}
+			ps.setLong(1, idObservatory);
+			ps.setString(2, tagId);
+			rs = ps.executeQuery();
+			List<String> tmp = null;
+			if (exObsIds != null) {
+				tmp = Arrays.asList(exObsIds);
+			}
+			while (rs.next()) {
+				if (tmp != null && !tmp.isEmpty()) {
+					if (tmp.contains(String.valueOf(rs.getLong("o.id")))) {
+						getExecutedObservatoriesFromResult(c, results, rs, df);
+					}
+				} else {
+					getExecutedObservatoriesFromResult(c, results, rs, df);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(ps, rs);
+		}
+		return results;
+	}
+
+	/**
 	 * Gets the executed observatories from result.
 	 *
 	 * @param c       the c

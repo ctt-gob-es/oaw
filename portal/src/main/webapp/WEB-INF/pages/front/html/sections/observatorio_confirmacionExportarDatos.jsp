@@ -20,27 +20,73 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <script>
 	$(window).on('load', function() {
 
-		var $jq = $.noConflict();
-		$jq(document).ready(function() {
-			$.ajax({
-				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
-				method : 'POST',
-				cache : false
-			}).success(function(response) {
-
-				$('#tagsFilter').tagbox({
-					items : response.etiquetas,
-					searchIn : [ 'name' ],
-					rowFormat : '<span class="name">{{name}}</span>',
-					tokenFormat : '{{name}}',
-					valueField : 'id',
-					itemClass : 'user'
-				});
-
-			});
+		$(".checkTag").on("change", function() {
+			var id = $(this).attr("id");
+			if ($(this).is(":checked")) {
+				$('#fieldset_' + $(this).val()).show();
+			} else {
+				$('#fieldset_' + $(this).val()).hide();
+			}
 		});
 
+		var idObs = '<c:out value="${param.id_observatorio}"/>';
+
+		$('.select_first').each(function(index) {
+			loadOptions(idObs, $(this).attr("data-tag"), this);
+		});
+
+		$('.select_previous').each(function(index) {
+			loadOptions(idObs, $(this).attr("data-tag"), this);
+		});
 	});
+
+	function formatDate(date) {
+		var d = new Date(date), month = '' + (d.getMonth() + 1), day = ''
+				+ d.getDate(), year = d.getFullYear();
+
+		if (month.length < 2)
+			month = '0' + month;
+		if (day.length < 2)
+			day = '0' + day;
+
+		return [ year, month, day ].join('_');
+	}
+
+	function loadOptions(idObs, tagId, element) {
+		$.ajaxSetup({
+			cache : false
+		});
+		$
+				.ajax({
+					type : "GET",
+					url : '/oaw/secure/databaseExportAction.do?action=observatoriesByTag&id_observatorio='
+							+ idObs + '&tagId=' + tagId,
+					dataType : "json",
+					success : function(data) {
+						if (data.length > 0) {
+							$
+									.each(
+											data,
+											function(key, value) {
+												$(element)
+														.append(
+																"<option value="
+																		+ formatDate(value.fecha)
+																		+ ">"
+																		+ value.fechaStr
+																		+ "</option>");
+											});
+						} else {
+							$(element).append(
+									"<option value=''>" + noResults
+											+ "</option>");
+						}
+					},
+					error : function(data) {
+						alert('error');
+					}
+				});
+	}
 </script>
 <div id="main">
 	<div id="container_menu_izq">
@@ -84,8 +130,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								<bean:message key="report.config.tags.title" />
 							</strong>
 						</label>
-						<input name="tags" autocapitalize="off" placeholder="<bean:message key="placeholder.tags" />" autofocus
-							id="tagsFilter" type="text" value="" />
+						<logic:iterate name="tagList" id="tag">
+							<input type="checkbox" value="<c:out value="${tag.id}" />" name="tags" id="check_<c:out value="${tag.id}" />"
+								class="checkTag">
+							<bean:write name="tag" property="name" />
+						</logic:iterate>
 					</div>
 					<p class="alert alert-info">
 						<span class="glyphicon glyphicon-info-sign"></span>
@@ -120,76 +169,32 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</logic:iterate>
 					</div>
 				</fieldset>
-				<fieldset>
-					<legend>
-						<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.fija" />
-					</legend>
-					<div class="formItem">
-						<label for="url" class="control-label">
-							<strong class="labelVisu">
-<%-- 								<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr> --%>
-								<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.primera" />
-							</strong>
-						</label>
-						<select  name="compareFixedFirst">
-							<option value=""></option>
-							<logic:iterate name="<%=Constants.FULFILLED_OBSERVATORIES%>" id="fulfilledObservatory">
-								<option value="<bean:write name="fulfilledObservatory" property="id" />"><bean:write
-										name="fulfilledObservatory" property="fechaStr" /></option>
-							</logic:iterate>
-						</select>
-					</div>
-					<div class="formItem">
-						<label for="url" class="control-label">
-							<strong class="labelVisu">
-<%-- 								<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr> --%>
-								<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.anterior" />
-							</strong>
-						</label>
-						<select  name="compareFixedLast">
-							<option value=""></option>
-							<logic:iterate name="<%=Constants.FULFILLED_OBSERVATORIES%>" id="fulfilledObservatory">
-								<option value="<bean:write name="fulfilledObservatory" property="id" />"><bean:write
-										name="fulfilledObservatory" property="fechaStr" /></option>
-							</logic:iterate>
-						</select>
-					</div>
-				</fieldset>
-				<fieldset>
-					<legend>
-						<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.variable" arg0="--reemplazar--" />
-					</legend>
-					<div class="formItem">
-						<label for="url" class="control-label">
-							<strong class="labelVisu">
-<%-- 								<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr> --%>
-								<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.primera" />
-							</strong>
-						</label>
-						<select name="compareFixedFirst">
-							<option value=""></option>
-							<logic:iterate name="<%=Constants.FULFILLED_OBSERVATORIES%>" id="fulfilledObservatory">
-								<option value="<bean:write name="fulfilledObservatory" property="id" />"><bean:write
-										name="fulfilledObservatory" property="fechaStr" /></option>
-							</logic:iterate>
-						</select>
-					</div>
-					<div class="formItem">
-						<label for="url" class="control-label">
-							<strong class="labelVisu">
-<%-- 								<abbr title="<bean:message key="campo.obligatorio" />"> * </abbr> --%>
-								<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.anterior" />
-							</strong>
-						</label>
-						<select name="compareFixedLast">
-							<option value=""></option>
-							<logic:iterate name="<%=Constants.FULFILLED_OBSERVATORIES%>" id="fulfilledObservatory">
-								<option value="<bean:write name="fulfilledObservatory" property="id" />"><bean:write
-										name="fulfilledObservatory" property="fechaStr" /></option>
-							</logic:iterate>
-						</select>
-					</div>
-				</fieldset>
+				<logic:iterate name="tagList" id="tag">
+					<fieldset id="fieldset_<c:out value="${tag.id}" />" style="display: none;">
+						<legend>
+							<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.variable" arg0="" />
+							<c:out value="${tag.name}" />
+						</legend>
+						<div class="formItem">
+							<label for="url" class="control-label">
+								<strong class="labelVisu">
+									<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.primera" />
+								</strong>
+							</label>
+							<select class="select_first" name="first_<c:out value="${tag.id}" />"
+								id="select_first_<c:out value="${tag.id}" />" data-tag="<c:out value="${tag.id}" />"></select>
+						</div>
+						<div class="formItem">
+							<label for="url" class="control-label">
+								<strong class="labelVisu">
+									<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.anterior" />
+								</strong>
+							</label>
+							<select class="select_previous" name="previous_<c:out value="${tag.id}" />"
+								id="select_previous_<c:out value="${tag.id}" />" data-tag="<c:out value="${tag.id}" />"></select>
+						</div>
+					</fieldset>
+				</logic:iterate>
 				<fieldset>
 					<p>
 						<strong class="labelVisu">
@@ -214,16 +219,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</div>
 				</fieldset>
 				<div class="formButton">
-					<%-- <jsp:useBean id="params" class="java.util.HashMap" />
-				<bean:parameter id="id_observatorio" name="<%=Constants.ID_OBSERVATORIO %>" />
-				<bean:parameter id="idExObs" name="<%= Constants.ID_EX_OBS %>" />
-				<bean:parameter id="idCartucho" name="<%= Constants.ID_CARTUCHO %>" />
-				<c:set target="${params}" property="id_observatorio" value="${id_observatorio}" />
-				<c:set target="${params}" property="idExObs" value="${idExObs}" />
-				<c:set target="${params}" property="idCartucho" value="${idCartucho}" />
-				<html:link styleClass="btn btn-primary btn-lg" forward="databaseExportActionExport" name="params">
-					<bean:message key="boton.aceptar" />
-				</html:link>--%>
 					<input type="hidden" name="action" value="export" />
 					<input type="hidden" name="idCartucho" value="<c:out value="${param.idCartucho}"/>" />
 					<input type="hidden" name="id_observatorio" value="<c:out value="${param.id_observatorio}"/>" />
