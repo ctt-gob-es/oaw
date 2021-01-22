@@ -392,4 +392,37 @@ public final class EtiquetaDAO {
 		}
 		return ids;
 	}
+
+	/**
+	 * Gets the all etiquetas clasification.
+	 *
+	 * @param c             the c
+	 * @param clasification the clasification
+	 * @return the all etiquetas clasification
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<EtiquetaForm> getAllEtiquetasClasification(Connection c, final int clasification) throws SQLException {
+		final List<EtiquetaForm> results = new ArrayList<>();
+		String query = "SELECT e.id_etiqueta, e.nombre, e.id_clasificacion, c.id_clasificacion, c.nombre"
+				+ " FROM etiqueta e LEFT JOIN clasificacion_etiqueta c ON(e.id_clasificacion = c.id_clasificacion) WHERE c.id_clasificacion = ? ORDER BY UPPER(c.nombre) ASC, UPPER(e.nombre) ASC";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setInt(1, clasification);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					final EtiquetaForm etiquetaForm = new EtiquetaForm();
+					etiquetaForm.setId(rs.getLong("e.id_etiqueta"));
+					etiquetaForm.setName(rs.getString("e.nombre"));
+					final ClasificacionForm clasificacionForm = new ClasificacionForm();
+					clasificacionForm.setId(rs.getString("e.id_clasificacion"));
+					clasificacionForm.setNombre(rs.getString("c.nombre"));
+					etiquetaForm.setClasificacion(clasificacionForm);
+					results.add(etiquetaForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return results;
+	}
 }
