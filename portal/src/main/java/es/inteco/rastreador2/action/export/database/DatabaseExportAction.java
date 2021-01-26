@@ -98,7 +98,7 @@ public class DatabaseExportAction extends Action {
 						}
 						// if has tags (ids) check if has request params like fisrt_{idtag}, previous_{idtag}
 						List<ComparisionForm> comparision = null;
-						if (tagsToFilter.length > 0) {
+						if (tagsToFilter != null && tagsToFilter.length > 0) {
 							comparision = new ArrayList<>();
 							for (String tagId : tagsToFilter) {
 								ComparisionForm c = new ComparisionForm();
