@@ -17,10 +17,16 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <link rel="stylesheet" href="/oaw/js/tagbox/tagbox.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script src="/oaw/js/jqgrid/i18n/grid.locale-es.js" type="text/javascript"></script>
 <script src="https://code.jquery.com/jquery-1.12.1.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/oaw/js/jqgrid/jquery.jqgrid.src.js"></script>
+<script>
+	var script = document.createElement('script');
+	var lang = (navigator.language || navigator.browserLanguage)
+	script.src = '/oaw/js/jqgrid/i18n/grid.locale-'+lang.substring(0,2)+'.js';
+	document.head.appendChild(script);
+</script>
+<!-- <script src="/oaw/js/jqgrid/i18n/grid.locale-es.js" type="text/javascript"></script> -->
 <style>
 /* Make sure you reset e'erything beforehand. */
 * {
@@ -153,7 +159,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 													width : 40,
 													formatter : valueFormatter,
 													editrules : {
-														required : false
+														required : false,
+														number:true
 													},
 													sortable : false,
 													align : "left"
@@ -175,6 +182,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												pginput : false,
 												hidegrid : false,
 												altRows : false,
+												regional: navigator.language || navigator.browserLanguage,
 												mtype : 'POST',
 
 												onSelectRow : function(rowid,
