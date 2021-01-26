@@ -199,6 +199,13 @@ Email: observ.accesibilidad@correo.gob.es
 													<bean:message key='tooltip.status.relaunch' />
 												</span>
 											</html:link>
+											<html:link forward="estadoObservatorio" name="paramsRelanzar">
+												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
+													title="<bean:message key='tooltip.status.obs'/>"></span>
+												<span class="sr-only">
+													<bean:message key='tooltip.status.obs' />
+												</span>
+											</html:link>
 										</logic:equal>
 										<logic:equal name="fulfilledObservatory" property="observatorio.estado" value="3">
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.relanzado" />
@@ -209,13 +216,6 @@ Email: observ.accesibilidad@correo.gob.es
 													<bean:message key='tooltip.status.obs' />
 												</span>
 											</html:link>
-											<%-- <html:link forward="relanzarObservatorio" name="paramsRelanzar">
-												<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-													title="<bean:message key='tooltip.status.relaunch'/>"></span>
-												<span class="sr-only">
-													<bean:message key='tooltip.status.relaunch' />
-												</span>
-											</html:link> --%>
 											<html:link forward="stopObservatorio" name="params">
 												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip"
 													title="<bean:message key='tooltip.status.stop' />"></span>
@@ -223,16 +223,16 @@ Email: observ.accesibilidad@correo.gob.es
 													<bean:message key='tooltip.status.stop' />
 												</span>
 											</html:link>
-										</logic:equal>
-										<logic:equal name="fulfilledObservatory" property="observatorio.estado" value="1">
-											<bean:message key="resultado.observatorio.rastreo.realizado.estado.lanzado" />
-											<%-- <html:link forward="estadoObservatorio" name="paramsRelanzar">
+											<html:link forward="estadoObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
 													title="<bean:message key='tooltip.status.obs'/>"></span>
 												<span class="sr-only">
 													<bean:message key='tooltip.status.obs' />
 												</span>
-											</html:link> --%>
+											</html:link>
+										</logic:equal>
+										<logic:equal name="fulfilledObservatory" property="observatorio.estado" value="1">
+											<bean:message key="resultado.observatorio.rastreo.realizado.estado.lanzado" />
 											<html:link forward="relanzarObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
 													title="<bean:message key='tooltip.status.relaunch'/>"></span>
@@ -243,6 +243,13 @@ Email: observ.accesibilidad@correo.gob.es
 											<html:link forward="stopObservatorio" name="params">
 												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip" title="Parar ejecución" />
 												<span class="sr-only">Parar</span>
+											</html:link>
+											<html:link forward="estadoObservatorio" name="paramsRelanzar">
+												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
+													title="<bean:message key='tooltip.status.obs'/>"></span>
+												<span class="sr-only">
+													<bean:message key='tooltip.status.obs' />
+												</span>
 											</html:link>
 										</logic:equal>
 										<logic:equal name="fulfilledObservatory" property="observatorio.estado" value="0">
@@ -269,6 +276,13 @@ Email: observ.accesibilidad@correo.gob.es
 													title="<bean:message key='tooltip.status.relaunch'/>"></span>
 												<span class="sr-only">
 													<bean:message key='tooltip.status.relaunch' />
+												</span>
+											</html:link>
+											<html:link forward="estadoObservatorio" name="paramsRelanzar">
+												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
+													title="<bean:message key='tooltip.status.obs'/>"></span>
+												<span class="sr-only">
+													<bean:message key='tooltip.status.obs' />
 												</span>
 											</html:link>
 										</logic:equal>
