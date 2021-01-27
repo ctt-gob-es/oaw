@@ -449,11 +449,11 @@ public final class AnnexUtils {
 										Map<String, ValidationDetails> details = wcagCompliance.get(pageForm.getUrl());
 										for (WcagEmPointKey wcagEmPoint : WcagEmPointKey.values()) {
 											// do what you want
-											String compliance = messageResources.getMessage("observatory.graphic.compilance.green");
+											String compliance = messageResources.getMessage("modality.pass");
 											if (EARL_FAILED.equalsIgnoreCase(details.get(wcagEmPoint.getWcagEmId()).getResult())) {
-												compliance = messageResources.getMessage("observatory.graphic.compilance.red");
+												compliance = messageResources.getMessage("modality.fail");
 											} else if (EARL_INAPPLICABLE.equalsIgnoreCase(details.get(wcagEmPoint.getWcagEmId()).getResult())) {
-												compliance = messageResources.getMessage("observatory.graphic.compilance.gray");
+												compliance = messageResources.getMessage("resultados.anonimos.porc.portales.na");
 											}
 											writeTag(hd, "C_" + wcagEmPoint.getWcagPoint().replace(".", "_"), compliance);
 										}
@@ -771,18 +771,15 @@ public final class AnnexUtils {
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "2. Iteración SW.xlsx")) {
 			final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
 			final String ObservatoryFormDate = observatoryForm.getDate().substring(0, 10);
-			final String[] ColumnNames = new String[] { "id", "nombre", "namecat", "ambito", "complejidad", "depende_de",
-					"semilla", "tematica", "distribucion", "recurrencia", "otros", "paginas", "puntuacion_" + ObservatoryFormDate,
-					"adecuacion_" + ObservatoryFormDate, "cumplimiento_" + ObservatoryFormDate, "NV_" + ObservatoryFormDate,
-					"A_" + ObservatoryFormDate, "AA_" + ObservatoryFormDate, "NC_" + ObservatoryFormDate,
-					"PC_" + ObservatoryFormDate, "TC_" + ObservatoryFormDate };
+			final String[] ColumnNames = new String[] { "id", "nombre", "namecat", "ambito", "complejidad", "depende_de", "semilla", "tematica", "distribucion", "recurrencia", "otros", "paginas",
+					"puntuacion_" + ObservatoryFormDate, "adecuacion_" + ObservatoryFormDate, "cumplimiento_" + ObservatoryFormDate, "NV_" + ObservatoryFormDate, "A_" + ObservatoryFormDate,
+					"AA_" + ObservatoryFormDate, "NC_" + ObservatoryFormDate, "PC_" + ObservatoryFormDate, "TC_" + ObservatoryFormDate };
 			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet("Hoja1");
+			XSSFSheet sheet = wb.createSheet("Resultados");
 			XSSFRow row;
 			XSSFCell cell;
 			int rowIndex = 0;
 			int columnIndex = 0;
-
 			// create header cell style
 			CellStyle headerStyle = wb.createCellStyle();
 			headerStyle.setWrapText(true);
@@ -790,7 +787,6 @@ public final class AnnexUtils {
 			headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 			headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
 			headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
 			// create light shadow cell style
 			CellStyle shadowStyle = wb.createCellStyle();
 			shadowStyle.setWrapText(true);
@@ -798,7 +794,6 @@ public final class AnnexUtils {
 			shadowStyle.setVerticalAlignment(VerticalAlignment.TOP);
 			shadowStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
 			shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
 			// Add headers
 			row = sheet.createRow(rowIndex);
 			for (String name : ColumnNames) {
@@ -807,7 +802,6 @@ public final class AnnexUtils {
 				cell.setCellStyle(headerStyle);
 				columnIndex++;
 			}
-
 			// The sheet already has headers, so we start in the second row.
 			rowIndex++;
 			int categoryStarts;
@@ -832,7 +826,6 @@ public final class AnnexUtils {
 								if (pageForm != null) {
 									row = sheet.createRow(rowIndex);
 									int excelRowNumber = rowIndex + 1;
-
 									// "id"
 									cell = row.createCell(0);
 									cell.setCellValue(String.valueOf(semillaForm.getId()));
@@ -861,7 +854,6 @@ public final class AnnexUtils {
 									cell = row.createCell(6);
 									cell.setCellValue(pageForm.getUrl());
 									cell.setCellStyle(shadowStyle);
-
 									// Seed tags
 									List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
 									List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
@@ -872,25 +864,24 @@ public final class AnnexUtils {
 										for (EtiquetaForm tmp : etiquetas) {
 											if (tmp.getClasificacion() != null) {
 												switch (tmp.getClasificacion().getId()) {
-													case "1":
-														tagsTematica.add(tmp);
-														break;
-													case "2":
-														tagsDistribucion.add(tmp);
-														break;
-													case "3":
-														tagsRecurrencia.add(tmp);
-														break;
-													case "4":
-														tagsOtros.add(tmp);
-														break;
-													default:
-														break;
+												case "1":
+													tagsTematica.add(tmp);
+													break;
+												case "2":
+													tagsDistribucion.add(tmp);
+													break;
+												case "3":
+													tagsRecurrencia.add(tmp);
+													break;
+												case "4":
+													tagsOtros.add(tmp);
+													break;
+												default:
+													break;
 												}
 											}
 										}
 									}
-
 									// "tematica"
 									String dataToInsert = "";
 									if (!tagsTematica.isEmpty()) {
@@ -904,7 +895,6 @@ public final class AnnexUtils {
 									cell = row.createCell(7);
 									cell.setCellValue(dataToInsert);
 									cell.setCellStyle(shadowStyle);
-
 									// "distribucion"
 									dataToInsert = "";
 									if (!tagsDistribucion.isEmpty()) {
@@ -918,7 +908,6 @@ public final class AnnexUtils {
 									cell = row.createCell(8);
 									cell.setCellValue(dataToInsert);
 									cell.setCellStyle(shadowStyle);
-
 									// "Recurrencia"
 									dataToInsert = "";
 									if (!tagsRecurrencia.isEmpty()) {
@@ -932,7 +921,6 @@ public final class AnnexUtils {
 									cell = row.createCell(9);
 									cell.setCellValue(dataToInsert);
 									cell.setCellStyle(shadowStyle);
-
 									// Otros
 									dataToInsert = "";
 									if (!tagsOtros.isEmpty()) {
@@ -946,12 +934,10 @@ public final class AnnexUtils {
 									cell = row.createCell(10);
 									cell.setCellValue(dataToInsert);
 									cell.setCellStyle(shadowStyle);
-
 									// Páginas
 									cell = row.createCell(11);
 									cell.setCellValue(String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
 									cell.setCellStyle(shadowStyle);
-
 									// "puntuacion_" + date
 									cell = row.createCell(12);
 									cell.setCellType(CellType.NUMERIC);
@@ -1781,7 +1767,6 @@ public final class AnnexUtils {
 			}
 			properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
 			series3.setShapeProperties(properties3);
-
 			chart.plot(data);
 			XDDFBarChartData bar = (XDDFBarChartData) data;
 			bar.setBarDirection(BarDirection.COL);
