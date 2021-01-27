@@ -768,11 +768,13 @@ public final class AnnexUtils {
 	 * @throws Exception the exception
 	 */
 	public static void createAnnexXLSX(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "Adecuación de SW por segmentos.xls.xlsx")) {
+		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "2. Iteración SW.xlsx")) {
 			final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
 			final String ObservatoryFormDate = observatoryForm.getDate().substring(0, 10);
-			final String[] ColumnNames = new String[] { "nombre", "namecat", "depende_de", "semilla", "puntuacion_" + ObservatoryFormDate, "adecuacion_" + ObservatoryFormDate,
-					"cumplimiento_" + ObservatoryFormDate, "NV_" + ObservatoryFormDate, "A_" + ObservatoryFormDate, "AA_" + ObservatoryFormDate, "NC_" + ObservatoryFormDate,
+			final String[] ColumnNames = new String[] { "id", "nombre", "namecat", "ambito", "complejidad", "depende_de",
+					"semilla", "tematica", "distribucion", "recurrencia", "otros", "paginas", "puntuacion_" + ObservatoryFormDate,
+					"adecuacion_" + ObservatoryFormDate, "cumplimiento_" + ObservatoryFormDate, "NV_" + ObservatoryFormDate,
+					"A_" + ObservatoryFormDate, "AA_" + ObservatoryFormDate, "NC_" + ObservatoryFormDate,
 					"PC_" + ObservatoryFormDate, "TC_" + ObservatoryFormDate };
 			XSSFWorkbook wb = new XSSFWorkbook();
 			XSSFSheet sheet = wb.createSheet("Hoja1");
@@ -780,6 +782,7 @@ public final class AnnexUtils {
 			XSSFCell cell;
 			int rowIndex = 0;
 			int columnIndex = 0;
+
 			// create header cell style
 			CellStyle headerStyle = wb.createCellStyle();
 			headerStyle.setWrapText(true);
@@ -787,6 +790,7 @@ public final class AnnexUtils {
 			headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 			headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
 			headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
 			// create light shadow cell style
 			CellStyle shadowStyle = wb.createCellStyle();
 			shadowStyle.setWrapText(true);
@@ -794,6 +798,7 @@ public final class AnnexUtils {
 			shadowStyle.setVerticalAlignment(VerticalAlignment.TOP);
 			shadowStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
 			shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
 			// Add headers
 			row = sheet.createRow(rowIndex);
 			for (String name : ColumnNames) {
@@ -802,6 +807,7 @@ public final class AnnexUtils {
 				cell.setCellStyle(headerStyle);
 				columnIndex++;
 			}
+
 			// The sheet already has headers, so we start in the second row.
 			rowIndex++;
 			int categoryStarts;
@@ -826,64 +832,168 @@ public final class AnnexUtils {
 								if (pageForm != null) {
 									row = sheet.createRow(rowIndex);
 									int excelRowNumber = rowIndex + 1;
-									// "nombre"
+
+									// "id"
 									cell = row.createCell(0);
+									cell.setCellValue(String.valueOf(semillaForm.getId()));
+									cell.setCellStyle(shadowStyle);
+									// "nombre"
+									cell = row.createCell(1);
 									cell.setCellValue(siteForm.getName());
 									cell.setCellStyle(shadowStyle);
 									// "namecat"
-									cell = row.createCell(1);
+									cell = row.createCell(2);
 									cell.setCellValue(categoryForm.getName());
 									cell.setCellStyle(shadowStyle);
+									// "ambito"
+									cell = row.createCell(3);
+									cell.setCellValue(semillaForm.getAmbito().getName());
+									cell.setCellStyle(shadowStyle);
+									// "complejidad"
+									cell = row.createCell(4);
+									cell.setCellValue(semillaForm.getComplejidad().getName());
+									cell.setCellStyle(shadowStyle);
 									// "depende_de"
-									cell = row.createCell(2);
+									cell = row.createCell(5);
 									cell.setCellValue(dependencias.toString());
 									cell.setCellStyle(shadowStyle);
 									// "semilla"
-									cell = row.createCell(3);
+									cell = row.createCell(6);
 									cell.setCellValue(pageForm.getUrl());
 									cell.setCellStyle(shadowStyle);
+
+									// Seed tags
+									List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+									List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+									List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+									List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+									List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+									if (etiquetas != null && !etiquetas.isEmpty()) {
+										for (EtiquetaForm tmp : etiquetas) {
+											if (tmp.getClasificacion() != null) {
+												switch (tmp.getClasificacion().getId()) {
+													case "1":
+														tagsTematica.add(tmp);
+														break;
+													case "2":
+														tagsDistribucion.add(tmp);
+														break;
+													case "3":
+														tagsRecurrencia.add(tmp);
+														break;
+													case "4":
+														tagsOtros.add(tmp);
+														break;
+													default:
+														break;
+												}
+											}
+										}
+									}
+
+									// "tematica"
+									String dataToInsert = "";
+									if (!tagsTematica.isEmpty()) {
+										for (int i = 0; i < tagsTematica.size(); i++) {
+											dataToInsert += tagsTematica.get(i).getName();
+											if (i < tagsDistribucion.size() - 1) {
+												dataToInsert += "\n";
+											}
+										}
+									}
+									cell = row.createCell(7);
+									cell.setCellValue(dataToInsert);
+									cell.setCellStyle(shadowStyle);
+
+									// "distribucion"
+									dataToInsert = "";
+									if (!tagsDistribucion.isEmpty()) {
+										for (int i = 0; i < tagsDistribucion.size(); i++) {
+											dataToInsert += tagsDistribucion.get(i).getName();
+											if (i < tagsDistribucion.size() - 1) {
+												dataToInsert += "\n";
+											}
+										}
+									}
+									cell = row.createCell(8);
+									cell.setCellValue(dataToInsert);
+									cell.setCellStyle(shadowStyle);
+
+									// "Recurrencia"
+									dataToInsert = "";
+									if (!tagsRecurrencia.isEmpty()) {
+										for (int i = 0; i < tagsRecurrencia.size(); i++) {
+											dataToInsert += tagsRecurrencia.get(i).getName();
+											if (i < tagsRecurrencia.size() - 1) {
+												dataToInsert += "\n";
+											}
+										}
+									}
+									cell = row.createCell(9);
+									cell.setCellValue(dataToInsert);
+									cell.setCellStyle(shadowStyle);
+
+									// Otros
+									dataToInsert = "";
+									if (!tagsOtros.isEmpty()) {
+										for (int i = 0; i < tagsOtros.size(); i++) {
+											dataToInsert += tagsOtros.get(i).getName();
+											if (i < tagsOtros.size() - 1) {
+												dataToInsert += "\n";
+											}
+										}
+									}
+									cell = row.createCell(10);
+									cell.setCellValue(dataToInsert);
+									cell.setCellStyle(shadowStyle);
+
+									// Páginas
+									cell = row.createCell(11);
+									cell.setCellValue(String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
+									cell.setCellStyle(shadowStyle);
+
 									// "puntuacion_" + date
-									cell = row.createCell(4);
+									cell = row.createCell(12);
 									cell.setCellType(CellType.NUMERIC);
 									cell.setCellValue(Double.parseDouble(pageForm.getScore()));
 									cell.setCellStyle(shadowStyle);
 									// "adecuacion_" + date
-									cell = row.createCell(5);
+									cell = row.createCell(13);
 									cell.setCellValue(ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
 									cell.setCellStyle(shadowStyle);
 									// "cumplimiento_" + date
-									cell = row.createCell(6);
+									cell = row.createCell(14);
 									cell.setCellValue(siteForm.getCompliance());
 									cell.setCellStyle(shadowStyle);
 									// "NV_" + date
-									cell = row.createCell(7);
+									cell = row.createCell(15);
 									cell.setCellType(CellType.NUMERIC);
-									cell.setCellFormula("IF($F" + excelRowNumber + "=\"No Válido\",$E" + excelRowNumber + ",0)");
+									cell.setCellFormula("IF($N" + excelRowNumber + "=\"No Válido\",$M" + excelRowNumber + ",0)");
 									cell.setCellStyle(shadowStyle);
 									// "A_" + date
-									cell = row.createCell(8);
+									cell = row.createCell(16);
 									cell.setCellType(CellType.NUMERIC);
-									cell.setCellFormula("IF($F" + excelRowNumber + "=\"A\",$E" + excelRowNumber + ",0)");
+									cell.setCellFormula("IF($N" + excelRowNumber + "=\"A\",$M" + excelRowNumber + ",0)");
 									cell.setCellStyle(shadowStyle);
 									// "AA_" + date
-									cell = row.createCell(9);
+									cell = row.createCell(17);
 									cell.setCellType(CellType.NUMERIC);
-									cell.setCellFormula("IF($F" + excelRowNumber + "=\"AA\",$E" + excelRowNumber + ",0)");
+									cell.setCellFormula("IF($N" + excelRowNumber + "=\"AA\",$M" + excelRowNumber + ",0)");
 									cell.setCellStyle(shadowStyle);
 									// "NC_" + date
-									cell = row.createCell(10);
+									cell = row.createCell(18);
 									cell.setCellType(CellType.NUMERIC);
-									cell.setCellFormula("IF($G" + excelRowNumber + "=\"No conforme\",$E" + excelRowNumber + ",0)");
+									cell.setCellFormula("IF($O" + excelRowNumber + "=\"No conforme\",$M" + excelRowNumber + ",0)");
 									cell.setCellStyle(shadowStyle);
 									// "PC_" + date
-									cell = row.createCell(11);
+									cell = row.createCell(19);
 									cell.setCellType(CellType.NUMERIC);
-									cell.setCellFormula("IF($G" + excelRowNumber + "=\"Parcialmente conforme\",$E" + excelRowNumber + ",0)");
+									cell.setCellFormula("IF($O" + excelRowNumber + "=\"Parcialmente conforme\",$M" + excelRowNumber + ",0)");
 									cell.setCellStyle(shadowStyle);
 									// "TC_" + date
-									cell = row.createCell(12);
+									cell = row.createCell(20);
 									cell.setCellType(CellType.NUMERIC);
-									cell.setCellFormula("IF($G" + excelRowNumber + "=\"Plenamente conforme\",$E" + excelRowNumber + ",0)");
+									cell.setCellFormula("IF($O" + excelRowNumber + "=\"Plenamente conforme\",$M" + excelRowNumber + ",0)");
 									cell.setCellStyle(shadowStyle);
 									rowIndex++;
 								}
@@ -1634,10 +1744,10 @@ public final class AnnexUtils {
 			CTPlotArea plotArea = chart.getCTChart().getPlotArea();
 			plotArea.getValAxArray()[0].addNewMajorGridlines();
 			// Get agency names
-			XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 0, 0));
+			XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 1, 1));
 			// First serie ("No válido" / "No Conforme")
 			XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, isFirst ? 7 : 10, isFirst ? 7 : 10));
+					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, isFirst ? 15 : 18, isFirst ? 15 : 18));
 			XDDFChartData.Series series1 = data.addSeries(agencies, values1);
 			series1.setTitle(isFirst ? "No Válido" : "No Conforme", null);
 			// Set series color
@@ -1649,7 +1759,7 @@ public final class AnnexUtils {
 			series1.setShapeProperties(properties1);
 			// Second serie ("A" / "Parcialmente conforme")
 			XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, isFirst ? 8 : 11, isFirst ? 8 : 11));
+					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, isFirst ? 16 : 19, isFirst ? 16 : 19));
 			XDDFChartData.Series series2 = data.addSeries(agencies, values2);
 			series2.setTitle(isFirst ? "A" : "Parcialmente conforme", null);
 			// Set series color
@@ -1661,7 +1771,7 @@ public final class AnnexUtils {
 			series2.setShapeProperties(properties2);
 			// Third serie ("AA" / "Plenamente conforme")
 			XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, isFirst ? 9 : 12, isFirst ? 9 : 12));
+					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, isFirst ? 17 : 20, isFirst ? 17 : 20));
 			XDDFChartData.Series series3 = data.addSeries(agencies, values3);
 			series3.setTitle(isFirst ? "AA" : "Plenamente Conforme", null);
 			// Set series color
@@ -1671,6 +1781,7 @@ public final class AnnexUtils {
 			}
 			properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
 			series3.setShapeProperties(properties3);
+
 			chart.plot(data);
 			XDDFBarChartData bar = (XDDFBarChartData) data;
 			bar.setBarDirection(BarDirection.COL);
