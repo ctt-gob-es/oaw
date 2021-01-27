@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.struts.util.MessageResources;
+
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -1604,7 +1606,8 @@ public final class ObservatorioDAO {
 	 */
 	public static List<Long> getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(Connection c, final Long idObsRealizado, final Integer percent, final Integer seeds) throws Exception {
 		final List<Long> crawlerIds = new ArrayList<>();
-		final String tresholdCalculation = "(((cl.amplitud*cl.profundidad)+1)*((100 -(select `value` from observatorio_extra_configuration where `key` ='umbral'))/100))";
+		// final String tresholdCalculation = "(((cl.amplitud*cl.profundidad)+1)*((100 -(select `value` from observatorio_extra_configuration where `key` ='umbral'))/100))";
+		final String tresholdCalculation = "(((cl.amplitud*cl.profundidad)+1)*(((select `value` from observatorio_extra_configuration where `key` ='umbral'))/100))";
 		String query = "SELECT ID_SEED,ID_RR,ID_R, NUM_C, ((cl.amplitud*cl.profundidad)+1) CX, " + tresholdCalculation
 				+ " THRESHOLD  FROM (SELECT l.id_lista as ID_SEED, rr.id as ID_RR, rr.id_rastreo as ID_R , count(ta.cod_url) as NUM_C FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l WHERE ta.cod_rastreo = rr.id AND rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista AND r.estado = 4 and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado= ?) GROUP by rr.id) AS NUM_CRAWLS, lista l2, complejidades_lista cl WHERE  l2.id_lista = ID_SEED AND cl.id_complejidad=l2.id_complejidad AND NUM_C < "
 				+ tresholdCalculation + "";
@@ -2836,6 +2839,7 @@ public final class ObservatorioDAO {
 	 */
 	public static List<ExtraConfigurationForm> loadExtraConfiguration(Connection c) throws SQLException {
 		List<ExtraConfigurationForm> extraConfig = new ArrayList<>();
+		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		final String query = "SELECT `id` AS C_ID,`name` AS N_ID, `key` AS K_ID,`value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` <> 'autorelaunch' ORDER BY `id`";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			try (ResultSet rs = ps.executeQuery()) {
@@ -2844,7 +2848,7 @@ public final class ObservatorioDAO {
 					config.setId(rs.getLong("C_ID"));
 					config.setKey(rs.getString("K_ID"));
 					config.setValue(rs.getString("V_ID"));
-					config.setName(rs.getString("N_ID"));
+					config.setName(messageResources.getMessage(rs.getString("N_ID")));
 					extraConfig.add(config);
 				}
 			}
@@ -2865,6 +2869,7 @@ public final class ObservatorioDAO {
 	 */
 	public static List<ExtraConfigurationForm> getExtraConfiguration(Connection c, final String key) throws SQLException {
 		List<ExtraConfigurationForm> extraConfig = new ArrayList<>();
+		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		final String query = "SELECT `id` AS C_ID,`name` AS N_ID, `key` AS K_ID,`value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = '" + key + "' ORDER BY `id`";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			try (ResultSet rs = ps.executeQuery()) {
@@ -2873,7 +2878,7 @@ public final class ObservatorioDAO {
 					config.setId(rs.getLong("C_ID"));
 					config.setKey(rs.getString("K_ID"));
 					config.setValue(rs.getString("V_ID"));
-					config.setName(rs.getString("N_ID"));
+					config.setName(messageResources.getMessage(rs.getString("N_ID")));
 					extraConfig.add(config);
 				}
 			}
@@ -2952,6 +2957,35 @@ public final class ObservatorioDAO {
 	public static int getWidthFromConfig(Connection c) throws SQLException {
 		int timeout = 0;
 		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'width'";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					String value = rs.getString("V_ID");
+					try {
+						timeout = Integer.parseInt(value);
+						return timeout;
+					} catch (Exception e) {
+						return 0;
+					}
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return timeout;
+	}
+
+	/**
+	 * Gets the depth from width.
+	 *
+	 * @param c the c
+	 * @return the depth from width
+	 * @throws SQLException the SQL exception
+	 */
+	public static int getTresholdFromConfig(Connection c) throws SQLException {
+		int timeout = 0;
+		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'umbral'";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
