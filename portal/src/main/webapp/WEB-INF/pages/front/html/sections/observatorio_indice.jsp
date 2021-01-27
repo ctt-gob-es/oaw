@@ -26,7 +26,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	script.src = '/oaw/js/jqgrid/i18n/grid.locale-'+lang.substring(0,2)+'.js';
 	document.head.appendChild(script);
 </script>
-<!-- <script src="/oaw/js/jqgrid/i18n/grid.locale-es.js" type="text/javascript"></script> -->
+
 <style>
 /* Make sure you reset e'erything beforehand. */
 * {
@@ -149,14 +149,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 													sortable : false
 												}, {
 													name : "name",
-													width : 60,
+													width : 80,
 													sortable : false,
 													align : "left",
 													editable : false,
 													formatter: nameFormatter
 												}, {
 													name : "value",
-													width : 40,
+													width : 20,
 													formatter : valueFormatter,
 													editrules : {
 														required : false,

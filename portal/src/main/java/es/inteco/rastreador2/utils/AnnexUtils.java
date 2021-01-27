@@ -100,12 +100,25 @@ import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNEEN2019;
+import es.oaw.wcagem.WcagEmUtils;
+import es.oaw.wcagem.enums.WcagEmPointKey;
+import es.oaw.wcagem.util.ValidationDetails;
 
 /**
  * The Class AnnexUtils.
  */
 @SuppressWarnings("deprecation")
 public final class AnnexUtils {
+	/** The Constant EARL_INAPPLICABLE. */
+	private static final String EARL_INAPPLICABLE = "earl:inapplicable";
+	/** The Constant EARL_FAILED. */
+	private static final String EARL_FAILED = "earl:failed";
+	/** The Constant EARL_PASSED. */
+	private static final String EARL_PASSED = "earl:passed";
+	/** The Constant EARL_CANNOT_TELL. */
+	private static final String EARL_CANNOT_TELL = "earl:cantTell";
+	/** The Constant EARL_UNTESTED. */
+	private static final String EARL_UNTESTED = "earl:untested";
 	/**
 	 * The Constant EMPTY_STRING.
 	 */
@@ -174,13 +187,35 @@ public final class AnnexUtils {
 		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds);
 		createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+		createAnnexPaginasCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+		createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		// TODO Add comparision
 		createAnnexXLSX(messageResources, idObsExecution, idOperation);
 		createAnnexXLSX_Evolution(messageResources, idObsExecution, idOperation, comparision);
 		createAnnexXLSX_PerDependency(idOperation);
 		createComparativeSuitabilitieXLSX(messageResources, idObsExecution, idOperation);
+	}
+
+	/**
+	 * Creates the annex criteria portal.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexPortalsCriteria(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales-criterios.xml")) {
+			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, true, true);
+		} catch (Exception e) {
+			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
 	}
 
 	/**
@@ -196,7 +231,7 @@ public final class AnnexUtils {
 	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas.xml")) {
-			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false);
+			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false, false);
 		} catch (Exception e) {
 			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -216,7 +251,27 @@ public final class AnnexUtils {
 	public static void createAnnexPaginasVerifications(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas-verificaciones.xml")) {
-			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, true);
+			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, true, false);
+		} catch (Exception e) {
+			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Creates the annex paginas criteria.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexPaginasCriteria(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas-criterios.xml")) {
+			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false, true);
 		} catch (Exception e) {
 			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -232,13 +287,14 @@ public final class AnnexUtils {
 	 * @param c                the c
 	 * @param writer           the writer
 	 * @param verifications    the verifications
+	 * @param criterias        the criterias
 	 * @throws IOException  Signals that an I/O exception has occurred.
 	 * @throws SAXException the SAX exception
 	 * @throws Exception    the exception
 	 * @throws SQLException the SQL exception
 	 */
-	private static void generateXmlPages(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications)
-			throws IOException, SAXException, Exception, SQLException {
+	private static void generateXmlPages(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications,
+			final boolean criterias) throws IOException, SAXException, Exception, SQLException {
 		final ContentHandler hd = getContentHandler(writer);
 		hd.startDocument();
 		hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
@@ -361,6 +417,7 @@ public final class AnnexUtils {
 									writeTag(hd, "url", pageForm.getUrl());
 									writeTag(hd, "puntuacion", pageForm.getScore());
 									writeTag(hd, "adecuacion", ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
+									// OAW Verifications
 									if (verifications) {
 										ObservatoryEvaluationForm evaluationForm = currentEvaluationPageList.stream().filter(evaluation -> pageForm.getUrl().equals(evaluation.getUrl())).findAny()
 												.orElse(null);
@@ -379,6 +436,26 @@ public final class AnnexUtils {
 													i++;
 												}
 											}
+										}
+									}
+									// WCAG Criterias
+									if (criterias) {
+										final List<Long> analysisIdsByTracking = AnalisisDatos.getEvaluationIdsFromExecutedObservatoryAndIdSeed(idObsExecution,
+												Long.valueOf(siteForm.getIdCrawlerSeed()));
+										final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0,
+												analysisIdsByTracking);
+										// This map store, the url and a map with everi wcag automatic validation an result
+										Map<String, Map<String, ValidationDetails>> wcagCompliance = WcagEmUtils.generateEquivalenceMap(currentEvaluationPageList);
+										Map<String, ValidationDetails> details = wcagCompliance.get(pageForm.getUrl());
+										for (WcagEmPointKey wcagEmPoint : WcagEmPointKey.values()) {
+											// do what you want
+											String compliance = messageResources.getMessage("observatory.graphic.compilance.green");
+											if (EARL_FAILED.equalsIgnoreCase(details.get(wcagEmPoint.getWcagEmId()).getResult())) {
+												compliance = messageResources.getMessage("observatory.graphic.compilance.red");
+											} else if (EARL_INAPPLICABLE.equalsIgnoreCase(details.get(wcagEmPoint.getWcagEmId()).getResult())) {
+												compliance = messageResources.getMessage("observatory.graphic.compilance.gray");
+											}
+											writeTag(hd, "C_" + wcagEmPoint.getWcagPoint().replace(".", "_"), compliance);
 										}
 									}
 									hd.endElement(EMPTY_STRING, EMPTY_STRING, "pagina");
@@ -437,7 +514,7 @@ public final class AnnexUtils {
 	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales.xml")) {
-			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, false);
+			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, false, false);
 		} catch (Exception e) {
 			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -457,7 +534,7 @@ public final class AnnexUtils {
 	public static void createAnnexPortalsVerification(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales-verificaciones.xml")) {
-			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, true, true);
+			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, true, true, false);
 		} catch (Exception e) {
 			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -474,12 +551,13 @@ public final class AnnexUtils {
 	 * @param writer           the writer
 	 * @param verifications    the verifications
 	 * @param onlyLast         the only last
+	 * @param criterias        the criterias
 	 * @throws SQLException the SQL exception
 	 * @throws SAXException the SAX exception
 	 * @throws IOException  Signals that an I/O exception has occurred.
 	 */
 	private static void generateXmlPortal(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications,
-			final boolean onlyLast) throws SQLException, SAXException, IOException {
+			final boolean onlyLast, final boolean criterias) throws SQLException, SAXException, IOException {
 		final ContentHandler hd = getContentHandler(writer);
 		hd.startDocument();
 		hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
@@ -622,6 +700,34 @@ public final class AnnexUtils {
 						for (LabelValueBean value : currentScore.getVerifications2()) {
 							writeTag(hd, "V_2_" + i, evaluateCompliance(value));
 							i++;
+						}
+					}
+					if (criterias) {
+						final List<Long> analysisIdsByTracking = AnalisisDatos.getEvaluationIdsFromExecutedObservatoryAndIdSeed(idObsExecution, semillaForm.getId());
+						final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+						Map<String, Map<String, ValidationDetails>> wcagCompliance = WcagEmUtils.generateEquivalenceMap(currentEvaluationPageList);
+						for (WcagEmPointKey wcagEmPointKey : WcagEmPointKey.values()) {
+							// Iterate WCAG Points
+							if (wcagCompliance != null && !wcagCompliance.isEmpty()) {
+								// Iterate evl list to preserve order
+								String compliance = messageResources.getMessage("observatory.graphic.compilance.green");
+								for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
+									String outcome = "";
+									Map<String, ValidationDetails> result = wcagCompliance.get(eval.getUrl());
+									// if cointain current wcag rule
+									if (result.containsKey(wcagEmPointKey.getWcagEmId())) {
+										final String validationResult = result.get(wcagEmPointKey.getWcagEmId()).getResult();
+										// if one of this has earl:failed, all result marked as failed
+										// do what you want
+										if (EARL_FAILED.equals(validationResult)) {
+											compliance = messageResources.getMessage("observatory.graphic.compilance.red");
+										} else if (EARL_INAPPLICABLE.equals(validationResult)) {
+											compliance = messageResources.getMessage("observatory.graphic.compilance.gray");
+										}
+									}
+								}
+								writeTag(hd, "C_" + wcagEmPointKey.getWcagPoint().replace(".", "_"), compliance);
+							}
 						}
 					}
 					hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);

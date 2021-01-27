@@ -133,6 +133,7 @@ public class EstadoObservatorioAction extends Action {
 				if (lessThresholdIds != null && !lessThresholdIds.isEmpty()) {
 					finishLessThreshold = ObservatorioDAO.getResultSeedsFullFromObservatoryByIds(c, new SemillaForm(), idEjecucionObservatorio.longValue(), 0l, -1, lessThresholdIds);
 				}
+				request.setAttribute("umbral", ObservatorioDAO.getTresholdFromConfig(c));
 				request.setAttribute("idCartucho", idCartucho);
 				request.setAttribute("idObservatory", idObservatory);
 				request.setAttribute("idExecutedObservatorio", idEjecucionObservatorio);

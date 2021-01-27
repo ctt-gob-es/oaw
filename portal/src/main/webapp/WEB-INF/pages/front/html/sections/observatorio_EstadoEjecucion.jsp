@@ -27,7 +27,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	script.src = '/oaw/js/jqgrid/i18n/grid.locale-'+lang.substring(0,2)+'.js';
 	document.head.appendChild(script);
 </script>
-
 <script>
 
 
@@ -71,7 +70,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											{
 												editUrl : '/oaw/secure/estadoObservatorio.do?action=getLessThreshold&idExObs='
 													+ $('[name=idExObs]').val(),
-												colNames : [ colNameId, colNameName, colNameComplex,
+												colNames : [ colNameId, colNameName, colNameComplex, "URLs",
 													colNameUrls, colNamePercent, colNameObs,
 													colNameRelaunch ],
 													
@@ -98,6 +97,15 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															sortable : false,
 															editable : false,
 															
+														},
+														{
+															name : "listaUrlsString",
+															align : "left",
+															width : 50,
+															edittype : 'custom',
+															sortable : false,
+															formatter : urlsFormatter,
+															editable : false
 														},
 														{
 															name : "numCrawls",
@@ -241,6 +249,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 	}
 
+	function urlsFormatter(cellvalue, options, rowObject) {
+		return rowObject.listaUrls.toString().replace(/\,/g, '\r\n');
+	}
+						
 	
 	function percentFormatter(cellvalue, options, rowObject) {
 		return (Math.round(cellvalue * 100) / 100).toFixed(2);
@@ -536,7 +548,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tr>
 				</tbody>
 			</table>
-			<br/>
+			<br />
 			<h2>
 				<bean:message key="observatory.status.summary" />
 			</h2>
@@ -612,7 +624,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tr>
 				</tbody>
 			</table>
-			<br/>
+			<br />
 			<logic:notEqual name="estado" property="idEstado" value="0">
 				<h2>
 					<bean:message key="observatory.status.last.title" />
@@ -749,7 +761,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tbody>
 				</table>
 			</logic:notEqual>
-			<br/>
+			<br />
 			<!-- Less Threshold -->
 			<h2>
 				<bean:size id="finishLessThresholdSize" name="finishLessThreshold" />
@@ -765,7 +777,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<label for="percentLess">
 							<bean:message key="observatory.status.percent.threshold.filter.percent" />
 						</label>
-						<input type="number" class="form-control" id="percentLess" />
+						<input type="number" class="form-control" id="percentLess" value="<bean:write name="umbral"/>" />
 					</div>
 					<div class="form-group">
 						<label for="seedCrawledLess">
@@ -787,7 +799,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<input type="hidden" name="<%=Constants.ID_CARTUCHO%>" value="<bean:write name="idCartucho"/>" />
 				<table id="grid" class="gridTable table table-stripped table-bordered table-hover table-console"></table>
 			</form>
-			<br/>
+			<br />
 			<!-- Not finished -->
 			<h2 style="margin-top: 15px">
 				<bean:size id="finishWithoutResultsSize" name="finishWithoutResults" />
@@ -877,7 +889,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<input type="hidden" name='idExObs' <c:out value='value=${idExecutedObservatorio}' />>
 			</form>
 			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-			<br/>
+			<br />
 			<h2>
 				<bean:message key="observatory.status.notes.title" />
 			</h2>
