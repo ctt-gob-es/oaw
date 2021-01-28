@@ -15,124 +15,126 @@
 ******************************************************************************/
 package es.inteco.rastreador2.dao.export.database;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "export_page")
 public class Page {
-    @Id
-    @GeneratedValue
-    @Column(name = "id", nullable = false)
-    private Long id;
+	@Id
+	@GeneratedValue
+	@Column(name = "id", nullable = false)
+	private Long id;
+	@Column(name = "url", nullable = false, length = 500)
+	private String url;
+	@Column(name = "score", nullable = false)
+	private BigDecimal score;
+	@Column(name = "scoreLevel1", nullable = false)
+	private BigDecimal scoreLevel1;
+	@Column(name = "scoreLevel2", nullable = false)
+	private BigDecimal scoreLevel2;
+	@Column(name = "level", nullable = false)
+	private String level;
+	@ManyToOne
+	@JoinColumn(name = "idSite", nullable = false, referencedColumnName = "id")
+	private Site site;
+	@OneToMany(targetEntity = AspectScore.class, mappedBy = "page", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<AspectScore> aspectScoreList;
+	@OneToMany(targetEntity = VerificationPage.class, mappedBy = "page", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<VerificationPage> verificationPageList;
 
-    @Column(name = "url", nullable = false, length = 500)
-    private String url;
+	public Long getId() {
+		return id;
+	}
 
-    @Column(name = "score", nullable = false)
-    private BigDecimal score;
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    @Column(name = "scoreLevel1", nullable = false)
-    private BigDecimal scoreLevel1;
+	public String getUrl() {
+		return url;
+	}
 
-    @Column(name = "scoreLevel2", nullable = false)
-    private BigDecimal scoreLevel2;
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-    @Column(name = "level", nullable = false)
-    private String level;
+	public Site getSite() {
+		return site;
+	}
 
-    @ManyToOne
-    @JoinColumn(name = "idSite", nullable = false, referencedColumnName = "id")
-    private Site site;
+	public void setSite(Site site) {
+		this.site = site;
+	}
 
-    @OneToMany(targetEntity = AspectScore.class, mappedBy = "page", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<AspectScore> aspectScoreList;
+	public BigDecimal getScore() {
+		return score;
+	}
 
-    @OneToMany(targetEntity = VerificationPage.class, mappedBy = "page", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<VerificationPage> verificationPageList;
+	public void setScore(BigDecimal score) {
+		this.score = score;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public String getLevel() {
+		return level;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setLevel(String level) {
+		this.level = level;
+	}
 
-    public String getUrl() {
-        return url;
-    }
+	public BigDecimal getScoreLevel1() {
+		return scoreLevel1;
+	}
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+	public void setScoreLevel1(BigDecimal scoreLevel1) {
+		this.scoreLevel1 = scoreLevel1;
+	}
 
-    public Site getSite() {
-        return site;
-    }
+	public BigDecimal getScoreLevel2() {
+		return scoreLevel2;
+	}
 
-    public void setSite(Site site) {
-        this.site = site;
-    }
+	public void setScoreLevel2(BigDecimal scoreLevel2) {
+		this.scoreLevel2 = scoreLevel2;
+	}
 
-    public BigDecimal getScore() {
-        return score;
-    }
+	public List<AspectScore> getAspectScoreList() {
+		if (aspectScoreList == null) {
+			aspectScoreList = new ArrayList<>();
+		}
+		return aspectScoreList;
+	}
 
-    public void setScore(BigDecimal score) {
-        this.score = score;
-    }
+	public void setAspectScoreList(List<AspectScore> aspectScoreList) {
+		this.aspectScoreList = aspectScoreList;
+	}
 
-    public String getLevel() {
-        return level;
-    }
+	public List<VerificationPage> getVerificationPageList() {
+		if (verificationPageList == null) {
+			verificationPageList = new ArrayList<>();
+		}
+		return verificationPageList;
+	}
 
-    public void setLevel(String level) {
-        this.level = level;
-    }
-
-    public BigDecimal getScoreLevel1() {
-        return scoreLevel1;
-    }
-
-    public void setScoreLevel1(BigDecimal scoreLevel1) {
-        this.scoreLevel1 = scoreLevel1;
-    }
-
-    public BigDecimal getScoreLevel2() {
-        return scoreLevel2;
-    }
-
-    public void setScoreLevel2(BigDecimal scoreLevel2) {
-        this.scoreLevel2 = scoreLevel2;
-    }
-
-    public List<AspectScore> getAspectScoreList() {
-        if (aspectScoreList == null) {
-            aspectScoreList = new ArrayList<>();
-        }
-        return aspectScoreList;
-    }
-
-    public void setAspectScoreList(List<AspectScore> aspectScoreList) {
-        this.aspectScoreList = aspectScoreList;
-    }
-
-    public List<VerificationPage> getVerificationPageList() {
-        if (verificationPageList == null) {
-            verificationPageList = new ArrayList<>();
-        }
-        return verificationPageList;
-    }
-
-    public void setVerificationPageList(List<VerificationPage> verificationPageList) {
-        this.verificationPageList = verificationPageList;
-    }
+	public void setVerificationPageList(List<VerificationPage> verificationPageList) {
+		this.verificationPageList = verificationPageList;
+	}
 }

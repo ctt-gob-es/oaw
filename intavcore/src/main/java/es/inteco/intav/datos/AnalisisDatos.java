@@ -413,6 +413,32 @@ public final class AnalisisDatos {
 	}
 
 	/**
+	 * Gets the evaluation ids from executed observatory and id seed.
+	 *
+	 * @param idExObs the id ex obs
+	 * @param idSeed  the id seed
+	 * @return the evaluation ids from executed observatory and id seed
+	 */
+	public static List<Long> getEvaluationIdsFromExecutedObservatoryAndIdSeed(final Long idExObs, final Long idSeed) {
+		final List<Long> evaluationIds = new ArrayList<>();
+		try (Connection conn = DataBaseManager.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(
+						"SELECT distinct cod_analisis FROM tanalisis t JOIN rastreos_realizados rr on t.cod_rastreo=rr.id WHERE cod_rastreo in (select id from rastreos_realizados where id_obs_realizado = ?) AND rr.id_lista=? ORDER by cod_analisis")) {
+			pstmt.setLong(1, idExObs);
+			pstmt.setLong(2, idSeed);
+			try (ResultSet rs = pstmt.executeQuery()) {
+				while (rs.next()) {
+					evaluationIds.add(rs.getLong(1));
+				}
+			}
+		} catch (Exception ex) {
+			Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
+			return evaluationIds;
+		}
+		return evaluationIds;
+	}
+
+	/**
 	 * Obtiene todos los recursos CSS (CSSDTO) que están asociados a una evaluación, análisis de una página.
 	 *
 	 * @param idCodAnalisis el identificador de la evaluación.

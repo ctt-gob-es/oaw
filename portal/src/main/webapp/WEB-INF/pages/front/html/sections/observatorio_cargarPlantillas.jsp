@@ -25,7 +25,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/oaw/js/jqgrid/jquery.jqgrid.src.js"></script>
-<script src="/oaw/js/jqgrid/i18n/grid.locale-es.js" type="text/javascript"></script>
+<script>
+	var script = document.createElement('script');
+	var lang = (navigator.language || navigator.browserLanguage)
+	script.src = '/oaw/js/jqgrid/i18n/grid.locale-'+lang.substring(0,2)+'.js';
+	document.head.appendChild(script);
+</script>
+
 
 
 <!--  JQ GRID   -->
