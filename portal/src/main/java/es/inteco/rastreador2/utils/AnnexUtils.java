@@ -100,12 +100,25 @@ import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNEEN2019;
+import es.oaw.wcagem.WcagEmUtils;
+import es.oaw.wcagem.enums.WcagEmPointKey;
+import es.oaw.wcagem.util.ValidationDetails;
 
 /**
  * The Class AnnexUtils.
  */
 @SuppressWarnings("deprecation")
 public final class AnnexUtils {
+	/** The Constant EARL_INAPPLICABLE. */
+	private static final String EARL_INAPPLICABLE = "earl:inapplicable";
+	/** The Constant EARL_FAILED. */
+	private static final String EARL_FAILED = "earl:failed";
+	/** The Constant EARL_PASSED. */
+	private static final String EARL_PASSED = "earl:passed";
+	/** The Constant EARL_CANNOT_TELL. */
+	private static final String EARL_CANNOT_TELL = "earl:cantTell";
+	/** The Constant EARL_UNTESTED. */
+	private static final String EARL_UNTESTED = "earl:untested";
 	/**
 	 * The Constant EMPTY_STRING.
 	 */
@@ -174,13 +187,35 @@ public final class AnnexUtils {
 		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds);
 		createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+		createAnnexPaginasCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+		createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		// TODO Add comparision
 		createAnnexXLSX(messageResources, idObsExecution, idOperation);
 		createAnnexXLSX_Evolution(messageResources, idObsExecution, idOperation, comparision);
 		createAnnexXLSX_PerDependency(idOperation);
 		createComparativeSuitabilitieXLSX(messageResources, idObsExecution, idOperation);
+	}
+
+	/**
+	 * Creates the annex criteria portal.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexPortalsCriteria(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales-criterios.xml")) {
+			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, true, true);
+		} catch (Exception e) {
+			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
 	}
 
 	/**
@@ -196,7 +231,7 @@ public final class AnnexUtils {
 	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas.xml")) {
-			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false);
+			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false, false);
 		} catch (Exception e) {
 			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -216,7 +251,27 @@ public final class AnnexUtils {
 	public static void createAnnexPaginasVerifications(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas-verificaciones.xml")) {
-			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, true);
+			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, true, false);
+		} catch (Exception e) {
+			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Creates the annex paginas criteria.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexPaginasCriteria(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas-criterios.xml")) {
+			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false, true);
 		} catch (Exception e) {
 			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -232,13 +287,14 @@ public final class AnnexUtils {
 	 * @param c                the c
 	 * @param writer           the writer
 	 * @param verifications    the verifications
+	 * @param criterias        the criterias
 	 * @throws IOException  Signals that an I/O exception has occurred.
 	 * @throws SAXException the SAX exception
 	 * @throws Exception    the exception
 	 * @throws SQLException the SQL exception
 	 */
-	private static void generateXmlPages(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications)
-			throws IOException, SAXException, Exception, SQLException {
+	private static void generateXmlPages(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications,
+			final boolean criterias) throws IOException, SAXException, Exception, SQLException {
 		final ContentHandler hd = getContentHandler(writer);
 		hd.startDocument();
 		hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
@@ -361,6 +417,7 @@ public final class AnnexUtils {
 									writeTag(hd, "url", pageForm.getUrl());
 									writeTag(hd, "puntuacion", pageForm.getScore());
 									writeTag(hd, "adecuacion", ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
+									// OAW Verifications
 									if (verifications) {
 										ObservatoryEvaluationForm evaluationForm = currentEvaluationPageList.stream().filter(evaluation -> pageForm.getUrl().equals(evaluation.getUrl())).findAny()
 												.orElse(null);
@@ -379,6 +436,26 @@ public final class AnnexUtils {
 													i++;
 												}
 											}
+										}
+									}
+									// WCAG Criterias
+									if (criterias) {
+										final List<Long> analysisIdsByTracking = AnalisisDatos.getEvaluationIdsFromExecutedObservatoryAndIdSeed(idObsExecution,
+												Long.valueOf(siteForm.getIdCrawlerSeed()));
+										final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0,
+												analysisIdsByTracking);
+										// This map store, the url and a map with everi wcag automatic validation an result
+										Map<String, Map<String, ValidationDetails>> wcagCompliance = WcagEmUtils.generateEquivalenceMap(currentEvaluationPageList);
+										Map<String, ValidationDetails> details = wcagCompliance.get(pageForm.getUrl());
+										for (WcagEmPointKey wcagEmPoint : WcagEmPointKey.values()) {
+											// do what you want
+											String compliance = messageResources.getMessage("modality.pass");
+											if (EARL_FAILED.equalsIgnoreCase(details.get(wcagEmPoint.getWcagEmId()).getResult())) {
+												compliance = messageResources.getMessage("modality.fail");
+											} else if (EARL_INAPPLICABLE.equalsIgnoreCase(details.get(wcagEmPoint.getWcagEmId()).getResult())) {
+												compliance = messageResources.getMessage("resultados.anonimos.porc.portales.na");
+											}
+											writeTag(hd, "C_" + wcagEmPoint.getWcagPoint().replace(".", "_"), compliance);
 										}
 									}
 									hd.endElement(EMPTY_STRING, EMPTY_STRING, "pagina");
@@ -437,7 +514,7 @@ public final class AnnexUtils {
 	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales.xml")) {
-			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, false);
+			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, false, false);
 		} catch (Exception e) {
 			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -457,7 +534,7 @@ public final class AnnexUtils {
 	public static void createAnnexPortalsVerification(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales-verificaciones.xml")) {
-			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, true, true);
+			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, true, true, false);
 		} catch (Exception e) {
 			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -474,12 +551,13 @@ public final class AnnexUtils {
 	 * @param writer           the writer
 	 * @param verifications    the verifications
 	 * @param onlyLast         the only last
+	 * @param criterias        the criterias
 	 * @throws SQLException the SQL exception
 	 * @throws SAXException the SAX exception
 	 * @throws IOException  Signals that an I/O exception has occurred.
 	 */
 	private static void generateXmlPortal(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications,
-			final boolean onlyLast) throws SQLException, SAXException, IOException {
+			final boolean onlyLast, final boolean criterias) throws SQLException, SAXException, IOException {
 		final ContentHandler hd = getContentHandler(writer);
 		hd.startDocument();
 		hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
@@ -624,6 +702,34 @@ public final class AnnexUtils {
 							i++;
 						}
 					}
+					if (criterias) {
+						final List<Long> analysisIdsByTracking = AnalisisDatos.getEvaluationIdsFromExecutedObservatoryAndIdSeed(idObsExecution, semillaForm.getId());
+						final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+						Map<String, Map<String, ValidationDetails>> wcagCompliance = WcagEmUtils.generateEquivalenceMap(currentEvaluationPageList);
+						for (WcagEmPointKey wcagEmPointKey : WcagEmPointKey.values()) {
+							// Iterate WCAG Points
+							if (wcagCompliance != null && !wcagCompliance.isEmpty()) {
+								// Iterate evl list to preserve order
+								String compliance = messageResources.getMessage("observatory.graphic.compilance.green");
+								for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
+									String outcome = "";
+									Map<String, ValidationDetails> result = wcagCompliance.get(eval.getUrl());
+									// if cointain current wcag rule
+									if (result.containsKey(wcagEmPointKey.getWcagEmId())) {
+										final String validationResult = result.get(wcagEmPointKey.getWcagEmId()).getResult();
+										// if one of this has earl:failed, all result marked as failed
+										// do what you want
+										if (EARL_FAILED.equals(validationResult)) {
+											compliance = messageResources.getMessage("observatory.graphic.compilance.red");
+										} else if (EARL_INAPPLICABLE.equals(validationResult)) {
+											compliance = messageResources.getMessage("observatory.graphic.compilance.gray");
+										}
+									}
+								}
+								writeTag(hd, "C_" + wcagEmPointKey.getWcagPoint().replace(".", "_"), compliance);
+							}
+						}
+					}
 					hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 				}
 			}
@@ -665,18 +771,15 @@ public final class AnnexUtils {
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "2. Iteración SW.xlsx")) {
 			final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
 			final String ObservatoryFormDate = observatoryForm.getDate().substring(0, 10);
-			final String[] ColumnNames = new String[] { "id", "nombre", "namecat", "ambito", "complejidad", "depende_de",
-					"semilla", "tematica", "distribucion", "recurrencia", "otros", "paginas", "puntuacion_" + ObservatoryFormDate,
-					"adecuacion_" + ObservatoryFormDate, "cumplimiento_" + ObservatoryFormDate, "NV_" + ObservatoryFormDate,
-					"A_" + ObservatoryFormDate, "AA_" + ObservatoryFormDate, "NC_" + ObservatoryFormDate,
-					"PC_" + ObservatoryFormDate, "TC_" + ObservatoryFormDate };
+			final String[] ColumnNames = new String[] { "id", "nombre", "namecat", "ambito", "complejidad", "depende_de", "semilla", "tematica", "distribucion", "recurrencia", "otros", "paginas",
+					"puntuacion_" + ObservatoryFormDate, "adecuacion_" + ObservatoryFormDate, "cumplimiento_" + ObservatoryFormDate, "NV_" + ObservatoryFormDate, "A_" + ObservatoryFormDate,
+					"AA_" + ObservatoryFormDate, "NC_" + ObservatoryFormDate, "PC_" + ObservatoryFormDate, "TC_" + ObservatoryFormDate };
 			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet("Hoja1");
+			XSSFSheet sheet = wb.createSheet("Resultados");
 			XSSFRow row;
 			XSSFCell cell;
 			int rowIndex = 0;
 			int columnIndex = 0;
-
 			// create header cell style
 			CellStyle headerStyle = wb.createCellStyle();
 			headerStyle.setWrapText(true);
@@ -684,7 +787,6 @@ public final class AnnexUtils {
 			headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 			headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
 			headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
 			// create light shadow cell style
 			CellStyle shadowStyle = wb.createCellStyle();
 			shadowStyle.setWrapText(true);
@@ -692,7 +794,6 @@ public final class AnnexUtils {
 			shadowStyle.setVerticalAlignment(VerticalAlignment.TOP);
 			shadowStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
 			shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
 			// Add headers
 			row = sheet.createRow(rowIndex);
 			for (String name : ColumnNames) {
@@ -701,7 +802,6 @@ public final class AnnexUtils {
 				cell.setCellStyle(headerStyle);
 				columnIndex++;
 			}
-
 			// The sheet already has headers, so we start in the second row.
 			rowIndex++;
 			int categoryStarts;
@@ -721,65 +821,167 @@ public final class AnnexUtils {
 									dependencias.append("\n");
 								}
 							}
-						}
-
-						row = sheet.createRow(rowIndex);
-						int excelRowNumber = rowIndex + 1;
-
-						// "id"
-						cell = row.createCell(0);
-						cell.setCellValue(String.valueOf(semillaForm.getId()));
-						cell.setCellStyle(shadowStyle);
-						// "nombre"
-						cell = row.createCell(1);
-						cell.setCellValue(semillaForm.getNombre());
-						cell.setCellStyle(shadowStyle);
-						// "namecat"
-						cell = row.createCell(2);
-						cell.setCellValue(categoryForm.getName());
-						cell.setCellStyle(shadowStyle);
-						// "ambito"
-						cell = row.createCell(3);
-						cell.setCellValue(semillaForm.getAmbito().getName());
-						cell.setCellStyle(shadowStyle);
-						// "complejidad"
-						cell = row.createCell(4);
-						cell.setCellValue(semillaForm.getComplejidad().getName());
-						cell.setCellStyle(shadowStyle);
-						// "depende_de"
-						cell = row.createCell(5);
-						cell.setCellValue(dependencias.toString());
-						cell.setCellStyle(shadowStyle);
-						// "semilla"
-						cell = row.createCell(6);
-						cell.setCellValue(semillaForm.getListaUrls().get(0));
-						cell.setCellStyle(shadowStyle);
-
-						// Seed tags
-						List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
-						List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
-						List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
-						List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
-						List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
-						if (etiquetas != null && !etiquetas.isEmpty()) {
-							for (EtiquetaForm tmp : etiquetas) {
-								if (tmp.getClasificacion() != null) {
-									switch (tmp.getClasificacion().getId()) {
-										case "1":
-											tagsTematica.add(tmp);
-											break;
-										case "2":
-											tagsDistribucion.add(tmp);
-											break;
-										case "3":
-											tagsRecurrencia.add(tmp);
-											break;
-										case "4":
-											tagsOtros.add(tmp);
-											break;
-										default:
-											break;
+							// page per row
+							for (PageForm pageForm : siteForm.getPageList()) {
+								if (pageForm != null) {
+									row = sheet.createRow(rowIndex);
+									int excelRowNumber = rowIndex + 1;
+									// "id"
+									cell = row.createCell(0);
+									cell.setCellValue(String.valueOf(semillaForm.getId()));
+									cell.setCellStyle(shadowStyle);
+									// "nombre"
+									cell = row.createCell(1);
+									cell.setCellValue(siteForm.getName());
+									cell.setCellStyle(shadowStyle);
+									// "namecat"
+									cell = row.createCell(2);
+									cell.setCellValue(categoryForm.getName());
+									cell.setCellStyle(shadowStyle);
+									// "ambito"
+									cell = row.createCell(3);
+									cell.setCellValue(semillaForm.getAmbito().getName());
+									cell.setCellStyle(shadowStyle);
+									// "complejidad"
+									cell = row.createCell(4);
+									cell.setCellValue(semillaForm.getComplejidad().getName());
+									cell.setCellStyle(shadowStyle);
+									// "depende_de"
+									cell = row.createCell(5);
+									cell.setCellValue(dependencias.toString());
+									cell.setCellStyle(shadowStyle);
+									// "semilla"
+									cell = row.createCell(6);
+									cell.setCellValue(pageForm.getUrl());
+									cell.setCellStyle(shadowStyle);
+									// Seed tags
+									List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+									List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+									List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+									List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+									List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+									if (etiquetas != null && !etiquetas.isEmpty()) {
+										for (EtiquetaForm tmp : etiquetas) {
+											if (tmp.getClasificacion() != null) {
+												switch (tmp.getClasificacion().getId()) {
+												case "1":
+													tagsTematica.add(tmp);
+													break;
+												case "2":
+													tagsDistribucion.add(tmp);
+													break;
+												case "3":
+													tagsRecurrencia.add(tmp);
+													break;
+												case "4":
+													tagsOtros.add(tmp);
+													break;
+												default:
+													break;
+												}
+											}
+										}
 									}
+									// "tematica"
+									String dataToInsert = "";
+									if (!tagsTematica.isEmpty()) {
+										for (int i = 0; i < tagsTematica.size(); i++) {
+											dataToInsert += tagsTematica.get(i).getName();
+											if (i < tagsDistribucion.size() - 1) {
+												dataToInsert += "\n";
+											}
+										}
+									}
+									cell = row.createCell(7);
+									cell.setCellValue(dataToInsert);
+									cell.setCellStyle(shadowStyle);
+									// "distribucion"
+									dataToInsert = "";
+									if (!tagsDistribucion.isEmpty()) {
+										for (int i = 0; i < tagsDistribucion.size(); i++) {
+											dataToInsert += tagsDistribucion.get(i).getName();
+											if (i < tagsDistribucion.size() - 1) {
+												dataToInsert += "\n";
+											}
+										}
+									}
+									cell = row.createCell(8);
+									cell.setCellValue(dataToInsert);
+									cell.setCellStyle(shadowStyle);
+									// "Recurrencia"
+									dataToInsert = "";
+									if (!tagsRecurrencia.isEmpty()) {
+										for (int i = 0; i < tagsRecurrencia.size(); i++) {
+											dataToInsert += tagsRecurrencia.get(i).getName();
+											if (i < tagsRecurrencia.size() - 1) {
+												dataToInsert += "\n";
+											}
+										}
+									}
+									cell = row.createCell(9);
+									cell.setCellValue(dataToInsert);
+									cell.setCellStyle(shadowStyle);
+									// Otros
+									dataToInsert = "";
+									if (!tagsOtros.isEmpty()) {
+										for (int i = 0; i < tagsOtros.size(); i++) {
+											dataToInsert += tagsOtros.get(i).getName();
+											if (i < tagsOtros.size() - 1) {
+												dataToInsert += "\n";
+											}
+										}
+									}
+									cell = row.createCell(10);
+									cell.setCellValue(dataToInsert);
+									cell.setCellStyle(shadowStyle);
+									// Páginas
+									cell = row.createCell(11);
+									cell.setCellValue(String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
+									cell.setCellStyle(shadowStyle);
+									// "puntuacion_" + date
+									cell = row.createCell(12);
+									cell.setCellType(CellType.NUMERIC);
+									cell.setCellValue(Double.parseDouble(pageForm.getScore()));
+									cell.setCellStyle(shadowStyle);
+									// "adecuacion_" + date
+									cell = row.createCell(13);
+									cell.setCellValue(ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
+									cell.setCellStyle(shadowStyle);
+									// "cumplimiento_" + date
+									cell = row.createCell(14);
+									cell.setCellValue(siteForm.getCompliance());
+									cell.setCellStyle(shadowStyle);
+									// "NV_" + date
+									cell = row.createCell(15);
+									cell.setCellType(CellType.NUMERIC);
+									cell.setCellFormula("IF($N" + excelRowNumber + "=\"No Válido\",$M" + excelRowNumber + ",0)");
+									cell.setCellStyle(shadowStyle);
+									// "A_" + date
+									cell = row.createCell(16);
+									cell.setCellType(CellType.NUMERIC);
+									cell.setCellFormula("IF($N" + excelRowNumber + "=\"A\",$M" + excelRowNumber + ",0)");
+									cell.setCellStyle(shadowStyle);
+									// "AA_" + date
+									cell = row.createCell(17);
+									cell.setCellType(CellType.NUMERIC);
+									cell.setCellFormula("IF($N" + excelRowNumber + "=\"AA\",$M" + excelRowNumber + ",0)");
+									cell.setCellStyle(shadowStyle);
+									// "NC_" + date
+									cell = row.createCell(18);
+									cell.setCellType(CellType.NUMERIC);
+									cell.setCellFormula("IF($O" + excelRowNumber + "=\"No conforme\",$M" + excelRowNumber + ",0)");
+									cell.setCellStyle(shadowStyle);
+									// "PC_" + date
+									cell = row.createCell(19);
+									cell.setCellType(CellType.NUMERIC);
+									cell.setCellFormula("IF($O" + excelRowNumber + "=\"Parcialmente conforme\",$M" + excelRowNumber + ",0)");
+									cell.setCellStyle(shadowStyle);
+									// "TC_" + date
+									cell = row.createCell(20);
+									cell.setCellType(CellType.NUMERIC);
+									cell.setCellFormula("IF($O" + excelRowNumber + "=\"Plenamente conforme\",$M" + excelRowNumber + ",0)");
+									cell.setCellStyle(shadowStyle);
+									rowIndex++;
 								}
 							}
 						}
@@ -1674,7 +1876,6 @@ public final class AnnexUtils {
 			}
 			properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
 			series3.setShapeProperties(properties3);
-
 			chart.plot(data);
 			XDDFBarChartData bar = (XDDFBarChartData) data;
 			bar.setBarDirection(BarDirection.COL);
