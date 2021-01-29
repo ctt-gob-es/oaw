@@ -42,6 +42,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xddf.usermodel.PresetColor;
@@ -72,6 +73,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
@@ -200,7 +202,7 @@ public final class AnnexUtils {
 		createAnnexXLSX(messageResources, idObsExecution, idOperation);
 		createAnnexXLSX_Evolution(messageResources, idObsExecution, idOperation, comparision);
 		createAnnexXLSX_PerDependency(idOperation);
-		// createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
+		createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
 		createComparativeSuitabilitieXLSX(messageResources, idObsExecution, idOperation);
 	}
 
@@ -219,12 +221,11 @@ public final class AnnexUtils {
 		final FileOutputStream fos = new FileOutputStream(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "3. - Iteración Ranking.xlsx");
 		// TODO Add new sheet in the beginning
 		XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(originalWb));
-		XSSFSheet rankingSheet = wb.createSheet("Ranking");
-		wb.setSheetOrder("Ranking", 0);
-		wb.setSelectedTab(0);
-		// Fill header rows
-		final String[] ColumnNames = new String[] { "MINISTERIOS", "TOTAL PORTALES AA", "% AA", "NOTA MEDIA AA", "TOTAL PORTALES A", "% A", "NOTA MEDIA A", "TOTAL PORTALES NO VÁLIDO", "% NO VÁLIDO",
+		final String sheetname = "Ranking Adecuación";
+		final String[] columnNames = new String[] { "MINISTERIOS", "TOTAL PORTALES AA", "% AA", "NOTA MEDIA AA", "TOTAL PORTALES A", "% A", "NOTA MEDIA A", "TOTAL PORTALES NO VÁLIDO", "% NO VÁLIDO",
 				"NOTA MEDIA NV", "% NO CUMPLEN", "TOTAL PORTALES", };
+		XSSFSheet rankingSheet = wb.createSheet(sheetname);
+		wb.setSheetOrder(sheetname, 0);
 		XSSFRow row;
 		XSSFCell cell;
 		int rowIndex = 0;
@@ -304,7 +305,7 @@ public final class AnnexUtils {
 		headerStyleBlue.setFont(blackBold10);
 		// Add headers
 		row = rankingSheet.createRow(rowIndex);
-		for (String name : ColumnNames) {
+		for (String name : columnNames) {
 			cell = row.createCell(columnIndex);
 			cell.setCellValue(name);
 			columnIndex++;
@@ -357,11 +358,24 @@ public final class AnnexUtils {
 		r = rankingSheet.getRow(ref.getRow());
 		c = r.getCell(ref.getCol());
 		c.setCellStyle(headerStyleBlue);
+		final XSSFSheet resultSheet = wb.getSheet("Resultados");
+		// Set table to manipulate data
+		ref = new CellReference("A1");
+		CellReference topLeft = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
+		ref = new CellReference("U" + resultSheet.getLastRowNum());
+		CellReference bottomRight = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
+		AreaReference tableArea = wb.getCreationHelper().createAreaReference(topLeft, bottomRight);
+		XSSFTable dataTable = resultSheet.createTable(tableArea);
+		dataTable.setDisplayName("Tabla1");
+		// this sets auto filters
+		dataTable.getCTTable().addNewAutoFilter().setRef(tableArea.formatAsString());
+		/*
+		 * CTTableColumns columns = dataTable.getCTTable().addNewTableColumns(); ref = new CellReference("U1"); columns.setCount(ref.getCol()); for (int i = 1; i <= ref.getCol(); i++) { CTTableColumn
+		 * column = columns.addNewTableColumn(); column.setId(i); ref = new CellReference("A" + i); r = resultSheet.getRow(ref.getRow()); c = r.getCell(ref.getCol());
+		 * column.setName(c.getStringCellValue()); }
+		 */
 		// TODO Fill B with distinct depende D
-		//
-		// =COUNTIFS(Tabla1[depende_de],"*"&Tabla2[[#This Row],[MINISTERIOS]]&"*",Tabla1[AA_2020-07-03],">0")
-		// =IF($M2<>0,$C2/$M2,0)
-		List<String> dependencies = getValues("F", wb.getSheet("Resultados"));
+		List<String> dependencies = getValues("F", resultSheet);
 		rowIndex++;
 		int numOfDependencies = 0;
 		for (String dependency : dependencies) {
@@ -377,22 +391,66 @@ public final class AnnexUtils {
 //		Get date
 		Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry = annexmap.entrySet().iterator().next();
 		Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
-		final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
-		for (int i = 0; i < numOfDependencies; i++) {
-			// C
-			r = rankingSheet.getRow(rowIndex);
-			c = r.getCell(2);
-			c.setCellFormula("=COUNTIFS(Tabla1[depende_de],\"*\"&Tabla2[[#This Row],[MINISTERIOS]]&\"*\",Tabla1[AA_" + executionDateAux + "],\">0\")");
-			// D
-			r = rankingSheet.getRow(rowIndex);
-			c = r.getCell(3);
-			c.setCellFormula("=IF($M2<>0,$C2/$M2,0)");
-			// E
-			r = rankingSheet.getRow(rowIndex);
-			c = r.getCell(3);
-			// =IF(Tabla2[[#This Row],[TOTAL PORTALES AA]]>0,SUMIFS(Tabla1[AA_2020-07-03],Tabla1[depende_de],"*"&Tabla2[[#This Row],[MINISTERIOS]]&"*")/Tabla2[[#This Row],[TOTAL PORTALES AA]],0)
-			c.setCellFormula("=IF($M2<>0,$C2/$M2,0)");
+		// final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+		try {
+			for (int i = 0; i < numOfDependencies; i++) {
+				int cellCount = 2;
+				r = rankingSheet.getRow(rowIndex + i);
+				/******** AA **********/
+				c = r.createCell(cellCount);
+				cellCount++;
+				c.setCellFormula("COUNTIFS(Resultados!$F:$F,\"*\"&B:B&\"*\",Resultados!$R:$R,\">0\")");
+				c = r.createCell(cellCount);
+				cellCount++;
+				c.setCellFormula("IF(M:M<>0,C:C/M:M,0)");
+				c = r.createCell(cellCount);
+				cellCount++;
+				c.setCellFormula("IF(C:C>0,SUMIFS(Resultados!$R:$R,Resultados!$F:$F,\"*\"&B:B&\"*\")/C:C,0)");
+				/******** A **********/
+				c = r.createCell(cellCount);
+				cellCount++;
+				c.setCellFormula("COUNTIFS(Resultados!$F:$F,\"*\"&B:B&\"*\",Resultados!$P:$P,\">0\")");
+				c = r.createCell(cellCount);
+				cellCount++;
+				c.setCellFormula("IF(M:M<>0,F:F/M:M,0)");
+				c = r.createCell(cellCount);
+				cellCount++;
+				c.setCellFormula("IF(F:F>0,SUMIFS(Resultados!$P:$P,Resultados!$F:$F,\"*\"&B:B&\"*\")/F:F,0)");
+				/******** NV **********/
+				c = r.createCell(cellCount);
+				cellCount++;
+				c.setCellFormula("COUNTIFS(Resultados!$F:$F,\"*\"&B:B&\"*\",Resultados!$Q:$Q,\">0\")");
+				c = r.createCell(cellCount);
+				cellCount++;
+				c.setCellFormula("IF(M:M<>0,I:I/M:M,0)");
+				c = r.createCell(cellCount);
+				cellCount++;
+				c.setCellFormula("IF(I:I>0,SUMIFS(Resultados!$Q:$Q,Resultados!$F:$F,\"*\"&B:B&\"*\")/I:I,0)");
+				/******** SUMS **********/
+				c = r.createCell(cellCount);
+				cellCount++;
+				final int currentRowXlsx = rowIndex + i + 1;
+				c.setCellFormula("SUM(J" + currentRowXlsx + ",G" + currentRowXlsx + ")");
+				c = r.createCell(cellCount);
+				cellCount++;
+				c.setCellFormula("SUM(C" + currentRowXlsx + ",F" + currentRowXlsx + ",I" + currentRowXlsx + ")");
+			}
+			ref = new CellReference("C2");
+			topLeft = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
+			ref = new CellReference("M" + (numOfDependencies + 1));
+			bottomRight = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
+			tableArea = wb.getCreationHelper().createAreaReference(topLeft, bottomRight);
+			XSSFTable dataTableRanking = resultSheet.createTable(tableArea);
+			dataTableRanking.setDisplayName("TablaRankingA");
+			// this sets auto filters
+			dataTableRanking.getCTTable().addNewAutoFilter().setRef(tableArea.formatAsString());
+			rankingSheet.setAutoFilter(new CellRangeAddress(topLeft.getRow(), bottomRight.getRow(), topLeft.getCol(), bottomRight.getCol()));
+			dataTableRanking.getCTTable();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
 		}
+//		wb.setSelectedTab(0);
 		XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
 		wb.write(fos);
 		fos.close();
@@ -999,18 +1057,15 @@ public final class AnnexUtils {
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "2. Iteración SW.xlsx")) {
 			final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
 			final String ObservatoryFormDate = observatoryForm.getDate().substring(0, 10);
-			final String[] ColumnNames = new String[] { "id", "nombre", "namecat", "ambito", "complejidad", "depende_de",
-					"semilla", "tematica", "distribucion", "recurrencia", "otros", "paginas", "puntuacion_" + ObservatoryFormDate,
-					"adecuacion_" + ObservatoryFormDate, "cumplimiento_" + ObservatoryFormDate, "NV_" + ObservatoryFormDate,
-					"A_" + ObservatoryFormDate, "AA_" + ObservatoryFormDate, "NC_" + ObservatoryFormDate,
-					"PC_" + ObservatoryFormDate, "TC_" + ObservatoryFormDate };
+			final String[] ColumnNames = new String[] { "id", "nombre", "namecat", "ambito", "complejidad", "depende_de", "semilla", "tematica", "distribucion", "recurrencia", "otros", "paginas",
+					"puntuacion_" + ObservatoryFormDate, "adecuacion_" + ObservatoryFormDate, "cumplimiento_" + ObservatoryFormDate, "NV_" + ObservatoryFormDate, "A_" + ObservatoryFormDate,
+					"AA_" + ObservatoryFormDate, "NC_" + ObservatoryFormDate, "PC_" + ObservatoryFormDate, "TC_" + ObservatoryFormDate };
 			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet("Hoja1");
+			XSSFSheet sheet = wb.createSheet("Resultados");
 			XSSFRow row;
 			XSSFCell cell;
 			int rowIndex = 0;
 			int columnIndex = 0;
-
 			// create header cell style
 			CellStyle headerStyle = wb.createCellStyle();
 			headerStyle.setWrapText(true);
@@ -1018,7 +1073,6 @@ public final class AnnexUtils {
 			headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 			headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
 			headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
 			// create light shadow cell style
 			CellStyle shadowStyle = wb.createCellStyle();
 			shadowStyle.setWrapText(true);
@@ -1026,7 +1080,6 @@ public final class AnnexUtils {
 			shadowStyle.setVerticalAlignment(VerticalAlignment.TOP);
 			shadowStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
 			shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
 			// Add headers
 			row = sheet.createRow(rowIndex);
 			for (String name : ColumnNames) {
@@ -1035,7 +1088,6 @@ public final class AnnexUtils {
 				cell.setCellStyle(headerStyle);
 				columnIndex++;
 			}
-
 			// The sheet already has headers, so we start in the second row.
 			rowIndex++;
 			int categoryStarts;
@@ -1043,9 +1095,7 @@ public final class AnnexUtils {
 				categoryStarts = rowIndex;
 				if (categoryForm != null) {
 					for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-
 						final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
-
 						// Multidependence
 						StringBuilder dependencias = new StringBuilder();
 						if (semillaForm.getDependencias() != null) {
@@ -1056,10 +1106,8 @@ public final class AnnexUtils {
 								}
 							}
 						}
-
 						row = sheet.createRow(rowIndex);
 						int excelRowNumber = rowIndex + 1;
-
 						// "id"
 						cell = row.createCell(0);
 						cell.setCellValue(String.valueOf(semillaForm.getId()));
@@ -1088,7 +1136,6 @@ public final class AnnexUtils {
 						cell = row.createCell(6);
 						cell.setCellValue(semillaForm.getListaUrls().get(0));
 						cell.setCellStyle(shadowStyle);
-
 						// Seed tags
 						List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
 						List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
@@ -1099,25 +1146,24 @@ public final class AnnexUtils {
 							for (EtiquetaForm tmp : etiquetas) {
 								if (tmp.getClasificacion() != null) {
 									switch (tmp.getClasificacion().getId()) {
-										case "1":
-											tagsTematica.add(tmp);
-											break;
-										case "2":
-											tagsDistribucion.add(tmp);
-											break;
-										case "3":
-											tagsRecurrencia.add(tmp);
-											break;
-										case "4":
-											tagsOtros.add(tmp);
-											break;
-										default:
-											break;
+									case "1":
+										tagsTematica.add(tmp);
+										break;
+									case "2":
+										tagsDistribucion.add(tmp);
+										break;
+									case "3":
+										tagsRecurrencia.add(tmp);
+										break;
+									case "4":
+										tagsOtros.add(tmp);
+										break;
+									default:
+										break;
 									}
 								}
 							}
 						}
-
 						// "tematica"
 						String dataToInsert = "";
 						if (!tagsTematica.isEmpty()) {
@@ -1131,7 +1177,6 @@ public final class AnnexUtils {
 						cell = row.createCell(7);
 						cell.setCellValue(dataToInsert);
 						cell.setCellStyle(shadowStyle);
-
 						// "distribucion"
 						dataToInsert = "";
 						if (!tagsDistribucion.isEmpty()) {
@@ -1145,7 +1190,6 @@ public final class AnnexUtils {
 						cell = row.createCell(8);
 						cell.setCellValue(dataToInsert);
 						cell.setCellStyle(shadowStyle);
-
 						// "Recurrencia"
 						dataToInsert = "";
 						if (!tagsRecurrencia.isEmpty()) {
@@ -1159,7 +1203,6 @@ public final class AnnexUtils {
 						cell = row.createCell(9);
 						cell.setCellValue(dataToInsert);
 						cell.setCellStyle(shadowStyle);
-
 						// Otros
 						dataToInsert = "";
 						if (!tagsOtros.isEmpty()) {
@@ -1173,12 +1216,10 @@ public final class AnnexUtils {
 						cell = row.createCell(10);
 						cell.setCellValue(dataToInsert);
 						cell.setCellStyle(shadowStyle);
-
 						// Páginas
 						cell = row.createCell(11);
 						cell.setCellValue(String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
 						cell.setCellStyle(shadowStyle);
-
 						Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
 						// "puntuacion_" + date
 						cell = row.createCell(12);
@@ -1225,12 +1266,10 @@ public final class AnnexUtils {
 						cell.setCellStyle(shadowStyle);
 						rowIndex++;
 					}
-
 					// Increase width of columns to match content
 					for (int i = 0; i < ColumnNames.length; i++) {
 						sheet.autoSizeColumn(i);
 					}
-
 					// Create graph into the Category sheet
 					if (categoryForm.getSiteFormList().size() > 0) {
 						/*
@@ -1254,6 +1293,7 @@ public final class AnnexUtils {
 			throw e;
 		}
 	}
+
 	/**
 	 * Creates the XLSX evolution annex.
 	 *
