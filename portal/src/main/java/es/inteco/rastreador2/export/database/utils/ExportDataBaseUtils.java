@@ -95,10 +95,10 @@ public final class ExportDataBaseUtils {
 			BeanUtils.copyProperties(pageForm, page);
 			pageFormList.add(pageForm);
 		}
-		List<VerificationModalityForm> verificationModalityFormList = new ArrayList<>();
-		for (VerificationModality verification : site.getVerificationModalityList()) {
-			verificationModalityFormList.add(getVerificationModalityForm(verification));
-		}
+//		List<VerificationModalityForm> verificationModalityFormList = new ArrayList<>();
+//		for (VerificationModality verification : site.getVerificationModalityList()) {
+//			verificationModalityFormList.add(getVerificationModalityForm(verification));
+//		}
 		siteForm.setPageList(pageFormList);
 		return siteForm;
 	}
