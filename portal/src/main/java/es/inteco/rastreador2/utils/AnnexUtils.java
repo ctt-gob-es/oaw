@@ -218,12 +218,48 @@ public final class AnnexUtils {
 		// TODO Clone file 1 or 2
 		final PropertiesManager pmgr = new PropertiesManager();
 		final File originalWb = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "2. Iteración SW.xlsx");
-		final FileOutputStream fos = new FileOutputStream(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "3. - Iteración Ranking.xlsx");
+		final FileOutputStream fos = new FileOutputStream(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "3. Iteración Ranking.xlsx");
 		// TODO Add new sheet in the beginning
 		XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(originalWb));
-		final String sheetname = "Ranking Adecuación";
-		final String[] columnNames = new String[] { "MINISTERIOS", "TOTAL PORTALES AA", "% AA", "NOTA MEDIA AA", "TOTAL PORTALES A", "% A", "NOTA MEDIA A", "TOTAL PORTALES NO VÁLIDO", "% NO VÁLIDO",
-				"NOTA MEDIA NV", "% NO CUMPLEN", "TOTAL PORTALES", };
+		final XSSFSheet resultSheet = wb.getSheet("Resultados");
+		final String sheetnameAllocation = "Ranking Adecuación";
+		final String sheetnameCompliance = "Ranking Cumplimiento";
+		final String[] columnNamesAllocation = new String[] { "MINISTERIOS", "TOTAL PORTALES AA", "% AA", "NOTA MEDIA AA", "TOTAL PORTALES A", "% A", "NOTA MEDIA A", "TOTAL PORTALES NO VÁLIDO",
+				"% NO VÁLIDO", "NOTA MEDIA NV", "% NO CUMPLEN", "TOTAL PORTALES" };
+		// In order left to right
+		final String[] columnResultsAllocation = new String[] { "R", "P", "Q" };
+		final String[] columnResultsCompliance = new String[] { "U", "T", "S" };
+		final String[] columnNamesCompliance = new String[] { "MINISTERIOS", "TOTAL PORTALES TC", "% TC", "NOTA MEDIA TC", "TOTAL PORTALES PC", "% PC", "NOTA MEDIA PC", "TOTAL PORTALES NC", "% NC",
+				"NOTA MEDIA NC", "% NO CONFORMES", "TOTAL PORTALES" };
+		// TODO Add table
+		// Set table to manipulate data
+		CellReference ref = new CellReference("A1");
+		CellReference topLeft = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
+		ref = new CellReference("U" + resultSheet.getLastRowNum());
+		CellReference bottomRight = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
+		AreaReference tableArea = wb.getCreationHelper().createAreaReference(topLeft, bottomRight);
+		XSSFTable dataTable = resultSheet.createTable(tableArea);
+		dataTable.setDisplayName("Tabla1");
+		// this sets auto filters
+		dataTable.getCTTable().addNewAutoFilter().setRef(tableArea.formatAsString());
+		addRankingSheet(wb, resultSheet, sheetnameAllocation, columnNamesAllocation, columnResultsAllocation);
+		addRankingSheet(wb, resultSheet, sheetnameCompliance, columnNamesCompliance, columnResultsCompliance);
+//		wb.setSelectedTab(0);
+		XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+		wb.write(fos);
+		fos.close();
+	}
+
+	/**
+	 * Adds the ranking sheet.
+	 *
+	 * @param wb          the wb
+	 * @param resultSheet the result sheet
+	 * @param sheetname   the sheetname
+	 * @param columnNames the column names
+	 */
+	private static void addRankingSheet(XSSFWorkbook wb, final XSSFSheet resultSheet, final String sheetname, final String[] columnNames, final String[] columnResults) {
+		final String resultColumnDependecy = "F";
 		XSSFSheet rankingSheet = wb.createSheet(sheetname);
 		wb.setSheetOrder(sheetname, 0);
 		XSSFRow row;
@@ -310,72 +346,75 @@ public final class AnnexUtils {
 			cell.setCellValue(name);
 			columnIndex++;
 		}
-		CellReference ref = new CellReference("B1");
-		Row r = rankingSheet.getRow(ref.getRow());
-		Cell c = r.getCell(ref.getCol());
+		// Reset
+		columnIndex = 1;
+//		CellReference ref = new CellReference("B1");
+//		Row r = rankingSheet.getRow(ref.getRow());
+//		Cell c = r.getCell(ref.getCol());
+		Cell c = rankingSheet.getRow(rowIndex).getCell(columnIndex++);
 		c.setCellStyle(headerStyle);
-		ref = new CellReference("C1");
-		r = rankingSheet.getRow(ref.getRow());
-		c = r.getCell(ref.getCol());
+//		ref = new CellReference("C1");
+//		r = rankingSheet.getRow(ref.getRow());
+//		c = r.getCell(ref.getCol());
+		c = rankingSheet.getRow(rowIndex).getCell(columnIndex++);
 		c.setCellStyle(headerStyleGreen);
-		ref = new CellReference("D1");
-		r = rankingSheet.getRow(ref.getRow());
-		c = r.getCell(ref.getCol());
+//		ref = new CellReference("D1");
+//		r = rankingSheet.getRow(ref.getRow());
+//		c = r.getCell(ref.getCol());
+		c = rankingSheet.getRow(rowIndex).getCell(columnIndex++);
 		c.setCellStyle(headerStyleGreen);
-		ref = new CellReference("E1");
-		r = rankingSheet.getRow(ref.getRow());
-		c = r.getCell(ref.getCol());
+//		ref = new CellReference("E1");
+//		r = rankingSheet.getRow(ref.getRow());
+//		c = r.getCell(ref.getCol());
+		c = rankingSheet.getRow(rowIndex).getCell(columnIndex++);
 		c.setCellStyle(headerStyleGreen);
-		ref = new CellReference("F1");
-		r = rankingSheet.getRow(ref.getRow());
-		c = r.getCell(ref.getCol());
+//		ref = new CellReference("F1");
+//		r = rankingSheet.getRow(ref.getRow());
+//		c = r.getCell(ref.getCol());
+		c = rankingSheet.getRow(rowIndex).getCell(columnIndex++);
 		c.setCellStyle(headerStyleYellow);
-		ref = new CellReference("G1");
-		r = rankingSheet.getRow(ref.getRow());
-		c = r.getCell(ref.getCol());
+//		ref = new CellReference("G1");
+//		r = rankingSheet.getRow(ref.getRow());
+//		c = r.getCell(ref.getCol());
+		c = rankingSheet.getRow(rowIndex).getCell(columnIndex++);
 		c.setCellStyle(headerStyleYellow);
-		ref = new CellReference("H1");
-		r = rankingSheet.getRow(ref.getRow());
-		c = r.getCell(ref.getCol());
+//		ref = new CellReference("H1");
+//		r = rankingSheet.getRow(ref.getRow());
+//		c = r.getCell(ref.getCol());
+		c = rankingSheet.getRow(rowIndex).getCell(columnIndex++);
 		c.setCellStyle(headerStyleYellow);
-		ref = new CellReference("I1");
-		r = rankingSheet.getRow(ref.getRow());
-		c = r.getCell(ref.getCol());
+//		ref = new CellReference("I1");
+//		r = rankingSheet.getRow(ref.getRow());
+//		c = r.getCell(ref.getCol());
+		c = rankingSheet.getRow(rowIndex).getCell(columnIndex++);
 		c.setCellStyle(headerStyleRed);
-		ref = new CellReference("J1");
-		r = rankingSheet.getRow(ref.getRow());
-		c = r.getCell(ref.getCol());
+//		ref = new CellReference("J1");
+//		r = rankingSheet.getRow(ref.getRow());
+//		c = r.getCell(ref.getCol());
+		c = rankingSheet.getRow(rowIndex).getCell(columnIndex++);
 		c.setCellStyle(headerStyleRed);
-		ref = new CellReference("K1");
-		r = rankingSheet.getRow(ref.getRow());
-		c = r.getCell(ref.getCol());
+//		ref = new CellReference("K1");
+//		r = rankingSheet.getRow(ref.getRow());
+//		c = r.getCell(ref.getCol());
+		c = rankingSheet.getRow(rowIndex).getCell(columnIndex++);
 		c.setCellStyle(headerStyleRed);
-		ref = new CellReference("L1");
-		r = rankingSheet.getRow(ref.getRow());
-		c = r.getCell(ref.getCol());
+//		ref = new CellReference("L1");
+//		r = rankingSheet.getRow(ref.getRow());
+//		c = r.getCell(ref.getCol());
+		c = rankingSheet.getRow(rowIndex).getCell(columnIndex++);
 		c.setCellStyle(headerStyleOrange);
-		ref = new CellReference("M1");
-		r = rankingSheet.getRow(ref.getRow());
-		c = r.getCell(ref.getCol());
+//		ref = new CellReference("M1");
+//		r = rankingSheet.getRow(ref.getRow());
+//		c = r.getCell(ref.getCol());
+		c = rankingSheet.getRow(rowIndex).getCell(columnIndex++);
 		c.setCellStyle(headerStyleBlue);
-		final XSSFSheet resultSheet = wb.getSheet("Resultados");
-		// Set table to manipulate data
-		ref = new CellReference("A1");
-		CellReference topLeft = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
-		ref = new CellReference("U" + resultSheet.getLastRowNum());
-		CellReference bottomRight = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
-		AreaReference tableArea = wb.getCreationHelper().createAreaReference(topLeft, bottomRight);
-		XSSFTable dataTable = resultSheet.createTable(tableArea);
-		dataTable.setDisplayName("Tabla1");
-		// this sets auto filters
-		dataTable.getCTTable().addNewAutoFilter().setRef(tableArea.formatAsString());
 		/*
 		 * CTTableColumns columns = dataTable.getCTTable().addNewTableColumns(); ref = new CellReference("U1"); columns.setCount(ref.getCol()); for (int i = 1; i <= ref.getCol(); i++) { CTTableColumn
 		 * column = columns.addNewTableColumn(); column.setId(i); ref = new CellReference("A" + i); r = resultSheet.getRow(ref.getRow()); c = r.getCell(ref.getCol());
 		 * column.setName(c.getStringCellValue()); }
 		 */
 		// TODO Fill B with distinct depende D
-		List<String> dependencies = getValues("F", resultSheet);
+		List<String> dependencies = getValues(resultColumnDependecy, resultSheet);
 		rowIndex++;
 		int numOfDependencies = 0;
 		for (String dependency : dependencies) {
@@ -388,44 +427,50 @@ public final class AnnexUtils {
 		}
 		// Fill other columns
 		rowIndex = 1;
-//		Get date
-		Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry = annexmap.entrySet().iterator().next();
-		Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
+//		TODO Get date
+//		Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry = annexmap.entrySet().iterator().next();
+//		Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
 		// final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
 		try {
 			for (int i = 0; i < numOfDependencies; i++) {
 				int cellCount = 2;
-				r = rankingSheet.getRow(rowIndex + i);
+				Row r = rankingSheet.getRow(rowIndex + i);
 				/******** AA **********/
 				c = r.createCell(cellCount);
 				cellCount++;
-				c.setCellFormula("COUNTIFS(Resultados!$F:$F,\"*\"&B:B&\"*\",Resultados!$R:$R,\">0\")");
+				c.setCellFormula(
+						"COUNTIFS(Resultados!$" + resultColumnDependecy + ":$F" + resultColumnDependecy + ",\"*\"&B:B&\"*\",Resultados!$" + columnResults[0] + ":$F" + columnResults[0] + ",\">0\")");
 				c = r.createCell(cellCount);
 				cellCount++;
 				c.setCellFormula("IF(M:M<>0,C:C/M:M,0)");
 				c = r.createCell(cellCount);
 				cellCount++;
-				c.setCellFormula("IF(C:C>0,SUMIFS(Resultados!$R:$R,Resultados!$F:$F,\"*\"&B:B&\"*\")/C:C,0)");
+				c.setCellFormula("IF(C:C>0,SUMIFS(Resultados!$" + columnResults[0] + ":$F" + columnResults[0] + ",Resultados!$" + resultColumnDependecy + ":$F" + resultColumnDependecy
+						+ ",\"*\"&B:B&\"*\")/C:C,0)");
 				/******** A **********/
 				c = r.createCell(cellCount);
 				cellCount++;
-				c.setCellFormula("COUNTIFS(Resultados!$F:$F,\"*\"&B:B&\"*\",Resultados!$P:$P,\">0\")");
+				c.setCellFormula(
+						"COUNTIFS(Resultados!$" + resultColumnDependecy + ":$F" + resultColumnDependecy + ",\"*\"&B:B&\"*\",Resultados!$" + columnResults[1] + ":$F" + columnResults[1] + ",\">0\")");
 				c = r.createCell(cellCount);
 				cellCount++;
 				c.setCellFormula("IF(M:M<>0,F:F/M:M,0)");
 				c = r.createCell(cellCount);
 				cellCount++;
-				c.setCellFormula("IF(F:F>0,SUMIFS(Resultados!$P:$P,Resultados!$F:$F,\"*\"&B:B&\"*\")/F:F,0)");
+				c.setCellFormula("IF(F:F>0,SUMIFS(Resultados!$" + columnResults[1] + ":$F" + columnResults[1] + ",Resultados!$" + resultColumnDependecy + ":$F" + resultColumnDependecy
+						+ ",\"*\"&B:B&\"*\")/F:F,0)");
 				/******** NV **********/
 				c = r.createCell(cellCount);
 				cellCount++;
-				c.setCellFormula("COUNTIFS(Resultados!$F:$F,\"*\"&B:B&\"*\",Resultados!$Q:$Q,\">0\")");
+				c.setCellFormula(
+						"COUNTIFS(Resultados!$" + resultColumnDependecy + ":$F" + resultColumnDependecy + ",\"*\"&B:B&\"*\",Resultados!$" + columnResults[2] + ":$F" + columnResults[2] + ",\">0\")");
 				c = r.createCell(cellCount);
 				cellCount++;
 				c.setCellFormula("IF(M:M<>0,I:I/M:M,0)");
 				c = r.createCell(cellCount);
 				cellCount++;
-				c.setCellFormula("IF(I:I>0,SUMIFS(Resultados!$Q:$Q,Resultados!$F:$F,\"*\"&B:B&\"*\")/I:I,0)");
+				c.setCellFormula("IF(I:I>0,SUMIFS(Resultados!$" + columnResults[2] + ":$F" + columnResults[2] + ",Resultados!$" + resultColumnDependecy + ":$F" + resultColumnDependecy
+						+ ",\"*\"&B:B&\"*\")/I:I,0)");
 				/******** SUMS **********/
 				c = r.createCell(cellCount);
 				cellCount++;
@@ -435,11 +480,11 @@ public final class AnnexUtils {
 				cellCount++;
 				c.setCellFormula("SUM(C" + currentRowXlsx + ",F" + currentRowXlsx + ",I" + currentRowXlsx + ")");
 			}
-			ref = new CellReference("C2");
-			topLeft = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
+			CellReference ref = new CellReference("C1");
+			CellReference topLeft = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
 			ref = new CellReference("M" + (numOfDependencies + 1));
-			bottomRight = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
-			tableArea = wb.getCreationHelper().createAreaReference(topLeft, bottomRight);
+			CellReference bottomRight = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
+			AreaReference tableArea = wb.getCreationHelper().createAreaReference(topLeft, bottomRight);
 			XSSFTable dataTableRanking = resultSheet.createTable(tableArea);
 			dataTableRanking.setDisplayName("TablaRankingA");
 			// this sets auto filters
@@ -447,13 +492,8 @@ public final class AnnexUtils {
 			rankingSheet.setAutoFilter(new CellRangeAddress(topLeft.getRow(), bottomRight.getRow(), topLeft.getCol(), bottomRight.getCol()));
 			dataTableRanking.getCTTable();
 		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+			Logger.putLog("Error generating 3. Iteración Ranking.xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-//		wb.setSelectedTab(0);
-		XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
-		wb.write(fos);
-		fos.close();
 	}
 
 	/**
@@ -1061,7 +1101,7 @@ public final class AnnexUtils {
 					"puntuacion_" + ObservatoryFormDate, "adecuacion_" + ObservatoryFormDate, "cumplimiento_" + ObservatoryFormDate, "NV_" + ObservatoryFormDate, "A_" + ObservatoryFormDate,
 					"AA_" + ObservatoryFormDate, "NC_" + ObservatoryFormDate, "PC_" + ObservatoryFormDate, "TC_" + ObservatoryFormDate };
 			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet("Hoja1");
+			XSSFSheet sheet = wb.createSheet("Resultados");
 			XSSFRow row;
 			XSSFCell cell;
 			int rowIndex = 0;
