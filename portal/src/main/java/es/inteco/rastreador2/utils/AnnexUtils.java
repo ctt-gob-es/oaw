@@ -1061,7 +1061,7 @@ public final class AnnexUtils {
 					"puntuacion_" + ObservatoryFormDate, "adecuacion_" + ObservatoryFormDate, "cumplimiento_" + ObservatoryFormDate, "NV_" + ObservatoryFormDate, "A_" + ObservatoryFormDate,
 					"AA_" + ObservatoryFormDate, "NC_" + ObservatoryFormDate, "PC_" + ObservatoryFormDate, "TC_" + ObservatoryFormDate };
 			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet("Resultados");
+			XSSFSheet sheet = wb.createSheet("Hoja1");
 			XSSFRow row;
 			XSSFCell cell;
 			int rowIndex = 0;
@@ -1096,175 +1096,177 @@ public final class AnnexUtils {
 				if (categoryForm != null) {
 					for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 						final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
-						// Multidependence
-						StringBuilder dependencias = new StringBuilder();
-						if (semillaForm.getDependencias() != null) {
-							for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-								dependencias.append(semillaForm.getDependencias().get(i).getName());
-								if (i < semillaForm.getDependencias().size() - 1) {
-									dependencias.append("\n");
-								}
-							}
-						}
-						row = sheet.createRow(rowIndex);
-						int excelRowNumber = rowIndex + 1;
-						// "id"
-						cell = row.createCell(0);
-						cell.setCellValue(String.valueOf(semillaForm.getId()));
-						cell.setCellStyle(shadowStyle);
-						// "nombre"
-						cell = row.createCell(1);
-						cell.setCellValue(semillaForm.getNombre());
-						cell.setCellStyle(shadowStyle);
-						// "namecat"
-						cell = row.createCell(2);
-						cell.setCellValue(categoryForm.getName());
-						cell.setCellStyle(shadowStyle);
-						// "ambito"
-						cell = row.createCell(3);
-						cell.setCellValue(semillaForm.getAmbito().getName());
-						cell.setCellStyle(shadowStyle);
-						// "complejidad"
-						cell = row.createCell(4);
-						cell.setCellValue(semillaForm.getComplejidad().getName());
-						cell.setCellStyle(shadowStyle);
-						// "depende_de"
-						cell = row.createCell(5);
-						cell.setCellValue(dependencias.toString());
-						cell.setCellStyle(shadowStyle);
-						// "semilla"
-						cell = row.createCell(6);
-						cell.setCellValue(semillaForm.getListaUrls().get(0));
-						cell.setCellStyle(shadowStyle);
-						// Seed tags
-						List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
-						List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
-						List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
-						List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
-						List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
-						if (etiquetas != null && !etiquetas.isEmpty()) {
-							for (EtiquetaForm tmp : etiquetas) {
-								if (tmp.getClasificacion() != null) {
-									switch (tmp.getClasificacion().getId()) {
-									case "1":
-										tagsTematica.add(tmp);
-										break;
-									case "2":
-										tagsDistribucion.add(tmp);
-										break;
-									case "3":
-										tagsRecurrencia.add(tmp);
-										break;
-									case "4":
-										tagsOtros.add(tmp);
-										break;
-									default:
-										break;
+						if (categoryForm.getName().equals(semillaForm.getCategoria().getName())) {
+							// Multidependence
+							StringBuilder dependencias = new StringBuilder();
+							if (semillaForm.getDependencias() != null) {
+								for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+									dependencias.append(semillaForm.getDependencias().get(i).getName());
+									if (i < semillaForm.getDependencias().size() - 1) {
+										dependencias.append("\n");
 									}
 								}
 							}
-						}
-						// "tematica"
-						String dataToInsert = "";
-						if (!tagsTematica.isEmpty()) {
-							for (int i = 0; i < tagsTematica.size(); i++) {
-								dataToInsert += tagsTematica.get(i).getName();
-								if (i < tagsDistribucion.size() - 1) {
-									dataToInsert += "\n";
+							row = sheet.createRow(rowIndex);
+							int excelRowNumber = rowIndex + 1;
+							// "id"
+							cell = row.createCell(0);
+							cell.setCellValue(String.valueOf(semillaForm.getId()));
+							cell.setCellStyle(shadowStyle);
+							// "nombre"
+							cell = row.createCell(1);
+							cell.setCellValue(semillaForm.getNombre());
+							cell.setCellStyle(shadowStyle);
+							// "namecat"
+							cell = row.createCell(2);
+							cell.setCellValue(categoryForm.getName());
+							cell.setCellStyle(shadowStyle);
+							// "ambito"
+							cell = row.createCell(3);
+							cell.setCellValue(semillaForm.getAmbito().getName());
+							cell.setCellStyle(shadowStyle);
+							// "complejidad"
+							cell = row.createCell(4);
+							cell.setCellValue(semillaForm.getComplejidad().getName());
+							cell.setCellStyle(shadowStyle);
+							// "depende_de"
+							cell = row.createCell(5);
+							cell.setCellValue(dependencias.toString());
+							cell.setCellStyle(shadowStyle);
+							// "semilla"
+							cell = row.createCell(6);
+							cell.setCellValue(semillaForm.getListaUrls().get(0));
+							cell.setCellStyle(shadowStyle);
+							// Seed tags
+							List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+							List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+							List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+							List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+							List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+							if (etiquetas != null && !etiquetas.isEmpty()) {
+								for (EtiquetaForm tmp : etiquetas) {
+									if (tmp.getClasificacion() != null) {
+										switch (tmp.getClasificacion().getId()) {
+										case "1":
+											tagsTematica.add(tmp);
+											break;
+										case "2":
+											tagsDistribucion.add(tmp);
+											break;
+										case "3":
+											tagsRecurrencia.add(tmp);
+											break;
+										case "4":
+											tagsOtros.add(tmp);
+											break;
+										default:
+											break;
+										}
+									}
 								}
 							}
-						}
-						cell = row.createCell(7);
-						cell.setCellValue(dataToInsert);
-						cell.setCellStyle(shadowStyle);
-						// "distribucion"
-						dataToInsert = "";
-						if (!tagsDistribucion.isEmpty()) {
-							for (int i = 0; i < tagsDistribucion.size(); i++) {
-								dataToInsert += tagsDistribucion.get(i).getName();
-								if (i < tagsDistribucion.size() - 1) {
-									dataToInsert += "\n";
+							// "tematica"
+							String dataToInsert = "";
+							if (!tagsTematica.isEmpty()) {
+								for (int i = 0; i < tagsTematica.size(); i++) {
+									dataToInsert += tagsTematica.get(i).getName();
+									if (i < tagsDistribucion.size() - 1) {
+										dataToInsert += "\n";
+									}
 								}
 							}
-						}
-						cell = row.createCell(8);
-						cell.setCellValue(dataToInsert);
-						cell.setCellStyle(shadowStyle);
-						// "Recurrencia"
-						dataToInsert = "";
-						if (!tagsRecurrencia.isEmpty()) {
-							for (int i = 0; i < tagsRecurrencia.size(); i++) {
-								dataToInsert += tagsRecurrencia.get(i).getName();
-								if (i < tagsRecurrencia.size() - 1) {
-									dataToInsert += "\n";
+							cell = row.createCell(7);
+							cell.setCellValue(dataToInsert);
+							cell.setCellStyle(shadowStyle);
+							// "distribucion"
+							dataToInsert = "";
+							if (!tagsDistribucion.isEmpty()) {
+								for (int i = 0; i < tagsDistribucion.size(); i++) {
+									dataToInsert += tagsDistribucion.get(i).getName();
+									if (i < tagsDistribucion.size() - 1) {
+										dataToInsert += "\n";
+									}
 								}
 							}
-						}
-						cell = row.createCell(9);
-						cell.setCellValue(dataToInsert);
-						cell.setCellStyle(shadowStyle);
-						// Otros
-						dataToInsert = "";
-						if (!tagsOtros.isEmpty()) {
-							for (int i = 0; i < tagsOtros.size(); i++) {
-								dataToInsert += tagsOtros.get(i).getName();
-								if (i < tagsOtros.size() - 1) {
-									dataToInsert += "\n";
+							cell = row.createCell(8);
+							cell.setCellValue(dataToInsert);
+							cell.setCellStyle(shadowStyle);
+							// "Recurrencia"
+							dataToInsert = "";
+							if (!tagsRecurrencia.isEmpty()) {
+								for (int i = 0; i < tagsRecurrencia.size(); i++) {
+									dataToInsert += tagsRecurrencia.get(i).getName();
+									if (i < tagsRecurrencia.size() - 1) {
+										dataToInsert += "\n";
+									}
 								}
 							}
+							cell = row.createCell(9);
+							cell.setCellValue(dataToInsert);
+							cell.setCellStyle(shadowStyle);
+							// Otros
+							dataToInsert = "";
+							if (!tagsOtros.isEmpty()) {
+								for (int i = 0; i < tagsOtros.size(); i++) {
+									dataToInsert += tagsOtros.get(i).getName();
+									if (i < tagsOtros.size() - 1) {
+										dataToInsert += "\n";
+									}
+								}
+							}
+							cell = row.createCell(10);
+							cell.setCellValue(dataToInsert);
+							cell.setCellStyle(shadowStyle);
+							// Páginas
+							cell = row.createCell(11);
+							cell.setCellValue(String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
+							cell.setCellStyle(shadowStyle);
+							Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
+							// "puntuacion_" + date
+							cell = row.createCell(12);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellValue(Double.parseDouble(entry.getValue().getTotalScore().toString()));
+							cell.setCellStyle(shadowStyle);
+							// "adecuacion_" + date
+							cell = row.createCell(13);
+							cell.setCellValue(changeLevelName(entry.getValue().getLevel(), messageResources));
+							cell.setCellStyle(shadowStyle);
+							// "cumplimiento_" + date
+							cell = row.createCell(14);
+							cell.setCellValue(entry.getValue().getCompliance());
+							cell.setCellStyle(shadowStyle);
+							// "NV_" + date
+							cell = row.createCell(15);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($N" + excelRowNumber + "=\"No Válido\",$M" + excelRowNumber + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// "A_" + date
+							cell = row.createCell(16);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($N" + excelRowNumber + "=\"A\",$M" + excelRowNumber + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// "AA_" + date
+							cell = row.createCell(17);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($N" + excelRowNumber + "=\"AA\",$M" + excelRowNumber + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// "NC_" + date
+							cell = row.createCell(18);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($O" + excelRowNumber + "=\"No conforme\",$M" + excelRowNumber + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// "PC_" + date
+							cell = row.createCell(19);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($O" + excelRowNumber + "=\"Parcialmente conforme\",$M" + excelRowNumber + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// "TC_" + date
+							cell = row.createCell(20);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($O" + excelRowNumber + "=\"Plenamente conforme\",$M" + excelRowNumber + ",0)");
+							cell.setCellStyle(shadowStyle);
+							rowIndex++;
 						}
-						cell = row.createCell(10);
-						cell.setCellValue(dataToInsert);
-						cell.setCellStyle(shadowStyle);
-						// Páginas
-						cell = row.createCell(11);
-						cell.setCellValue(String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
-						cell.setCellStyle(shadowStyle);
-						Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
-						// "puntuacion_" + date
-						cell = row.createCell(12);
-						cell.setCellType(CellType.NUMERIC);
-						cell.setCellValue(Double.parseDouble(entry.getValue().getTotalScore().toString()));
-						cell.setCellStyle(shadowStyle);
-						// "adecuacion_" + date
-						cell = row.createCell(13);
-						cell.setCellValue(changeLevelName(entry.getValue().getLevel(), messageResources));
-						cell.setCellStyle(shadowStyle);
-						// "cumplimiento_" + date
-						cell = row.createCell(14);
-						cell.setCellValue(entry.getValue().getCompliance());
-						cell.setCellStyle(shadowStyle);
-						// "NV_" + date
-						cell = row.createCell(15);
-						cell.setCellType(CellType.NUMERIC);
-						cell.setCellFormula("IF($N" + excelRowNumber + "=\"No Válido\",$M" + excelRowNumber + ",0)");
-						cell.setCellStyle(shadowStyle);
-						// "A_" + date
-						cell = row.createCell(16);
-						cell.setCellType(CellType.NUMERIC);
-						cell.setCellFormula("IF($N" + excelRowNumber + "=\"A\",$M" + excelRowNumber + ",0)");
-						cell.setCellStyle(shadowStyle);
-						// "AA_" + date
-						cell = row.createCell(17);
-						cell.setCellType(CellType.NUMERIC);
-						cell.setCellFormula("IF($N" + excelRowNumber + "=\"AA\",$M" + excelRowNumber + ",0)");
-						cell.setCellStyle(shadowStyle);
-						// "NC_" + date
-						cell = row.createCell(18);
-						cell.setCellType(CellType.NUMERIC);
-						cell.setCellFormula("IF($O" + excelRowNumber + "=\"No conforme\",$M" + excelRowNumber + ",0)");
-						cell.setCellStyle(shadowStyle);
-						// "PC_" + date
-						cell = row.createCell(19);
-						cell.setCellType(CellType.NUMERIC);
-						cell.setCellFormula("IF($O" + excelRowNumber + "=\"Parcialmente conforme\",$M" + excelRowNumber + ",0)");
-						cell.setCellStyle(shadowStyle);
-						// "TC_" + date
-						cell = row.createCell(20);
-						cell.setCellType(CellType.NUMERIC);
-						cell.setCellFormula("IF($O" + excelRowNumber + "=\"Plenamente conforme\",$M" + excelRowNumber + ",0)");
-						cell.setCellStyle(shadowStyle);
-						rowIndex++;
 					}
 					// Increase width of columns to match content
 					for (int i = 0; i < ColumnNames.length; i++) {
