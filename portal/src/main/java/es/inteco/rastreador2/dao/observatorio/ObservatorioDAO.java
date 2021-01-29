@@ -220,6 +220,7 @@ public final class ObservatorioDAO {
 	 * @param date          the date
 	 * @param desc          the desc
 	 * @param exObsIds      the ex obs ids
+	 * @param tagId         the tag id
 	 * @return the fulfilled observatories by tag
 	 * @throws SQLException the SQL exception
 	 */
@@ -1606,16 +1607,18 @@ public final class ObservatorioDAO {
 	 */
 	public static List<Long> getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(Connection c, final Long idObsRealizado, final Integer percent, final Integer seeds) throws Exception {
 		final List<Long> crawlerIds = new ArrayList<>();
-		// final String tresholdCalculation = "(((cl.amplitud*cl.profundidad)+1)*((100 -(select `value` from observatorio_extra_configuration where `key` ='umbral'))/100))";
 		final String tresholdCalculation = "(((cl.amplitud*cl.profundidad)+1)*(((select `value` from observatorio_extra_configuration where `key` ='umbral'))/100))";
 		String query = "SELECT ID_SEED,ID_RR,ID_R, NUM_C, ((cl.amplitud*cl.profundidad)+1) CX, " + tresholdCalculation
-				+ " THRESHOLD  FROM (SELECT l.id_lista as ID_SEED, rr.id as ID_RR, rr.id_rastreo as ID_R , count(ta.cod_url) as NUM_C FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l WHERE ta.cod_rastreo = rr.id AND rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista AND r.estado = 4 and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado= ?) GROUP by rr.id) AS NUM_CRAWLS, lista l2, complejidades_lista cl WHERE  l2.id_lista = ID_SEED AND cl.id_complejidad=l2.id_complejidad AND NUM_C < "
-				+ tresholdCalculation + "";
-		if (percent != null) {
-			query += " AND  ((NUM_C * 1.0) / ((cl.profundidad * cl.amplitud) + 1)) * 100 <= ?";
-		}
-		if (seeds != null) {
-			query += " AND NUM_C" + "<= ?";
+				+ " THRESHOLD  FROM (SELECT l.id_lista as ID_SEED, rr.id as ID_RR, rr.id_rastreo as ID_R , count(ta.cod_url) as NUM_C FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l WHERE ta.cod_rastreo = rr.id AND rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista AND r.estado = 4 and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado= ?) GROUP by rr.id) AS NUM_CRAWLS, lista l2, complejidades_lista cl WHERE  l2.id_lista = ID_SEED AND cl.id_complejidad=l2.id_complejidad";
+		if (percent == null && seeds == null) {
+			query += " AND NUM_C < " + tresholdCalculation + "";
+		} else {
+			if (percent != null) {
+				query += " AND  ((NUM_C * 1.0) / ((cl.profundidad * cl.amplitud) + 1)) * 100 <= ?";
+			}
+			if (seeds != null) {
+				query += " AND NUM_C" + "<= ?";
+			}
 		}
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			int paramNumber = 1;

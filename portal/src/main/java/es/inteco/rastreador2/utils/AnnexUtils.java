@@ -19,6 +19,7 @@ import static es.inteco.common.Constants.CATEGORY_NAME;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -33,13 +34,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xddf.usermodel.PresetColor;
 import org.apache.poi.xddf.usermodel.XDDFColor;
 import org.apache.poi.xddf.usermodel.XDDFLineProperties;
@@ -64,6 +68,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFChart;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -195,7 +200,230 @@ public final class AnnexUtils {
 		createAnnexXLSX(messageResources, idObsExecution, idOperation);
 		createAnnexXLSX_Evolution(messageResources, idObsExecution, idOperation, comparision);
 		createAnnexXLSX_PerDependency(idOperation);
+		// createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
 		createComparativeSuitabilitieXLSX(messageResources, idObsExecution, idOperation);
+	}
+
+	/**
+	 * Creates the annex XLSX ranking.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexXLSXRanking(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+		// TODO Clone file 1 or 2
+		final PropertiesManager pmgr = new PropertiesManager();
+		final File originalWb = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "2. Iteración SW.xlsx");
+		final FileOutputStream fos = new FileOutputStream(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "3. - Iteración Ranking.xlsx");
+		// TODO Add new sheet in the beginning
+		XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(originalWb));
+		XSSFSheet rankingSheet = wb.createSheet("Ranking");
+		wb.setSheetOrder("Ranking", 0);
+		wb.setSelectedTab(0);
+		// Fill header rows
+		final String[] ColumnNames = new String[] { "MINISTERIOS", "TOTAL PORTALES AA", "% AA", "NOTA MEDIA AA", "TOTAL PORTALES A", "% A", "NOTA MEDIA A", "TOTAL PORTALES NO VÁLIDO", "% NO VÁLIDO",
+				"NOTA MEDIA NV", "% NO CUMPLEN", "TOTAL PORTALES", };
+		XSSFRow row;
+		XSSFCell cell;
+		int rowIndex = 0;
+		int columnIndex = 1;
+		XSSFFont whiteBold16 = wb.createFont();
+		whiteBold16.setFontHeightInPoints((short) 16);
+		whiteBold16.setFontName("Arial");
+		whiteBold16.setColor(IndexedColors.WHITE.getIndex());
+		whiteBold16.setBold(true);
+		whiteBold16.setItalic(false);
+		XSSFFont whiteBold10 = wb.createFont();
+		whiteBold10.setFontHeightInPoints((short) 10.5);
+		whiteBold10.setFontName("Arial");
+		whiteBold10.setColor(IndexedColors.WHITE.getIndex());
+		whiteBold10.setBold(true);
+		whiteBold10.setItalic(false);
+		XSSFFont blackBold10 = wb.createFont();
+		blackBold10.setFontHeightInPoints((short) 10.5);
+		blackBold10.setFontName("Arial");
+		blackBold10.setColor(IndexedColors.BLACK.getIndex());
+		blackBold10.setBold(true);
+		blackBold10.setItalic(false);
+		XSSFFont blackBold11 = wb.createFont();
+		blackBold11.setFontHeightInPoints((short) 11);
+		blackBold11.setFontName("Arial");
+		blackBold11.setColor(IndexedColors.BLACK.getIndex());
+		blackBold11.setBold(true);
+		blackBold11.setItalic(false);
+		CellStyle dependencyStyle = wb.createCellStyle();
+		dependencyStyle.setWrapText(true);
+		dependencyStyle.setAlignment(HorizontalAlignment.CENTER);
+		dependencyStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+		dependencyStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+		dependencyStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		dependencyStyle.setFont(blackBold11);
+		CellStyle headerStyle = wb.createCellStyle();
+		headerStyle.setWrapText(true);
+		headerStyle.setAlignment(HorizontalAlignment.CENTER);
+		headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+		headerStyle.setFillForegroundColor(IndexedColors.BLUE.getIndex());
+		headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		headerStyle.setFont(whiteBold16);
+		CellStyle headerStyleGreen = wb.createCellStyle();
+		headerStyleGreen.setWrapText(true);
+		headerStyleGreen.setAlignment(HorizontalAlignment.CENTER);
+		headerStyleGreen.setVerticalAlignment(VerticalAlignment.CENTER);
+		headerStyleGreen.setFillForegroundColor(IndexedColors.GREEN.getIndex());
+		headerStyleGreen.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		headerStyleGreen.setFont(whiteBold10);
+		CellStyle headerStyleYellow = wb.createCellStyle();
+		headerStyleYellow.setWrapText(true);
+		headerStyleYellow.setAlignment(HorizontalAlignment.CENTER);
+		headerStyleYellow.setVerticalAlignment(VerticalAlignment.CENTER);
+		headerStyleYellow.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+		headerStyleYellow.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		headerStyleYellow.setFont(blackBold10);
+		CellStyle headerStyleRed = wb.createCellStyle();
+		headerStyleRed.setWrapText(true);
+		headerStyleRed.setAlignment(HorizontalAlignment.CENTER);
+		headerStyleRed.setVerticalAlignment(VerticalAlignment.CENTER);
+		headerStyleRed.setFillForegroundColor(IndexedColors.RED.getIndex());
+		headerStyleRed.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		headerStyleRed.setFont(blackBold10);
+		CellStyle headerStyleOrange = wb.createCellStyle();
+		headerStyleOrange.setWrapText(true);
+		headerStyleOrange.setAlignment(HorizontalAlignment.CENTER);
+		headerStyleOrange.setVerticalAlignment(VerticalAlignment.CENTER);
+		headerStyleOrange.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
+		headerStyleOrange.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		headerStyleOrange.setFont(blackBold10);
+		CellStyle headerStyleBlue = wb.createCellStyle();
+		headerStyleBlue.setWrapText(true);
+		headerStyleBlue.setAlignment(HorizontalAlignment.CENTER);
+		headerStyleBlue.setVerticalAlignment(VerticalAlignment.CENTER);
+		headerStyleBlue.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+		headerStyleBlue.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		headerStyleBlue.setFont(blackBold10);
+		// Add headers
+		row = rankingSheet.createRow(rowIndex);
+		for (String name : ColumnNames) {
+			cell = row.createCell(columnIndex);
+			cell.setCellValue(name);
+			columnIndex++;
+		}
+		CellReference ref = new CellReference("B1");
+		Row r = rankingSheet.getRow(ref.getRow());
+		Cell c = r.getCell(ref.getCol());
+		c.setCellStyle(headerStyle);
+		ref = new CellReference("C1");
+		r = rankingSheet.getRow(ref.getRow());
+		c = r.getCell(ref.getCol());
+		c.setCellStyle(headerStyleGreen);
+		ref = new CellReference("D1");
+		r = rankingSheet.getRow(ref.getRow());
+		c = r.getCell(ref.getCol());
+		c.setCellStyle(headerStyleGreen);
+		ref = new CellReference("E1");
+		r = rankingSheet.getRow(ref.getRow());
+		c = r.getCell(ref.getCol());
+		c.setCellStyle(headerStyleGreen);
+		ref = new CellReference("F1");
+		r = rankingSheet.getRow(ref.getRow());
+		c = r.getCell(ref.getCol());
+		c.setCellStyle(headerStyleYellow);
+		ref = new CellReference("G1");
+		r = rankingSheet.getRow(ref.getRow());
+		c = r.getCell(ref.getCol());
+		c.setCellStyle(headerStyleYellow);
+		ref = new CellReference("H1");
+		r = rankingSheet.getRow(ref.getRow());
+		c = r.getCell(ref.getCol());
+		c.setCellStyle(headerStyleYellow);
+		ref = new CellReference("I1");
+		r = rankingSheet.getRow(ref.getRow());
+		c = r.getCell(ref.getCol());
+		c.setCellStyle(headerStyleRed);
+		ref = new CellReference("J1");
+		r = rankingSheet.getRow(ref.getRow());
+		c = r.getCell(ref.getCol());
+		c.setCellStyle(headerStyleRed);
+		ref = new CellReference("K1");
+		r = rankingSheet.getRow(ref.getRow());
+		c = r.getCell(ref.getCol());
+		c.setCellStyle(headerStyleRed);
+		ref = new CellReference("L1");
+		r = rankingSheet.getRow(ref.getRow());
+		c = r.getCell(ref.getCol());
+		c.setCellStyle(headerStyleOrange);
+		ref = new CellReference("M1");
+		r = rankingSheet.getRow(ref.getRow());
+		c = r.getCell(ref.getCol());
+		c.setCellStyle(headerStyleBlue);
+		// TODO Fill B with distinct depende D
+		//
+		// =COUNTIFS(Tabla1[depende_de],"*"&Tabla2[[#This Row],[MINISTERIOS]]&"*",Tabla1[AA_2020-07-03],">0")
+		// =IF($M2<>0,$C2/$M2,0)
+		List<String> dependencies = getValues("F", wb.getSheet("Resultados"));
+		rowIndex++;
+		int numOfDependencies = 0;
+		for (String dependency : dependencies) {
+			row = rankingSheet.createRow(rowIndex);
+			cell = row.createCell(1);
+			cell.setCellValue(dependency);
+			cell.setCellStyle(dependencyStyle);
+			rowIndex++;
+			numOfDependencies++;
+		}
+		// Fill other columns
+		rowIndex = 1;
+//		Get date
+		Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry = annexmap.entrySet().iterator().next();
+		Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
+		final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+		for (int i = 0; i < numOfDependencies; i++) {
+			// C
+			r = rankingSheet.getRow(rowIndex);
+			c = r.getCell(2);
+			c.setCellFormula("=COUNTIFS(Tabla1[depende_de],\"*\"&Tabla2[[#This Row],[MINISTERIOS]]&\"*\",Tabla1[AA_" + executionDateAux + "],\">0\")");
+			// D
+			r = rankingSheet.getRow(rowIndex);
+			c = r.getCell(3);
+			c.setCellFormula("=IF($M2<>0,$C2/$M2,0)");
+			// E
+			r = rankingSheet.getRow(rowIndex);
+			c = r.getCell(3);
+			// =IF(Tabla2[[#This Row],[TOTAL PORTALES AA]]>0,SUMIFS(Tabla1[AA_2020-07-03],Tabla1[depende_de],"*"&Tabla2[[#This Row],[MINISTERIOS]]&"*")/Tabla2[[#This Row],[TOTAL PORTALES AA]],0)
+			c.setCellFormula("=IF($M2<>0,$C2/$M2,0)");
+		}
+		XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+		wb.write(fos);
+		fos.close();
+	}
+
+	/**
+	 * Gets the values.
+	 *
+	 * @param column the column
+	 * @param sheet  the sheet
+	 * @return the values
+	 */
+	private static List<String> getValues(final String column, final XSSFSheet sheet) {
+		List<String> listAll = new ArrayList<>();
+		int row = 2;
+		boolean stop = false;
+		while (!stop) {
+			CellReference ref = new CellReference(column + "" + row);
+			Row r = sheet.getRow(ref.getRow());
+			if (r == null) {
+				stop = true;
+			} else {
+				Cell c = r.getCell(ref.getCol());
+				if (!listAll.contains(c.getStringCellValue())) {
+					listAll.add(c.getStringCellValue());
+				}
+				row++;
+			}
+		}
+		Collections.sort(listAll);
+		return listAll;
 	}
 
 	/**
