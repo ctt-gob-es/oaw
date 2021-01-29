@@ -197,8 +197,8 @@ public final class AnnexUtils {
 		createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		// TODO Add comparision
-		createAnnexXLSX(messageResources, idObsExecution, idOperation);
-		createAnnexXLSX_Evolution(messageResources, idObsExecution, idOperation, comparision);
+		createAnnexXLSX2(messageResources, idObsExecution, idOperation);
+		createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision);
 		createAnnexXLSX_PerDependency(idOperation);
 		// createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
 		createComparativeSuitabilitieXLSX(messageResources, idObsExecution, idOperation);
@@ -995,7 +995,7 @@ public final class AnnexUtils {
 	 * @param idOperation      the id operation
 	 * @throws Exception the exception
 	 */
-	public static void createAnnexXLSX(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+	public static void createAnnexXLSX2(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "2. Iteración SW.xlsx")) {
 			final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
 			final String ObservatoryFormDate = observatoryForm.getDate().substring(0, 10);
@@ -1005,7 +1005,7 @@ public final class AnnexUtils {
 					"A_" + ObservatoryFormDate, "AA_" + ObservatoryFormDate, "NC_" + ObservatoryFormDate,
 					"PC_" + ObservatoryFormDate, "TC_" + ObservatoryFormDate };
 			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet("Hoja1");
+			XSSFSheet sheet = wb.createSheet("Resultados");
 			XSSFRow row;
 			XSSFCell cell;
 			int rowIndex = 0;
@@ -1265,12 +1265,13 @@ public final class AnnexUtils {
 	 * @param comparision      the comparision
 	 * @throws Exception the exception
 	 */
-	public static void createAnnexXLSX_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision) throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "Adecuación de SW por segmentos con evolutivo.xlsx")) {
+	public static void createAnnexXLSX1_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision) throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "1. Evolutivo SW.xlsx")) {
 			XSSFWorkbook wb = new XSSFWorkbook();
 			XSSFSheet sheet = wb.createSheet("Resultados");
 			XSSFRow row;
 			XSSFCell cell;
+			final int numberOfFixedColumns = 12;
 			int rowIndex = 0;
 			int columnIndex = 0;
 			executionDates = new ArrayList<>();
@@ -1292,10 +1293,18 @@ public final class AnnexUtils {
 			shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 			// Add headers without values
 			ColumnNames = new ArrayList<>();
+			ColumnNames.add("id");
 			ColumnNames.add("nombre");
 			ColumnNames.add("namecat");
+			ColumnNames.add("ambito");
+			ColumnNames.add("complejidad");
 			ColumnNames.add("depende_de");
 			ColumnNames.add("semilla");
+			ColumnNames.add("tematica");
+			ColumnNames.add("distribucion");
+			ColumnNames.add("recurrencia");
+			ColumnNames.add("otros");
+			ColumnNames.add("paginas");
 			row = sheet.createRow(rowIndex);
 			for (String name : ColumnNames) {
 				cell = row.createCell(columnIndex);
@@ -1331,6 +1340,13 @@ public final class AnnexUtils {
 						columnIndex = 0;
 						excelLine = new ExcelLine();
 						excelLine.setRowIndex(rowIndex);
+
+						// "id"
+						String id = String.valueOf(semillaForm.getId());
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(id);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setId(id);
 						// "nombre"
 						String name = semillaForm.getNombre();
 						cell = row.createCell(columnIndex++);
@@ -1342,6 +1358,18 @@ public final class AnnexUtils {
 						cell.setCellValue(namecat);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setNamecat(namecat);
+						// "ambito"
+						String ambito = semillaForm.getAmbito().getName();
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(ambito);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setAmbito(ambito);
+						// "complejidad"
+						String compl = semillaForm.getComplejidad().getName();
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(compl);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setComplejidad(compl);
 						// "depende_de"
 						// Multidependencia
 						StringBuilder dependencias = new StringBuilder();
@@ -1366,6 +1394,102 @@ public final class AnnexUtils {
 						cell.setCellValue(semilla);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setSemilla(semilla);
+
+						// Seed tags
+						List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+						List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+						List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+						List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+						List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+						if (etiquetas != null && !etiquetas.isEmpty()) {
+							for (EtiquetaForm tmp : etiquetas) {
+								if (tmp.getClasificacion() != null) {
+									switch (tmp.getClasificacion().getId()) {
+										case "1":
+											tagsTematica.add(tmp);
+											break;
+										case "2":
+											tagsDistribucion.add(tmp);
+											break;
+										case "3":
+											tagsRecurrencia.add(tmp);
+											break;
+										case "4":
+											tagsOtros.add(tmp);
+											break;
+										default:
+											break;
+									}
+								}
+							}
+						}
+
+						// "tematica"
+						String dataToInsert = "";
+						if (!tagsTematica.isEmpty()) {
+							for (int i = 0; i < tagsTematica.size(); i++) {
+								dataToInsert += tagsTematica.get(i).getName();
+								if (i < tagsDistribucion.size() - 1) {
+									dataToInsert += "\n";
+								}
+							}
+						}
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(dataToInsert);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setTematica(dataToInsert);
+
+						// "distribucion"
+						dataToInsert = "";
+						if (!tagsDistribucion.isEmpty()) {
+							for (int i = 0; i < tagsDistribucion.size(); i++) {
+								dataToInsert += tagsDistribucion.get(i).getName();
+								if (i < tagsDistribucion.size() - 1) {
+									dataToInsert += "\n";
+								}
+							}
+						}
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(dataToInsert);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setDistribucion(dataToInsert);
+
+						// "Recurrencia"
+						dataToInsert = "";
+						if (!tagsRecurrencia.isEmpty()) {
+							for (int i = 0; i < tagsRecurrencia.size(); i++) {
+								dataToInsert += tagsRecurrencia.get(i).getName();
+								if (i < tagsRecurrencia.size() - 1) {
+									dataToInsert += "\n";
+								}
+							}
+						}
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(dataToInsert);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setRecurrencia(dataToInsert);
+
+						// Otros
+						dataToInsert = "";
+						if (!tagsOtros.isEmpty()) {
+							for (int i = 0; i < tagsOtros.size(); i++) {
+								dataToInsert += tagsOtros.get(i).getName();
+								if (i < tagsOtros.size() - 1) {
+									dataToInsert += "\n";
+								}
+							}
+						}
+						cell = row.createCell(columnIndex++);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setOtros(dataToInsert);
+
+						// Páginas
+						String pages = String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId()));
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(pages);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setPaginas(pages);
+
 						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
 							final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
 							if (!executionDates.contains(executionDateAux))
@@ -1434,8 +1558,8 @@ public final class AnnexUtils {
 						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
 							final String date = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
 							row = sheet.getRow(rowIndex);
-							String columnFirstLetter = GetExcelColumnNameForNumber(6 + (3 * executionDates.indexOf(date)));
-							String columnSecondLetter = GetExcelColumnNameForNumber(5 + (3 * executionDates.indexOf(date)));
+							String columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.indexOf(date)));
+							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 1) + (3 * executionDates.indexOf(date)));
 							// "NV_" + date
 							// Add header if it is not already created
 							if (!ColumnNames.contains("NV_" + date)) {
@@ -1445,7 +1569,7 @@ public final class AnnexUtils {
 								cellInHeader.setCellValue("NV_" + date);
 								cellInHeader.setCellStyle(headerStyle);
 							}
-							cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate));
+							cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
@@ -1458,7 +1582,7 @@ public final class AnnexUtils {
 								cellInHeader.setCellValue("A_" + date);
 								cellInHeader.setCellStyle(headerStyle);
 							}
-							cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 1);
+							cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 1);
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"A\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
@@ -1471,11 +1595,11 @@ public final class AnnexUtils {
 								cellInHeader.setCellValue("AA_" + date);
 								cellInHeader.setCellStyle(headerStyle);
 							}
-							cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 2);
+							cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 2);
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
-							columnFirstLetter = GetExcelColumnNameForNumber(7 + (3 * executionDates.indexOf(date)));
+							columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.indexOf(date)));
 							// "NC_" + date
 							// Add header if it is not already created
 							if (!ColumnNames.contains("NC_" + date)) {
@@ -1485,7 +1609,7 @@ public final class AnnexUtils {
 								cellInHeader.setCellValue("NC_" + date);
 								cellInHeader.setCellStyle(headerStyle);
 							}
-							cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
+							cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
@@ -1498,7 +1622,7 @@ public final class AnnexUtils {
 								cellInHeader.setCellValue("PC_" + date);
 								cellInHeader.setCellStyle(headerStyle);
 							}
-							cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 4);
+							cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 4);
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
@@ -1511,7 +1635,7 @@ public final class AnnexUtils {
 								cellInHeader.setCellValue("TC_" + date);
 								cellInHeader.setCellStyle(headerStyle);
 							}
-							cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 5);
+							cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 5);
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
@@ -1538,8 +1662,8 @@ public final class AnnexUtils {
 						// Discard rows without the last execution
 						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
 						if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
-							String columnFirstLetter = GetExcelColumnNameForNumber(5);
-							String columnSecondLetter = GetExcelColumnNameForNumber(5 + (3 * executionDates.size() - 3));
+							String columnFirstLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1);
+							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
 							cell = row.createCell(ColumnNames.size() - 1);
 							String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":"
 									+ columnFirstLetter + ")<=-0.5,\"EMPEORA\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter
@@ -1568,8 +1692,8 @@ public final class AnnexUtils {
 						// Discard rows without the last execution
 						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
 						if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
-							String columnFirstLetter = GetExcelColumnNameForNumber(6);
-							String columnSecondLetter = GetExcelColumnNameForNumber(6 + (3 * executionDates.size() - 3));
+							String columnFirstLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 2);
+							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
 							cell = row.createCell(ColumnNames.size() - 1);
 							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
 									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Prioridad 1\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
@@ -1596,7 +1720,7 @@ public final class AnnexUtils {
 				for (int i = 0; i < rowIndex; i++) {
 					row = sheet.getRow(i);
 					if (row != null) {
-						cell = row.getCell(1);
+						cell = row.getCell(2);
 						if (categoryFirstRow == 0 && cell.getStringCellValue().equals(category))
 							categoryFirstRow = i;
 						if (categoryLastRow == 0 && !cell.getStringCellValue().equals(category) && categoryFirstRow != 0)
@@ -1608,8 +1732,8 @@ public final class AnnexUtils {
 				if (wb.getSheet(categorySheetName) == null && categoryFirstRow != 0 && categoryLastRow != 0) {
 					wb.createSheet(categorySheetName);
 					XSSFSheet currentSheet = wb.getSheet(categorySheetName);
-					InsertGraphIntoSheetByEvolution(wb, currentSheet, categoryFirstRow, categoryLastRow, true);
-					InsertGraphIntoSheetByEvolution(wb, currentSheet, categoryFirstRow, categoryLastRow, false);
+					InsertGraphIntoSheetByEvolution(wb, currentSheet, categoryFirstRow, categoryLastRow, true, numberOfFixedColumns);
+					InsertGraphIntoSheetByEvolution(wb, currentSheet, categoryFirstRow, categoryLastRow, false, numberOfFixedColumns);
 				}
 			}
 			// Increase width of columns to match content
@@ -1898,13 +2022,13 @@ public final class AnnexUtils {
 			cell.setCellValue(categories.get(i));
 			cell = row.createCell(1);
 			cell.setCellStyle(shadowStyle);
-			cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"EMPEORA\")");
+			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"EMPEORA\")");
 			cell = row.createCell(2);
 			cell.setCellStyle(shadowStyle);
-			cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"MEJORA\")");
+			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"MEJORA\")");
 			cell = row.createCell(3);
 			cell.setCellStyle(shadowStyle);
-			cell.setCellFormula("COUNTIFS($B$2:$B$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"SE MANTIENE\")");
+			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"SE MANTIENE\")");
 		}
 		// TOTAL row
 		row = sheet.createRow(RowStartPosition + categories.size() + 2);
@@ -2024,7 +2148,7 @@ public final class AnnexUtils {
 	 * @param categoryLastRow  the category last row
 	 * @param isFirst          the is first
 	 */
-	private static void InsertGraphIntoSheetByEvolution(XSSFWorkbook wb, XSSFSheet currentSheet, int categoryFirstRow, int categoryLastRow, boolean isFirst) {
+	private static void InsertGraphIntoSheetByEvolution(XSSFWorkbook wb, XSSFSheet currentSheet, int categoryFirstRow, int categoryLastRow, boolean isFirst, int numberOfFixedColumns) {
 		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(categoryLastRow - categoryFirstRow, 16), isFirst ? 40 : 85);
 		XSSFChart chart = drawing.createChart(anchor);
@@ -2046,7 +2170,7 @@ public final class AnnexUtils {
 		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 0, 0));
 		// Iterate through the executions
 		for (String date : executionDates) {
-			int firstSerieColumn = 4 + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
+			int firstSerieColumn = numberOfFixedColumns + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
 			// First serie ("No válido" / "No Conforme")
 			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 0 : 3));
 			XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
@@ -2464,90 +2588,82 @@ public final class AnnexUtils {
 	 * The Class ExcelLine.
 	 */
 	private static class ExcelLine {
+		/** The id. */
+		private String id;
 		/** The nombre. */
 		private String nombre;
 		/** The namecat. */
 		private String namecat;
+		/** The ambito. */
+		private String ambito;
+		/** The depende de. */
+		private String complejidad;
 		/** The depende de. */
 		private String depende_de;
 		/** The semilla. */
 		private String semilla;
+		/** The tematica. */
+		private String tematica;
+		/** The distribucion. */
+		private String distribucion;
+		/** The recurrencia. */
+		private String recurrencia;
+		/** The otros. */
+		private String otros;
+		/** The row paginas. */
+		private String paginas;
 		/** The row index. */
 		private Integer rowIndex;
 		/** The executions. */
 		private List<ExcelExecution> executions = new ArrayList<>();
 
-		/**
-		 * Gets the nombre.
-		 *
-		 * @return the nombre
-		 */
+		public String getId() { return id; }
+		public void setId(String id) { this.id = id; }
+
 		public String getNombre() {
 			return nombre;
 		}
+		public void setNombre(String nombre) { this.nombre = nombre; }
 
-		/**
-		 * Sets the nombre.
-		 *
-		 * @param nombre the new nombre
-		 */
-		public void setNombre(String nombre) {
-			this.nombre = nombre;
-		}
-
-		/**
-		 * Gets the namecat.
-		 *
-		 * @return the namecat
-		 */
 		public String getNamecat() {
 			return namecat;
 		}
-
-		/**
-		 * Sets the namecat.
-		 *
-		 * @param namecat the new namecat
-		 */
 		public void setNamecat(String namecat) {
 			this.namecat = namecat;
 		}
 
-		/**
-		 * Gets the depende de.
-		 *
-		 * @return the depende de
-		 */
+		public String getAmbito() { return ambito; }
+		public void setAmbito(String ambito) { this.ambito = ambito; }
+
+		public String getComplejidad() { return complejidad; }
+		public void setComplejidad(String complejidad) { this.complejidad = complejidad; }
+
 		public String getDepende_de() {
 			return depende_de;
 		}
+		public void setDepende_de(String depende_de) { this.depende_de = depende_de; }
 
-		/**
-		 * Sets the depende de.
-		 *
-		 * @param depende_de the new depende de
-		 */
-		public void setDepende_de(String depende_de) {
-			this.depende_de = depende_de;
-		}
-
-		/**
-		 * Gets the semilla.
-		 *
-		 * @return the semilla
-		 */
 		public String getSemilla() {
 			return semilla;
 		}
-
-		/**
-		 * Sets the semilla.
-		 *
-		 * @param semilla the new semilla
-		 */
 		public void setSemilla(String semilla) {
 			this.semilla = semilla;
 		}
+
+		public String getTematica() { return tematica; }
+		public void setTematica(String tematica) { this.tematica = tematica; }
+
+		public String getDistribucion() { return distribucion; }
+		public void setDistribucion(String distribucion) { this.distribucion = distribucion; }
+
+		public String getRecurrencia() { return recurrencia; }
+		public void setRecurrencia(String recurrencia) { this.recurrencia = recurrencia; }
+
+		public String getOtros() { return otros; }
+		public void setOtros(String otros) { this.otros = otros; }
+
+		public String getPaginas() { return paginas; }
+		public void setPaginas(String paginas) { this.paginas = paginas; }
 
 		/**
 		 * Gets the executions.
