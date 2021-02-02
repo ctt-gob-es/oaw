@@ -2201,6 +2201,7 @@ public final class AnnexUtils {
 	 * @throws Exception the exception
 	 */
 	public static void createAnnexXLSX_PerDependency(final Long idOperation) throws Exception {
+		final int numberOfFixedColumns = 12;
 		// Iterate through dependencies to create each file
 		for (String currentDependency : dependencies) {
 			try (FileOutputStream writer = getFileOutputStream(idOperation, "/Dependencias/" + currentDependency + ".xlsx")) {
@@ -2237,6 +2238,10 @@ public final class AnnexUtils {
 					if (currentLine.getValue().getDepende_de().contains(currentDependency)) {
 						row = sheet.createRow(rowIndex);
 						columnIndex = 0;
+						// "id"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getId());
+						cell.setCellStyle(shadowStyle);
 						// "nombre"
 						cell = row.createCell(columnIndex++);
 						cell.setCellValue(currentLine.getValue().getNombre());
@@ -2245,6 +2250,14 @@ public final class AnnexUtils {
 						cell = row.createCell(columnIndex++);
 						cell.setCellValue(currentLine.getValue().getNamecat());
 						cell.setCellStyle(shadowStyle);
+						// "ambito"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getAmbito());
+						cell.setCellStyle(shadowStyle);
+						// "complejidad"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getComplejidad());
+						cell.setCellStyle(shadowStyle);
 						// "depende_de"
 						cell = row.createCell(columnIndex++);
 						cell.setCellValue(currentLine.getValue().getDepende_de());
@@ -2252,6 +2265,26 @@ public final class AnnexUtils {
 						// "semilla"
 						cell = row.createCell(columnIndex++);
 						cell.setCellValue(currentLine.getValue().getSemilla());
+						cell.setCellStyle(shadowStyle);
+						// "tematica"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getTematica());
+						cell.setCellStyle(shadowStyle);
+						// "semilla"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getSemilla());
+						cell.setCellStyle(shadowStyle);
+						// "distribucion"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getDistribucion());
+						cell.setCellStyle(shadowStyle);
+						// "recurrencia"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getRecurrencia());
+						cell.setCellStyle(shadowStyle);
+						// "otros"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getOtros());
 						cell.setCellStyle(shadowStyle);
 						for (String date : executionDates) {
 							cell = row.createCell(columnIndex++);
@@ -2278,36 +2311,36 @@ public final class AnnexUtils {
 				for (int i = 1; i < rowIndex; i++) {
 					row = sheet.getRow(i);
 					for (int numberOfDate = 0; numberOfDate < executionDates.size(); numberOfDate++) {
-						String columnFirstLetter = GetExcelColumnNameForNumber(6 + (3 * numberOfDate));
-						String columnSecondLetter = GetExcelColumnNameForNumber(5 + (3 * numberOfDate));
+						String columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * numberOfDate));
+						String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 1) + (3 * numberOfDate));
 						// "NV_" + date
-						cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate));
+						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate));
 						cell.setCellType(CellType.NUMERIC);
 						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No Válido\",$" + columnSecondLetter + (i + 1) + ",0)");
 						cell.setCellStyle(shadowStyle);
 						// "A_" + date
-						cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 1);
+						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 1);
 						cell.setCellType(CellType.NUMERIC);
 						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"A\",$" + columnSecondLetter + (i + 1) + ",0)");
 						cell.setCellStyle(shadowStyle);
 						// "AA_" + date
-						cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 2);
+						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 2);
 						cell.setCellType(CellType.NUMERIC);
 						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"AA\",$" + columnSecondLetter + (i + 1) + ",0)");
 						cell.setCellStyle(shadowStyle);
-						columnFirstLetter = GetExcelColumnNameForNumber(6 + (3 * numberOfDate) + 1);
+						columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2)  + (3 * numberOfDate) + 1);
 						// "NC_" + date
-						cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
+						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
 						cell.setCellType(CellType.NUMERIC);
 						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
 						cell.setCellStyle(shadowStyle);
 						// "PC_" + date
-						cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 4);
+						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 4);
 						cell.setCellType(CellType.NUMERIC);
 						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
 						cell.setCellStyle(shadowStyle);
 						// "PC_" + date
-						cell = row.createCell(4 + (3 * executionDates.size()) + (6 * numberOfDate) + 5);
+						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 5);
 						cell.setCellType(CellType.NUMERIC);
 						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
 						cell.setCellStyle(shadowStyle);
@@ -2319,8 +2352,8 @@ public final class AnnexUtils {
 				}
 				XSSFSheet currentSheet = wb.createSheet("Grafica Adecuación");
 				if (rowIndex > 1) {
-					InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, true);
-					InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, false);
+					InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, true, numberOfFixedColumns);
+					InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, false, numberOfFixedColumns);
 				}
 				XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
 				wb.write(writer);
@@ -2670,7 +2703,7 @@ public final class AnnexUtils {
 	 * @param rowIndex     the row index
 	 * @param isFirst      the is first
 	 */
-	private static void InsertGraphIntoSheetByDependency(XSSFWorkbook wb, XSSFSheet currentSheet, int rowIndex, boolean isFirst) {
+	private static void InsertGraphIntoSheetByDependency(XSSFWorkbook wb, XSSFSheet currentSheet, int rowIndex, boolean isFirst, int numberOfFixedColumns) {
 		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(rowIndex, 16), isFirst ? 40 : 85);
 		XSSFChart chart = drawing.createChart(anchor);
@@ -2692,7 +2725,7 @@ public final class AnnexUtils {
 		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(1, rowIndex - 1, 0, 0));
 		// Iterate through the executions
 		for (String date : executionDates) {
-			int firstSerieColumn = 4 + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
+			int firstSerieColumn = numberOfFixedColumns + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
 			// First serie ("No válido" / "No Conforme")
 			FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 0 : 3));
 			XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
