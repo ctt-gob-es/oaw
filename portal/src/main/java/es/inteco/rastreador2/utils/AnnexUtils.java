@@ -2328,7 +2328,7 @@ public final class AnnexUtils {
 						cell.setCellType(CellType.NUMERIC);
 						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"AA\",$" + columnSecondLetter + (i + 1) + ",0)");
 						cell.setCellStyle(shadowStyle);
-						columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2)  + (3 * numberOfDate) + 1);
+						columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * numberOfDate) + 1);
 						// "NC_" + date
 						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
 						cell.setCellType(CellType.NUMERIC);
@@ -2350,10 +2350,15 @@ public final class AnnexUtils {
 				for (int i = 0; i < ColumnNames.size(); i++) {
 					sheet.autoSizeColumn(i);
 				}
-				XSSFSheet currentSheet = wb.createSheet("Grafica Adecuación");
+				XSSFSheet currentSheet = wb.createSheet("Evolución SW");
 				if (rowIndex > 1) {
-					InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, true, numberOfFixedColumns);
-					InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, false, numberOfFixedColumns);
+					InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, true, numberOfFixedColumns, false);
+					InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, false, numberOfFixedColumns, false);
+				}
+				XSSFSheet currentSheet2 = wb.createSheet("Iteración SW");
+				if (rowIndex > 1) {
+					InsertGraphIntoSheetByDependency(wb, currentSheet2, rowIndex, true, numberOfFixedColumns, true);
+					InsertGraphIntoSheetByDependency(wb, currentSheet2, rowIndex, false, numberOfFixedColumns, true);
 				}
 				XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
 				wb.write(writer);
@@ -2703,7 +2708,7 @@ public final class AnnexUtils {
 	 * @param rowIndex     the row index
 	 * @param isFirst      the is first
 	 */
-	private static void InsertGraphIntoSheetByDependency(XSSFWorkbook wb, XSSFSheet currentSheet, int rowIndex, boolean isFirst, int numberOfFixedColumns) {
+	private static void InsertGraphIntoSheetByDependency(XSSFWorkbook wb, XSSFSheet currentSheet, int rowIndex, boolean isFirst, int numberOfFixedColumns, boolean onlyLastIteration) {
 		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(rowIndex, 16), isFirst ? 40 : 85);
 		XSSFChart chart = drawing.createChart(anchor);
@@ -2724,47 +2729,51 @@ public final class AnnexUtils {
 		// Get agency names
 		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(1, rowIndex - 1, 0, 0));
 		// Iterate through the executions
+		int i = 0;
 		for (String date : executionDates) {
-			int firstSerieColumn = numberOfFixedColumns + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
-			// First serie ("No válido" / "No Conforme")
-			FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 0 : 3));
-			XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-					new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 0 : 3), firstSerieColumn + (isFirst ? 0 : 3)));
-			XDDFChartData.Series series1 = data.addSeries(agencies, values1);
-			series1.setTitle((isFirst ? "NV_" : "NC_") + date, null);
-			// Set series color
-			XDDFShapeProperties properties1 = series1.getShapeProperties();
-			if (properties1 == null) {
-				properties1 = new XDDFShapeProperties();
+			if (!onlyLastIteration || (onlyLastIteration && i == (executionDates.size() - 1))) {
+				int firstSerieColumn = numberOfFixedColumns + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
+				// First serie ("No válido" / "No Conforme")
+				FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 0 : 3));
+				XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+						new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 0 : 3), firstSerieColumn + (isFirst ? 0 : 3)));
+				XDDFChartData.Series series1 = data.addSeries(agencies, values1);
+				series1.setTitle((isFirst ? "NV_" : "NC_") + date, null);
+				// Set series color
+				XDDFShapeProperties properties1 = series1.getShapeProperties();
+				if (properties1 == null) {
+					properties1 = new XDDFShapeProperties();
+				}
+				properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
+				series1.setShapeProperties(properties1);
+				// Second serie ("A" / "Parcialmente conforme")
+				FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 1 : 4));
+				XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+						new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 1 : 4), firstSerieColumn + (isFirst ? 1 : 4)));
+				XDDFChartData.Series series2 = data.addSeries(agencies, values2);
+				series2.setTitle((isFirst ? "A_" : "PC_") + date, null);
+				// Set series color
+				XDDFShapeProperties properties2 = series2.getShapeProperties();
+				if (properties2 == null) {
+					properties2 = new XDDFShapeProperties();
+				}
+				properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
+				series2.setShapeProperties(properties2);
+				// Third serie ("AA" / "Plenamente conforme")
+				FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 2 : 5));
+				XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+						new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 2 : 5), firstSerieColumn + (isFirst ? 2 : 5)));
+				XDDFChartData.Series series3 = data.addSeries(agencies, values3);
+				series3.setTitle((isFirst ? "AA_" : "TC_") + date, null);
+				// Set series color
+				XDDFShapeProperties properties3 = series3.getShapeProperties();
+				if (properties3 == null) {
+					properties3 = new XDDFShapeProperties();
+				}
+				properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
+				series3.setShapeProperties(properties3);
 			}
-			properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
-			series1.setShapeProperties(properties1);
-			// Second serie ("A" / "Parcialmente conforme")
-			FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 1 : 4));
-			XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-					new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 1 : 4), firstSerieColumn + (isFirst ? 1 : 4)));
-			XDDFChartData.Series series2 = data.addSeries(agencies, values2);
-			series2.setTitle((isFirst ? "A_" : "PC_") + date, null);
-			// Set series color
-			XDDFShapeProperties properties2 = series2.getShapeProperties();
-			if (properties2 == null) {
-				properties2 = new XDDFShapeProperties();
-			}
-			properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
-			series2.setShapeProperties(properties2);
-			// Third serie ("AA" / "Plenamente conforme")
-			FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 2 : 5));
-			XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-					new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 2 : 5), firstSerieColumn + (isFirst ? 2 : 5)));
-			XDDFChartData.Series series3 = data.addSeries(agencies, values3);
-			series3.setTitle((isFirst ? "AA_" : "TC_") + date, null);
-			// Set series color
-			XDDFShapeProperties properties3 = series3.getShapeProperties();
-			if (properties3 == null) {
-				properties3 = new XDDFShapeProperties();
-			}
-			properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
-			series3.setShapeProperties(properties3);
+			i++;
 		}
 		chart.plot(data);
 		XDDFBarChartData bar = (XDDFBarChartData) data;
