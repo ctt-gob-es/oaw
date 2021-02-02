@@ -177,15 +177,15 @@ public final class AnnexUtils {
 	/**
 	 * Column names list created by generation Evolution and reused generating PerDependency annex.
 	 */
-	private static List<String> ColumnNames = new ArrayList<>();
+	private static List<String> ColumnNames;
 	/**
 	 * Execution dates list created by generation Evolution and reused generating PerDependency annex.
 	 */
-	private static List<String> executionDates = new ArrayList<>();
+	private static List<String> executionDates;
 	/**
 	 * Dependency names list created by generation Evolution and reused generating PerDependency annex.
 	 */
-	private static List<String> dependencies = new ArrayList<>();
+	private static List<String> dependencies;
 	/** The annexmap. */
 	private static Map<Long, TreeMap<String, ScoreForm>> annexmap;
 	/** The evaluation ids. */
@@ -1466,6 +1466,7 @@ public final class AnnexUtils {
 	 * @throws Exception the exception
 	 */
 	public static void createAnnexXLSX2(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+		ColumnNames = new ArrayList<>();
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "2. Iteración SW.xlsx")) {
 			final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
 			final String ObservatoryFormDate = observatoryForm.getDate().substring(0, 10);
@@ -1719,6 +1720,7 @@ public final class AnnexUtils {
 	 */
 	public static void createAnnexXLSX1_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision)
 			throws Exception {
+		dependencies = new ArrayList<>();
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "1. Evolutivo SW.xlsx")) {
 			XSSFWorkbook wb = new XSSFWorkbook();
 			XSSFSheet sheet = wb.createSheet("Resultados");
