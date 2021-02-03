@@ -2889,25 +2889,17 @@ public final class AnnexUtils {
 		bottomAxis.setPosition(AxisPosition.RIGHT);
 		CTPlotArea plotArea = chart.getCTChart().getPlotArea();
 		plotArea.getValAxArray()[0].addNewMajorGridlines();
+		plotArea.getValAxArray(0).getScaling().addNewMax().setVal(10);
+		plotArea.getValAxArray(0).getScaling().addNewMin().setVal(0);
 		// Get agency names
 		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 1, 1));
 		// Iterate through the executions
-		CellReference firstDataCell = null;
-		CellReference lastDataCell = null;
-		int i = 0;
 		for (String date : executionDates) {
 			int firstSerieColumn = numberOfFixedColumns + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
 			// First serie ("No válido" / "No Conforme")
 			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 0 : 3));
 			XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
 					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 0 : 3), firstSerieColumn + (isFirst ? 0 : 3)));
-			if (i == 0) {
-				firstDataCell = new CellReference(categoryFirstRow, firstSerieColumn + (isFirst ? 0 : 3));
-			}
-			if (i == (executionDates.size() - 1)) {
-				lastDataCell = new CellReference(categoryLastRow - 1, firstSerieColumn + (isFirst ? 0 : 3));
-			}
-			i++;
 			XDDFChartData.Series series1 = data.addSeries(agencies, values1);
 			series1.setTitle((isFirst ? "NV_" : "NC_") + date, null);
 			// Set series color
