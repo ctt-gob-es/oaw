@@ -2586,7 +2586,7 @@ public final class AnnexUtils {
 		shadowStyleCentered.setWrapText(true);
 		shadowStyleCentered.setAlignment(HorizontalAlignment.CENTER);
 		shadowStyleCentered.setVerticalAlignment(VerticalAlignment.CENTER);
-		shadowStyleCentered.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
+		shadowStyleCentered.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
 		shadowStyleCentered.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		XSSFCell cell;
 		XSSFRow row;
@@ -2696,7 +2696,7 @@ public final class AnnexUtils {
 		shadowStyleCentered.setWrapText(true);
 		shadowStyleCentered.setAlignment(HorizontalAlignment.CENTER);
 		shadowStyleCentered.setVerticalAlignment(VerticalAlignment.CENTER);
-		shadowStyleCentered.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
+		shadowStyleCentered.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
 		shadowStyleCentered.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		XSSFCell cell;
 		XSSFRow row;
@@ -2890,7 +2890,7 @@ public final class AnnexUtils {
 		CTPlotArea plotArea = chart.getCTChart().getPlotArea();
 		plotArea.getValAxArray()[0].addNewMajorGridlines();
 		// Get agency names
-		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 0, 0));
+		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 1, 1));
 		// Iterate through the executions
 		CellReference firstDataCell = null;
 		CellReference lastDataCell = null;
