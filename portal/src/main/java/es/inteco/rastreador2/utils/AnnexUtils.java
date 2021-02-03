@@ -1724,8 +1724,6 @@ public final class AnnexUtils {
 	 */
 	public static void createAnnexXLSX1_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation,
 												  final List<ComparisionForm> comparision, double firstThreshold, double secondThreshold) throws Exception {
-	public static void createAnnexXLSX1_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision)
-			throws Exception {
 		dependencies = new ArrayList<>();
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "1. Evolutivo SW.xlsx")) {
 			XSSFWorkbook wb = new XSSFWorkbook();
