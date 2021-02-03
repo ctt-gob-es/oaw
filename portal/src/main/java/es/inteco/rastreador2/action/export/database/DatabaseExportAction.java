@@ -152,7 +152,7 @@ public class DatabaseExportAction extends Action {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final ObservatorioRealizadoForm fulfilledObservatory = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExObservatory);
 			if (CartuchoDAO.isCartuchoAccesibilidad(c, fulfilledObservatory.getCartucho().getId())) {
-				final String application = CartuchoDAO.getApplication(DataBaseManager.getConnection(), idCartucho);
+				final String application = CartuchoDAO.getApplication(c, idCartucho);
 				final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, idObservatory, Constants.NO_PAGINACION, fulfilledObservatory.getFecha(), false,
 						null);
 				if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
@@ -250,7 +250,9 @@ public class DatabaseExportAction extends Action {
 			final Long idOperation = System.currentTimeMillis();
 			final Long idCartucho = Long.valueOf(request.getParameter(Constants.ID_CARTUCHO));
 			MessageResources resources = CrawlerUtils.getResources(request);
-			final String application = CartuchoDAO.getApplication(DataBaseManager.getConnection(), idCartucho);
+			final Connection connection = DataBaseManager.getConnection();
+			final String application = CartuchoDAO.getApplication(connection, idCartucho);
+			DataBaseManager.closeConnection(connection);
 			if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
 				resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 			} else if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {

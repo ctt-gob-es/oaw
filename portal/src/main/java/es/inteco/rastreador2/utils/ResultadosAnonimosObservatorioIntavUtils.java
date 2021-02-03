@@ -1283,7 +1283,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 					final Evaluator evaluator = new Evaluator();
 					int i = 1;
 					for (Long idAnalysis : listAnalysis) {
-						Logger.putLog(" i= " + i + "/" + listAnalysis.size() + "(" + idAnalysis + ")", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR);
+						// Logger.putLog(" i= " + i + "/" + listAnalysis.size() + "(" + idAnalysis + ")", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR);
 						i++;
 						final Evaluation evaluation = evaluator.getObservatoryAnalisisDB(conn, idAnalysis, EvaluatorUtils.getDocList());
 						final String methodology = ObservatorioDAO.getMethodology(conn, Long.parseLong(executionId));
