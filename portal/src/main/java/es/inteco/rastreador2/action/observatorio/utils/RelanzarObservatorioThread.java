@@ -81,7 +81,8 @@ public class RelanzarObservatorioThread extends Thread {
 	public void run() {
 		Connection c = null;
 		try {
-			c = DataBaseManager.getConnection();
+			final Connection connection = DataBaseManager.getConnection();
+			c = connection;
 			c.setAutoCommit(false);
 			// Borramos de la tabla de estado
 			EstadoObservatorioDAO.deleteEstado(c, Integer.parseInt(idObservatorio), Integer.parseInt(idEjecucionObservatorio));
@@ -116,7 +117,7 @@ public class RelanzarObservatorioThread extends Thread {
 							lanzarRastreo(String.valueOf(idCrawling), String.valueOf(idObservatorio));
 							// Por si tarda mucho en acabar el rastreo, volvemos a
 							// inicializar una conexion
-							c = DataBaseManager.getConnection();
+							c = connection;
 							c.setAutoCommit(false);
 							Long idNewExecution = Long.valueOf(RastreoDAO.getExecutedCrawling(c, idCrawling, RastreoDAO.getIdSeedByIdRastreo(c, idCrawling)).getId());
 							RastreoDAO.setObservatoryExecutionToCrawlerExecution(c, Long.parseLong(idEjecucionObservatorio), idNewExecution);
@@ -138,9 +139,9 @@ public class RelanzarObservatorioThread extends Thread {
 				Logger.putLog("No se han encontrado rastreos que relanzar", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_INFO);
 			}
 			if (!isInterrupted()) {
-				ObservatorioDAO.updateObservatoryStatus(DataBaseManager.getConnection(), Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.FINISHED_OBSERVATORY_STATUS);
+				ObservatorioDAO.updateObservatoryStatus(connection, Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.FINISHED_OBSERVATORY_STATUS);
 			} else {
-				ObservatorioDAO.updateObservatoryStatus(DataBaseManager.getConnection(), Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.STOPPED_OBSERVATORY_STATUS);
+				ObservatorioDAO.updateObservatoryStatus(connection, Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.STOPPED_OBSERVATORY_STATUS);
 			}
 			Logger.putLog("Finalizado el observatorio con id " + idEjecucionObservatorio, RelanzarObservatorioThread.class, Logger.LOG_LEVEL_INFO);
 			c.commit();
