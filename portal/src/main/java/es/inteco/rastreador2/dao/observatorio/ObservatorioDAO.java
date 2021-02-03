@@ -2915,7 +2915,7 @@ public final class ObservatorioDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error en getTimeoutFromConfig", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return timeout;
@@ -2944,7 +2944,7 @@ public final class ObservatorioDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error en getDepthFromConfig", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return timeout;
@@ -2973,7 +2973,7 @@ public final class ObservatorioDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error en getWidthFromConfig", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return timeout;
@@ -3002,7 +3002,7 @@ public final class ObservatorioDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error en getTresholdFromConfig", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return timeout;
@@ -3072,10 +3072,68 @@ public final class ObservatorioDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error en getAutorelaunchFromConfig", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return autorelaunch;
+	}
+
+	/**
+	 * Gets the first classification threshold from config.
+	 *
+	 * @param c the c
+	 * @return the first classification threshold from config.
+	 * @throws SQLException the SQL exception
+	 */
+	public static double getFirstClassificationThresholdFromConfig(Connection c) throws SQLException {
+		double firstThreshold = 0;
+		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'firstclassthreshold'";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					String value = rs.getString("V_ID");
+					try {
+						firstThreshold = Double.parseDouble(value);
+						return firstThreshold;
+					} catch (Exception e) {
+						return 0;
+					}
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getFirstClassificationThresholdFromConfig", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return firstThreshold;
+	}
+
+	/**
+	 * Gets the second classification threshold from config.
+	 *
+	 * @param c the c
+	 * @return the second classification threshold from config.
+	 * @throws SQLException the SQL exception
+	 */
+	public static double getSecondClassificationThresholdFromConfig(Connection c) throws SQLException {
+		double secondThreshold = 0;
+		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'secondclassthreshold'";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					String value = rs.getString("V_ID");
+					try {
+						secondThreshold = Double.parseDouble(value);
+						return secondThreshold;
+					} catch (Exception e) {
+						return 0;
+					}
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getSecondClassificationThresholdFromConfig", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return secondThreshold;
 	}
 
 	/**

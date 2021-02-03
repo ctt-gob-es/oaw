@@ -49,7 +49,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		if (day.length < 2)
 			day = '0' + day;
 
-		return [ year, month, day ].join('_');
+		return [ year, month, day ].join('-');
 	}
 
 	function loadOptions(idObs, tagId, element) {

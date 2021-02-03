@@ -26,13 +26,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -160,6 +155,8 @@ public final class AnnexUtils {
 	 * Execution dates list created by generation Evolution and reused generating PerDependency annex.
 	 */
 	private static List<String> executionDates = new ArrayList<>();
+	private static List<Date> executionDatesWithFormat = new ArrayList<>();
+	private static List<Date> executionDatesWithFormat_Valid = new ArrayList<>();
 	/**
 	 * Dependency names list created by generation Evolution and reused generating PerDependency annex.
 	 */
@@ -185,7 +182,7 @@ public final class AnnexUtils {
 	 * @throws Exception the exception
 	 */
 	public static void generateAllAnnex(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds,
-			final List<ComparisionForm> comparision) throws Exception {
+			final List<ComparisionForm> comparision, double firstThreshold, double secondThreshold) throws Exception {
 		annexmap = createAnnexMap(idObsExecution, tagsToFilter, exObsIds);
 		evaluationIds = AnalisisDatos.getEvaluationIdsFromExecutedObservatory(idObsExecution);
 		observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
@@ -198,7 +195,7 @@ public final class AnnexUtils {
 		createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		// TODO Add comparision
 		createAnnexXLSX2(messageResources, idObsExecution, idOperation);
-		createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision);
+		createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, firstThreshold, secondThreshold);
 		createAnnexXLSX_PerDependency(idOperation);
 		// createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
 		createComparativeSuitabilitieXLSX(messageResources, idObsExecution, idOperation);
@@ -1265,7 +1262,8 @@ public final class AnnexUtils {
 	 * @param comparision      the comparision
 	 * @throws Exception the exception
 	 */
-	public static void createAnnexXLSX1_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision) throws Exception {
+	public static void createAnnexXLSX1_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation,
+												  final List<ComparisionForm> comparision, double firstThreshold, double secondThreshold) throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "1. Evolutivo SW.xlsx")) {
 			XSSFWorkbook wb = new XSSFWorkbook();
 			XSSFSheet sheet = wb.createSheet("Resultados");
@@ -1327,6 +1325,7 @@ public final class AnnexUtils {
 						categories.add(namecat);
 				}
 			}
+
 			// Sort all category names
 			Collections.sort(categories);
 			// Loop to insert fixed values
@@ -1490,10 +1489,41 @@ public final class AnnexUtils {
 						cell.setCellStyle(shadowStyle);
 						excelLine.setPaginas(pages);
 
+						// ***************************
+						// *    EXECUTION VALUES     *
+						// ***************************
+						executionDatesWithFormat = new ArrayList<>();
+						// Get all execution dates in DateTime format
 						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+							executionDatesWithFormat.add(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0,19)));
+						}
+
+						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+							// If there is an newer execution the same day, then ignore current one.
+							boolean newerFound = false;
+							Date currentExecutionDate = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0,19));
+							for (Date d : executionDatesWithFormat){
+								if (d.getDay() == currentExecutionDate.getDay()
+										&& d.getMonth() == currentExecutionDate.getMonth()
+										&& d.getYear() == currentExecutionDate.getYear()){
+									if (d.getHours() > currentExecutionDate.getHours()
+										|| (d.getHours() == currentExecutionDate.getHours() && d.getMinutes() > currentExecutionDate.getMinutes())
+									    || (d.getHours() == currentExecutionDate.getHours() && d.getMinutes() == currentExecutionDate.getMinutes() && d.getSeconds() > currentExecutionDate.getSeconds())){
+										newerFound = true;
+										break;
+									}
+								}
+							}
+							if (newerFound) {
+								continue;
+							}
+
 							final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
-							if (!executionDates.contains(executionDateAux))
+							if (!executionDates.contains(executionDateAux)) {
 								executionDates.add(executionDateAux);
+								executionDatesWithFormat_Valid.add(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0,19)));
+							}
+
 							double score = Double.parseDouble(entry.getValue().getTotalScore().toString());
 							String adequacy = changeLevelName(entry.getValue().getLevel(), messageResources);
 							String compliance = entry.getValue().getCompliance();
@@ -1557,95 +1587,99 @@ public final class AnnexUtils {
 						int numberOfDate = 0;
 						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
 							final String date = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
-							row = sheet.getRow(rowIndex);
-							String columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.indexOf(date)));
-							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 1) + (3 * executionDates.indexOf(date)));
-							// "NV_" + date
-							// Add header if it is not already created
-							if (!ColumnNames.contains("NV_" + date)) {
-								ColumnNames.add("NV_" + date);
-								XSSFRow headerRow = sheet.getRow(0);
-								XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-								cellInHeader.setCellValue("NV_" + date);
-								cellInHeader.setCellStyle(headerStyle);
+							// Previously we ignore the minor date of the day when there is a day with more than one executions.
+							// Now we also ignore it to keep coherence.
+							if (executionDatesWithFormat_Valid.contains(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0,19)))) {
+								row = sheet.getRow(rowIndex);
+								String columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.indexOf(date)));
+								String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 1) + (3 * executionDates.indexOf(date)));
+								// "NV_" + date
+								// Add header if it is not already created
+								if (!ColumnNames.contains("NV_" + date)) {
+									ColumnNames.add("NV_" + date);
+									XSSFRow headerRow = sheet.getRow(0);
+									XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+									cellInHeader.setCellValue("NV_" + date);
+									cellInHeader.setCellStyle(headerStyle);
+								}
+								cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate));
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+								cell.setCellStyle(shadowStyle);
+								// "A_" + date
+								// Add header if it is not already created
+								if (!ColumnNames.contains("A_" + date)) {
+									ColumnNames.add("A_" + date);
+									XSSFRow headerRow = sheet.getRow(0);
+									XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+									cellInHeader.setCellValue("A_" + date);
+									cellInHeader.setCellStyle(headerStyle);
+								}
+								cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 1);
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"A\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+								cell.setCellStyle(shadowStyle);
+								// "AA_" + date
+								// Add header if it is not already created
+								if (!ColumnNames.contains("AA_" + date)) {
+									ColumnNames.add("AA_" + date);
+									XSSFRow headerRow = sheet.getRow(0);
+									XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+									cellInHeader.setCellValue("AA_" + date);
+									cellInHeader.setCellStyle(headerStyle);
+								}
+								cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 2);
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+								cell.setCellStyle(shadowStyle);
+								columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.indexOf(date)));
+								// "NC_" + date
+								// Add header if it is not already created
+								if (!ColumnNames.contains("NC_" + date)) {
+									ColumnNames.add("NC_" + date);
+									XSSFRow headerRow = sheet.getRow(0);
+									XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+									cellInHeader.setCellValue("NC_" + date);
+									cellInHeader.setCellStyle(headerStyle);
+								}
+								cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+								cell.setCellStyle(shadowStyle);
+								// "PC_" + date
+								// Add header if it is not already created
+								if (!ColumnNames.contains("PC_" + date)) {
+									ColumnNames.add("PC_" + date);
+									XSSFRow headerRow = sheet.getRow(0);
+									XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+									cellInHeader.setCellValue("PC_" + date);
+									cellInHeader.setCellStyle(headerStyle);
+								}
+								cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 4);
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+								cell.setCellStyle(shadowStyle);
+								// "TC_" + date
+								// Add header if it is not already created
+								if (!ColumnNames.contains("TC_" + date)) {
+									ColumnNames.add("TC_" + date);
+									XSSFRow headerRow = sheet.getRow(0);
+									XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+									cellInHeader.setCellValue("TC_" + date);
+									cellInHeader.setCellStyle(headerStyle);
+								}
+								cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 5);
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+								cell.setCellStyle(shadowStyle);
+								numberOfDate++;
 							}
-							cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate));
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-							cell.setCellStyle(shadowStyle);
-							// "A_" + date
-							// Add header if it is not already created
-							if (!ColumnNames.contains("A_" + date)) {
-								ColumnNames.add("A_" + date);
-								XSSFRow headerRow = sheet.getRow(0);
-								XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-								cellInHeader.setCellValue("A_" + date);
-								cellInHeader.setCellStyle(headerStyle);
-							}
-							cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 1);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"A\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-							cell.setCellStyle(shadowStyle);
-							// "AA_" + date
-							// Add header if it is not already created
-							if (!ColumnNames.contains("AA_" + date)) {
-								ColumnNames.add("AA_" + date);
-								XSSFRow headerRow = sheet.getRow(0);
-								XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-								cellInHeader.setCellValue("AA_" + date);
-								cellInHeader.setCellStyle(headerStyle);
-							}
-							cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 2);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-							cell.setCellStyle(shadowStyle);
-							columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.indexOf(date)));
-							// "NC_" + date
-							// Add header if it is not already created
-							if (!ColumnNames.contains("NC_" + date)) {
-								ColumnNames.add("NC_" + date);
-								XSSFRow headerRow = sheet.getRow(0);
-								XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-								cellInHeader.setCellValue("NC_" + date);
-								cellInHeader.setCellStyle(headerStyle);
-							}
-							cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-							cell.setCellStyle(shadowStyle);
-							// "PC_" + date
-							// Add header if it is not already created
-							if (!ColumnNames.contains("PC_" + date)) {
-								ColumnNames.add("PC_" + date);
-								XSSFRow headerRow = sheet.getRow(0);
-								XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-								cellInHeader.setCellValue("PC_" + date);
-								cellInHeader.setCellStyle(headerStyle);
-							}
-							cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 4);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-							cell.setCellStyle(shadowStyle);
-							// "TC_" + date
-							// Add header if it is not already created
-							if (!ColumnNames.contains("TC_" + date)) {
-								ColumnNames.add("TC_" + date);
-								XSSFRow headerRow = sheet.getRow(0);
-								XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-								cellInHeader.setCellValue("TC_" + date);
-								cellInHeader.setCellStyle(headerStyle);
-							}
-							cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 5);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-							cell.setCellStyle(shadowStyle);
-							numberOfDate++;
 						}
 					}
 				}
 			}
-			// Loop to insert puntuation evolution.
-			// TODO ADD comparision
+
+			// Loop to insert puntuation evolution compare with previous.
 			// To select comparision column in comparision object, check if seed has tagId of comparision to select column by date
 			ColumnNames.add("evol_puntuacion_ant");
 			XSSFRow headerRow = sheet.getRow(0);
@@ -1662,12 +1696,21 @@ public final class AnnexUtils {
 						// Discard rows without the last execution
 						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
 						if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
-							String columnFirstLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1);
+
+							List<EtiquetaForm> tags = semillaForm.getEtiquetas();
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", false);
 							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
+
 							cell = row.createCell(ColumnNames.size() - 1);
-							String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":"
-									+ columnFirstLetter + ")<=-0.5,\"EMPEORA\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter
-									+ ")<=0.5,\"SE MANTIENE\",\"MEJORA\")))";
+							String formula="IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + columnSecondLetter + ":" +
+									columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<=-" + secondThreshold + ",\"EMPEORA MUCHO\",IF(AND((" +
+									columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")>-" + secondThreshold + ",(" +
+									columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter +
+									")<-" + firstThreshold + "),\"EMPEORA\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter +
+									":" + columnFirstLetter + ")>-" + firstThreshold + ",(" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter +
+									":" + columnFirstLetter + ")<" + firstThreshold + "),\"SE MANTIENE\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" +
+									columnFirstLetter + ":" + columnFirstLetter + ")>" + firstThreshold + ",(" + columnSecondLetter + ":" + columnSecondLetter + "-" +
+									columnFirstLetter + ":" + columnFirstLetter + ")<" + secondThreshold + "),\"MEJORA\",\"MEJORA MUCHO\")))))";
 							cell.setCellFormula(formula);
 							cell.setCellStyle(shadowStyle);
 						}
@@ -1675,8 +1718,8 @@ public final class AnnexUtils {
 				}
 				rowIndex++;
 			}
-			// Loop to insert adecuation evolution.
-			// TODO ADD comparision
+
+			// Loop to insert adecuation evolution compare with previous
 			ColumnNames.add("evol_adecuacion_ant");
 			headerRow = sheet.getRow(0);
 			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
@@ -1692,7 +1735,7 @@ public final class AnnexUtils {
 						// Discard rows without the last execution
 						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
 						if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
-							String columnFirstLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 2);
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "adecuacion", false);
 							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
 							cell = row.createCell(ColumnNames.size() - 1);
 							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
@@ -1705,8 +1748,83 @@ public final class AnnexUtils {
 				}
 				rowIndex++;
 			}
+
+			// Loop to insert puntuation evolution compare with first
+			// To select comparision column in comparision object, check if seed has tagId of comparision to select column by date
+			ColumnNames.add("evol_puntuacion_primer");
+			headerRow = sheet.getRow(0);
+			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+			cellInHeader.setCellValue("evol_puntuacion_primer");
+			cellInHeader.setCellStyle(headerStyle);
+			rowIndex = 1;
+			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+				// On each category iteration we filter the other categories.
+				if (semillaForm.getId() != 0) {
+					row = sheet.getRow(rowIndex);
+					if (row != null) {
+						// Discard rows without the last execution
+						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
+						if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
+
+							List<EtiquetaForm> tags = semillaForm.getEtiquetas();
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", true);
+							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
+
+							cell = row.createCell(ColumnNames.size() - 1);
+							String formula="IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + columnSecondLetter + ":" +
+									columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<=-" + secondThreshold + ",\"EMPEORA MUCHO\",IF(AND((" +
+									columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")>-" + secondThreshold + ",(" +
+									columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter +
+									")<-" + firstThreshold + "),\"EMPEORA\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter +
+									":" + columnFirstLetter + ")>-" + firstThreshold + ",(" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter +
+									":" + columnFirstLetter + ")<" + firstThreshold + "),\"SE MANTIENE\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" +
+									columnFirstLetter + ":" + columnFirstLetter + ")>" + firstThreshold + ",(" + columnSecondLetter + ":" + columnSecondLetter + "-" +
+									columnFirstLetter + ":" + columnFirstLetter + ")<" + secondThreshold + "),\"MEJORA\",\"MEJORA MUCHO\")))))";
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+					}
+				}
+				rowIndex++;
+			}
+
+			// Loop to insert adecuation evolution compare with first	.
+			ColumnNames.add("evol_adecuacion_ant");
+			headerRow = sheet.getRow(0);
+			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+			cellInHeader.setCellValue("evol_adecuacion_ant");
+			cellInHeader.setCellStyle(headerStyle);
+			rowIndex = 1;
+			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+				// On each category iteration we filter the other categories.
+				if (semillaForm.getId() != 0) {
+					row = sheet.getRow(rowIndex);
+					if (row != null) {
+						// Discard rows without the last execution
+						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
+						if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "adecuacion", true);
+							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.size() - 1);
+							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
+									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Prioridad 1\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
+									+ "$419=\"No Válido\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Prioridad 1\",1,3))";
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+					}
+				}
+				rowIndex++;
+			}
+
 			int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
-			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.size() - 1);
+			String title = "Datos de evolución anterior iteración de portales por segmento. Diferencias de " + firstThreshold + " y " + secondThreshold + " puntos.";
+			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.size() - 3, title);
+			title = "Datos de evolución primera iteración de portales por segmento. Diferencias de " + firstThreshold + " y " + secondThreshold + " puntos.";
+			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.size() - 3, title);
+
 			// Insert graph sheets per category
 			for (String category : categories) {
 				/*
@@ -1747,6 +1865,62 @@ public final class AnnexUtils {
 			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+	}
+
+	private static String GetFirstLetterPreviousExecution(List<ComparisionForm> comparision, List<EtiquetaForm> labels, List<String> columnNames, String columnName, boolean compareWithFirst) {
+
+		String previousDate = "";
+		String columnToReturn = "";
+
+		if (comparision != null) {
+			// Get previous date by tag
+			for (ComparisionForm com : comparision) {
+				for (EtiquetaForm label : labels) {
+					if (com.getIdTag() == label.getId()) {
+						previousDate = compareWithFirst ? com.getFirst() : com.getPrevious();
+						break;
+					}
+				}
+				if (previousDate != "") {
+					int i = 1;
+					for (String s : columnNames) {
+						if (s.contains(columnName) && s.contains(previousDate)) {
+							columnToReturn = GetExcelColumnNameForNumber(i);
+							break;
+						}
+						i++;
+					}
+					break;
+				}
+			}
+		}
+
+		// When we can't find the previous by tag, then we search for the Fisrt or penultimate execution.
+		if (columnToReturn == "") {
+			boolean lastFound = false;
+			int last = 1;
+
+			for (int i = columnNames.size() - 1; i >= 10; i--) {
+				if (columnNames.get(i).contains(columnName) && !columnNames.get(i).contains("evol")){
+					if (!lastFound) {
+						last = i;
+						lastFound = true;
+					}
+					else {
+						columnToReturn = GetExcelColumnNameForNumber(i + 1);
+						if(!compareWithFirst) {
+							break;
+						}
+					}
+				}
+			}
+
+			// This code cover the case of only one execution.
+			if (columnToReturn == ""){
+				columnToReturn = GetExcelColumnNameForNumber(last + 1);;
+			}
+		}
+		return columnToReturn;
 	}
 
 	/**
@@ -1952,63 +2126,99 @@ public final class AnnexUtils {
 	 * @return the int
 	 */
 	private static int InsertSummaryTable(XSSFSheet sheet, int RowStartPosition, List<String> ColumnNames, CellStyle headerStyle, CellStyle shadowStyle) {
+		// create light shadow cell style CENTERED
+		CellStyle shadowStyleCentered = sheet.getWorkbook().createCellStyle();
+		shadowStyleCentered.setWrapText(true);
+		shadowStyleCentered.setAlignment(HorizontalAlignment.CENTER);
+		shadowStyleCentered.setVerticalAlignment(VerticalAlignment.CENTER);
+		shadowStyleCentered.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
+		shadowStyleCentered.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
 		XSSFCell cell;
 		XSSFRow row;
 		// Insert Summary table.
-		String columnResumeName = GetExcelColumnNameForNumber(ColumnNames.size());
+		String columnResumeNamePrevious = GetExcelColumnNameForNumber(ColumnNames.size()-2);
+		String columnResumeNameFirst = GetExcelColumnNameForNumber(ColumnNames.size());
 		row = sheet.createRow(RowStartPosition);
 		cell = row.createCell(0);
 		cell.setCellValue("Datos de evolución de portales por nivel de adecuación");
+		cell.setCellStyle(headerStyle);
+		cell = row.createCell(1);
+		cell.setCellValue("Anterior");
+		cell.setCellStyle(headerStyle);
+		cell = row.createCell(2);
+		cell.setCellValue("Primera");
 		cell.setCellStyle(headerStyle);
 		row = sheet.createRow(RowStartPosition + 1);
 		cell = row.createCell(0);
 		cell.setCellStyle(headerStyle);
 		cell.setCellValue("De NV a P1");
 		cell = row.createCell(1);
-		cell.setCellStyle(shadowStyle);
-		cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",1)");
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",1)");
+		cell = row.createCell(2);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",1)");
 		row = sheet.createRow(RowStartPosition + 2);
 		cell = row.createCell(0);
 		cell.setCellValue("De NV a P2");
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(1);
-		cell.setCellStyle(shadowStyle);
-		cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",3)");
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",3)");
+		cell = row.createCell(2);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",3)");
 		row = sheet.createRow(RowStartPosition + 3);
 		cell = row.createCell(0);
 		cell.setCellStyle(headerStyle);
 		cell.setCellValue("De P1 a P2");
 		cell = row.createCell(1);
-		cell.setCellStyle(shadowStyle);
-		cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",2)");
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",2)");
+		cell = row.createCell(2);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",2)");
 		row = sheet.createRow(RowStartPosition + 4);
 		cell = row.createCell(0);
 		cell.setCellValue("De P2 a P1");
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(1);
-		cell.setCellStyle(shadowStyle);
-		cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-2)");
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",-2)");
+		cell = row.createCell(2);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",-2)");
 		row = sheet.createRow(RowStartPosition + 5);
 		cell = row.createCell(0);
 		cell.setCellStyle(headerStyle);
 		cell.setCellValue("De P2 a NV");
 		cell = row.createCell(1);
-		cell.setCellStyle(shadowStyle);
-		cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-3)");
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",-3)");
+		cell = row.createCell(2);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",-3)");
 		row = sheet.createRow(RowStartPosition + 6);
 		cell = row.createCell(0);
 		cell.setCellValue("De P1 a NV");
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(1);
-		cell.setCellStyle(shadowStyle);
-		cell.setCellFormula("COUNTIF(" + columnResumeName + ":" + columnResumeName + ",-1)");
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",-1)");
+		cell = row.createCell(2);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",-1)");
 		row = sheet.createRow(RowStartPosition + 7);
 		cell = row.createCell(0);
 		cell.setCellValue("Total cambian: ");
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(1);
 		cell.setCellStyle(headerStyle);
-		cell.setCellFormula("SUM(B" + (RowStartPosition + 2) + ":B" + (RowStartPosition + 7) + ")");
+		cell.setCellFormula("SUM(C" + (RowStartPosition + 2) + ":C" + (RowStartPosition + 7) + ")");
+		cell = row.createCell(2);
+		cell.setCellStyle(headerStyle);
+		cell.setCellFormula("SUM(C" + (RowStartPosition + 2) + ":C" + (RowStartPosition + 7) + ")");
 		return RowStartPosition + 7;
 	}
 
@@ -2024,13 +2234,21 @@ public final class AnnexUtils {
 	 * @param columnSourceData the column source data
 	 * @return the int
 	 */
-	private static int InsertCategoriesTable(XSSFSheet sheet, int RowStartPosition, List<String> categories, CellStyle headerStyle, CellStyle shadowStyle, int lastDataRow, int columnSourceData) {
+	private static int InsertCategoriesTable(XSSFSheet sheet, int RowStartPosition, List<String> categories, CellStyle headerStyle, CellStyle shadowStyle, int lastDataRow, int columnSourceData, String title) {
+		// create light shadow cell style CENTERED
+		CellStyle shadowStyleCentered = sheet.getWorkbook().createCellStyle();
+		shadowStyleCentered.setWrapText(true);
+		shadowStyleCentered.setAlignment(HorizontalAlignment.CENTER);
+		shadowStyleCentered.setVerticalAlignment(VerticalAlignment.CENTER);
+		shadowStyleCentered.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
+		shadowStyleCentered.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
 		XSSFCell cell;
 		XSSFRow row;
 		// Insert Summary table.
 		row = sheet.createRow(RowStartPosition);
 		cell = row.createCell(0);
-		cell.setCellValue("Datos de evolución de portales respecto a la primera iteración/anterior iteración (Empeora, Se mantiene, Mejora) por segmento. Diferencia 0,5 puntos");
+		cell.setCellValue(title);
 		cell.setCellStyle(headerStyle);
 		row = sheet.createRow(RowStartPosition + 1);
 		cell = row.createCell(0);
@@ -2038,15 +2256,19 @@ public final class AnnexUtils {
 		cell.setCellValue("Segmento");
 		cell = row.createCell(1);
 		cell.setCellStyle(headerStyle);
-		cell.setCellValue("Empeoran");
+		cell.setCellValue("Empeoran mucho");
 		cell = row.createCell(2);
 		cell.setCellStyle(headerStyle);
-		cell.setCellValue("Mejoran");
+		cell.setCellValue("Empeoran");
 		cell = row.createCell(3);
 		cell.setCellStyle(headerStyle);
 		cell.setCellValue("Se mantiene");
 		cell = row.createCell(4);
 		cell.setCellStyle(headerStyle);
+		cell.setCellValue("Mejoran");
+		cell = row.createCell(5);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("Mejoran mucho");
 		String dataColumn = GetExcelColumnNameForNumber(columnSourceData);
 		for (int i = 0; i < categories.size(); i++) {
 			row = sheet.createRow(RowStartPosition + i + 2);
@@ -2054,14 +2276,20 @@ public final class AnnexUtils {
 			cell.setCellStyle(shadowStyle);
 			cell.setCellValue(categories.get(i));
 			cell = row.createCell(1);
-			cell.setCellStyle(shadowStyle);
-			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"EMPEORA\")");
+			cell.setCellStyle(shadowStyleCentered);
+			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"EMPEORA MUCHO\")");
 			cell = row.createCell(2);
-			cell.setCellStyle(shadowStyle);
-			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"MEJORA\")");
+			cell.setCellStyle(shadowStyleCentered);
+			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"EMPEORA\")");
 			cell = row.createCell(3);
-			cell.setCellStyle(shadowStyle);
+			cell.setCellStyle(shadowStyleCentered);
 			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"SE MANTIENE\")");
+			cell = row.createCell(4);
+			cell.setCellStyle(shadowStyleCentered);
+			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"MEJORA\")");
+			cell = row.createCell(5);
+			cell.setCellStyle(shadowStyleCentered);
+			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"MEJORA MUCHO\")");
 		}
 		// TOTAL row
 		row = sheet.createRow(RowStartPosition + categories.size() + 2);
@@ -2079,8 +2307,14 @@ public final class AnnexUtils {
 		cell.setCellFormula("SUM(D" + (RowStartPosition + 3) + ":D" + (RowStartPosition + categories.size() + 2) + ")");
 		cell = row.createCell(4);
 		cell.setCellStyle(headerStyle);
-		cell.setCellFormula("SUM(B" + (RowStartPosition + categories.size() + 3) + ":D" + (RowStartPosition + categories.size() + 3) + ")");
-		return 1;
+		cell.setCellFormula("SUM(E" + (RowStartPosition + 3) + ":E" + (RowStartPosition + categories.size() + 2) + ")");
+		cell = row.createCell(5);
+		cell.setCellStyle(headerStyle);
+		cell.setCellFormula("SUM(F" + (RowStartPosition + 3) + ":F" + (RowStartPosition + categories.size() + 2) + ")");
+		cell = row.createCell(6);
+		cell.setCellStyle(headerStyle);
+		cell.setCellFormula("SUM(B" + (RowStartPosition + categories.size() + 3) + ":F" + (RowStartPosition + categories.size() + 3) + ")");
+		return RowStartPosition + categories.size() + 1;
 	}
 
 	/**

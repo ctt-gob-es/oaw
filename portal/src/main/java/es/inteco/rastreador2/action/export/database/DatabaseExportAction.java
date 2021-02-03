@@ -96,6 +96,13 @@ public class DatabaseExportAction extends Action {
 						if (exObsIds == null) {
 							exObsIds = new String[] { request.getParameter(Constants.ID_EX_OBS) };
 						}
+
+						// Get classification thresholds
+						Connection connection = DataBaseManager.getConnection();
+						double firstThreshold = ObservatorioDAO.getFirstClassificationThresholdFromConfig(connection);
+						double secondThreshold = ObservatorioDAO.getSecondClassificationThresholdFromConfig(connection);
+						DataBaseManager.closeConnection(connection);
+
 						// if has tags (ids) check if has request params like fisrt_{idtag}, previous_{idtag}
 						List<ComparisionForm> comparision = null;
 						if (tagsToFilter != null && tagsToFilter.length > 0) {
@@ -110,7 +117,7 @@ public class DatabaseExportAction extends Action {
 						}
 						// Export all??
 						export(mapping, request);
-						getAnnexes(mapping, request, response, tagsToFilter, exObsIds, comparision);
+						getAnnexes(mapping, request, response, tagsToFilter, exObsIds, comparision, firstThreshold, secondThreshold);
 					} else if (request.getParameter(Constants.ACTION).equals(Constants.CONFIRM)) {
 						Connection connection = DataBaseManager.getConnection();
 						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
@@ -237,7 +244,7 @@ public class DatabaseExportAction extends Action {
 	 * @throws Exception the exception
 	 */
 	private ActionForward getAnnexes(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response, final String[] tagsToFilter, final String[] exObsIds,
-			final List<ComparisionForm> comparision) throws Exception {
+			final List<ComparisionForm> comparision, double firstThreshold, double secondThreshold) throws Exception {
 		try {
 			final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 			final Long idOperation = System.currentTimeMillis();
@@ -249,7 +256,7 @@ public class DatabaseExportAction extends Action {
 			} else if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
 				resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 			}
-			AnnexUtils.generateAllAnnex(resources, idObsExecution, idOperation, tagsToFilter, exObsIds, comparision);
+			AnnexUtils.generateAllAnnex(resources, idObsExecution, idOperation, tagsToFilter, exObsIds, comparision, firstThreshold, secondThreshold);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
 			final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";
