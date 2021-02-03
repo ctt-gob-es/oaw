@@ -2466,17 +2466,20 @@ public final class AnnexUtils {
 						cell.setCellValue(currentLine.getValue().getOtros());
 						cell.setCellStyle(shadowStyle);
 						for (String date : executionDates) {
+							// Puntuación
 							cell = row.createCell(columnIndex++);
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellStyle(shadowStyle);
 							if (currentLine.getValue().HasDate(date)) {
 								cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getScore());
 							}
+							// Adecuación
 							cell = row.createCell(columnIndex++);
 							cell.setCellStyle(shadowStyle);
 							if (currentLine.getValue().HasDate(date)) {
 								cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getAdequacy());
 							}
+							// Cumplimiento
 							cell = row.createCell(columnIndex++);
 							cell.setCellStyle(shadowStyle);
 							if (currentLine.getValue().HasDate(date)) {
@@ -2530,14 +2533,14 @@ public final class AnnexUtils {
 					sheet.autoSizeColumn(i);
 				}
 				XSSFSheet currentSheet = wb.createSheet("Evolución SW");
-				if (rowIndex > 1) {
-					InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, true, numberOfFixedColumns, false);
-					InsertGraphIntoSheetByDependency(wb, currentSheet, rowIndex, false, numberOfFixedColumns, false);
-				}
 				XSSFSheet currentSheet2 = wb.createSheet("Iteración SW");
+				XSSFSheet currentSheet3 = wb.createSheet("Evolución Agregada");
 				if (rowIndex > 1) {
-					InsertGraphIntoSheetByDependency(wb, currentSheet2, rowIndex, true, numberOfFixedColumns, true);
-					InsertGraphIntoSheetByDependency(wb, currentSheet2, rowIndex, false, numberOfFixedColumns, true);
+					InsertGraphIntoSheetByDependency(currentSheet, rowIndex, true, numberOfFixedColumns, false);
+					InsertGraphIntoSheetByDependency(currentSheet, rowIndex, false, numberOfFixedColumns, false);
+					InsertGraphIntoSheetByDependency(currentSheet2, rowIndex, true, numberOfFixedColumns, true);
+					InsertGraphIntoSheetByDependency(currentSheet2, rowIndex, false, numberOfFixedColumns, true);
+					InsertAgregatePieChar(currentSheet3, rowIndex, ColumnNames, headerStyle, shadowStyle);
 				}
 				XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
 				wb.write(writer);
@@ -2547,6 +2550,91 @@ public final class AnnexUtils {
 				throw e;
 			}
 		}
+	}
+
+	/**
+	 * Insert agregate pie char.
+	 *
+	 * @param currentSheet3 the current sheet 3
+	 * @param rowIndex      the row index
+	 * @param columnNames   the column names
+	 * @param headerStyle   the header style
+	 * @param shadowStyle   the shadow style
+	 */
+	private static void InsertAgregatePieChar(XSSFSheet currentSheet3, int rowIndex, List<String> columnNames, CellStyle headerStyle, CellStyle shadowStyle) {
+		CreationHelper createHelper = currentSheet3.getWorkbook().getCreationHelper();
+		CellStyle percentCenterStyle = currentSheet3.getWorkbook().createCellStyle();
+		percentCenterStyle.setWrapText(true);
+		percentCenterStyle.setAlignment(HorizontalAlignment.CENTER);
+		percentCenterStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+		percentCenterStyle.setDataFormat(createHelper.createDataFormat().getFormat(PERCENT_FORMAT));
+		int adecuationColumn = 0;
+		for (int i = columnNames.size() - 1; i > 5; i--) {
+			if (columnNames.get(i).contains("adecuacion") && !columnNames.get(i).contains("ant")) {
+				adecuationColumn = i + 1;
+			}
+		}
+		// COMPLIANCE
+		// "Headers"
+		XSSFRow row = currentSheet3.createRow(0);
+		XSSFCell cell = row.createCell(1);
+		cell.setCellValue("Número de páginas.");
+		cell.setCellStyle(headerStyle);
+		cell = row.createCell(2);
+		cell.setCellValue("Porcentaje sobre el total.");
+		cell.setCellStyle(headerStyle);
+		// "A"
+		row = currentSheet3.createRow(1);
+		cell = row.createCell(0);
+		cell.setCellValue("A");
+		cell.setCellStyle(headerStyle);
+		// Number of A
+		cell = row.createCell(1);
+		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn) + "1:" + GetExcelColumnNameForNumber(adecuationColumn) + rowIndex + ",\"A\")");
+		// Percent of A
+		cell = row.createCell(2);
+		cell.setCellFormula("B2/" + (rowIndex - 1));
+		cell.setCellStyle(percentCenterStyle);
+		// "AA"
+		row = currentSheet3.createRow(2);
+		cell = row.createCell(0);
+		cell.setCellValue("AA");
+		cell.setCellStyle(headerStyle);
+		// Number of AA
+		cell = row.createCell(1);
+		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn) + "1:" + GetExcelColumnNameForNumber(adecuationColumn) + rowIndex + ",\"AA\")");
+		// Percent of AA
+		cell = row.createCell(2);
+		cell.setCellFormula("B3/" + (rowIndex - 1));
+		cell.setCellStyle(percentCenterStyle);
+		// "No Válido"
+		row = currentSheet3.createRow(3);
+		cell = row.createCell(0);
+		cell.setCellValue("No Válido");
+		cell.setCellStyle(headerStyle);
+		// Number of No Válido
+		cell = row.createCell(1);
+		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn) + "1:" + GetExcelColumnNameForNumber(adecuationColumn) + rowIndex + ",\"No Válido\")");
+		// Percent of No Válido
+		cell = row.createCell(2);
+		cell.setCellFormula("B4/" + (rowIndex - 1));
+		cell.setCellStyle(percentCenterStyle);
+		currentSheet3.autoSizeColumn(0);
+		currentSheet3.autoSizeColumn(1);
+		currentSheet3.autoSizeColumn(2);
+		XSSFDrawing drawing = currentSheet3.createDrawingPatriarch();
+		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 1, 8, 9, 20);
+		XSSFChart chart = drawing.createChart(anchor);
+		chart.setTitleText("Acumulado Adecuación");
+		chart.setTitleOverlay(false);
+		XDDFChartLegend legend = chart.getOrAddLegend();
+		legend.setPosition(LegendPosition.TOP_RIGHT);
+		XDDFDataSource<String> labels = XDDFDataSourcesFactory.fromStringCellRange(currentSheet3, new CellRangeAddress(1, 3, 0, 0));
+		XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(currentSheet3, new CellRangeAddress(1, 3, 1, 1));
+		XDDFChartData data = chart.createData(ChartTypes.PIE, null, null);
+		data.setVaryColors(true);
+		data.addSeries(labels, values);
+		chart.plot(data);
 	}
 
 	/**
@@ -2944,14 +3032,13 @@ public final class AnnexUtils {
 	/**
 	 * Insert graph into sheet by dependency.
 	 *
-	 * @param wb                   the wb
 	 * @param currentSheet         the current sheet
 	 * @param rowIndex             the row index
 	 * @param isFirst              the is first
 	 * @param numberOfFixedColumns the number of fixed columns
 	 * @param onlyLastIteration    the only last iteration
 	 */
-	private static void InsertGraphIntoSheetByDependency(XSSFWorkbook wb, XSSFSheet currentSheet, int rowIndex, boolean isFirst, int numberOfFixedColumns, boolean onlyLastIteration) {
+	private static void InsertGraphIntoSheetByDependency(XSSFSheet currentSheet, int rowIndex, boolean isFirst, int numberOfFixedColumns, boolean onlyLastIteration) {
 		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(rowIndex, 16), isFirst ? 40 : 85);
 		XSSFChart chart = drawing.createChart(anchor);
@@ -2970,15 +3057,15 @@ public final class AnnexUtils {
 		CTPlotArea plotArea = chart.getCTChart().getPlotArea();
 		plotArea.getValAxArray()[0].addNewMajorGridlines();
 		// Get agency names
-		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(1, rowIndex - 1, 0, 0));
+		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(currentSheet.getWorkbook().getSheetAt(0), new CellRangeAddress(1, rowIndex - 1, 0, 0));
 		// Iterate through the executions
 		int i = 0;
 		for (String date : executionDates) {
 			if (!onlyLastIteration || (onlyLastIteration && i == (executionDates.size() - 1))) {
 				int firstSerieColumn = numberOfFixedColumns + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
 				// First serie ("No válido" / "No Conforme")
-				FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 0 : 3));
-				XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+				FillNullCellInRange(currentSheet.getWorkbook().getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 0 : 3));
+				XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(currentSheet.getWorkbook().getSheetAt(0),
 						new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 0 : 3), firstSerieColumn + (isFirst ? 0 : 3)));
 				XDDFChartData.Series series1 = data.addSeries(agencies, values1);
 				series1.setTitle((isFirst ? "NV_" : "NC_") + date, null);
@@ -2990,8 +3077,8 @@ public final class AnnexUtils {
 				properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
 				series1.setShapeProperties(properties1);
 				// Second serie ("A" / "Parcialmente conforme")
-				FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 1 : 4));
-				XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+				FillNullCellInRange(currentSheet.getWorkbook().getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 1 : 4));
+				XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(currentSheet.getWorkbook().getSheetAt(0),
 						new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 1 : 4), firstSerieColumn + (isFirst ? 1 : 4)));
 				XDDFChartData.Series series2 = data.addSeries(agencies, values2);
 				series2.setTitle((isFirst ? "A_" : "PC_") + date, null);
@@ -3003,8 +3090,8 @@ public final class AnnexUtils {
 				properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
 				series2.setShapeProperties(properties2);
 				// Third serie ("AA" / "Plenamente conforme")
-				FillNullCellInRange(wb.getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 2 : 5));
-				XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
+				FillNullCellInRange(currentSheet.getWorkbook().getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 2 : 5));
+				XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(currentSheet.getWorkbook().getSheetAt(0),
 						new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 2 : 5), firstSerieColumn + (isFirst ? 2 : 5)));
 				XDDFChartData.Series series3 = data.addSeries(agencies, values3);
 				series3.setTitle((isFirst ? "AA_" : "TC_") + date, null);
