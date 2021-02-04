@@ -223,13 +223,6 @@ Email: observ.accesibilidad@correo.gob.es
 													<bean:message key='tooltip.status.stop' />
 												</span>
 											</html:link>
-											<html:link forward="estadoObservatorio" name="paramsRelanzar">
-												<span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip"
-													title="<bean:message key='tooltip.status.obs'/>"></span>
-												<span class="sr-only">
-													<bean:message key='tooltip.status.obs' />
-												</span>
-											</html:link>
 										</logic:equal>
 										<logic:equal name="fulfilledObservatory" property="observatorio.estado" value="1">
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.lanzado" />
