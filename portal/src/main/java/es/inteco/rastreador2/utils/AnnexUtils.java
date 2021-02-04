@@ -2610,7 +2610,7 @@ public final class AnnexUtils {
 		// "No VÃ¡lido"
 		row = currentSheet3.createRow(3);
 		cell = row.createCell(0);
-		cell.setCellValue("No VÃ¡lido");
+		cell.setCellValue("No Válido");
 		cell.setCellStyle(headerStyle);
 		// Number of No VÃ¡lido
 		cell = row.createCell(1);
