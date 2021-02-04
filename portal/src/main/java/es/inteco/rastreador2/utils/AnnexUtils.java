@@ -2574,7 +2574,7 @@ public final class AnnexUtils {
 			}
 		}
 
-		// COMPLIANCE
+		// ADECUACY
 		// "Headers"
 		XSSFRow row = currentSheet3.createRow(0);
 		XSSFCell cell = row.createCell(1);
@@ -2591,7 +2591,7 @@ public final class AnnexUtils {
 		cell.setCellStyle(headerStyle);
 		// Number of A
 		cell = row.createCell(1);
-		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn)  + "1:" + GetExcelColumnNameForNumber(adecuationColumn)
+		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn)  + "2:" + GetExcelColumnNameForNumber(adecuationColumn)
 				+ rowIndex + ",\"A\")");
 		//Percent of A
 		cell = row.createCell(2);
@@ -2605,7 +2605,7 @@ public final class AnnexUtils {
 		cell.setCellStyle(headerStyle);
 		// Number of AA
 		cell = row.createCell(1);
-		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn)  + "1:" + GetExcelColumnNameForNumber(adecuationColumn)
+		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn)  + "2:" + GetExcelColumnNameForNumber(adecuationColumn)
 				+ rowIndex + ",\"AA\")");
 		//Percent of AA
 		cell = row.createCell(2);
@@ -2619,7 +2619,7 @@ public final class AnnexUtils {
 		cell.setCellStyle(headerStyle);
 		// Number of No Válido
 		cell = row.createCell(1);
-		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn)  + "1:" + GetExcelColumnNameForNumber(adecuationColumn)
+		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn)  + "2:" + GetExcelColumnNameForNumber(adecuationColumn)
 				+ rowIndex + ",\"No Válido\")");
 		//Percent of No Válido
 		cell = row.createCell(2);
@@ -2650,6 +2650,90 @@ public final class AnnexUtils {
 		data.setVaryColors(true);
 		data.addSeries(labels, values);
 		chart.plot(data);
+
+		// COMPLIANCE
+		int complianceColumn = 0;
+		for (int i = columnNames.size() - 1 ; i > 5 ; i--){
+			if (columnNames.get(i).contains("cumplimiento") && !columnNames.get(i).contains("ant")){
+				complianceColumn = i + 1;
+			}
+		}
+		// "Headers"
+		row = currentSheet3.createRow(25);
+		cell = row.createCell(1);
+		cell.setCellValue("Número de páginas.");
+		cell.setCellStyle(headerStyle);
+		cell = row.createCell(2);
+		cell.setCellValue("Porcentaje sobre el total.");
+		cell.setCellStyle(headerStyle);
+
+		// "Plenamente conforme"
+		row = currentSheet3.createRow(26);
+		cell = row.createCell(0);
+		cell.setCellValue("Plenamente conforme");
+		cell.setCellStyle(headerStyle);
+		// Number of Plenamente conforme
+		cell = row.createCell(1);
+		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(complianceColumn)  + "2:" + GetExcelColumnNameForNumber(complianceColumn)
+				+ rowIndex + ",\"Plenamente conforme\")");
+		//Percent of Plenamente conforme
+		cell = row.createCell(2);
+		cell.setCellFormula("B27/"+(rowIndex-1));
+		cell.setCellStyle(percentCenterStyle);
+
+		// "Parcialmente conforme"
+		row = currentSheet3.createRow(27);
+		cell = row.createCell(0);
+		cell.setCellValue("Parcialmente conforme");
+		cell.setCellStyle(headerStyle);
+		// Number of Parcialmente conforme
+		cell = row.createCell(1);
+		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(complianceColumn)  + "2:" + GetExcelColumnNameForNumber(complianceColumn)
+				+ rowIndex + ",\"Parcialmente conforme\")");
+		//Percent of Parcialmente conforme
+		cell = row.createCell(2);
+		cell.setCellFormula("B28/"+(rowIndex-1));
+		cell.setCellStyle(percentCenterStyle);
+
+		// "No conforme"
+		row = currentSheet3.createRow(28);
+		cell = row.createCell(0);
+		cell.setCellValue("No conforme");
+		cell.setCellStyle(headerStyle);
+		// Number of No conforme
+		cell = row.createCell(1);
+		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(complianceColumn)  + "2:" + GetExcelColumnNameForNumber(complianceColumn)
+				+ rowIndex + ",\"No conforme\")");
+		//Percent of No conforme
+		cell = row.createCell(2);
+		cell.setCellFormula("B29/"+(rowIndex-1));
+		cell.setCellStyle(percentCenterStyle);
+
+		currentSheet3.autoSizeColumn(0);
+		currentSheet3.autoSizeColumn(1);
+		currentSheet3.autoSizeColumn(2);
+
+		XSSFDrawing drawing2 = currentSheet3.createDrawingPatriarch();
+		XSSFClientAnchor anchor2 = drawing2.createAnchor(0, 0, 0, 0, 1, 32, 9, 44);
+
+		XSSFChart chart2 = drawing2.createChart(anchor2);
+		chart2.setTitleText("Acumulado Cumplimiento");
+		chart2.setTitleOverlay(false);
+
+		XDDFChartLegend legend2 = chart2.getOrAddLegend();
+		legend2.setPosition(LegendPosition.TOP_RIGHT);
+
+		XDDFDataSource<String> labels2 = XDDFDataSourcesFactory.fromStringCellRange(currentSheet3,
+				new CellRangeAddress(26, 28, 0, 0));
+
+		XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(currentSheet3,
+				new CellRangeAddress(26, 28, 1, 1));
+
+		XDDFChartData data2 = chart2.createData(ChartTypes.PIE, null, null);
+		data2.setVaryColors(true);
+		data2.addSeries(labels2, values2);
+		chart2.plot(data2);
+
 	}
 
 	/**
