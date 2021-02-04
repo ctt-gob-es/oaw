@@ -2607,15 +2607,15 @@ public final class AnnexUtils {
 		cell = row.createCell(2);
 		cell.setCellFormula("B3/" + (rowIndex - 1));
 		cell.setCellStyle(percentCenterStyle);
-		// "No VÃ¡lido"
+		// "No Válido"
 		row = currentSheet3.createRow(3);
 		cell = row.createCell(0);
 		cell.setCellValue("No Válido");
 		cell.setCellStyle(headerStyle);
-		// Number of No VÃ¡lido
+		// Number of No Válido
 		cell = row.createCell(1);
 		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn) + "2:" + GetExcelColumnNameForNumber(adecuationColumn) + rowIndex + ",\"No Válido\")");
-		// Percent of No VÃ¡lido
+		// Percent of No Válido
 		cell = row.createCell(2);
 		cell.setCellFormula("B4/" + (rowIndex - 1));
 		cell.setCellStyle(percentCenterStyle);
