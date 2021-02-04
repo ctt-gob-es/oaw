@@ -2578,7 +2578,7 @@ public final class AnnexUtils {
 		// "Headers"
 		XSSFRow row = currentSheet3.createRow(0);
 		XSSFCell cell = row.createCell(1);
-		cell.setCellValue("NÃºmero de pÃ¡ginas.");
+		cell.setCellValue("Número de páginas.");
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(2);
 		cell.setCellValue("Porcentaje sobre el total.");
@@ -2614,7 +2614,7 @@ public final class AnnexUtils {
 		cell.setCellStyle(headerStyle);
 		// Number of No VÃ¡lido
 		cell = row.createCell(1);
-		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn) + "2:" + GetExcelColumnNameForNumber(adecuationColumn) + rowIndex + ",\"No VÃ¡lido\")");
+		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn) + "2:" + GetExcelColumnNameForNumber(adecuationColumn) + rowIndex + ",\"No Válido\")");
 		// Percent of No VÃ¡lido
 		cell = row.createCell(2);
 		cell.setCellFormula("B4/" + (rowIndex - 1));
@@ -2625,7 +2625,7 @@ public final class AnnexUtils {
 		XSSFDrawing drawing = currentSheet3.createDrawingPatriarch();
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 1, 8, 9, 20);
 		XSSFChart chart = drawing.createChart(anchor);
-		chart.setTitleText("Acumulado AdecuaciÃ³n");
+		chart.setTitleText("Nivel de adecuación estimado global");
 		chart.setTitleOverlay(false);
 		XDDFChartLegend legend = chart.getOrAddLegend();
 		legend.setPosition(LegendPosition.TOP_RIGHT);
@@ -2645,7 +2645,7 @@ public final class AnnexUtils {
 		// "Headers"
 		row = currentSheet3.createRow(25);
 		cell = row.createCell(1);
-		cell.setCellValue("NÃºmero de pÃ¡ginas.");
+		cell.setCellValue("Número de páginas.");
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(2);
 		cell.setCellValue("Porcentaje sobre el total.");
@@ -2692,7 +2692,7 @@ public final class AnnexUtils {
 		XSSFDrawing drawing2 = currentSheet3.createDrawingPatriarch();
 		XSSFClientAnchor anchor2 = drawing2.createAnchor(0, 0, 0, 0, 1, 32, 9, 44);
 		XSSFChart chart2 = drawing2.createChart(anchor2);
-		chart2.setTitleText("Acumulado Cumplimiento");
+		chart2.setTitleText("Situación de cumplimiento estimada global");
 		chart2.setTitleOverlay(false);
 		XDDFChartLegend legend2 = chart2.getOrAddLegend();
 		legend2.setPosition(LegendPosition.TOP_RIGHT);
@@ -3124,7 +3124,7 @@ public final class AnnexUtils {
 		CTPlotArea plotArea = chart.getCTChart().getPlotArea();
 		plotArea.getValAxArray()[0].addNewMajorGridlines();
 		// Get agency names
-		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(currentSheet.getWorkbook().getSheetAt(0), new CellRangeAddress(1, rowIndex - 1, 0, 0));
+		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(currentSheet.getWorkbook().getSheetAt(0), new CellRangeAddress(1, rowIndex - 1, 1, 1));
 		// Iterate through the executions
 		int i = 0;
 		for (String date : executionDates) {
