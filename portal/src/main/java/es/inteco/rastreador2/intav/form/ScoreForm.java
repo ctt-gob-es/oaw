@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.apache.struts.util.LabelValueBean;
 
+import es.inteco.rastreador2.export.database.form.VerificationScoreForm;
+
 /**
  * The Class ScoreForm.
  */
@@ -56,6 +58,26 @@ public class ScoreForm {
 	private List<LabelValueBean> verifications2;
 	/** The compliance. */
 	private String compliance;
+	/** The Verification score list. */
+	private List<VerificationScoreForm> VerificationScoreList;
+
+	/**
+	 * Gets the verification score list.
+	 *
+	 * @return the verificationScoreList
+	 */
+	public List<VerificationScoreForm> getVerificationScoreList() {
+		return VerificationScoreList;
+	}
+
+	/**
+	 * Sets the verification score list.
+	 *
+	 * @param verificationScoreList the verificationScoreList to set
+	 */
+	public void setVerificationScoreList(List<VerificationScoreForm> verificationScoreList) {
+		VerificationScoreList = verificationScoreList;
+	}
 
 	/**
 	 * Gets the total score.
