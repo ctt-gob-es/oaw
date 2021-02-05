@@ -54,11 +54,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xddf.usermodel.PresetColor;
-import org.apache.poi.xddf.usermodel.XDDFColor;
-import org.apache.poi.xddf.usermodel.XDDFLineProperties;
-import org.apache.poi.xddf.usermodel.XDDFShapeProperties;
-import org.apache.poi.xddf.usermodel.XDDFSolidFillProperties;
+import org.apache.poi.xddf.usermodel.*;
 import org.apache.poi.xddf.usermodel.chart.AxisCrosses;
 import org.apache.poi.xddf.usermodel.chart.AxisPosition;
 import org.apache.poi.xddf.usermodel.chart.AxisTickLabelPosition;
@@ -88,6 +84,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTPlotArea;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCol;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -2543,6 +2540,13 @@ public final class AnnexUtils {
 					InsertAgregatePieChar(currentSheet3, rowIndex, ColumnNames, headerStyle, shadowStyle);
 				}
 				XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+
+				// Hide Id Column
+				CTCol col = sheet.getCTWorksheet().getColsArray(0).addNewCol();
+				col.setMin(1);
+				col.setMax(1);
+				col.setHidden(true);
+
 				wb.write(writer);
 				wb.close();
 			} catch (Exception e) {
@@ -2634,6 +2638,14 @@ public final class AnnexUtils {
 		XDDFChartData data = chart.createData(ChartTypes.PIE, null, null);
 		data.setVaryColors(true);
 		data.addSeries(labels, values);
+
+		chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(0);
+		chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).getDPtList().get(0).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#008000"));
+		chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(1);
+		chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).getDPtList().get(1).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#fee100"));
+		chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(2);
+		chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).getDPtList().get(2).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#ff0000"));
+
 		chart.plot(data);
 		// COMPLIANCE
 		int complianceColumn = 0;
@@ -2701,6 +2713,14 @@ public final class AnnexUtils {
 		XDDFChartData data2 = chart2.createData(ChartTypes.PIE, null, null);
 		data2.setVaryColors(true);
 		data2.addSeries(labels2, values2);
+
+		chart2.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(0);
+		chart2.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).getDPtList().get(0).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#008000"));
+		chart2.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(1);
+		chart2.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).getDPtList().get(1).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#fee100"));
+		chart2.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(2);
+		chart2.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).getDPtList().get(2).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#ff0000"));
+
 		chart2.plot(data2);
 	}
 
@@ -2996,7 +3016,8 @@ public final class AnnexUtils {
 			if (properties2 == null) {
 				properties2 = new XDDFShapeProperties();
 			}
-			properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
+
+			properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(hex2Rgb("#fee100"))));
 			series2.setShapeProperties(properties2);
 			// Third serie ("AA" / "Plenamente conforme")
 			XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
@@ -3075,7 +3096,7 @@ public final class AnnexUtils {
 			if (properties2 == null) {
 				properties2 = new XDDFShapeProperties();
 			}
-			properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
+			properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(hex2Rgb("#fee100"))));
 			series2.setShapeProperties(properties2);
 			// Third serie ("AA" / "Plenamente conforme")
 			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 2 : 5));
@@ -3154,7 +3175,7 @@ public final class AnnexUtils {
 				if (properties2 == null) {
 					properties2 = new XDDFShapeProperties();
 				}
-				properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.YELLOW)));
+				properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(hex2Rgb("#fee100"))));
 				series2.setShapeProperties(properties2);
 				// Third serie ("AA" / "Plenamente conforme")
 				FillNullCellInRange(currentSheet.getWorkbook().getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 2 : 5));
@@ -3175,6 +3196,13 @@ public final class AnnexUtils {
 		chart.plot(data);
 		XDDFBarChartData bar = (XDDFBarChartData) data;
 		bar.setBarDirection(BarDirection.COL);
+	}
+
+	private static byte[] hex2Rgb(String colorStr) {
+		int r = Integer.valueOf(colorStr.substring(1, 3), 16);
+		int g = Integer.valueOf(colorStr.substring(3, 5), 16);
+		int b = Integer.valueOf(colorStr.substring(5, 7), 16);
+		return new byte[]{(byte) r, (byte) g, (byte) b};
 	}
 
 	/**
