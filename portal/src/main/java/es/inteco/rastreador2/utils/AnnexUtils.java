@@ -285,12 +285,12 @@ public final class AnnexUtils {
 		final XSSFSheet resultSheet = wb.getSheet("Resultados");
 		final String sheetnameAllocation = "Ranking Adecuación";
 		final String sheetnameCompliance = "Ranking Cumplimiento";
-		final String[] columnNamesAllocation = new String[] { "ENTIDAD", "TOTAL PORTALES AA", "% AA", "NOTA MEDIA AA", "TOTAL PORTALES A", "% A", "NOTA MEDIA A", "TOTAL PORTALES NO VÁLIDO",
+		final String[] columnNamesAllocation = new String[] { "ORGANISMO", "TOTAL PORTALES AA", "% AA", "NOTA MEDIA AA", "TOTAL PORTALES A", "% A", "NOTA MEDIA A", "TOTAL PORTALES NO VÁLIDO",
 				"% NO VÁLIDO", "NOTA MEDIA NV", "% NO CUMPLEN", "TOTAL PORTALES" };
 		// In order left to right
 		final String[] columnResultsAllocation = new String[] { "R", "P", "Q" };
 		final String[] columnResultsCompliance = new String[] { "U", "T", "S" };
-		final String[] columnNamesCompliance = new String[] { "ENTIDAD", "TOTAL PORTALES TC", "% TC", "NOTA MEDIA TC", "TOTAL PORTALES PC", "% PC", "NOTA MEDIA PC", "TOTAL PORTALES NC", "% NC",
+		final String[] columnNamesCompliance = new String[] { "ORGANISMO", "TOTAL PORTALES TC", "% TC", "NOTA MEDIA TC", "TOTAL PORTALES PC", "% PC", "NOTA MEDIA PC", "TOTAL PORTALES NC", "% NC",
 				"NOTA MEDIA NC", "% NO CONFORMES", "TOTAL PORTALES" };
 		// Add table with filters
 		CellReference ref = new CellReference("A1");
@@ -398,7 +398,8 @@ public final class AnnexUtils {
 				c.setCellFormula("C:C+F:F+I:I");
 				cellCount++;
 			}
-			evaluateAllFormulaCellsSheet(tmpSheet, wb.getCreationHelper().createFormulaEvaluator());
+//			evaluateAllFormulaCellsSheet(tmpSheet, wb.getCreationHelper().createFormulaEvaluator());
+			XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
 			// Sort rows
 			XSSFSheet rankingSheet = sortSheet(wb, tmpSheet, sheetname, 2);
 			// Reset
@@ -900,8 +901,12 @@ public final class AnnexUtils {
 				stop = true;
 			} else {
 				Cell c = r.getCell(ref.getCol());
-				if (!listAll.contains(c.getStringCellValue())) {
-					listAll.add(c.getStringCellValue());
+				final String stringCellValue = c.getStringCellValue();
+				String[] splited = stringCellValue.split("\\n");
+				for (int i = 0; i < splited.length; i++) {
+					if (!listAll.contains(splited[i])) {
+						listAll.add(splited[i]);
+					}
 				}
 				row++;
 			}
@@ -1045,8 +1050,9 @@ public final class AnnexUtils {
 									}
 								}
 							}
-							writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
 							writeTag(hd, Constants.XML_AMBITO, semillaForm.getAmbito().getName());
+							writeTag(hd, Constants.XML_COMPLEJIDAD, semillaForm.getComplejidad().getName());
+							writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
 							writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
 							// Seed tags
 							List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
