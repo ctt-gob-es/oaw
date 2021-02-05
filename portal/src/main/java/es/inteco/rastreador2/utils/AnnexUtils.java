@@ -2589,20 +2589,8 @@ public final class AnnexUtils {
 		cell = row.createCell(2);
 		cell.setCellValue("Porcentaje sobre el total.");
 		cell.setCellStyle(headerStyle);
-		// "A"
-		row = currentSheet3.createRow(1);
-		cell = row.createCell(0);
-		cell.setCellValue("A");
-		cell.setCellStyle(headerStyle);
-		// Number of A
-		cell = row.createCell(1);
-		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn) + "2:" + GetExcelColumnNameForNumber(adecuationColumn) + rowIndex + ",\"A\")");
-		// Percent of A
-		cell = row.createCell(2);
-		cell.setCellFormula("B2/" + (rowIndex - 1));
-		cell.setCellStyle(percentCenterStyle);
 		// "AA"
-		row = currentSheet3.createRow(2);
+		row = currentSheet3.createRow(1);
 		cell = row.createCell(0);
 		cell.setCellValue("AA");
 		cell.setCellStyle(headerStyle);
@@ -2611,17 +2599,29 @@ public final class AnnexUtils {
 		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn) + "2:" + GetExcelColumnNameForNumber(adecuationColumn) + rowIndex + ",\"AA\")");
 		// Percent of AA
 		cell = row.createCell(2);
+		cell.setCellFormula("B2/" + (rowIndex - 1));
+		cell.setCellStyle(percentCenterStyle);
+		// "A"
+		row = currentSheet3.createRow(2);
+		cell = row.createCell(0);
+		cell.setCellValue("A");
+		cell.setCellStyle(headerStyle);
+		// Number of A
+		cell = row.createCell(1);
+		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn) + "2:" + GetExcelColumnNameForNumber(adecuationColumn) + rowIndex + ",\"A\")");
+		// Percent of A
+		cell = row.createCell(2);
 		cell.setCellFormula("B3/" + (rowIndex - 1));
 		cell.setCellStyle(percentCenterStyle);
-		// "No VÃ¡lido"
+		// "No Válido"
 		row = currentSheet3.createRow(3);
 		cell = row.createCell(0);
 		cell.setCellValue("No Válido");
 		cell.setCellStyle(headerStyle);
-		// Number of No VÃ¡lido
+		// Number of No Válido
 		cell = row.createCell(1);
 		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn) + "2:" + GetExcelColumnNameForNumber(adecuationColumn) + rowIndex + ",\"No Válido\")");
-		// Percent of No VÃ¡lido
+		// Percent of No Válido
 		cell = row.createCell(2);
 		cell.setCellFormula("B4/" + (rowIndex - 1));
 		cell.setCellStyle(percentCenterStyle);
