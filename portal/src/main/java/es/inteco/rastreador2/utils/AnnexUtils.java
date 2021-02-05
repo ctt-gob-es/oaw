@@ -32,10 +32,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -113,10 +115,9 @@ import es.inteco.rastreador2.export.database.form.ComparisionForm;
 import es.inteco.rastreador2.export.database.form.ObservatoryForm;
 import es.inteco.rastreador2.export.database.form.PageForm;
 import es.inteco.rastreador2.export.database.form.SiteForm;
+import es.inteco.rastreador2.export.database.form.VerificationScoreForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNEEN2019;
 import es.oaw.wcagem.WcagEmUtils;
 import es.oaw.wcagem.enums.WcagEmPointKey;
 import es.oaw.wcagem.util.ValidationDetails;
@@ -1129,6 +1130,14 @@ public final class AnnexUtils {
 							// Num crawls
 							writeTag(hd, "paginas", String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
 							hd.startElement(EMPTY_STRING, EMPTY_STRING, "paginas", null);
+							Map<String, Map<String, ValidationDetails>> wcagCompliance = null;
+							// Only generate this info once
+							if (criterias) {
+								final List<Long> analysisIdsByTracking = AnalisisDatos.getEvaluationIdsFromExecutedObservatoryAndIdSeed(idObsExecution, Long.valueOf(siteForm.getIdCrawlerSeed()));
+								final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+								// This map store, the url and a map with everi wcag automatic validation an result
+								wcagCompliance = WcagEmUtils.generateEquivalenceMap(currentEvaluationPageList);
+							}
 							for (PageForm pageForm : siteForm.getPageList()) {
 								if (pageForm != null) {
 									hd.startElement(EMPTY_STRING, EMPTY_STRING, "pagina", null);
@@ -1158,12 +1167,6 @@ public final class AnnexUtils {
 									}
 									// WCAG Criterias
 									if (criterias) {
-										final List<Long> analysisIdsByTracking = AnalisisDatos.getEvaluationIdsFromExecutedObservatoryAndIdSeed(idObsExecution,
-												Long.valueOf(siteForm.getIdCrawlerSeed()));
-										final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0,
-												analysisIdsByTracking);
-										// This map store, the url and a map with everi wcag automatic validation an result
-										Map<String, Map<String, ValidationDetails>> wcagCompliance = WcagEmUtils.generateEquivalenceMap(currentEvaluationPageList);
 										Map<String, ValidationDetails> details = wcagCompliance.get(pageForm.getUrl());
 										for (WcagEmPointKey wcagEmPoint : WcagEmPointKey.values()) {
 											// do what you want
@@ -1406,18 +1409,27 @@ public final class AnnexUtils {
 						}
 					}
 					if (verifications) {
-						final AnonymousResultExportPdf pdfBuilder = new AnonymousResultExportPdfUNEEN2019();
-						ScoreForm currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
-						ObservatoryEvaluationForm observatoryEvaluationForm = currentEvaluationPageList.get(0);
-						int i = 1;
-						for (LabelValueBean value : currentScore.getVerifications1()) {
-							writeTag(hd, "V_1_" + i, evaluateCompliance(value));
-							i++;
-						}
-						i = 1;
-						for (LabelValueBean value : currentScore.getVerifications2()) {
-							writeTag(hd, "V_2_" + i, evaluateCompliance(value));
-							i++;
+						// final AnonymousResultExportPdf pdfBuilder = new AnonymousResultExportPdfUNEEN2019();
+						// ScoreForm currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
+						// ObservatoryEvaluationForm observatoryEvaluationForm = currentEvaluationPageList.get(0);
+//						int i = 1;
+//						for (LabelValueBean value : currentScore.getVerifications1()) {
+//							writeTag(hd, "V_1_" + i, evaluateCompliance(value));
+//							i++;
+//						}
+//						i = 1;
+//						for (LabelValueBean value : currentScore.getVerifications2()) {
+//							writeTag(hd, "V_2_" + i, evaluateCompliance(value));
+//							i++;
+//						}
+//						Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
+//						for (VerificationModalityForm value : entry.getValue().getVerificationModalityList()) {
+//							// entry.getValue().getVerificationModalityList();
+//							writeTag(hd, "V_2_" + i, evaluateCompliance(new BigDecimal(value.get)));
+//						}
+						Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
+						for (VerificationScoreForm verification : entry.getValue().getVerificationScoreList()) {
+							writeTag(hd, "V_" + verification.getVerification().replace(".", "_"), evaluateCompliance(verification.getScore()));
 						}
 					}
 					if (criterias) {
@@ -1475,6 +1487,29 @@ public final class AnnexUtils {
 		} catch (NumberFormatException e) {
 			return "NA";
 		}
+	}
+
+	/**
+	 * Evaluate compliance.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
+	private static String evaluateCompliance(final BigDecimal value) {
+		if (value != null) {
+			try {
+				if (value.compareTo(new BigDecimal(9)) >= 0) {
+					return "C";
+				} else if (value.compareTo(new BigDecimal(0)) >= 0) {
+					return "NC";
+				} else {
+					return "NA";
+				}
+			} catch (NumberFormatException e) {
+				return "NA";
+			}
+		}
+		return "NA";
 	}
 
 	/**
@@ -3441,6 +3476,35 @@ public final class AnnexUtils {
 						seedInfo.put(observatory.getDate(), scoreForm);
 						seedMap.put(Long.valueOf(siteForm.getIdCrawlerSeed()), seedInfo);
 						scoreForm.setCompliance(siteForm.getCompliance());
+						// scoreForm.setVerificationScoreList(siteForm.getVerificationScoreList());
+						List<VerificationScoreForm> verificationScoreList = new LinkedList<>();
+						for (VerificationScoreForm verification : siteForm.getVerificationScoreList()) {
+							VerificationScoreForm vsf = new VerificationScoreForm();
+							BeanUtils.copyProperties(vsf, verification);
+							verificationScoreList.add(vsf);
+						}
+						Collections.sort(verificationScoreList, new Comparator<VerificationScoreForm>() {
+							@Override
+							public int compare(VerificationScoreForm version1, VerificationScoreForm version2) {
+								String[] v1 = version1.getVerification().split("\\.");
+								String[] v2 = version2.getVerification().split("\\.");
+								int major1 = major(v1);
+								int major2 = major(v2);
+								if (major1 == major2) {
+									return minor(v1).compareTo(minor(v2));
+								}
+								return major1 > major2 ? 1 : -1;
+							}
+
+							private int major(String[] version) {
+								return Integer.parseInt(version[0]);
+							}
+
+							private Integer minor(String[] version) {
+								return version.length > 1 ? Integer.parseInt(version[1]) : 0;
+							}
+						});
+						scoreForm.setVerificationScoreList(verificationScoreList);
 					}
 				}
 			}

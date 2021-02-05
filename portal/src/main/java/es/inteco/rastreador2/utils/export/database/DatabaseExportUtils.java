@@ -15,8 +15,6 @@
 ******************************************************************************/
 package es.inteco.rastreador2.utils.export.database;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -120,6 +118,7 @@ public final class DatabaseExportUtils {
 		final Map<String, BigDecimal> verificationAndScore = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_NONE);
 		for (String key : verificationAndScore.keySet()) {
 			VerificationScore verificationScore = new VerificationScore();
+			// verification.id.reg.exp = (\\d\\.\\d)
 			verificationScore.setVerification(getVerificationId(key));
 			verificationScore.setObservatory(observatory);
 			if (verificationAndScore.get(key).intValue() != -1) {
@@ -410,10 +409,11 @@ public final class DatabaseExportUtils {
 	 */
 	private static String getVerificationId(final String verification) {
 		final PropertiesManager pmgr = new PropertiesManager();
-		final Pattern pattern = Pattern.compile(pmgr.getValue(CRAWLER_PROPERTIES, "verification.id.reg.exp"), Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+		// final Pattern pattern = Pattern.compile(pmgr.getValue(CRAWLER_PROPERTIES, "verification.id.reg.exp"), Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+		final Pattern pattern = Pattern.compile("(\\d+\\.\\d+\\.\\d+)|(\\d+\\.\\d+)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 		final Matcher matcher = pattern.matcher(verification);
 		if (matcher.find()) {
-			return matcher.group(1);
+			return matcher.group();
 		} else {
 			return verification;
 		}

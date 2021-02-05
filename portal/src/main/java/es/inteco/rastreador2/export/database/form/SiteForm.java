@@ -47,6 +47,26 @@ public class SiteForm {
 	private List<PageForm> pageList;
 	/** The verification modality list. */
 	private List<VerificationModalityForm> verificationModalityList;
+	/** The verification score list. */
+	private List<VerificationScoreForm> verificationScoreList;
+
+	/**
+	 * Gets the verification score list.
+	 *
+	 * @return the verificationScoreList
+	 */
+	public List<VerificationScoreForm> getVerificationScoreList() {
+		return verificationScoreList;
+	}
+
+	/**
+	 * Sets the verification score list.
+	 *
+	 * @param verificationScoreList the verificationScoreList to set
+	 */
+	public void setVerificationScoreList(List<VerificationScoreForm> verificationScoreList) {
+		this.verificationScoreList = verificationScoreList;
+	}
 
 	/**
 	 * Gets the id crawler seed.
