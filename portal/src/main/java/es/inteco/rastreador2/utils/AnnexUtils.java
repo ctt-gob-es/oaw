@@ -46,7 +46,6 @@ import org.apache.poi.ss.usermodel.ComparisonOperator;
 import org.apache.poi.ss.usermodel.ConditionalFormattingRule;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.PatternFormatting;
@@ -261,7 +260,6 @@ public final class AnnexUtils {
 		createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-		// TODO Add comparision
 		createAnnexXLSX2(messageResources, idObsExecution, idOperation);
 		createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, firstThreshold, secondThreshold);
 		createAnnexXLSX_PerDependency(idOperation);
@@ -278,7 +276,7 @@ public final class AnnexUtils {
 	 * @throws Exception the exception
 	 */
 	public static void createAnnexXLSXRanking(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
-		// TODO Clone file 1 or 2?
+		// Clone file 2
 		final PropertiesManager pmgr = new PropertiesManager();
 		final File originalWb = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "2. Iteración SW.xlsx");
 		final FileOutputStream fos = new FileOutputStream(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "3. Iteración Ranking.xlsx");
@@ -784,39 +782,6 @@ public final class AnnexUtils {
 			rows.add(sheet.getRow(i + 1));
 		}
 		return rows;
-	}
-
-	/**
-	 * Evaluate all formula cells sheet.
-	 *
-	 * @param sheet     the sheet
-	 * @param evaluator the evaluator
-	 */
-	private static void evaluateAllFormulaCellsSheet(final XSSFSheet sheet, FormulaEvaluator evaluator) {
-		for (Row r : sheet) {
-			for (Cell c : r) {
-				if (c.getCellType() == CellType.FORMULA) {
-					evaluator.evaluateFormulaCell(c);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Evaluate all formula cells sheet column.
-	 *
-	 * @param sheet     the sheet
-	 * @param column    the column
-	 * @param evaluator the evaluator
-	 */
-	private static void evaluateAllFormulaCellsSheetColumn(final XSSFSheet sheet, final int column, FormulaEvaluator evaluator) {
-		for (Row r : sheet) {
-			Logger.putLog("row=" + r.getRowNum(), AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-			Cell c = r.getCell(column);
-			if (c != null && c.getCellType() == CellType.FORMULA) {
-				evaluator.evaluateFormulaCell(c);
-			}
-		}
 	}
 
 	/**
@@ -1409,24 +1374,6 @@ public final class AnnexUtils {
 						}
 					}
 					if (verifications) {
-						// final AnonymousResultExportPdf pdfBuilder = new AnonymousResultExportPdfUNEEN2019();
-						// ScoreForm currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
-						// ObservatoryEvaluationForm observatoryEvaluationForm = currentEvaluationPageList.get(0);
-//						int i = 1;
-//						for (LabelValueBean value : currentScore.getVerifications1()) {
-//							writeTag(hd, "V_1_" + i, evaluateCompliance(value));
-//							i++;
-//						}
-//						i = 1;
-//						for (LabelValueBean value : currentScore.getVerifications2()) {
-//							writeTag(hd, "V_2_" + i, evaluateCompliance(value));
-//							i++;
-//						}
-//						Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
-//						for (VerificationModalityForm value : entry.getValue().getVerificationModalityList()) {
-//							// entry.getValue().getVerificationModalityList();
-//							writeTag(hd, "V_2_" + i, evaluateCompliance(new BigDecimal(value.get)));
-//						}
 						Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
 						for (VerificationScoreForm verification : entry.getValue().getVerificationScoreList()) {
 							writeTag(hd, "V_" + verification.getVerification().replace(".", "_"), evaluateCompliance(verification.getScore()));
@@ -1442,7 +1389,6 @@ public final class AnnexUtils {
 								// Iterate evl list to preserve order
 								String compliance = messageResources.getMessage("observatory.graphic.compilance.green");
 								for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
-									String outcome = "";
 									Map<String, ValidationDetails> result = wcagCompliance.get(eval.getUrl());
 									// if cointain current wcag rule
 									if (result.containsKey(wcagEmPointKey.getWcagEmId())) {
@@ -1825,8 +1771,6 @@ public final class AnnexUtils {
 				columnIndex++;
 			}
 			rowIndex++;
-			// TODO Global varibal final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution, null, null);
-			// Get all category names
 			/*
 			 * Category names list created by generation Evolution and reused generating PerDependency annex.
 			 */
