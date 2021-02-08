@@ -232,17 +232,17 @@ app.post('/ods', function (request, response) {
                 var currentThematic = thematicScopes[i];
                 var cellRow;
                 switch (currentThematic.id) {
-                    case "THEMATIC_1": cellRow = 49; break;
-                    case "THEMATIC_2": cellRow = 50; break;
-                    case "THEMATIC_3": cellRow = 51; break;
-                    case "THEMATIC_4": cellRow = 52; break;
-                    case "THEMATIC_5": cellRow = 53; break;
-                    case "THEMATIC_6": cellRow = 54; break;
-                    case "THEMATIC_7": cellRow = 55; break;
-                    case "THEMATIC_8": cellRow = 56; break;
-                    case "THEMATIC_9": cellRow = 57; break;
-                    case "THEMATIC_10": cellRow = 58; break;
-                    case "THEMATIC_11": cellRow = 59; break;
+                    case "THEMATIC_1": cellRow = 48; break;
+                    case "THEMATIC_2": cellRow = 49; break;
+                    case "THEMATIC_3": cellRow = 50; break;
+                    case "THEMATIC_4": cellRow = 51; break;
+                    case "THEMATIC_5": cellRow = 52; break;
+                    case "THEMATIC_6": cellRow = 53; break;
+                    case "THEMATIC_7": cellRow = 54; break;
+                    case "THEMATIC_8": cellRow = 55; break;
+                    case "THEMATIC_9": cellRow = 56; break;
+                    case "THEMATIC_10": cellRow = 57; break;
+                    case "THEMATIC_11": cellRow = 58; break;
                 }
 
                 titleElm = doc.createElement("text:p");
@@ -264,17 +264,17 @@ app.post('/ods', function (request, response) {
             titleElm = doc.createElement("text:p");
             text = doc.createTextNode(evaluationTypeText);
             titleElm.appendChild(text);
-            select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[61]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
+            select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[60]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
             text = doc.createTextNode(website.evaluationCompany?website.evaluationCompany:"");
             titleElm.appendChild(text);
-            select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[63]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
+            select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[62]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             titleElm = doc.createElement("text:p");
             text = doc.createTextNode(website.observations?website.observations:"");
             titleElm.appendChild(text);
-            select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[65]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
+            select(`//office:spreadsheet/table:table[@table:name='01.Definición de ámbito']/table:table-row[64]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
 
             //checking technologies [02]
             console.log("Procesando tecnologías...");
@@ -912,20 +912,20 @@ app.post('/xlsx', function (request, response) {
                 var currentThematic = thematicScopes[i];
                 var cellRow;
                 switch (currentThematic.id) {
-                    case "THEMATIC_1": cellRow = 49; break;
-                    case "THEMATIC_2": cellRow = 50; break;
-                    case "THEMATIC_3": cellRow = 51; break;
-                    case "THEMATIC_4": cellRow = 52; break;
-                    case "THEMATIC_5": cellRow = 53; break;
-                    case "THEMATIC_6": cellRow = 54; break;
-                    case "THEMATIC_7": cellRow = 55; break;
-                    case "THEMATIC_8": cellRow = 56; break;
-                    case "THEMATIC_9": cellRow = 57; break;
-                    case "THEMATIC_10": cellRow = 58; break;
-                    case "THEMATIC_11": cellRow = 59; break;
+                    case "THEMATIC_1": cellRow = 48; break;
+                    case "THEMATIC_2": cellRow = 49; break;
+                    case "THEMATIC_3": cellRow = 50; break;
+                    case "THEMATIC_4": cellRow = 51; break;
+                    case "THEMATIC_5": cellRow = 52; break;
+                    case "THEMATIC_6": cellRow = 53; break;
+                    case "THEMATIC_7": cellRow = 54; break;
+                    case "THEMATIC_8": cellRow = 55; break;
+                    case "THEMATIC_9": cellRow = 56; break;
+                    case "THEMATIC_10": cellRow = 57; break;
+                    case "THEMATIC_11": cellRow = 58; break;
                 }
                 // exists one line less in xlsx vs ods
-                workbook.sheet("01.Definición de ámbito").cell("D" + (cellRow - 1)).value("Sí");
+                workbook.sheet("01.Definición de ámbito").cell("D" + cellRow).value("Sí");
             }
 
 
