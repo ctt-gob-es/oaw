@@ -96,13 +96,11 @@ public class DatabaseExportAction extends Action {
 						if (exObsIds == null) {
 							exObsIds = new String[] { request.getParameter(Constants.ID_EX_OBS) };
 						}
-
 						// Get classification thresholds
 						Connection connection = DataBaseManager.getConnection();
 						double firstThreshold = ObservatorioDAO.getFirstClassificationThresholdFromConfig(connection);
 						double secondThreshold = ObservatorioDAO.getSecondClassificationThresholdFromConfig(connection);
 						DataBaseManager.closeConnection(connection);
-
 						// if has tags (ids) check if has request params like fisrt_{idtag}, previous_{idtag}
 						List<ComparisionForm> comparision = null;
 						if (tagsToFilter != null && tagsToFilter.length > 0) {
@@ -247,8 +245,13 @@ public class DatabaseExportAction extends Action {
 			final List<ComparisionForm> comparision, double firstThreshold, double secondThreshold) throws Exception {
 		try {
 			final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+			final Long idObs = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 			final Long idOperation = System.currentTimeMillis();
 			final Long idCartucho = Long.valueOf(request.getParameter(Constants.ID_CARTUCHO));
+			String[] tagsToFilterFixed = null;
+			if (request.getParameter("tagsFixed") != null && !StringUtils.isEmpty(request.getParameter("tagsFixed"))) {
+				tagsToFilterFixed = request.getParameter("tagsFixed").split(",");
+			}
 			MessageResources resources = CrawlerUtils.getResources(request);
 			final Connection connection = DataBaseManager.getConnection();
 			final String application = CartuchoDAO.getApplication(connection, idCartucho);
@@ -258,7 +261,7 @@ public class DatabaseExportAction extends Action {
 			} else if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
 				resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 			}
-			AnnexUtils.generateAllAnnex(resources, idObsExecution, idOperation, tagsToFilter, exObsIds, comparision, firstThreshold, secondThreshold);
+			AnnexUtils.generateAllAnnex(resources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision, firstThreshold, secondThreshold);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
 			final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";

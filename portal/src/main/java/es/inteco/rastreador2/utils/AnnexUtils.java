@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +36,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -44,7 +47,6 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.ComparisonOperator;
 import org.apache.poi.ss.usermodel.ConditionalFormattingRule;
-import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -55,12 +57,15 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xddf.usermodel.*;
+import org.apache.poi.xddf.usermodel.PresetColor;
+import org.apache.poi.xddf.usermodel.XDDFColor;
+import org.apache.poi.xddf.usermodel.XDDFShapeProperties;
+import org.apache.poi.xddf.usermodel.XDDFSolidFillProperties;
+import org.apache.poi.xddf.usermodel.chart.AxisCrossBetween;
 import org.apache.poi.xddf.usermodel.chart.AxisCrosses;
 import org.apache.poi.xddf.usermodel.chart.AxisPosition;
-import org.apache.poi.xddf.usermodel.chart.AxisTickLabelPosition;
-import org.apache.poi.xddf.usermodel.chart.AxisTickMark;
 import org.apache.poi.xddf.usermodel.chart.BarDirection;
+import org.apache.poi.xddf.usermodel.chart.BarGrouping;
 import org.apache.poi.xddf.usermodel.chart.ChartTypes;
 import org.apache.poi.xddf.usermodel.chart.LegendPosition;
 import org.apache.poi.xddf.usermodel.chart.XDDFBarChartData;
@@ -76,15 +81,14 @@ import org.apache.poi.xssf.usermodel.XSSFChart;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
-import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTPlotArea;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTTextBody;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCol;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -103,6 +107,7 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
+import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
@@ -123,10 +128,165 @@ import es.oaw.wcagem.util.ValidationDetails;
  */
 @SuppressWarnings("deprecation")
 public final class AnnexUtils {
-	/** The Constant TW_DECIMALS_FORMAT. */
-	private static final String TWO_DECIMALS_FORMAT = "0.00";
-	/** The Constant PERCENT_FORMAT. */
-	private static final String PERCENT_FORMAT = "0.00%";
+	private static final String NV_LITERAL = "No Válido";
+	/** The Constant EVOL_PUNTUACION_ANT. */
+	private static final String EVOL_PUNTUACION_ANT = "evol_puntuacion_ant";
+	/** The Constant RANKING_3RD. */
+	private static final String RANKING_3RD = "3ª";
+	/** The Constant RANKING_2ND. */
+	private static final String RANKING_2ND = "2ª";
+	/** The Constant RANKING_1ST. */
+	private static final String RANKING_1ST = "1ª";
+	/** The Constant A4. */
+	private static final String A4 = "A4";
+	/** The Constant A3. */
+	private static final String A3 = "A3";
+	/** The Constant A2. */
+	private static final String A2 = "A2";
+	/** The Constant B1. */
+	private static final String B1 = "B1";
+	/** The Constant KEY_DATE_FORMAT_EVOLUTION. */
+	private static final String KEY_DATE_FORMAT_EVOLUTION = "date.format.evolution";
+	/** The Constant MUCH_BETTER_COLOR. */
+	private static final String MUCH_BETTER_COLOR = "#009900";
+	/** The Constant BETTER_COLOR. */
+	private static final String BETTER_COLOR = "#99ff33";
+	/** The Constant STABLE_COLOR. */
+	private static final String STABLE_COLOR = "#ffff00";
+	/** The Constant WORST_COLOR. */
+	private static final String WORST_COLOR = "#ff6600";
+	/** The Constant MUCH_WORST_COLOR. */
+	private static final String MUCH_WORST_COLOR = "#ff0000";
+	/** The Constant A1. */
+	private static final String A1 = "A1";
+	/** The Constant COLUMN_TITLE_NO_CONFORMES. */
+	private static final String COLUMN_TITLE_NO_CONFORMES = "% NO CONFORMES";
+	/** The Constant COLUMN_TITLE_NOTA_MEDIA_NC. */
+	private static final String COLUMN_TITLE_NOTA_MEDIA_NC = "NOTA MEDIA NC";
+	/** The Constant COLUMN_TITLE_PERCENT_NC. */
+	private static final String COLUMN_TITLE_PERCENT_NC = "% NC";
+	/** The Constant COLUMN_TITLE_TOTAL_PORTALES_NC. */
+	private static final String COLUMN_TITLE_TOTAL_PORTALES_NC = "TOTAL PORTALES NC";
+	/** The Constant COLUMN_TITLE_NOTA_MEDIA_PC. */
+	private static final String COLUMN_TITLE_NOTA_MEDIA_PC = "NOTA MEDIA PC";
+	/** The Constant COLUMN_TITLE_PERCENT_PC. */
+	private static final String COLUMN_TITLE_PERCENT_PC = "% PC";
+	/** The Constant COLUMN_TITLE_TOTAL_PORTALES_PC. */
+	private static final String COLUMN_TITLE_TOTAL_PORTALES_PC = "TOTAL PORTALES PC";
+	/** The Constant COLUMN_TITLE_NOTA_MEDIA_TC. */
+	private static final String COLUMN_TITLE_NOTA_MEDIA_TC = "NOTA MEDIA TC";
+	/** The Constant COLUMN_TITLE_PERCENT_TC. */
+	private static final String COLUMN_TITLE_PERCENT_TC = "% TC";
+	/** The Constant COLUMN_TITLE_TOTAL_PORTALES_TC. */
+	private static final String COLUMN_TITLE_TOTAL_PORTALES_TC = "TOTAL PORTALES TC";
+	/** The Constant COLUMN_TITLE_TOTAL_PORTALES. */
+	private static final String COLUMN_TITLE_TOTAL_PORTALES = "TOTAL PORTALES";
+	/** The Constant COLUMN_TITLE_NO_CUMPLEN. */
+	private static final String COLUMN_TITLE_NO_CUMPLEN = "% NO CUMPLEN";
+	/** The Constant COLUMN_TITLE_NOTA_MEDIA_NV. */
+	private static final String COLUMN_TITLE_NOTA_MEDIA_NV = "NOTA MEDIA NV";
+	/** The Constant COLUMN_TITLE_NV. */
+	private static final String COLUMN_TITLE_NV = "% NO VÁLIDO";
+	/** The Constant COLUMN_TITLE_TOTAL_PORTALES_NV. */
+	private static final String COLUMN_TITLE_TOTAL_PORTALES_NV = "TOTAL PORTALES NO VÁLIDO";
+	/** The Constant COLUMN_TITLE_NOTA_MEDIA_A. */
+	private static final String COLUMN_TITLE_NOTA_MEDIA_A = "NOTA MEDIA A";
+	/** The Constant COLUMN_TITLE_PERCENT_A. */
+	private static final String COLUMN_TITLE_PERCENT_A = "% A";
+	/** The Constant COLUMN_TITLE_TOTAL_PORTALES_A. */
+	private static final String COLUMN_TITLE_TOTAL_PORTALES_A = "TOTAL PORTALES A";
+	/** The Constant COLUMN_TITLE_NOTA_MEDIA_AA. */
+	private static final String COLUMN_TITLE_NOTA_MEDIA_AA = "NOTA MEDIA AA";
+	/** The Constant COLUMN_TITLE_AA. */
+	private static final String COLUMN_TITLE_AA = "% AA";
+	/** The Constant COLUMN_TITLE_TOTAL_PORTALES_AA. */
+	private static final String COLUMN_TITLE_TOTAL_PORTALES_AA = "TOTAL PORTALES AA";
+	/** The Constant COLUMN_TITLE_ORGANISMO. */
+	private static final String COLUMN_TITLE_ORGANISMO = "ORGANISMO";
+	/** The Constant REGEX_DOT. */
+	private static final String REGEX_DOT = "\\.";
+	/** The Constant YELLOW_OAW_HTML. */
+	private static final String YELLOW_OAW_HTML = "#fee100";
+	/** The Constant TC_PREFFIX. */
+	private static final String TC_PREFFIX = "TC_";
+	/** The Constant AA_PREFFIX. */
+	private static final String AA_PREFFIX = "AA_";
+	/** The Constant PC_PREFFIX. */
+	private static final String PC_PREFFIX = "PC_";
+	/** The Constant A_PREFFIX. */
+	private static final String A_PREFFIX = "A_";
+	/** The Constant NC_PREFFIX. */
+	private static final String NC_PREFFIX = "NC_";
+	/** The Constant NV_PREFFIX. */
+	private static final String NV_PREFFIX = "NV_";
+	/** The Constant COMPLIANCE_EVOLUTION_TITLE. */
+	private static final String COMPLIANCE_EVOLUTION_TITLE = "Evolución del cumplimiento estimado";
+	/** The Constant ALLOCATION_EVOLUTION_TITLE. */
+	private static final String ALLOCATION_EVOLUTION_TITLE = "Evolución de la adecuación";
+	/** The Constant COMPLIANCE_LEVEL_TITLE. */
+	private static final String COMPLIANCE_LEVEL_TITLE = "Situación de cumplimiento estimada";
+	/** The Constant ALLOCATION_LEVEL_TITLE. */
+	private static final String ALLOCATION_LEVEL_TITLE = "Nivel de adecuación estimado";
+	/** The Constant SHEET_IMPROVMENTS_TITLEMEJORAS. */
+	private static final String SHEET_IMPROVMENTS_TITLE = "Mejoras";
+	/** The Constant EVOLUCIÓN_SOBRE_ITERACIÓN_ANTERIOR_PARTE_FIJA. */
+	private static final String PREVIOUS_ITERATION_FIXED_TITLE = "Evolución sobre iteración anterior. Parte fija";
+	/** The Constant EVOLUCIÓN_SOBRE_PRIMERA_ITERACIÓN_PARTE_FIJA. */
+	private static final String FIRST_ITERATION_FIXED_TITLE = "Evolución sobre primera iteración. Parte fija";
+	/** The Constant EVOLUCIÓN_SOBRE_ITERACIÓN_ANTERIOR_TERMINOS_GLOBALES. */
+	private static final String PREVIOUS_ITERATION_GLOBAL_TITLE = "Evolución sobre iteración anterior. Terminos globales";
+	/** The Constant EVOLUCIÓN_SOBRE_PRIMERA_ITERACIÓN_TERMINOS_GLOBALES. */
+	private static final String FIRST_ITERATION_GLOBAL_TITLE = "Evolución sobre primera iteración. Terminos globales";
+	/** The Constant NÚMERO_DE_SITIOS_WEB. */
+	private static final String NUMBER_OF_SITES = "Número de sitios web";
+	/** The Constant PORCENTAJE_DE_SITIOS. */
+	private static final String PERCENTAGE_OF_SITES = "Porcentaje de sitios";
+	/** The Constant MEJORAN_MUCHO. */
+	private static final String MUCH_BETTER = "Mejoran mucho";
+	/** The Constant MEJORAN. */
+	private static final String BETTER = "Mejoran";
+	/** The Constant SE_MANTIENEN. */
+	private static final String STABLE = "Se mantienen";
+	/** The Constant EMPEORAN. */
+	private static final String WORST = "Empeoran";
+	/** The Constant EMPEORAN_MUCHO. */
+	private static final String MUCH_WORST = "Empeoran mucho";
+	/** The Constant EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART. */
+	private static final String EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART = "Evolución de la situación de cumplimiento estinada. Parte fija";
+	/** The Constant EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART. */
+	private static final String EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART = "Evolución del nivel de adecuación estimado. Parte fija";
+	/** The Constant EVOLUTION_OF_THE_COMPLIANCE_SITUATION_INTENDED_TO_BE_IMPLEMENTED_IN_GLOBAL_TERMS. */
+	private static final String EVOLUTION_OF_THE_COMPLIANCE_SITUATION_INTENDED_TO_BE_IMPLEMENTED_IN_GLOBAL_TERMS = "Evolución de la situación de cumplimiento estimada. Términos globales";
+	/** The Constant EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_IN_GLOBAL_TERMS. */
+	private static final String EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_IN_GLOBAL_TERMS = "Evolución del nivel de adecuación estimado. Términos globales";
+	/** The Constant FILE_4_EVOLUTION_AND_PROGRESS_XLSX_NAME. */
+	private static final String FILE_4_EVOLUTION_AND_PROGRESS_XLSX_NAME = "4. Evolutivo y Progreso de Observatorio.xlsx";
+	/** The Constant EXPORT_ANNEX_PATH. */
+	private static final String EXPORT_ANNEX_PATH = "export.annex.path";
+	/** The Constant FILE_3_ITERATION_XLSX_NAME. */
+	private static final String FILE_3_ITERATION_RANKING_XLSX_NAME = "3. Iteración Ranking.xlsx";
+	/** The Constant FILE_2_EVOLUTION_XLSX_NAME. */
+	private static final String FILE_2_ITERATION_XLSX_NAME = "2. Iteración SW.xlsx";
+	/** The Constant FILE_1_EVOLUTION_XLSX_NAME. */
+	private static final String FILE_1_EVOLUTION_XLSX_NAME = "1. Evolutivo SW.xlsx";
+	/** The Constant SHEET_RANKING_COMPLIANCE_NAME. */
+	private static final String SHEET_RANKING_COMPLIANCE_NAME = "Ranking Cumplimiento";
+	/** The Constant SHEET_RANKING_ALLOCATION_NAME. */
+	private static final String SHEET_RANKING_ALLOCATION_NAME = "Ranking Adecuación";
+	/** The Constant SHEET_RESULTS_NAME. */
+	private static final String SHEET_RESULTS_NAME = "Resultados";
+	/** The Constant COMPLIANCE_TOTAL_LITERAL. */
+	private static final String COMPLIANCE_TOTAL_LITERAL = "Plenamente conforme";
+	/** The Constant COMPLIANCE_PARTIAL_LITERAL. */
+	private static final String COMPLIANCE_PARTIAL_LITERAL = "Parcialmente conforme";
+	/** The Constant COMPLIANCE_NOT_LITERAL. */
+	private static final String COMPLIANCE_NOT_LITERAL = "No conforme";
+	/** The Constant ALLOCATION_AA_LITERAL. */
+	private static final String ALLOCATION_AA_LITERAL = "AA";
+	/** The Constant ALLOCATION_A_LITERAL. */
+	private static final String ALLOCATION_A_LITERAL = "A";
+	/** The Constant ALLOCATION_NOT_VALID_LITERAL. */
+	private static final String ALLOCATION_NOT_VALID_LITERAL = "No válido";
 	/** The Constant RANGE_THIRD_COLUMN_RANKING. */
 	private static final String RANGE_THIRD_COLUMN_RANKING = "I:I";
 	/** The Constant RANGE_SECOND_COLUMN_RANKING. */
@@ -135,16 +295,12 @@ public final class AnnexUtils {
 	private static final String RANGE_FIRST_COLUMN_RANKING = "C:C";
 	/** The Constant RANGE_TOTAL_PORTALS_RANKING. */
 	private static final String RANGE_TOTAL_PORTALS_RANKING = "M:M";
-	/** The Constant COLOR_BLACK. */
-	private static final short COLOR_BLACK = IndexedColors.BLACK.getIndex();
-	/** The Constant COLOR_WHITE. */
-	private static final short COLOR_WHITE = IndexedColors.WHITE.getIndex();
-	/** The Constant ARIAL_FONT_NAME. */
-	private static final String ARIAL_FONT_NAME = "Arial";
 	/** The Constant EARL_INAPPLICABLE. */
 	private static final String EARL_INAPPLICABLE = "earl:inapplicable";
 	/** The Constant EARL_FAILED. */
 	private static final String EARL_FAILED = "earl:failed";
+	/** The message resources. */
+	private static MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 	/**
 	 * The Constant EMPTY_STRING.
 	 */
@@ -190,67 +346,38 @@ public final class AnnexUtils {
 	 */
 	private static List<String> dependencies;
 	/** The annexmap. */
-	private static Map<Long, TreeMap<String, ScoreForm>> annexmap;
+	private static Map<SemillaForm, TreeMap<String, ScoreForm>> annexmap;
 	/** The evaluation ids. */
 	private static List<Long> evaluationIds;
 	/** The observatory manager. */
 	private static es.gob.oaw.rastreador2.observatorio.ObservatoryManager observatoryManager;
 	/** The current evaluation page list. */
 	private static List<ObservatoryEvaluationForm> currentEvaluationPageList;
-	/** The bold percent 11 center style. */
-	private static CellStyle boldPercent11CenterStyle;
-	/** The white bold 16 font. */
-	private static XSSFFont whiteBold16Font;
-	/** The white bold 10 font. */
-	private static XSSFFont whiteBold10Font;
-	/** The black bold 10 font. */
-	private static XSSFFont blackBold10Font;
-	/** The black normal 11 font. */
-	private static XSSFFont blackNormal11Font;
-	/** The black bold 11 font. */
-	private static XSSFFont blackBold11Font;
-	/** The bold data 11 left style. */
-	private static CellStyle boldData11LeftStyle;
-	/** The bold data 11 center style. */
-	private static CellStyle boldData11CenterStyle;
-	/** The blue background white bold 16. */
-	private static CellStyle blueBackgroundWhiteBold16;
-	/** The green background white bold 16. */
-	private static CellStyle greenBackgroundWhiteBold16;
-	/** The yellow background black 10. */
-	private static CellStyle yellowBackgroundBlack10;
-	/** The red backgrounf black bold 10. */
-	private static CellStyle redBackgrounfBlackBold10;
-	/** The orange background black bold 10. */
-	private static CellStyle orangeBackgroundBlackBold10;
-	/** The blue background black bold 10. */
-	private static CellStyle blueBackgroundBlackBold10;
-	/** The light blue background black normal 11. */
-	private static CellStyle lightBlueBackgroundBlackNormal11;
-	/** The white backgrount normal 11 center. */
-	private static CellStyle whiteBackgrountNormal11Center;
-	/** The white backgrount normal 11 decimal center. */
-	private static CellStyle whiteBackgrountNormal11DecimalCenter;
 
 	/**
 	 * Generate all annex.
 	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param idOperation      the id operation
-	 * @param tagsToFilter     the tags to filter
-	 * @param exObsIds         the ex obs ids
-	 * @param comparision      the comparision
-	 * @param firstThreshold   the first threshold
-	 * @param secondThreshold  the second threshold
+	 * @param messageResources  the message resources
+	 * @param idObs             the id obs
+	 * @param idObsExecution    the id obs execution
+	 * @param idOperation       the id operation
+	 * @param tagsToFilter      the tags to filter
+	 * @param tagsToFilterFixed the tags to filter fixed
+	 * @param exObsIds          the ex obs ids
+	 * @param comparision       the comparision
+	 * @param firstThreshold    the first threshold
+	 * @param secondThreshold   the second threshold
 	 * @throws Exception the exception
 	 */
-	public static void generateAllAnnex(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds,
-			final List<ComparisionForm> comparision, double firstThreshold, double secondThreshold) throws Exception {
+	public static void generateAllAnnex(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter,
+			final String[] tagsToFilterFixed, final String[] exObsIds, final List<ComparisionForm> comparision, double firstThreshold, double secondThreshold) throws Exception {
+		Logger.putLog("Inicio de la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		Logger.putLog("Obteniendo información para la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		annexmap = createAnnexMap(idObsExecution, tagsToFilter, exObsIds);
 		evaluationIds = AnalisisDatos.getEvaluationIdsFromExecutedObservatory(idObsExecution);
 		observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
 		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds);
+		Logger.putLog("Generando anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPaginasCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
@@ -261,7 +388,8 @@ public final class AnnexUtils {
 		createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, firstThreshold, secondThreshold);
 		createAnnexXLSX_PerDependency(idOperation);
 		createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
-		createComparativeSuitabilitieXLSX(messageResources, idObsExecution, idOperation);
+		createAnnexProgressEvolutionXLSX(messageResources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision, firstThreshold, secondThreshold);
+		Logger.putLog("Fin de la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 	}
 
 	/**
@@ -273,23 +401,25 @@ public final class AnnexUtils {
 	 * @throws Exception the exception
 	 */
 	public static void createAnnexXLSXRanking(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+		Logger.putLog("Generando anexo: " + FILE_3_ITERATION_RANKING_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		// Clone file 2
 		final PropertiesManager pmgr = new PropertiesManager();
-		final File originalWb = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "2. Iteración SW.xlsx");
-		final FileOutputStream fos = new FileOutputStream(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "3. Iteración Ranking.xlsx");
+		final File originalWb = new File(pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_ANNEX_PATH) + idOperation + File.separator + FILE_2_ITERATION_XLSX_NAME);
+		final FileOutputStream fos = new FileOutputStream(pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_ANNEX_PATH) + idOperation + File.separator + FILE_3_ITERATION_RANKING_XLSX_NAME);
 		XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(originalWb));
-		final XSSFSheet resultSheet = wb.getSheet("Resultados");
-		final String sheetnameAllocation = "Ranking Adecuación";
-		final String sheetnameCompliance = "Ranking Cumplimiento";
-		final String[] columnNamesAllocation = new String[] { "ORGANISMO", "TOTAL PORTALES AA", "% AA", "NOTA MEDIA AA", "TOTAL PORTALES A", "% A", "NOTA MEDIA A", "TOTAL PORTALES NO VÁLIDO",
-				"% NO VÁLIDO", "NOTA MEDIA NV", "% NO CUMPLEN", "TOTAL PORTALES" };
+		final XSSFSheet resultSheet = wb.getSheet(SHEET_RESULTS_NAME);
+		final String sheetnameAllocation = SHEET_RANKING_ALLOCATION_NAME;
+		final String sheetnameCompliance = SHEET_RANKING_COMPLIANCE_NAME;
+		final String[] columnNamesAllocation = new String[] { COLUMN_TITLE_ORGANISMO, COLUMN_TITLE_TOTAL_PORTALES_AA, COLUMN_TITLE_AA, COLUMN_TITLE_NOTA_MEDIA_AA, COLUMN_TITLE_TOTAL_PORTALES_A,
+				COLUMN_TITLE_PERCENT_A, COLUMN_TITLE_NOTA_MEDIA_A, COLUMN_TITLE_TOTAL_PORTALES_NV, COLUMN_TITLE_NV, COLUMN_TITLE_NOTA_MEDIA_NV, COLUMN_TITLE_NO_CUMPLEN, COLUMN_TITLE_TOTAL_PORTALES };
 		// In order left to right
 		final String[] columnResultsAllocation = new String[] { "R", "P", "Q" };
 		final String[] columnResultsCompliance = new String[] { "U", "T", "S" };
-		final String[] columnNamesCompliance = new String[] { "ORGANISMO", "TOTAL PORTALES TC", "% TC", "NOTA MEDIA TC", "TOTAL PORTALES PC", "% PC", "NOTA MEDIA PC", "TOTAL PORTALES NC", "% NC",
-				"NOTA MEDIA NC", "% NO CONFORMES", "TOTAL PORTALES" };
+		final String[] columnNamesCompliance = new String[] { COLUMN_TITLE_ORGANISMO, COLUMN_TITLE_TOTAL_PORTALES_TC, COLUMN_TITLE_PERCENT_TC, COLUMN_TITLE_NOTA_MEDIA_TC,
+				COLUMN_TITLE_TOTAL_PORTALES_PC, COLUMN_TITLE_PERCENT_PC, COLUMN_TITLE_NOTA_MEDIA_PC, COLUMN_TITLE_TOTAL_PORTALES_NC, COLUMN_TITLE_PERCENT_NC, COLUMN_TITLE_NOTA_MEDIA_NC,
+				COLUMN_TITLE_NO_CONFORMES, COLUMN_TITLE_TOTAL_PORTALES };
 		// Add table with filters
-		CellReference ref = new CellReference("A1");
+		CellReference ref = new CellReference(A1);
 		CellReference topLeft = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
 		ref = new CellReference("U" + resultSheet.getLastRowNum());
 		CellReference bottomRight = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
@@ -297,12 +427,13 @@ public final class AnnexUtils {
 		if (bottomRight.getRow() - topLeft.getRow() >= 2) {
 			AreaReference tableArea = wb.getCreationHelper().createAreaReference(topLeft, bottomRight);
 			XSSFTable dataTable = resultSheet.createTable(tableArea);
-			dataTable.setDisplayName("Tabla1");
+			dataTable.setDisplayName("TableResults");
 			// this sets auto filters
 			dataTable.getCTTable().addNewAutoFilter().setRef(tableArea.formatAsString());
 		}
-		addRankingSheet(wb, resultSheet, sheetnameAllocation, columnNamesAllocation, columnResultsAllocation, "TablaRankingA");
-		addRankingSheet(wb, resultSheet, sheetnameCompliance, columnNamesCompliance, columnResultsCompliance, "TablaRankingC");
+		XlsxUtils xlsxUtils = new XlsxUtils(wb);
+		addRankingSheet(wb, resultSheet, sheetnameAllocation, columnNamesAllocation, columnResultsAllocation, "TableRankingA", xlsxUtils);
+		addRankingSheet(wb, resultSheet, sheetnameCompliance, columnNamesCompliance, columnResultsCompliance, "TableRankingC", xlsxUtils);
 		// Conditional formatting
 		addConditionaFormatting(wb.getSheet(sheetnameAllocation));
 		addConditionaFormatting(wb.getSheet(sheetnameCompliance));
@@ -310,6 +441,552 @@ public final class AnnexUtils {
 		XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
 		wb.write(fos);
 		fos.close();
+	}
+
+	/**
+	 * Creates the annex progress evolution XLSX.
+	 *
+	 * @param messageResources  the message resources
+	 * @param idObs             the id obs
+	 * @param idObsExecution    the id obs execution
+	 * @param idOperation       the id operation
+	 * @param tagsToFilter      the tags to filter
+	 * @param tagsToFilterFixed the tags to filter fixed
+	 * @param exObsIds          the ex obs ids
+	 * @param comparision       the comparision
+	 * @param firstThreshold    the first threshold
+	 * @param secondThreshold   the second threshold
+	 * @throws Exception the exception
+	 */
+	private static void createAnnexProgressEvolutionXLSX(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter,
+			final String[] tagsToFilterFixed, final String[] exObsIds, final List<ComparisionForm> comparision, double firstThreshold, double secondThreshold) throws Exception {
+		Logger.putLog("Generando anexo: " + FILE_4_EVOLUTION_AND_PROGRESS_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_4_EVOLUTION_AND_PROGRESS_XLSX_NAME)) {
+			final XSSFWorkbook wb = new XSSFWorkbook();
+			final XSSFSheet globalSheet = wb.createSheet("Global");
+			// First sheet global part
+			XlsxUtils xlsxUtils = new XlsxUtils(wb);
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(idObs, idObsExecution, tagsToFilter, exObsIds);
+			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMap,
+					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_IN_GLOBAL_TERMS, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_INTENDED_TO_BE_IMPLEMENTED_IN_GLOBAL_TERMS, null, null, false, 0, xlsxUtils);
+			// Second sheet fixed part
+			final XSSFSheet fixedSheet = wb.createSheet("Fijos");
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(idObs, idObsExecution, tagsToFilterFixed,
+					exObsIds);
+			generateGlobalProgressEvolutionSheet(fixedSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed,
+					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 0, xlsxUtils);
+			// N sheets by segment
+			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idObsExecution);
+			for (CategoriaForm category : categories) {
+				final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution,
+						Long.valueOf(category.getId()), tagsToFilter, exObsIds);
+				if (pageObservatoryMapCat != null) {
+					String currentCategory = category.getName().substring(0, Math.min(category.getName().length(), 31));
+					final XSSFSheet categorySheet = wb.createSheet(currentCategory);
+					// TODO Extract to constants
+					generateGlobalProgressEvolutionSheet(categorySheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapCat,
+							"Evolución del nivel de adecuación estimado. Segmento " + category.getName() + ". Términos globales",
+							"Evolución de la situación de cumplimiento estinada. Segmento " + category.getName() + ". Términos globales",
+							"Evolución del nivel de adecuación estimado. Segmento " + category.getName() + ". Parte fija",
+							"Evolución de la situación de cumplimiento estinada. Segmento " + category.getName() + ". Parte fija", true, 0, xlsxUtils);
+				}
+			}
+			// Final sheet comparision
+			final Connection conn = DataBaseManager.getConnection();
+			generateSummaryProgression(wb, conn, idOperation, comparision, firstThreshold, secondThreshold, tagsToFilterFixed);
+			DataBaseManager.closeConnection(conn);
+			XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+			wb.write(writer);
+			wb.close();
+		} catch (Exception e) {
+			Logger.putLog("Error al generar el anexo: " + FILE_4_EVOLUTION_AND_PROGRESS_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			throw e;
+		}
+	}
+
+	/**
+	 * Generate summary progression.
+	 *
+	 * @param wb                the wb
+	 * @param conn              the conn
+	 * @param idOperation       the id operation
+	 * @param comparision       the comparision
+	 * @param firstThreshold    the first threshold
+	 * @param secondThreshold   the second threshold
+	 * @param tagsToFilterFixed the tags to filter fixed
+	 * @throws SQLException the SQL exception
+	 */
+	private static void generateSummaryProgression(final XSSFWorkbook wb, final Connection conn, final Long idOperation, final List<ComparisionForm> comparision, double firstThreshold,
+			double secondThreshold, final String[] tagsToFilterFixed) throws SQLException {
+		// Loop to insert puntuation evolution compare with previous.
+		// To select comparision column in comparision object, check if seed has tagId of comparision to select column by date
+		SummaryEvolution globalSummaryFirst = new SummaryEvolution();
+		SummaryEvolution globalSummaryPrevious = new SummaryEvolution();
+		SummaryEvolution fixedSummaryFirst = new SummaryEvolution();
+		SummaryEvolution fixedSummaryPrevious = new SummaryEvolution();
+		for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+			countEvolution(conn, comparision, firstThreshold, secondThreshold, globalSummaryPrevious, semillaEntry, false, null);
+			countEvolution(conn, comparision, firstThreshold, secondThreshold, globalSummaryFirst, semillaEntry, true, null);
+			countEvolution(conn, comparision, firstThreshold, secondThreshold, fixedSummaryPrevious, semillaEntry, false, tagsToFilterFixed);
+			countEvolution(conn, comparision, firstThreshold, secondThreshold, fixedSummaryFirst, semillaEntry, true, tagsToFilterFixed);
+		}
+		XSSFSheet improvementSheet = wb.createSheet(SHEET_IMPROVMENTS_TITLE);
+		int currentRow = 10;
+		generateSummaryData(globalSummaryPrevious, improvementSheet, currentRow, FIRST_ITERATION_GLOBAL_TITLE);
+		currentRow = 25;
+		generateSummaryData(globalSummaryFirst, improvementSheet, currentRow, PREVIOUS_ITERATION_GLOBAL_TITLE);
+		currentRow = 40;
+		generateSummaryData(fixedSummaryPrevious, improvementSheet, currentRow, FIRST_ITERATION_FIXED_TITLE);
+		currentRow = 55;
+		generateSummaryData(fixedSummaryFirst, improvementSheet, currentRow, PREVIOUS_ITERATION_FIXED_TITLE);
+	}
+
+	/**
+	 * Generate summary data.
+	 *
+	 * @param globalSummaryPrevious the global summary previous
+	 * @param improvementSheet      the improvement sheet
+	 * @param currentRow            the current row
+	 * @param title                 the title
+	 */
+	private static void generateSummaryData(SummaryEvolution globalSummaryPrevious, XSSFSheet improvementSheet, int currentRow, final String title) {
+		Row r;
+		Cell c;
+		XlsxUtils xlsxUtils = new XlsxUtils(improvementSheet.getWorkbook());
+		r = improvementSheet.createRow(currentRow);
+		c = r.createCell(0);
+		c.setCellValue(title);
+		final CellStyle whiteCell = xlsxUtils.getCellStyleByName(XlsxUtils.WHITE_BACKGROUND_BLACK_BOLD10);
+		final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_BLACK_BOLD10_CENTER);
+		final CellStyle headerStyleLeft = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_BLACK_BOLD10_LEFT);
+		final CellStyle percentStyle = xlsxUtils.getCellStyleByName(XlsxUtils.NORMAL_PERCENT11_CENTER_STYLE);
+		c.setCellStyle(whiteCell);
+		c = r.createCell(1);
+		c = r.createCell(2);
+		c = r.createCell(3);
+		c = r.createCell(4);
+		c = r.createCell(5);
+		improvementSheet.addMergedRegion(new CellRangeAddress(currentRow, currentRow, 0, 5));
+		currentRow++;
+		// Headers
+		r = improvementSheet.createRow(currentRow);
+		c = r.createCell(1); // Much worst
+		c.setCellValue(MUCH_WORST);
+		c.setCellStyle(headerStyle);
+		c = r.createCell(2); // worst
+		c.setCellValue(WORST);
+		c.setCellStyle(headerStyle);
+		c = r.createCell(3); // stable
+		c.setCellValue(STABLE);
+		c.setCellStyle(headerStyle);
+		c = r.createCell(4); // better
+		c.setCellValue(BETTER);
+		c.setCellStyle(headerStyle);
+		c = r.createCell(5); // much better
+		c.setCellValue(MUCH_BETTER);
+		c.setCellStyle(headerStyle);
+		currentRow++;
+		// Percenages
+		r = improvementSheet.createRow(currentRow);
+		c = r.createCell(0);
+		c.setCellValue(PERCENTAGE_OF_SITES);
+		c.setCellStyle(headerStyleLeft);
+		c = r.createCell(1); // Much worst
+		c.setCellValue((double) globalSummaryPrevious.getNumberMuchWorse() / (double) globalSummaryPrevious.total());
+		c.setCellStyle(percentStyle);
+		c = r.createCell(2); // worst
+		c.setCellValue((double) globalSummaryPrevious.getNumberWorse() / (double) globalSummaryPrevious.total());
+		c.setCellStyle(percentStyle);
+		c = r.createCell(3); // stable
+		c.setCellValue((double) globalSummaryPrevious.getNumberStable() / (double) globalSummaryPrevious.total());
+		c.setCellStyle(percentStyle);
+		c = r.createCell(4); // better
+		c.setCellValue((double) globalSummaryPrevious.getNumberBetter() / (double) globalSummaryPrevious.total());
+		c.setCellStyle(percentStyle);
+		c = r.createCell(5); // much better
+		c.setCellValue((double) globalSummaryPrevious.getNumberMuchBetter() / (double) globalSummaryPrevious.total());
+		c.setCellStyle(percentStyle);
+		currentRow++;
+		// Number of sites
+		r = improvementSheet.createRow(currentRow);
+		c = r.createCell(0); // Percentaje
+		c.setCellValue(NUMBER_OF_SITES);
+		c.setCellStyle(headerStyleLeft);
+		c = r.createCell(1); // Much worst
+		c.setCellValue(globalSummaryPrevious.getNumberMuchWorse());
+		c = r.createCell(2); // worst
+		c.setCellValue(globalSummaryPrevious.getNumberWorse());
+		c = r.createCell(3); // stable
+		c.setCellValue(globalSummaryPrevious.getNumberStable());
+		c = r.createCell(4); // better
+		c.setCellValue(globalSummaryPrevious.getNumberBetter());
+		c = r.createCell(5); // much better
+		c.setCellValue(globalSummaryPrevious.getNumberMuchBetter());
+		improvementSheet.autoSizeColumn(0);
+		improvementSheet.autoSizeColumn(1);
+		improvementSheet.autoSizeColumn(2);
+		improvementSheet.autoSizeColumn(3);
+		improvementSheet.autoSizeColumn(4);
+		improvementSheet.autoSizeColumn(5);
+		// Graphic
+		XSSFDrawing drawing = improvementSheet.createDrawingPatriarch();
+		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 7, currentRow - 2, 16, currentRow + 8);
+		XSSFChart chart = drawing.createChart(anchor);
+		chart.setTitleText(title);
+		chart.setTitleOverlay(false);
+		XDDFChartLegend legend = chart.getOrAddLegend();
+		legend.setPosition(LegendPosition.TOP_RIGHT);
+		XDDFDataSource<String> labels = XDDFDataSourcesFactory.fromStringCellRange(improvementSheet, new CellRangeAddress(currentRow - 2, currentRow - 2, 1, 5));
+		XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(improvementSheet, new CellRangeAddress(currentRow - 1, currentRow - 1, 1, 5));
+		XDDFChartData data = chart.createData(ChartTypes.PIE3D, null, null);
+		data.setVaryColors(true);
+		data.addSeries(labels, values);
+		// show labels
+		if (!chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).isSetDLbls()) {
+			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDLbls();
+		}
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowLegendKey().setVal(false);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowPercent().setVal(true);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowLeaderLines().setVal(false);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowVal().setVal(false);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowCatName().setVal(false);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowSerName().setVal(false);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowBubbleSize().setVal(false);
+		// angle
+		chart.getCTChart().addNewView3D().addNewRotX().setVal((byte) 25);
+		// colors
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(0);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(0).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(MUCH_WORST_COLOR));
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(1);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(1).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(WORST_COLOR));
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(2);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(2).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(STABLE_COLOR));
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(3);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(3).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(BETTER_COLOR));
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(4);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(4).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(MUCH_BETTER_COLOR));
+		chart.plot(data);
+		setRoundedCorners(chart, false);
+	}
+
+	/**
+	 * Count evolution.
+	 *
+	 * @param c                 the c
+	 * @param comparision       the comparision
+	 * @param firstThreshold    the first threshold
+	 * @param secondThreshold   the second threshold
+	 * @param globalSummary     the global summary
+	 * @param semillaEntry      the semilla entry
+	 * @param isFirst           the is first
+	 * @param tagsToFilterFixed the tags to filter fixed
+	 * @throws SQLException the SQL exception
+	 */
+	private static void countEvolution(final Connection c, final List<ComparisionForm> comparision, double firstThreshold, double secondThreshold, SummaryEvolution globalSummary,
+			Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry, final boolean isFirst, final String[] tagsToFilterFixed) throws SQLException {
+		final SemillaForm semillaForm = semillaEntry.getKey();
+		if (semillaForm != null && semillaForm.getId() != 0) {
+			// last puntuiaction
+			Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
+			BigDecimal lastScore = entry.getValue().getTotalScore();
+			if (comparision != null) {
+				// Get previous date by tag
+				for (ComparisionForm com : comparision) {
+					// exclude if selected tags fixed
+					if (tagsToFilterFixed != null && tagsToFilterFixed.length > 0) {
+						if (Arrays.asList(tagsToFilterFixed).contains(String.valueOf(com.getIdTag()))) {
+							continue;
+						}
+					}
+					for (EtiquetaForm label : semillaForm.getEtiquetas()) {
+						if (com.getIdTag() == label.getId()) {
+							BigDecimal scoreComparision = semillaEntry.getValue().get(isFirst ? com.getFirst() : com.getPrevious()).getTotalScore();
+							BigDecimal diffScore = lastScore.subtract(scoreComparision);
+							// Stable
+							if (diffScore.compareTo(BigDecimal.ZERO) == 0) {
+								globalSummary.setNumberStable(globalSummary.getNumberStable() + 1);
+							} else if (diffScore.compareTo(BigDecimal.ZERO) < 0) {
+								// worst
+								if (diffScore.compareTo(new BigDecimal(secondThreshold * -1)) < 0) {
+									globalSummary.setNumberMuchWorse(globalSummary.getNumberMuchWorse() + 1);
+								}
+								if (diffScore.compareTo(new BigDecimal(secondThreshold * -1)) > 0 && diffScore.compareTo(new BigDecimal(firstThreshold * -1)) < 0) {
+									globalSummary.setNumberWorse(globalSummary.getNumberWorse() + 1);
+								}
+								if (diffScore.compareTo(new BigDecimal(firstThreshold * -1)) > 0) {
+									globalSummary.setNumberStable(globalSummary.getNumberStable() + 1);
+								}
+							} else if (diffScore.compareTo(BigDecimal.ZERO) > 0) {
+								// better
+								if (diffScore.compareTo(new BigDecimal(secondThreshold)) > 0) {
+									globalSummary.setNumberMuchBetter(globalSummary.getNumberMuchBetter() + 1);
+								}
+								if (diffScore.compareTo(new BigDecimal(secondThreshold)) < 0 && diffScore.compareTo(new BigDecimal(firstThreshold)) > 0) {
+									globalSummary.setNumberBetter(globalSummary.getNumberBetter() + 1);
+								}
+								if (diffScore.compareTo(new BigDecimal(firstThreshold)) > 0) {
+									globalSummary.setNumberStable(globalSummary.getNumberStable() + 1);
+								}
+							}
+							break;
+						}
+					}
+				}
+			} else {
+				boolean include = true;
+				// exclude if selected tags fixed
+				if (tagsToFilterFixed != null && tagsToFilterFixed.length > 0) {
+					include = false;
+					for (EtiquetaForm label : semillaForm.getEtiquetas()) {
+						if (Arrays.asList(tagsToFilterFixed).contains(String.valueOf(label.getId()))) {
+							include = true;
+							break;
+						}
+					}
+				}
+				if (include) {
+					BigDecimal scoreComparision;
+					if (isFirst) {
+						scoreComparision = semillaEntry.getValue().firstEntry().getValue().getTotalScore();
+					} else {
+						// Obtain submap to has esay access to penultimate value
+						final NavigableMap<String, ScoreForm> subMap = semillaEntry.getValue().subMap(semillaEntry.getValue().firstEntry().getKey(), true, semillaEntry.getValue().lastEntry().getKey(),
+								false);
+						if (!subMap.isEmpty()) {
+							scoreComparision = subMap.lastEntry().getValue().getTotalScore();
+						} else {
+							scoreComparision = semillaEntry.getValue().firstEntry().getValue().getTotalScore();
+						}
+					}
+					BigDecimal diffScore = lastScore.subtract(scoreComparision);
+					// Stable
+					if (diffScore.compareTo(BigDecimal.ZERO) == 0) {
+						globalSummary.setNumberStable(globalSummary.getNumberStable() + 1);
+					} else if (diffScore.compareTo(BigDecimal.ZERO) < 0) {
+						// worst
+						if (diffScore.compareTo(new BigDecimal(secondThreshold * -1)) < 0) {
+							globalSummary.setNumberMuchWorse(globalSummary.getNumberMuchWorse() + 1);
+						}
+						if (diffScore.compareTo(new BigDecimal(secondThreshold * -1)) > 0 && diffScore.compareTo(new BigDecimal(firstThreshold * -1)) < 0) {
+							globalSummary.setNumberWorse(globalSummary.getNumberWorse() + 1);
+						}
+						if (diffScore.compareTo(new BigDecimal(firstThreshold * -1)) > 0) {
+							globalSummary.setNumberStable(globalSummary.getNumberStable() + 1);
+						}
+					} else if (diffScore.compareTo(BigDecimal.ZERO) > 0) {
+						// better
+						if (diffScore.compareTo(new BigDecimal(secondThreshold)) > 0) {
+							globalSummary.setNumberMuchBetter(globalSummary.getNumberMuchBetter() + 1);
+						}
+						if (diffScore.compareTo(new BigDecimal(secondThreshold)) < 0 && diffScore.compareTo(new BigDecimal(firstThreshold)) > 0) {
+							globalSummary.setNumberBetter(globalSummary.getNumberBetter() + 1);
+						}
+						if (diffScore.compareTo(new BigDecimal(firstThreshold)) > 0) {
+							globalSummary.setNumberStable(globalSummary.getNumberStable() + 1);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Generate global progress evolution sheet.
+	 *
+	 * @param sheet                        the sheet
+	 * @param messageResources             the message resources
+	 * @param idObs                        the id obs
+	 * @param idObsExecution               the id obs execution
+	 * @param idOperation                  the id operation
+	 * @param tagsToFilter                 the tags to filter
+	 * @param exObsIds                     the ex obs ids
+	 * @param pageObservatoryMap           the page observatory map
+	 * @param titleAllocationGraphicGlobal the title allocation graphic
+	 * @param titleComplianceGraphicGlobal the title compliance graphic global
+	 * @param titleAllocationGraphicFixed  the title allocation graphic fixed (only if generateFixedGraphics is true is required)
+	 * @param titleComplianceGrpahicFixed  the title compliance grpahic fixed (only if generateFixedGraphics is true is required)
+	 * @param generateFixedGraphics        the is segment
+	 * @param initRow                      the init row
+	 * @param xlsxUtils                    the xlsx utils
+	 */
+	private static void generateGlobalProgressEvolutionSheet(final XSSFSheet sheet, final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation,
+			final String[] tagsToFilter, final String[] exObsIds, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final String titleAllocationGraphicGlobal,
+			final String titleComplianceGraphicGlobal, final String titleAllocationGraphicFixed, final String titleComplianceGrpahicFixed, final boolean generateFixedGraphics, final int initRow,
+			final XlsxUtils xlsxUtils) {
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, KEY_DATE_FORMAT_EVOLUTION));
+		final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByType(String.valueOf(idObs),
+				String.valueOf(idObsExecution), pageObservatoryMap, exObsIds);
+		int rowCount = initRow;
+		int firstRow = initRow + 1;
+		// Allocation
+		// date + suiability
+		final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_A, df);
+		final Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_AA, df);
+		final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV, df);
+		// Styles
+		final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_BLACK_BOLD10_CENTER);
+		final CellStyle headerStyleLeft = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_WHITE_BOLD10_LEFT);
+		final CellStyle percentBoldStyle = xlsxUtils.getCellStyleByName(XlsxUtils.BOLD_PERCENT11_CENTER_STYLE);
+		final CellStyle percentStyle = xlsxUtils.getCellStyleByName(XlsxUtils.NORMAL_PERCENT11_CENTER_STYLE);
+		// Table allcation and pie chart
+		Row r;
+		Cell c;
+		// Headers
+		r = sheet.createRow(rowCount);
+		c = r.createCell(1);
+		c.setCellValue(ALLOCATION_NOT_VALID_LITERAL);
+		c.setCellStyle(headerStyle);
+		c = r.createCell(2);
+		c.setCellValue(ALLOCATION_A_LITERAL);
+		c.setCellStyle(headerStyle);
+		c = r.createCell(3);
+		c.setCellValue(ALLOCATION_AA_LITERAL);
+		c.setCellStyle(headerStyle);
+		rowCount++;
+		for (Entry<String, BigDecimal> entry : resultDataNV.entrySet()) {
+			r = sheet.createRow(rowCount);
+			c = r.createCell(0);
+			c.setCellValue(entry.getKey());
+			c.setCellStyle(headerStyleLeft);
+			c = r.createCell(1);
+			c.setCellValue(entry.getValue().doubleValue() / 100);
+			c.setCellStyle(percentStyle);
+			c = r.createCell(2);
+			c.setCellValue(resultDataA.get(entry.getKey()).doubleValue() / 100);
+			c.setCellStyle(percentStyle);
+			c = r.createCell(3);
+			c.setCellStyle(percentStyle);
+			c.setCellValue(resultDataAA.get(entry.getKey()).doubleValue() / 100);
+			rowCount++;
+		}
+		generateStackedBarGraphic(sheet, firstRow, rowCount, 1, 3, titleAllocationGraphicGlobal);
+		rowCount += 15;
+		// Compliance
+		// date + suiability
+		final Map<Date, Map<Long, Map<String, Integer>>> evolutionResultC = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByCompliance(String.valueOf(idObs),
+				String.valueOf(idObsExecution), pageObservatoryMap, exObsIds);
+		final Map<String, BigDecimal> resultDataPC = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResultC, Constants.OBS_COMPILANCE_PARTIAL, df);
+		final Map<String, BigDecimal> resultDataTC = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResultC, Constants.OBS_COMPILANCE_FULL, df);
+		final Map<String, BigDecimal> resultDataNC = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResultC, Constants.OBS_COMPILANCE_NONE, df);
+		// Table compliance and pie chart (Global)
+		// Headers
+		r = sheet.createRow(rowCount);
+		c = r.createCell(1);
+		c.setCellValue(COMPLIANCE_NOT_LITERAL);
+		c.setCellStyle(headerStyle);
+		c = r.createCell(2);
+		c.setCellValue(COMPLIANCE_PARTIAL_LITERAL);
+		c.setCellStyle(headerStyle);
+		c = r.createCell(3);
+		c.setCellValue(COMPLIANCE_TOTAL_LITERAL);
+		c.setCellStyle(headerStyle);
+		rowCount++;
+		firstRow = rowCount;
+		for (Entry<String, BigDecimal> entry : resultDataNC.entrySet()) {
+			r = sheet.createRow(rowCount);
+			c = r.createCell(0);
+			c.setCellValue(entry.getKey());
+			c.setCellStyle(headerStyleLeft);
+			c = r.createCell(1);
+			c.setCellValue(entry.getValue().doubleValue() / 100);
+			c.setCellStyle(percentStyle);
+			c = r.createCell(2);
+			c.setCellValue(resultDataPC.get(entry.getKey()).doubleValue() / 100);
+			c.setCellStyle(percentStyle);
+			c = r.createCell(3);
+			c.setCellValue(resultDataTC.get(entry.getKey()).doubleValue() / 100);
+			c.setCellStyle(percentStyle);
+			rowCount++;
+		}
+		generateStackedBarGraphic(sheet, firstRow, rowCount, 1, 3, titleComplianceGraphicGlobal);
+		// Generate 2 extra graphics for fixed part if required
+		if (generateFixedGraphics) {
+			generateGlobalProgressEvolutionSheet(sheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMap, titleAllocationGraphicFixed,
+					titleComplianceGrpahicFixed, null, null, false, rowCount + 15, xlsxUtils);
+		}
+		sheet.autoSizeColumn(0);
+		sheet.autoSizeColumn(1);
+		sheet.autoSizeColumn(2);
+		sheet.autoSizeColumn(3);
+	}
+
+	/**
+	 * Generate stacked bar graphic.
+	 *
+	 * @param sheet       the sheet
+	 * @param firstRow    the first row
+	 * @param lastRow     the last row
+	 * @param firstColumn the first column
+	 * @param lastColumn  the last column
+	 * @param title       the title
+	 */
+	private static void generateStackedBarGraphic(final XSSFSheet sheet, final int firstRow, final int lastRow, final int firstColumn, final int lastColumn, final String title) {
+		XDDFDataSource date = XDDFDataSourcesFactory.fromStringCellRange(sheet, new CellRangeAddress(firstRow, lastRow - 1, 0, 0));
+		XDDFNumericalDataSource<Double> lowLevel = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(firstRow, lastRow - 1, 1, 1));
+		XDDFNumericalDataSource<Double> mediumLevel = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(firstRow, lastRow - 1, 2, 2));
+		XDDFNumericalDataSource<Double> highLevel = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(firstRow, lastRow - 1, 3, 3));
+		XSSFDrawing drawing = sheet.createDrawingPatriarch();
+		// Graphic position
+		final int calculatedWidth = (lastColumn * 2) + ((lastRow - firstRow) * 2);
+		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, lastColumn * 2, firstRow,
+				(lastRow - firstRow) > 0 ? (calculatedWidth < 7 ? (lastColumn * 2) + 7 : (lastColumn * 2) + calculatedWidth) : (lastColumn * 2) + 7, lastRow + 10);
+		XSSFChart chart = drawing.createChart(anchor);
+		chart.setTitleText(title);
+		// set "the title overlays the plot area" to false explicitly
+		((XSSFChart) chart).getCTChart().getTitle().addNewOverlay().setVal(false);
+		XDDFChartLegend legend = chart.getOrAddLegend();
+		legend.setPosition(LegendPosition.RIGHT);
+		// bar chart
+		XDDFCategoryAxis bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
+		XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
+		leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+		// category axis crosses the value axis between the strokes and not midpoint the
+		// strokes
+		leftAxis.setCrossBetween(AxisCrossBetween.BETWEEN);
+		XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
+		XDDFChartData.Series series1 = data.addSeries(date, lowLevel);
+		series1.setTitle("lowLevel", new CellReference(sheet.getSheetName(), 0, 1, true, true));
+		XDDFChartData.Series series2 = data.addSeries(date, mediumLevel);
+		series2.setTitle("mediumLevel", new CellReference(sheet.getSheetName(), 0, 2, true, true));
+		XDDFChartData.Series series3 = data.addSeries(date, highLevel);
+		series3.setTitle("highLevel", new CellReference(sheet.getSheetName(), 0, 3, true, true));
+		chart.plot(data);
+		XDDFBarChartData bar = (XDDFBarChartData) data;
+		bar.setBarDirection(BarDirection.COL);
+		// looking for "Stacked Bar Chart"? uncomment the following line
+		bar.setBarGrouping(BarGrouping.STACKED);
+		// correcting the overlap so bars really are stacked and not side by side
+		chart.getCTChart().getPlotArea().getBarChartArray(0).addNewOverlap().setVal((byte) 100);
+		// limits of bars
+		chart.getCTChart().getPlotArea().getValAxArray(0).getScaling().addNewMax().setVal(1);// 100%
+		chart.getCTChart().getPlotArea().getValAxArray(0).getScaling().addNewMin().setVal(0);
+		solidFillSeries(data, 0, PresetColor.RED);
+		solidFillSeries(data, 1, PresetColor.YELLOW);
+		solidFillSeries(data, 2, PresetColor.GREEN);
+		// add data labels
+		for (int s = 0; s < 3; s++) {
+			chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).addNewDLbls();
+			chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(new byte[] { (byte) 255, (byte) 255, (byte) 255 });
+			chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewDLblPos().setVal(org.openxmlformats.schemas.drawingml.x2006.chart.STDLblPos.CTR);
+			chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewShowVal().setVal(true);
+			chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewShowLegendKey().setVal(false);
+			chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewShowCatName().setVal(false);
+			chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewShowSerName().setVal(false);
+		}
+		setRoundedCorners(chart, false);
+	}
+
+	/**
+	 * Sets the rounded corners.
+	 *
+	 * @param chart  the chart
+	 * @param setVal the set val
+	 */
+	private static void setRoundedCorners(XSSFChart chart, boolean setVal) {
+		if (chart.getCTChartSpace().getRoundedCorners() == null)
+			chart.getCTChartSpace().addNewRoundedCorners();
+		chart.getCTChartSpace().getRoundedCorners().setVal(setVal);
 	}
 
 	/**
@@ -337,19 +1014,20 @@ public final class AnnexUtils {
 	 * @param columnNames   the column names
 	 * @param columnResults the column results
 	 * @param tableName     the table name
+	 * @param xlsxUtils     the xlsx utils
 	 */
-	private static void addRankingSheet(XSSFWorkbook wb, final XSSFSheet resultSheet, final String sheetname, final String[] columnNames, final String[] columnResults, final String tableName) {
+	private static void addRankingSheet(XSSFWorkbook wb, final XSSFSheet resultSheet, final String sheetname, final String[] columnNames, final String[] columnResults, final String tableName,
+			final XlsxUtils xlsxUtils) {
 		final String resultColumnDependecy = "F";
 		final XSSFDataFormat format = wb.createDataFormat();
 		final XSSFSheet tmpSheet = wb.createSheet(sheetname);
-		final CreationHelper createHelper = wb.getCreationHelper();
 		wb.setSheetOrder(sheetname, 0);
 		XSSFRow row;
 		XSSFCell cell;
 		int rowIndex = 0;
 		int columnIndex = 1;
-		initFonts(wb);
-		initStyles(wb, createHelper);
+		final CellStyle dataStyleBold = xlsxUtils.getCellStyleByName(XlsxUtils.BOLD_DATA11_CENTER_STYLE);
+		final CellStyle dataStyleNormal = xlsxUtils.getCellStyleByName(XlsxUtils.WHITE_BACKGROUNT_NORMAL11_DECIMAL_CENTER);
 		// Reset
 		columnIndex = 1;
 		Cell c = null;
@@ -362,7 +1040,7 @@ public final class AnnexUtils {
 			row = tmpSheet.createRow(rowIndex);
 			cell = row.createCell(1);
 			cell.setCellValue(dependency);
-			cell.setCellStyle(boldData11LeftStyle);
+			cell.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.BOLD_DATA11_LEFT_STYLE));
 			rowIndex++;
 			numOfDependencies++;
 		}
@@ -372,29 +1050,28 @@ public final class AnnexUtils {
 				int cellCount = 2;
 				Row r = tmpSheet.getRow(rowIndex + i);
 				/******** AA/TC **********/
-				cellCount = generateColumnCount(columnResults, resultColumnDependecy, boldData11CenterStyle, cellCount, r, 0);
-				cellCount = generateColumnPercent(boldData11CenterStyle, format, cellCount, r, RANGE_TOTAL_PORTALS_RANKING, RANGE_FIRST_COLUMN_RANKING);
-				cellCount = generetaColumnAverage(columnResults, resultColumnDependecy, whiteBackgrountNormal11DecimalCenter, format, cellCount, r, 0, RANGE_FIRST_COLUMN_RANKING);
+				cellCount = generateColumnCount(columnResults, resultColumnDependecy, dataStyleBold, cellCount, r, 0);
+				cellCount = generateColumnPercent(dataStyleBold, format, cellCount, r, RANGE_TOTAL_PORTALS_RANKING, RANGE_FIRST_COLUMN_RANKING, xlsxUtils);
+				cellCount = generetaColumnAverage(columnResults, resultColumnDependecy, dataStyleNormal, format, cellCount, r, 0, RANGE_FIRST_COLUMN_RANKING);
 				/******** A/PC **********/
-				cellCount = generateColumnCount(columnResults, resultColumnDependecy, boldData11CenterStyle, cellCount, r, 1);
-				cellCount = generateColumnPercent(boldData11CenterStyle, format, cellCount, r, RANGE_TOTAL_PORTALS_RANKING, RANGE_SECOND_COLUMN_RANKING);
-				cellCount = generetaColumnAverage(columnResults, resultColumnDependecy, whiteBackgrountNormal11DecimalCenter, format, cellCount, r, 1, RANGE_SECOND_COLUMN_RANKING);
+				cellCount = generateColumnCount(columnResults, resultColumnDependecy, dataStyleBold, cellCount, r, 1);
+				cellCount = generateColumnPercent(dataStyleBold, format, cellCount, r, RANGE_TOTAL_PORTALS_RANKING, RANGE_SECOND_COLUMN_RANKING, xlsxUtils);
+				cellCount = generetaColumnAverage(columnResults, resultColumnDependecy, dataStyleNormal, format, cellCount, r, 1, RANGE_SECOND_COLUMN_RANKING);
 				/******** NV/NC **********/
-				cellCount = generateColumnCount(columnResults, resultColumnDependecy, boldData11CenterStyle, cellCount, r, 2);
-				cellCount = generateColumnPercent(boldData11CenterStyle, format, cellCount, r, RANGE_TOTAL_PORTALS_RANKING, RANGE_THIRD_COLUMN_RANKING);
-				cellCount = generetaColumnAverage(columnResults, resultColumnDependecy, whiteBackgrountNormal11DecimalCenter, format, cellCount, r, 1, RANGE_THIRD_COLUMN_RANKING);
+				cellCount = generateColumnCount(columnResults, resultColumnDependecy, dataStyleBold, cellCount, r, 2);
+				cellCount = generateColumnPercent(dataStyleBold, format, cellCount, r, RANGE_TOTAL_PORTALS_RANKING, RANGE_THIRD_COLUMN_RANKING, xlsxUtils);
+				cellCount = generetaColumnAverage(columnResults, resultColumnDependecy, dataStyleNormal, format, cellCount, r, 1, RANGE_THIRD_COLUMN_RANKING);
 				/******** SUMS **********/
 				c = r.createCell(cellCount);
 				c.setCellFormula("J:J+G:G");
-				c.setCellStyle(boldPercent11CenterStyle);
+				c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.BOLD_PERCENT11_CENTER_STYLE));
 				cellCount++;
 				/***/
 				c = r.createCell(cellCount);
-				c.setCellStyle(boldData11CenterStyle);
+				c.setCellStyle(dataStyleBold);
 				c.setCellFormula("C:C+F:F+I:I");
 				cellCount++;
 			}
-//			evaluateAllFormulaCellsSheet(tmpSheet, wb.getCreationHelper().createFormulaEvaluator());
 			XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
 			// Sort rows
 			XSSFSheet rankingSheet = sortSheet(wb, tmpSheet, sheetname, 2);
@@ -412,31 +1089,31 @@ public final class AnnexUtils {
 			columnIndex = 1;
 			// Set header styles
 			c = row.getCell(columnIndex++);
-			c.setCellStyle(blueBackgroundWhiteBold16);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_WHITE_BOLD16));
 			c = row.getCell(columnIndex++);
-			c.setCellStyle(greenBackgroundWhiteBold16);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.GREEN_BACKGROUND_WHITE_BOLD16));
 			c = row.getCell(columnIndex++);
-			c.setCellStyle(greenBackgroundWhiteBold16);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.GREEN_BACKGROUND_WHITE_BOLD16));
 			c = row.getCell(columnIndex++);
-			c.setCellStyle(greenBackgroundWhiteBold16);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.GREEN_BACKGROUND_WHITE_BOLD16));
 			c = row.getCell(columnIndex++);
-			c.setCellStyle(yellowBackgroundBlack10);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.YELLOW_BACKGROUND_BLACK10));
 			c = row.getCell(columnIndex++);
-			c.setCellStyle(yellowBackgroundBlack10);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.YELLOW_BACKGROUND_BLACK10));
 			c = row.getCell(columnIndex++);
-			c.setCellStyle(yellowBackgroundBlack10);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.YELLOW_BACKGROUND_BLACK10));
 			c = row.getCell(columnIndex++);
-			c.setCellStyle(redBackgrounfBlackBold10);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.RED_BACKGROUNF_BLACK_BOLD10));
 			c = row.getCell(columnIndex++);
-			c.setCellStyle(redBackgrounfBlackBold10);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.RED_BACKGROUNF_BLACK_BOLD10));
 			c = row.getCell(columnIndex++);
-			c.setCellStyle(redBackgrounfBlackBold10);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.RED_BACKGROUNF_BLACK_BOLD10));
 			c = row.getCell(columnIndex++);
-			c.setCellStyle(orangeBackgroundBlackBold10);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.ORANGE_BACKGROUND_BLACK_BOLD10));
 			c = row.getCell(columnIndex++);
-			c.setCellStyle(blueBackgroundBlackBold10);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_BLACK_BOLD10));
 			// Table with autofilter
-			CellReference ref = new CellReference("B1");
+			CellReference ref = new CellReference(B1);
 			CellReference topLeft = new CellReference(rankingSheet.getRow(ref.getRow()).getCell(ref.getCol()));
 			ref = new CellReference("M" + (numOfDependencies + 1));
 			CellReference bottomRight = new CellReference(rankingSheet.getRow(ref.getRow()).getCell(ref.getCol()));
@@ -449,39 +1126,18 @@ public final class AnnexUtils {
 				dataTableRanking.getCTTable().addNewAutoFilter().setRef(tableArea.formatAsString());
 			}
 			// Set poduim cells
-			ref = new CellReference("A2");
+			ref = new CellReference(A2);
 			c = rankingSheet.getRow(ref.getRow()).createCell(ref.getCol());
-			c.setCellValue("1ª");
-			CellStyle firstStyle = wb.createCellStyle();
-			firstStyle.setWrapText(true);
-			firstStyle.setAlignment(HorizontalAlignment.CENTER);
-			firstStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-			firstStyle.setFillForegroundColor(IndexedColors.GOLD.getIndex());
-			firstStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-			firstStyle.setFont(blackBold10Font);
-			c.setCellStyle(firstStyle);
-			ref = new CellReference("A3");
+			c.setCellValue(RANKING_1ST);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.FIRST_STYLE));
+			ref = new CellReference(A3);
 			c = rankingSheet.getRow(ref.getRow()).createCell(ref.getCol());
-			CellStyle secondStyle = wb.createCellStyle();
-			secondStyle.setWrapText(true);
-			secondStyle.setAlignment(HorizontalAlignment.CENTER);
-			secondStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-			secondStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-			secondStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-			secondStyle.setFont(blackBold10Font);
-			c.setCellStyle(secondStyle);
-			c.setCellValue("2ª");
-			ref = new CellReference("A4");
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.SECOND_STYLE));
+			c.setCellValue(RANKING_2ND);
+			ref = new CellReference(A4);
 			c = rankingSheet.getRow(ref.getRow()).createCell(ref.getCol());
-			c.setCellValue("3ª");
-			CellStyle thirdStyle = wb.createCellStyle();
-			thirdStyle.setWrapText(true);
-			thirdStyle.setAlignment(HorizontalAlignment.CENTER);
-			thirdStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-			thirdStyle.setFillForegroundColor(IndexedColors.BROWN.getIndex());
-			thirdStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-			thirdStyle.setFont(blackBold10Font);
-			c.setCellStyle(thirdStyle);
+			c.setCellValue(RANKING_3RD);
+			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.THIRD_STYLE));
 			// Set auto size
 			columnIndex = 1;
 			for (int i = 0; i < columnNames.length; i++) {
@@ -491,139 +1147,6 @@ public final class AnnexUtils {
 		} catch (Exception e) {
 			Logger.putLog("Error generating 3. Iteración Ranking.xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-	}
-
-	/**
-	 * Inits the styles.
-	 *
-	 * @param wb           the wb
-	 * @param createHelper the create helper
-	 */
-	private static void initStyles(XSSFWorkbook wb, final CreationHelper createHelper) {
-		boldData11LeftStyle = wb.createCellStyle();
-		boldData11LeftStyle.setWrapText(true);
-		boldData11LeftStyle.setAlignment(HorizontalAlignment.LEFT);
-		boldData11LeftStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-		boldData11LeftStyle.setFillForegroundColor(COLOR_WHITE);
-		boldData11LeftStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		boldData11LeftStyle.setFont(blackBold11Font);
-		boldData11CenterStyle = wb.createCellStyle();
-		boldData11CenterStyle.setWrapText(true);
-		boldData11CenterStyle.setAlignment(HorizontalAlignment.CENTER);
-		boldData11CenterStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-		boldData11CenterStyle.setFillForegroundColor(COLOR_WHITE);
-		boldData11CenterStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		boldData11CenterStyle.setFont(blackBold11Font);
-		boldPercent11CenterStyle = wb.createCellStyle();
-		boldPercent11CenterStyle.setWrapText(true);
-		boldPercent11CenterStyle.setAlignment(HorizontalAlignment.CENTER);
-		boldPercent11CenterStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-		boldPercent11CenterStyle.setFillForegroundColor(COLOR_WHITE);
-		boldPercent11CenterStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		boldPercent11CenterStyle.setFont(blackBold11Font);
-		boldPercent11CenterStyle.setDataFormat(createHelper.createDataFormat().getFormat(PERCENT_FORMAT));
-		blueBackgroundWhiteBold16 = wb.createCellStyle();
-		blueBackgroundWhiteBold16.setWrapText(true);
-		blueBackgroundWhiteBold16.setAlignment(HorizontalAlignment.CENTER);
-		blueBackgroundWhiteBold16.setVerticalAlignment(VerticalAlignment.CENTER);
-		blueBackgroundWhiteBold16.setFillForegroundColor(IndexedColors.BLUE.getIndex());
-		blueBackgroundWhiteBold16.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		blueBackgroundWhiteBold16.setFont(whiteBold16Font);
-		greenBackgroundWhiteBold16 = wb.createCellStyle();
-		greenBackgroundWhiteBold16.setWrapText(true);
-		greenBackgroundWhiteBold16.setAlignment(HorizontalAlignment.CENTER);
-		greenBackgroundWhiteBold16.setVerticalAlignment(VerticalAlignment.CENTER);
-		greenBackgroundWhiteBold16.setFillForegroundColor(IndexedColors.GREEN.getIndex());
-		greenBackgroundWhiteBold16.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		greenBackgroundWhiteBold16.setFont(whiteBold10Font);
-		yellowBackgroundBlack10 = wb.createCellStyle();
-		yellowBackgroundBlack10.setWrapText(true);
-		yellowBackgroundBlack10.setAlignment(HorizontalAlignment.CENTER);
-		yellowBackgroundBlack10.setVerticalAlignment(VerticalAlignment.CENTER);
-		yellowBackgroundBlack10.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
-		yellowBackgroundBlack10.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		yellowBackgroundBlack10.setFont(blackBold10Font);
-		redBackgrounfBlackBold10 = wb.createCellStyle();
-		redBackgrounfBlackBold10.setWrapText(true);
-		redBackgrounfBlackBold10.setAlignment(HorizontalAlignment.CENTER);
-		redBackgrounfBlackBold10.setVerticalAlignment(VerticalAlignment.CENTER);
-		redBackgrounfBlackBold10.setFillForegroundColor(IndexedColors.RED.getIndex());
-		redBackgrounfBlackBold10.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		redBackgrounfBlackBold10.setFont(blackBold10Font);
-		orangeBackgroundBlackBold10 = wb.createCellStyle();
-		orangeBackgroundBlackBold10.setWrapText(true);
-		orangeBackgroundBlackBold10.setAlignment(HorizontalAlignment.CENTER);
-		orangeBackgroundBlackBold10.setVerticalAlignment(VerticalAlignment.CENTER);
-		orangeBackgroundBlackBold10.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
-		orangeBackgroundBlackBold10.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		orangeBackgroundBlackBold10.setFont(blackBold10Font);
-		blueBackgroundBlackBold10 = wb.createCellStyle();
-		blueBackgroundBlackBold10.setWrapText(true);
-		blueBackgroundBlackBold10.setAlignment(HorizontalAlignment.CENTER);
-		blueBackgroundBlackBold10.setVerticalAlignment(VerticalAlignment.CENTER);
-		blueBackgroundBlackBold10.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
-		blueBackgroundBlackBold10.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		blueBackgroundBlackBold10.setFont(blackBold10Font);
-		lightBlueBackgroundBlackNormal11 = wb.createCellStyle();
-		lightBlueBackgroundBlackNormal11.setWrapText(true);
-		lightBlueBackgroundBlackNormal11.setAlignment(HorizontalAlignment.CENTER);
-		lightBlueBackgroundBlackNormal11.setVerticalAlignment(VerticalAlignment.CENTER);
-		lightBlueBackgroundBlackNormal11.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
-		lightBlueBackgroundBlackNormal11.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		lightBlueBackgroundBlackNormal11.setFont(blackNormal11Font);
-		whiteBackgrountNormal11Center = wb.createCellStyle();
-		whiteBackgrountNormal11Center.setWrapText(true);
-		whiteBackgrountNormal11Center.setAlignment(HorizontalAlignment.CENTER);
-		whiteBackgrountNormal11Center.setVerticalAlignment(VerticalAlignment.CENTER);
-		whiteBackgrountNormal11Center.setFillForegroundColor(COLOR_WHITE);
-		whiteBackgrountNormal11Center.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		whiteBackgrountNormal11Center.setFont(blackNormal11Font);
-		whiteBackgrountNormal11DecimalCenter = wb.createCellStyle();
-		whiteBackgrountNormal11DecimalCenter.setWrapText(true);
-		whiteBackgrountNormal11DecimalCenter.setAlignment(HorizontalAlignment.CENTER);
-		whiteBackgrountNormal11DecimalCenter.setVerticalAlignment(VerticalAlignment.CENTER);
-		whiteBackgrountNormal11DecimalCenter.setFillForegroundColor(COLOR_WHITE);
-		whiteBackgrountNormal11DecimalCenter.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		whiteBackgrountNormal11DecimalCenter.setFont(blackNormal11Font);
-		whiteBackgrountNormal11DecimalCenter.setDataFormat(createHelper.createDataFormat().getFormat(TWO_DECIMALS_FORMAT));
-	}
-
-	/**
-	 * Inits the fonts.
-	 *
-	 * @param wb the wb
-	 */
-	private static void initFonts(XSSFWorkbook wb) {
-		whiteBold16Font = wb.createFont();
-		whiteBold16Font.setFontHeightInPoints((short) 16);
-		whiteBold16Font.setFontName(ARIAL_FONT_NAME);
-		whiteBold16Font.setColor(COLOR_WHITE);
-		whiteBold16Font.setBold(true);
-		whiteBold16Font.setItalic(false);
-		whiteBold10Font = wb.createFont();
-		whiteBold10Font.setFontHeightInPoints((short) 10.5);
-		whiteBold10Font.setFontName(ARIAL_FONT_NAME);
-		whiteBold10Font.setColor(COLOR_WHITE);
-		whiteBold10Font.setBold(true);
-		whiteBold10Font.setItalic(false);
-		blackBold10Font = wb.createFont();
-		blackBold10Font.setFontHeightInPoints((short) 10.5);
-		blackBold10Font.setFontName(ARIAL_FONT_NAME);
-		blackBold10Font.setColor(COLOR_BLACK);
-		blackBold10Font.setBold(true);
-		blackBold10Font.setItalic(false);
-		blackNormal11Font = wb.createFont();
-		blackNormal11Font.setFontHeightInPoints((short) 11);
-		blackNormal11Font.setFontName(ARIAL_FONT_NAME);
-		blackNormal11Font.setColor(COLOR_BLACK);
-		blackNormal11Font.setBold(false);
-		blackNormal11Font.setItalic(false);
-		blackBold11Font = wb.createFont();
-		blackBold11Font.setFontHeightInPoints((short) 11);
-		blackBold11Font.setFontName(ARIAL_FONT_NAME);
-		blackBold11Font.setColor(COLOR_BLACK);
-		blackBold11Font.setBold(true);
-		blackBold11Font.setItalic(false);
 	}
 
 	/**
@@ -814,13 +1337,14 @@ public final class AnnexUtils {
 	 * @param r                     the r
 	 * @param range1                the range 1
 	 * @param range2                the range 2
+	 * @param xlsxUtils             the xlsx utils
 	 * @return the int
 	 */
-	private static int generateColumnPercent(CellStyle boldData11CenterStyle, XSSFDataFormat format, int cellCount, Row r, final String range1, final String range2) {
+	private static int generateColumnPercent(CellStyle boldData11CenterStyle, XSSFDataFormat format, int cellCount, Row r, final String range1, final String range2, final XlsxUtils xlsxUtils) {
 		Cell c;
 		c = r.createCell(cellCount);
 		c.setCellFormula("IF(" + range1 + "<>0," + range2 + "/" + range1 + ",0)");
-		c.setCellStyle(boldPercent11CenterStyle);
+		c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.BOLD_PERCENT11_CENTER_STYLE));
 		cellCount++;
 		return cellCount;
 	}
@@ -891,9 +1415,10 @@ public final class AnnexUtils {
 	public static void createAnnexPortalsCriteria(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales-criterios.xml")) {
+			Logger.putLog("Generando anexo: anexo-portales-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, true, true);
 		} catch (Exception e) {
-			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error generar el anexo: anexo-portales-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -911,9 +1436,10 @@ public final class AnnexUtils {
 	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas.xml")) {
+			Logger.putLog("Generando anexo: anexo-paginas.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false, false);
 		} catch (Exception e) {
-			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al generar el anexo: anexo-paginas.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -931,9 +1457,10 @@ public final class AnnexUtils {
 	public static void createAnnexPaginasVerifications(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas-verificaciones.xml")) {
+			Logger.putLog("Generando anexo: anexo-paginas-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, true, false);
 		} catch (Exception e) {
-			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al generar el anexo: anexo-paginas-verificaciones", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -951,9 +1478,10 @@ public final class AnnexUtils {
 	public static void createAnnexPaginasCriteria(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas-criterios.xml")) {
+			Logger.putLog("Generando anexo: anexo-paginas-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false, true);
 		} catch (Exception e) {
-			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al generar el anexo: anexo-paginas-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -1197,9 +1725,10 @@ public final class AnnexUtils {
 	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales.xml")) {
+			Logger.putLog("Generando anexo: anexo-portales.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, false, false);
 		} catch (Exception e) {
-			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al generar el anexo: anexo-portales.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -1217,9 +1746,10 @@ public final class AnnexUtils {
 	public static void createAnnexPortalsVerification(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales-verificaciones.xml")) {
+			Logger.putLog("Generando anexo: anexo-portales-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, true, true, false);
 		} catch (Exception e) {
-			Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al generar el anexo: anexo-portales-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -1244,8 +1774,8 @@ public final class AnnexUtils {
 		final ContentHandler hd = getContentHandler(writer);
 		hd.startDocument();
 		hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
-		for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-			final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+		for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+			final SemillaForm semillaForm = semillaEntry.getKey();
 			if (semillaForm.getId() != 0) {
 				// Filter by tags
 				List<String> tagList = null;
@@ -1417,27 +1947,6 @@ public final class AnnexUtils {
 	 * @param value the value
 	 * @return the string
 	 */
-	private static String evaluateCompliance(final LabelValueBean value) {
-		try {
-			BigDecimal bigDecimal = new BigDecimal(value.getValue());
-			if (bigDecimal.compareTo(new BigDecimal(9)) >= 0) {
-				return "C";
-			} else if (bigDecimal.compareTo(new BigDecimal(0)) >= 0) {
-				return "NC";
-			} else {
-				return "NA";
-			}
-		} catch (NumberFormatException e) {
-			return "NA";
-		}
-	}
-
-	/**
-	 * Evaluate compliance.
-	 *
-	 * @param value the value
-	 * @return the string
-	 */
 	private static String evaluateCompliance(final BigDecimal value) {
 		if (value != null) {
 			try {
@@ -1465,32 +1974,22 @@ public final class AnnexUtils {
 	 */
 	public static void createAnnexXLSX2(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
 		ColumnNames = new ArrayList<>();
-		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "2. Iteración SW.xlsx")) {
+		Logger.putLog("Generando anexo: " + FILE_2_ITERATION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_2_ITERATION_XLSX_NAME)) {
 			final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
 			final String ObservatoryFormDate = observatoryForm.getDate().substring(0, 10);
 			final String[] ColumnNames = new String[] { "id", "nombre", "namecat", "ambito", "complejidad", "depende_de", "semilla", "tematica", "distribucion", "recurrencia", "otros", "paginas",
-					"puntuacion_" + ObservatoryFormDate, "adecuacion_" + ObservatoryFormDate, "cumplimiento_" + ObservatoryFormDate, "NV_" + ObservatoryFormDate, "A_" + ObservatoryFormDate,
-					"AA_" + ObservatoryFormDate, "NC_" + ObservatoryFormDate, "PC_" + ObservatoryFormDate, "TC_" + ObservatoryFormDate };
+					"puntuacion_" + ObservatoryFormDate, "adecuacion_" + ObservatoryFormDate, "cumplimiento_" + ObservatoryFormDate, NV_PREFFIX + ObservatoryFormDate, A_PREFFIX + ObservatoryFormDate,
+					AA_PREFFIX + ObservatoryFormDate, NC_PREFFIX + ObservatoryFormDate, PC_PREFFIX + ObservatoryFormDate, TC_PREFFIX + ObservatoryFormDate };
 			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet("Resultados");
+			XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
 			XSSFRow row;
 			XSSFCell cell;
 			int rowIndex = 0;
 			int columnIndex = 0;
-			// create header cell style
-			CellStyle headerStyle = wb.createCellStyle();
-			headerStyle.setWrapText(true);
-			headerStyle.setAlignment(HorizontalAlignment.CENTER);
-			headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-			headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
-			headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-			// create light shadow cell style
-			CellStyle shadowStyle = wb.createCellStyle();
-			shadowStyle.setWrapText(true);
-			shadowStyle.setAlignment(HorizontalAlignment.LEFT);
-			shadowStyle.setVerticalAlignment(VerticalAlignment.TOP);
-			shadowStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
-			shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			XlsxUtils xlsxUtils = new XlsxUtils(wb);
+			final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
+			final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
 			// Add headers
 			row = sheet.createRow(rowIndex);
 			for (String name : ColumnNames) {
@@ -1505,8 +2004,8 @@ public final class AnnexUtils {
 			for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
 				categoryStarts = rowIndex;
 				if (categoryForm != null) {
-					for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-						final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+					for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+						final SemillaForm semillaForm = semillaEntry.getKey();
 						if (categoryForm.getName().equals(semillaForm.getCategoria().getName())) {
 							// Multidependence
 							StringBuilder dependencias = new StringBuilder();
@@ -1702,7 +2201,7 @@ public final class AnnexUtils {
 			wb.write(writer);
 			wb.close();
 		} catch (Exception e) {
-			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al generar el anexo: " + FILE_2_ITERATION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -1721,9 +2220,10 @@ public final class AnnexUtils {
 	public static void createAnnexXLSX1_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision,
 			double firstThreshold, double secondThreshold) throws Exception {
 		dependencies = new ArrayList<>();
-		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "1. Evolutivo SW.xlsx")) {
+		Logger.putLog("Generando anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_1_EVOLUTION_XLSX_NAME)) {
 			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet("Resultados");
+			XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
 			XSSFRow row;
 			XSSFCell cell;
 			final int numberOfFixedColumns = 12;
@@ -1732,20 +2232,9 @@ public final class AnnexUtils {
 			executionDates = new ArrayList<>();
 			excelLines = new HashMap<>();
 			ExcelLine excelLine;
-			// create header cell style
-			CellStyle headerStyle = wb.createCellStyle();
-			headerStyle.setWrapText(true);
-			headerStyle.setAlignment(HorizontalAlignment.CENTER);
-			headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-			headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
-			headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-			// create light shadow cell style
-			CellStyle shadowStyle = wb.createCellStyle();
-			shadowStyle.setWrapText(true);
-			shadowStyle.setAlignment(HorizontalAlignment.LEFT);
-			shadowStyle.setVerticalAlignment(VerticalAlignment.TOP);
-			shadowStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
-			shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			XlsxUtils xlsxUtils = new XlsxUtils(wb);
+			final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
+			final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
 			// Add headers without values
 			ColumnNames = new ArrayList<>();
 			ColumnNames.add("id");
@@ -1772,8 +2261,8 @@ public final class AnnexUtils {
 			 * Category names list created by generation Evolution and reused generating PerDependency annex.
 			 */
 			List<String> categories = new ArrayList<>();
-			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+				final SemillaForm semillaForm = semillaEntry.getKey();
 				String namecat = semillaForm.getCategoria().getName();
 				if (semillaForm.getId() != 0) {
 					if (!categories.contains(namecat))
@@ -1784,8 +2273,8 @@ public final class AnnexUtils {
 			Collections.sort(categories);
 			// Loop to insert fixed values
 			for (String currentCategory : categories) {
-				for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-					final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+				for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+					final SemillaForm semillaForm = semillaEntry.getKey();
 					String namecat = semillaForm.getCategoria().getName();
 					// On each category iteration we filter the other categories.
 					if (semillaForm.getId() != 0 && namecat.equals(currentCategory)) {
@@ -2020,8 +2509,8 @@ public final class AnnexUtils {
 			// Loop to insert executions values.
 			rowIndex = 0;
 			for (String currentCategory : categories) {
-				for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-					final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+				for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+					final SemillaForm semillaForm = semillaEntry.getKey();
 					// On each category iteration we filter the other categories.
 					if (semillaForm.getId() != 0 && semillaForm.getCategoria().getName().equals(currentCategory)) {
 						rowIndex++;
@@ -2036,11 +2525,11 @@ public final class AnnexUtils {
 								String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 1) + (3 * executionDates.indexOf(date)));
 								// "NV_" + date
 								// Add header if it is not already created
-								if (!ColumnNames.contains("NV_" + date)) {
-									ColumnNames.add("NV_" + date);
+								if (!ColumnNames.contains(NV_PREFFIX + date)) {
+									ColumnNames.add(NV_PREFFIX + date);
 									XSSFRow headerRow = sheet.getRow(0);
 									XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-									cellInHeader.setCellValue("NV_" + date);
+									cellInHeader.setCellValue(NV_PREFFIX + date);
 									cellInHeader.setCellStyle(headerStyle);
 								}
 								cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate));
@@ -2049,11 +2538,11 @@ public final class AnnexUtils {
 								cell.setCellStyle(shadowStyle);
 								// "A_" + date
 								// Add header if it is not already created
-								if (!ColumnNames.contains("A_" + date)) {
-									ColumnNames.add("A_" + date);
+								if (!ColumnNames.contains(A_PREFFIX + date)) {
+									ColumnNames.add(A_PREFFIX + date);
 									XSSFRow headerRow = sheet.getRow(0);
 									XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-									cellInHeader.setCellValue("A_" + date);
+									cellInHeader.setCellValue(A_PREFFIX + date);
 									cellInHeader.setCellStyle(headerStyle);
 								}
 								cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 1);
@@ -2062,11 +2551,11 @@ public final class AnnexUtils {
 								cell.setCellStyle(shadowStyle);
 								// "AA_" + date
 								// Add header if it is not already created
-								if (!ColumnNames.contains("AA_" + date)) {
-									ColumnNames.add("AA_" + date);
+								if (!ColumnNames.contains(AA_PREFFIX + date)) {
+									ColumnNames.add(AA_PREFFIX + date);
 									XSSFRow headerRow = sheet.getRow(0);
 									XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-									cellInHeader.setCellValue("AA_" + date);
+									cellInHeader.setCellValue(AA_PREFFIX + date);
 									cellInHeader.setCellStyle(headerStyle);
 								}
 								cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 2);
@@ -2076,11 +2565,11 @@ public final class AnnexUtils {
 								columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.indexOf(date)));
 								// "NC_" + date
 								// Add header if it is not already created
-								if (!ColumnNames.contains("NC_" + date)) {
-									ColumnNames.add("NC_" + date);
+								if (!ColumnNames.contains(NC_PREFFIX + date)) {
+									ColumnNames.add(NC_PREFFIX + date);
 									XSSFRow headerRow = sheet.getRow(0);
 									XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-									cellInHeader.setCellValue("NC_" + date);
+									cellInHeader.setCellValue(NC_PREFFIX + date);
 									cellInHeader.setCellStyle(headerStyle);
 								}
 								cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
@@ -2089,11 +2578,11 @@ public final class AnnexUtils {
 								cell.setCellStyle(shadowStyle);
 								// "PC_" + date
 								// Add header if it is not already created
-								if (!ColumnNames.contains("PC_" + date)) {
-									ColumnNames.add("PC_" + date);
+								if (!ColumnNames.contains(PC_PREFFIX + date)) {
+									ColumnNames.add(PC_PREFFIX + date);
 									XSSFRow headerRow = sheet.getRow(0);
 									XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-									cellInHeader.setCellValue("PC_" + date);
+									cellInHeader.setCellValue(PC_PREFFIX + date);
 									cellInHeader.setCellStyle(headerStyle);
 								}
 								cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 4);
@@ -2102,11 +2591,11 @@ public final class AnnexUtils {
 								cell.setCellStyle(shadowStyle);
 								// "TC_" + date
 								// Add header if it is not already created
-								if (!ColumnNames.contains("TC_" + date)) {
-									ColumnNames.add("TC_" + date);
+								if (!ColumnNames.contains(TC_PREFFIX + date)) {
+									ColumnNames.add(TC_PREFFIX + date);
 									XSSFRow headerRow = sheet.getRow(0);
 									XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-									cellInHeader.setCellValue("TC_" + date);
+									cellInHeader.setCellValue(TC_PREFFIX + date);
 									cellInHeader.setCellStyle(headerStyle);
 								}
 								cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 5);
@@ -2121,14 +2610,14 @@ public final class AnnexUtils {
 			}
 			// Loop to insert puntuation evolution compare with previous.
 			// To select comparision column in comparision object, check if seed has tagId of comparision to select column by date
-			ColumnNames.add("evol_puntuacion_ant");
+			ColumnNames.add(EVOL_PUNTUACION_ANT);
 			XSSFRow headerRow = sheet.getRow(0);
 			XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue("evol_puntuacion_ant");
+			cellInHeader.setCellValue(EVOL_PUNTUACION_ANT);
 			cellInHeader.setCellStyle(headerStyle);
 			rowIndex = 1;
-			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+				final SemillaForm semillaForm = semillaEntry.getKey();
 				// On each category iteration we filter the other categories.
 				if (semillaForm.getId() != 0) {
 					row = sheet.getRow(rowIndex);
@@ -2136,7 +2625,6 @@ public final class AnnexUtils {
 						// Discard rows without the last execution
 						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
 						if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
-							List<EtiquetaForm> tags = semillaForm.getEtiquetas();
 							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", false);
 							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
 							cell = row.createCell(ColumnNames.size() - 1);
@@ -2161,8 +2649,8 @@ public final class AnnexUtils {
 			cellInHeader.setCellValue("evol_adecuacion_ant");
 			cellInHeader.setCellStyle(headerStyle);
 			rowIndex = 1;
-			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+				final SemillaForm semillaForm = semillaEntry.getKey();
 				// On each category iteration we filter the other categories.
 				if (semillaForm.getId() != 0) {
 					row = sheet.getRow(rowIndex);
@@ -2191,8 +2679,8 @@ public final class AnnexUtils {
 			cellInHeader.setCellValue("evol_puntuacion_primer");
 			cellInHeader.setCellStyle(headerStyle);
 			rowIndex = 1;
-			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+				final SemillaForm semillaForm = semillaEntry.getKey();
 				// On each category iteration we filter the other categories.
 				if (semillaForm.getId() != 0) {
 					row = sheet.getRow(rowIndex);
@@ -2200,7 +2688,6 @@ public final class AnnexUtils {
 						// Discard rows without the last execution
 						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
 						if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
-							List<EtiquetaForm> tags = semillaForm.getEtiquetas();
 							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", true);
 							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
 							cell = row.createCell(ColumnNames.size() - 1);
@@ -2225,8 +2712,8 @@ public final class AnnexUtils {
 			cellInHeader.setCellValue("evol_adecuacion_ant");
 			cellInHeader.setCellStyle(headerStyle);
 			rowIndex = 1;
-			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+				final SemillaForm semillaForm = semillaEntry.getKey();
 				// On each category iteration we filter the other categories.
 				if (semillaForm.getId() != 0) {
 					row = sheet.getRow(rowIndex);
@@ -2289,7 +2776,7 @@ public final class AnnexUtils {
 			wb.write(writer);
 			wb.close();
 		} catch (Exception e) {
-			Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al generar el anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -2365,27 +2852,17 @@ public final class AnnexUtils {
 		final int numberOfFixedColumns = 12;
 		// Iterate through dependencies to create each file
 		for (String currentDependency : dependencies) {
+			Logger.putLog("Generando anexo: " + currentDependency + ".xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 			try (FileOutputStream writer = getFileOutputStream(idOperation, "/Dependencias/" + currentDependency + ".xlsx")) {
 				XSSFWorkbook wb = new XSSFWorkbook();
-				XSSFSheet sheet = wb.createSheet("Resultados");
+				XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
 				XSSFRow row;
 				XSSFCell cell;
 				int rowIndex = 0;
 				int columnIndex = 0;
-				// create header cell style
-				CellStyle headerStyle = wb.createCellStyle();
-				headerStyle.setWrapText(true);
-				headerStyle.setAlignment(HorizontalAlignment.CENTER);
-				headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-				headerStyle.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
-				headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-				// create light shadow cell style
-				CellStyle shadowStyle = wb.createCellStyle();
-				shadowStyle.setWrapText(true);
-				shadowStyle.setAlignment(HorizontalAlignment.LEFT);
-				shadowStyle.setVerticalAlignment(VerticalAlignment.TOP);
-				shadowStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
-				shadowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+				XlsxUtils xlsxUtils = new XlsxUtils(wb);
+				final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
+				final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
 				row = sheet.createRow(rowIndex);
 				for (int i = 0; i < ColumnNames.size() - 2; i++) {
 					cell = row.createCell(columnIndex);
@@ -2522,20 +2999,18 @@ public final class AnnexUtils {
 					InsertGraphIntoSheetByDependency(currentSheet, rowIndex, false, numberOfFixedColumns, false);
 					InsertGraphIntoSheetByDependency(currentSheet2, rowIndex, true, numberOfFixedColumns, true);
 					InsertGraphIntoSheetByDependency(currentSheet2, rowIndex, false, numberOfFixedColumns, true);
-					InsertAgregatePieChar(currentSheet3, rowIndex, ColumnNames, headerStyle, shadowStyle);
+					InsertAgregatePieChar(currentSheet3, rowIndex, ColumnNames, xlsxUtils);
 				}
 				XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
-
 				// Hide Id Column
 				CTCol col = sheet.getCTWorksheet().getColsArray(0).addNewCol();
 				col.setMin(1);
 				col.setMax(1);
 				col.setHidden(true);
-
 				wb.write(writer);
 				wb.close();
 			} catch (Exception e) {
-				Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+				Logger.putLog("Error al generar el anexo: " + currentDependency + ".xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
 			}
 		}
@@ -2547,22 +3022,17 @@ public final class AnnexUtils {
 	 * @param currentSheet3 the current sheet 3
 	 * @param rowIndex      the row index
 	 * @param columnNames   the column names
-	 * @param headerStyle   the header style
-	 * @param shadowStyle   the shadow style
+	 * @param xlsxUtils     the xlsx utils
 	 */
-	private static void InsertAgregatePieChar(XSSFSheet currentSheet3, int rowIndex, List<String> columnNames, CellStyle headerStyle, CellStyle shadowStyle) {
-		CreationHelper createHelper = currentSheet3.getWorkbook().getCreationHelper();
-		CellStyle percentCenterStyle = currentSheet3.getWorkbook().createCellStyle();
-		percentCenterStyle.setWrapText(true);
-		percentCenterStyle.setAlignment(HorizontalAlignment.CENTER);
-		percentCenterStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-		percentCenterStyle.setDataFormat(createHelper.createDataFormat().getFormat(PERCENT_FORMAT));
+	private static void InsertAgregatePieChar(XSSFSheet currentSheet3, int rowIndex, List<String> columnNames, final XlsxUtils xlsxUtils) {
 		int adecuationColumn = 0;
 		for (int i = columnNames.size() - 1; i > 5; i--) {
 			if (columnNames.get(i).contains("adecuacion") && !columnNames.get(i).contains("ant")) {
 				adecuationColumn = i + 1;
 			}
 		}
+		CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
+		CellStyle percentCenterStyle = xlsxUtils.getCellStyleByName(XlsxUtils.NORMAL_PERCENT11_CENTER_STYLE);
 		// ADECUACY
 		// "Headers"
 		XSSFRow row = currentSheet3.createRow(0);
@@ -2575,7 +3045,7 @@ public final class AnnexUtils {
 		// "AA"
 		row = currentSheet3.createRow(1);
 		cell = row.createCell(0);
-		cell.setCellValue("AA");
+		cell.setCellValue(ALLOCATION_AA_LITERAL);
 		cell.setCellStyle(headerStyle);
 		// Number of AA
 		cell = row.createCell(1);
@@ -2587,7 +3057,7 @@ public final class AnnexUtils {
 		// "A"
 		row = currentSheet3.createRow(2);
 		cell = row.createCell(0);
-		cell.setCellValue("A");
+		cell.setCellValue(ALLOCATION_A_LITERAL);
 		cell.setCellStyle(headerStyle);
 		// Number of A
 		cell = row.createCell(1);
@@ -2599,7 +3069,7 @@ public final class AnnexUtils {
 		// "No Válido"
 		row = currentSheet3.createRow(3);
 		cell = row.createCell(0);
-		cell.setCellValue("No Válido");
+		cell.setCellValue(ALLOCATION_NOT_VALID_LITERAL);
 		cell.setCellStyle(headerStyle);
 		// Number of No Válido
 		cell = row.createCell(1);
@@ -2620,18 +3090,19 @@ public final class AnnexUtils {
 		legend.setPosition(LegendPosition.TOP_RIGHT);
 		XDDFDataSource<String> labels = XDDFDataSourcesFactory.fromStringCellRange(currentSheet3, new CellRangeAddress(1, 3, 0, 0));
 		XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(currentSheet3, new CellRangeAddress(1, 3, 1, 1));
-		XDDFChartData data = chart.createData(ChartTypes.PIE, null, null);
+		XDDFChartData data = chart.createData(ChartTypes.PIE3D, null, null);
 		data.setVaryColors(true);
 		data.addSeries(labels, values);
-
-		chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(0);
-		chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).getDPtList().get(0).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#008000"));
-		chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(1);
-		chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).getDPtList().get(1).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#fee100"));
-		chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(2);
-		chart.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).getDPtList().get(2).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#ff0000"));
-
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(0);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(0).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#008000"));
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(1);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(1).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(YELLOW_OAW_HTML));
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(2);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(2).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(MUCH_WORST_COLOR));
+		// angle getPie3DChartArray
+		chart.getCTChart().addNewView3D().addNewRotX().setVal((byte) 25);
 		chart.plot(data);
+		setRoundedCorners(chart, false);
 		// COMPLIANCE
 		int complianceColumn = 0;
 		for (int i = columnNames.size() - 1; i > 5; i--) {
@@ -2650,7 +3121,7 @@ public final class AnnexUtils {
 		// "Plenamente conforme"
 		row = currentSheet3.createRow(26);
 		cell = row.createCell(0);
-		cell.setCellValue("Plenamente conforme");
+		cell.setCellValue(COMPLIANCE_TOTAL_LITERAL);
 		cell.setCellStyle(headerStyle);
 		// Number of Plenamente conforme
 		cell = row.createCell(1);
@@ -2662,7 +3133,7 @@ public final class AnnexUtils {
 		// "Parcialmente conforme"
 		row = currentSheet3.createRow(27);
 		cell = row.createCell(0);
-		cell.setCellValue("Parcialmente conforme");
+		cell.setCellValue(COMPLIANCE_PARTIAL_LITERAL);
 		cell.setCellStyle(headerStyle);
 		// Number of Parcialmente conforme
 		cell = row.createCell(1);
@@ -2674,7 +3145,7 @@ public final class AnnexUtils {
 		// "No conforme"
 		row = currentSheet3.createRow(28);
 		cell = row.createCell(0);
-		cell.setCellValue("No conforme");
+		cell.setCellValue(COMPLIANCE_NOT_LITERAL);
 		cell.setCellStyle(headerStyle);
 		// Number of No conforme
 		cell = row.createCell(1);
@@ -2695,18 +3166,19 @@ public final class AnnexUtils {
 		legend2.setPosition(LegendPosition.TOP_RIGHT);
 		XDDFDataSource<String> labels2 = XDDFDataSourcesFactory.fromStringCellRange(currentSheet3, new CellRangeAddress(26, 28, 0, 0));
 		XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(currentSheet3, new CellRangeAddress(26, 28, 1, 1));
-		XDDFChartData data2 = chart2.createData(ChartTypes.PIE, null, null);
+		XDDFChartData data2 = chart2.createData(ChartTypes.PIE3D, null, null);
 		data2.setVaryColors(true);
 		data2.addSeries(labels2, values2);
-
-		chart2.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(0);
-		chart2.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).getDPtList().get(0).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#008000"));
-		chart2.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(1);
-		chart2.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).getDPtList().get(1).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#fee100"));
-		chart2.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(2);
-		chart2.getCTChart().getPlotArea().getPieChartArray(0).getSerArray(0).getDPtList().get(2).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#ff0000"));
-
+		chart2.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(0);
+		chart2.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(0).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb("#008000"));
+		chart2.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(1);
+		chart2.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(1).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(YELLOW_OAW_HTML));
+		chart2.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(2);
+		chart2.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(2).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(MUCH_WORST_COLOR));
+		// angle getPie3DChartArray
+		chart2.getCTChart().addNewView3D().addNewRotX().setVal((byte) 25);
 		chart2.plot(data2);
+		setRoundedCorners(chart2, false);
 	}
 
 	/**
@@ -2871,19 +3343,19 @@ public final class AnnexUtils {
 		cell.setCellValue("Segmento");
 		cell = row.createCell(1);
 		cell.setCellStyle(headerStyle);
-		cell.setCellValue("Empeoran mucho");
+		cell.setCellValue(MUCH_WORST);
 		cell = row.createCell(2);
 		cell.setCellStyle(headerStyle);
-		cell.setCellValue("Empeoran");
+		cell.setCellValue(WORST);
 		cell = row.createCell(3);
 		cell.setCellStyle(headerStyle);
 		cell.setCellValue("Se mantiene");
 		cell = row.createCell(4);
 		cell.setCellStyle(headerStyle);
-		cell.setCellValue("Mejoran");
+		cell.setCellValue(BETTER);
 		cell = row.createCell(5);
 		cell.setCellStyle(headerStyle);
-		cell.setCellValue("Mejoran mucho");
+		cell.setCellValue(MUCH_BETTER);
 		String dataColumn = GetExcelColumnNameForNumber(columnSourceData);
 		for (int i = 0; i < categories.size(); i++) {
 			row = sheet.createRow(RowStartPosition + i + 2);
@@ -2963,7 +3435,7 @@ public final class AnnexUtils {
 			XSSFDrawing drawing = sheet.createDrawingPatriarch();
 			XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(categoryLastRow - categoryFirstRow, 16), isFirst ? 40 : 85);
 			XSSFChart chart = drawing.createChart(anchor);
-			chart.setTitleText(isFirst ? "Nivel de adecuación estimado" : "Situación de cumplimiento estimada");
+			chart.setTitleText(isFirst ? ALLOCATION_LEVEL_TITLE : COMPLIANCE_LEVEL_TITLE);
 			chart.setTitleOverlay(false);
 			XDDFChartLegend legend = chart.getOrAddLegend();
 			legend.setPosition(LegendPosition.LEFT);
@@ -2971,54 +3443,48 @@ public final class AnnexUtils {
 			XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
 			XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
 			bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+			bottomAxis.getOrAddTextProperties();
 			leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-			bottomAxis.setTickLabelPosition(AxisTickLabelPosition.LOW);
-			bottomAxis.setMajorTickMark(AxisTickMark.NONE);
-			bottomAxis.setPosition(AxisPosition.RIGHT);
+			// category axis crosses the value axis between the strokes and not midpoint the
+			// strokes
+			leftAxis.setCrossBetween(AxisCrossBetween.BETWEEN);
 			CTPlotArea plotArea = chart.getCTChart().getPlotArea();
 			plotArea.getValAxArray()[0].addNewMajorGridlines();
+			plotArea.getValAxArray(0).getScaling().addNewMax().setVal(10);
+			plotArea.getValAxArray(0).getScaling().addNewMin().setVal(0);
 			// Get agency names
 			XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 1, 1));
 			// First serie ("No válido" / "No Conforme")
 			XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
 					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, isFirst ? 15 : 18, isFirst ? 15 : 18));
 			XDDFChartData.Series series1 = data.addSeries(agencies, values1);
-			series1.setTitle(isFirst ? "No Válido" : "No Conforme", null);
-			// Set series color
-			XDDFShapeProperties properties1 = series1.getShapeProperties();
-			if (properties1 == null) {
-				properties1 = new XDDFShapeProperties();
-			}
-			properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
-			series1.setShapeProperties(properties1);
+			series1.setTitle(isFirst ? ALLOCATION_NOT_VALID_LITERAL : COMPLIANCE_NOT_LITERAL, null);
 			// Second serie ("A" / "Parcialmente conforme")
 			XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
 					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, isFirst ? 16 : 19, isFirst ? 16 : 19));
 			XDDFChartData.Series series2 = data.addSeries(agencies, values2);
-			series2.setTitle(isFirst ? "A" : "Parcialmente conforme", null);
-			// Set series color
-			XDDFShapeProperties properties2 = series2.getShapeProperties();
-			if (properties2 == null) {
-				properties2 = new XDDFShapeProperties();
-			}
-
-			properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(hex2Rgb("#fee100"))));
-			series2.setShapeProperties(properties2);
+			series2.setTitle(isFirst ? ALLOCATION_A_LITERAL : COMPLIANCE_PARTIAL_LITERAL, null);
 			// Third serie ("AA" / "Plenamente conforme")
 			XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
 					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, isFirst ? 17 : 20, isFirst ? 17 : 20));
 			XDDFChartData.Series series3 = data.addSeries(agencies, values3);
-			series3.setTitle(isFirst ? "AA" : "Plenamente Conforme", null);
-			// Set series color
-			XDDFShapeProperties properties3 = series3.getShapeProperties();
-			if (properties3 == null) {
-				properties3 = new XDDFShapeProperties();
-			}
-			properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
-			series3.setShapeProperties(properties3);
+			series3.setTitle(isFirst ? ALLOCATION_AA_LITERAL : COMPLIANCE_TOTAL_LITERAL, null);
 			chart.plot(data);
+			solidFillSeries(data, 0, PresetColor.RED);
+			solidFillSeries(data, 1, PresetColor.YELLOW);
+			solidFillSeries(data, 2, PresetColor.GREEN);
 			XDDFBarChartData bar = (XDDFBarChartData) data;
 			bar.setBarDirection(BarDirection.COL);
+			bar.setBarGrouping(BarGrouping.CLUSTERED);
+			bar.setBarDirection(BarDirection.COL);
+			bar.setBarGrouping(BarGrouping.CLUSTERED);
+			// Rotate labels bottom axis
+			CTTextBody text = chart.getCTChart().getPlotArea().getCatAxArray(0).getTxPr();
+			int rotAngle = 0;
+			int minus45Deg = (int) Math.round(-5400000 / 2d);
+			rotAngle = minus45Deg;
+			text.getBodyPr().setRot(rotAngle);
+			setRoundedCorners(chart, false);
 		}
 	}
 
@@ -3036,7 +3502,7 @@ public final class AnnexUtils {
 		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(categoryLastRow - categoryFirstRow, 16), isFirst ? 40 : 85);
 		XSSFChart chart = drawing.createChart(anchor);
-		chart.setTitleText(isFirst ? "Evolución de la adecuación" : "Evolución del cumplimiento estimado");
+		chart.setTitleText(isFirst ? ALLOCATION_EVOLUTION_TITLE : COMPLIANCE_EVOLUTION_TITLE);
 		chart.setTitleOverlay(false);
 		XDDFChartLegend legend = chart.getOrAddLegend();
 		legend.setPosition(LegendPosition.LEFT);
@@ -3044,10 +3510,11 @@ public final class AnnexUtils {
 		XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
 		XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
 		bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+		bottomAxis.getOrAddTextProperties();
 		leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-		bottomAxis.setTickLabelPosition(AxisTickLabelPosition.LOW);
-		bottomAxis.setMajorTickMark(AxisTickMark.NONE);
-		bottomAxis.setPosition(AxisPosition.RIGHT);
+		// category axis crosses the value axis between the strokes and not midpoint the
+		// strokes
+		leftAxis.setCrossBetween(AxisCrossBetween.BETWEEN);
 		CTPlotArea plotArea = chart.getCTChart().getPlotArea();
 		plotArea.getValAxArray()[0].addNewMajorGridlines();
 		plotArea.getValAxArray(0).getScaling().addNewMax().setVal(10);
@@ -3055,6 +3522,7 @@ public final class AnnexUtils {
 		// Get agency names
 		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 1, 1));
 		// Iterate through the executions
+		int iteration = 0;
 		for (String date : executionDates) {
 			int firstSerieColumn = numberOfFixedColumns + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
 			// First serie ("No válido" / "No Conforme")
@@ -3062,44 +3530,36 @@ public final class AnnexUtils {
 			XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
 					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 0 : 3), firstSerieColumn + (isFirst ? 0 : 3)));
 			XDDFChartData.Series series1 = data.addSeries(agencies, values1);
-			series1.setTitle((isFirst ? "NV_" : "NC_") + date, null);
-			// Set series color
-			XDDFShapeProperties properties1 = series1.getShapeProperties();
-			if (properties1 == null) {
-				properties1 = new XDDFShapeProperties();
-			}
-			properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
-			series1.setShapeProperties(properties1);
+			series1.setTitle((isFirst ? NV_PREFFIX : NC_PREFFIX) + date, null);
+			solidFillSeries(data, iteration++, PresetColor.RED);
 			// Second serie ("A" / "Parcialmente conforme")
 			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 1 : 4));
 			XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
 					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 1 : 4), firstSerieColumn + (isFirst ? 1 : 4)));
 			XDDFChartData.Series series2 = data.addSeries(agencies, values2);
-			series2.setTitle((isFirst ? "A_" : "PC_") + date, null);
-			// Set series color
-			XDDFShapeProperties properties2 = series2.getShapeProperties();
-			if (properties2 == null) {
-				properties2 = new XDDFShapeProperties();
-			}
-			properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(hex2Rgb("#fee100"))));
-			series2.setShapeProperties(properties2);
+			series2.setTitle((isFirst ? A_PREFFIX : PC_PREFFIX) + date, null);
+			solidFillSeries(data, iteration++, PresetColor.YELLOW);
 			// Third serie ("AA" / "Plenamente conforme")
 			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 2 : 5));
 			XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
 					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 2 : 5), firstSerieColumn + (isFirst ? 2 : 5)));
 			XDDFChartData.Series series3 = data.addSeries(agencies, values3);
-			series3.setTitle((isFirst ? "AA_" : "TC_") + date, null);
-			// Set series color
-			XDDFShapeProperties properties3 = series3.getShapeProperties();
-			if (properties3 == null) {
-				properties3 = new XDDFShapeProperties();
-			}
-			properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
-			series3.setShapeProperties(properties3);
+			series3.setTitle((isFirst ? AA_PREFFIX : TC_PREFFIX) + date, null);
+			solidFillSeries(data, iteration++, PresetColor.GREEN);
 		}
 		chart.plot(data);
 		XDDFBarChartData bar = (XDDFBarChartData) data;
 		bar.setBarDirection(BarDirection.COL);
+		bar.setBarGrouping(BarGrouping.CLUSTERED);
+		bar.setBarDirection(BarDirection.COL);
+		bar.setBarGrouping(BarGrouping.CLUSTERED);
+		// Rotate labels bottom axis
+		CTTextBody text = chart.getCTChart().getPlotArea().getCatAxArray(0).getTxPr();
+		int rotAngle = 0;
+		int minus45Deg = (int) Math.round(-5400000 / 2d);
+		rotAngle = minus45Deg;
+		text.getBodyPr().setRot(rotAngle);
+		setRoundedCorners(chart, false);
 	}
 
 	/**
@@ -3115,7 +3575,7 @@ public final class AnnexUtils {
 		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(rowIndex, 16), isFirst ? 40 : 85);
 		XSSFChart chart = drawing.createChart(anchor);
-		chart.setTitleText(isFirst ? "Evolución de la adecuación" : "Evolución del cumplimiento estimado");
+		chart.setTitleText(isFirst ? ALLOCATION_EVOLUTION_TITLE : COMPLIANCE_EVOLUTION_TITLE);
 		chart.setTitleOverlay(false);
 		XDDFChartLegend legend = chart.getOrAddLegend();
 		legend.setPosition(LegendPosition.LEFT);
@@ -3123,16 +3583,20 @@ public final class AnnexUtils {
 		XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
 		XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
 		bottomAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+		bottomAxis.getOrAddTextProperties();
 		leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-		bottomAxis.setTickLabelPosition(AxisTickLabelPosition.LOW);
-		bottomAxis.setMajorTickMark(AxisTickMark.NONE);
-		bottomAxis.setPosition(AxisPosition.RIGHT);
+		// category axis crosses the value axis between the strokes and not midpoint the
+		// strokes
+		leftAxis.setCrossBetween(AxisCrossBetween.BETWEEN);
 		CTPlotArea plotArea = chart.getCTChart().getPlotArea();
 		plotArea.getValAxArray()[0].addNewMajorGridlines();
+		plotArea.getValAxArray(0).getScaling().addNewMax().setVal(10);
+		plotArea.getValAxArray(0).getScaling().addNewMin().setVal(0);
 		// Get agency names
 		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(currentSheet.getWorkbook().getSheetAt(0), new CellRangeAddress(1, rowIndex - 1, 1, 1));
 		// Iterate through the executions
 		int i = 0;
+		int iteration = 0;
 		for (String date : executionDates) {
 			if (!onlyLastIteration || (onlyLastIteration && i == (executionDates.size() - 1))) {
 				int firstSerieColumn = numberOfFixedColumns + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
@@ -3141,173 +3605,49 @@ public final class AnnexUtils {
 				XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(currentSheet.getWorkbook().getSheetAt(0),
 						new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 0 : 3), firstSerieColumn + (isFirst ? 0 : 3)));
 				XDDFChartData.Series series1 = data.addSeries(agencies, values1);
-				series1.setTitle((isFirst ? "NV_" : "NC_") + date, null);
-				// Set series color
-				XDDFShapeProperties properties1 = series1.getShapeProperties();
-				if (properties1 == null) {
-					properties1 = new XDDFShapeProperties();
-				}
-				properties1.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED)));
-				series1.setShapeProperties(properties1);
+				series1.setTitle((isFirst ? NV_PREFFIX : NC_PREFFIX) + date, null);
+				solidFillSeries(data, iteration++, PresetColor.RED);
 				// Second serie ("A" / "Parcialmente conforme")
 				FillNullCellInRange(currentSheet.getWorkbook().getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 1 : 4));
 				XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(currentSheet.getWorkbook().getSheetAt(0),
 						new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 1 : 4), firstSerieColumn + (isFirst ? 1 : 4)));
 				XDDFChartData.Series series2 = data.addSeries(agencies, values2);
-				series2.setTitle((isFirst ? "A_" : "PC_") + date, null);
-				// Set series color
-				XDDFShapeProperties properties2 = series2.getShapeProperties();
-				if (properties2 == null) {
-					properties2 = new XDDFShapeProperties();
-				}
-				properties2.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(hex2Rgb("#fee100"))));
-				series2.setShapeProperties(properties2);
+				series2.setTitle((isFirst ? A_PREFFIX : PC_PREFFIX) + date, null);
+				solidFillSeries(data, iteration++, XDDFColor.from(hex2Rgb(YELLOW_OAW_HTML)));
 				// Third serie ("AA" / "Plenamente conforme")
 				FillNullCellInRange(currentSheet.getWorkbook().getSheetAt(0), 1, rowIndex - 1, firstSerieColumn + (isFirst ? 2 : 5));
 				XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(currentSheet.getWorkbook().getSheetAt(0),
 						new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 2 : 5), firstSerieColumn + (isFirst ? 2 : 5)));
 				XDDFChartData.Series series3 = data.addSeries(agencies, values3);
-				series3.setTitle((isFirst ? "AA_" : "TC_") + date, null);
-				// Set series color
-				XDDFShapeProperties properties3 = series3.getShapeProperties();
-				if (properties3 == null) {
-					properties3 = new XDDFShapeProperties();
-				}
-				properties3.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.GREEN)));
-				series3.setShapeProperties(properties3);
+				series3.setTitle((isFirst ? AA_PREFFIX : TC_PREFFIX) + date, null);
+				solidFillSeries(data, iteration++, PresetColor.RED);
 			}
 			i++;
 		}
 		chart.plot(data);
 		XDDFBarChartData bar = (XDDFBarChartData) data;
 		bar.setBarDirection(BarDirection.COL);
+		bar.setBarGrouping(BarGrouping.CLUSTERED);
+		// Rotate labels bottom axis
+		CTTextBody text = chart.getCTChart().getPlotArea().getCatAxArray(0).getTxPr();
+		int rotAngle = 0;
+		int minus45Deg = (int) Math.round(-5400000 / 2d);
+		rotAngle = minus45Deg;
+		text.getBodyPr().setRot(rotAngle);
+		setRoundedCorners(chart, false);
 	}
 
+	/**
+	 * Hex 2 rgb.
+	 *
+	 * @param colorStr the color str
+	 * @return the byte[]
+	 */
 	private static byte[] hex2Rgb(String colorStr) {
 		int r = Integer.valueOf(colorStr.substring(1, 3), 16);
 		int g = Integer.valueOf(colorStr.substring(3, 5), 16);
 		int b = Integer.valueOf(colorStr.substring(5, 7), 16);
-		return new byte[]{(byte) r, (byte) g, (byte) b};
-	}
-
-	/**
-	 * Creates the XLSX annex.
-	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param idOperation      the id operation
-	 * @throws Exception the exception
-	 */
-	public static void createComparativeSuitabilitieXLSX(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
-		/*
-		 * try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, "suitabilities.xlsx")) { final String[] ColumnNames = new String[]{"Grupo",
-		 * "Observatorio", "Parcial", "Prioridad 1", "Prioridad 1 y 2"}; final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
-		 * 
-		 * XSSFWorkbook wb = new XSSFWorkbook(); XSSFSheet sheet = wb.createSheet("Global");
-		 * 
-		 * //create default cell style (aligned top left and allow line wrapping) CellStyle defaultStyle = wb.createCellStyle(); defaultStyle.setWrapText(true);
-		 * defaultStyle.setAlignment(HorizontalAlignment.LEFT); defaultStyle.setVerticalAlignment(VerticalAlignment.TOP);
-		 * 
-		 * int rowIndex = 0; int columnIndex = 0; XSSFRow row; XSSFCell cell;
-		 * 
-		 * Object[][] tableData = { {"Global", "AGE Mayo 2018", 28, 13, 59}, {"Global", "CCAA Mayo 2018", 45, 27, 28}, {"Global", "EELL Mayo 2018", 62, 18, 20}, {"Principales", "AGE Mayo 2018", 0 ,
-		 * 22, 78}, {"Principales", "CCAA Mayo 2018", 21, 26, 53}, {"Principales", "EELL Mayo 2018", 44, 28, 28}, {"Global", "AGE Noviembre 2018", 27, 14, 59}, {"Global", "CCAA Noviembre 2018", 45,
-		 * 25, 30}, {"Global", "EELL Noviembre 2018", 60, 18, 22}, {"Principales", "AGE Noviembre 2018", 14, 9, 77}, {"Principales", "CCAA Noviembre 2018", 32, 26, 42}, {"Principales",
-		 * "EELL Noviembre 2018", 45, 20, 35}, {"Global", "AGE Junio 2019", 25, 11, 64}, {"Global", "CCAA Junio 2019", 38, 30, 32}, {"Global", "EELL Junio 2019", 61, 16, 23}, {"Principales",
-		 * "AGE Junio 2019", 9 , 5, 86}, {"Principales", "CCAA Junio 2019", 25, 30, 45}, {"Principales", "EELL Junio 2019", 47, 16, 37} };
-		 * 
-		 * // Add headers row = sheet.createRow(rowIndex); for (String name : ColumnNames ) { cell = row.createCell(columnIndex); cell.setCellValue(name); columnIndex++; }
-		 * 
-		 * // [TEMPORAL] Add info manually rowIndex=0; for (Object[] dataLine : tableData) { row = sheet.createRow(++rowIndex);
-		 * 
-		 * columnIndex = 0; for (Object field : dataLine) { cell = row.createCell(columnIndex); if (field instanceof String) { cell.setCellValue((String) field); } else if (field instanceof Integer) {
-		 * cell.setCellValue((Integer) field); } columnIndex++; } }
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * // determine the type of the category axis from it's first category value (value in A2 in this case) XDDFDataSource dataSource = null; CellType type = CellType.ERROR; row = sheet.getRow(1);
-		 * if (row != null) { cell = row.getCell(0); if (cell != null) { dataSource = XDDFDataSourcesFactory.fromStringCellRange(sheet, new CellRangeAddress(1, 10, 1, 1)); } } if (dataSource != null)
-		 * { // if no type of category axis found, don't create a chart at all XDDFNumericalDataSource<Double> high = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(1, 10, 2,
-		 * 2)); XDDFNumericalDataSource<Double> medium = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(1, 10, 3, 3)); XDDFNumericalDataSource<Double> low =
-		 * XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(1, 10, 4, 4));
-		 * 
-		 * XSSFDrawing drawing = sheet.createDrawingPatriarch(); XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 6, 0, 16, 20);
-		 * 
-		 * XSSFChart chart = drawing.createChart(anchor); XDDFChartLegend legend = chart.getOrAddLegend(); legend.setPosition(LegendPosition.RIGHT);
-		 * 
-		 * // bar chart
-		 * 
-		 * XDDFCategoryAxis bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM); XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT); leftAxis.setTitle("Number of defects");
-		 * leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
-		 * 
-		 * // category axis crosses the value axis between the strokes and not midpoint the strokes leftAxis.setCrossBetween(AxisCrossBetween.BETWEEN);
-		 * 
-		 * XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis); XDDFChartData.Series series1 = data.addSeries(dataSource, high); series1.setTitle("Parcial", new
-		 * CellReference(sheet.getSheetName(), 0, 2, true, true)); XDDFChartData.Series series2 = data.addSeries(dataSource, medium); series2.setTitle("Prioridad 1", new
-		 * CellReference(sheet.getSheetName(), 0, 3, true, true)); XDDFChartData.Series series3 = data.addSeries(dataSource, low); series3.setTitle("Prioridad 1 y 2", new
-		 * CellReference(sheet.getSheetName(), 0, 4, true, true)); chart.plot(data);
-		 * 
-		 * XDDFBarChartData bar = (XDDFBarChartData) data; bar.setBarDirection(BarDirection.COL);
-		 * 
-		 * // looking for "Stacked Bar Chart"? uncomment the following line bar.setBarGrouping(BarGrouping.STACKED);
-		 * 
-		 * // correcting the overlap so bars really are stacked and not side by side chart.getCTChart().getPlotArea().getBarChartArray(0).addNewOverlap().setVal((byte)100);
-		 * 
-		 * solidFillSeries(data, 0, PresetColor.ORANGE); solidFillSeries(data, 1, PresetColor.YELLOW); solidFillSeries(data, 2, PresetColor.GREEN);
-		 * 
-		 * // add data labels for (int s = 0 ; s < 3; s++) { chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).addNewDLbls(); //
-		 * chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls() // .addNewDLblPos().setVal(org.openxmlformats.schemas.drawingml.x2006.chart.STDLblPos.CTR);
-		 * chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewShowVal().setVal(true);
-		 * chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewShowLegendKey().setVal(false);
-		 * chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewShowCatName().setVal(false);
-		 * chart.getCTChart().getPlotArea().getBarChartArray(0).getSerArray(s).getDLbls().addNewShowSerName().setVal(false); }
-		 * 
-		 * // line chart
-		 * 
-		 * // axis must be there but must not be visible bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM); bottomAxis.setVisible(false); leftAxis = chart.createValueAxis(AxisPosition.LEFT);
-		 * leftAxis.setVisible(false);
-		 * 
-		 * // set correct cross axis bottomAxis.crossAxis(leftAxis); leftAxis.crossAxis(bottomAxis);
-		 * 
-		 * data = chart.createData(ChartTypes.LINE, bottomAxis, leftAxis);
-		 * 
-		 * chart.plot(data); }
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * XSSFFormulaEvaluator.evaluateAllFormulaCells(wb); wb.write(writer); wb.close(); } catch (Exception e) { Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e); throw e; }
-		 */
+		return new byte[] { (byte) r, (byte) g, (byte) b };
 	}
 
 	/**
@@ -3328,23 +3668,14 @@ public final class AnnexUtils {
 		series.setShapeProperties(properties);
 	}
 
-	/**
-	 * Solid line series.
-	 *
-	 * @param data  the data
-	 * @param index the index
-	 * @param color the color
-	 */
-	private static void solidLineSeries(XDDFChartData data, int index, PresetColor color) {
-		XDDFSolidFillProperties fill = new XDDFSolidFillProperties(XDDFColor.from(color));
-		XDDFLineProperties line = new XDDFLineProperties();
-		line.setFillProperties(fill);
+	private static void solidFillSeries(XDDFChartData data, int index, XDDFColor color) {
+		XDDFSolidFillProperties fill = new XDDFSolidFillProperties(color);
 		XDDFChartData.Series series = data.getSeries().get(index);
 		XDDFShapeProperties properties = series.getShapeProperties();
 		if (properties == null) {
 			properties = new XDDFShapeProperties();
 		}
-		properties.setLineProperties(line);
+		properties.setFillProperties(fill);
 		series.setShapeProperties(properties);
 	}
 
@@ -3358,7 +3689,7 @@ public final class AnnexUtils {
 	 */
 	private static FileWriter getFileWriter(final Long idOperation, final String filename) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
-		final File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + filename);
+		final File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_ANNEX_PATH) + idOperation + File.separator + filename);
 		if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
 			Logger.putLog("No se ha podido crear los directorios al exportar los anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		}
@@ -3375,7 +3706,7 @@ public final class AnnexUtils {
 	 */
 	private static FileOutputStream getFileOutputStream(final Long idOperation, final String filename) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
-		final File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + filename);
+		final File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_ANNEX_PATH) + idOperation + File.separator + filename);
 		if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
 			Logger.putLog("No se ha podido crear los directorios al exportar los anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		}
@@ -3389,6 +3720,7 @@ public final class AnnexUtils {
 	 * @return the content handler
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings("restriction")
 	private static ContentHandler getContentHandler(final FileWriter writer) throws IOException {
 		final XMLSerializer serializer = new XMLSerializer(writer, new OutputFormat("XML", "UTF-8", true));
 		return serializer.asContentHandler();
@@ -3418,7 +3750,8 @@ public final class AnnexUtils {
 	 * @param exObsIds       the ex obs ids
 	 * @return the map
 	 */
-	private static Map<Long, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] tagsToFilter, final String[] exObsIds) {
+	private static Map<SemillaForm, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] tagsToFilter, final String[] exObsIds) {
+		final Map<SemillaForm, TreeMap<String, ScoreForm>> seedMapFilled = new HashMap<>();
 		final Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
 		Connection c = null;
 		try {
@@ -3448,7 +3781,6 @@ public final class AnnexUtils {
 						seedInfo.put(observatory.getDate(), scoreForm);
 						seedMap.put(Long.valueOf(siteForm.getIdCrawlerSeed()), seedInfo);
 						scoreForm.setCompliance(siteForm.getCompliance());
-						// scoreForm.setVerificationScoreList(siteForm.getVerificationScoreList());
 						List<VerificationScoreForm> verificationScoreList = new LinkedList<>();
 						for (VerificationScoreForm verification : siteForm.getVerificationScoreList()) {
 							VerificationScoreForm vsf = new VerificationScoreForm();
@@ -3458,8 +3790,8 @@ public final class AnnexUtils {
 						Collections.sort(verificationScoreList, new Comparator<VerificationScoreForm>() {
 							@Override
 							public int compare(VerificationScoreForm version1, VerificationScoreForm version2) {
-								String[] v1 = version1.getVerification().split("\\.");
-								String[] v2 = version2.getVerification().split("\\.");
+								String[] v1 = version1.getVerification().split(REGEX_DOT);
+								String[] v2 = version2.getVerification().split(REGEX_DOT);
 								int major1 = major(v1);
 								int major2 = major(v2);
 								if (major1 == major2) {
@@ -3480,6 +3812,11 @@ public final class AnnexUtils {
 					}
 				}
 			}
+			// Retrive seed form to prevent extra database querys in other methods
+			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : seedMap.entrySet()) {
+				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+				seedMapFilled.put(semillaForm, semillaEntry.getValue());
+			}
 		} catch (Exception e) {
 			Logger.putLog("Error al recuperar las semillas del Observatorio al crear el anexo", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		} finally {
@@ -3489,7 +3826,7 @@ public final class AnnexUtils {
 				Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			}
 		}
-		return seedMap;
+		return seedMapFilled;
 	}
 
 	/**
@@ -3910,6 +4247,121 @@ public final class AnnexUtils {
 		 */
 		public void setCompliance(String compliance) {
 			this.compliance = compliance;
+		}
+	}
+
+	/**
+	 * The Class SummaryEvolution.
+	 */
+	public static class SummaryEvolution {
+		/** The number much worse. */
+		private int numberMuchWorse = 0;
+		/** The number worse. */
+		private int numberWorse = 0;
+		/** The number stable. */
+		private int numberStable = 0;
+		/** The number better. */
+		private int numberBetter = 0;
+		/** The number much better. */
+		private int numberMuchBetter = 0;
+
+		/**
+		 * Total.
+		 *
+		 * @return the int
+		 */
+		public int total() {
+			return this.numberBetter + this.numberMuchBetter + this.numberMuchWorse + this.numberStable + this.numberWorse;
+		}
+
+		/**
+		 * Gets the number much worse.
+		 *
+		 * @return the numberMuchWorse
+		 */
+		public int getNumberMuchWorse() {
+			return numberMuchWorse;
+		}
+
+		/**
+		 * Sets the number much worse.
+		 *
+		 * @param numberMuchWorse the numberMuchWorse to set
+		 */
+		public void setNumberMuchWorse(int numberMuchWorse) {
+			this.numberMuchWorse = numberMuchWorse;
+		}
+
+		/**
+		 * Gets the number worse.
+		 *
+		 * @return the numberWorse
+		 */
+		public int getNumberWorse() {
+			return numberWorse;
+		}
+
+		/**
+		 * Sets the number worse.
+		 *
+		 * @param numberWorse the numberWorse to set
+		 */
+		public void setNumberWorse(int numberWorse) {
+			this.numberWorse = numberWorse;
+		}
+
+		/**
+		 * Gets the number stable.
+		 *
+		 * @return the numberStable
+		 */
+		public int getNumberStable() {
+			return numberStable;
+		}
+
+		/**
+		 * Sets the number stable.
+		 *
+		 * @param numberStable the numberStable to set
+		 */
+		public void setNumberStable(int numberStable) {
+			this.numberStable = numberStable;
+		}
+
+		/**
+		 * Gets the number better.
+		 *
+		 * @return the numberBetter
+		 */
+		public int getNumberBetter() {
+			return numberBetter;
+		}
+
+		/**
+		 * Sets the number better.
+		 *
+		 * @param numberBetter the numberBetter to set
+		 */
+		public void setNumberBetter(int numberBetter) {
+			this.numberBetter = numberBetter;
+		}
+
+		/**
+		 * Gets the number much better.
+		 *
+		 * @return the numberMuchBetter
+		 */
+		public int getNumberMuchBetter() {
+			return numberMuchBetter;
+		}
+
+		/**
+		 * Sets the number much better.
+		 *
+		 * @param numberMuchBetter the numberMuchBetter to set
+		 */
+		public void setNumberMuchBetter(int numberMuchBetter) {
+			this.numberMuchBetter = numberMuchBetter;
 		}
 	}
 }
