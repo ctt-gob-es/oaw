@@ -38,6 +38,28 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		$('.select_previous').each(function(index) {
 			loadOptions(idObs, $(this).attr("data-tag"), this);
 		});
+
+		var $jq = $.noConflict();
+		$jq(document).ready(function() {			
+			$.ajax({
+				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
+				method : 'POST',
+				cache : false
+			}).success(function(response) {
+
+				$('#tagsFilterFixed').tagbox({
+					items : response.etiquetas,
+					searchIn : [ 'name' ],
+					rowFormat : '<span class="name">{{name}}</span>',
+					tokenFormat : '{{name}}',
+					valueField : 'id',
+					itemClass : 'user'
+				});
+
+			});
+
+		});
+
 	});
 
 	function formatDate(date) {
@@ -142,30 +164,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<bean:message key="report.config.etiquetas.filter.info" />
 					</p>
 				</fieldset>
-				<fieldset>
-					<legend>
-						<bean:message key="report.config.observatorios.filter.title" />
-					</legend>
-					<div class="formItem">
-						<logic:iterate name="<%=Constants.FULFILLED_OBSERVATORIES%>" id="fulfilledObservatory">
-							<c:if test="${fulfilledObservatory.id == param.idExObs}">
-								<label class="label100">
-									<input type="checkbox" checked value="<c:out value="${fulfilledObservatory.id}" />" name="evol">
-									<bean:write name="fulfilledObservatory" property="fechaStr" />
-									(
-									<bean:message key="current" />
-									)
-								</label>
-							</c:if>
-							<c:if test="${fulfilledObservatory.id != param.idExObs}">
-								<label class="label100">
-									<input type="checkbox" value="<c:out value="${fulfilledObservatory.id}" />" name="evol">
-									<bean:write name="fulfilledObservatory" property="fechaStr" />
-								</label>
-							</c:if>
-						</logic:iterate>
-					</div>
-				</fieldset>
 				<logic:iterate name="tagList" id="tag">
 					<fieldset id="fieldset_<c:out value="${tag.id}" />" style="display: none;">
 						<legend>
@@ -192,6 +190,48 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</div>
 					</fieldset>
 				</logic:iterate>
+				<fieldset>
+					<legend>
+						<bean:message key="report.config.observatorios.filter.title" />
+					</legend>
+					<div class="formItem">
+						<logic:iterate name="<%=Constants.FULFILLED_OBSERVATORIES%>" id="fulfilledObservatory">
+							<c:if test="${fulfilledObservatory.id == param.idExObs}">
+								<label class="label100">
+									<input type="checkbox" checked value="<c:out value="${fulfilledObservatory.id}" />" name="evol">
+									<bean:write name="fulfilledObservatory" property="fechaStr" />
+									(
+									<bean:message key="current" />
+									)
+								</label>
+							</c:if>
+							<c:if test="${fulfilledObservatory.id != param.idExObs}">
+								<label class="label100">
+									<input type="checkbox" value="<c:out value="${fulfilledObservatory.id}" />" name="evol">
+									<bean:write name="fulfilledObservatory" property="fechaStr" />
+								</label>
+							</c:if>
+						</logic:iterate>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend>
+						<bean:message key="report.config.tags.fixed.title" />
+					</legend>
+					<div class="formItem">
+						<label for="url" class="control-label">
+							<strong class="labelVisu">
+								<bean:message key="report.config.tags.title" />
+							</strong>
+						</label>
+						<input name="tagsFixed" autocapitalize="off" placeholder="<bean:message key="placeholder.tags" />" autofocus
+							id="tagsFilterFixed" type="text" value="" />
+					</div>
+					<p class="alert alert-info">
+						<span class="glyphicon glyphicon-info-sign"></span>
+						<bean:message key="report.config.tags.fixed.filter.info" />
+					</p>
+				</fieldset>
 				<fieldset>
 					<p>
 						<strong class="labelVisu">
