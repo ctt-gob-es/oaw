@@ -3471,7 +3471,7 @@ public final class AnnexUtils {
 			series3.setTitle(isFirst ? ALLOCATION_AA_LITERAL : COMPLIANCE_TOTAL_LITERAL, null);
 			chart.plot(data);
 			solidFillSeries(data, 0, PresetColor.RED);
-			solidFillSeries(data, 1, PresetColor.YELLOW);
+			solidFillSeries(data, 1, XDDFColor.from(hex2Rgb(YELLOW_OAW_HTML)));
 			solidFillSeries(data, 2, PresetColor.GREEN);
 			XDDFBarChartData bar = (XDDFBarChartData) data;
 			bar.setBarDirection(BarDirection.COL);
@@ -3538,7 +3538,7 @@ public final class AnnexUtils {
 					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 1 : 4), firstSerieColumn + (isFirst ? 1 : 4)));
 			XDDFChartData.Series series2 = data.addSeries(agencies, values2);
 			series2.setTitle((isFirst ? A_PREFFIX : PC_PREFFIX) + date, null);
-			solidFillSeries(data, iteration++, PresetColor.YELLOW);
+			solidFillSeries(data, iteration++, XDDFColor.from(hex2Rgb(YELLOW_OAW_HTML)));
 			// Third serie ("AA" / "Plenamente conforme")
 			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 2 : 5));
 			XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
