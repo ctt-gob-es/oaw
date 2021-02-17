@@ -78,7 +78,7 @@ angular.module('wcagReporter')
 
         $http.get($scope.exportJsonUrl, {}).then(function onSuccess(response) {
           $http({
-            //            url: 'http://localhost:9001/ods',
+                       //url: 'http://localhost:9001/ods',
             url: $location.protocol() + "://" + $location.host() + ':' + $location.port() + "/ods",
             method: "POST",
             data: response,
