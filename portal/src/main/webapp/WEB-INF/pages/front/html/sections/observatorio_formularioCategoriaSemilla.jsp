@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologï¿½as de la Comunicaciï¿½n, 
 This program is licensed and may be used, modified and redistributed under the terms
 of the European Public License (EUPL), either version 1.2 or (at your option) any later 
 version as soon as they are approved by the European Commission.
@@ -274,10 +274,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<bean:message key="categoria.semillas.fichero.info">
 					<jsp:attribute name="arg0">
                             <a href="../xml/seeds.xml"
-							title="<bean:message key="categoria.semillas.fichero.ejemplo.title"/>" download>
-							<bean:message key="categoria.semillas.fichero.ejemplo" />
-						</a>
-                        </jsp:attribute>
+							title="<bean:message key="categoria.semillas.fichero.ejemplo.title"/>" download><bean:message
+								key="categoria.semillas.fichero.ejemplo" /></a>
+                    </jsp:attribute>
+					<jsp:attribute name="arg1">
+                            <a href="../xlsx/seeds.xlsx"
+							title="<bean:message key="categoria.semillas.fichero.ejemplo.title"/>" download><bean:message
+								key="categoria.semillas.fichero.ejemplo" /></a>
+                    </jsp:attribute>
 				</bean:message>
 			</p>
 			<p>
