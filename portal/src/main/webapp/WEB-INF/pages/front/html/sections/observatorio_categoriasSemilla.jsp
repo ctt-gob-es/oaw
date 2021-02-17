@@ -108,17 +108,21 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</span>
 									</td>
 									<td>
-										<html:link forward="getCategorySeedsFile" paramId="<%=Constants.ID_CATEGORIA%>" paramName="category"
+										<html:link forward="getCategorySeedsFileXml" paramId="<%=Constants.ID_CATEGORIA%>" paramName="category"
 											paramProperty="id">
 											<span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip"
 												title='<bean:message key="indice.categorias.download.xml"/>' />
-											<span class="sr-only">Descargar</span>
+											<span class="sr-only">
+												<bean:message key='colname.download' />
+											</span>
 										</html:link>
 										<html:link forward="getCategorySeedsFileXlsx" paramId="<%=Constants.ID_CATEGORIA%>" paramName="category"
 											paramProperty="id">
-											<span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip"
+											<span class="glyphicon glyphicon-save-file" aria-hidden="true" data-toggle="tooltip"
 												title='<bean:message key="indice.categorias.download.xlsx"/>' />
-											<span class="sr-only">Descargar</span>
+											<span class="sr-only">
+												<bean:message key='colname.download' />
+											</span>
 										</html:link>
 									</td>
 									<td>
