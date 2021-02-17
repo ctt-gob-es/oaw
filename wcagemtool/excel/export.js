@@ -403,6 +403,9 @@ app.post('/ods', function (request, response) {
                 var titleElm = doc.createElement("text:p");
                 var text = doc.createTextNode(webpages[i].title);
                 titleElm.appendChild(text);
+                select(`//office:spreadsheet/table:table[@table:name='03.Muestra']/table:table-row[${row}]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
+
+
                 //Page type
                 var pageTypeOption = "";
                 switch (webpages[i].pageType) {
@@ -424,27 +427,25 @@ app.post('/ods', function (request, response) {
                 var pageTypeElm = doc.createElement("text:p");
                 var pageTypeText = doc.createTextNode(pageTypeOption);
                 pageTypeElm.appendChild(pageTypeText);
+                select(`//office:spreadsheet/table:table[@table:name='03.Muestra']/table:table-row[${row}]/table:table-cell[4]`, doc)[0].appendChild(pageTypeElm);
 
 
                 //Page URL
                 var urlElm = doc.createElement("text:p");
                 var url = doc.createTextNode(webpages[i].source ? webpages[i].source : (webpages[i].description?webpages[i].description:""));
                 urlElm.appendChild(url);
+                select(`//office:spreadsheet/table:table[@table:name='03.Muestra']/table:table-row[${row}]/table:table-cell[5]`, doc)[0].appendChild(urlElm);
 
                 //breadcrumb
                 var breadcrumbElm = doc.createElement("text:p");
                 var breadcrumbUrl = doc.createTextNode(webpages[i].breadcrumb ? webpages[i].breadcrumb : "");
                 breadcrumbElm.appendChild(breadcrumbUrl);
+                select(`//office:spreadsheet/table:table[@table:name='03.Muestra']/table:table-row[${row}]/table:table-cell[6]`, doc)[0].appendChild(breadcrumbElm);
 
                 //elements
                 var elementsElm = doc.createElement("text:p");
                 var elementsText = doc.createTextNode(webpages[i].elements ? webpages[i].elements : "");
                 elementsElm.appendChild(elementsText);
-
-                select(`//office:spreadsheet/table:table[@table:name='03.Muestra']/table:table-row[${row}]/table:table-cell[3]`, doc)[0].appendChild(titleElm);
-                select(`//office:spreadsheet/table:table[@table:name='03.Muestra']/table:table-row[${row}]/table:table-cell[4]`, doc)[0].appendChild(pageTypeElm);
-                select(`//office:spreadsheet/table:table[@table:name='03.Muestra']/table:table-row[${row}]/table:table-cell[5]`, doc)[0].appendChild(urlElm);
-                select(`//office:spreadsheet/table:table[@table:name='03.Muestra']/table:table-row[${row}]/table:table-cell[6]`, doc)[0].appendChild(breadcrumbElm);
                 select(`//office:spreadsheet/table:table[@table:name='03.Muestra']/table:table-row[${row}]/table:table-cell[7]`, doc)[0].appendChild(elementsElm);
                 row++;
             }
