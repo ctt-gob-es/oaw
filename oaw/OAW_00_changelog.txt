@@ -10,10 +10,12 @@
   la anterior está deprecada y será retirada en algún momento
 - Generación de excels de adeucación y cumplimiento con y sin evolutivo junto con los anexos
 - Generación de excels de adeucación y cumplimiento con y sin evolutivo junto con los anexos por dependencia
-- Modificatos xml de anexos para incluir más información
+- Modificados xml de anexos para incluir más información
 - Generación de xml anexo-portales-verificaciones.xml
 - Generación de xml anexo-paginas-verificaciones.xml
+- Generación de varios XLSX en los anexos de resumen y estadísticas del observatorio
 - Adjuntado el código fuente de la página de accesibilidad en el cartucho de accesibilidad
+- Exportación/importación de semillas en xlsx 
 
 5.1.0
 ------------------------------------------------------------------------------------------------------------------------------------
