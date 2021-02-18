@@ -41,6 +41,7 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.job.CrawledLink;
+import es.inteco.intav.dao.TAnalisisAccesibilidadDAO;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.plugin.dao.DataBaseManager;
@@ -221,6 +222,13 @@ public class BasicServiceManager {
 					sourceFilesManager.writeSourceFilesContent(DataBaseManager.getConnection(), analysisIdsByTracking, basicServiceForm.getFileName());
 					sourceFilesManager.zipSourcesContent(true);
 				} else {
+					if (Constants.REPORT_OBSERVATORY_5.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_5_NOBROKEN.equals(basicServiceForm.getReport())) {
+						// TODO Add accesibility page if exists
+						String codFuente = TAnalisisAccesibilidadDAO.getSourceCode(DataBaseManager.getConnection(), idCrawling);
+						if (!org.apache.commons.lang3.StringUtils.isEmpty(codFuente)) {
+							sourceFilesManager.writeSourceFilesAccessibility(DataBaseManager.getConnection(), codFuente);
+						}
+					}
 					sourceFilesManager.writeSourceFiles(DataBaseManager.getConnection(), analysisIdsByTracking);
 					sourceFilesManager.zipSources(true);
 				}
