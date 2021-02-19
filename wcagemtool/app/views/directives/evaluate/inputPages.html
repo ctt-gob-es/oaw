@@ -13,18 +13,30 @@
     </div>
     <div ng-class="col2">
       {{ 'SAMPLE.LABEL_TYPE' | translate}}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
-      target="inf_page_type" title="{{ 'SAMPLE.HD_STRUCT_SAMPLE_SUB' | translate }}"></info-button>
+        target="{{ 'inf_page_type_' + suffix }}" title="{{ 'SAMPLE.HD_STRUCT_SAMPLE_SUB' | translate }}"></info-button>
     </div>
     <div ng-class="col3">
       {{ 'SAMPLE.LABEL_PAGE' | translate}}&nbsp;*
     </div>
     <div ng-class="col4">
       {{ 'SAMPLE.LABEL_BREADCRUMB' | translate}}&nbsp;*&nbsp;<info-button label="{{'COMMON.BTN_INFO' | translate}}"
-      target="inf_page_breadcrumb" title="{{ 'SAMPLE.HD_STRUCT_SAMPLE_SUB' | translate }}"></info-button>
+        target="{{ 'inf_page_breadcrumb_' + suffix }}" title="{{ 'SAMPLE.HD_STRUCT_SAMPLE_SUB' | translate }}"></info-button>
     </div>
     <div ng-class="col5">
       {{ 'SAMPLE.LABEL_ELEMENTS' | translate}}</div>
   </header>
+  
+
+  
+  
+  <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" ref="{{ 'inf_page_type_' + suffix }}">
+    <p ng-bind-html="'SAMPLE.PAGE_TYPE_INFO' | translate"></p>
+  </info-field>
+
+  <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" ref="{{ 'inf_page_breadcrumb_' + suffix }}">
+    <p ng-bind-html="'SAMPLE.PAGE_BREADCRUMB_INFO_1' | translate"></p>
+    <p ng-bind-html="'SAMPLE.PAGE_BREADCRUMB_INFO_2' | translate"></p>
+  </info-field>
 
   <p ng-if="pages.length === 0" class="appear no-selection alert alert-info"><em>
       {{ 'SAMPLE.NO_PAGES_DEFINED' | translate}}
@@ -32,14 +44,7 @@
 
   <fieldset class="row form-group-inline appear" ng-repeat="page in pages">
 
-    <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" ref="inf_page_type">
-      <p ng-bind-html="'SAMPLE.PAGE_TYPE_INFO' | translate"></p>
-    </info-field>
 
-    <info-field button="{{'COMMON.BTN_CLOSE_INFO' | translate}}" ref="inf_page_breadcrumb">
-      <p ng-bind-html="'SAMPLE.PAGE_BREADCRUMB_INFO_1' | translate"></p>
-      <p ng-bind-html="'SAMPLE.PAGE_BREADCRUMB_INFO_2' | translate"></p>
-    </info-field>
 
     <legend ng-class="col0">
       {{ 'SAMPLE.ITEM' | translate }} {{$index+1}}
@@ -50,20 +55,22 @@
       {{ 'SAMPLE.LABEL_PAGE' | translate }}:
     </label>
     <div ng-class="col1">
-      <input type="text" ng-class="!isValid(page.title) ? 'form-control invalid' : 'form-control'" id="struct_{{$index}}_{{$id}}" ng-model="page.title"
-        shy-placeholder="'SAMPLE.PLH_TITLE' | translate" ng-required="true">
+      <input type="text" ng-class="!isValid(page.title) ? 'form-control invalid' : 'form-control'"
+        id="struct_{{$index}}_{{$id}}" ng-model="page.title" shy-placeholder="'SAMPLE.PLH_TITLE' | translate"
+        ng-required="true">
       <div class="invalid-feedback" ng-if="!isValid(page.title)">
         {{'SAMPLE.REQUIRED_FIELD' | translate}}
       </div>
     </div>
 
     <label ng-class="colHide" for="struct_{{$index}}_{{$id}}">
-      {{ 'SAMPLE.LABEL_TYPE' | translate }}: 
+      {{ 'SAMPLE.LABEL_TYPE' | translate }}:
     </label>
 
 
     <div ng-class="col2">
-      <select name="pageType" id="pageType" ng-model="page.pageType" ng-class="!isValid(page.pageType) ? 'form-control invalid' : 'form-control'" ng-required="true">
+      <select name="pageType" id="pageType" ng-model="page.pageType"
+        ng-class="!isValid(page.pageType) ? 'form-control invalid' : 'form-control'" ng-required="true">
         <option value=""></option> <!-- not selected / blank option -->
         <option value="PAGE_TYPE_1">{{'SAMPLE.PAGE_TYPE_1' | translate}}</option>
         <option value="PAGE_TYPE_2">{{'SAMPLE.PAGE_TYPE_2' | translate}}</option>
@@ -91,12 +98,12 @@
       {{'SAMPLE.LABEL_HANDLE' | translate}}:
     </label>
     <div ng-class="col3">
-      <input type="text" ng-class="!isValid(page.description) ? 'form-control invalid' : 'form-control'" id="rand_page_desc_{{$index}}_{{$id}}"
-        ng-model="page.description" ng-blur="processPage(page)" shy-placeholder="'SAMPLE.PLH_PAGE_URL' | translate"
-        ng-required="true">
-        <div class="invalid-feedback" ng-if="!isValid(page.description)">
-          {{'SAMPLE.REQUIRED_FIELD' | translate}}
-        </div>
+      <input type="text" ng-class="!isValid(page.description) ? 'form-control invalid' : 'form-control'"
+        id="rand_page_desc_{{$index}}_{{$id}}" ng-model="page.description" ng-blur="processPage(page)"
+        shy-placeholder="'SAMPLE.PLH_PAGE_URL' | translate" ng-required="true">
+      <div class="invalid-feedback" ng-if="!isValid(page.description)">
+        {{'SAMPLE.REQUIRED_FIELD' | translate}}
+      </div>
     </div>
 
     <label ng-class="colHide" for="rand_page_desc_{{$index}}_{{$id}}">
@@ -105,12 +112,12 @@
 
 
     <div ng-class="col4">
-      <input type="text" ng-class="!isValid(page.breadcrumb) ? 'form-control invalid' : 'form-control'" id="rand_page_desc_{{$index}}_{{$id}}" ng-model="page.breadcrumb"
-         ng-blur="processPage(page)" shy-placeholder="'SAMPLE.PLH_BREADCRUMB' | translate"
-        ng-required="true">
-        <div class="invalid-feedback" ng-if="!isValid(page.breadcrumb)">
-          {{'SAMPLE.REQUIRED_FIELD' | translate}}
-        </div>
+      <input type="text" ng-class="!isValid(page.breadcrumb) ? 'form-control invalid' : 'form-control'"
+        id="rand_page_desc_{{$index}}_{{$id}}" ng-model="page.breadcrumb" ng-blur="processPage(page)"
+        shy-placeholder="'SAMPLE.PLH_BREADCRUMB' | translate" ng-required="true">
+      <div class="invalid-feedback" ng-if="!isValid(page.breadcrumb)">
+        {{'SAMPLE.REQUIRED_FIELD' | translate}}
+      </div>
     </div>
 
     <label ng-class="colHide" for="rand_page_desc_{{$index}}_{{$id}}">

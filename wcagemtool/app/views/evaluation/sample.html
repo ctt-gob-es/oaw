@@ -48,34 +48,33 @@
     }"></p>
     </info-field>
 
-    <input-pages pages="structuredSample.webpage" add-page="getPageAdder(structuredSample)"
-      remove-page="getPageRemover(structuredSample)" update-page="getPageUpdater(structuredSample,randomSample)""
-  ></input-pages>
+    <input-pages pages="structuredSample.webpage" add-page="getPageAdder(structuredSample)" suffix="'struct'"
+      remove-page="getPageRemover(structuredSample)" update-page="getPageUpdater(structuredSample,randomSample)">
+    </input-pages>
 
-  <h2>
-    {{'SAMPLE.HD_RANDOM_SAMPLE' | translate }}&nbsp;<info-button
-    label=" {{'COMMON.BTN_INFO' | translate}}" target="inf_rand_sample"
-      title="{{ 'SAMPLE.HD_RANDOM_SAMPLE' | translate }}">
+    <h2>
+      {{'SAMPLE.HD_RANDOM_SAMPLE' | translate }}&nbsp;<info-button label=" {{'COMMON.BTN_INFO' | translate}}"
+        target="inf_rand_sample" title="{{ 'SAMPLE.HD_RANDOM_SAMPLE' | translate }}">
       </info-button>
-      </h2>
+    </h2>
 
-      <info-field ref="inf_rand_sample" button="{{'COMMON.BTN_CLOSE_INFO' | translate}}">
-        <p ng-bind-html="'SAMPLE.INF_RAND_SAMPLE' | translate: {
+    <info-field ref="inf_rand_sample" button="{{'COMMON.BTN_CLOSE_INFO' | translate}}">
+      <p ng-bind-html="'SAMPLE.INF_RAND_SAMPLE' | translate: {
       link_em_3b: 'http://www.w3.org/TR/WCAG-EM/#step3b',
       link_em_state: 'http://www.w3.org/TR/WCAG-EM/#states'
     }"></p>
-      </info-field>
+    </info-field>
 
-      <div class="alert alert-warning" ng-bind-html="
+    <div class="alert alert-warning" ng-bind-html="
      'SAMPLE.RAND_SAMPLE_LENGTH' | translate: {
       total: structuredSample.webpage.length,
       count: randPageCount()}
     ">
-      </div>
+    </div>
 
-      <input-pages pages="randomSample.webpage" add-page="getPageAdder(randomSample)"
-        remove-page="getPageRemover(randomSample)" update-page="getPageUpdater(randomSample,structuredSample)">
-      </input-pages>
+    <input-pages pages="randomSample.webpage" add-page="getPageAdder(randomSample)" suffix="'rand'"
+      remove-page="getPageRemover(randomSample)" update-page="getPageUpdater(randomSample,structuredSample)">
+    </input-pages>
 
   </form>
 

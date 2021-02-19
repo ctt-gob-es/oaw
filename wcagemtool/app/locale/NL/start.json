@@ -1,5 +1,5 @@
 {
-    "TITLE": "WCAG-EM Report Tool",
+    "TITLE": "AER Tool (Accessibility Evaluation Report)",
     "SUBTITLE": "Website Toegankelijkheid Evaluatie Rapport Generator",
     "INTRO_HD": "Wat de tool doet",
     "INTRO_1": "Deze tool helpt u bij het maken van rapporten volgens de <a href={{link_wcagem}}>Website Accessibility Conformance Evaluation Methodology (WCAG-EM)</a>. Het voert geen toegankelijkheidstests voor u uit. Het begeleidt je door de stappen van WCAG-EM, om een <a href={{link_report}}>gestructureerd rapport</a> te genereren op basis van de gegevens die u invult. De tool is ontworpen voor ervaren inspecteurs bekend met <a href={{link_wcag}}>Richtlijnen voor Toegankelijkheid van Webcontent (WCAG) 2.0</a> en met enige kennis van WCAG-EM. U kunt een WCAG-EM introductie vinden in het <a href={{link_conformance}}>WCAG-EM Overzicht</a>.",
