@@ -8,7 +8,8 @@ angular.module('wcagReporter')
         pages: '=',
         addPage: '&',
         removePage: '&',
-        updatePage: '&',
+        updatePage: '&', 
+        suffix:'='
       },
       link: function (scope) {
         var addPageFunc = scope.addPage();
