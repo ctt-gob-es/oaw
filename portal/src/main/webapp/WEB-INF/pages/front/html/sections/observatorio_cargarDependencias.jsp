@@ -14,15 +14,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml />
 <html:javascript formName="DependenciaForm" />
-
 <!--  JQ GRID   -->
 <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
-
 <link rel="stylesheet" href="/oaw/css/jqgrid.semillas.css">
-
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<link rel="stylesheet"
-	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/oaw/js/jqgrid/jquery.jqgrid.src.js"></script>
@@ -32,17 +28,15 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	script.src = '/oaw/js/jqgrid/i18n/grid.locale-'+lang.substring(0,2)+'.js';
 	document.head.appendChild(script);
 </script>
-
-
-
 <!--  JQ GRID   -->
 <script>
 
 var colNameOldName = '<bean:message key="colname.oldname"/>';
 var colNameId = '<bean:message key="colname.id"/>';
-
+var colNameTags = '<bean:message key="colname.etiqeutas"/>';
 var colNameName = '<bean:message key="colname.name"/>';
 var colNameRemove = '<bean:message key="colname.remove"/>';
+var colNameScope = '<bean:message key="colname.scope"/>';
 
 
 	var scroll;
@@ -76,7 +70,7 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 											{
 												editUrl : '/oaw/secure/ViewDependenciasObservatorio.do?action=update',
 												colNames : [ colNameId, colNameName,
-													colNameOldName,
+													colNameOldName,colNameScope, colNameTags, "Emails", "Auto", "Official",
 													colNameRemove ],
 												colModel : [
 														{
@@ -87,7 +81,7 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 
 														{
 															name : "name",
-															width : 60,
+															width : 30,
 															editrules : {
 																required : true
 															},
@@ -100,10 +94,108 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 															hidden : true,
 															sortable : false
 														},
+														{														
+															name : "ambitoaux",
+															width : 15,
+															edittype : "select",
+															align : "center",
+															editoptions : {
+
+																dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
+																buildSelect : function(
+																		data) {
+
+																	var response = jQuery
+																			.parseJSON(data);
+																	var s = '<select><option value=""></option>';
+
+																	if (response
+																			&& response.length) {
+																		for (var i = 0, l = response.length; i < l; i++) {
+																			var ri = response[i];
+																			s += '<option class="dependenciaOption" value="'
+																					+ ri.id
+																					+ '">'
+																					+ ri.name
+																					+ '</option>';
+																		}
+																	}
+
+																	return s
+																			+ "</select>";
+																}
+
+															},
+															// editrules : {
+															// required : true
+															// },
+															formatter : ambitoFormatter,
+															sortable : false
+
+														},
+														{
+															name : "etiquetasSeleccionadas",
+															cellattr : function(
+																	rowId, val,
+																	rawObject, cm,
+																	rdata) {
+																return 'title="'
+																		+ titleEtiquetasFormatter(
+																				val,
+																				null,
+																				rawObject)
+																		+ '"';
+															},
+															align : "left",
+															width : 25,
+															edittype : 'custom',
+															sortable : false,
+															editoptions : {
+																custom_element : tagEdit,
+																custom_value : tagEditValue
+															},
+															editrules : {
+																required : false
+															},
+															formatter : etiquetasFormatter,
+															sortable : false
+														},
+														{
+															name : "emails",
+															width : 30,
+															editrules : {
+																required : true
+															},
+															sortable : false,
+															align : "left", 
+															formatter: emailsFormatter
+														},
+														{
+															name : "official",
+															align : "center",
+															width : 10,
+															template : "booleanCheckboxFa",
+															edittype : "checkbox",
+															editoptions : {
+																value : "true:false"
+															},
+															sortable : false
+														},
+														{
+															name : "sendAuto",
+															align : "center",
+															width : 10,
+															template : "booleanCheckboxFa",
+															edittype : "checkbox",
+															editoptions : {
+																value : "true:false"
+															},
+															sortable : false
+														},														
 
 														{
 															name : "eliminar",
-															width : 20,
+															width : 10,
 															sortable : false,
 															editable : false,
 															formatter : eliminarFormatter,
@@ -275,6 +367,117 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 				+ options.rowId
 				+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>"+ colNameRemove +"</span></span>";
 	}
+	
+	function emailsFormatter(cellvalue, options, rowObject) {
+		return rowObject.emails.toString().replace(/\,/g, '\r\n');
+	}
+	
+	function ambitoFormatter(cellvalue, options, rowObject) {
+		if (rowObject.ambito && rowObject.ambito.name != null) {
+			return rowObject.ambito.name;
+		} else {
+			return "";
+		}
+	}
+	
+	function titleEtiquetasFormatter(cellvalue, options, rowObject) {
+		var cellFormatted = "";
+
+		$.each(rowObject.idTag, function(index, value) {
+			cellFormatted = cellFormatted + value.name + "\n";
+		});
+
+		return cellFormatted;
+	}
+	
+	function etiquetasFormatter(cellvalue, options, rowObject) {
+
+		var data = "";
+
+		$.each(rowObject.idTag, function(index, value) {
+			data = data + value.id + ",";
+		});
+
+		if (data) {
+			data = data.slice(0, -1);
+		}
+
+		var cellFormatted = "<div class='tagbox-wrapper'>";
+
+		$.each(rowObject.idTag, function(index, value) {
+			cellFormatted = cellFormatted + "<div class='tagbox-token'><span>"
+					+ value.name + "</span></div>";
+		});
+
+		cellFormatted = cellFormatted + "</div>";
+
+		return cellFormatted;
+	}
+	
+	function tagEdit(value, options, rowObject) {
+
+		var element = document.createElement('input');
+
+		element.setAttribute("name", "tags");
+		element.setAttribute("id", "tagsFilter");
+		element.setAttribute("type", "text");
+		element.setAttribute("autocapitalize", "off");
+		element.setAttribute("placeholder", "Escriba para buscar...");
+
+		var seed = $('#grid').jqGrid('getRowData', options.rowId);
+
+		var data = $("#grid").jqGrid('getGridParam', 'data');
+
+
+		$.ajax({
+			url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
+			method : 'POST',
+			cache : false
+		}).success(function(response) {
+			
+			
+			$.each(data, function(index, item) {
+				if (item.id == options.rowId) {
+
+					var data = "";
+
+					$.each(item.etiquetas, function(index, value) {
+						data = data + value.id + ",";
+					});
+
+					if (data) {
+						data = data.slice(0, -1);
+					}
+
+					element.setAttribute('value', data);
+
+				}
+			});
+
+			$(element).tagbox({
+				items : response.etiquetas,
+				searchIn : [ 'name' ],
+				rowFormat : '<span class="name">{{name}}</span>',
+				tokenFormat : '{{name}}',
+				valueField : 'id',
+				itemClass : 'user'
+			});
+
+		});
+
+		return element;
+
+	}
+
+	function tagEditValue(elem, operation, value) {
+
+		if (operation === 'get') {
+			return $(elem).val();
+		} else if (operation === 'set') {
+			$('input', elem).val(value);
+		}
+	}
+
 
 	function eliminarDependencia(rowId) {
 		
@@ -470,106 +673,93 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 		return guardado;
 	}
 </script>
-
-
 <!-- observatorio_cargarDependencias.jsp -->
 <div id="main">
-
-
 	<div id="dialogoNuevaDependencia" style="display: none">
 		<div id="main" style="overflow: hidden">
-
 			<div id="erroresNuevaSemillaMD" style="display: none"></div>
-
 			<form id="nuevaDependenciaForm">
 				<!-- Nombre -->
 				<div class="row formItem">
-					<label for="nombre" class="control-label"
-						style="margin-left: 25px;"><strong class="labelVisu"><acronym
-							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
-								key="nueva.dependencia.observatorio.nombre" /></strong></label>
+					<label for="nombre" class="control-label" style="margin-left: 25px;">
+						<strong class="labelVisu">
+							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
+							<bean:message key="nueva.dependencia.observatorio.nombre" />
+						</strong>
+					</label>
 					<div class="col-xs-8">
-						<input type="text" id="nombre" name="nombre"
-							class="textoLargo form-control" />
+						<input type="text" id="nombre" name="nombre" class="textoLargo form-control" />
 					</div>
 				</div>
 			</form>
 		</div>
 	</div>
-
-
 	<div id="container_menu_izq">
 		<jsp:include page="menu.jsp" />
 	</div>
-
 	<div id="container_der">
-
 		<div id="migas">
 			<p class="sr-only">
 				<bean:message key="ubicacion.usuario" />
 			</p>
 			<ol class="breadcrumb">
-				<li><html:link forward="observatoryMenu">
+				<li>
+					<html:link forward="observatoryMenu">
 						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 						<bean:message key="migas.observatorio" />
-					</html:link></li>
-				<li class="active"><bean:message
-						key="migas.dependencias.observatorio" /></li>
+					</html:link>
+				</li>
+				<li class="active">
+					<bean:message key="migas.dependencias.observatorio" />
+				</li>
 			</ol>
 		</div>
-
 		<div id="cajaformularios">
 			<h2>
 				<bean:message key="gestion.dependencias.observatorio.titulo" />
 			</h2>
-
 			<div id="exitosNuevaSemillaMD" style="display: none"></div>
-
-			<form id="buscadorDependencias" class="formulario form-horizontal"
-				onsubmit="buscar()">
+			<form id="buscadorDependencias" class="formulario form-horizontal" onsubmit="buscar()">
 				<fieldset>
-					<legend><bean:message key="buscador"/></legend>
+					<legend>
+						<bean:message key="buscador" />
+					</legend>
 					<jsp:include page="/common/crawler_messages.jsp" />
 					<div class="formItem">
-						<label for="nombre" class="control-label"><strong
-							class="labelVisu"><bean:message
-									key="nueva.dependencia.observatorio.nombre" /></strong></label> <input
-							type="text" class="texto form-control" id="nombre" name="nombre" />
+						<label for="nombre" class="control-label">
+							<strong class="labelVisu">
+								<bean:message key="nueva.dependencia.observatorio.nombre" />
+							</strong>
+						</label>
+						<input type="text" class="texto form-control" id="nombre" name="nombre" />
 					</div>
 					<div class="formButton">
-						<span onclick="buscar()" class="btn btn-default btn-lg"> <span
-							class="glyphicon glyphicon-search" aria-hidden="true"></span> <bean:message
-								key="boton.buscar" />
-						</span> <span onclick="limpiar()" class="btn btn-default btn-lg">
-							<span aria-hidden="true"></span> <bean:message
-								key="boton.limpiar" />
+						<span onclick="buscar()" class="btn btn-default btn-lg">
+							<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+							<bean:message key="boton.buscar" />
+						</span>
+						<span onclick="limpiar()" class="btn btn-default btn-lg">
+							<span aria-hidden="true"></span>
+							<bean:message key="boton.limpiar" />
 						</span>
 					</div>
 				</fieldset>
 			</form>
-
 			<!-- Nueva semilla -->
 			<p class="pull-right">
-				<a href="#" class="btn btn-default btn-lg"
-					onclick="dialogoNuevaDependencia()"> <span
-					class="glyphicon glyphicon-plus" aria-hidden="true"
-					data-toggle="tooltip" title=""
-					data-original-title="Crear una semilla"></span> <bean:message
-						key="nueva.dependencia.observatorio" />
+				<a href="#" class="btn btn-default btn-lg" onclick="dialogoNuevaDependencia()">
+					<span class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip" title=""
+						data-original-title="Crear una semilla"></span>
+					<bean:message key="nueva.dependencia.observatorio" />
 				</a>
 			</p>
 			<!-- Grid -->
 			<table id="grid">
 			</table>
-
-
-
 			<p id="paginador"></p>
-
 		</div>
 		<p id="pCenter">
-			<html:link forward="observatoryMenu"
-				styleClass="btn btn-default btn-lg">
+			<html:link forward="observatoryMenu" styleClass="btn btn-default btn-lg">
 				<bean:message key="boton.volver" />
 			</html:link>
 		</p>
