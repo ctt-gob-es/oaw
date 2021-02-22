@@ -24,8 +24,8 @@ UPDATE observatorios_realizados obr SET obr.tags = (SELECT ob.tags from observat
 
 -- uras
 
-ALTER TABLE `dependencia` ADD `emails` TEXT NOT NULL;
-ALTER TABLE `dependencia` ADD `id_ambit` INT NOT NULL;
-ALTER TABLE `dependencia` ADD `send_auto` INT NOT NULL;
-ALTER TABLE `dependencia` ADD `official` INT NOT NULL;
-ALTER TABLE `dependencia` ADD `id_tag` INT NOT NULL;
+ALTER TABLE `dependencia` ADD `emails` TEXT NULL;
+ALTER TABLE `dependencia` ADD `id_ambit` INT NULL;
+ALTER TABLE `dependencia` ADD `send_auto` INT NULL;
+ALTER TABLE `dependencia` ADD `official` INT NULL;
+ALTER TABLE `dependencia` ADD `id_tag` INT NULL;

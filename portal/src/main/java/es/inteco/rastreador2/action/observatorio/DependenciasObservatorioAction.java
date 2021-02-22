@@ -34,6 +34,8 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.intav.form.PageForm;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
+import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.dao.dependencia.DependenciaDAO;
 import es.inteco.rastreador2.json.JsonMessage;
@@ -43,24 +45,17 @@ import es.inteco.rastreador2.utils.Pagination;
  * The Class DependenciasObservatorioAction.
  */
 public class DependenciasObservatorioAction extends DispatchAction {
-
 	/**
 	 * Load. Carga de la página.
 	 *
-	 * @param mapping
-	 *            the mapping
-	 * @param form
-	 *            the form
-	 * @param request
-	 *            the request
-	 * @param response
-	 *            the response
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
 	 * @return the action forward
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
 	public ActionForward load(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
 		// Marcamos el menú
 		request.getSession().setAttribute(Constants.MENU, Constants.MENU_INTECO_OBS);
 		if (request.getParameter(Constants.RETURN_OBSERVATORY_RESULTS) != null) {
@@ -68,51 +63,33 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		} else {
 			request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_OBS_DEPENDENCIAS);
 		}
-
 		return mapping.findForward(Constants.EXITO);
 	}
 
 	/**
 	 * Search. Devuelve un JSON con los resultados de la búsqueda
 	 *
-	 * @param mapping
-	 *            the mapping
-	 * @param form
-	 *            the form
-	 * @param request
-	 *            the request
-	 * @param response
-	 *            the response
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
 	 * @return the action forward
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
 	public ActionForward search(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
 		try (Connection c = DataBaseManager.getConnection()) {
-
 			String nombre = request.getParameter("nombre");
-
 			if (!StringUtils.isEmpty(nombre)) {
-
 				nombre = es.inteco.common.utils.StringUtils.corregirEncoding(nombre);
 			}
-
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
-
 			final int numResult = DependenciaDAO.countDependencias(c, nombre);
-
 			response.setContentType("text/json");
-
 			List<DependenciaForm> listaDependencias = DependenciaDAO.getDependencias(c, nombre, (pagina - 1));
-
 			String jsonSeeds = new Gson().toJson(listaDependencias);
-
 			// Paginacion
 			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
-
 			String jsonPagination = new Gson().toJson(paginas);
-
 			PrintWriter pw = response.getWriter();
 			// pw.write(json);
 			pw.write("{\"dependencias\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
@@ -121,56 +98,49 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		} catch (Exception e) {
 			Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-
 		return null;
 	}
 
 	/**
 	 * Update.
 	 *
-	 * @param mapping
-	 *            the mapping
-	 * @param form
-	 *            the form
-	 * @param request
-	 *            the request
-	 * @param response
-	 *            the response
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
 	 * @return the action forward
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
 	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
-
 		DependenciaForm dependencia = (DependenciaForm) form;
-
 		ActionErrors errors = dependencia.validate(mapping, request);
-
+		AmbitoForm ambitoSemilla = new AmbitoForm();
+		ambitoSemilla.setId(request.getParameter("ambitoaux"));
+		dependencia.setAmbito(ambitoSemilla);
+		EtiquetaForm tag = new EtiquetaForm();
+		if (!StringUtils.isEmpty(request.getParameter("tagaux"))) {
+			tag.setId(Long.parseLong(request.getParameter("tagaux")));
+			dependencia.setTag(tag);
+		}
 		if (errors != null && !errors.isEmpty()) {
 			// Error de validación
 			response.setStatus(400);
 			response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.dependencia.obligatorio"));
 		} else {
-
 			try (Connection c = DataBaseManager.getConnection()) {
-
 				if (DependenciaDAO.existsDependencia(c, dependencia) && !dependencia.getName().equalsIgnoreCase(dependencia.getNombreAntiguo())) {
 					response.setStatus(400);
 					response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.dependencia.duplicado"));
-
 				} else {
 					DependenciaDAO.update(c, dependencia);
 					response.getWriter().write(messageResources.getMessage("mensaje.exito.dependencia.generada"));
 				}
-
 			} catch (Exception e) {
 				Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 				response.setStatus(400);
 				response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
 			}
-
 		}
 		return null;
 	}
@@ -178,33 +148,29 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	/**
 	 * Save.
 	 *
-	 * @param mapping
-	 *            the mapping
-	 * @param form
-	 *            the form
-	 * @param request
-	 *            the request
-	 * @param response
-	 *            the response
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
 	 * @return the action forward
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
 	public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
-
 		List<JsonMessage> errores = new ArrayList<>();
-
-		String nombre = request.getParameter("nombre");
-
-		if (StringUtils.isNotEmpty(nombre)) {
-
-			DependenciaForm dependencia = new DependenciaForm();
-			dependencia.setName(nombre);
-
+//		String nombre = request.getParameter("nombre");
+		DependenciaForm dependencia = (DependenciaForm) form;
+		if (StringUtils.isNotEmpty(dependencia.getName())) {
+//			dependencia.setName(nombre);
+			AmbitoForm ambitoSemilla = new AmbitoForm();
+			ambitoSemilla.setId(request.getParameter("ambitoaux"));
+			dependencia.setAmbito(ambitoSemilla);
+			EtiquetaForm tag = new EtiquetaForm();
+			if (!StringUtils.isEmpty(request.getParameter("tagaux"))) {
+				tag.setId(Long.parseLong(request.getParameter("tagaux")));
+				dependencia.setTag(tag);
+			}
 			try (Connection c = DataBaseManager.getConnection()) {
-
 				if (DependenciaDAO.existsDependencia(c, dependencia)) {
 					response.setStatus(400);
 					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.dependencia.duplicado")));
@@ -214,7 +180,6 @@ public class DependenciasObservatorioAction extends DispatchAction {
 					errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.dependencia.generada")));
 					response.getWriter().write(new Gson().toJson(errores));
 				}
-
 			} catch (Exception e) {
 				Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 				response.setStatus(400);
@@ -231,46 +196,31 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	/**
 	 * Delete.
 	 *
-	 * @param mapping
-	 *            the mapping
-	 * @param form
-	 *            the form
-	 * @param request
-	 *            the request
-	 * @param response
-	 *            the response
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
 	 * @return the action forward
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
 	public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
-
 		List<JsonMessage> errores = new ArrayList<>();
-
 		String id = request.getParameter("idDependencia");
-
 		if (id != null) {
-
 			try (Connection c = DataBaseManager.getConnection()) {
-
 				DependenciaDAO.delete(c, Long.parseLong(id));
 				errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.dependencia.eliminada")));
 				response.getWriter().write(new Gson().toJson(errores));
-
 			} catch (Exception e) {
 				Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 				response.setStatus(400);
 				response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
 			}
-
 		} else {
 			response.setStatus(400);
 			response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
 		}
-
 		return null;
 	}
-
 }
