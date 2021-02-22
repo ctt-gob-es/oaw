@@ -49,12 +49,5 @@
     "REQUIRED_FIELD": "Campo obligatorio",
     "PAGE_TYPE_INFO":" Tipo de la página añadida (de acuerdo con la Decisión de Ejecución 2018/1524)",
     "PAGE_BREADCRUMB_INFO_1":"Cuando la página NO forme parte de un PROCESO, indicar separados por '>' la navegación que hay que hacer por el sitio web",
-    "PAGE_BREADCRUMB_INFO_2": "Cuando la página SI forme parte de un PROCESO, para guiar el mismo,  indicar los nombres cortos dados en las páginas previas del proceso separados por '>' e indicar entre paréntesis la acción que hay que realizar para pasar al siguiente paso del proceso. <p>Ej:<ul><li>Provincia (Elegir Madrid)</li><li>Provincia > Trámite (Elegir Trámite X)</li><li>Provincia > Trámite > Descripción (Entrar)</li></ul></p>"
-    
-    
-    
-                                                              
-
-    
-                                                             
+    "PAGE_BREADCRUMB_INFO_2": "Cuando la página SI forme parte de un PROCESO, para guiar el mismo,  indicar los nombres cortos dados en las páginas previas del proceso separados por '>' e indicar entre paréntesis la acción que hay que realizar para pasar al siguiente paso del proceso. <p>Ej:<ul><li>Provincia (Elegir Madrid)</li><li>Provincia > Trámite (Elegir Trámite X)</li><li>Provincia > Trámite > Descripción (Entrar)</li></ul></p>"                                                             
 }

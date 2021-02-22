@@ -29,5 +29,6 @@
     "TITLE": "Step 4: Audit the Selected Sample",
     "UNDERSTAND": "Understanding",
     "UNTESTED": "{{critCount}} untested",
-    "LABEL_DESCR": "Description"
+    "LABEL_DESCR": "Description",
+    "REQUIRED_FIELD_INFO": "* Required field"
 }
