@@ -172,9 +172,22 @@ public final class DependenciaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static void save(Connection c, DependenciaForm dependencia) throws SQLException {
-		final String query = "INSERT INTO dependencia(nombre) VALUES (?)";
+		final String query = "INSERT INTO dependencia(nombre, emails, send_auto, official,id_ambit,id_tag) VALUES (?,?,?,?,?,?)";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, dependencia.getName());
+			ps.setString(2, dependencia.getEmails());
+			ps.setBoolean(3, dependencia.isSendAuto());
+			ps.setBoolean(4, dependencia.isOfficial());
+			if (dependencia.getAmbito() != null && StringUtils.isNotEmpty(dependencia.getAmbito().getId())) {
+				ps.setString(5, dependencia.getAmbito().getId());
+			} else {
+				ps.setString(5, null);
+			}
+			if (dependencia.getTag() != null && dependencia.getTag().getId() != null) {
+				ps.setLong(6, dependencia.getTag().getId());
+			} else {
+				ps.setString(6, null);
+			}
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -190,10 +203,24 @@ public final class DependenciaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static void update(Connection c, DependenciaForm dependencia) throws SQLException {
-		final String query = "UPDATE dependencia SET nombre = ? WHERE id_dependencia = ?";
+		// d.emails, d.send_auto, d.official
+		final String query = "UPDATE dependencia SET nombre = ?, emails = ?, send_auto = ? , official = ?, id_ambit = ?, id_tag = ?  WHERE id_dependencia = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, dependencia.getName());
-			ps.setLong(2, dependencia.getId());
+			ps.setString(2, dependencia.getEmails());
+			ps.setBoolean(3, dependencia.isSendAuto());
+			ps.setBoolean(4, dependencia.isOfficial());
+			if (dependencia.getAmbito() != null && StringUtils.isNotEmpty(dependencia.getAmbito().getId())) {
+				ps.setString(5, dependencia.getAmbito().getId());
+			} else {
+				ps.setString(5, null);
+			}
+			if (dependencia.getTag() != null && dependencia.getTag().getId() != null) {
+				ps.setLong(6, dependencia.getTag().getId());
+			} else {
+				ps.setString(6, null);
+			}
+			ps.setLong(7, dependencia.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
