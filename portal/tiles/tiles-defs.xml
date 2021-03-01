@@ -313,6 +313,12 @@
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarEtiquetas.jsp" />
 	</definition>
+	
+	<definition name=".cargarRangosObservatorio" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarRangos.jsp" />
+	</definition>
+	
 
 	<!-- Página cargar vaciar tablas observatorio -->
 	<definition name=".cargarReducirTablasObservatorio" extends="mainLayout">
@@ -824,5 +830,10 @@
 	<definition name=".confirmarPararObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionParar.jsp" />
+	</definition>
+	
+	<definition name=".confirmSendObservatoryResultsByMail" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionEnvioEmails.jsp" />
 	</definition>
 </tiles-definitions>    
