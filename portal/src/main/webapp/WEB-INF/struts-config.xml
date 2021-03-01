@@ -39,6 +39,8 @@
 		<form-bean name="ComplejidadForm" type="es.inteco.rastreador2.actionform.semillas.ComplejidadForm" />
 
 		<form-bean name="EtiquetaForm" type="es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm" />
+		
+		<form-bean name="RangeForm" type="es.inteco.rastreador2.actionform.observatorio.RangeForm" />
 
 		<form-bean name="ReducirTablasForm" type="es.inteco.rastreador2.actionform.observatorio.ReducirTablasForm" />
 
@@ -357,7 +359,10 @@
 
 		<forward name="observatoryReducirTablas" path="/secure/ViewReducirTablasObservatorio.do?action=load" />
 
-
+		<forward name="confirmSendObservatoryResultsByMail"
+			path="/secure/ConfigSendResultsByMailAction.do?action=confirm" />
+			
+			<forward name="observatoryRanges" path="/secure/RangeObservatorio.do?action=load" />
 
 	</global-forwards>
 
@@ -1010,13 +1015,13 @@
 
 		<!-- RELANZAR SELECCIONANDO -->
 		<action path="/secure/RelanzarObservatorioSeleccionandoAction"
-				type="es.inteco.rastreador2.action.observatorio.RelanzarObservatorioSeleccionandoAction">
+			type="es.inteco.rastreador2.action.observatorio.RelanzarObservatorioSeleccionandoAction">
 			<forward name="volver" path=".indexAdmin" />
 			<forward name="exito" path=".Exito" />
 			<forward name="confirmacionRelanzar" path=".confirmarRelanzarObservatorio" />
-    </action>
+		</action>
 
-    <!-- Importar -->
+		<!-- Importar -->
 		<action path="/secure/SeedMassImport" type="es.inteco.rastreador2.action.observatorio.SeedMassImportAction"
 			name="SemillaSearchForm">
 			<forward name="volver" path=".indexAdmin" />
@@ -1051,6 +1056,19 @@
 
 		<action path="/secure/ConfigExportOpenOfficeAction"
 			type="es.inteco.rastreador2.openOffice.export.ConfigExportOpenOfficeAction">
+		</action>
+
+		<action path="/secure/ConfigSendResultsByMailAction"
+			type="es.inteco.rastreador2.action.export.database.SendResultsByMailAction" scope="request">
+			<forward name="confirm" path=".confirmSendObservatoryResultsByMail" />
+			<forward name="exito" path=".Exito" />
+		</action>
+		
+		<action path="/secure/RangeObservatorio"
+			type="es.inteco.rastreador2.action.observatorio.RangeObservatorioAction" name="RangeForm" parameter="action"
+			scope="request" validate="false">
+			<forward name="exito" path=".cargarRangosObservatorio" />
+
 		</action>
 
 	</action-mappings>

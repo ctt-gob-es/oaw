@@ -217,7 +217,7 @@ public interface Constants {
 	String CATEGORY_SEED_FORM = "categorySeedForm";
 	/** The get category seeds file. */
 	String GET_CATEGORY_SEEDS_FILE_XML = "getCategorySeedsFileXml";
-	/** Action to export category seeds to an excel file */
+	/** Action to export category seeds to an excel file. */
 	String GET_CATEGORY_SEEDS_FILE_XLSX = "getCategorySeedsFileXlsx";
 	/** The load form. */
 	String LOAD_FORM = "loadForm";
@@ -1179,6 +1179,8 @@ public interface Constants {
 	String SUBMENU_OBS_REDUCIRTABLAS = "submenuReducirTablasObs";
 	/** The submenu obs etiquetas. */
 	String SUBMENU_OBS_ETIQUETAS = "submenuEtiquetasObs";
+	/** The submenu obs ranges. */
+	String SUBMENU_OBS_RANGES = "submenuRangesObs";
 	/** The submenu observatorio. */
 	String SUBMENU_OBSERVATORIO = "submenuObservatorio";
 	/** The submenu servicio diagnostico. */
@@ -1920,5 +1922,6 @@ public interface Constants {
 	BaseColor BC_MARRRON_C_NC = new BaseColor(196, 89, 17);
 	/** The bc gris muy claro. */
 	BaseColor BC_GRIS_MUY_CLARO = new BaseColor(245, 245, 245);
+	/** The observatory extra configuration list. */
 	String OBSERVATORY_EXTRA_CONFIGURATION_LIST = "extraConfigurationList";
 }

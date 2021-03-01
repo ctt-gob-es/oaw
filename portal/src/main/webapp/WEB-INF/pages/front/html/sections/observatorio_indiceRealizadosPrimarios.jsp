@@ -145,6 +145,9 @@ Email: observ.accesibilidad@correo.gob.es
 									<bean:message key="resultado.observatorio.rastreo.realizado.anexos" />
 								</th>
 								<th class="accion">
+									<bean:message key="resultado.observatorio.rastreo.realizado.send" />
+								</th>
+								<th class="accion">
 									<bean:message key="resultado.observatorio.rastreo.realizado.eliminar" />
 								</th>
 							</tr>
@@ -347,6 +350,15 @@ Email: observ.accesibilidad@correo.gob.es
 												title="<bean:message key="indice.rastreo.exportar.database" />"></span>
 											<span class="sr-only">
 												<bean:message key="indice.rastreo.exportar.database" />
+											</span>
+										</html:link>
+									</td>
+									<td>
+										<html:link forward="confirmSendObservatoryResultsByMail" name="paramsInformeAgregado">
+											<span class="glyphicon glyphicon-envelope" aria-hidden="true" data-toggle="tooltip"
+												title="<bean:message key="indice.rastreo.exportar.database" />"></span>
+											<span class="sr-only">
+												<bean:message key="indice.rastreo.send.database" />
 											</span>
 										</html:link>
 									</td>

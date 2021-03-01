@@ -107,9 +107,11 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
+import es.inteco.rastreador2.actionform.observatorio.RangeForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
+import es.inteco.rastreador2.dao.observatorio.RangeDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.export.database.form.CategoryForm;
 import es.inteco.rastreador2.export.database.form.ComparisionForm;
@@ -128,6 +130,9 @@ import es.oaw.wcagem.util.ValidationDetails;
  */
 @SuppressWarnings("deprecation")
 public final class AnnexUtils {
+	/** The Constant EVOL_ADECUACION_ANT. */
+	private static final String EVOL_ADECUACION_ANT = "evol_adecuacion_ant";
+	/** The Constant NV_LITERAL. */
 	private static final String NV_LITERAL = "No Válido";
 	/** The Constant EVOL_PUNTUACION_ANT. */
 	private static final String EVOL_PUNTUACION_ANT = "evol_puntuacion_ant";
@@ -353,6 +358,8 @@ public final class AnnexUtils {
 	private static es.gob.oaw.rastreador2.observatorio.ObservatoryManager observatoryManager;
 	/** The current evaluation page list. */
 	private static List<ObservatoryEvaluationForm> currentEvaluationPageList;
+	/** The website ranges. */
+	private static List<RangeForm> websiteRanges;
 
 	/**
 	 * Generate all annex.
@@ -377,6 +384,9 @@ public final class AnnexUtils {
 		evaluationIds = AnalisisDatos.getEvaluationIdsFromExecutedObservatory(idObsExecution);
 		observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
 		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds);
+		Connection c = DataBaseManager.getConnection();
+		websiteRanges = RangeDAO.findAll(c);
+		DataBaseManager.closeConnection(c);
 		Logger.putLog("Generando anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
@@ -2628,13 +2638,7 @@ public final class AnnexUtils {
 							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", false);
 							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
 							cell = row.createCell(ColumnNames.size() - 1);
-							String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":"
-									+ columnFirstLetter + ")<=-" + secondThreshold + ",\"EMPEORA MUCHO\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":"
-									+ columnFirstLetter + ")>-" + secondThreshold + ",(" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<-"
-									+ firstThreshold + "),\"EMPEORA\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")>-"
-									+ firstThreshold + ",(" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<" + firstThreshold
-									+ "),\"SE MANTIENE\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")>" + firstThreshold + ",("
-									+ columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<" + secondThreshold + "),\"MEJORA\",\"MEJORA MUCHO\")))))";
+							String formula = generateComparisionFormula(firstThreshold, secondThreshold, columnFirstLetter, columnSecondLetter);
 							cell.setCellFormula(formula);
 							cell.setCellStyle(shadowStyle);
 						}
@@ -2643,10 +2647,10 @@ public final class AnnexUtils {
 				rowIndex++;
 			}
 			// Loop to insert adecuation evolution compare with previous
-			ColumnNames.add("evol_adecuacion_ant");
+			ColumnNames.add(EVOL_ADECUACION_ANT);
 			headerRow = sheet.getRow(0);
 			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue("evol_adecuacion_ant");
+			cellInHeader.setCellValue(EVOL_ADECUACION_ANT);
 			cellInHeader.setCellStyle(headerStyle);
 			rowIndex = 1;
 			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
@@ -2706,10 +2710,10 @@ public final class AnnexUtils {
 				rowIndex++;
 			}
 			// Loop to insert adecuation evolution compare with first .
-			ColumnNames.add("evol_adecuacion_ant");
+			ColumnNames.add(EVOL_ADECUACION_ANT);
 			headerRow = sheet.getRow(0);
 			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue("evol_adecuacion_ant");
+			cellInHeader.setCellValue(EVOL_ADECUACION_ANT);
 			cellInHeader.setCellStyle(headerStyle);
 			rowIndex = 1;
 			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
@@ -2779,6 +2783,34 @@ public final class AnnexUtils {
 			Logger.putLog("Error al generar el anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+	}
+
+	/**
+	 * Generate comparision formula.
+	 *
+	 * @param firstThreshold     the first threshold
+	 * @param secondThreshold    the second threshold
+	 * @param columnFirstLetter  the column first letter
+	 * @param columnSecondLetter the column second letter
+	 * @return the string
+	 */
+	private static String generateComparisionFormula(double firstThreshold, double secondThreshold, String columnFirstLetter, String columnSecondLetter) {
+		final String substractColumnsResult = columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter;
+		for (RangeForm range : websiteRanges) {
+			// =IF(AND(C:C>=1,C:C<=2),1,0)
+			String rangetoString = "";
+			if (range.getMaxValue() != null) {
+				rangetoString = "AND(" + substractColumnsResult + "" + range.getMinValueOperator() + "" + range.getMinValue() + "," + substractColumnsResult + "" + range.getMaxValueOperator() + ""
+						+ range.getMaxValue();
+			} else {
+				rangetoString = substractColumnsResult + "" + range.getMinValueOperator() + "" + range.getMinValue();
+			}
+		}
+		String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + substractColumnsResult + ")<=-" + secondThreshold + ",\"EMPEORA MUCHO\",IF(AND(("
+				+ substractColumnsResult + ")>-" + secondThreshold + ",(" + substractColumnsResult + ")<-" + firstThreshold + "),\"EMPEORA\",IF(AND((" + substractColumnsResult + ")>-" + firstThreshold
+				+ ",(" + substractColumnsResult + ")<" + firstThreshold + "),\"SE MANTIENE\",IF(AND((" + substractColumnsResult + ")>" + firstThreshold + ",(" + substractColumnsResult + ")<"
+				+ secondThreshold + "),\"MEJORA\",\"MEJORA MUCHO\")))))";
+		return formula;
 	}
 
 	/**
@@ -3668,6 +3700,13 @@ public final class AnnexUtils {
 		series.setShapeProperties(properties);
 	}
 
+	/**
+	 * Solid fill series.
+	 *
+	 * @param data  the data
+	 * @param index the index
+	 * @param color the color
+	 */
 	private static void solidFillSeries(XDDFChartData data, int index, XDDFColor color) {
 		XDDFSolidFillProperties fill = new XDDFSolidFillProperties(color);
 		XDDFChartData.Series series = data.getSeries().get(index);

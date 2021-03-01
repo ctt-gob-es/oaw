@@ -29,3 +29,15 @@ ALTER TABLE `dependencia` ADD `id_ambit` INT NULL;
 ALTER TABLE `dependencia` ADD `send_auto` INT NULL;
 ALTER TABLE `dependencia` ADD `official` INT NULL;
 ALTER TABLE `dependencia` ADD `id_tag` INT NULL;
+
+
+CREATE TABLE `observatorio_range` ( 
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(255) NOT NULL ,
+	`min_value` float(4,2) NOT NULL , 
+	`max_value` float(4,2) ,
+	`min_value_operator` VARCHAR(255) NOT NULL ,
+	`max_value_operator` VARCHAR(255), 
+    PRIMARY KEY(`id`),
+	UNIQUE (`name`)
+);
