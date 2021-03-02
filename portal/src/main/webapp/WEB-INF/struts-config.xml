@@ -39,8 +39,10 @@
 		<form-bean name="ComplejidadForm" type="es.inteco.rastreador2.actionform.semillas.ComplejidadForm" />
 
 		<form-bean name="EtiquetaForm" type="es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm" />
-		
+
 		<form-bean name="RangeForm" type="es.inteco.rastreador2.actionform.observatorio.RangeForm" />
+		
+		<form-bean name="TemplateRangeForm" type="es.inteco.rastreador2.actionform.observatorio.TemplateRangeForm" />
 
 		<form-bean name="ReducirTablasForm" type="es.inteco.rastreador2.actionform.observatorio.ReducirTablasForm" />
 
@@ -361,8 +363,9 @@
 
 		<forward name="confirmSendObservatoryResultsByMail"
 			path="/secure/ConfigSendResultsByMailAction.do?action=confirm" />
-			
-			<forward name="observatoryRanges" path="/secure/RangeObservatorio.do?action=load" />
+
+		<forward name="observatoryRanges" path="/secure/RangeObservatorio.do?action=load" />
+
 
 	</global-forwards>
 
@@ -1063,12 +1066,18 @@
 			<forward name="confirm" path=".confirmSendObservatoryResultsByMail" />
 			<forward name="exito" path=".Exito" />
 		</action>
-		
+
 		<action path="/secure/RangeObservatorio"
 			type="es.inteco.rastreador2.action.observatorio.RangeObservatorioAction" name="RangeForm" parameter="action"
 			scope="request" validate="false">
 			<forward name="exito" path=".cargarRangosObservatorio" />
 
+		</action>
+
+
+		<action path="/secure/TemplateRangeObservatorio"
+			type="es.inteco.rastreador2.action.observatorio.TemplateRangeObservatorioAction" name="TemplateRangeForm" parameter="action"
+			scope="request" validate="false">
 		</action>
 
 	</action-mappings>

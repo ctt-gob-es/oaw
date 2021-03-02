@@ -41,6 +41,7 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -359,7 +360,7 @@ public final class AnnexUtils {
 	/** The current evaluation page list. */
 	private static List<ObservatoryEvaluationForm> currentEvaluationPageList;
 	/** The website ranges. */
-	private static List<RangeForm> websiteRanges;
+	private static List<RangeForm> websiteRanges = new ArrayList<>();
 
 	/**
 	 * Generate all annex.
@@ -2695,13 +2696,14 @@ public final class AnnexUtils {
 							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", true);
 							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
 							cell = row.createCell(ColumnNames.size() - 1);
-							String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":"
-									+ columnFirstLetter + ")<=-" + secondThreshold + ",\"EMPEORA MUCHO\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":"
-									+ columnFirstLetter + ")>-" + secondThreshold + ",(" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<-"
-									+ firstThreshold + "),\"EMPEORA\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")>-"
-									+ firstThreshold + ",(" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<" + firstThreshold
-									+ "),\"SE MANTIENE\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")>" + firstThreshold + ",("
-									+ columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<" + secondThreshold + "),\"MEJORA\",\"MEJORA MUCHO\")))))";
+//							String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":"
+//									+ columnFirstLetter + ")<=-" + secondThreshold + ",\"EMPEORA MUCHO\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":"
+//									+ columnFirstLetter + ")>-" + secondThreshold + ",(" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<-"
+//									+ firstThreshold + "),\"EMPEORA\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")>-"
+//									+ firstThreshold + ",(" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<" + firstThreshold
+//									+ "),\"SE MANTIENE\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")>" + firstThreshold + ",("
+//									+ columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<" + secondThreshold + "),\"MEJORA\",\"MEJORA MUCHO\")))))";
+							String formula = generateComparisionFormula(firstThreshold, secondThreshold, columnFirstLetter, columnSecondLetter);
 							cell.setCellFormula(formula);
 							cell.setCellStyle(shadowStyle);
 						}
@@ -2796,20 +2798,30 @@ public final class AnnexUtils {
 	 */
 	private static String generateComparisionFormula(double firstThreshold, double secondThreshold, String columnFirstLetter, String columnSecondLetter) {
 		final String substractColumnsResult = columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter;
-		for (RangeForm range : websiteRanges) {
-			// =IF(AND(C:C>=1,C:C<=2),1,0)
-			String rangetoString = "";
-			if (range.getMaxValue() != null) {
-				rangetoString = "AND(" + substractColumnsResult + "" + range.getMinValueOperator() + "" + range.getMinValue() + "," + substractColumnsResult + "" + range.getMaxValueOperator() + ""
-						+ range.getMaxValue();
-			} else {
-				rangetoString = substractColumnsResult + "" + range.getMinValueOperator() + "" + range.getMinValue();
+		String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",\"\")";
+		if (websiteRanges != null && !websiteRanges.isEmpty()) {
+			formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",_next_if_clause_)";
+			int index = 0;
+			for (RangeForm range : websiteRanges) {
+				String rangetoString = "";
+				String ifCaluse = "";
+				// has superior range
+				if (range.getMaxValueOperator() != null && !StringUtils.isEmpty(range.getMaxValueOperator())) {
+					rangetoString = "AND(" + substractColumnsResult + "" + range.getMinValueOperator() + "" + range.getMinValue() + "," + substractColumnsResult + "" + range.getMaxValueOperator() + ""
+							+ range.getMaxValue() + ")";
+				} else {
+					rangetoString = substractColumnsResult + "" + range.getMinValueOperator() + "" + range.getMinValue();
+				}
+				// is last iteration
+				if (index == websiteRanges.size() - 1) {
+					ifCaluse = "IF(" + rangetoString + ",\"" + range.getName() + "\",\"ERROR\")";
+				} else {
+					ifCaluse = "IF(" + rangetoString + ",\"" + range.getName() + "\",_next_if_clause_)";
+				}
+				formula = formula.replace("_next_if_clause_", ifCaluse);
+				index++;
 			}
 		}
-		String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + substractColumnsResult + ")<=-" + secondThreshold + ",\"EMPEORA MUCHO\",IF(AND(("
-				+ substractColumnsResult + ")>-" + secondThreshold + ",(" + substractColumnsResult + ")<-" + firstThreshold + "),\"EMPEORA\",IF(AND((" + substractColumnsResult + ")>-" + firstThreshold
-				+ ",(" + substractColumnsResult + ")<" + firstThreshold + "),\"SE MANTIENE\",IF(AND((" + substractColumnsResult + ")>" + firstThreshold + ",(" + substractColumnsResult + ")<"
-				+ secondThreshold + "),\"MEJORA\",\"MEJORA MUCHO\")))))";
 		return formula;
 	}
 

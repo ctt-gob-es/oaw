@@ -41,3 +41,17 @@ CREATE TABLE `observatorio_range` (
     PRIMARY KEY(`id`),
 	UNIQUE (`name`)
 );
+
+CREATE TABLE `observatorio_template_range` ( 
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`id_observatory_execution` INT NOT NULL,
+	`name` VARCHAR(255) NOT NULL ,
+	`min_value` float(4,2) NOT NULL , 
+	`max_value` float(4,2) ,
+	`min_value_operator` VARCHAR(255) NOT NULL ,
+	`max_value_operator` VARCHAR(255), 
+	`template` mediumtext NOT NULL,
+    PRIMARY KEY(`id`),
+	UNIQUE (`name`)
+);
+
