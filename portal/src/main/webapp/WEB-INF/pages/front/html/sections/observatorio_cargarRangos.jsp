@@ -184,7 +184,7 @@ function reloadGrid(path) {
 									},
 									edittype : "select",
 									editoptions : {
-										value: "<:<;<=:<=;=:=;=>:=>;>:>"
+										value: "<:<;<=:<=;=:=;>=:>=;>:>"
 									},
 									align: "center",
 									sortable: false
