@@ -2667,8 +2667,8 @@ public final class AnnexUtils {
 							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
 							cell = row.createCell(ColumnNames.size() - 1);
 							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
-									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Prioridad 1\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
-									+ "$419=\"No Válido\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Prioridad 1\",1,3))";
+									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
+									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
 							cell.setCellFormula(formula);
 							cell.setCellStyle(shadowStyle);
 						}
@@ -2696,13 +2696,6 @@ public final class AnnexUtils {
 							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", true);
 							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
 							cell = row.createCell(ColumnNames.size() - 1);
-//							String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",IF((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":"
-//									+ columnFirstLetter + ")<=-" + secondThreshold + ",\"EMPEORA MUCHO\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":"
-//									+ columnFirstLetter + ")>-" + secondThreshold + ",(" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<-"
-//									+ firstThreshold + "),\"EMPEORA\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")>-"
-//									+ firstThreshold + ",(" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<" + firstThreshold
-//									+ "),\"SE MANTIENE\",IF(AND((" + columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")>" + firstThreshold + ",("
-//									+ columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter + ")<" + secondThreshold + "),\"MEJORA\",\"MEJORA MUCHO\")))))";
 							String formula = generateComparisionFormula(firstThreshold, secondThreshold, columnFirstLetter, columnSecondLetter);
 							cell.setCellFormula(formula);
 							cell.setCellStyle(shadowStyle);
@@ -2731,8 +2724,8 @@ public final class AnnexUtils {
 							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
 							cell = row.createCell(ColumnNames.size() - 1);
 							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
-									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Prioridad 1\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
-									+ "$419=\"No Válido\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Prioridad 1\",1,3))";
+									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
+									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
 							cell.setCellFormula(formula);
 							cell.setCellStyle(shadowStyle);
 						}
@@ -3282,7 +3275,7 @@ public final class AnnexUtils {
 		row = sheet.createRow(RowStartPosition + 1);
 		cell = row.createCell(0);
 		cell.setCellStyle(headerStyle);
-		cell.setCellValue("De NV a P1");
+		cell.setCellValue("De NV a A");
 		cell = row.createCell(1);
 		cell.setCellStyle(shadowStyleCentered);
 		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",1)");
@@ -3291,7 +3284,7 @@ public final class AnnexUtils {
 		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",1)");
 		row = sheet.createRow(RowStartPosition + 2);
 		cell = row.createCell(0);
-		cell.setCellValue("De NV a P2");
+		cell.setCellValue("De NV a AA");
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(1);
 		cell.setCellStyle(shadowStyleCentered);
@@ -3302,7 +3295,7 @@ public final class AnnexUtils {
 		row = sheet.createRow(RowStartPosition + 3);
 		cell = row.createCell(0);
 		cell.setCellStyle(headerStyle);
-		cell.setCellValue("De P1 a P2");
+		cell.setCellValue("De A a AA");
 		cell = row.createCell(1);
 		cell.setCellStyle(shadowStyleCentered);
 		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",2)");
@@ -3311,7 +3304,7 @@ public final class AnnexUtils {
 		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",2)");
 		row = sheet.createRow(RowStartPosition + 4);
 		cell = row.createCell(0);
-		cell.setCellValue("De P2 a P1");
+		cell.setCellValue("De AA a A");
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(1);
 		cell.setCellStyle(shadowStyleCentered);
@@ -3322,7 +3315,7 @@ public final class AnnexUtils {
 		row = sheet.createRow(RowStartPosition + 5);
 		cell = row.createCell(0);
 		cell.setCellStyle(headerStyle);
-		cell.setCellValue("De P2 a NV");
+		cell.setCellValue("De AA a NV");
 		cell = row.createCell(1);
 		cell.setCellStyle(shadowStyleCentered);
 		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",-3)");
@@ -3331,7 +3324,7 @@ public final class AnnexUtils {
 		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",-3)");
 		row = sheet.createRow(RowStartPosition + 6);
 		cell = row.createCell(0);
-		cell.setCellValue("De P1 a NV");
+		cell.setCellValue("De A a NV");
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(1);
 		cell.setCellStyle(shadowStyleCentered);
@@ -3385,66 +3378,53 @@ public final class AnnexUtils {
 		cell = row.createCell(0);
 		cell.setCellStyle(headerStyle);
 		cell.setCellValue("Segmento");
-		cell = row.createCell(1);
-		cell.setCellStyle(headerStyle);
-		cell.setCellValue(MUCH_WORST);
-		cell = row.createCell(2);
-		cell.setCellStyle(headerStyle);
-		cell.setCellValue(WORST);
-		cell = row.createCell(3);
-		cell.setCellStyle(headerStyle);
-		cell.setCellValue("Se mantiene");
-		cell = row.createCell(4);
-		cell.setCellStyle(headerStyle);
-		cell.setCellValue(BETTER);
-		cell = row.createCell(5);
-		cell.setCellStyle(headerStyle);
-		cell.setCellValue(MUCH_BETTER);
+		if (websiteRanges != null && !websiteRanges.isEmpty()) {
+			int col = 1;
+			for (RangeForm range : websiteRanges) {
+				cell = row.createCell(col);
+				cell.setCellStyle(headerStyle);
+				cell.setCellValue(range.getName());
+				col++;
+			}
+		}
 		String dataColumn = GetExcelColumnNameForNumber(columnSourceData);
 		for (int i = 0; i < categories.size(); i++) {
 			row = sheet.createRow(RowStartPosition + i + 2);
 			cell = row.createCell(0);
 			cell.setCellStyle(shadowStyle);
 			cell.setCellValue(categories.get(i));
-			cell = row.createCell(1);
-			cell.setCellStyle(shadowStyleCentered);
-			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"EMPEORA MUCHO\")");
-			cell = row.createCell(2);
-			cell.setCellStyle(shadowStyleCentered);
-			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"EMPEORA\")");
-			cell = row.createCell(3);
-			cell.setCellStyle(shadowStyleCentered);
-			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"SE MANTIENE\")");
-			cell = row.createCell(4);
-			cell.setCellStyle(shadowStyleCentered);
-			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"MEJORA\")");
-			cell = row.createCell(5);
-			cell.setCellStyle(shadowStyleCentered);
-			cell.setCellFormula("COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"MEJORA MUCHO\")");
+			if (websiteRanges != null && !websiteRanges.isEmpty()) {
+				int col = 1;
+				for (RangeForm range : websiteRanges) {
+					cell = row.createCell(col);
+					cell.setCellStyle(shadowStyleCentered);
+					cell.setCellFormula(
+							"COUNTIFS($C$2:$C$" + lastDataRow + ",\"" + categories.get(i) + "\",$" + dataColumn + "$2:$" + dataColumn + "$" + lastDataRow + ",\"" + range.getName() + "\")");
+					col++;
+				}
+			}
 		}
 		// TOTAL row
 		row = sheet.createRow(RowStartPosition + categories.size() + 2);
 		cell = row.createCell(0);
 		cell.setCellStyle(headerStyle);
 		cell.setCellValue("TOTAL");
-		cell = row.createCell(1);
-		cell.setCellStyle(headerStyle);
-		cell.setCellFormula("SUM(B" + (RowStartPosition + 3) + ":B" + (RowStartPosition + categories.size() + 2) + ")");
-		cell = row.createCell(2);
-		cell.setCellStyle(headerStyle);
-		cell.setCellFormula("SUM(C" + (RowStartPosition + 3) + ":C" + (RowStartPosition + categories.size() + 2) + ")");
-		cell = row.createCell(3);
-		cell.setCellStyle(headerStyle);
-		cell.setCellFormula("SUM(D" + (RowStartPosition + 3) + ":D" + (RowStartPosition + categories.size() + 2) + ")");
-		cell = row.createCell(4);
-		cell.setCellStyle(headerStyle);
-		cell.setCellFormula("SUM(E" + (RowStartPosition + 3) + ":E" + (RowStartPosition + categories.size() + 2) + ")");
-		cell = row.createCell(5);
-		cell.setCellStyle(headerStyle);
-		cell.setCellFormula("SUM(F" + (RowStartPosition + 3) + ":F" + (RowStartPosition + categories.size() + 2) + ")");
-		cell = row.createCell(6);
-		cell.setCellStyle(headerStyle);
-		cell.setCellFormula("SUM(B" + (RowStartPosition + categories.size() + 3) + ":F" + (RowStartPosition + categories.size() + 3) + ")");
+		if (websiteRanges != null && !websiteRanges.isEmpty()) {
+			int col = 1;
+			for (RangeForm range : websiteRanges) {
+				cell = row.createCell(col);
+				cell.setCellStyle(headerStyle);
+				String column = GetExcelColumnNameForNumber(col + 1);
+				cell.setCellFormula("SUM(" + column + "" + (RowStartPosition + 3) + ":" + column + "" + (RowStartPosition + categories.size() + 2) + ")");
+				col++;
+			}
+			// Sum total portals
+			String firstColumn = GetExcelColumnNameForNumber(2);
+			String lastColumn = GetExcelColumnNameForNumber(websiteRanges.size() + 1);
+			cell = row.createCell(websiteRanges.size() + 1);
+			cell.setCellStyle(headerStyle);
+			cell.setCellFormula("SUM(" + firstColumn + "" + (RowStartPosition + categories.size() + 3) + ":" + lastColumn + "" + (RowStartPosition + categories.size() + 3) + ")");
+		}
 		return RowStartPosition + categories.size() + 1;
 	}
 
