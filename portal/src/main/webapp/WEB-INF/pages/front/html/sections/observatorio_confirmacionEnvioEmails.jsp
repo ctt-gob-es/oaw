@@ -789,6 +789,17 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					<legend>
 						<bean:message key="report.config.observatorios.templates.title" />
 					</legend>
+
+					<div class="alert alert-info">
+						<span class="glyphicon glyphicon-info-sign"></span>
+						<em>
+							<bean:message key="nueva.semilla.webs.informacion" />
+						</em>
+						:
+						<bean:message key="report.config.observatorios.templates.info" />
+						<br/>
+						<bean:message key="report.config.observatorios.templates.info.list" />
+					</div>
 					<div>
 						<p class="pull-right">
 							<a href="#" class="btn btn-default btn-lg" onclick="dialogNewRange()">
@@ -809,8 +820,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</strong>
 					</p>
 					<p>
-
-							<bean:message key="resultado.observatorio.rastreo.realizado.send.info2" />
+						<bean:message key="resultado.observatorio.rastreo.realizado.send.info2" />
 					</p>
 				</fieldset>
 				<div class="formButton">
