@@ -88,15 +88,6 @@ public class SendResultsByMailAction extends Action {
 		if (CrawlerUtils.hasAccess(request, "export.observatory.results")) {
 			try {
 				if (request.getParameter(Constants.ACTION) != null) {
-					/*
-					 * if (request.getParameter(Constants.ACTION).equals(Constants.EXPORT)) { String[] tagsToFilter = null; if (request.getParameter("tags") != null &&
-					 * !StringUtils.isEmpty(request.getParameter("tags"))) { tagsToFilter = request.getParameter("tags").split(","); } // Evol executions ids String[] exObsIds =
-					 * request.getParameterValues("evol"); if (exObsIds == null) { exObsIds = new String[] { request.getParameter(Constants.ID_EX_OBS) }; } // if has tags (ids) check if has request
-					 * params like fisrt_{idtag}, previous_{idtag} List<ComparisionForm> comparision = null; if (tagsToFilter != null && tagsToFilter.length > 0) { comparision = new ArrayList<>(); for
-					 * (String tagId : tagsToFilter) { ComparisionForm c = new ComparisionForm(); c.setIdTag(Integer.parseInt(tagId)); c.setFirst(request.getParameter("first_" + tagId));
-					 * c.setPrevious(request.getParameter("previous_" + tagId)); comparision.add(c); } } // Export all?? export(mapping, request); getAnnexes(mapping, request, response, tagsToFilter,
-					 * exObsIds, comparision); } else
-					 */
 					if (request.getParameter(Constants.ACTION).equals(Constants.CONFIG)) {
 						Connection connection = DataBaseManager.getConnection();
 						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));

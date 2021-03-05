@@ -524,8 +524,8 @@ public final class AnnexUtils {
 		Connection c = DataBaseManager.getConnection();
 		// Save config
 		ObservatorioDAO.saveConfig(c, idObsExecution, exObsIds, comparision);
-		// Remove old customs if exists
-		UraCustomTextDAO.deleteAll(c, idObsExecution);
+		// TODO Remove old customs if exists?
+		// UraCustomTextDAO.deleteAll(c, idObsExecution);
 		// Save new custom
 		UraCustomTextDAO.save(c, uraCustomList);
 		DataBaseManager.closeConnection(c);
