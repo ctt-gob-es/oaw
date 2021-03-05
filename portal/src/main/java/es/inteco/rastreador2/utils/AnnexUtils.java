@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -39,6 +40,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -109,10 +114,15 @@ import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.observatorio.RangeForm;
+import es.inteco.rastreador2.actionform.observatorio.TemplateRangeForm;
+import es.inteco.rastreador2.actionform.observatorio.UraCustomTextForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.observatorio.RangeDAO;
+import es.inteco.rastreador2.dao.observatorio.TemplateRangeDAO;
+import es.inteco.rastreador2.dao.observatorio.UraCustomTextDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.export.database.form.CategoryForm;
 import es.inteco.rastreador2.export.database.form.ComparisionForm;
@@ -361,6 +371,12 @@ public final class AnnexUtils {
 	private static List<ObservatoryEvaluationForm> currentEvaluationPageList;
 	/** The website ranges. */
 	private static List<RangeForm> websiteRanges = new ArrayList<>();
+	/** The iteration ranges. */
+	private static List<TemplateRangeForm> iterationRanges = new ArrayList<>();
+	/** The script engine manager. */
+	private static ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
+	/** The script engine. */
+	private static ScriptEngine scriptEngine = scriptEngineManager.getEngineByName("JavaScript");
 
 	/**
 	 * Generate all annex.
@@ -373,21 +389,13 @@ public final class AnnexUtils {
 	 * @param tagsToFilterFixed the tags to filter fixed
 	 * @param exObsIds          the ex obs ids
 	 * @param comparision       the comparision
-	 * @param firstThreshold    the first threshold
-	 * @param secondThreshold   the second threshold
 	 * @throws Exception the exception
 	 */
 	public static void generateAllAnnex(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter,
-			final String[] tagsToFilterFixed, final String[] exObsIds, final List<ComparisionForm> comparision, double firstThreshold, double secondThreshold) throws Exception {
+			final String[] tagsToFilterFixed, final String[] exObsIds, final List<ComparisionForm> comparision) throws Exception {
 		Logger.putLog("Inicio de la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		Logger.putLog("Obteniendo información para la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-		annexmap = createAnnexMap(idObsExecution, tagsToFilter, exObsIds);
-		evaluationIds = AnalisisDatos.getEvaluationIdsFromExecutedObservatory(idObsExecution);
-		observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
-		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds);
-		Connection c = DataBaseManager.getConnection();
-		websiteRanges = RangeDAO.findAll(c);
-		DataBaseManager.closeConnection(c);
+		generateInfo(idObsExecution, exObsIds);
 		Logger.putLog("Generando anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
@@ -396,11 +404,149 @@ public final class AnnexUtils {
 		createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexXLSX2(messageResources, idObsExecution, idOperation);
-		createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, firstThreshold, secondThreshold);
+		createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision);
 		createAnnexXLSX_PerDependency(idOperation);
 		createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
-		createAnnexProgressEvolutionXLSX(messageResources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision, firstThreshold, secondThreshold);
+		createAnnexProgressEvolutionXLSX(messageResources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision);
 		Logger.putLog("Fin de la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+	}
+
+	/**
+	 * Generate info.
+	 *
+	 * @param idObsExecution the id obs execution
+	 * @param exObsIds       the ex obs ids
+	 * @throws Exception    the exception
+	 * @throws SQLException the SQL exception
+	 */
+	private static void generateInfo(final Long idObsExecution, final String[] exObsIds) throws Exception, SQLException {
+		annexmap = createAnnexMap(idObsExecution, exObsIds);
+		evaluationIds = AnalisisDatos.getEvaluationIdsFromExecutedObservatory(idObsExecution);
+		observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
+		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds);
+		Connection c = DataBaseManager.getConnection();
+		websiteRanges = RangeDAO.findAll(c);
+		iterationRanges = TemplateRangeDAO.findAll(c, idObsExecution);
+		DataBaseManager.closeConnection(c);
+	}
+
+	/**
+	 * Generate evolution data.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObs            the id obs
+	 * @param idObsExecution   the id obs execution
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @param comparision      the comparision
+	 * @throws Exception the exception
+	 */
+	public static void generateEvolutionData(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final String[] tagsToFilter, final String[] exObsIds,
+			final List<ComparisionForm> comparision) throws Exception {
+		// Returns a map of dependencies and values of evolution
+		generateInfo(idObsExecution, exObsIds);
+		List<UraCustomTextForm> uraCustomList = new ArrayList<>();
+		// Generate a list of UraCustomTextForm with all URA information
+		Map<DependenciaForm, List<SemillaForm>> mapSeedByDependencia = new HashMap<>();
+		for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+			final SemillaForm semillaForm = semillaEntry.getKey();
+			if (semillaForm.getId() != 0) {
+				for (DependenciaForm dependencia : semillaForm.getDependencias()) {
+					List<SemillaForm> seedsByDependency = mapSeedByDependencia.get(dependencia);
+					if (seedsByDependency == null) {
+						seedsByDependency = new ArrayList<SemillaForm>();
+					}
+					seedsByDependency.add(semillaForm);
+					mapSeedByDependencia.put(dependencia, seedsByDependency);
+				}
+			}
+		}
+		// Loop into map
+		for (Map.Entry<DependenciaForm, List<SemillaForm>> entry : mapSeedByDependencia.entrySet()) {
+			// calculate
+			BigDecimal sumLastScore = BigDecimal.ZERO;
+			BigDecimal sumPreviousScore = BigDecimal.ZERO;
+			for (SemillaForm semillaForm : entry.getValue()) {
+				TreeMap<String, ScoreForm> scoreMap = annexmap.get(semillaForm);
+				// last score
+				BigDecimal lastScore = scoreMap.lastEntry().getValue().getTotalScore();
+				BigDecimal previousScore = null;
+				// prevoius
+				if (comparision != null) {
+					// Get previous date by tag
+					for (ComparisionForm com : comparision) {
+						for (EtiquetaForm label : semillaForm.getEtiquetas()) {
+							if (com.getIdTag() == label.getId()) {
+								final ScoreForm scoreForm = scoreMap.get(com.getPrevious());
+								if (scoreForm != null) {
+									previousScore = scoreForm.getTotalScore();
+								}
+								break;
+							}
+						}
+					}
+				} else {
+					// Obtain submap to has esay access to penultimate value
+					final NavigableMap<String, ScoreForm> subMap = scoreMap.subMap(scoreMap.firstEntry().getKey(), true, scoreMap.lastEntry().getKey(), false);
+					if (!subMap.isEmpty()) {
+						previousScore = subMap.lastEntry().getValue().getTotalScore();
+					} else {
+						previousScore = scoreMap.firstEntry().getValue().getTotalScore();
+					}
+				}
+				if (lastScore != null) {
+					sumLastScore = sumLastScore.add(lastScore);
+				}
+				if (previousScore != null) {
+					sumPreviousScore = sumPreviousScore.add(previousScore);
+				}
+			}
+			// Calculate mid
+			BigDecimal midLastScores = sumLastScore.divide(new BigDecimal(entry.getValue().size()), RoundingMode.HALF_UP);
+			BigDecimal midPreviousScores = sumPreviousScore.divide(new BigDecimal(entry.getValue().size()), RoundingMode.HALF_UP);
+			BigDecimal diffMidScores = midLastScores.subtract(midPreviousScores);
+			//
+			UraCustomTextForm uraCustom = new UraCustomTextForm();
+			uraCustom.setIdUra(entry.getKey().getId());
+			uraCustom.setIdObservatoryExecution(idObsExecution);
+			uraCustom.setRangeValue(diffMidScores.floatValue());
+			for (TemplateRangeForm range : iterationRanges) {
+				String expression = diffMidScores + "" + range.getMinValueOperator() + "" + range.getMinValue();
+				if (range.getMaxValueOperator() != null && !StringUtils.isEmpty(range.getMaxValueOperator())) {
+					expression += "&& " + diffMidScores + "" + range.getMaxValueOperator() + "" + range.getMaxValue();
+				}
+				if ((boolean) scriptEngine.eval(expression)) {
+					uraCustom.setIdRange(range.getId());
+				}
+			}
+			uraCustomList.add(uraCustom);
+		}
+		Connection c = DataBaseManager.getConnection();
+		// Save config
+		ObservatorioDAO.saveConfig(c, idObsExecution, exObsIds, comparision);
+		// Remove old customs if exists
+		UraCustomTextDAO.deleteAll(c, idObsExecution);
+		// Save new custom
+		UraCustomTextDAO.save(c, uraCustomList);
+		DataBaseManager.closeConnection(c);
+	}
+
+	/**
+	 * Generate email annex.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObs            the id obs
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param exObsIds         the ex obs ids
+	 * @param comparision      the comparision
+	 * @throws Exception the exception
+	 */
+	public static void generateEmailAnnex(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation, final String[] exObsIds,
+			final List<ComparisionForm> comparision) throws Exception {
+		generateInfo(idObsExecution, exObsIds);
+		createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision);
+		createAnnexXLSX_PerDependency(idOperation);
 	}
 
 	/**
@@ -465,12 +611,10 @@ public final class AnnexUtils {
 	 * @param tagsToFilterFixed the tags to filter fixed
 	 * @param exObsIds          the ex obs ids
 	 * @param comparision       the comparision
-	 * @param firstThreshold    the first threshold
-	 * @param secondThreshold   the second threshold
 	 * @throws Exception the exception
 	 */
 	private static void createAnnexProgressEvolutionXLSX(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter,
-			final String[] tagsToFilterFixed, final String[] exObsIds, final List<ComparisionForm> comparision, double firstThreshold, double secondThreshold) throws Exception {
+			final String[] tagsToFilterFixed, final String[] exObsIds, final List<ComparisionForm> comparision) throws Exception {
 		Logger.putLog("Generando anexo: " + FILE_4_EVOLUTION_AND_PROGRESS_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_4_EVOLUTION_AND_PROGRESS_XLSX_NAME)) {
 			final XSSFWorkbook wb = new XSSFWorkbook();
@@ -504,7 +648,7 @@ public final class AnnexUtils {
 			}
 			// Final sheet comparision
 			final Connection conn = DataBaseManager.getConnection();
-			generateSummaryProgression(wb, conn, idOperation, comparision, firstThreshold, secondThreshold, tagsToFilterFixed);
+			generateSummaryProgression(wb, conn, idOperation, comparision, tagsToFilterFixed);
 			DataBaseManager.closeConnection(conn);
 			XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
 			wb.write(writer);
@@ -522,13 +666,12 @@ public final class AnnexUtils {
 	 * @param conn              the conn
 	 * @param idOperation       the id operation
 	 * @param comparision       the comparision
-	 * @param firstThreshold    the first threshold
-	 * @param secondThreshold   the second threshold
 	 * @param tagsToFilterFixed the tags to filter fixed
-	 * @throws SQLException the SQL exception
+	 * @throws SQLException    the SQL exception
+	 * @throws ScriptException
 	 */
-	private static void generateSummaryProgression(final XSSFWorkbook wb, final Connection conn, final Long idOperation, final List<ComparisionForm> comparision, double firstThreshold,
-			double secondThreshold, final String[] tagsToFilterFixed) throws SQLException {
+	private static void generateSummaryProgression(final XSSFWorkbook wb, final Connection conn, final Long idOperation, final List<ComparisionForm> comparision, final String[] tagsToFilterFixed)
+			throws SQLException, ScriptException {
 		// Loop to insert puntuation evolution compare with previous.
 		// To select comparision column in comparision object, check if seed has tagId of comparision to select column by date
 		SummaryEvolution globalSummaryFirst = new SummaryEvolution();
@@ -536,10 +679,11 @@ public final class AnnexUtils {
 		SummaryEvolution fixedSummaryFirst = new SummaryEvolution();
 		SummaryEvolution fixedSummaryPrevious = new SummaryEvolution();
 		for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-			countEvolution(conn, comparision, firstThreshold, secondThreshold, globalSummaryPrevious, semillaEntry, false, null);
-			countEvolution(conn, comparision, firstThreshold, secondThreshold, globalSummaryFirst, semillaEntry, true, null);
-			countEvolution(conn, comparision, firstThreshold, secondThreshold, fixedSummaryPrevious, semillaEntry, false, tagsToFilterFixed);
-			countEvolution(conn, comparision, firstThreshold, secondThreshold, fixedSummaryFirst, semillaEntry, true, tagsToFilterFixed);
+			// TODO Applu websites ranges
+			countEvolution(conn, comparision, globalSummaryPrevious, semillaEntry, false, null);
+			countEvolution(conn, comparision, globalSummaryFirst, semillaEntry, true, null);
+			countEvolution(conn, comparision, fixedSummaryPrevious, semillaEntry, false, tagsToFilterFixed);
+			countEvolution(conn, comparision, fixedSummaryFirst, semillaEntry, true, tagsToFilterFixed);
 		}
 		XSSFSheet improvementSheet = wb.createSheet(SHEET_IMPROVMENTS_TITLE);
 		int currentRow = 10;
@@ -555,12 +699,12 @@ public final class AnnexUtils {
 	/**
 	 * Generate summary data.
 	 *
-	 * @param globalSummaryPrevious the global summary previous
-	 * @param improvementSheet      the improvement sheet
-	 * @param currentRow            the current row
-	 * @param title                 the title
+	 * @param globalSummary    the global summary previous
+	 * @param improvementSheet the improvement sheet
+	 * @param currentRow       the current row
+	 * @param title            the title
 	 */
-	private static void generateSummaryData(SummaryEvolution globalSummaryPrevious, XSSFSheet improvementSheet, int currentRow, final String title) {
+	private static void generateSummaryData(SummaryEvolution globalSummary, XSSFSheet improvementSheet, int currentRow, final String title) {
 		Row r;
 		Cell c;
 		XlsxUtils xlsxUtils = new XlsxUtils(improvementSheet.getWorkbook());
@@ -572,73 +716,53 @@ public final class AnnexUtils {
 		final CellStyle headerStyleLeft = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_BLACK_BOLD10_LEFT);
 		final CellStyle percentStyle = xlsxUtils.getCellStyleByName(XlsxUtils.NORMAL_PERCENT11_CENTER_STYLE);
 		c.setCellStyle(whiteCell);
-		c = r.createCell(1);
-		c = r.createCell(2);
-		c = r.createCell(3);
-		c = r.createCell(4);
-		c = r.createCell(5);
-		improvementSheet.addMergedRegion(new CellRangeAddress(currentRow, currentRow, 0, 5));
+		int col = 1;
+		for (Map.Entry<String, Integer> range : globalSummary.getRangeMaps().entrySet()) {
+			c = r.createCell(col);
+			col++;
+		}
+		improvementSheet.addMergedRegion(new CellRangeAddress(currentRow, currentRow, 0, col - 1));
 		currentRow++;
 		// Headers
 		r = improvementSheet.createRow(currentRow);
-		c = r.createCell(1); // Much worst
-		c.setCellValue(MUCH_WORST);
-		c.setCellStyle(headerStyle);
-		c = r.createCell(2); // worst
-		c.setCellValue(WORST);
-		c.setCellStyle(headerStyle);
-		c = r.createCell(3); // stable
-		c.setCellValue(STABLE);
-		c.setCellStyle(headerStyle);
-		c = r.createCell(4); // better
-		c.setCellValue(BETTER);
-		c.setCellStyle(headerStyle);
-		c = r.createCell(5); // much better
-		c.setCellValue(MUCH_BETTER);
-		c.setCellStyle(headerStyle);
+		col = 1;
+		for (Map.Entry<String, Integer> range : globalSummary.getRangeMaps().entrySet()) {
+			c = r.createCell(col);
+			c.setCellValue(range.getKey());
+			c.setCellStyle(headerStyle);
+			improvementSheet.autoSizeColumn(col);
+			col++;
+		}
 		currentRow++;
 		// Percenages
 		r = improvementSheet.createRow(currentRow);
 		c = r.createCell(0);
 		c.setCellValue(PERCENTAGE_OF_SITES);
 		c.setCellStyle(headerStyleLeft);
-		c = r.createCell(1); // Much worst
-		c.setCellValue((double) globalSummaryPrevious.getNumberMuchWorse() / (double) globalSummaryPrevious.total());
-		c.setCellStyle(percentStyle);
-		c = r.createCell(2); // worst
-		c.setCellValue((double) globalSummaryPrevious.getNumberWorse() / (double) globalSummaryPrevious.total());
-		c.setCellStyle(percentStyle);
-		c = r.createCell(3); // stable
-		c.setCellValue((double) globalSummaryPrevious.getNumberStable() / (double) globalSummaryPrevious.total());
-		c.setCellStyle(percentStyle);
-		c = r.createCell(4); // better
-		c.setCellValue((double) globalSummaryPrevious.getNumberBetter() / (double) globalSummaryPrevious.total());
-		c.setCellStyle(percentStyle);
-		c = r.createCell(5); // much better
-		c.setCellValue((double) globalSummaryPrevious.getNumberMuchBetter() / (double) globalSummaryPrevious.total());
-		c.setCellStyle(percentStyle);
+		Integer total = 0;
+		for (Map.Entry<String, Integer> range : globalSummary.getRangeMaps().entrySet()) {
+			total += range.getValue();
+		}
+		col = 1;
+		for (Map.Entry<String, Integer> range : globalSummary.getRangeMaps().entrySet()) {
+			c = r.createCell(col);
+			c.setCellValue((double) range.getValue() / (double) total);
+			c.setCellStyle(percentStyle);
+			col++;
+		}
 		currentRow++;
 		// Number of sites
 		r = improvementSheet.createRow(currentRow);
 		c = r.createCell(0); // Percentaje
 		c.setCellValue(NUMBER_OF_SITES);
 		c.setCellStyle(headerStyleLeft);
-		c = r.createCell(1); // Much worst
-		c.setCellValue(globalSummaryPrevious.getNumberMuchWorse());
-		c = r.createCell(2); // worst
-		c.setCellValue(globalSummaryPrevious.getNumberWorse());
-		c = r.createCell(3); // stable
-		c.setCellValue(globalSummaryPrevious.getNumberStable());
-		c = r.createCell(4); // better
-		c.setCellValue(globalSummaryPrevious.getNumberBetter());
-		c = r.createCell(5); // much better
-		c.setCellValue(globalSummaryPrevious.getNumberMuchBetter());
-		improvementSheet.autoSizeColumn(0);
-		improvementSheet.autoSizeColumn(1);
-		improvementSheet.autoSizeColumn(2);
-		improvementSheet.autoSizeColumn(3);
-		improvementSheet.autoSizeColumn(4);
-		improvementSheet.autoSizeColumn(5);
+		col = 1;
+		for (Map.Entry<String, Integer> range : globalSummary.getRangeMaps().entrySet()) {
+			c = r.createCell(col);
+			c.setCellValue(range.getValue());
+			improvementSheet.autoSizeColumn(col);
+			col++;
+		}
 		// Graphic
 		XSSFDrawing drawing = improvementSheet.createDrawingPatriarch();
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 7, currentRow - 2, 16, currentRow + 8);
@@ -691,11 +815,17 @@ public final class AnnexUtils {
 	 * @param semillaEntry      the semilla entry
 	 * @param isFirst           the is first
 	 * @param tagsToFilterFixed the tags to filter fixed
-	 * @throws SQLException the SQL exception
+	 * @throws SQLException    the SQL exception
+	 * @throws ScriptException
 	 */
-	private static void countEvolution(final Connection c, final List<ComparisionForm> comparision, double firstThreshold, double secondThreshold, SummaryEvolution globalSummary,
-			Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry, final boolean isFirst, final String[] tagsToFilterFixed) throws SQLException {
+	private static void countEvolution(final Connection c, final List<ComparisionForm> comparision, SummaryEvolution globalSummary, Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry,
+			final boolean isFirst, final String[] tagsToFilterFixed) throws SQLException, ScriptException {
 		final SemillaForm semillaForm = semillaEntry.getKey();
+		Map<String, Integer> rangeMap = globalSummary.getRangeMaps();
+		// Init map
+		for (RangeForm range : websiteRanges) {
+			rangeMap.put(range.getName(), 0);
+		}
 		if (semillaForm != null && semillaForm.getId() != 0) {
 			// last puntuiaction
 			Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
@@ -713,30 +843,20 @@ public final class AnnexUtils {
 						if (com.getIdTag() == label.getId()) {
 							BigDecimal scoreComparision = semillaEntry.getValue().get(isFirst ? com.getFirst() : com.getPrevious()).getTotalScore();
 							BigDecimal diffScore = lastScore.subtract(scoreComparision);
-							// Stable
-							if (diffScore.compareTo(BigDecimal.ZERO) == 0) {
-								globalSummary.setNumberStable(globalSummary.getNumberStable() + 1);
-							} else if (diffScore.compareTo(BigDecimal.ZERO) < 0) {
-								// worst
-								if (diffScore.compareTo(new BigDecimal(secondThreshold * -1)) < 0) {
-									globalSummary.setNumberMuchWorse(globalSummary.getNumberMuchWorse() + 1);
+							for (RangeForm range : websiteRanges) {
+								String expression = diffScore + "" + range.getMinValueOperator() + "" + range.getMinValue();
+								if (range.getMaxValueOperator() != null && !StringUtils.isEmpty(range.getMaxValueOperator())) {
+									expression += "&& " + diffScore + "" + range.getMaxValueOperator() + "" + range.getMaxValue();
 								}
-								if (diffScore.compareTo(new BigDecimal(secondThreshold * -1)) > 0 && diffScore.compareTo(new BigDecimal(firstThreshold * -1)) < 0) {
-									globalSummary.setNumberWorse(globalSummary.getNumberWorse() + 1);
-								}
-								if (diffScore.compareTo(new BigDecimal(firstThreshold * -1)) > 0) {
-									globalSummary.setNumberStable(globalSummary.getNumberStable() + 1);
-								}
-							} else if (diffScore.compareTo(BigDecimal.ZERO) > 0) {
-								// better
-								if (diffScore.compareTo(new BigDecimal(secondThreshold)) > 0) {
-									globalSummary.setNumberMuchBetter(globalSummary.getNumberMuchBetter() + 1);
-								}
-								if (diffScore.compareTo(new BigDecimal(secondThreshold)) < 0 && diffScore.compareTo(new BigDecimal(firstThreshold)) > 0) {
-									globalSummary.setNumberBetter(globalSummary.getNumberBetter() + 1);
-								}
-								if (diffScore.compareTo(new BigDecimal(firstThreshold)) > 0) {
-									globalSummary.setNumberStable(globalSummary.getNumberStable() + 1);
+								if ((boolean) scriptEngine.eval(expression)) {
+									Integer val = rangeMap.get(range.getName());
+									if (val != null) {
+										val++;
+									} else {
+										val = 1;
+									}
+									rangeMap.put(range.getName(), val);
+									break;
 								}
 							}
 							break;
@@ -770,30 +890,19 @@ public final class AnnexUtils {
 						}
 					}
 					BigDecimal diffScore = lastScore.subtract(scoreComparision);
-					// Stable
-					if (diffScore.compareTo(BigDecimal.ZERO) == 0) {
-						globalSummary.setNumberStable(globalSummary.getNumberStable() + 1);
-					} else if (diffScore.compareTo(BigDecimal.ZERO) < 0) {
-						// worst
-						if (diffScore.compareTo(new BigDecimal(secondThreshold * -1)) < 0) {
-							globalSummary.setNumberMuchWorse(globalSummary.getNumberMuchWorse() + 1);
+					for (RangeForm range : websiteRanges) {
+						String expression = diffScore + "" + range.getMinValueOperator() + "" + range.getMinValue();
+						if (range.getMaxValueOperator() != null && !StringUtils.isEmpty(range.getMaxValueOperator())) {
+							expression += "&& " + diffScore + "" + range.getMaxValueOperator() + "" + range.getMaxValue();
 						}
-						if (diffScore.compareTo(new BigDecimal(secondThreshold * -1)) > 0 && diffScore.compareTo(new BigDecimal(firstThreshold * -1)) < 0) {
-							globalSummary.setNumberWorse(globalSummary.getNumberWorse() + 1);
-						}
-						if (diffScore.compareTo(new BigDecimal(firstThreshold * -1)) > 0) {
-							globalSummary.setNumberStable(globalSummary.getNumberStable() + 1);
-						}
-					} else if (diffScore.compareTo(BigDecimal.ZERO) > 0) {
-						// better
-						if (diffScore.compareTo(new BigDecimal(secondThreshold)) > 0) {
-							globalSummary.setNumberMuchBetter(globalSummary.getNumberMuchBetter() + 1);
-						}
-						if (diffScore.compareTo(new BigDecimal(secondThreshold)) < 0 && diffScore.compareTo(new BigDecimal(firstThreshold)) > 0) {
-							globalSummary.setNumberBetter(globalSummary.getNumberBetter() + 1);
-						}
-						if (diffScore.compareTo(new BigDecimal(firstThreshold)) > 0) {
-							globalSummary.setNumberStable(globalSummary.getNumberStable() + 1);
+						if ((boolean) scriptEngine.eval(expression)) {
+							Integer val = rangeMap.get(range.getName());
+							if (val != null) {
+								val++;
+							} else {
+								val = 1;
+							}
+							rangeMap.put(range.getName(), val);
 						}
 					}
 				}
@@ -2224,12 +2333,10 @@ public final class AnnexUtils {
 	 * @param idObsExecution   the id obs execution
 	 * @param idOperation      the id operation
 	 * @param comparision      the comparision
-	 * @param firstThreshold   the first threshold
-	 * @param secondThreshold  the second threshold
 	 * @throws Exception the exception
 	 */
-	public static void createAnnexXLSX1_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision,
-			double firstThreshold, double secondThreshold) throws Exception {
+	public static void createAnnexXLSX1_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision)
+			throws Exception {
 		dependencies = new ArrayList<>();
 		Logger.putLog("Generando anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_1_EVOLUTION_XLSX_NAME)) {
@@ -2639,7 +2746,7 @@ public final class AnnexUtils {
 							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", false);
 							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
 							cell = row.createCell(ColumnNames.size() - 1);
-							String formula = generateComparisionFormula(firstThreshold, secondThreshold, columnFirstLetter, columnSecondLetter);
+							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
 							cell.setCellFormula(formula);
 							cell.setCellStyle(shadowStyle);
 						}
@@ -2696,7 +2803,7 @@ public final class AnnexUtils {
 							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", true);
 							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
 							cell = row.createCell(ColumnNames.size() - 1);
-							String formula = generateComparisionFormula(firstThreshold, secondThreshold, columnFirstLetter, columnSecondLetter);
+							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
 							cell.setCellFormula(formula);
 							cell.setCellStyle(shadowStyle);
 						}
@@ -2734,9 +2841,9 @@ public final class AnnexUtils {
 				rowIndex++;
 			}
 			int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
-			String title = "Datos de evolución anterior iteración de portales por segmento. Diferencias de " + firstThreshold + " y " + secondThreshold + " puntos.";
+			String title = "Datos de evolución anterior iteración de portales por segmento.";
 			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.size() - 3, title);
-			title = "Datos de evolución primera iteración de portales por segmento. Diferencias de " + firstThreshold + " y " + secondThreshold + " puntos.";
+			title = "Datos de evolución primera iteración de portales por segmento.";
 			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.size() - 3, title);
 			// Insert graph sheets per category
 			for (String category : categories) {
@@ -2783,13 +2890,11 @@ public final class AnnexUtils {
 	/**
 	 * Generate comparision formula.
 	 *
-	 * @param firstThreshold     the first threshold
-	 * @param secondThreshold    the second threshold
 	 * @param columnFirstLetter  the column first letter
 	 * @param columnSecondLetter the column second letter
 	 * @return the string
 	 */
-	private static String generateComparisionFormula(double firstThreshold, double secondThreshold, String columnFirstLetter, String columnSecondLetter) {
+	private static String generateComparisionFormula(final String columnFirstLetter, final String columnSecondLetter) {
 		final String substractColumnsResult = columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter;
 		String formula = "IF(" + columnSecondLetter + ":" + columnSecondLetter + "=\"\",\"\",\"\")";
 		if (websiteRanges != null && !websiteRanges.isEmpty()) {
@@ -3777,11 +3882,10 @@ public final class AnnexUtils {
 	 * Creates the annex map.
 	 *
 	 * @param idObsExecution the id obs execution
-	 * @param tagsToFilter   the tags to filter
 	 * @param exObsIds       the ex obs ids
 	 * @return the map
 	 */
-	private static Map<SemillaForm, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] tagsToFilter, final String[] exObsIds) {
+	private static Map<SemillaForm, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] exObsIds) {
 		final Map<SemillaForm, TreeMap<String, ScoreForm>> seedMapFilled = new HashMap<>();
 		final Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
 		Connection c = null;
@@ -4285,114 +4389,25 @@ public final class AnnexUtils {
 	 * The Class SummaryEvolution.
 	 */
 	public static class SummaryEvolution {
-		/** The number much worse. */
-		private int numberMuchWorse = 0;
-		/** The number worse. */
-		private int numberWorse = 0;
-		/** The number stable. */
-		private int numberStable = 0;
-		/** The number better. */
-		private int numberBetter = 0;
-		/** The number much better. */
-		private int numberMuchBetter = 0;
+		/** The range maps. */
+		private Map<String, Integer> rangeMaps = new TreeMap<>();
 
 		/**
-		 * Total.
+		 * Gets the range maps.
 		 *
-		 * @return the int
+		 * @return the range maps
 		 */
-		public int total() {
-			return this.numberBetter + this.numberMuchBetter + this.numberMuchWorse + this.numberStable + this.numberWorse;
+		public Map<String, Integer> getRangeMaps() {
+			return rangeMaps;
 		}
 
 		/**
-		 * Gets the number much worse.
+		 * Sets the range maps.
 		 *
-		 * @return the numberMuchWorse
+		 * @param rangeMaps the range maps
 		 */
-		public int getNumberMuchWorse() {
-			return numberMuchWorse;
-		}
-
-		/**
-		 * Sets the number much worse.
-		 *
-		 * @param numberMuchWorse the numberMuchWorse to set
-		 */
-		public void setNumberMuchWorse(int numberMuchWorse) {
-			this.numberMuchWorse = numberMuchWorse;
-		}
-
-		/**
-		 * Gets the number worse.
-		 *
-		 * @return the numberWorse
-		 */
-		public int getNumberWorse() {
-			return numberWorse;
-		}
-
-		/**
-		 * Sets the number worse.
-		 *
-		 * @param numberWorse the numberWorse to set
-		 */
-		public void setNumberWorse(int numberWorse) {
-			this.numberWorse = numberWorse;
-		}
-
-		/**
-		 * Gets the number stable.
-		 *
-		 * @return the numberStable
-		 */
-		public int getNumberStable() {
-			return numberStable;
-		}
-
-		/**
-		 * Sets the number stable.
-		 *
-		 * @param numberStable the numberStable to set
-		 */
-		public void setNumberStable(int numberStable) {
-			this.numberStable = numberStable;
-		}
-
-		/**
-		 * Gets the number better.
-		 *
-		 * @return the numberBetter
-		 */
-		public int getNumberBetter() {
-			return numberBetter;
-		}
-
-		/**
-		 * Sets the number better.
-		 *
-		 * @param numberBetter the numberBetter to set
-		 */
-		public void setNumberBetter(int numberBetter) {
-			this.numberBetter = numberBetter;
-		}
-
-		/**
-		 * Gets the number much better.
-		 *
-		 * @return the numberMuchBetter
-		 */
-		public int getNumberMuchBetter() {
-			return numberMuchBetter;
-		}
-
-		/**
-		 * Sets the number much better.
-		 *
-		 * @param numberMuchBetter the numberMuchBetter to set
-		 */
-		public void setNumberMuchBetter(int numberMuchBetter) {
-			this.numberMuchBetter = numberMuchBetter;
+		public void setRangeMaps(Map<String, Integer> rangeMaps) {
+			this.rangeMaps = rangeMaps;
 		}
 	}
 }

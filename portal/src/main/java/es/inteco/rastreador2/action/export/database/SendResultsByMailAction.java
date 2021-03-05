@@ -54,6 +54,7 @@ import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.dao.export.database.Category;
 import es.inteco.rastreador2.dao.export.database.Observatory;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
+import es.inteco.rastreador2.dao.observatorio.UraCustomTextDAO;
 import es.inteco.rastreador2.export.database.form.ComparisionForm;
 import es.inteco.rastreador2.manager.BaseManager;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
@@ -62,6 +63,7 @@ import es.inteco.rastreador2.pdf.utils.ZipUtils;
 import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.AnnexUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
+import es.inteco.rastreador2.utils.SendResultsMailUtils;
 import es.inteco.rastreador2.utils.export.database.DatabaseExportUtils;
 import es.inteco.utils.FileUtils;
 
@@ -86,21 +88,30 @@ public class SendResultsByMailAction extends Action {
 		if (CrawlerUtils.hasAccess(request, "export.observatory.results")) {
 			try {
 				if (request.getParameter(Constants.ACTION) != null) {
-					if (request.getParameter(Constants.ACTION).equals(Constants.EXPORT)) {
+					/*
+					 * if (request.getParameter(Constants.ACTION).equals(Constants.EXPORT)) { String[] tagsToFilter = null; if (request.getParameter("tags") != null &&
+					 * !StringUtils.isEmpty(request.getParameter("tags"))) { tagsToFilter = request.getParameter("tags").split(","); } // Evol executions ids String[] exObsIds =
+					 * request.getParameterValues("evol"); if (exObsIds == null) { exObsIds = new String[] { request.getParameter(Constants.ID_EX_OBS) }; } // if has tags (ids) check if has request
+					 * params like fisrt_{idtag}, previous_{idtag} List<ComparisionForm> comparision = null; if (tagsToFilter != null && tagsToFilter.length > 0) { comparision = new ArrayList<>(); for
+					 * (String tagId : tagsToFilter) { ComparisionForm c = new ComparisionForm(); c.setIdTag(Integer.parseInt(tagId)); c.setFirst(request.getParameter("first_" + tagId));
+					 * c.setPrevious(request.getParameter("previous_" + tagId)); comparision.add(c); } } // Export all?? export(mapping, request); getAnnexes(mapping, request, response, tagsToFilter,
+					 * exObsIds, comparision); } else
+					 */
+					if (request.getParameter(Constants.ACTION).equals(Constants.CONFIG)) {
+						Connection connection = DataBaseManager.getConnection();
+						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
+						DataBaseManager.closeConnection(connection);
+						return config(mapping, request);
+					} else if (request.getParameter(Constants.ACTION).equals(Constants.EXECUTE)) {
 						String[] tagsToFilter = null;
 						if (request.getParameter("tags") != null && !StringUtils.isEmpty(request.getParameter("tags"))) {
-							tagsToFilter = request.getParameter("tags").split(",");
+							tagsToFilter = request.getParameterValues("tags");
 						}
 						// Evol executions ids
 						String[] exObsIds = request.getParameterValues("evol");
 						if (exObsIds == null) {
 							exObsIds = new String[] { request.getParameter(Constants.ID_EX_OBS) };
 						}
-						// Get classification thresholds
-						Connection connection = DataBaseManager.getConnection();
-						double firstThreshold = ObservatorioDAO.getFirstClassificationThresholdFromConfig(connection);
-						double secondThreshold = ObservatorioDAO.getSecondClassificationThresholdFromConfig(connection);
-						DataBaseManager.closeConnection(connection);
 						// if has tags (ids) check if has request params like fisrt_{idtag}, previous_{idtag}
 						List<ComparisionForm> comparision = null;
 						if (tagsToFilter != null && tagsToFilter.length > 0) {
@@ -113,13 +124,18 @@ public class SendResultsByMailAction extends Action {
 								comparision.add(c);
 							}
 						}
-						// Export all??
-						export(mapping, request);
-						getAnnexes(mapping, request, response, tagsToFilter, exObsIds, comparision, firstThreshold, secondThreshold);
+						final Long idExObservatory = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+						AnnexUtils.generateEvolutionData(CrawlerUtils.getResources(request), idObservatory, idExObservatory, tagsToFilter, exObsIds, comparision);
+						return mapping.findForward(Constants.CONFIRM);
 					} else if (request.getParameter(Constants.ACTION).equals(Constants.CONFIRM)) {
 						Connection connection = DataBaseManager.getConnection();
 						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
 						DataBaseManager.closeConnection(connection);
+						// TODO Generate Annex file 1, by dependency, pdf individual report zip and send
+						final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+						final Long idObs = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
+						final Long idCartucho = Long.valueOf(request.getParameter(Constants.ID_CARTUCHO));
+						SendResultsMailUtils.generateAndSendData(idObs, idCartucho, idObsExecution);
 						return confirm(mapping, request);
 					} else if (request.getParameter(Constants.ACTION).equals("observatoriesByTag")) {
 						observatoriesByTag(mapping, form, request, response);
@@ -215,7 +231,7 @@ public class SendResultsByMailAction extends Action {
 	 * @return the action forward
 	 * @throws Exception the exception
 	 */
-	private ActionForward confirm(ActionMapping mapping, HttpServletRequest request) throws Exception {
+	private ActionForward config(ActionMapping mapping, HttpServletRequest request) throws Exception {
 		final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 		try (Connection c = DataBaseManager.getConnection()) {
 			final List<EtiquetaForm> tagList = EtiquetaDAO.getAllEtiquetasClasification(c, 3);
@@ -226,23 +242,48 @@ public class SendResultsByMailAction extends Action {
 			Logger.putLog("Error en la confirmación para exportar los resultados del observatorio: ", SendResultsByMailAction.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+		return mapping.findForward(Constants.CONFIG);
+	}
+
+	/**
+	 * Confirm.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	private ActionForward confirm(ActionMapping mapping, HttpServletRequest request) throws Exception {
+		final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
+		final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+		try (Connection c = DataBaseManager.getConnection()) {
+			// TODO Load list of URAs
+			request.setAttribute("tagList", UraCustomTextDAO.findAll(c, idObsExecution));
+			final ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
+			request.setAttribute(Constants.OBSERVATORY_FORM, observatorioForm);
+		} catch (Exception e) {
+			Logger.putLog("Error en la confirmación para exportar los resultados del observatorio: ", SendResultsByMailAction.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
 		return mapping.findForward(Constants.CONFIRM);
 	}
 
 	/**
 	 * Gets the annexes.
 	 *
-	 * @param mapping      the mapping
-	 * @param request      the request
-	 * @param response     the response
-	 * @param tagsToFilter the tags to filter
-	 * @param exObsIds     the ex obs ids
-	 * @param comparision  the comparision TODO Apply
+	 * @param mapping         the mapping
+	 * @param request         the request
+	 * @param response        the response
+	 * @param tagsToFilter    the tags to filter
+	 * @param exObsIds        the ex obs ids
+	 * @param comparision     the comparision TODO Apply
+	 * @param firstThreshold  the first threshold
+	 * @param secondThreshold the second threshold
 	 * @return the annexes
 	 * @throws Exception the exception
 	 */
 	private ActionForward getAnnexes(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response, final String[] tagsToFilter, final String[] exObsIds,
-			final List<ComparisionForm> comparision, double firstThreshold, double secondThreshold) throws Exception {
+			final List<ComparisionForm> comparision) throws Exception {
 		try {
 			final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 			final Long idObs = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
@@ -261,7 +302,7 @@ public class SendResultsByMailAction extends Action {
 			} else if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
 				resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 			}
-			AnnexUtils.generateAllAnnex(resources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision, firstThreshold, secondThreshold);
+			AnnexUtils.generateAllAnnex(resources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
 			final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";

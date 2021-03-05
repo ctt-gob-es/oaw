@@ -33,36 +33,15 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.intav.form.PageForm;
 import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.rastreador2.actionform.observatorio.TemplateRangeForm;
-import es.inteco.rastreador2.dao.observatorio.TemplateRangeDAO;
+import es.inteco.rastreador2.actionform.observatorio.UraCustomTextForm;
+import es.inteco.rastreador2.dao.observatorio.UraCustomTextDAO;
 import es.inteco.rastreador2.json.JsonMessage;
 import es.inteco.rastreador2.utils.Pagination;
 
 /**
  * The Class EtiquetasObservatorioAction.
  */
-public class TemplateRangeObservatorioAction extends DispatchAction {
-	/**
-	 * Load. Carga de la página.
-	 *
-	 * @param mapping  the mapping
-	 * @param form     the form
-	 * @param request  the request
-	 * @param response the response
-	 * @return the action forward
-	 * @throws Exception the exception
-	 */
-	public ActionForward load(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		// Marcamos el menú
-		request.getSession().setAttribute(Constants.MENU, Constants.MENU_INTECO_OBS);
-		if (request.getParameter(Constants.RETURN_OBSERVATORY_RESULTS) != null) {
-			request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_OBSERVATORIO);
-		} else {
-			request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_OBS_RANGES);
-		}
-		return mapping.findForward(Constants.EXITO);
-	}
-
+public class UraCustomTextObservatorioAction extends DispatchAction {
 	/**
 	 * Search. Devuelve un JSON con los resultados de la búsqueda
 	 *
@@ -75,26 +54,54 @@ public class TemplateRangeObservatorioAction extends DispatchAction {
 	 */
 	public ActionForward all(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
-			String nombre = request.getParameter("nombre");
-			Long idExObs = Long.parseLong(request.getParameter("idExObs"));
-			if (!StringUtils.isEmpty(nombre)) {
-				nombre = es.inteco.common.utils.StringUtils.corregirEncoding(nombre);
-			}
+			Long idExObs = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
-			final int numResult = TemplateRangeDAO.count(c, nombre, idExObs);
+			final int numResult = UraCustomTextDAO.count(c, idExObs);
 			response.setContentType("text/json");
-			List<TemplateRangeForm> listaEtiquetas = TemplateRangeDAO.findAll(c, idExObs);
-			String jsonSeeds = new Gson().toJson(listaEtiquetas);
-			// Paginacion
+			List<UraCustomTextForm> list = UraCustomTextDAO.findAll(c, idExObs);
+			String jsonSeeds = new Gson().toJson(list);
 			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
 			String jsonPagination = new Gson().toJson(paginas);
 			PrintWriter pw = response.getWriter();
-			// pw.write(json);
-			pw.write("{\"templates\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
+			pw.write("{\"uras\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
 			pw.flush();
 			pw.close();
 		} catch (Exception e) {
-			Logger.putLog("Error: ", TemplateRangeObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error: ", UraCustomTextObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return null;
+	}
+
+	/**
+	 * Find.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	public ActionForward find(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		try (Connection c = DataBaseManager.getConnection()) {
+			final Long idExObs = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
+			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
+			String[] urasIds = null;
+			if (request.getParameter("uras") != null && !StringUtils.isEmpty(request.getParameter("uras"))) {
+				urasIds = request.getParameter("uras").split(",");
+			}
+			final int numResult = UraCustomTextDAO.count(c, idExObs, urasIds);
+			response.setContentType("text/json");
+			List<UraCustomTextForm> list = UraCustomTextDAO.findByIds(c, idExObs, urasIds);
+			String jsonSeeds = new Gson().toJson(list);
+			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
+			String jsonPagination = new Gson().toJson(paginas);
+			PrintWriter pw = response.getWriter();
+			pw.write("{\"uras\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
+			pw.flush();
+			pw.close();
+		} catch (Exception e) {
+			Logger.putLog("Error: ", UraCustomTextObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		return null;
 	}
@@ -111,52 +118,14 @@ public class TemplateRangeObservatorioAction extends DispatchAction {
 	 */
 	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
-		TemplateRangeForm range = (TemplateRangeForm) form;
+		UraCustomTextForm range = (UraCustomTextForm) form;
 		try (Connection c = DataBaseManager.getConnection()) {
-			TemplateRangeDAO.update(c, range);
+			UraCustomTextDAO.update(c, range);
 			response.getWriter().write(messageResources.getMessage("mensaje.exito.range.generada"));
 		} catch (Exception e) {
 			Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 			response.setStatus(400);
 			response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
-		}
-		return null;
-	}
-
-	/**
-	 * Save.
-	 *
-	 * @param mapping  the mapping
-	 * @param form     the form
-	 * @param request  the request
-	 * @param response the response
-	 * @return the action forward
-	 * @throws Exception the exception
-	 */
-	public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
-		List<JsonMessage> errores = new ArrayList<>();
-		TemplateRangeForm range = (TemplateRangeForm) form;
-		if (range != null && StringUtils.isNotEmpty(range.getName())) {
-			try (Connection c = DataBaseManager.getConnection()) {
-				if (TemplateRangeDAO.exists(c, range)) {
-					response.setStatus(400);
-					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.range.duplicado")));
-					response.getWriter().write(new Gson().toJson(errores));
-				} else {
-					TemplateRangeDAO.save(c, range);
-					errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.range.generada")));
-					response.getWriter().write(new Gson().toJson(errores));
-				}
-			} catch (Exception e) {
-				Logger.putLog("Error: ", TemplateRangeObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-				response.setStatus(400);
-				response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
-			}
-		} else {
-			response.setStatus(400);
-			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.range.obligatorio")));
-			response.getWriter().write(new Gson().toJson(errores));
 		}
 		return null;
 	}
@@ -177,11 +146,11 @@ public class TemplateRangeObservatorioAction extends DispatchAction {
 		String id = request.getParameter("id");
 		if (id != null) {
 			try (Connection c = DataBaseManager.getConnection()) {
-				TemplateRangeDAO.delete(c, Long.parseLong(id));
+				UraCustomTextDAO.delete(c, Long.parseLong(id));
 				errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.range.eliminada")));
 				response.getWriter().write(new Gson().toJson(errores));
 			} catch (Exception e) {
-				Logger.putLog("Error: ", TemplateRangeObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+				Logger.putLog("Error: ", UraCustomTextObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 				response.setStatus(400);
 				response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
 			}

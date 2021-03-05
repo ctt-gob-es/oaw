@@ -833,4 +833,9 @@
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionEnvioEmails.jsp" />
 	</definition>
+	
+	<definition name=".confirmSendObservatoryResultsByMail2" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionEnvioEmails2.jsp" />
+	</definition>
 </tiles-definitions>    

@@ -354,6 +354,13 @@ Email: observ.accesibilidad@correo.gob.es
 										</html:link>
 									</td>
 									<td>
+										<html:link forward="configSendObservatoryResultsByMail" name="paramsInformeAgregado">
+											<span class="glyphicon glyphicon-cog" aria-hidden="true" data-toggle="tooltip"
+												title="<bean:message key="indice.rastreo.send.database.config" />"></span>
+											<span class="sr-only">
+												<bean:message key="indice.rastreo.send.database.config" />
+											</span>
+										</html:link>
 										<html:link forward="confirmSendObservatoryResultsByMail" name="paramsInformeAgregado">
 											<span class="glyphicon glyphicon-envelope" aria-hidden="true" data-toggle="tooltip"
 												title="<bean:message key="indice.rastreo.exportar.database" />"></span>

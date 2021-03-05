@@ -223,7 +223,7 @@ var colNameSendAuto = '<bean:message key="colname.send.auto"/>';
 															formatter: emailsFormatter
 														},
 														{
-															name : "official",
+															name : "sendAuto",
 															align : "center",
 															width : 10,
 															template : "booleanCheckboxFa",
@@ -234,7 +234,7 @@ var colNameSendAuto = '<bean:message key="colname.send.auto"/>';
 															sortable : false
 														},
 														{
-															name : "sendAuto",
+															name : "official",
 															align : "center",
 															width : 10,
 															template : "booleanCheckboxFa",

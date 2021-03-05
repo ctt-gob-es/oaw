@@ -20,7 +20,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -82,6 +84,14 @@ public final class ZipUtils {
 		return null;
 	}
 
+	/**
+	 * Pdfs zip to list.
+	 *
+	 * @param idObservatory the id observatory
+	 * @param idExecutionOb the id execution ob
+	 * @param basePath      the base path
+	 * @return the list
+	 */
 	public static List<String> pdfsZipToList(final Long idObservatory, final Long idExecutionOb, final String basePath) {
 		List<String> zipFiles = new ArrayList<>();
 		final String executionPath = basePath + idObservatory + File.separator + idExecutionOb + File.separator;
@@ -96,6 +106,41 @@ public final class ZipUtils {
 						// final String zipPath = executionPath + "temp" + File.separator + file.getName() + ".zip";
 						generateZipFile(path, zipPath, false);
 						zipFiles.add(zipPath);
+					}
+				}
+			}
+			// NO generate zip with sirectoruies
+			// generateZipFile(finalPath, finalZipPath, false);
+			// PENDING No eliminamos los temporales
+			// FileUtils.removeFile(basePath + idObservatory + File.separator + idExecutionOb + File.separator + "temp" + File.separator);
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return zipFiles;
+	}
+
+	/**
+	 * Pdfs zip to map.
+	 *
+	 * @param idObservatory the id observatory
+	 * @param idExecutionOb the id execution ob
+	 * @param basePath      the base path
+	 * @return the map
+	 */
+	public static Map<String, String> pdfsZipToMap(final Long idObservatory, final Long idExecutionOb, final String basePath) {
+		Map<String, String> zipFiles = new HashMap<String, String>();
+		final String executionPath = basePath + idObservatory + File.separator + idExecutionOb + File.separator;
+		try {
+			final File directory = new File(executionPath);
+			final File[] directoryFiles = directory.listFiles();
+			if (directoryFiles != null) {
+				for (File file : directoryFiles) {
+					if (file.isDirectory()) {
+						final String path = executionPath + file.getName() + File.separator;
+						final String zipPath = executionPath + File.separator + file.getName() + ".zip";
+						// final String zipPath = executionPath + "temp" + File.separator + file.getName() + ".zip";
+						generateZipFile(path, zipPath, false);
+						zipFiles.put(file.getName(), zipPath);
 					}
 				}
 			}

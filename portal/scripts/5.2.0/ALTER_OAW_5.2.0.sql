@@ -13,8 +13,8 @@ INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES (
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.width','width', '10');
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.depth','depth', '10');
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.autorelaunch','autorelaunch', '0');
-INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.first.classification.threshold','firstclassthreshold', '0.5');
-INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.second.classification.threshold','secondclassthreshold', '2');
+--INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.first.classification.threshold','firstclassthreshold', '0.5');
+--INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.second.classification.threshold','secondclassthreshold', '2');
 
 ALTER TABLE `tanalisis_accesibilidad` ADD `COD_FUENTE` MEDIUMTEXT;
 
@@ -38,8 +38,7 @@ CREATE TABLE `observatorio_range` (
 	`max_value` float(4,2) ,
 	`min_value_operator` VARCHAR(255) NOT NULL ,
 	`max_value_operator` VARCHAR(255), 
-    PRIMARY KEY(`id`),
-	UNIQUE (`name`)
+    PRIMARY KEY(`id`)
 );
 
 CREATE TABLE `observatorio_template_range` ( 
@@ -51,7 +50,32 @@ CREATE TABLE `observatorio_template_range` (
 	`min_value_operator` VARCHAR(255) NOT NULL ,
 	`max_value_operator` VARCHAR(255), 
 	`template` mediumtext NOT NULL,
-    PRIMARY KEY(`id`),
-	UNIQUE (`name`)
+    PRIMARY KEY(`id`)
 );
 
+CREATE TABLE `observatorio_template_custom_text_ura` ( 
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`id_observatory_execution` INT NOT NULL,
+	`id_ura` INT NOT NULL,
+	`id_range` INT NOT NULL,
+	`range_value` float(4,2) ,
+	`custom_text` mediumtext NOT NULL,
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE `observatorio_send_configuration` ( 
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`id_observatory_execution` INT NOT NULL,
+	`ids_observatory_execution_evolution` VARCHAR(255),
+	`has_custom_texts` INT NOT NULL DEFAULT 0,
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE `observatorio_send_configuration_comparision` ( 
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`id_observatory_execution` INT NOT NULL,
+	`id_tag` INT NOT NULL,
+	`date_first` VARCHAR(255),
+	`date_previous` VARCHAR(255),
+    PRIMARY KEY(`id`)
+);
