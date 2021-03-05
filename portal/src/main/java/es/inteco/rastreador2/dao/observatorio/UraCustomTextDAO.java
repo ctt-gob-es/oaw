@@ -195,7 +195,8 @@ public class UraCustomTextDAO {
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
-			ps = c.prepareStatement("INSERT INTO observatorio_template_custom_text_ura(id_observatory_execution, id_ura, id_range, custom_text, range_value) VALUES (?,?,?,?,?)",
+			ps = c.prepareStatement(
+					"INSERT INTO observatorio_template_custom_text_ura(id_observatory_execution, id_ura, id_range, custom_text, range_value) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE id_range = ?, range_value = ?;",
 					Statement.RETURN_GENERATED_KEYS);
 			ps.setLong(1, form.getIdObservatoryExecution());
 			ps.setLong(2, form.getIdUra());
@@ -210,6 +211,8 @@ public class UraCustomTextDAO {
 			}
 			ps.setString(4, "");
 			ps.setFloat(5, form.getRangeValue());
+			ps.setLong(6, form.getIdRange());
+			ps.setFloat(7, form.getRangeValue());
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 0) {
 				throw new SQLException("Creating range failed, no rows affected.");

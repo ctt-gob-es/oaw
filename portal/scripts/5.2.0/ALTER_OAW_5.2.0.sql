@@ -62,6 +62,7 @@ CREATE TABLE `observatorio_template_custom_text_ura` (
 	`custom_text` mediumtext NOT NULL,
     PRIMARY KEY(`id`)
 );
+ALTER TABLE observatorio_template_custom_text_ura ADD UNIQUE unique_index(id_observatory_execution, id_ura);
 
 CREATE TABLE `observatorio_send_configuration` ( 
 	`id` INT NOT NULL AUTO_INCREMENT,
