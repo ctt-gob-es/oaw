@@ -30,9 +30,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	document.head.appendChild(script);
 </script>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-
-
-
 <script>
 	$(window).on('load', function() {
 	
@@ -74,7 +71,17 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	
 	});
 	
-	
+	function formatDate(date) {
+		var d = new Date(date), month = '' + (d.getMonth() + 1), day = ''
+				+ d.getDate(), year = d.getFullYear();
+
+		if (month.length < 2)
+			month = '0' + month;
+		if (day.length < 2)
+			day = '0' + day;
+
+		return [ year, month, day ].join('-');
+	}
 	
 	function loadOptions(idObs, tagId, element) {
 	    $.ajaxSetup({
@@ -107,7 +114,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	                }
 	            },
 	            error: function(data) {
-	                alert('error');
+	                
 	            }
 	        });
 	}
@@ -304,6 +311,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	                                editrules: {
 	                                    required: true,
 	                                },
+	                                edittype : 'custom',
+									editoptions : {
+										custom_element : templateEdit,
+										custom_value : templateEditValue
+									},
 	                                align: "left",
 	                                sortable: false,
 	
@@ -331,7 +343,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	                        pgtext: false,
 	                        pginput: false,
 	                        hidegrid: false,
-	                        altRows: true,
+	                        altRows: false,
 	                        mtype: 'POST',
 	
 	                        onSelectRow: function(rowid,
@@ -401,7 +413,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	                                                    response) {
 	                                                    reloadGrid(lastUrl);
 	                                                },
-	                                                url: '/oaw/secure/ViewRangesObservatorio.do?action=update',
+	                                                url: '/oaw/secure/TemplateRangeObservatorio.do?action=update',
 	                                                restoreAfterError: false,
 	                                            });
 	
@@ -471,7 +483,25 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	
 	}
 	
-	
+	function templateEdit(value, options, rowObject) {
+		var element = document.createElement('textarea');
+		element.setAttribute("name", "templateEdit");
+		element.setAttribute("id", "templateEdit");
+		
+		CKEDITOR.replace(element);
+		CKEDITOR.instances.templateEdit.setData(value);
+		return element;
+	}
+
+	function templateEditValue(elem, operation, value) {
+
+		if (operation === 'get') {
+			return CKEDITOR.instances.templateEdit.getData();
+		} else if (operation === 'set') {
+			//CKEDITOR.replace('templateEdit');
+			//CKEDITOR.instances.templateEdit.setData(value);
+		}
+	}
 	
 	
 	var dialog;
@@ -688,7 +718,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			</ol>
 		</div>
 		<div id="cajaformularios">
-			<form action="/oaw/secure/databaseExportAction.do">
+			<form action="/oaw/secure/ConfigSendResultsByMailAction.do">
 				<h2>
 					<bean:message key="send.results.observatory.title" />
 				</h2>
@@ -775,32 +805,20 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<fieldset>
 					<p>
 						<strong class="labelVisu">
-							<bean:message key="confirmacion.exportar.resultados.observatorio.pregunta" />
+							<bean:message key="resultado.observatorio.rastreo.realizado.send.info" />
 						</strong>
 					</p>
 					<p>
-						<strong class="labelVisu">
-							<bean:message key="confirmacion.exportar.resultados.observatorio.info" />
-						</strong>
+
+							<bean:message key="resultado.observatorio.rastreo.realizado.send.info2" />
 					</p>
-					<div class="formItem">
-						<label>
-							<strong class="labelVisu">
-								<bean:message key="confirmacion.eliminar.observatorio.nombre" />
-								:
-							</strong>
-						</label>
-						<p>
-							<bean:write name="<%=Constants.OBSERVATORY_FORM%>" property="nombre" />
-						</p>
-					</div>
 				</fieldset>
 				<div class="formButton">
-					<input type="hidden" name="action" value="export" />
+					<input type="hidden" name="action" value="execute" />
 					<input type="hidden" name="idCartucho" value="<c:out value="${param.idCartucho}"/>" />
 					<input type="hidden" name="id_observatorio" value="<c:out value="${param.id_observatorio}"/>" />
 					<input type="hidden" name="idExObs" value="<c:out value="${param.idExObs}"/>" />
-					<input type="submit" class="btn btn-primary btn-lg" value=<bean:message key="boton.enviar" />>
+					<input type="submit" class="btn btn-primary btn-lg" value=<bean:message key="boton.aceptar" />>
 					<html:link styleClass="btn btn-default btn-lg" forward="observatoryMenu">
 						<bean:message key="boton.cancelar" />
 					</html:link>

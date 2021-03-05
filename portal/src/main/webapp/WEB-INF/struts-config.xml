@@ -41,8 +41,12 @@
 		<form-bean name="EtiquetaForm" type="es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm" />
 
 		<form-bean name="RangeForm" type="es.inteco.rastreador2.actionform.observatorio.RangeForm" />
-		
+
 		<form-bean name="TemplateRangeForm" type="es.inteco.rastreador2.actionform.observatorio.TemplateRangeForm" />
+
+		<form-bean name="UraCustomTextForm" type="es.inteco.rastreador2.actionform.observatorio.UraCustomTextForm" />
+
+
 
 		<form-bean name="ReducirTablasForm" type="es.inteco.rastreador2.actionform.observatorio.ReducirTablasForm" />
 
@@ -360,6 +364,9 @@
 		<forward name="observatoryPlantillas" path="/secure/Plantilla.do?action=load" />
 
 		<forward name="observatoryReducirTablas" path="/secure/ViewReducirTablasObservatorio.do?action=load" />
+
+		<forward name="configSendObservatoryResultsByMail"
+			path="/secure/ConfigSendResultsByMailAction.do?action=config" />
 
 		<forward name="confirmSendObservatoryResultsByMail"
 			path="/secure/ConfigSendResultsByMailAction.do?action=confirm" />
@@ -1063,7 +1070,8 @@
 
 		<action path="/secure/ConfigSendResultsByMailAction"
 			type="es.inteco.rastreador2.action.export.database.SendResultsByMailAction" scope="request">
-			<forward name="confirm" path=".confirmSendObservatoryResultsByMail" />
+			<forward name="config" path=".confirmSendObservatoryResultsByMail" />
+			<forward name="confirm" path=".confirmSendObservatoryResultsByMail2" />
 			<forward name="exito" path=".Exito" />
 		</action>
 
@@ -1076,9 +1084,16 @@
 
 
 		<action path="/secure/TemplateRangeObservatorio"
-			type="es.inteco.rastreador2.action.observatorio.TemplateRangeObservatorioAction" name="TemplateRangeForm" parameter="action"
-			scope="request" validate="false">
+			type="es.inteco.rastreador2.action.observatorio.TemplateRangeObservatorioAction" name="TemplateRangeForm"
+			parameter="action" scope="request" validate="false">
 		</action>
+
+
+		<action path="/secure/UraCustomTextObservatorio"
+			type="es.inteco.rastreador2.action.observatorio.UraCustomTextObservatorioAction" name="UraCustomTextForm"
+			parameter="action" scope="request" validate="false">
+		</action>
+
 
 	</action-mappings>
 

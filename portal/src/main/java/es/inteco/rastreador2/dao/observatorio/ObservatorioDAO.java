@@ -18,6 +18,7 @@ package es.inteco.rastreador2.dao.observatorio;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 import static org.apache.commons.lang3.StringUtils.leftPad;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -71,6 +72,7 @@ import es.inteco.rastreador2.dao.rastreo.DatosCartuchoRastreoForm;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
+import es.inteco.rastreador2.export.database.form.ComparisionForm;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.DAOUtils;
 
@@ -3161,11 +3163,157 @@ public final class ObservatorioDAO {
 				numCrawls = rsCrawls.getInt("numCrawls");
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("SQL Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		} finally {
 			DAOUtils.closeQueries(psCrawls, rsCrawls);
 		}
 		return numCrawls;
+	}
+
+	/**
+	 * Save config.
+	 *
+	 * @param c              the c
+	 * @param idObsExecution the id obs execution
+	 * @param exObsIds       the ex obs ids
+	 * @param comparision    the comparision
+	 * @throws SQLException                 the SQL exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
+	public static void saveConfig(Connection c, final Long idObsExecution, final String[] exObsIds, final List<ComparisionForm> comparision) throws SQLException, UnsupportedEncodingException {
+		PreparedStatement ps = null;
+		try {
+			// Delete existing
+			ps = c.prepareStatement("DELETE FROM observatorio_send_configuration WHERE id_observatory_execution = " + idObsExecution);
+			ps.executeUpdate();
+			DAOUtils.closeQueries(ps, null);
+			ps = c.prepareStatement("DELETE FROM observatorio_send_configuration_comparision WHERE id_observatory_execution = " + idObsExecution);
+			ps.executeUpdate();
+			DAOUtils.closeQueries(ps, null);
+			// Insert new
+			ps = c.prepareStatement("INSERT INTO observatorio_send_configuration(id_observatory_execution, ids_observatory_execution_evolution) " + "VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+			ps.setLong(1, idObsExecution);
+			ps.setString(2, String.join(",", exObsIds));
+			ps.executeUpdate();
+			try (ResultSet rs = ps.getGeneratedKeys()) {
+				if (rs.next()) {
+					if (comparision != null && !comparision.isEmpty()) {
+						for (ComparisionForm cmp : comparision) {
+							ps = c.prepareStatement("INSERT INTO observatorio_send_configuration_comparision(id_observatory_execution, id_tag, date_first, date_previous) " + "VALUES (?,?,?,?)",
+									Statement.RETURN_GENERATED_KEYS);
+							ps.setLong(1, idObsExecution);
+							ps.setLong(2, cmp.getIdTag());
+							ps.setString(3, cmp.getFirst());
+							ps.setString(4, cmp.getPrevious());
+							ps.executeUpdate();
+							DAOUtils.closeQueries(ps, null);
+						}
+					}
+				}
+			}
+		} catch (SQLException e) {
+			c.rollback();
+			Logger.putLog("SQL_EXCEPTION: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(ps, null);
+		}
+	}
+
+	/**
+	 * Gets the comparision config.
+	 *
+	 * @param c              the c
+	 * @param idObsExecution the id obs execution
+	 * @return the comparision config
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<ComparisionForm> getComparisionConfig(Connection c, final Long idObsExecution) throws SQLException {
+		List<ComparisionForm> list = new ArrayList<>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = c.prepareStatement("SELECT id, id_observatory_execution, id_tag, date_first, date_previous FROM observatorio_send_configuration_comparision WHERE id_observatory_execution = ?");
+			ps.setLong(1, idObsExecution);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				ComparisionForm cmp = new ComparisionForm();
+				cmp.setIdTag(rs.getInt("id_tag"));
+				cmp.setFirst(rs.getString("date_first"));
+				cmp.setFirst(rs.getString("date_previous"));
+				list.add(cmp);
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(ps, rs);
+		}
+		return list;
+	}
+
+	/**
+	 * Gets the ex obs ids config.
+	 *
+	 * @param c              the c
+	 * @param idObsExecution the id obs execution
+	 * @return the ex obs ids config
+	 * @throws SQLException the SQL exception
+	 */
+	public static String[] getExObsIdsConfig(Connection c, Long idObsExecution) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = c.prepareStatement(
+					"SELECT id, id_observatory_execution, ids_observatory_execution_evolution, has_custom_texts FROM observatorio_send_configuration WHERE id_observatory_execution = ?");
+			ps.setLong(1, idObsExecution);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				String exObsIds = rs.getString("ids_observatory_execution_evolution");
+				if (exObsIds != null && !org.apache.commons.lang3.StringUtils.isEmpty(exObsIds)) {
+					return exObsIds.split(",");
+				}
+				return null;
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(ps, rs);
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the dependencies by id ex obs.
+	 *
+	 * @param c              the c
+	 * @param idObsExecution the id obs execution
+	 * @return the dependencies by id ex obs
+	 */
+	public static List<DependenciaForm> getDependenciesByIdExObs(Connection c, final Long idObsExecution) {
+		List<DependenciaForm> dependencies = new ArrayList<>();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = c.prepareStatement(
+					"SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official FROM rastreos_realizados rr JOIN lista l ON rr.id_lista=l.id_lista JOIN semilla_dependencia sd ON sd.id_lista=l.id_lista JOIN dependencia d ON d.id_dependencia=sd.id_dependencia WHERE rr.id_obs_realizado = ?");
+			ps.setLong(1, idObsExecution);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				DependenciaForm d = new DependenciaForm();
+				d.setId(rs.getLong("d.id_dependencia"));
+				d.setName(rs.getString("d.nombre"));
+				d.setEmails(rs.getString("d.emails"));
+				d.setSendAuto(rs.getBoolean("d.send_auto"));
+				d.setOfficial(rs.getBoolean("d.official"));
+				dependencies.add(d);
+			}
+		} catch (SQLException e) {
+		} finally {
+			DAOUtils.closeQueries(ps, rs);
+		}
+		return dependencies;
 	}
 }
