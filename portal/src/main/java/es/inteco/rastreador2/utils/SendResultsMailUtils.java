@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -82,32 +83,34 @@ public final class SendResultsMailUtils {
 			// TODO GET DEPENDENCY FILE FROM ANNEXPATH
 			// TODO GET PDF ZIP FROM ZIPS PATH
 			DependenciaForm dependency = DependenciaDAO.findById(c, ura.getUraId());
-			String xlsxFilePath = annexPath + "/Dependencias/" + dependency.getName() + ".xlsx";
-			String pdfZipPath = pdfZipsPath.get(PDFUtils.formatSeedName(dependency.getName()));
-			File xlsx = new File(xlsxFilePath);
-			File pdfZip = new File(pdfZipPath);
-			if (xlsx.exists() && pdfZip.exists()) {
-				// TODO Make a zip with dependency xlsx and zipPdf
-				File zipFileToSend = new File(exportPath + "/resultados_" + PDFUtils.formatSeedName(dependency.getName()) + ".zip");
-				FileOutputStream fos = new FileOutputStream(zipFileToSend);
-				ZipOutputStream zipOut = new ZipOutputStream(fos);
-				List<File> files = new ArrayList<>();
-				files.add(pdfZip);
-				files.add(xlsx);
-				for (File file : files) {
-					FileInputStream fis = new FileInputStream(file);
-					ZipEntry zipEntry = new ZipEntry(file.getName());
-					zipOut.putNextEntry(zipEntry);
-					byte[] bytes = new byte[1024];
-					int length;
-					while ((length = fis.read(bytes)) >= 0) {
-						zipOut.write(bytes, 0, length);
+			if (dependency.isSendAuto() && !StringUtils.isEmpty(dependency.getEmails())) {
+				String xlsxFilePath = annexPath + "/Dependencias/" + dependency.getName() + ".xlsx";
+				String pdfZipPath = pdfZipsPath.get(PDFUtils.formatSeedName(dependency.getName()));
+				File xlsx = new File(xlsxFilePath);
+				File pdfZip = new File(pdfZipPath);
+				if (xlsx.exists() && pdfZip.exists()) {
+					// TODO Make a zip with dependency xlsx and zipPdf
+					File zipFileToSend = new File(exportPath + "/resultados_" + PDFUtils.formatSeedName(dependency.getName()) + ".zip");
+					FileOutputStream fos = new FileOutputStream(zipFileToSend);
+					ZipOutputStream zipOut = new ZipOutputStream(fos);
+					List<File> files = new ArrayList<>();
+					files.add(pdfZip);
+					files.add(xlsx);
+					for (File file : files) {
+						FileInputStream fis = new FileInputStream(file);
+						ZipEntry zipEntry = new ZipEntry(file.getName());
+						zipOut.putNextEntry(zipEntry);
+						byte[] bytes = new byte[1024];
+						int length;
+						while ((length = fis.read(bytes)) >= 0) {
+							zipOut.write(bytes, 0, length);
+						}
+						fis.close();
 					}
-					fis.close();
+					zipOut.close();
+					fos.close();
+					sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName());
 				}
-				zipOut.close();
-				fos.close();
-				sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName());
 			}
 		}
 		DataBaseManager.closeConnection(c);
@@ -164,9 +167,9 @@ public final class SendResultsMailUtils {
 		// TODO Email subject
 		final String mailSubject = "Prueba enviar resultado: " + observatoryName;
 		final MailService mailService = new MailService();
-		List<String> mailsTo = new ArrayList<>();
 		// TODO Get emails from URA
-		mailsTo.add("alvaro.pelaez@ctic.es");
+//		mailsTo.add("alvaro.pelaez@ctic.es");
+		List<String> mailsTo = Arrays.asList(ura.getEmails().split(";"));
 		mailService.sendMail(mailsTo, mailSubject, mailBody.toString(), attachUrl, attachName, true);
 	}
 
