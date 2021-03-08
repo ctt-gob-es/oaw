@@ -308,6 +308,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	                            {
 	                                name: "template",
 	                                width: 50,
+	                                editable: true,
 	                                editrules: {
 	                                    required: true,
 	                                },
@@ -316,8 +317,18 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										custom_element : templateEdit,
 										custom_value : templateEditValue
 									},
+									formatter: templateFormatter,
+									unformat: templateUnformat,
 	                                align: "left",
 	                                sortable: false,
+									cellattr : function(
+											rowId, val,
+											rawObject, cm,
+											rdata) {
+										return 'title="'
+												+ rdata.template.replace(/<\/?[^>]+(>|$)/g, "")
+												+ '"';
+									},
 	
 	                            },
 	                            {
@@ -483,13 +494,16 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	
 	}
 	
-	function templateEdit(value, options, rowObject) {
+	function templateEdit(value, options) {
 		var element = document.createElement('textarea');
 		element.setAttribute("name", "templateEdit");
 		element.setAttribute("id", "templateEdit");
 		
 		CKEDITOR.replace(element);
-		CKEDITOR.instances.templateEdit.setData(value);
+		
+		//CKEDITOR.instances.templateEdit.setData(value);
+		CKEDITOR.instances.templateEdit.setData($('#grid').getLocalRow(options.rowId).template);
+		
 		return element;
 	}
 
@@ -501,6 +515,20 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			//CKEDITOR.replace('templateEdit');
 			//CKEDITOR.instances.templateEdit.setData(value);
 		}
+	}
+	
+	
+	 
+	
+	function templateUnformat(cellvalue, options, cell){
+		return cellvalue;
+	}
+	
+	function templateFormatter(cellvalue, options, rowObject) {
+		if (cellvalue && cellvalue.length > 100){
+			return cellvalue.substr(0,100) + '...';
+		}
+		return cellvalue;
 	}
 	
 	
@@ -789,7 +817,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					<legend>
 						<bean:message key="report.config.observatorios.templates.title" />
 					</legend>
-
 					<div class="alert alert-info">
 						<span class="glyphicon glyphicon-info-sign"></span>
 						<em>
@@ -797,7 +824,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</em>
 						:
 						<bean:message key="report.config.observatorios.templates.info" />
-						<br/>
+						<br />
 						<bean:message key="report.config.observatorios.templates.info.list" />
 					</div>
 					<div>
