@@ -355,19 +355,19 @@ Email: observ.accesibilidad@correo.gob.es
 									</td>
 									<td>
 										<html:link forward="configSendObservatoryResultsByMail" name="paramsInformeAgregado">
-											<span class="glyphicon glyphicon-cog" aria-hidden="true" data-toggle="tooltip"
+											<span class="glyphicon glyphicon-envelope" aria-hidden="true" data-toggle="tooltip"
 												title="<bean:message key="indice.rastreo.send.database.config" />"></span>
 											<span class="sr-only">
 												<bean:message key="indice.rastreo.send.database.config" />
 											</span>
 										</html:link>
-										<html:link forward="confirmSendObservatoryResultsByMail" name="paramsInformeAgregado">
+										<!--<html:link forward="confirmSendObservatoryResultsByMail" name="paramsInformeAgregado">
 											<span class="glyphicon glyphicon-envelope" aria-hidden="true" data-toggle="tooltip"
 												title="<bean:message key="indice.rastreo.exportar.database" />"></span>
 											<span class="sr-only">
 												<bean:message key="indice.rastreo.send.database" />
 											</span>
-										</html:link>
+										</html:link>-->
 									</td>
 									<td><jsp:useBean id="paramsDeleteExecution" class="java.util.HashMap" />
 										<c:set target="${paramsDeleteExecution}" property="id_observatorio" value="${id_observatorio}" />

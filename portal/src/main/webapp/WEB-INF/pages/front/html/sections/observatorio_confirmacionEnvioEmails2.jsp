@@ -476,11 +476,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<fieldset>
 					<p>
 						<strong class="labelVisu">
-							<bean:message key="resultado.observatorio.rastreo.realizado.send.info" />
+							<bean:message key="resultado.observatorio.rastreo.realizado.confirm.send" />
 						</strong>
 					</p>
 					<p>
-						<bean:message key="resultado.observatorio.rastreo.realizado.send.info2" />
+						<bean:message key="resultado.observatorio.rastreo.realizado.send.confirm.info" />
 					</p>
 				</fieldset>
 				<div class="formButton">
