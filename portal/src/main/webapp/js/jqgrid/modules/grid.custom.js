@@ -97,14 +97,14 @@
 					cm = colModel[i];
 					if (cm.index === colname || cm.name === colname) {
 						if (p.frozenColumns === true && cm.frozen === true) {
-							sobj = grid.fhDiv.find("#" + p.id + "_" + colname);
+							sobj = grid.fhDiv.find("#" + jqID(p.id + "_" + colname));
 						}
 						if (!sobj || sobj.length === 0) {
 							sobj = grid.headers[i].el;
 						}
 						sort = cm.sortable;
 						if (typeof sort !== "boolean" || sort) {
-							self.sortData("jqgh_" + p.id + "_" + colname, i, reload, sor, sobj);
+							self.sortData(cm.index || cm.name, i, reload, sor, sobj);
 						}
 						break;
 					}
@@ -223,8 +223,8 @@
 				var getMinimizeIcon = function (path) {
 						return base.getIconRes.call($t, "gridMinimize." + path);
 					},
-					visibleGridIcon = getMinimizeIcon("visible"), // "ui-icon-circle-triangle-n"
-					hiddenGridIcon = getMinimizeIcon("hidden");  // "ui-icon-circle-triangle-s"
+					visibleGridIcon = getMinimizeIcon("visible"),
+					hiddenGridIcon = getMinimizeIcon("hidden");
 				if (state === "hidden") {
 					$(".ui-jqgrid-bdiv, .ui-jqgrid-hdiv", p.gView).slideUp("fast");
 					if (p.pager) { $(p.pager).slideUp("fast"); }
@@ -491,10 +491,10 @@
 									case "currency":
 										var prefix = getFormaterOption("prefix"),
 											suffix = getFormaterOption("suffix");
-										if (prefix && prefix.length) {
+										if (prefix && prefix.length && v.substr(0, prefix.length) === prefix) {
 											v = v.substr(prefix.length);
 										}
-										if (suffix && suffix.length) {
+										if (suffix && suffix.length && v.length > suffix.length && v.substr(v.length - suffix.length, suffix.length) === suffix) {
 											v = v.substr(0, v.length - suffix.length);
 										}
 										v = cutThousandsSeparator(v)
@@ -715,12 +715,15 @@
 									itemText = item.text;
 								}
 								selclass = selected === itemOper ? highlightClass : "";
-								str += '<li class="ui-menu-item ' + selclass + '" role="presentation"><a class="ui-corner-all g-menu-item" tabindex="0" role="menuitem" value="' + htmlEncode(itemOper) + '" data-oper="' + htmlEncode(itemOperand) + '"><table><tr><td style="width:25px">' + htmlEncode(itemOperand) + '</td><td>' + htmlEncode(itemText) + '</td></tr></table></a></li>';
+								str += '<li class="' +
+									getGuiStyles.call($t, "searchToolbar.menuItem", "ui-jqgrid-menu-item " + selclass) +
+									'" role="presentation"><a class="' +
+									getGuiStyles.call($t, "searchToolbar.menuItemButton", "g-menu-item") +
+									'" tabindex="0" role="menuitem" value="' + htmlEncode(itemOper) + '" data-oper="' + htmlEncode(itemOperand) + '"><table><tr><td style="width:25px">' + htmlEncode(itemOperand) + '</td><td>' + htmlEncode(itemText) + '</td></tr></table></a></li>';
 							}
 						}
 						str += "</ul>";
 						$("body").append(str);
-						$("#sopt_menu").addClass("ui-menu ui-widget ui-widget-content ui-corner-all");
 						$("#sopt_menu > li > a").hover(
 							function () { $(this).addClass(hoverClasses); },
 							function () { $(this).removeClass(hoverClasses); }
@@ -791,7 +794,7 @@
 								(soptions.searchtitle != null ? soptions.searchtitle : getRes("search.operandTitle")) +
 								"' data-soper='" + so + "' class='" +
 								getGuiStyles.call($t, "searchToolbar.operButton", "soptclass") +
-								"' data-colname='" + this.name + "'>" + sot + "</a>");
+								"' data-colname='" + this.name + "'>" + htmlEncode(sot) + "</a>");
 						}
 						$tdOper.data("colindex", ci);
 						if (soptions.sopt == null || soptions.sopt.length === 1) {
@@ -1387,8 +1390,8 @@
 				if (!grid || p == null || p.frozenColumns === true) { return; }
 				var cm = p.colModel, i, len = cm.length, maxfrozen = -1, frozen = false, frozenIds = [], $colHeaderRow,// nonFrozenIds = [],
 					tid = jqID(p.id), // one can use p.idSel and remove "#"
-					hoverClasses = getGuiStyles.call($t, "states.hover"),
-					disabledClass = getGuiStyles.call($t, "states.disabled");
+					hoverClasses = getGuiStyles.call($t, "states.hover");
+
 				// TODO treeGrid and grouping  Support
 				// TODO: allow to edit columns AFTER frozen columns
 				if (p.subGrid === true || p.treeGrid === true || p.scroll) {
@@ -1516,21 +1519,6 @@
 						$(ftbl).width(1);
 						$(grid.fsDiv).append(ftbl);
 					}
-					// sorting stuff
-					$self.on("jqGridSortCol.setFrozenColumns", function (e, index, idxcol) {
-						var previousSelectedTh = $("tr.ui-jqgrid-labels:last th:eq(" + p.lastsort + ")", grid.fhDiv), newSelectedTh = $("tr.ui-jqgrid-labels:last th:eq(" + idxcol + ")", grid.fhDiv);
-
-						$("span.ui-grid-ico-sort", previousSelectedTh).addClass(disabledClass);
-						$(previousSelectedTh).attr("aria-selected", "false");
-						$("span.ui-icon-" + p.sortorder, newSelectedTh).removeClass(disabledClass);
-						$(newSelectedTh).attr("aria-selected", "true");
-						if (!p.viewsortcols[0]) {
-							if (p.lastsort !== idxcol) {
-								$("span.s-ico", previousSelectedTh).hide();
-								$("span.s-ico", newSelectedTh).show();
-							}
-						}
-					});
 
 					// data stuff
 					//TODO support for setRowData

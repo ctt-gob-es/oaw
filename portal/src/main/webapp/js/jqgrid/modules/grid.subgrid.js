@@ -1,7 +1,7 @@
 /**
  * jqGrid extension for SubGrid Data
  * Copyright (c) 2008-2014, Tony Tomov, tony@trirand.com
- * Copyright (c) 2014-2017, Oleg Kiriljuk, oleg.kiriljuk@ok-soft-gmbh.com
+ * Copyright (c) 2014-2019, Oleg Kiriljuk, oleg.kiriljuk@ok-soft-gmbh.com
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
@@ -142,7 +142,7 @@
 								f = cm.mapping || cm.name;
 								if (f) {
 									for (i = 0; i < f.length; i++) {
-										subGridCell($tr, $(f[i], this).text() || "&#160;", i);
+										subGridCell($tr, jgrid.getXmlData(this, f[i]) || "&#160;", i);
 									}
 								}
 							}
@@ -167,7 +167,7 @@
 									f = cm.mapping || cm.name;
 									if (f.length) {
 										for (j = 0; j < f.length; j++) {
-											subGridCell($tr, cur[f[j]] || "&#160;", j);
+											subGridCell($tr, jgrid.getAccessor(cur, f[j]) || "&#160;", j);
 										}
 									}
 								}
@@ -274,7 +274,7 @@
 							}
 						});
 						if ($(this).hasClass("sgcollapsed")) {
-							if (p.subGridOptions.reloadOnExpand === true || (p.subGridOptions.reloadOnExpand === false && !$(r).hasClass('ui-subgrid'))) {
+							if (p.subGridOptions.reloadOnExpand === true || (p.subGridOptions.reloadOnExpand === false && !$(r).hasClass("ui-subgrid"))) {
 								atd = pos >= 1 ? "<td colspan='" + pos + "'>&#160;</td>" : "";
 								if (!subGridFeedback.call(ts, "beforeExpand", subgridDivId, rowid)) {
 									return;
@@ -347,8 +347,13 @@
 					iRow++;
 				}
 				if (p.subGridOptions.expandOnLoad === true) {
+					var iColSubgrid = p.iColByName.subgrid;
 					$(ts.rows).filter(".jqgrow").each(function (index, row) {
-						$(row.cells[0]).click();
+						$(row.cells[iColSubgrid])
+							.filter(".sgcollapsed")
+							.children(".sgbutton-div")
+							.children(".sgbutton")
+							.click();
 					});
 				}
 				ts.subGridXml = function (xml, sid) {

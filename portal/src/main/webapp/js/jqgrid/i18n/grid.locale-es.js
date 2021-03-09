@@ -101,7 +101,7 @@ var locInfo = {
 		bExit: "Cancelar",
 		msg: {
 			required: "Campo obligatorio",
-			number: "Introduzca un n&uacute;mero",
+			number: "Introduzca un número",
 			minValue: "El valor debe ser mayor o igual a ",
 			maxValue: "El valor debe ser menor o igual a ",
 			email: "no es una dirección de correo válida",

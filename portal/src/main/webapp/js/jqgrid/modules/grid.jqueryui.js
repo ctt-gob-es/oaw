@@ -140,11 +140,11 @@
 									// both belongs no header group then the column could be NOT in
 									// selectedList. I find better to insert the item AFTER the hidden
 									// or non-movable columns (like "rn", "subgrid" column or other)
-									while (iCol >= 0 && iCol < p.colModel.length &&
+									while (iCol >= 0 && iCol < p.colModel.length && iCol !== iColItem &&
 											(p.colModel[iCol].hidden || p.colModel[iCol].hidedlg) &&
-											inGroup != null &&
+											(inGroup == null ||
 											//inGroup[iCol] !== undefined && inGroup[iColItem] !== undefined &&
-											inGroup[iCol] === inGroup[iColItem]) {
+											inGroup[iCol] === inGroup[iColItem])) {
 										iCol++;
 									}
 									that.newColOrder.splice(iCol, 0, p.colModel[iColItem].name);
@@ -807,21 +807,26 @@
 							},
 							drop: function (ev, ui) {
 								if (!$(ui.draggable).hasClass("jqgrow")) { return; }
-								var accept = $(ui.draggable).attr("id");
-								var getdata = ui.draggable.parent().parent().jqGrid("getRowData", accept);
+								var rowid = $(ui.draggable).attr("id"),
+									$srcGrid = ui.draggable.parent().parent(),
+									getdata = $srcGrid.jqGrid("getRowData", rowid);
 								if (!opts1.dropbyname) {
-									var i = 0, tmpdata = {}, nm, key;
-									var dropmodel = $("#" + jqID(this.id)).jqGrid("getGridParam", "colModel");
+									var tmpdata = {}, iSrc, iDest, srcName, destName,
+										srcColModel = $srcGrid.jqGrid("getGridParam", "colModel"),
+										destColModel = $("#" + jqID(this.id)).jqGrid("getGridParam", "colModel");
 									try {
-										for (key in getdata) {
-											if (getdata.hasOwnProperty(key)) {
-												nm = dropmodel[i].name;
-												if (!(nm === "cb" || nm === "rn" || nm === "subgrid")) {
-													if (getdata.hasOwnProperty(key) && dropmodel[i]) {
-														tmpdata[nm] = getdata[key];
+										for (iSrc = 0, iDest = 0; iSrc < srcColModel.length && iDest < destColModel.length; iSrc++) {
+											srcName = srcColModel[iSrc].name;
+											if (!(srcName === "cb" || srcName === "rn" || srcName === "subgrid")) {
+												// src column found, which need be copied
+												for (; iDest < destColModel.length; iDest++) {
+													destName = destColModel[iDest].name;
+													if (!(destName === "cb" || destName === "rn" || destName === "subgrid")) {
+														tmpdata[destName] = getdata[srcName];
+														break;
 													}
 												}
-												i++;
+												iDest++;
 											}
 										}
 										getdata = tmpdata;
@@ -838,7 +843,11 @@
 									var grid;
 									if (opts1.autoid) {
 										if ($.isFunction(opts1.autoid)) {
-											grid = opts1.autoid.call(this, getdata);
+											grid = opts1.autoid.call(this, getdata, {
+												rowid: rowid,
+												ev: ev,
+												ui: ui
+											});
 										} else {
 											grid = Math.ceil(Math.random() * 1000);
 											grid = opts1.autoidprefix + grid;

@@ -9,7 +9,7 @@
  *
  * $Version: 07/06/2008 +r13
  * Changed by Oleg Kiriljuk, oleg.kiriljuk@ok-soft-gmbh.com
- * Copyright (c) 2014-2017, Oleg Kiriljuk, oleg.kiriljuk@ok-soft-gmbh.com
+ * Copyright (c) 2014-2019, Oleg Kiriljuk, oleg.kiriljuk@ok-soft-gmbh.com
  */
 /*jslint browser: true, nomen: true, plusplus: true, white: true */
 /*global jQuery, define, exports, module, require */
