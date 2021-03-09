@@ -180,6 +180,45 @@ public final class DependenciaDAO {
 	}
 
 	/**
+	 * Find by id.
+	 *
+	 * @param c    the c
+	 * @param name the name
+	 * @return the dependencia form
+	 * @throws SQLException the SQL exception
+	 */
+	public static DependenciaForm findByName(Connection c, final String name) throws SQLException {
+		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official FROM dependencia d WHERE d.nombre = ? ";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setString(1, name);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					DependenciaForm dependenciaForm = new DependenciaForm();
+					dependenciaForm.setId(rs.getLong("d.id_dependencia"));
+					dependenciaForm.setName(rs.getString("d.nombre"));
+					dependenciaForm.setEmails(rs.getString("d.emails"));
+					if (rs.getInt("d.send_auto") == 0) {
+						dependenciaForm.setSendAuto(false);
+					} else {
+						dependenciaForm.setSendAuto(true);
+					}
+					if (rs.getInt("d.official") == 0) {
+						dependenciaForm.setOfficial(false);
+					} else {
+						dependenciaForm.setOfficial(true);
+					}
+					dependenciaForm.setName(rs.getString("d.nombre"));
+					return dependenciaForm;
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return null;
+	}
+
+	/**
 	 * Exists dependencia.
 	 *
 	 * @param c           the c

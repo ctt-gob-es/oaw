@@ -14,6 +14,7 @@ package es.inteco.rastreador2.actionform.semillas;
 
 import java.io.Serializable;
 
+import org.apache.struts.upload.FormFile;
 import org.apache.struts.validator.ValidatorForm;
 
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
@@ -43,6 +44,8 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	private AmbitoForm ambito;
 	/** The tag. */
 	private EtiquetaForm tag;
+	/** The file seeds. */
+	private FormFile dependencyFile;
 
 	/**
 	 * Gets the id.
@@ -201,6 +204,24 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	 */
 	public void setOfficial(boolean official) {
 		this.official = official;
+	}
+
+	/**
+	 * Gets the dependency file.
+	 *
+	 * @return the dependency file
+	 */
+	public FormFile getDependencyFile() {
+		return dependencyFile;
+	}
+
+	/**
+	 * Sets the dependency file.
+	 *
+	 * @param dependencyFile the new dependency file
+	 */
+	public void setDependencyFile(FormFile dependencyFile) {
+		this.dependencyFile = dependencyFile;
 	}
 
 	/**

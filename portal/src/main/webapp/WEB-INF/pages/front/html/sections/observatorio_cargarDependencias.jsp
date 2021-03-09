@@ -775,6 +775,21 @@ var colNameSendAuto = '<bean:message key="colname.send.auto"/>';
 
 		return guardado;
 	}
+	
+	
+	function selectXMLFile(){
+		
+		 document.getElementById('importFile').click();
+	}
+	
+
+	$(function() {
+	   $("#importFile").change(function (){
+	     var fileName = $(this).val();
+	     $(this).closest('form').submit();	     
+	   });
+	});
+
 </script>
 <!-- observatorio_cargarDependencias.jsp -->
 <div id="main">
@@ -913,11 +928,29 @@ var colNameSendAuto = '<bean:message key="colname.send.auto"/>';
 		</form>
 		<!-- Nueva semilla -->
 		<p class="pull-right">
+			<!-- Importar todas las semillas -->
+			<a href="#" class="btn btn-default btn-lg " onclick="selectXMLFile()">
+				<span class="glyphicon glyphicon-cloud-upload" aria-hidden="true" data-toggle="tooltip" title=""
+					data-original-title="Importar un fichero XML/xlsx de semillas"></span>
+				<bean:message key="cargar.semilla.observatorio.importar.todo" />
+			</a>
 			<a href="#" class="btn btn-default btn-lg" onclick="dialogoNuevaDependencia()">
 				<span class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip" title=""
 					data-original-title="Crear una semilla"></span>
 				<bean:message key="nueva.dependencia.observatorio" />
 			</a>
+		<form method="post" style="display: none" action="/oaw/secure/ViewDependenciasObservatorio.do?action=upload"
+			enctype="multipart/form-data">
+			<div class="formItem">
+				<label for="importFile" class="control-label">
+					<strong class="labelVisu">
+						<bean:message key="categoria.semillas.fichero" />
+						:
+					</strong>
+				</label>
+				<input type="file" id="importFile" name="dependencyFile" style="display: none">
+			</div>
+		</form>
 		</p>
 		<!-- Grid -->
 		<table id="grid">

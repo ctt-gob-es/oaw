@@ -264,12 +264,12 @@
 		<put name="title" value="application.title" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_generarAllReports.jsp" />
 	</definition>
-	
+
 	<definition name=".generateReportAsync" extends="mainLayout">
 		<put name="title" value="application.title" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_generateReportAsync.jsp" />
-	</definition>	
-	
+	</definition>
+
 
 	<!-- Página cargar semillas observatorio -->
 	<definition name=".cargarSemillasObservatorio" extends="mainLayout">
@@ -311,7 +311,7 @@
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarEtiquetas.jsp" />
 	</definition>
 
-<definition name=".cargarRangosObservatorio" extends="mainLayout">
+	<definition name=".cargarRangosObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarRangos.jsp" />
 	</definition>
@@ -322,7 +322,7 @@
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarReducirTablas.jsp" />
 	</definition>
-	
+
 	<!-- Página CARGAR RASTREOS REALIZADOS observatorio -->
 	<definition name=".cargarRastreosRealizadosObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
@@ -814,26 +814,32 @@
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionImportar.jsp" />
 	</definition>
 
+	<definition name=".confirmarImportacionDependencias" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionImportarDependencias.jsp" />
+	</definition>
+
+
 	<definition name=".configurarFiltrosAgregados" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_configurarFiltrosAgregados.jsp" />
 	</definition>
-	
+
 	<definition name=".configurarFiltrosGlobales" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_configurarFiltrosGlobales.jsp" />
 	</definition>
-	
+
 	<definition name=".confirmarPararObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionParar.jsp" />
 	</definition>
-	
-<definition name=".confirmSendObservatoryResultsByMail" extends="mainLayout">
+
+	<definition name=".confirmSendObservatoryResultsByMail" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionEnvioEmails.jsp" />
 	</definition>
-	
+
 	<definition name=".confirmSendObservatoryResultsByMail2" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionEnvioEmails2.jsp" />
