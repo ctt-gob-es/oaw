@@ -519,6 +519,7 @@
 			type="es.inteco.rastreador2.action.observatorio.DependenciasObservatorioAction" parameter="action" scope="request"
 			validate="false">
 			<forward name="exito" path=".cargarDependenciasObservatorio" />
+			<forward name="confirmacionImportar" path=".confirmarImportacionDependencias" />
 		</action>
 
 		<action path="/secure/JsonResultadoObservatorio"
