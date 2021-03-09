@@ -184,7 +184,7 @@ function reloadGrid(path) {
 									},
 									edittype : "select",
 									editoptions : {
-										value: "<:<;<=:<=;=:=;>=:>=;>:>"
+										value: "<:<;<=:<=;>=:>=;>:>"
 									},
 									align: "center",
 									sortable: false
@@ -208,7 +208,7 @@ function reloadGrid(path) {
 									edittype : "select",
 									formatter: cellFormatter,
 									editoptions : {
-										value: ":;<:<;<=:<=;=:=;=>:=>;>:>"
+										value: ":;<:<;<=:<=;=>:=>;>:>"
 									},
 									sortable: false
 
@@ -532,7 +532,6 @@ function cellFormatter(cellvalue, options, rowObject) {
 							<option value=""></option>
 							<option value="&#60;">&#60;</option>
 							<option value="&#60;&#61;">&#60;&#61;</option>
-							<option value="&#61;">&#61;</option>
 							<option value="&#62;">&#62;</option>
 							<option value="&#62;&#61;">&#62;&#61;</option>
 						</select>

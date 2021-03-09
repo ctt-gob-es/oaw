@@ -38,7 +38,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	var colNameId = '<bean:message key="colname.id"/>';
 	var colNameName = '<bean:message key="colname.name"/>';
 	var colNameRange = '<bean:message key="colname.range"/>';
-	var colNameTemplate = '<bean:message key="colname.template"/>';
+	var colNameTemplate = '<bean:message key="colname.custom.message"/>';
 	var colNameRemove = '<bean:message key="colname.remove"/>';
 
 	var windowTitleRemove = '<bean:message key="range.observatory.modal.delete.title"/>';
@@ -57,13 +57,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					function() {
 						var $jq = $.noConflict();
 						var lastUrl;
-// 						$jq(document)
-// 								.ready(
-// 										function() {
-// 											reloadGrid('/oaw/secure/UraCustomTextObservatorio.do?action=all&idExObs='
-// 													+ $('[name=idExObs]').val());
-// 										});
-
 						$
 								.ajax(
 										{
@@ -132,16 +125,20 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										});
 
 					});
+	
+	
 
 	function reloadGrid(path) {
-
+	
 		lastUrl = path;
 
 		// keep scroll
 		scroll = $(window).scrollTop();
 
-		$('#grid').jqGrid('clearGridData')
-
+		$('#grid').jqGrid('clearGridData');
+		
+		
+		
 		$
 				.ajax({
 					url : path,
@@ -155,6 +152,25 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							ajaxJson = JSON.stringify(data.uras);
 
 							total = data.paginador.total;
+							
+							$.extend(true, $.jgrid.icons, {
+							    glyphIcon: {
+							        nav: {
+							            common: "",
+							            edit: "glyphicon glyphicon-pencil",
+							            add: "glyphicon glyphicon-plus",
+							            del: "glyphicon glyphicon-trash",
+							            search: "glyphicon glyphicon-search",
+							            refresh: "glyphicon glyphicon-refresh",
+							            view: "fa fa-lg fa-fw fa-file-o",
+							            save: "glyphicon glyphicon-save",
+							            cancel: "glyphicon glyphicon-ban-circle",
+							            newbutton: "fa fa-lg fa-fw fa-external-link"
+							        }
+							    }
+							});		
+
+							
 
 							$('#grid')
 									.jqGrid(
@@ -163,8 +179,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												colNames : [ colNameId,
 														colNameName,
 														colNameRange,
-														colNameTemplate,
-														colNameRemove ],
+														colNameTemplate,"" ],
 												colModel : [
 														{
 															name : "id",
@@ -198,27 +213,30 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 																custom_element : templateEdit,
 																custom_value : templateEditValue
 															},
+															formatter: templateFormatter,
 															align : "left",
 															sortable : false,
 
 														},
-														{
-															name : "eliminar",
-															width : 10,
-															sortable : false,
-															editable : false,
-															formatter : eliminarFormatter,
-														}
+														{ 
+															name: "actions",
+															template: "actions",
+															formatoptions: {
+																keys: true,
+																delbutton: false,
+															}
+														 
+														}, 
 
 												],
 												inlineEditing : {
 													keys : true,
-													defaultFocusField : "name"
 												},
 												cmTemplate : {
 													autoResizable : true,
 													editable : true
 												},
+												//iconSet: "glyphIcon",
 												viewrecords : false,
 												autowidth : true,
 												pgbuttons : false,
@@ -270,7 +288,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															"td"), iCol = $.jgrid
 															.getCellIndex($td[0]);
 
-													if (this.p.colModel[iCol].name === "eliminar") {
+													if (this.p.colModel[iCol].name === "actions") {
 														return false;
 													}
 
@@ -306,7 +324,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 													// Restaurar el scroll
 													$(window).scrollTop(scroll);
 												}
-											}).jqGrid("inlineNav");
+											}).jqGrid('navGrid').jqGrid("inlineNav");
 
 							// Recargar el grid
 							$('#grid').jqGrid('setGridParam', {
@@ -314,6 +332,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							}).trigger('reloadGrid');
 
 							$('#grid').unbind("contextmenu");
+
+							//ui-corner-all ui-pg-div ui-inline-edit
+							$("#grid .ui-icon-pencil").removeClass('ui-icon ui-icon-pencil').addClass('glyphicon glyphicon-edit');
+							$("#grid .ui-icon-disk").removeClass('ui-icon ui-icon-disk').addClass('glyphicon glyphicon-floppy-disk');
+							$("#grid .ui-icon-cancel").removeClass('ui-icon ui-icon-cancel').addClass('glyphicon glyphicon-ban-circle');
+
+							
+							
 
 							// Mostrar sin resultados
 							if (total == 0) {
@@ -369,17 +395,22 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				});
 
 	}
+	
 
-	function templateEdit(value, options, rowObject) {
+
+	function templateEdit(value, options) {
 		var element = document.createElement('textarea');
 		element.setAttribute("name", "templateEdit");
 		element.setAttribute("id", "templateEdit");
-
+		
 		CKEDITOR.replace(element);
-		CKEDITOR.instances.templateEdit.setData(value);
+		
+		//CKEDITOR.instances.templateEdit.setData(value);
+		CKEDITOR.instances.templateEdit.setData($('#grid').getLocalRow(options.rowId).template);
+		
 		return element;
 	}
-
+	
 	function templateEditValue(elem, operation, value) {
 
 		if (operation === 'get') {
@@ -396,13 +427,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		} else {
 			return "";
 		}
-	}
-
-	function eliminarFormatter(cellvalue, options, rowObject) {
-		return "<span style='cursor:pointer' onclick='deleteRange("
-				+ options.rowId
-				+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>"
-				+ colNameRemove + "</span></span>";
+	}	
+	
+	function templateFormatter(cellvalue, options, rowObject) {
+		if (cellvalue && cellvalue.length > 100){
+			return cellvalue.substr(0,100) + '...';
+		}
+		return cellvalue;
 	}
 </script>
 <script src="/oaw/js/ckeditor/ckeditor.js"></script>

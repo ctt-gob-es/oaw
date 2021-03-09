@@ -31,10 +31,9 @@ public class UraCustomTextDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static int count(Connection c, final Long idExObs) throws SQLException {
-		int count = 1;
 		String query = "SELECT COUNT(*) FROM observatorio_template_custom_text_ura e WHERE 1=1 AND id_observatory_execution = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
-			ps.setLong(count++, idExObs);
+			ps.setLong(1, idExObs);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					return rs.getInt(1);
@@ -60,14 +59,14 @@ public class UraCustomTextDAO {
 	public static int count(Connection c, final Long idExObs, final String[] ids) throws SQLException {
 		int count = 0;
 		if (ids != null && ids.length > 0) {
-			String query = "SELECT COUNT(*) FROM observatorio_template_custom_text_ura e WHERE 1=1 AND id_observatory_execution = ? ";
+			String query = "SELECT COUNT(*) FROM observatorio_template_custom_text_ura c WHERE 1=1 AND id_observatory_execution = ? ";
 			query = query + " AND c.id_ura IN (" + ids[0];
 			for (int i = 1; i < ids.length; i++) {
 				query = query + "," + ids[i];
 			}
 			query = query + ")";
 			try (PreparedStatement ps = c.prepareStatement(query)) {
-				ps.setLong(count++, idExObs);
+				ps.setLong(1, idExObs);
 				try (ResultSet rs = ps.executeQuery()) {
 					if (rs.next()) {
 						return rs.getInt(1);

@@ -1,7 +1,7 @@
 /**
  * jqGrid extension for manipulating Grid Data
  * Copyright (c) 2008-2014, Tony Tomov, tony@trirand.com,  http://trirand.com/blog/
- * Copyright (c) 2014-2017, Oleg Kiriljuk, oleg.kiriljuk@ok-soft-gmbh.com
+ * Copyright (c) 2014-2019, Oleg Kiriljuk, oleg.kiriljuk@ok-soft-gmbh.com
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
@@ -529,6 +529,7 @@
 						useDefValues: true,
 						useFormatter: false,
 						beforeAddRow: null,
+						//srcRowid: undefined,
 						addRowParams: { extraparam: {} }
 					}, jgrid.inlineEdit, p.inlineEditing || {}, oMuligrid || {});
 				if (!editFeedback.call($t, o, "beforeAddRow", o.addRowParams)) { return; }
@@ -543,7 +544,7 @@
 					});
 				}
 				o.rowID = p.idPrefix + o.rowID;
-				$self.jqGrid("addRowData", o.rowID, o.initdata, o.position);
+				$self.jqGrid("addRowData", o.rowID, o.initdata, o.position, o.srcRowid);
 				$("#" + jgrid.jqID(o.rowID), $t).addClass("jqgrid-new-row");
 				if (o.useFormatter) {
 					$("#" + jgrid.jqID(o.rowID) + " .ui-inline-edit", $t).click();
@@ -702,7 +703,7 @@
 						iconsOverText: o.iconsOverText,
 						id: gid + "_ilsave",
 						onClickButton: function () {
-							if (!hasOneFromClasses(this, disabledClass)) {
+							if (!hasOneFromClasses(this, disabledClass) && p.savedRow.length > 0) {
 								var sr = p.savedRow[0].id;
 								if (sr) {
 									var opers = p.prmNames, oper = opers.oper, tmpParams = o.editParams;
@@ -733,7 +734,7 @@
 						iconsOverText: o.iconsOverText,
 						id: gid + "_ilcancel",
 						onClickButton: function () {
-							if (!hasOneFromClasses(this, disabledClass)) {
+							if (!hasOneFromClasses(this, disabledClass) && p.savedRow.length > 0) {
 								var sr = p.savedRow[0].id, cancelPrm = o.editParams;
 								if (sr) {
 									if ($("#" + jgrid.jqID(sr), $t).hasClass("jqgrid-new-row")) {

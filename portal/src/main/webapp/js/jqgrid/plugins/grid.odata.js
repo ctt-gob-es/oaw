@@ -1,7 +1,7 @@
 /**
  * @license OData plugin for Free-jqGrid
  *
- * Copyright (c) 2014-2017, Mark Babayev (https://github.com/mirik123) markolog@gmail.com
+ * Copyright (c) 2014-2018, Mark Babayev (https://github.com/mirik123) markolog@gmail.com
  * License MIT (MIT-LICENSE.txt)
  *
  * inspired by Richard Bennett gist code: jqGrid.ODataExtensions.js
