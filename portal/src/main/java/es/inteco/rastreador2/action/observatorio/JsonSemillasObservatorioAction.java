@@ -520,6 +520,35 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	}
 
 	/**
+	 * List by ambit and tag.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	public ActionForward listByAmbitAndTag(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		try (Connection c = DataBaseManager.getConnection()) {
+			final String idAmbit = request.getParameter("idAmbit");
+			String[] idsTags = null;
+			if (!StringUtils.isEmpty(request.getParameter("idTags"))) {
+				idsTags = request.getParameterValues("idTags");
+			}
+			List<DependenciaForm> listDependencias = SemillaDAO.getSeedDependenciasByAmbitAndTags(c, idAmbit, idsTags);
+			String jsonDependencias = new Gson().toJson(listDependencias);
+			PrintWriter pw = response.getWriter();
+			pw.write(jsonDependencias);
+			pw.flush();
+			pw.close();
+		} catch (Exception e) {
+			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return null;
+	}
+
+	/**
 	 * Obtiene un listado de todas las etiquetas. La respuesta se genera como un JSON
 	 *
 	 * @param mapping  the mapping

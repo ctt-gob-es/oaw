@@ -137,16 +137,7 @@ var translatedColNames = [ colNameId, colNameOldName,
 	$(function() {
 	   $("#importFile").change(function (){
 	     var fileName = $(this).val();
-
 	     $(this).closest('form').submit();
-	    		 
-	    		 
-	    	 //$('<form method="post" action="/oaw/secure/ViewSemillasObservatorio.do?action=loadSeedsFile" enctype="multipart/form-data"><input type="file" name="fileSeeds" value='+ $(this).val()+'</form>').appendTo('body').submit();
-	    		 
-	    		 
-	    	 
-	     
-	     
 	   });
 	});
 
