@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -261,7 +262,6 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	 * @throws Exception the exception
 	 */
 	public ActionForward upload(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		final MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DependenciaForm dependencyForm = (DependenciaForm) form;
 		// Validate form
@@ -289,16 +289,46 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		List<DependencyComparision> comparisionList = processFile(dependencyForm.getDependencyFile());
 		List<DependencyComparision> updatedDependencies = new ArrayList<>();
 		List<DependenciaForm> newDependencies = new ArrayList<>();
+		List<DependenciaForm> updatedAndNewDependencies = new ArrayList<>();
+		List<DependenciaForm> inalterableDependencies = new ArrayList<>();
 		for (DependencyComparision comparision : comparisionList) {
 			if (comparision.isNew()) {
 				newDependencies.add(comparision.getNewDependency());
-			} else {
+			} else if (!comparision.isInalterable()) {
 				updatedDependencies.add(comparision);
+			} else {
+				inalterableDependencies.add(comparision.getDependency());
 			}
+			updatedAndNewDependencies.add(comparision.getNewDependency());
 		}
 		request.setAttribute("updatedDependencies", updatedDependencies);
 		request.setAttribute("newDependencies", newDependencies);
+		request.setAttribute("inalterableDependencies", inalterableDependencies);
+		// Store list in session
+		HttpSession session = request.getSession();
+		session.setAttribute("updatedAndNewDependencies", updatedAndNewDependencies);
 		return mapping.findForward(Constants.CONFIRMACION_IMPORTAR);
+	}
+
+	/**
+	 * Import all.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	public ActionForward importAll(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession();
+		List<DependenciaForm> dependencies = (List<DependenciaForm>) session.getAttribute("updatedAndNewDependencies");
+		try (Connection c = DataBaseManager.getConnection()) {
+			DependenciaDAO.saveOrUpdate(c, dependencies);
+		} catch (Exception e) {
+			return mapping.findForward("observatoryDependencias");
+		}
+		return mapping.findForward("observatoryDependencias");
 	}
 
 	/**
@@ -338,7 +368,11 @@ public class DependenciasObservatorioAction extends DispatchAction {
 							}
 							// Add to comparision
 							DependencyComparision comparision = new DependencyComparision();
-							comparision.setDependency(DependenciaDAO.findByName(c, newDependency.getName()));
+							final DependenciaForm databaseDependency = DependenciaDAO.findByName(c, newDependency.getName());
+							comparision.setDependency(databaseDependency);
+							if (databaseDependency != null) {
+								newDependency.setId(databaseDependency.getId());
+							}
 							comparision.setNewDependency(newDependency);
 							comparisionList.add(comparision);
 						}
@@ -412,7 +446,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		/** The new dependency. */
 		private DependenciaForm newDependency;
 		/** The same official. */
-		private boolean sameProvince, sameEmails, sameOfficial, isNew;
+		private boolean sameProvince, sameEmails, sameOfficial, isNew, inInalterable;
 
 		/**
 		 * Checks if is new.
@@ -424,13 +458,23 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		}
 
 		/**
+		 * In inalterable.
+		 *
+		 * @return true, if successful
+		 */
+		public boolean isInalterable() {
+			return isSameEmails() && isSameOfficial() && isSameProvince();
+		}
+
+		/**
 		 * Checks if is same province.
 		 *
 		 * @return true, if is same province
 		 */
 		public boolean isSameProvince() {
 			// return (dependency!=null && newDependency!=null &&;
-			return (dependency != null && newDependency != null && dependency.getTag() != null && newDependency.getTag() != null && dependency.getTag().equals(newDependency.getTag()));
+			return ((dependency != null && newDependency != null && dependency.getTag() == null && newDependency.getTag() == null)
+					|| (dependency != null && newDependency != null && dependency.getTag() != null && newDependency.getTag() != null && dependency.getTag().equals(newDependency.getTag())));
 		}
 
 		/**

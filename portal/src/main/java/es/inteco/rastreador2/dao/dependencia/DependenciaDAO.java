@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
+import es.inteco.rastreador2.utils.DAOUtils;
 
 /**
  * The Class DependenciaDAO.
@@ -320,6 +322,56 @@ public final class DependenciaDAO {
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
+		}
+	}
+
+	/**
+	 * Save or update.
+	 *
+	 * @param c            the c
+	 * @param dependencies the dependencies
+	 * @throws SQLException the SQL exception
+	 */
+	public static void saveOrUpdate(Connection c, final List<DependenciaForm> dependencies) throws SQLException {
+		PreparedStatement ps = null;
+		try {
+			c.setAutoCommit(false);
+			for (DependenciaForm dependency : dependencies) {
+				if (dependency.getId() != null) {
+					ps = c.prepareStatement("UPDATE dependencia SET  emails = ?, official = ?, id_tag = ?  WHERE id_dependencia = ?");
+					ps.setString(1, dependency.getEmails());
+					ps.setBoolean(2, dependency.isOfficial());
+					ps.setNull(3, Types.BIGINT);
+					if (dependency.getTag() != null) {
+						ps.setLong(3, dependency.getTag().getId());
+					}
+					ps.setLong(4, dependency.getId());
+					ps.executeUpdate();
+				} else {
+					ps = c.prepareStatement("INSERT INTO dependencia(nombre, emails, official,id_tag) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE emails=?, official=?, id_tag=?");
+					ps.setString(1, dependency.getName());
+					ps.setString(2, dependency.getEmails());
+					ps.setBoolean(3, dependency.isOfficial());
+					ps.setNull(4, Types.BIGINT);
+					if (dependency.getTag() != null) {
+						ps.setLong(4, dependency.getTag().getId());
+					}
+					ps.setString(5, dependency.getEmails());
+					ps.setBoolean(6, dependency.isOfficial());
+					if (dependency.getTag() != null) {
+						ps.setLong(7, dependency.getTag().getId());
+					}
+					ps.setNull(7, Types.BIGINT);
+					ps.executeUpdate();
+				}
+			}
+			c.commit();
+		} catch (SQLException e) {
+			c.rollback();
+			Logger.putLog("Error on", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(ps, null);
 		}
 	}
 }

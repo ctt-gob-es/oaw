@@ -195,6 +195,73 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</logic:iterate>
 					</logic:notEmpty>
 				</logic:present>
+				
+				<!-- Inalterable -->
+					<logic:present name="inalterableDependencies">
+					<logic:notEmpty name="inalterableDependencies">
+						<h3>
+							<bean:message key="importar.dependencias.inalterable.title" />
+						</h3>
+						<bean:size id="beansize" name="inalterableDependencies" />
+						<bean:message key="importar.dependencias.inalterable.title.total">
+							<jsp:attribute name="arg0">
+                            <bean:write name="beansize" />
+                        </jsp:attribute>
+						</bean:message>
+						<logic:iterate name="inalterableDependencies" id="dependency">
+							<table class="table table-stripped table-bordered table-hover">
+								<caption>
+									<bean:message key="lista.semillas.observatorio" />
+								</caption>
+								<colgroup>
+									<col style="width: 50%">
+									<col style="width: 10%">
+									<col style="width: 10%">
+									<col style="width: 30%">
+								</colgroup>
+								<tbody>
+									<tr>
+										<th>
+											<bean:message key="colname.name" />
+										</th>
+										<th>
+											<bean:message key="colname.province" />
+										</th>
+										<th>
+											<bean:message key="colname.official" />
+										</th>
+										<th>
+											<bean:message key="colname.email" />
+										</th>
+									</tr>
+									<tr>
+										<td>
+											<bean:write name="dependency" property="name" />
+										</td>
+										<td>
+											<logic:notEmpty name="dependency" property="tag">
+												<bean:write name="dependency" property="tag.name" />
+											</logic:notEmpty>
+										</td>
+										<td>
+											<logic:equal name="dependency" property="official" value="true">
+												<bean:message key="si" />
+											</logic:equal>
+											<logic:equal name="dependency" property="official" value="false">
+												<bean:message key="no" />
+											</logic:equal>
+										</td>
+										<td>
+											<bean:write name="dependency" property="emails" />
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</logic:iterate>
+					</logic:notEmpty>
+				</logic:present>
+				
+				
 				<p>
 					<bean:message key="importar.semillas.info2" />
 				</p>
@@ -204,12 +271,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					<bean:define id="confirmacion" value="<%=Constants.CONFIRMACION%>" />
 					<jsp:useBean id="paramsSI" class="java.util.HashMap" />
 					<jsp:useBean id="paramsNO" class="java.util.HashMap" />
-					<c:set target="${paramsSI}" property="action" value="loadSeedsFile" />
+					<c:set target="${paramsSI}" property="action" value="importAll" />
 					<c:set target="${paramsSI}" property="confirmacion" value="${confSi}" />
-					<html:link styleClass="btn btn-primary btn-lg" forward="loadSeedsFile" name="paramsSI">
+					<html:link styleClass="btn btn-primary btn-lg" forward="importAllDependencies" name="paramsSI">
 						<bean:message key="boton.aceptar" />
 					</html:link>
-					<html:link styleClass="btn btn-default btn-lg" forward="observatorySeed">
+					<html:link styleClass="btn btn-default btn-lg" forward="observatoryDependencias">
 						<bean:message key="boton.cancelar" />
 					</html:link>
 				</div>
