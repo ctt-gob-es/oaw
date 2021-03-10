@@ -1768,8 +1768,9 @@ public final class SemillaDAO {
 	/**
 	 * Update seed ambito.
 	 *
-	 * @param c          the c
-	 * @param ambitoForm the ambito form
+	 * @param c            the c
+	 * @param idSeed       the id seed
+	 * @param observations the observations
 	 * @throws SQLException the SQL exception
 	 */
 	public static void updateSeedObservations(Connection c, final Integer idSeed, final String observations) throws SQLException {
@@ -2424,11 +2425,9 @@ public final class SemillaDAO {
 					throw new SQLException("Creating user failed, no rows affected.");
 				}
 				ResultSet generatedKeys = ps.getGeneratedKeys();
-
 				if (generatedKeys.next()) {
 					semillaForm.setId(generatedKeys.getLong(1));
 				}
-
 				// Multidependencia
 				// Inserción de las nuevas
 				if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
@@ -2442,8 +2441,7 @@ public final class SemillaDAO {
 						// se devuelve el id de la dependencia existente
 						if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentDependencia.getName())) {
 							PreparedStatement psCreateDependencia = c.prepareStatement(
-									"INSERT INTO dependencia(nombre) VALUES (?) ON DUPLICATE KEY UPDATE id_dependencia=LAST_INSERT_ID(id_dependencia), nombre = ?",
-									Statement.RETURN_GENERATED_KEYS);
+									"INSERT INTO dependencia(nombre) VALUES (?) ON DUPLICATE KEY UPDATE id_dependencia=LAST_INSERT_ID(id_dependencia), nombre = ?", Statement.RETURN_GENERATED_KEYS);
 							psCreateDependencia.setString(1, currentDependencia.getName());
 							psCreateDependencia.setString(2, currentDependencia.getName());
 							int affectedRowsD = psCreateDependencia.executeUpdate();
@@ -3196,6 +3194,63 @@ public final class SemillaDAO {
 				final int resultFrom = pagSize * page;
 				ps.setInt(1, pagSize);
 				ps.setInt(2, resultFrom);
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					DependenciaForm dependenciaForm = new DependenciaForm();
+					dependenciaForm.setId(rs.getLong("id_dependencia"));
+					dependenciaForm.setName(rs.getString(NOMBRE));
+					dependencias.add(dependenciaForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return dependencias;
+	}
+
+	/**
+	 * Gets the seed dependencias by ambit and tags.
+	 *
+	 * @param c       the c
+	 * @param idAmbit the id ambit
+	 * @param idsTags the ids tags
+	 * @return the seed dependencias by ambit and tags
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<DependenciaForm> getSeedDependenciasByAmbitAndTags(Connection c, final String idAmbit, final String[] idsTags) throws SQLException {
+		final List<DependenciaForm> dependencias = new ArrayList<>();
+		String query = "SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE 1=1";
+		if (!org.apache.commons.lang3.StringUtils.isEmpty(idAmbit)) {
+			query += " AND d.id_ambit = ? ";
+		}
+		if (idsTags != null && idsTags.length > 0) {
+			query += " AND d.id_tag IN (";
+			for (int i = 0; i < idsTags.length; i++) {
+				if (!org.apache.commons.lang3.StringUtils.isEmpty(idsTags[i])) {
+					query += "?";
+					if (i < idsTags.length - 1) {
+						query += ",";
+					}
+				}
+			}
+			query += ")";
+		}
+		query += " ORDER BY UPPER(d.nombre) ASC ";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			int paramIndex = 1;
+			if (!StringUtils.isEmpty(idAmbit)) {
+				ps.setString(paramIndex, idAmbit);
+				paramIndex++;
+			}
+			if (idsTags != null && idsTags.length > 0) {
+				for (int i = 0; i < idsTags.length; i++) {
+					if (!org.apache.commons.lang3.StringUtils.isEmpty(idsTags[i])) {
+						ps.setString(paramIndex, idsTags[i]);
+						paramIndex++;
+					}
+				}
 			}
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
