@@ -340,6 +340,8 @@
 
 		<!-- Nuevo mantenimiento de dependencias -->
 		<forward name="observatoryDependencias" path="/secure/ViewDependenciasObservatorio.do?action=load" />
+		<forward name="importAllDependencies" path="/secure/ViewDependenciasObservatorio.do?action=importAll" />
+		
 
 		<forward name="relanzarObservatorio" path="/secure/RelanzarObservatorio.do" />
 
