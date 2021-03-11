@@ -53,16 +53,17 @@ CREATE TABLE `observatorio_template_range` (
     PRIMARY KEY(`id`)
 );
 
-CREATE TABLE `observatorio_template_custom_text_ura` ( 
+CREATE TABLE `observatorio_ura_send_results` ( 
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`id_observatory_execution` INT NOT NULL,
 	`id_ura` INT NOT NULL,
 	`id_range` INT NOT NULL,
 	`range_value` float(4,2) ,
 	`custom_text` mediumtext NOT NULL,
+	`send` int(11) NOT NULL DEFAULT '0',
     PRIMARY KEY(`id`)
 );
-ALTER TABLE observatorio_template_custom_text_ura ADD UNIQUE unique_index(id_observatory_execution, id_ura);
+ALTER TABLE observatorio_ura_send_results ADD UNIQUE unique_index(id_observatory_execution, id_ura);
 
 CREATE TABLE `observatorio_send_configuration` ( 
 	`id` INT NOT NULL AUTO_INCREMENT,
@@ -80,3 +81,6 @@ CREATE TABLE `observatorio_send_configuration_comparision` (
 	`date_previous` VARCHAR(255),
     PRIMARY KEY(`id`)
 );
+
+-- only in DES
+RENAME TABLE `observatorio_template_custom_text_ura` TO `observatorio_ura_send_results`;

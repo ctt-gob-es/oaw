@@ -29,14 +29,14 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.observatorio.ResultadosObservatorioAction;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.TemplateRangeForm;
-import es.inteco.rastreador2.actionform.observatorio.UraCustomTextForm;
+import es.inteco.rastreador2.actionform.observatorio.UraSendResultForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.dependencia.DependenciaDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.observatorio.TemplateRangeDAO;
-import es.inteco.rastreador2.dao.observatorio.UraCustomTextDAO;
+import es.inteco.rastreador2.dao.observatorio.UraSendResultDAO;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
@@ -62,7 +62,7 @@ public final class SendResultsMailUtils {
 	 * @param idObsExecution the id obs execution
 	 * @throws Exception the exception
 	 */
-	public static void generateAndSendData(final Long idObs, final Long idCartucho, final Long idObsExecution) throws Exception {
+	public static void generateAndSendData(final Long idObs, final Long idCartucho, final Long idObsExecution, final String emailSubject) throws Exception {
 		PropertiesManager pmgr = new PropertiesManager();
 		Connection c = DataBaseManager.getConnection();
 		final String[] exObsIds = ObservatorioDAO.getExObsIdsConfig(c, idObsExecution);
@@ -74,11 +74,11 @@ public final class SendResultsMailUtils {
 		final Map<String, String> pdfZipsPath = getPdfs(idObs, idObsExecution, fulfilledCrawlings);
 		// Get dependecies info
 		// List<DependenciaForm> dependencies = ObservatorioDAO.getDependenciesByIdExObs(c, idObsExecution);
-		final List<UraCustomTextForm> uras = UraCustomTextDAO.findAll(c, idObsExecution);
+		final List<UraSendResultForm> uras = UraSendResultDAO.findAll(c, idObsExecution);
 		final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
 		final List<TemplateRangeForm> iterationRanges = TemplateRangeDAO.findAll(c, idObsExecution);
 		final Map<Long, TemplateRangeForm> iterationRangesMap = iterationRanges.stream().collect(Collectors.toMap(TemplateRangeForm::getId, template -> template));
-		for (UraCustomTextForm ura : uras) {
+		for (UraSendResultForm ura : uras) {
 			// Find Dependency
 			// TODO GET DEPENDENCY FILE FROM ANNEXPATH
 			// TODO GET PDF ZIP FROM ZIPS PATH
@@ -109,7 +109,7 @@ public final class SendResultsMailUtils {
 					}
 					zipOut.close();
 					fos.close();
-					sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName());
+					sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName(), emailSubject);
 				}
 			}
 		}
@@ -139,9 +139,10 @@ public final class SendResultsMailUtils {
 	 * @param ura           the ura
 	 * @param attachUrl     the attach url
 	 * @param attachName    the attach name
+	 * @throws Exception
 	 */
-	private static void sendMailToUra(final Long idObservatory, final DependenciaForm ura, final UraCustomTextForm uraCustom, final Map<Long, TemplateRangeForm> iterationRangesMap,
-			final String attachUrl, final String attachName) {
+	private static void sendMailToUra(final Long idObservatory, final DependenciaForm ura, final UraSendResultForm uraCustom, final Map<Long, TemplateRangeForm> iterationRangesMap,
+			final String attachUrl, final String attachName, final String emailSubject) throws Exception {
 		final String observatoryName = getObservatoryName(idObservatory);
 		// TODO Compose boy with template
 		// todo MARKS
@@ -165,12 +166,16 @@ public final class SendResultsMailUtils {
 		templateMail = templateMail.replace("_ura_custom_text_", uraCustom.getTemplate());
 		StringBuilder mailBody = new StringBuilder(templateMail);
 		// TODO Email subject
-		final String mailSubject = "Prueba enviar resultado: " + observatoryName;
 		final MailService mailService = new MailService();
 		// TODO Get emails from URA
 //		mailsTo.add("alvaro.pelaez@ctic.es");
 		List<String> mailsTo = Arrays.asList(ura.getEmails().split(";"));
-		mailService.sendMail(mailsTo, mailSubject, mailBody.toString(), attachUrl, attachName, true);
+		mailService.sendMail(mailsTo, emailSubject, mailBody.toString(), attachUrl, attachName, true);
+		// TODO Mark as send
+		uraCustom.setSend(true);
+		Connection c = DataBaseManager.getConnection();
+		UraSendResultDAO.markSend(c, uraCustom);
+		DataBaseManager.closeConnection(c);
 	}
 
 	/**

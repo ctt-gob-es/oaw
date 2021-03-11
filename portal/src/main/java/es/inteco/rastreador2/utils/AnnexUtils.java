@@ -115,14 +115,14 @@ import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.observatorio.RangeForm;
 import es.inteco.rastreador2.actionform.observatorio.TemplateRangeForm;
-import es.inteco.rastreador2.actionform.observatorio.UraCustomTextForm;
+import es.inteco.rastreador2.actionform.observatorio.UraSendResultForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.observatorio.RangeDAO;
 import es.inteco.rastreador2.dao.observatorio.TemplateRangeDAO;
-import es.inteco.rastreador2.dao.observatorio.UraCustomTextDAO;
+import es.inteco.rastreador2.dao.observatorio.UraSendResultDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.export.database.form.CategoryForm;
 import es.inteco.rastreador2.export.database.form.ComparisionForm;
@@ -445,8 +445,8 @@ public final class AnnexUtils {
 			final List<ComparisionForm> comparision) throws Exception {
 		// Returns a map of dependencies and values of evolution
 		generateInfo(idObsExecution, exObsIds);
-		List<UraCustomTextForm> uraCustomList = new ArrayList<>();
-		// Generate a list of UraCustomTextForm with all URA information
+		List<UraSendResultForm> uraCustomList = new ArrayList<>();
+		// Generate a list of UraSendResultForm with all URA information
 		Map<DependenciaForm, List<SemillaForm>> mapSeedByDependencia = new HashMap<>();
 		for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 			final SemillaForm semillaForm = semillaEntry.getKey();
@@ -506,7 +506,7 @@ public final class AnnexUtils {
 			BigDecimal midPreviousScores = sumPreviousScore.divide(new BigDecimal(entry.getValue().size()), RoundingMode.HALF_UP);
 			BigDecimal diffMidScores = midLastScores.subtract(midPreviousScores);
 			//
-			UraCustomTextForm uraCustom = new UraCustomTextForm();
+			UraSendResultForm uraCustom = new UraSendResultForm();
 			uraCustom.setIdUra(entry.getKey().getId());
 			uraCustom.setIdObservatoryExecution(idObsExecution);
 			uraCustom.setRangeValue(diffMidScores.floatValue());
@@ -527,7 +527,7 @@ public final class AnnexUtils {
 		// TODO Remove old customs if exists?
 		// UraCustomTextDAO.deleteAll(c, idObsExecution);
 		// Save new custom
-		UraCustomTextDAO.save(c, uraCustomList);
+		UraSendResultDAO.save(c, uraCustomList);
 		DataBaseManager.closeConnection(c);
 	}
 

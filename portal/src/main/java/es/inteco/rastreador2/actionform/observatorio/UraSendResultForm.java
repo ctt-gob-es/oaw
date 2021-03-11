@@ -7,9 +7,9 @@ import org.apache.struts.validator.ValidatorForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 
 /**
- * The Class UraCustomTextForm.
+ * The Class UraSendResultForm.
  */
-public class UraCustomTextForm extends ValidatorForm implements Serializable {
+public class UraSendResultForm extends ValidatorForm implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 5141470638405603314L;
 	/** The id. */
@@ -32,6 +32,8 @@ public class UraCustomTextForm extends ValidatorForm implements Serializable {
 	private Long uraId;
 	/** The range value. */
 	private Float rangeValue;
+	/** The send. */
+	private boolean send;
 
 	/**
 	 * Gets the id.
@@ -49,6 +51,24 @@ public class UraCustomTextForm extends ValidatorForm implements Serializable {
 	 */
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	/**
+	 * Checks if is send.
+	 *
+	 * @return true, if is send
+	 */
+	public boolean isSend() {
+		return send;
+	}
+
+	/**
+	 * Sets the send.
+	 *
+	 * @param send the new send
+	 */
+	public void setSend(boolean send) {
+		this.send = send;
 	}
 
 	/**

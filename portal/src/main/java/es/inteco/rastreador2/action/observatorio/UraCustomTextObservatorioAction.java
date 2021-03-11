@@ -33,8 +33,8 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.intav.form.PageForm;
 import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.rastreador2.actionform.observatorio.UraCustomTextForm;
-import es.inteco.rastreador2.dao.observatorio.UraCustomTextDAO;
+import es.inteco.rastreador2.actionform.observatorio.UraSendResultForm;
+import es.inteco.rastreador2.dao.observatorio.UraSendResultDAO;
 import es.inteco.rastreador2.json.JsonMessage;
 import es.inteco.rastreador2.utils.Pagination;
 
@@ -56,9 +56,9 @@ public class UraCustomTextObservatorioAction extends DispatchAction {
 		try (Connection c = DataBaseManager.getConnection()) {
 			Long idExObs = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
-			final int numResult = UraCustomTextDAO.count(c, idExObs);
+			final int numResult = UraSendResultDAO.count(c, idExObs);
 			response.setContentType("text/json");
-			List<UraCustomTextForm> list = UraCustomTextDAO.findAll(c, idExObs);
+			List<UraSendResultForm> list = UraSendResultDAO.findAll(c, idExObs);
 			String jsonSeeds = new Gson().toJson(list);
 			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
 			String jsonPagination = new Gson().toJson(paginas);
@@ -90,9 +90,9 @@ public class UraCustomTextObservatorioAction extends DispatchAction {
 			if (request.getParameter("uras") != null && !StringUtils.isEmpty(request.getParameter("uras"))) {
 				urasIds = request.getParameter("uras").split(",");
 			}
-			final int numResult = UraCustomTextDAO.count(c, idExObs, urasIds);
+			final int numResult = UraSendResultDAO.count(c, idExObs, urasIds);
 			response.setContentType("text/json");
-			List<UraCustomTextForm> list = UraCustomTextDAO.findByIds(c, idExObs, urasIds);
+			List<UraSendResultForm> list = UraSendResultDAO.findByIds(c, idExObs, urasIds);
 			String jsonSeeds = new Gson().toJson(list);
 			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
 			String jsonPagination = new Gson().toJson(paginas);
@@ -118,9 +118,9 @@ public class UraCustomTextObservatorioAction extends DispatchAction {
 	 */
 	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
-		UraCustomTextForm range = (UraCustomTextForm) form;
+		UraSendResultForm range = (UraSendResultForm) form;
 		try (Connection c = DataBaseManager.getConnection()) {
-			UraCustomTextDAO.update(c, range);
+			UraSendResultDAO.update(c, range);
 			response.getWriter().write(messageResources.getMessage("mensaje.exito.range.generada"));
 		} catch (Exception e) {
 			Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
@@ -146,7 +146,7 @@ public class UraCustomTextObservatorioAction extends DispatchAction {
 		String id = request.getParameter("id");
 		if (id != null) {
 			try (Connection c = DataBaseManager.getConnection()) {
-				UraCustomTextDAO.delete(c, Long.parseLong(id));
+				UraSendResultDAO.delete(c, Long.parseLong(id));
 				errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.range.eliminada")));
 				response.getWriter().write(new Gson().toJson(errores));
 			} catch (Exception e) {
