@@ -190,7 +190,7 @@ public final class DependenciaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static DependenciaForm findByName(Connection c, final String name) throws SQLException {
-		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official FROM dependencia d WHERE d.nombre = ? ";
+		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE d.nombre = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, name);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -210,6 +210,12 @@ public final class DependenciaDAO {
 						dependenciaForm.setOfficial(true);
 					}
 					dependenciaForm.setName(rs.getString("d.nombre"));
+					if (rs.getInt("e.id_etiqueta") != 0) {
+						EtiquetaForm tag = new EtiquetaForm();
+						tag.setId(rs.getLong("e.id_etiqueta"));
+						tag.setName(rs.getString("e.nombre"));
+						dependenciaForm.setTag(tag);
+					}
 					return dependenciaForm;
 				}
 			}
