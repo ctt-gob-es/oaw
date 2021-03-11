@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
@@ -291,9 +292,18 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		List<DependenciaForm> newDependencies = new ArrayList<>();
 		List<DependenciaForm> updatedAndNewDependencies = new ArrayList<>();
 		List<DependenciaForm> inalterableDependencies = new ArrayList<>();
+		List<DependencyError> errorDependencies = new ArrayList<>();
 		for (DependencyComparision comparision : comparisionList) {
 			if (comparision.isNew()) {
 				newDependencies.add(comparision.getNewDependency());
+			} else if (comparision.getDependency() != null && comparision.getDependency().isOfficial() && comparision.getNewDependency() != null && !comparision.getNewDependency().isOfficial()) {
+				List<String> errorsDependency = new ArrayList<>();
+				MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+				errorsDependency.add(messageResources.getMessage("dependency.import.error.official.to.unofficial"));
+				DependencyError dependencyError = new DependencyError();
+				BeanUtils.copyProperties(dependencyError, comparision.getDependency());
+				dependencyError.setErrors(errorsDependency);
+				errorDependencies.add(dependencyError);
 			} else if (!comparision.isInalterable()) {
 				updatedDependencies.add(comparision);
 			} else {
@@ -304,6 +314,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		request.setAttribute("updatedDependencies", updatedDependencies);
 		request.setAttribute("newDependencies", newDependencies);
 		request.setAttribute("inalterableDependencies", inalterableDependencies);
+		request.setAttribute("errorDependencies", errorDependencies);
 		// Store list in session
 		HttpSession session = request.getSession();
 		session.setAttribute("updatedAndNewDependencies", updatedAndNewDependencies);
@@ -433,6 +444,34 @@ public class DependenciasObservatorioAction extends DispatchAction {
 			}
 		}
 		return headerData;
+	}
+
+	/**
+	 * The Class SeedError.
+	 */
+	public class DependencyError extends DependenciaForm {
+		/** The Constant serialVersionUID. */
+		private static final long serialVersionUID = 3659271546896392454L;
+		/** The errors. */
+		private List<String> errors = new ArrayList<>();
+
+		/**
+		 * Gets the errors.
+		 *
+		 * @return the error
+		 */
+		public List<String> getErrors() {
+			return errors;
+		}
+
+		/**
+		 * Sets the errors.
+		 *
+		 * @param errors the new errors
+		 */
+		public void setErrors(List<String> errors) {
+			this.errors = errors;
+		}
 	}
 
 	/**

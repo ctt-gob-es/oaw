@@ -42,6 +42,82 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<p>
 					<bean:message key="importar.semillas.info" />
 				</p>
+				<logic:present name="errorDependencies">
+					<logic:notEmpty name="errorDependencies">
+						<h3>
+							<bean:message key="importar.dependencias.error.title" />
+						</h3>
+						<bean:size id="beansize" name="errorDependencies" />
+						<bean:message key="importar.dependencias.error.title.total">
+							<jsp:attribute name="arg0">
+                            <bean:write name="beansize" />
+                        </jsp:attribute>
+						</bean:message>
+						<logic:iterate name="errorDependencies" id="dependency">
+							<table class="table table-stripped table-bordered table-hover">
+								<caption>
+									<bean:message key="lista.semillas.observatorio" />
+								</caption>
+								<colgroup>
+									<col style="width: 50%">
+									<col style="width: 10%">
+									<col style="width: 10%">
+									<col style="width: 10%">
+									<col style="width: 20%">
+								</colgroup>
+								<tbody>
+									<tr>
+										<th>
+											<bean:message key="colname.name" />
+										</th>
+										<th>
+											<bean:message key="colname.province" />
+										</th>
+										<th>
+											<bean:message key="colname.official" />
+										</th>
+										<th>
+											<bean:message key="colname.email" />
+										</th>
+										<th>
+											<bean:message key="cargar.semilla.observatorio.errores" />
+										</th>
+									</tr>
+									<tr>
+										<td>
+											<bean:write name="dependency" property="name" />
+										</td>
+										<td>
+											<logic:notEmpty name="dependency" property="tag">
+												<bean:write name="dependency" property="tag.name" />
+											</logic:notEmpty>
+										</td>
+										<td>
+											<logic:equal name="dependency" property="official" value="true">
+												<bean:message key="si" />
+											</logic:equal>
+											<logic:equal name="dependency" property="official" value="false">
+												<bean:message key="no" />
+											</logic:equal>
+										</td>
+										<td>
+											<bean:write name="dependency" property="emails" />
+										</td>
+										<td>
+											<ul class="seedImportErrorList">
+												<logic:iterate name="dependency" property="errors" id="error">
+													<li>
+														<bean:write name="error" />
+													</li>
+												</logic:iterate>
+											</ul>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</logic:iterate>
+					</logic:notEmpty>
+				</logic:present>
 				<!-- Updated -->
 				<logic:present name="updatedDependencies">
 					<logic:notEmpty name="updatedDependencies">
@@ -195,9 +271,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</logic:iterate>
 					</logic:notEmpty>
 				</logic:present>
-				
 				<!-- Inalterable -->
-					<logic:present name="inalterableDependencies">
+				<logic:present name="inalterableDependencies">
 					<logic:notEmpty name="inalterableDependencies">
 						<h3>
 							<bean:message key="importar.dependencias.inalterable.title" />
@@ -260,8 +335,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</logic:iterate>
 					</logic:notEmpty>
 				</logic:present>
-				
-				
 				<p>
 					<bean:message key="importar.semillas.info2" />
 				</p>

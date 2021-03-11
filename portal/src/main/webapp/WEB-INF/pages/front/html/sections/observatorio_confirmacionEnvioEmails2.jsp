@@ -40,6 +40,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	var colNameRange = '<bean:message key="colname.range"/>';
 	var colNameTemplate = '<bean:message key="colname.custom.message"/>';
 	var colNameRemove = '<bean:message key="colname.remove"/>';
+	var colNameSendAuto = '<bean:message key="colname.send.auto"/>';
 
 	var windowTitleRemove = '<bean:message key="range.observatory.modal.delete.title"/>';
 	var saveButton = '<bean:message key="boton.aceptar"/>';
@@ -176,7 +177,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												colNames : [ colNameId,
 														colNameName,
 														colNameRange,
-														colNameTemplate, "" ],
+														colNameTemplate,
+														colNameSendAuto, "" ],
 												colModel : [
 														{
 															name : "id",
@@ -203,7 +205,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															name : "template",
 															width : 50,
 															editrules : {
-																required : true,
+																required : false,
 															},
 															edittype : 'custom',
 															editoptions : {
@@ -214,6 +216,15 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															align : "left",
 															sortable : false,
 
+														},
+														{
+															name : "ura.sendAuto",
+															width : 20,
+															editable : false,
+															align : "center",
+															sortable : false,
+															width : 10,
+															template : "booleanCheckboxFa"
 														},
 														{
 															name : "actions",
@@ -479,16 +490,18 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<label for="emailSubject" class="control-label">
 							<strong class="labelVisu">
 								<bean:message key="resultado.observatorio.rastreo.realizado.send.subject" />
+								<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
 							</strong>
 						</label>
 						<div class="col-xs-6">
-							<input class="form-control" name="emailSubject" id="emailSubject" type="text" required/>
+							<input class="form-control" name="emailSubject" id="emailSubject" type="text" required />
 						</div>
 					</div>
 					<div class="row formItem">
 						<label for="customTextSelector" class="control-label">
 							<strong class="labelVisu">
 								<bean:message key="indice.rastreo.send.database.confirm.select.custom.text" />
+								<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
 							</strong>
 						</label>
 						<div class="col-xs-6">
