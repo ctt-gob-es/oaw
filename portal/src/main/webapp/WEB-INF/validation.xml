@@ -568,7 +568,7 @@
 			</field>
 		</form>
 
-<!-- 		<form name="UraCustomTextForm"> -->
+<!-- 		<form name="UraSendResultForm"> -->
 <!-- 			<field property="tam" depends="required"> -->
 <!-- 				<arg0 key="error.etiqueta" /> -->
 <!-- 			</field> -->

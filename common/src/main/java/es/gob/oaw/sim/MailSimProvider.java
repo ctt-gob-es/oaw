@@ -52,13 +52,6 @@ public class MailSimProvider implements MailProvider {
 			final EnvioMensajesService service = new EnvioMensajesService(wsdlURL);
 			final EnvioMensajesServiceWSBindingPortType envioMensajesServicePort = service.getEnvioMensajesServicePort();
 			Logger.putLog(String.format("Sending mail from MailSimProvider using %s", pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url")), MailSimProvider.class, Logger.LOG_LEVEL_WARNING);
-//			try {
-//				java.io.StringWriter writer = new java.io.StringWriter();
-//				javax.xml.bind.JAXBContext.newInstance(Peticion.class).createMarshaller().marshal(peticion,  new java.io.PrintWriter("/home/alvaro/oaw_sim.xml"));
-//				writer.toString();
-//			} catch (Exception e) {
-//
-//			}
 			final Respuesta respuesta = envioMensajesServicePort.enviarMensaje(peticion);
 			final ResponseStatusType respuestaStatus = respuesta.getStatus();
 			if (!"1000".equals(respuestaStatus.getStatusCode())) {

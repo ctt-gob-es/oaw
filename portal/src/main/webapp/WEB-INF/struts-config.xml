@@ -44,7 +44,7 @@
 
 		<form-bean name="TemplateRangeForm" type="es.inteco.rastreador2.actionform.observatorio.TemplateRangeForm" />
 
-		<form-bean name="UraCustomTextForm" type="es.inteco.rastreador2.actionform.observatorio.UraCustomTextForm" />
+		<form-bean name="UraSendResultForm" type="es.inteco.rastreador2.actionform.observatorio.UraSendResultForm" />
 
 
 
@@ -300,6 +300,9 @@
 		<forward name="generateAllReports" path=".generateAllReports" />
 
 		<forward name="generateReportAsync" path=".generateReportAsync" />
+		
+		<forward name="sendResultsByMailAsync" path=".sendResultsByMailAsync" />
+
 
 
 
@@ -1093,7 +1096,7 @@
 
 
 		<action path="/secure/UraCustomTextObservatorio"
-			type="es.inteco.rastreador2.action.observatorio.UraCustomTextObservatorioAction" name="UraCustomTextForm"
+			type="es.inteco.rastreador2.action.observatorio.UraCustomTextObservatorioAction" name="UraSendResultForm"
 			parameter="action" scope="request" validate="false">
 		</action>
 

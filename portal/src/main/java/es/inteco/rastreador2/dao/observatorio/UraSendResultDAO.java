@@ -14,14 +14,14 @@ import org.apache.commons.codec.binary.Base64;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.actionform.observatorio.RangeForm;
-import es.inteco.rastreador2.actionform.observatorio.UraCustomTextForm;
+import es.inteco.rastreador2.actionform.observatorio.UraSendResultForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.utils.DAOUtils;
 
 /**
  * The Class RangeDAO.
  */
-public class UraCustomTextDAO {
+public class UraSendResultDAO {
 	/**
 	 * Count.
 	 *
@@ -31,7 +31,7 @@ public class UraCustomTextDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static int count(Connection c, final Long idExObs) throws SQLException {
-		String query = "SELECT COUNT(*) FROM observatorio_template_custom_text_ura e WHERE 1=1 AND id_observatory_execution = ? ";
+		String query = "SELECT COUNT(*) FROM observatorio_ura_send_results e WHERE 1=1 AND id_observatory_execution = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idExObs);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -42,7 +42,7 @@ public class UraCustomTextDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", UraCustomTextDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -59,7 +59,7 @@ public class UraCustomTextDAO {
 	public static int count(Connection c, final Long idExObs, final String[] ids) throws SQLException {
 		int count = 0;
 		if (ids != null && ids.length > 0) {
-			String query = "SELECT COUNT(*) FROM observatorio_template_custom_text_ura c WHERE 1=1 AND id_observatory_execution = ? ";
+			String query = "SELECT COUNT(*) FROM observatorio_ura_send_results c WHERE 1=1 AND id_observatory_execution = ? ";
 			query = query + " AND c.id_ura IN (" + ids[0];
 			for (int i = 1; i < ids.length; i++) {
 				query = query + "," + ids[i];
@@ -75,7 +75,7 @@ public class UraCustomTextDAO {
 					}
 				}
 			} catch (SQLException e) {
-				Logger.putLog("SQL Exception: ", UraCustomTextDAO.class, Logger.LOG_LEVEL_ERROR, e);
+				Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
 			}
 		}
@@ -91,14 +91,14 @@ public class UraCustomTextDAO {
 	 * @throws SQLException the SQL exception
 	 */
 //	id_observatory_execution, id_ura, id_range, custom_text
-	public static List<UraCustomTextForm> findAll(Connection c, final Long idExObs) throws SQLException {
-		final List<UraCustomTextForm> results = new ArrayList<>();
-		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, r.id, r.name, d.id_dependencia, d.nombre FROM observatorio_template_custom_text_ura c JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ORDER BY c.id ASC";
+	public static List<UraSendResultForm> findAll(Connection c, final Long idExObs) throws SQLException {
+		final List<UraSendResultForm> results = new ArrayList<>();
+		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, r.id, r.name, d.id_dependencia, d.nombre FROM observatorio_ura_send_results c JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ORDER BY c.id ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idExObs);
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
-					final UraCustomTextForm form = new UraCustomTextForm();
+					final UraSendResultForm form = new UraSendResultForm();
 					form.setId(rs.getLong("c.id"));
 					form.setUraId(rs.getLong("d.id_dependencia"));
 					form.setUraName(rs.getString("d.nombre"));
@@ -111,11 +111,12 @@ public class UraCustomTextDAO {
 					ura.setId(rs.getLong("d.id_dependencia"));
 					ura.setName(rs.getString("d.nombre"));
 					form.setUra(ura);
+					form.setSend(rs.getBoolean("c.send"));
 					results.add(form);
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", UraCustomTextDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return results;
@@ -130,10 +131,10 @@ public class UraCustomTextDAO {
 	 * @return the list
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<UraCustomTextForm> findByIds(Connection c, final Long idExObs, final String[] ids) throws SQLException {
-		final List<UraCustomTextForm> results = new ArrayList<>();
+	public static List<UraSendResultForm> findByIds(Connection c, final Long idExObs, final String[] ids) throws SQLException {
+		final List<UraSendResultForm> results = new ArrayList<>();
 		if (ids != null && ids.length > 0) {
-			String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, r.id, r.name, d.id_dependencia, d.nombre FROM observatorio_template_custom_text_ura c JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ";
+			String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, r.id, r.name, d.id_dependencia, d.nombre FROM observatorio_ura_send_results c JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ";
 			query = query + " AND c.id_ura IN (" + ids[0];
 			for (int i = 1; i < ids.length; i++) {
 				query = query + "," + ids[i];
@@ -144,7 +145,7 @@ public class UraCustomTextDAO {
 				ps.setLong(1, idExObs);
 				try (ResultSet rs = ps.executeQuery()) {
 					while (rs.next()) {
-						final UraCustomTextForm form = new UraCustomTextForm();
+						final UraSendResultForm form = new UraSendResultForm();
 						form.setId(rs.getLong("c.id"));
 						form.setTemplate(new String(Base64.decodeBase64(rs.getString("custom_text").getBytes())));
 						final RangeForm range = new RangeForm();
@@ -155,11 +156,12 @@ public class UraCustomTextDAO {
 						ura.setId(rs.getLong("d.id_dependencia"));
 						ura.setName(rs.getString("d.nombre"));
 						form.setUra(ura);
+						form.setSend(rs.getBoolean("c.send"));
 						results.add(form);
 					}
 				}
 			} catch (SQLException e) {
-				Logger.putLog("SQL Exception: ", UraCustomTextDAO.class, Logger.LOG_LEVEL_ERROR, e);
+				Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
 			}
 		}
@@ -174,9 +176,9 @@ public class UraCustomTextDAO {
 	 * @throws SQLException                 the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	public static void save(Connection c, final List<UraCustomTextForm> list) throws SQLException, UnsupportedEncodingException {
+	public static void save(Connection c, final List<UraSendResultForm> list) throws SQLException, UnsupportedEncodingException {
 		if (list != null && !list.isEmpty()) {
-			for (UraCustomTextForm u : list) {
+			for (UraSendResultForm u : list) {
 				save(c, u);
 			}
 		}
@@ -190,12 +192,12 @@ public class UraCustomTextDAO {
 	 * @throws SQLException                 the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	public static void save(Connection c, final UraCustomTextForm form) throws SQLException, UnsupportedEncodingException {
+	public static void save(Connection c, final UraSendResultForm form) throws SQLException, UnsupportedEncodingException {
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
 			ps = c.prepareStatement(
-					"INSERT INTO observatorio_template_custom_text_ura(id_observatory_execution, id_ura, id_range, custom_text, range_value) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE id_range = ?, range_value = ?;",
+					"INSERT INTO observatorio_ura_send_results(id_observatory_execution, id_ura, id_range, custom_text, range_value) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE id_range = ?, range_value = ?;",
 					Statement.RETURN_GENERATED_KEYS);
 			ps.setLong(1, form.getIdObservatoryExecution());
 			ps.setLong(2, form.getIdUra());
@@ -219,7 +221,7 @@ public class UraCustomTextDAO {
 			c.commit();
 		} catch (SQLException e) {
 			c.rollback();
-			Logger.putLog("SQL_EXCEPTION: ", UraCustomTextDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("SQL_EXCEPTION: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		} finally {
 			DAOUtils.closeQueries(ps, null);
@@ -234,8 +236,8 @@ public class UraCustomTextDAO {
 	 * @throws SQLException                 the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	public static void update(Connection c, final UraCustomTextForm form) throws SQLException, UnsupportedEncodingException {
-		final String query = "UPDATE observatorio_template_custom_text_ura SET custom_text= ? WHERE id = ?";
+	public static void update(Connection c, final UraSendResultForm form) throws SQLException, UnsupportedEncodingException {
+		final String query = "UPDATE observatorio_ura_send_results SET custom_text= ? WHERE id = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			// Encode BASE64 code
 			String template = new String(form.getTemplate());
@@ -246,7 +248,28 @@ public class UraCustomTextDAO {
 			ps.setLong(2, form.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", UraCustomTextDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Mark send.
+	 *
+	 * @param c    the c
+	 * @param form the form
+	 * @throws SQLException                 the SQL exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
+	public static void markSend(Connection c, final UraSendResultForm form) throws SQLException, UnsupportedEncodingException {
+		// form.setSend(rs.getBoolean("c.send"));
+		final String query = "UPDATE observatorio_ura_send_results SET send= ? WHERE id = ?";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setBoolean(1, form.isSend());
+			ps.setLong(2, form.getId());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -259,11 +282,11 @@ public class UraCustomTextDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static void delete(Connection c, final Long id) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_template_custom_text_ura WHERE id = ?")) {
+		try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_ura_send_results WHERE id = ?")) {
 			ps.setLong(1, id);
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", UraCustomTextDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -276,11 +299,11 @@ public class UraCustomTextDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static void deleteAll(Connection c, final Long idExObs) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_template_custom_text_ura WHERE id_observatory_execution = ?")) {
+		try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_ura_send_results WHERE id_observatory_execution = ?")) {
 			ps.setLong(1, idExObs);
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", UraCustomTextDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}

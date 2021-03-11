@@ -271,6 +271,12 @@
 	</definition>
 
 
+<definition name=".sendResultsByMailAsync" extends="mainLayout">
+		<put name="title" value="application.title" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_sendResultsByMailAsync.jsp" />
+	</definition>
+
+
 	<!-- Página cargar semillas observatorio -->
 	<definition name=".cargarSemillasObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
