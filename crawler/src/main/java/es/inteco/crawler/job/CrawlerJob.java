@@ -58,6 +58,7 @@ import org.xml.sax.InputSource;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.CheckerParser;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import es.gob.oaw.MailException;
 import es.gob.oaw.MailService;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.common.logging.Logger;
@@ -580,7 +581,11 @@ public class CrawlerJob implements InterruptableJob {
 			final String connectionOkOAW = checkConnection(url, false) ? "Sí" : "No";
 			final String connectionOkJS = checkConnection(url, true) ? "Sí" : "No";
 			final String text = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.text"), url, crawled, objective, inDirectory, connectionOkOAW, connectionOkJS);
-			mailService.sendMail(mailTo, subject, text);
+			try {
+				mailService.sendMail(mailTo, subject, text);
+			} catch (MailException e) {
+				Logger.putLog("Fallo al enviar el correo", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
+			}
 		}
 	}
 

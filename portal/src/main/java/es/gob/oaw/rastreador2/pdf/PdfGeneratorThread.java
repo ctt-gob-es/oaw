@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.struts.util.PropertyMessageResources;
 
+import es.gob.oaw.MailException;
 import es.gob.oaw.MailService;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -84,8 +85,12 @@ public class PdfGeneratorThread extends Thread {
 			buildPdf(fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling());
 		}
 		final MailService mailService = new MailService();
-		mailService.sendMail(Collections.singletonList(email), "Generación de informes completado",
-				String.format("El proceso de generación de informes ha finalizado para el observatorio %s. Para descargar los informes vuelva a ejecutar la acción", observatoryName));
+		try {
+			mailService.sendMail(Collections.singletonList(email), "Generación de informes completado",
+					String.format("El proceso de generación de informes ha finalizado para el observatorio %s. Para descargar los informes vuelva a ejecutar la acción", observatoryName));
+		} catch (MailException e) {
+			Logger.putLog("Fallo al enviar el correo", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
+		}
 	}
 
 	/**

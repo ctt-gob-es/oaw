@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.apache.struts.util.PropertyMessageResources;
 
+import es.gob.oaw.MailException;
 import es.gob.oaw.MailService;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -107,7 +108,11 @@ public class PdfGeneratorThread2 extends Thread {
 		mailsTo.add(email);
 		mailsTo.add("alvaro.pelaez@ctic.es");
 //		mailService.sendMail(Collections.singletonList(email), "Generación de informes completado", mailBody.toString(), true);
-		mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
+		try {
+			mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
+		} catch (MailException e) {
+			Logger.putLog("Fallo al enviar el correo", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
+		}
 	}
 
 	/**

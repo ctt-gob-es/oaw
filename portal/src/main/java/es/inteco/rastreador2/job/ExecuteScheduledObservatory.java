@@ -31,6 +31,7 @@ import org.quartz.StatefulJob;
 import org.quartz.UnableToInterruptJobException;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import es.gob.oaw.MailException;
 import es.gob.oaw.MailService;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -319,7 +320,11 @@ public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJo
 			alertText += "\n" + pmgr.getValue(CRAWLER_PROPERTIES, "url.administrator.message") + url;
 		}
 		MailService mailService = new MailService();
-		mailService.sendMail(adminMails, alertSubject, alertText);
+		try {
+			mailService.sendMail(adminMails, alertSubject, alertText);
+		} catch (MailException e) {
+			Logger.putLog("Fallo al enviar el correo", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_ERROR, e);
+		}
 	}
 
 	/**

@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.util.MessageResources;
 import org.apache.struts.util.PropertyMessageResources;
 
+import es.gob.oaw.MailException;
 import es.gob.oaw.MailService;
 import es.gob.oaw.rastreador2.pdf.PdfGeneratorThread2;
 import es.gob.oaw.rastreador2.pdf.SourceFilesManager;
@@ -60,6 +61,7 @@ public final class SendResultsMailUtils {
 	 * @param idObs          the id obs
 	 * @param idCartucho     the id cartucho
 	 * @param idObsExecution the id obs execution
+	 * @param emailSubject   the email subject
 	 * @throws Exception the exception
 	 */
 	public static void generateAndSendData(final Long idObs, final Long idCartucho, final Long idObsExecution, final String emailSubject) throws Exception {
@@ -135,11 +137,14 @@ public final class SendResultsMailUtils {
 	/**
 	 * Send mail to ura.
 	 *
-	 * @param idObservatory the id observatory
-	 * @param ura           the ura
-	 * @param attachUrl     the attach url
-	 * @param attachName    the attach name
-	 * @throws Exception
+	 * @param idObservatory      the id observatory
+	 * @param ura                the ura
+	 * @param uraCustom          the ura custom
+	 * @param iterationRangesMap the iteration ranges map
+	 * @param attachUrl          the attach url
+	 * @param attachName         the attach name
+	 * @param emailSubject       the email subject
+	 * @throws Exception the exception
 	 */
 	private static void sendMailToUra(final Long idObservatory, final DependenciaForm ura, final UraSendResultForm uraCustom, final Map<Long, TemplateRangeForm> iterationRangesMap,
 			final String attachUrl, final String attachName, final String emailSubject) throws Exception {
@@ -168,11 +173,15 @@ public final class SendResultsMailUtils {
 		// TODO Email subject
 		final MailService mailService = new MailService();
 		// TODO Get emails from URA
-//		mailsTo.add("alvaro.pelaez@ctic.es");
 		List<String> mailsTo = Arrays.asList(ura.getEmails().split(";"));
-		mailService.sendMail(mailsTo, emailSubject, mailBody.toString(), attachUrl, attachName, true);
-		// TODO Mark as send
-		uraCustom.setSend(true);
+		try {
+			mailService.sendMail(mailsTo, emailSubject, mailBody.toString(), attachUrl, attachName, true);
+			// TODO Mark as send
+			uraCustom.setSend(true);
+		} catch (MailException e) {
+			// TODO: handle exception
+			uraCustom.setSend(false);
+		}
 		Connection c = DataBaseManager.getConnection();
 		UraSendResultDAO.markSend(c, uraCustom);
 		DataBaseManager.closeConnection(c);

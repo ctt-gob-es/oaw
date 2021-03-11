@@ -26,7 +26,7 @@ public interface MailProvider {
 	/**
 	 * Send mail.
 	 */
-	void sendMail();
+	void sendMail() throws MailException;
 
 	/**
 	 * Sets the mail to.
