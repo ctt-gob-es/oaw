@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.text.MessageFormat;
 import java.util.Collections;
 
+import es.gob.oaw.MailException;
 import es.gob.oaw.MailService;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -75,7 +76,11 @@ public class BasicServiceMailService {
 	 * @param attachName       the attach name
 	 */
 	public void sendBasicServiceReport(final BasicServiceForm basicServiceForm, final String attachUrl, final String attachName) {
-		mailService.sendMail(Collections.singletonList(basicServiceForm.getEmail()), getMailSubject(basicServiceForm.getReport()), getMailBody(basicServiceForm), attachUrl, attachName, true);
+		try {
+			mailService.sendMail(Collections.singletonList(basicServiceForm.getEmail()), getMailSubject(basicServiceForm.getReport()), getMailBody(basicServiceForm), attachUrl, attachName, true);
+		} catch (MailException e) {
+			Logger.putLog("Fallo al enviar el correo", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
+		}
 	}
 
 	/**
@@ -86,7 +91,11 @@ public class BasicServiceMailService {
 	 */
 	public void sendBasicServiceErrorMessage(final BasicServiceForm basicServiceForm, final String message) {
 		final String subject = pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.error.subject");
-		mailService.sendMail(Collections.singletonList(basicServiceForm.getEmail()), subject, message);
+		try {
+			mailService.sendMail(Collections.singletonList(basicServiceForm.getEmail()), subject, message);
+		} catch (MailException e) {
+			Logger.putLog("Fallo al enviar el correo", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
+		}
 	}
 
 	/**

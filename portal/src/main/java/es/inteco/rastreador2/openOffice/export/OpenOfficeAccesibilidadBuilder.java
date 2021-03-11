@@ -624,6 +624,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 					mailsTo.add("alvaro.pelaez@ctic.es");
 					mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
 				} catch (Exception e) {
+					Logger.putLog("Error", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
 		});

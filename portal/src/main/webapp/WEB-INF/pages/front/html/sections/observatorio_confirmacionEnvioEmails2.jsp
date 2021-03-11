@@ -149,26 +149,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 							total = data.paginador.total;
 
-							$
-									.extend(
-											true,
-											$.jgrid.icons,
-											{
-												glyphIcon : {
-													nav : {
-														common : "",
-														edit : "glyphicon glyphicon-pencil",
-														add : "glyphicon glyphicon-plus",
-														del : "glyphicon glyphicon-trash",
-														search : "glyphicon glyphicon-search",
-														refresh : "glyphicon glyphicon-refresh",
-														view : "fa fa-lg fa-fw fa-file-o",
-														save : "glyphicon glyphicon-save",
-														cancel : "glyphicon glyphicon-ban-circle",
-														newbutton : "fa fa-lg fa-fw fa-external-link"
-													}
-												}
-											});
 
 							$('#grid')
 									.jqGrid(
@@ -232,13 +212,16 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															formatoptions : {
 																keys : true,
 																delbutton : false,
+																url : '/oaw/secure/UraCustomTextObservatorio.do?action=update'
 															}
 
 														},
 
 												],
 												inlineEditing : {
-													keys : true,
+													restoreAfterError: true,
+							                        keys: true,
+							                        url : '/oaw/secure/UraCustomTextObservatorio.do?action=update'
 												},
 												cmTemplate : {
 													autoResizable : true,
@@ -333,7 +316,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 													$(window).scrollTop(scroll);
 												}
 											}).jqGrid('navGrid').jqGrid(
-											"inlineNav");
+											"inlineNav",{save:true, edit:true, add:true});
 
 							// Recargar el grid
 							$('#grid').jqGrid('setGridParam', {

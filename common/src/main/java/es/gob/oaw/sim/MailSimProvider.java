@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 
+import es.gob.oaw.MailException;
 import es.gob.oaw.MailProvider;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -36,9 +37,11 @@ public class MailSimProvider implements MailProvider {
 
 	/**
 	 * Send mail.
+	 *
+	 * @throws MailException the mail exception
 	 */
 	@Override
-	public void sendMail() {
+	public void sendMail() throws MailException {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final Peticion peticion = factory.createPeticion();
 		peticion.setUsuario(pmgr.getValue(MAIL_PROPERTIES, "sim.user.username"));
@@ -60,6 +63,7 @@ public class MailSimProvider implements MailProvider {
 			}
 		} catch (MalformedURLException e) {
 			Logger.putLog(String.format("Invalid SIM WSDL URL value of %s", pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url")), MailSimProvider.class, Logger.LOG_LEVEL_ERROR);
+			throw new MailException(e.getMessage(), e.getCause());
 		}
 	}
 

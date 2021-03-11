@@ -14,6 +14,7 @@ import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
 
+import es.gob.oaw.MailException;
 import es.gob.oaw.MailProvider;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -52,9 +53,11 @@ public class MailSmtpProvider implements MailProvider {
 
 	/**
 	 * Send mail.
+	 * 
+	 * @throws MailException
 	 */
 	@Override
-	public void sendMail() {
+	public void sendMail() throws MailException {
 		try {
 			// Create the email message
 			final MultiPartEmail email = createEmail();
@@ -73,6 +76,7 @@ public class MailSmtpProvider implements MailProvider {
 			email.send();
 		} catch (Exception e) {
 			Logger.putLog("FALLO No se ha podido enviar el correo", MailSmtpProvider.class, Logger.LOG_LEVEL_ERROR, e);
+			throw new MailException(e.getMessage(), e.getCause());
 		}
 	}
 
