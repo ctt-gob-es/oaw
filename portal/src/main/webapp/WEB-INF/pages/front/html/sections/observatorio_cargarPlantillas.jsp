@@ -14,12 +14,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml />
 <html:javascript formName="PlantillaForm" />
-
 <!--  JQ GRID   -->
 <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
-
 <link rel="stylesheet" href="/oaw/css/jqgrid.semillas.css">
-
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -31,9 +28,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	script.src = '/oaw/js/jqgrid/i18n/grid.locale-'+lang.substring(0,2)+'.js';
 	document.head.appendChild(script);
 </script>
-
-
-
 <!--  JQ GRID   -->
 <script>
 	var scroll;
@@ -43,7 +37,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	var colNameUpload = '<bean:message key="colname.upload"/>';
 	var colNameDownload = '<bean:message key="colname.download"/>';
 	var colNameRemove = '<bean:message key="colname.remove"/>';
+	var colNameType = '<bean:message key="colname.type"/>';
 
+	
 	
 	
 	function uploadFormatter(cellvalue, options, rowObject){
@@ -109,9 +105,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 	
 	function eliminarFormatter(cellvalue, options, rowObject) {
-		return "<span style='cursor:pointer' onclick='eliminarPlantilla("
-				+ options.rowId
-				+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>"+colNameRemove+"</span></span>";
+		if(rowObject.type!="xlsx" && rowObject.type!="ods"){
+			return "<span style='cursor:pointer' onclick='eliminarPlantilla("
+					+ options.rowId
+					+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>"+colNameRemove+"</span></span>";
+		} 
+		return "";
 	}
 	
 	function eliminarPlantilla(rowId) {
@@ -209,7 +208,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											{
 												editUrl : '/oaw/secure/Plantilla.do?action=update',
 												colNames : [ colNameId, colNameName,
-													colNameUpload,
+													 colNameType, colNameUpload,
 													colNameDownload,
 													colNameRemove ],
 												colModel : [
@@ -225,6 +224,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 																required : true
 															},
 															sortable : false,
+															align : "left"
+														},
+														{
+															name : "type",
+															width : 20,
+															editable : false,
 															align : "left"
 														},
 														{
@@ -588,88 +593,102 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		return guardado;
 	}
 </script>
-
 <div id="loading_cover_div"></div>
 <!-- observatorio_cargarDependencias.jsp -->
 <div id="main">
-
-
-
-
 	<div id="dialogoNuevaPlantilla" style="display: none">
 		<div id="main" style="overflow: hidden">
-
 			<div id="erroresPlantilla" style="display: none"></div>
-
 			<form id="nuevaPlantillaForm" enctype="multipart/form-data">
 				<!-- Nombre -->
 				<div class="row formItem">
-					<label for="nombre" class="control-label" style="margin-left: 25px;"><strong class="labelVisu"><acronym
-							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
-								key="nueva.plantilla.observatorio.nombre" /></strong></label>
+					<label for="nombre" class="control-label" style="margin-left: 25px;">
+						<strong class="labelVisu">
+							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
+							<bean:message key="nueva.plantilla.observatorio.nombre" />
+						</strong>
+					</label>
 					<div class="col-xs-8">
 						<input type="text" id="nombre" name="nombre" class="textoLargo form-control" />
 					</div>
 				</div>
-
 				<div class="row formItem">
-					<label for="nombre" class="control-label" style="margin-left: 25px;"><strong class="labelVisu"><acronym
-							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
-								key="nueva.plantilla.observatorio.fichero" /></strong></label>
-					<div class="col-xs-8">
-						<input type="file" name="file" accept=".odt" />
+					<label for="templateType" class="control-label" style="margin-left: 25px;">
+						<strong class="labelVisu">
+							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
+							<bean:message key="colname.type" />
+						</strong>
+					</label>
+					<div class="col-xs-6">
+						<select id="templateType" name="type" class="form-control">
+							<option value="odt">odt</option>
+							<option value="xlsx">xlsx (IRA)</option>
+							<option value="ods">ods (IRA)</option>
+						</select>
 					</div>
 				</div>
-				
+				<div class="row formItem">
+					<label for="nombre" class="control-label" style="margin-left: 25px;">
+						<strong class="labelVisu">
+							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
+							<bean:message key="nueva.plantilla.observatorio.fichero" />
+						</strong>
+					</label>
+					<div class="col-xs-8">
+						<input type="file" name="file" accept=".odt, .xlsx, .ods" />
+					</div>
+				</div>
 				<input type="hidden" name="id" value="0" id="templateId" />
-
 			</form>
 		</div>
 	</div>
-
-
 	<div id="container_menu_izq">
 		<jsp:include page="menu.jsp" />
 	</div>
-
 	<div id="container_der">
-
 		<div id="migas">
 			<p class="sr-only">
 				<bean:message key="ubicacion.usuario" />
 			</p>
 			<ol class="breadcrumb">
-				<li><html:link forward="observatoryMenu">
+				<li>
+					<html:link forward="observatoryMenu">
 						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 						<bean:message key="migas.observatorio" />
-					</html:link></li>
-				<li class="active"><bean:message key="migas.plantillas.observatorio" /></li>
+					</html:link>
+				</li>
+				<li class="active">
+					<bean:message key="migas.plantillas.observatorio" />
+				</li>
 			</ol>
 		</div>
-
 		<div id="cajaformularios">
 			<h2>
 				<bean:message key="gestion.plantillas.observatorio.titulo" />
 			</h2>
-
 			<div id="existosPlantilla" style="display: none"></div>
-
-
+			<div>
+				<p class="alert alert-info">
+					<span class="glyphicon glyphicon-info-sign"></span>
+					<em>
+						<bean:message key="nueva.semilla.webs.informacion" />
+					</em>
+					:
+					<bean:message key="gestion.plantillas.observatorio.info.ira" />
+				</p>
+			</div>
 			<!-- Nueva semilla -->
 			<p class="pull-right">
-				<a href="#" class="btn btn-default btn-lg" onclick="dialogoNuevaPlantilla()"> <span
-					class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip" title=""
-					data-original-title="Crear una semilla"></span> <bean:message key="nueva.plantilla.observatorio" />
+				<a href="#" class="btn btn-default btn-lg" onclick="dialogoNuevaPlantilla()">
+					<span class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip" title=""
+						data-original-title="Crear una semilla"></span>
+					<bean:message key="nueva.plantilla.observatorio" />
 				</a>
 			</p>
 			<!-- Grid -->
 			<table id="grid">
 			</table>
-
-
-
 			<p id="paginador"></p>
-
 		</div>
 		<p id="pCenter">
 			<html:link forward="observatoryMenu" styleClass="btn btn-default btn-lg">

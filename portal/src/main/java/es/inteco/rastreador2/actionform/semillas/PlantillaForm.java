@@ -8,22 +8,19 @@ import org.apache.struts.validator.ValidatorForm;
 /**
  * The Class PlantillaForm.
  */
-public class PlantillaForm extends ValidatorForm implements Serializable{
-	
+public class PlantillaForm extends ValidatorForm implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 5532039277670782238L;
-
 	/** The id. */
 	private Long id;
-	
 	/** The nombre. */
 	private String nombre;
-	
 	/** The documento. */
 	private byte[] documento;
-	
 	/** The file. */
 	private FormFile file;
+	/** The type. */
+	private String type;
 
 	/**
 	 * Gets the id.
@@ -96,6 +93,22 @@ public class PlantillaForm extends ValidatorForm implements Serializable{
 	public void setFile(FormFile file) {
 		this.file = file;
 	}
-	
-	
+
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * Sets the type.
+	 *
+	 * @param type the new type
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
 }
