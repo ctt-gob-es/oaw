@@ -102,7 +102,7 @@ public class PlantillaAction extends DispatchAction {
 		if (plantilla.getFile() == null || StringUtils.isEmpty(plantilla.getFile().getFileName())) {
 			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.documento.plantilla.obligatorio")));
 		}
-		if (!plantilla.getFile().getFileName().endsWith(".odt")) {
+		if (!plantilla.getFile().getFileName().endsWith(".odt") && !plantilla.getFile().getFileName().endsWith(".ods") && !plantilla.getFile().getFileName().endsWith(".xlsx")) {
 			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.documento.plantilla.formato")));
 		}
 		if (errores.size() == 0) {
@@ -110,6 +110,10 @@ public class PlantillaAction extends DispatchAction {
 				if (PlantillaDAO.existsPlantilla(c, plantilla)) {
 					response.setStatus(400);
 					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.plantilla.duplicado")));
+					response.getWriter().write(new Gson().toJson(errores));
+				} else if (("ods".equalsIgnoreCase(plantilla.getType()) || ("xlsx".equalsIgnoreCase(plantilla.getType())) && PlantillaDAO.existsPlantillaType(c, plantilla))) {
+					response.setStatus(400);
+					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.type.plantilla.duplicado")));
 					response.getWriter().write(new Gson().toJson(errores));
 				} else {
 					plantilla.setDocumento(plantilla.getFile().getFileData());

@@ -82,5 +82,11 @@ CREATE TABLE `observatorio_send_configuration_comparision` (
     PRIMARY KEY(`id`)
 );
 
--- only in DES
+-- only DES
 RENAME TABLE `observatorio_template_custom_text_ura` TO `observatorio_ura_send_results`;
+-- /only DES
+
+ALTER TABLE `observatorio_plantillas` ADD `type` VARCHAR(10) NULL;
+
+
+
