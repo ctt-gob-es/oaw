@@ -277,10 +277,9 @@ public final class PlantillaDAO {
 	 */
 	public static boolean rename(Connection c, final PlantillaForm plantilla) throws SQLException {
 		boolean saved = false;
-		try (PreparedStatement ps = c.prepareStatement("UPDATE observatorio_plantillas SET nombre = ?, type = ?  WHERE id_plantilla = ?", Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement ps = c.prepareStatement("UPDATE observatorio_plantillas SET nombre = ?  WHERE id_plantilla = ?", Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, plantilla.getNombre());
-			ps.setString(2, plantilla.getType());
-			ps.setLong(3, plantilla.getId());
+			ps.setLong(2, plantilla.getId());
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 0) {
 				saved = true;
