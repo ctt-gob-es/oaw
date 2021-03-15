@@ -65,6 +65,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		var plantilla = $('#grid').jqGrid('getRowData', rowId);
 		
 		$("#nuevaPlantillaForm #nombre").val(plantilla.nombre);
+		$("#nuevaPlantillaForm #type").val(plantilla.type);
 		$('#nuevaPlantillaForm #templateId').val(rowId);
 		
 
@@ -613,17 +614,17 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</div>
 				</div>
 				<div class="row formItem">
-					<label for="templateType" class="control-label" style="margin-left: 25px;">
+					<label for="type" class="control-label" style="margin-left: 25px;">
 						<strong class="labelVisu">
 							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
 							<bean:message key="colname.type" />
 						</strong>
 					</label>
 					<div class="col-xs-6">
-						<select id="templateType" name="type" class="form-control">
+						<select id="type" name="type" class="form-control">
 							<option value="odt">odt</option>
-							<option value="xlsx">xlsx (IRA)</option>
-							<option value="ods">ods (IRA)</option>
+							<option value="xlsx">xlsx</option>
+							<option value="ods">ods</option>
 						</select>
 					</div>
 				</div>
