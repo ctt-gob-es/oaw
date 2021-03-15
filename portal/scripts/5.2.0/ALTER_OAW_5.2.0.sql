@@ -87,6 +87,7 @@ RENAME TABLE `observatorio_template_custom_text_ura` TO `observatorio_ura_send_r
 -- /only DES
 
 ALTER TABLE `observatorio_plantillas` ADD `type` VARCHAR(10) NULL;
+UPDATE `observatorio_plantillas` SET `type`= 'odt';
 
 
 
