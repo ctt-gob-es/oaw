@@ -358,7 +358,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 				XSSFSheet sheet = workbook.getSheetAt(i);
 				if (sheet.getRow(0) != null && sheet.getRow(0).getCell(0) != null && IMPORT_COLUMN_OFFICIAL.equalsIgnoreCase(sheet.getRow(0).getCell(0).getStringCellValue())) {
 					ArrayList<String> headerData = getHeaders(sheet);
-					for (int j = 1; j < sheet.getLastRowNum(); j++) {
+					for (int j = 1; j < sheet.getLastRowNum() + 1; j++) {
 						Row r = sheet.getRow(j);
 						DependenciaForm newDependency = new DependenciaForm();
 						String name = headerData.indexOf(IMPORT_COLUMN_NAME) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_NAME))) : EMPTY_STRING;
