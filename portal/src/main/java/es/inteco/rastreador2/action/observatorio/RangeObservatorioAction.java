@@ -113,7 +113,10 @@ public class RangeObservatorioAction extends DispatchAction {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		RangeForm range = (RangeForm) form;
 		ActionErrors errors = range.validate(mapping, request);
-		if (errors != null && !errors.isEmpty()) {
+		if (range != null && StringUtils.isEmpty(range.getMaxValueOperator()) && StringUtils.isEmpty(range.getMinValueOperator())) {
+			response.setStatus(400);
+			response.getWriter().write(messageResources.getMessage("mensaje.error.range.format"));
+		} else if (errors != null && !errors.isEmpty()) {
 			// Error de validación
 			response.setStatus(400);
 			response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.range.obligatorio"));
@@ -149,7 +152,11 @@ public class RangeObservatorioAction extends DispatchAction {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		List<JsonMessage> errores = new ArrayList<>();
 		RangeForm range = (RangeForm) form;
-		if (range != null && StringUtils.isNotEmpty(range.getName())) {
+		if (range != null && StringUtils.isEmpty(range.getMaxValueOperator()) && StringUtils.isEmpty(range.getMinValueOperator())) {
+			response.setStatus(400);
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.range.format")));
+			response.getWriter().write(new Gson().toJson(errores));
+		} else if (range != null && StringUtils.isNotEmpty(range.getName())) {
 			try (Connection c = DataBaseManager.getConnection()) {
 				if (RangeDAO.exists(c, range)) {
 					response.setStatus(400);

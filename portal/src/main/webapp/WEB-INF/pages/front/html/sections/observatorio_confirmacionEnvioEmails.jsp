@@ -237,7 +237,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	                $('#grid')
 	                    .jqGrid({
 	                        editUrl: '/oaw/secure/TemplateRangeObservatorio.do?action=update',
-	                        colNames: [colNameId, colNameName, colNameMinValueOperator, colNameMinValue,
+	                        colNames: [colNameId, colNameName, colNameMinValue, colNameMinValueOperator, "x",
 	                            colNameMaxValueOperator, colNameMaxValue, colNameTemplate,
 	                            colNameRemove
 	                        ],
@@ -257,54 +257,57 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	                                sortable: true
 	
 	                            },
-	                            {
-	                                name: "minValueOperator",
-	                                width: 10,
-	                                editrules: {
-	                                    required: true
-	                                },
-	                                edittype: "select",
-	                                editoptions: {
-	                                    value: "<:<;<=:<=;=:=;>=:>=;>:>"
-	                                },
-	                                align: "center",
-	                                sortable: false
-	
-	                            }, {
-	                                name: "minValue",
-	                                width: 10,
-	                                editrules: {
-	                                    required: true,
-	                                    number: true,
-	                                },
-	                                align: "center",
-	                                sortable: true
-	
-	                            },
-	
-	                            {
-	                                name: "maxValueOperator",
-	                                width: 10,
-	                                align: "center",
-	                                edittype: "select",
-	                                formatter: cellFormatter,
-	                                editoptions: {
-	                                    value: ":;<:<;<=:<=;=:=;=>:=>;>:>"
-	                                },
-	                                sortable: false
-	
-	                            },
-	                            {
-	                                name: "maxValue",
-	                                width: 10,
-	                                editrules: {
-	                                    number: true,
-	                                },
-	                                formatter: cellFormatter,
-	                                align: "center",
-	                                sortable: true,
-	
-	                            },
+								{
+									name: "minValue",
+									width: 20,
+									editrules: {
+										number: true,
+									},
+									align: "center",
+									sortable: true
+
+								},
+								{
+									name: "minValueOperator",
+									width: 20,
+									edittype : "select",
+									editoptions : {
+										value: ":;<:<;<=:<="
+									},
+									align: "center",
+									sortable: false
+
+								},
+								 {
+									name:'x',
+									width: 5,
+									editable:'false',
+									formatter: xFormatter,
+									
+								 },
+
+								{
+									name: "maxValueOperator",
+									width: 20,
+									align: "center",
+									edittype : "select",
+									formatter: cellFormatter,
+									editoptions : {
+										value: ":;<:<;<=:<="
+									},
+									sortable: false
+
+								},								{
+									name: "maxValue",
+									width: 20,
+									editrules: {
+										number: true,
+									},
+									formatter: cellFormatter,
+									align: "center",
+									sortable: true,
+
+								},	
 	                            {
 	                                name: "template",
 	                                width: 50,
@@ -518,7 +521,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	}
 	
 	
-	 
+	function xFormatter(cellvalue, options, rowObject) {
+		return "X";
+}
 	
 	function templateUnformat(cellvalue, options, cell){
 		return cellvalue;
@@ -668,40 +673,28 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					<label for="minValue" class="control-label">
 						<strong class="labelVisu">
 							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="range.observatory.new.min" />
+							<bean:message key="colname.range" />
 						</strong>
 					</label>
 					<div class="col-xs-2">
-						<select id="minValueOperator" name="minValueOperator" class="form-control" required>
+						<input type="number" id="minValue" name="minValue" class="form-control" step="0.1" />
+					</div>
+					<div class="col-xs-2">
+						<select id="minValueOperator" name="minValueOperator" class="form-control">
 							<option value=""></option>
 							<option value="&#60;">&#60;</option>
 							<option value="&#60;&#61;">&#60;&#61;</option>
-							<option value="&#61;">&#61;</option>
-							<option value="&#62;">&#62;</option>
-							<option value="&#62;&#61;">&#62;&#61;</option>
 						</select>
 					</div>
-					<div class="col-xs-3">
-						<input type="number" id="minValue" name="minValue" class="form-control" step="0.1" required />
-					</div>
-				</div>
-				<div class="row formItem">
-					<label for="maxValue" class="control-label">
-						<strong class="labelVisu">
-							<bean:message key="range.observatory.new.max" />
-						</strong>
-					</label>
+					<div class="col-xs-1 text-center">X</div>
 					<div class="col-xs-2">
 						<select id="maxValueOperator" name="maxValueOperator" class="form-control">
 							<option value=""></option>
 							<option value="&#60;">&#60;</option>
 							<option value="&#60;&#61;">&#60;&#61;</option>
-							<option value="&#61;">&#61;</option>
-							<option value="&#62;">&#62;</option>
-							<option value="&#62;&#61;">&#62;&#61;</option>
 						</select>
 					</div>
-					<div class="col-xs-3">
+					<div class="col-xs-2">
 						<input type="number" id="maxValue" name="maxValue" class="form-control" step="0.1" />
 					</div>
 				</div>

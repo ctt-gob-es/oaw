@@ -156,7 +156,7 @@ function reloadGrid(path) {
 					.jqGrid(
 						{
 							editUrl: '/oaw/secure/RangeObservatorio.do?action=update',
-							colNames: [colNameId, colNameName, colNameMinValueOperator, colNameMinValue,
+							colNames: [colNameId, colNameName, colNameMinValue, colNameMinValueOperator, "x",
 								colNameMaxValueOperator, colNameMaxValue,
 								colNameRemove],
 							colModel: [
@@ -177,29 +177,33 @@ function reloadGrid(path) {
 
 								},
 								{
-									name: "minValueOperator",
-									width: 20,
-									editrules: {
-										required: true
-									},
-									edittype : "select",
-									editoptions : {
-										value: "<:<;<=:<=;>=:>=;>:>"
-									},
-									align: "center",
-									sortable: false
-
-								},								{
 									name: "minValue",
 									width: 20,
 									editrules: {
-										required: true,
 										number: true,
 									},
 									align: "center",
 									sortable: true
 
 								},
+								{
+									name: "minValueOperator",
+									width: 20,
+									edittype : "select",
+									editoptions : {
+										value: ":;<:<;<=:<="
+									},
+									align: "center",
+									sortable: false
+
+								},
+								 {
+									name:'x',
+									width: 5,
+									editable:'false',
+									formatter: xFormatter,
+									
+								 },
 
 								{
 									name: "maxValueOperator",
@@ -208,7 +212,7 @@ function reloadGrid(path) {
 									edittype : "select",
 									formatter: cellFormatter,
 									editoptions : {
-										value: ":;<:<;<=:<=;=>:=>;>:>"
+										value: ":;<:<;<=:<="
 									},
 									sortable: false
 
@@ -492,6 +496,12 @@ function saveNewRange() {
 	
 }
 
+
+
+function xFormatter(cellvalue, options, rowObject) {
+		return "X";
+}
+
 function cellFormatter(cellvalue, options, rowObject) {
 	if(cellvalue){
 		return cellvalue;
@@ -507,6 +517,16 @@ function cellFormatter(cellvalue, options, rowObject) {
 	<div id="dialogNewRange" style="display: none">
 		<div id="main" style="overflow: hidden">
 			<div id="errorMD" style="display: none"></div>
+			<div>
+				<p class="alert alert-info">
+					<span class="glyphicon glyphicon-info-sign"></span>
+					<em>
+						<bean:message key="nueva.semilla.webs.informacion" />
+					</em>
+					:
+					<bean:message key="new.ranges.observatorio.info.modal" />
+				</p>
+			</div>
 			<form id="newRangeForm">
 				<!-- Nombre -->
 				<div class="row formItem">
@@ -524,39 +544,28 @@ function cellFormatter(cellvalue, options, rowObject) {
 					<label for="minValue" class="control-label">
 						<strong class="labelVisu">
 							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="range.observatory.new.min" />
+							<bean:message key="colname.range" />
 						</strong>
 					</label>
 					<div class="col-xs-2">
-						<select id="minValueOperator" name="minValueOperator" class="form-control" required>
+						<input type="number" id="minValue" name="minValue" class="form-control" step="0.1" />
+					</div>
+					<div class="col-xs-2">
+						<select id="minValueOperator" name="minValueOperator" class="form-control">
 							<option value=""></option>
 							<option value="&#60;">&#60;</option>
 							<option value="&#60;&#61;">&#60;&#61;</option>
-							<option value="&#62;">&#62;</option>
-							<option value="&#62;&#61;">&#62;&#61;</option>
 						</select>
 					</div>
-					<div class="col-xs-3">
-						<input type="number" id="minValue" name="minValue" class="form-control" step="0.1" required />
-					</div>
-				</div>
-				<div class="row formItem">
-					<label for="maxValue" class="control-label">
-						<strong class="labelVisu">
-							<bean:message key="range.observatory.new.max" />
-						</strong>
-					</label>
+					<div class="col-xs-1">X</div>
 					<div class="col-xs-2">
 						<select id="maxValueOperator" name="maxValueOperator" class="form-control">
 							<option value=""></option>
 							<option value="&#60;">&#60;</option>
 							<option value="&#60;&#61;">&#60;&#61;</option>
-							<option value="&#61;">&#61;</option>
-							<option value="&#62;">&#62;</option>
-							<option value="&#62;&#61;">&#62;&#61;</option>
 						</select>
 					</div>
-					<div class="col-xs-3">
+					<div class="col-xs-2">
 						<input type="number" id="maxValue" name="maxValue" class="form-control" step="0.1" />
 					</div>
 				</div>
@@ -588,7 +597,16 @@ function cellFormatter(cellvalue, options, rowObject) {
 				<bean:message key="gestion.ranges.observatorio.titulo" />
 			</h2>
 			<div id="successMD" style="display: none"></div>
-			<!-- Nueva semilla -->
+			<div>
+				<p class="alert alert-info">
+					<span class="glyphicon glyphicon-info-sign"></span>
+					<em>
+						<bean:message key="nueva.semilla.webs.informacion" />
+					</em>
+					:
+					<bean:message key="new.ranges.observatorio.info" />
+				</p>
+			</div>
 			<p class="pull-right">
 				<a href="#" class="btn btn-default btn-lg" onclick="dialogNewRange()">
 					<span class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip" title=""
