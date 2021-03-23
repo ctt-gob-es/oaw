@@ -84,6 +84,9 @@ CREATE TABLE `observatorio_send_configuration_comparision` (
 
 -- only DES
 RENAME TABLE `observatorio_template_custom_text_ura` TO `observatorio_ura_send_results`;
+ALTER TABLE `observatorio_range` CHANGE `min_value` `min_value` FLOAT(4,2) NULL;
+ALTER TABLE `observatorio_range` CHANGE `min_value_operator` `min_value_operator` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
+
 -- /only DES
 
 ALTER TABLE `observatorio_plantillas` ADD `type` VARCHAR(10) NULL;

@@ -511,10 +511,7 @@ public final class AnnexUtils {
 			uraCustom.setIdObservatoryExecution(idObsExecution);
 			uraCustom.setRangeValue(diffMidScores.floatValue());
 			for (TemplateRangeForm range : iterationRanges) {
-				String expression = diffMidScores + "" + range.getMinValueOperator() + "" + range.getMinValue();
-				if (range.getMaxValueOperator() != null && !StringUtils.isEmpty(range.getMaxValueOperator())) {
-					expression += "&& " + diffMidScores + "" + range.getMaxValueOperator() + "" + range.getMaxValue();
-				}
+				String expression = generateRangeJsExpression(diffMidScores, range.getMinValueOperator(), range.getMaxValueOperator(), range.getMinValue(), range.getMaxValue());
 				if ((boolean) scriptEngine.eval(expression)) {
 					uraCustom.setIdRange(range.getId());
 				}
@@ -529,6 +526,28 @@ public final class AnnexUtils {
 		// Save new custom
 		UraSendResultDAO.save(c, uraCustomList);
 		DataBaseManager.closeConnection(c);
+	}
+
+	/**
+	 * Generate range js expression.
+	 *
+	 * @param diffMidScores    the diff mid scores
+	 * @param minValueOperator the min value operator
+	 * @param maxValueOperator the max value operator
+	 * @param minValue         the min value
+	 * @param maxValue         the max value
+	 * @return the string
+	 */
+	private static String generateRangeJsExpression(BigDecimal diffMidScores, final String minValueOperator, final String maxValueOperator, final Float minValue, final Float maxValue) {
+		String expression = "";
+		if (!StringUtils.isEmpty(minValueOperator) && !StringUtils.isEmpty(maxValueOperator)) {
+			expression += minValue + "" + minValueOperator + "" + diffMidScores + " && " + diffMidScores + "" + maxValueOperator + "" + maxValue;
+		} else if (!StringUtils.isEmpty(minValueOperator) && StringUtils.isEmpty(maxValueOperator)) {
+			expression += minValue + "" + minValueOperator + "" + diffMidScores;
+		} else if (StringUtils.isEmpty(minValueOperator) && !StringUtils.isEmpty(maxValueOperator)) {
+			expression += diffMidScores + "" + maxValueOperator + "" + maxValue;
+		}
+		return expression;
 	}
 
 	/**
@@ -668,16 +687,16 @@ public final class AnnexUtils {
 	 * @param comparision       the comparision
 	 * @param tagsToFilterFixed the tags to filter fixed
 	 * @throws SQLException    the SQL exception
-	 * @throws ScriptException
+	 * @throws ScriptException the script exception
 	 */
 	private static void generateSummaryProgression(final XSSFWorkbook wb, final Connection conn, final Long idOperation, final List<ComparisionForm> comparision, final String[] tagsToFilterFixed)
 			throws SQLException, ScriptException {
 		// Loop to insert puntuation evolution compare with previous.
 		// To select comparision column in comparision object, check if seed has tagId of comparision to select column by date
-		SummaryEvolution globalSummaryFirst = new SummaryEvolution();
-		SummaryEvolution globalSummaryPrevious = new SummaryEvolution();
-		SummaryEvolution fixedSummaryFirst = new SummaryEvolution();
-		SummaryEvolution fixedSummaryPrevious = new SummaryEvolution();
+		SummaryEvolution globalSummaryFirst = new SummaryEvolution(websiteRanges);
+		SummaryEvolution globalSummaryPrevious = new SummaryEvolution(websiteRanges);
+		SummaryEvolution fixedSummaryFirst = new SummaryEvolution(websiteRanges);
+		SummaryEvolution fixedSummaryPrevious = new SummaryEvolution(websiteRanges);
 		for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 			// TODO Applu websites ranges
 			countEvolution(conn, comparision, globalSummaryPrevious, semillaEntry, false, null);
@@ -809,23 +828,17 @@ public final class AnnexUtils {
 	 *
 	 * @param c                 the c
 	 * @param comparision       the comparision
-	 * @param firstThreshold    the first threshold
-	 * @param secondThreshold   the second threshold
 	 * @param globalSummary     the global summary
 	 * @param semillaEntry      the semilla entry
 	 * @param isFirst           the is first
 	 * @param tagsToFilterFixed the tags to filter fixed
 	 * @throws SQLException    the SQL exception
-	 * @throws ScriptException
+	 * @throws ScriptException the script exception
 	 */
 	private static void countEvolution(final Connection c, final List<ComparisionForm> comparision, SummaryEvolution globalSummary, Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry,
 			final boolean isFirst, final String[] tagsToFilterFixed) throws SQLException, ScriptException {
 		final SemillaForm semillaForm = semillaEntry.getKey();
 		Map<String, Integer> rangeMap = globalSummary.getRangeMaps();
-		// Init map
-		for (RangeForm range : websiteRanges) {
-			rangeMap.put(range.getName(), 0);
-		}
 		if (semillaForm != null && semillaForm.getId() != 0) {
 			// last puntuiaction
 			Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
@@ -841,13 +854,18 @@ public final class AnnexUtils {
 					}
 					for (EtiquetaForm label : semillaForm.getEtiquetas()) {
 						if (com.getIdTag() == label.getId()) {
-							BigDecimal scoreComparision = semillaEntry.getValue().get(isFirst ? com.getFirst() : com.getPrevious()).getTotalScore();
+							BigDecimal scoreComparision = BigDecimal.ZERO;
+							final String key = isFirst ? com.getFirst() : com.getPrevious();
+							for (Map.Entry<String, ScoreForm> entry2 : semillaEntry.getValue().entrySet()) {
+								if (entry2.getKey().startsWith(key)) {
+									scoreComparision = scoreComparision.add(entry2.getValue().getTotalScore());
+									break;
+								}
+							}
+//							BigDecimal scoreComparision = semillaEntry.getValue().get(isFirst ? com.getFirst() : com.getPrevious()).getTotalScore();
 							BigDecimal diffScore = lastScore.subtract(scoreComparision);
 							for (RangeForm range : websiteRanges) {
-								String expression = diffScore + "" + range.getMinValueOperator() + "" + range.getMinValue();
-								if (range.getMaxValueOperator() != null && !StringUtils.isEmpty(range.getMaxValueOperator())) {
-									expression += "&& " + diffScore + "" + range.getMaxValueOperator() + "" + range.getMaxValue();
-								}
+								String expression = generateRangeJsExpression(diffScore, range.getMinValueOperator(), range.getMaxValueOperator(), range.getMinValue(), range.getMaxValue());
 								if ((boolean) scriptEngine.eval(expression)) {
 									Integer val = rangeMap.get(range.getName());
 									if (val != null) {
@@ -891,10 +909,7 @@ public final class AnnexUtils {
 					}
 					BigDecimal diffScore = lastScore.subtract(scoreComparision);
 					for (RangeForm range : websiteRanges) {
-						String expression = diffScore + "" + range.getMinValueOperator() + "" + range.getMinValue();
-						if (range.getMaxValueOperator() != null && !StringUtils.isEmpty(range.getMaxValueOperator())) {
-							expression += "&& " + diffScore + "" + range.getMaxValueOperator() + "" + range.getMaxValue();
-						}
+						String expression = generateRangeJsExpression(diffScore, range.getMinValueOperator(), range.getMaxValueOperator(), range.getMinValue(), range.getMaxValue());
 						if ((boolean) scriptEngine.eval(expression)) {
 							Integer val = rangeMap.get(range.getName());
 							if (val != null) {
@@ -2904,11 +2919,13 @@ public final class AnnexUtils {
 				String rangetoString = "";
 				String ifCaluse = "";
 				// has superior range
-				if (range.getMaxValueOperator() != null && !StringUtils.isEmpty(range.getMaxValueOperator())) {
-					rangetoString = "AND(" + substractColumnsResult + "" + range.getMinValueOperator() + "" + range.getMinValue() + "," + substractColumnsResult + "" + range.getMaxValueOperator() + ""
+				if (!StringUtils.isEmpty(range.getMinValueOperator()) && !StringUtils.isEmpty(range.getMaxValueOperator())) {
+					rangetoString = "AND(" + range.getMinValue() + "" + range.getMinValueOperator() + "" + substractColumnsResult + "," + substractColumnsResult + "" + range.getMaxValueOperator() + ""
 							+ range.getMaxValue() + ")";
-				} else {
-					rangetoString = substractColumnsResult + "" + range.getMinValueOperator() + "" + range.getMinValue();
+				} else if (!StringUtils.isEmpty(range.getMinValueOperator()) && StringUtils.isEmpty(range.getMaxValueOperator())) {
+					rangetoString = range.getMinValue() + "" + range.getMinValueOperator() + "" + substractColumnsResult;
+				} else if (StringUtils.isEmpty(range.getMinValueOperator()) && !StringUtils.isEmpty(range.getMaxValueOperator())) {
+					rangetoString = substractColumnsResult + "" + range.getMaxValueOperator() + "" + range.getMaxValue();
 				}
 				// is last iteration
 				if (index == websiteRanges.size() - 1) {
@@ -4391,6 +4408,13 @@ public final class AnnexUtils {
 	public static class SummaryEvolution {
 		/** The range maps. */
 		private Map<String, Integer> rangeMaps = new TreeMap<>();
+
+		public SummaryEvolution(final List<RangeForm> websiteRanges) {
+			// Init map
+			for (RangeForm range : websiteRanges) {
+				rangeMaps.put(range.getName(), 0);
+			}
+		}
 
 		/**
 		 * Gets the range maps.

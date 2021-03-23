@@ -183,14 +183,15 @@ public class TemplateRangeDAO {
 	 */
 	public static boolean exists(Connection c, final TemplateRangeForm form) throws SQLException {
 		boolean exists = false;
-		String query = "SELECT * FROM observatorio_template_range WHERE UPPER(name) = UPPER(?)";
+		String query = "SELECT * FROM observatorio_template_range WHERE UPPER(name) = UPPER(?) AND id_observatory_execution = ?";
 		if (form.getId() != null) {
 			query += " AND id <> ?";
 		}
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, form.getName());
+			ps.setLong(2, form.getIdObservatoryExecution());
 			if (form.getId() != null) {
-				ps.setLong(2, form.getId());
+				ps.setLong(3, form.getId());
 			}
 			ResultSet result = ps.executeQuery();
 			if (result.next()) {
