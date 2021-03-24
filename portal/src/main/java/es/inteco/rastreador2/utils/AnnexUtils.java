@@ -510,6 +510,7 @@ public final class AnnexUtils {
 			uraCustom.setIdUra(entry.getKey().getId());
 			uraCustom.setIdObservatoryExecution(idObsExecution);
 			uraCustom.setRangeValue(diffMidScores.floatValue());
+			uraCustom.setIdRange(0L); // prevents not matching range
 			for (TemplateRangeForm range : iterationRanges) {
 				String expression = generateRangeJsExpression(diffMidScores, range.getMinValueOperator(), range.getMaxValueOperator(), range.getMinValue(), range.getMaxValue());
 				if ((boolean) scriptEngine.eval(expression)) {
