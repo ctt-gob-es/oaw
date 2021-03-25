@@ -1,1 +1,9 @@
+/reportvalidation export-ignore
+/wcagemtool export-ignore
+/crawler/profiles/docker export-ignore
+/profiles/integracion export-ignore
+/intavcore/profiles/docker export-ignore
+/intavcore/profiles/integracion export-ignore
+/portal/profiles/docker export-ignore
+/portal/profiles/integracion export-ignore
 docker/mysql/02_data.sql filter=lfs diff=lfs merge=lfs -text
