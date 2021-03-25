@@ -6,4 +6,5 @@
 /intavcore/profiles/integracion export-ignore
 /portal/profiles/docker export-ignore
 /portal/profiles/integracion export-ignore
+.history export-ignore
 docker/mysql/02_data.sql filter=lfs diff=lfs merge=lfs -text
