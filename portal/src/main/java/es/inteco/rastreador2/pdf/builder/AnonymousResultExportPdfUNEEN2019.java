@@ -229,6 +229,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			specialChunkMap = new HashMap<>();
 			switch (this.getBasicServiceForm().getAnalysisType()) {
 			case CODIGO_FUENTE:
+			case CODIGO_FUENTE_MULTIPLE:
 				SpecialChunk chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p4.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT);
 				chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p4.basic.service.anchor1.url"));
 				chunk.setExternalLink(false);

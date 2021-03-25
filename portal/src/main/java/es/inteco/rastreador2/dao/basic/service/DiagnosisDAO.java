@@ -99,10 +99,15 @@ public final class DiagnosisDAO {
 			if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
 				ps.setString(3, basicServiceForm.getDomain());
 				ps.setString(11, basicServiceForm.getAnalysisType().getLabel());
+			} else if (basicServiceForm.getContents() != null && !basicServiceForm.getContents().isEmpty()) {
+				// TODO FUN10 TITLE
+				ps.setString(3, BasicServiceUtils.getTitleFromContent(basicServiceForm.getContents().get(0).getContent()));
+				ps.setString(11, BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE.getLabel());
 			} else if (StringUtils.isNotEmpty(basicServiceForm.getContent())) {
 				ps.setString(3, BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()));
 				ps.setString(11, BasicServiceAnalysisType.CODIGO_FUENTE.getLabel());
 			}
+			// TODO FUN 10
 			ps.setString(4, basicServiceForm.getEmail());
 			// if complex != null && !=0
 			if (!org.apache.commons.lang3.StringUtils.isEmpty(basicServiceForm.getComplexity()) && !"0".equalsIgnoreCase(basicServiceForm.getComplexity())) {

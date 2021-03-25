@@ -17,14 +17,22 @@ package es.inteco.rastreador2.utils.basic.service;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.IDN;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -48,6 +56,7 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
+import es.inteco.rastreador2.actionform.basic.service.BasicServiceFile;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
 import es.inteco.rastreador2.ws.CrawlerWS;
@@ -146,19 +155,26 @@ public final class BasicServiceUtils {
 		if (request.getParameter("informe-nobroken") != null && Boolean.parseBoolean(request.getParameter("informe-nobroken"))) {
 			basicServiceForm.setReport(basicServiceForm.getReport() + "-nobroken");
 		}
-		if (StringUtils.isNotEmpty(request.getParameter(Constants.PARAM_CONTENT))) {
+		// TODO Prevent full paths
+		String parameterFileName = request.getParameter("filename");
+		if (!org.apache.commons.lang3.StringUtils.isEmpty(parameterFileName)) {
+			String tmp;
 			try {
-				basicServiceForm.setContent(new String(request.getParameter(Constants.PARAM_CONTENT).getBytes("ISO-8859-1")));
+				tmp = StringUtils.corregirEncoding(parameterFileName).replace("\\", "/");
 			} catch (UnsupportedEncodingException e) {
-				Logger.putLog("No se puede codificar el contenido como ISO-8859-1", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
-				try {
-					basicServiceForm.setContent(new String(request.getParameter(Constants.PARAM_CONTENT).getBytes("UTF-8")));
-				} catch (UnsupportedEncodingException e1) {
-					Logger.putLog("No se puede codificar el contenido como UTF-8", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
-					basicServiceForm.setContent("");
-				}
+				tmp = parameterFileName.replace("\\", "/");
 			}
-			basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE);
+			if (tmp.lastIndexOf("/") > 0) {
+				parameterFileName = tmp.substring(tmp.lastIndexOf("/") + 1, tmp.length());
+			} else {
+				parameterFileName = tmp.toString();
+			}
+		}
+		basicServiceForm.setFileName(parameterFileName);
+		// TODO FUN10
+		final String contentParameter = request.getParameter(Constants.PARAM_CONTENT);
+		if (StringUtils.isNotEmpty(contentParameter)) {
+			getContent(basicServiceForm, parameterFileName, contentParameter);
 		}
 		if (StringUtils.isNotEmpty(request.getParameter("urls"))) {
 			String url = "";
@@ -185,25 +201,77 @@ public final class BasicServiceUtils {
 		basicServiceForm.setRegisterAnalysis(Boolean.parseBoolean(request.getParameter("registerAnalysis")));
 		basicServiceForm.setAnalysisToDelete(request.getParameter("analysisToDelete"));
 		basicServiceForm.setDomain(BasicServiceUtils.checkIDN(basicServiceForm.getDomain()));
-		// TODO Prevent full paths
-		String parameterFileName = request.getParameter("filename");
-		if (!org.apache.commons.lang3.StringUtils.isEmpty(parameterFileName)) {
-			String tmp;
-			try {
-				tmp = StringUtils.corregirEncoding(parameterFileName).replace("\\", "/");
-			} catch (UnsupportedEncodingException e) {
-				tmp = parameterFileName.replace("\\", "/");
-			}
-			if (tmp.lastIndexOf("/") > 0) {
-				parameterFileName = tmp.substring(tmp.lastIndexOf("/") + 1, tmp.length());
-			} else {
-				parameterFileName = tmp.toString();
-			}
-		}
-		basicServiceForm.setFileName(parameterFileName);
 		basicServiceForm.setComplexity(request.getParameter(Constants.PARAM_COMPLEXITY));
 		basicServiceForm.setDepthReport(request.getParameter(Constants.PARAM_DEPTH_REPORT));
 		return basicServiceForm;
+	}
+
+	/**
+	 * Gets the content.
+	 *
+	 * @param basicServiceForm  the basic service form
+	 * @param parameterFileName the parameter file name
+	 * @param contentParameter  the content parameter
+	 * @return the content
+	 */
+	public static void getContent(final BasicServiceForm basicServiceForm, String parameterFileName, final String contentParameter) {
+		// TODO FUN 10 CHECK IF IS ZIP
+		if (!org.apache.commons.lang3.StringUtils.isEmpty(parameterFileName) && parameterFileName.toLowerCase().endsWith(".zip")) {
+			// TODO READ FILE AN GET HTML
+			try {
+				File tmp = File.createTempFile("oaw_basic_service_", ".zip");
+				org.apache.commons.io.FileUtils.writeByteArrayToFile(tmp, Base64.getUrlDecoder().decode(contentParameter.getBytes("UTF-8")));
+				ZipFile zipFile;
+				try {
+					zipFile = new ZipFile(tmp);
+					Enumeration<? extends ZipEntry> entries = zipFile.entries();
+					List<BasicServiceFile> files = new ArrayList<>();
+					while (entries.hasMoreElements()) {
+						ZipEntry entry = entries.nextElement();
+						String name = entry.getName();
+						if (entry.getName().toLowerCase().endsWith(".html")) {
+							try {
+								String content = org.apache.commons.io.IOUtils.toString(zipFile.getInputStream(entry), StandardCharsets.ISO_8859_1.name());
+								BasicServiceFile file = new BasicServiceFile();
+								file.setName(name);
+								file.setContent(content);
+								files.add(file);
+							} catch (UnsupportedEncodingException e) {
+								Logger.putLog("No se puede codificar el contenido como ISO-8859-1", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+								try {
+									String content = org.apache.commons.io.IOUtils.toString(zipFile.getInputStream(entry), StandardCharsets.UTF_8.name());
+									BasicServiceFile file = new BasicServiceFile();
+									file.setName(name);
+									file.setContent(content);
+									files.add(file);
+								} catch (UnsupportedEncodingException e1) {
+									Logger.putLog("No se puede codificar el contenido como UTF-8", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+								}
+							}
+						}
+					}
+					basicServiceForm.setContents(files);
+				} catch (IOException e) {
+					Logger.putLog("No se puede procesar el fichero zip", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+				}
+			} catch (IOException e) {
+				Logger.putLog("No se puede leer el fichero zip adjuntado", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+			}
+			basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE);
+		} else {
+			try {
+				basicServiceForm.setContent(new String(contentParameter.getBytes("ISO-8859-1")));
+			} catch (UnsupportedEncodingException e) {
+				Logger.putLog("No se puede codificar el contenido como ISO-8859-1", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+				try {
+					basicServiceForm.setContent(new String(contentParameter.getBytes("UTF-8")));
+				} catch (UnsupportedEncodingException e1) {
+					Logger.putLog("No se puede codificar el contenido como UTF-8", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+					basicServiceForm.setContent("");
+				}
+			}
+			basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE);
+		}
 	}
 
 	/**
