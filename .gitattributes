@@ -7,3 +7,4 @@
 /intavcore/profiles/integracion export-ignore
 /portal/profiles/docker export-ignore
 /portal/profiles/integracion export-ignore
+.history export-ignore
