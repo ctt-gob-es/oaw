@@ -1,3 +1,12 @@
+<%@page import="java.util.Base64"%>
+<%@page import="java.nio.charset.Charset"%>
+<%@page import="java.io.FileInputStream"%>
+<%@page import="org.apache.commons.io.IOUtils"%>
+<%@page import="java.io.File"%>
+<%@page import="java.io.InputStream"%>
+<%@page import="java.io.BufferedInputStream"%>
+<%@page import="java.io.BufferedOutputStream"%>
+<%@page import="java.io.FileOutputStream"%>
 <%@page language="java"  contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@page import= "java.io.InputStreamReader" %>
@@ -77,8 +86,40 @@
                         readParam(item);
                     } else {
                         // Si no es campo de formulario es el fichero
-                        codigo = new String(item.get());
+                        //codigo = new String(item.get());
                         fileName = item.getName();
+                        
+                        
+                        try{
+                        	/*InputStream stream = item.getInputStream();
+                        	
+
+                            System.out.println("File field " + item.getFieldName() + " with file name "+ item.getName() + " detected.");
+
+                            item.write(new File("/tmp/item_" + item.getName()));
+                            // Process the input stream
+                            FileOutputStream fout= new FileOutputStream ("/tmp/fos_" + item.getName());
+                            BufferedOutputStream bout= new BufferedOutputStream (fout);
+                            BufferedInputStream bin= new BufferedInputStream(stream);
+                            byte buf[] = new byte[2048];
+                            int len=0;
+                            while ((len = bin.read(buf)) > 0)//((bin.read(buf)) != -1)
+                            {
+                                bout.write(buf, 0, len);
+                                if (len<2048)
+                                    len = len;
+                            }
+                            bout.close();
+                            bin.close();*/
+                            
+                            
+                            //codigo = IOUtils.toString(new FileInputStream (new File("/tmp/fos_" + item.getName())), "UTF-8");
+                            codigo = Base64.getUrlEncoder().encodeToString(item.get());
+                        	
+                        }catch(Exception e){}
+                        
+                        
+                        
                         
                     }
                 }
@@ -97,8 +138,8 @@
             } else if (paramName.equalsIgnoreCase("urls")) {
                 this.urls = item.getString();
             } else if (paramName.equalsIgnoreCase("content")) {
-                this.codigo = item.getString();
-                //Save filename
+                this.codigo = item.getString();                //Save filename
+
                 this.fileName = item.getName();
             } else if (paramName.equalsIgnoreCase("correo")) {
                 this.correo = item.getString();

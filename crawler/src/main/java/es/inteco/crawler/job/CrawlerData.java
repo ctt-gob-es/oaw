@@ -61,6 +61,8 @@ public class CrawlerData {
 	private List<String> urls;
 	/** The content. */
 	private String content;
+	/** The contents. */
+	private List<CrawlerFile> contents;
 	/** The domains. */
 	private List<String> domains;
 	/** The exceptions. */
@@ -97,6 +99,24 @@ public class CrawlerData {
 	private int extendedDepth = 0;
 	/** The extended width. */
 	private int extendedWidth = 0;
+
+	/**
+	 * Gets the contents.
+	 *
+	 * @return the contents
+	 */
+	public List<CrawlerFile> getContents() {
+		return contents;
+	}
+
+	/**
+	 * Sets the contents.
+	 *
+	 * @param contents the new contents
+	 */
+	public void setContents(List<CrawlerFile> contents) {
+		this.contents = contents;
+	}
 
 	/**
 	 * Checks if is in directory.

@@ -260,6 +260,28 @@ public class CrawlerJob implements InterruptableJob {
 	}
 
 	/**
+	 * Run multipla files analysis.
+	 *
+	 * @param crawlerData the crawler data
+	 * @return the list
+	 */
+	public List<CrawledLink> runMultiplaFilesAnalysis(final CrawlerData crawlerData) {
+		final List<CrawledLink> simpleAnalysisiDomains = new ArrayList<>();
+		if (crawlerData.getContents() != null && !crawlerData.getContents().isEmpty()) {
+			for (CrawlerFile cf : crawlerData.getContents()) {
+				final CrawledLink crawledLink = new CrawledLink(cf.getName(), cf.getContent(), 0, 0);
+				simpleAnalysisiDomains.add(crawledLink);
+			}
+		}
+		try {
+			analyze(simpleAnalysisiDomains, crawlerData, EMPTY_STRING);
+		} catch (Exception e) {
+			Logger.putLog("Error al ejecutar el análisis simple", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return simpleAnalysisiDomains;
+	}
+
+	/**
 	 * Finaliza el rastreo. Actualizando los datos en la base de datos.
 	 *
 	 * @param c           the c

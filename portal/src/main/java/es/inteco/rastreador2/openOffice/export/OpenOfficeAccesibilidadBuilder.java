@@ -621,7 +621,6 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 					final MailService mailService = new MailService();
 					List<String> mailsTo = new ArrayList<>();
 					mailsTo.add(userData.getEmail());
-					mailsTo.add("alvaro.pelaez@ctic.es");
 					mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
 				} catch (Exception e) {
 					Logger.putLog("Error", this.getClass(), Logger.LOG_LEVEL_ERROR, e);

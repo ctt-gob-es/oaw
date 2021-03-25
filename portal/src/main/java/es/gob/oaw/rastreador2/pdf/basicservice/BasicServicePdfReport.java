@@ -167,6 +167,7 @@ public class BasicServicePdfReport {
 						subtitle = messageResources2019.getMessage("pdf.accessibility.cover.type.url", new String[] { pdfBuilder.getBasicServiceForm().getDomain() });
 						break;
 					case CODIGO_FUENTE:
+					case CODIGO_FUENTE_MULTIPLE:
 						subtitle = messageResources2019.getMessage("pdf.accessibility.cover.type.source", new String[] { pdfBuilder.getBasicServiceForm().getFileName() });
 						break;
 					case LISTA_URLS:
