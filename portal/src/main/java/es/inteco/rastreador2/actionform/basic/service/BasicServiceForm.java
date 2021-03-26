@@ -335,7 +335,12 @@ public class BasicServiceForm extends ValidatorForm {
 	 */
 	public boolean isContentAnalysis() {
 		// TODO FUN10
-		return analysisType == BasicServiceAnalysisType.CODIGO_FUENTE || analysisType == BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE;
+		return analysisType == BasicServiceAnalysisType.CODIGO_FUENTE;
+	}
+
+	public boolean isContentAnalysisMultiple() {
+		// TODO FUN10
+		return analysisType == BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE;
 	}
 
 	/**

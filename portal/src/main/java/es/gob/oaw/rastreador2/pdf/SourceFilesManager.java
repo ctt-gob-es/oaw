@@ -121,6 +121,31 @@ public class SourceFilesManager {
 	}
 
 	/**
+	 * Write source files content multiple.
+	 *
+	 * @param c             the c
+	 * @param evaluationIds the evaluation ids
+	 */
+	@SuppressWarnings("deprecation")
+	public void writeSourceFilesContentMultiple(final Connection c, final List<Long> evaluationIds) {
+		int index = 1;
+		for (Long evaluationId : evaluationIds) {
+			final File pageSourcesDirectory = new File(parentDir, "codigo_fuente/" + index);
+			if (!pageSourcesDirectory.mkdirs()) {
+				Logger.putLog("No se ha podido crear el directorio sources - " + pageSourcesDirectory.getAbsolutePath(), PdfGeneratorThread.class, Logger.LOG_LEVEL_ERROR);
+			}
+			try {
+				final Analysis analysis = AnalisisDatos.getAnalisisFromId(c, evaluationId);
+				final File sourceCode = new File(pageSourcesDirectory + "/" + analysis.getUrl());
+				org.apache.commons.io.FileUtils.writeStringToFile(sourceCode, analysis.getSource());
+			} catch (IOException e) {
+				Logger.putLog("Exception al intentar guardar el código fuente", SourceFilesManager.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+			index++;
+		}
+	}
+
+	/**
 	 * Creates the CSS temp file.
 	 *
 	 * @param filename             the filename
