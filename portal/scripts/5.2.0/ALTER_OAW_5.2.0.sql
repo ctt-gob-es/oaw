@@ -92,5 +92,7 @@ ALTER TABLE `observatorio_range` CHANGE `min_value_operator` `min_value_operator
 ALTER TABLE `observatorio_plantillas` ADD `type` VARCHAR(10) NULL;
 UPDATE `observatorio_plantillas` SET `type`= 'odt';
 
+ALTER TABLE `dependencia` ADD `acronym` TEXT NULL;
+
 
 

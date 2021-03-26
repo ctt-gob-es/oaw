@@ -24,8 +24,9 @@ public class TemplateRangeDAO {
 	/**
 	 * Count.
 	 *
-	 * @param c      the c
-	 * @param nombre the nombre
+	 * @param c       the c
+	 * @param nombre  the nombre
+	 * @param idExObs the id ex obs
 	 * @return the int
 	 * @throws SQLException the SQL exception
 	 */
@@ -56,7 +57,8 @@ public class TemplateRangeDAO {
 	/**
 	 * Gets the etiquetas.
 	 *
-	 * @param c the c
+	 * @param c       the c
+	 * @param idExObs the id ex obs
 	 * @return the etiquetas
 	 * @throws SQLException the SQL exception
 	 */
@@ -83,6 +85,41 @@ public class TemplateRangeDAO {
 			throw e;
 		}
 		return results;
+	}
+
+	/**
+	 * Find by id.
+	 *
+	 * @param c       the c
+	 * @param idExObs the id ex obs
+	 * @param id      the id
+	 * @return the template range form
+	 * @throws SQLException the SQL exception
+	 */
+	public static TemplateRangeForm findById(Connection c, final Long idExObs, final Long id) throws SQLException {
+		final TemplateRangeForm result = null;
+		String query = "SELECT id, name, min_value, max_value, min_value_operator, max_value_operator, template FROM observatorio_template_range WHERE 1=1 AND id_observatory_execution = ? AND id =?";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(1, idExObs);
+			ps.setLong(2, id);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					final TemplateRangeForm form = new TemplateRangeForm();
+					form.setId(rs.getLong("id"));
+					form.setName(rs.getString("name"));
+					form.setMinValue(rs.getFloat("min_value"));
+					form.setMaxValue(rs.getFloat("max_value"));
+					form.setMinValueOperator(rs.getString("min_value_operator"));
+					form.setMaxValueOperator(rs.getString("max_value_operator"));
+					form.setTemplate(new String(Base64.decodeBase64(rs.getString("template").getBytes())));
+					return form;
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return result;
 	}
 
 	/**
