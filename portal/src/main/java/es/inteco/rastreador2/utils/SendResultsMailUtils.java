@@ -148,10 +148,40 @@ public final class SendResultsMailUtils {
 	 */
 	private static void sendMailToUra(final Long idObservatory, final DependenciaForm ura, final UraSendResultForm uraCustom, final Map<Long, TemplateRangeForm> iterationRangesMap,
 			final String attachUrl, final String attachName, final String emailSubject) throws Exception {
-		final String observatoryName = getObservatoryName(idObservatory);
 		// TODO Compose boy with template
 		// todo MARKS
 		TemplateRangeForm template = iterationRangesMap.get(uraCustom.getRange().getId());
+		StringBuilder mailBody = composeMailBody(ura, uraCustom, template);
+		// TODO Email subject
+		final MailService mailService = new MailService();
+		// TODO Get emails from URA
+		List<String> mailsTo = Arrays.asList(ura.getEmails().split(";"));
+		try {
+			if (!StringUtils.isEmpty(ura.getAcronym())) {
+				mailService.sendMail(mailsTo, "[" + ura.getAcronym() + "] " + emailSubject, mailBody.toString(), attachUrl, attachName, true);
+			} else {
+				mailService.sendMail(mailsTo, emailSubject, mailBody.toString(), attachUrl, attachName, true);
+			}
+			// TODO Mark as send
+			uraCustom.setSend(true);
+		} catch (MailException e) {
+			// TODO: handle exception
+			uraCustom.setSend(false);
+		}
+		Connection c = DataBaseManager.getConnection();
+		UraSendResultDAO.markSend(c, uraCustom);
+		DataBaseManager.closeConnection(c);
+	}
+
+	/**
+	 * Compose mail body.
+	 *
+	 * @param ura       the ura
+	 * @param uraCustom the ura custom
+	 * @param template  the template
+	 * @return the string builder
+	 */
+	public static StringBuilder composeMailBody(final DependenciaForm ura, final UraSendResultForm uraCustom, TemplateRangeForm template) {
 		String templateMail = template.getTemplate();
 		templateMail.replace("_ura_name_", ura.getName());
 		if (ura.isOfficial()) {
@@ -170,21 +200,7 @@ public final class SendResultsMailUtils {
 		templateMail = templateMail.replace("_ura_name_", ura.getName());
 		templateMail = templateMail.replace("_ura_custom_text_", uraCustom.getTemplate());
 		StringBuilder mailBody = new StringBuilder(templateMail);
-		// TODO Email subject
-		final MailService mailService = new MailService();
-		// TODO Get emails from URA
-		List<String> mailsTo = Arrays.asList(ura.getEmails().split(";"));
-		try {
-			mailService.sendMail(mailsTo, emailSubject, mailBody.toString(), attachUrl, attachName, true);
-			// TODO Mark as send
-			uraCustom.setSend(true);
-		} catch (MailException e) {
-			// TODO: handle exception
-			uraCustom.setSend(false);
-		}
-		Connection c = DataBaseManager.getConnection();
-		UraSendResultDAO.markSend(c, uraCustom);
-		DataBaseManager.closeConnection(c);
+		return mailBody;
 	}
 
 	/**

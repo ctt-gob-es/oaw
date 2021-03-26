@@ -46,6 +46,8 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	private EtiquetaForm tag;
 	/** The file seeds. */
 	private FormFile dependencyFile;
+	/** The acronym. */
+	private String acronym;
 
 	/**
 	 * Gets the id.
@@ -222,6 +224,24 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	 */
 	public void setDependencyFile(FormFile dependencyFile) {
 		this.dependencyFile = dependencyFile;
+	}
+
+	/**
+	 * Gets the acronym.
+	 *
+	 * @return the acronym
+	 */
+	public String getAcronym() {
+		return acronym;
+	}
+
+	/**
+	 * Sets the acronym.
+	 *
+	 * @param acronym the new acronym
+	 */
+	public void setAcronym(String acronym) {
+		this.acronym = acronym;
 	}
 
 	/**

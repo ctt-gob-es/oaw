@@ -171,6 +171,46 @@ public class UraSendResultDAO {
 	}
 
 	/**
+	 * Find by id.
+	 *
+	 * @param c       the c
+	 * @param idExObs the id ex obs
+	 * @param id      the id
+	 * @return the ura send result form
+	 * @throws SQLException the SQL exception
+	 */
+	public static UraSendResultForm findById(Connection c, final Long idExObs, final Long id) throws SQLException {
+		UraSendResultForm result = null;
+		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? AND c.id = ?";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(1, idExObs);
+			ps.setLong(2, id);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					final UraSendResultForm form = new UraSendResultForm();
+					form.setId(rs.getLong("c.id"));
+					form.setTemplate(new String(Base64.decodeBase64(rs.getString("custom_text").getBytes())));
+					form.setSend(rs.getBoolean("c.send"));
+					final RangeForm range = new RangeForm();
+					range.setId(rs.getLong("r.id"));
+					range.setName(rs.getString("r.name"));
+					form.setRange(range);
+					final DependenciaForm ura = new DependenciaForm();
+					ura.setId(rs.getLong("d.id_dependencia"));
+					ura.setName(rs.getString("d.nombre"));
+					ura.setSendAuto(rs.getBoolean("d.send_auto"));
+					form.setUra(ura);
+					return form;
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return result;
+	}
+
+	/**
 	 * Save.
 	 *
 	 * @param c    the c

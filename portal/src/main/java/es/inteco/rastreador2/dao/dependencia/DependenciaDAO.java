@@ -83,7 +83,7 @@ public final class DependenciaDAO {
 	 */
 	public static List<DependenciaForm> getDependencias(Connection c, String nombre, int page) throws SQLException {
 		final List<DependenciaForm> results = new ArrayList<>();
-		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official, a.nombre, a.id_ambito, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN ambitos_lista a ON d.id_ambit = a.id_ambito LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE 1=1 ";
+		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official, d.acronym, a.nombre, a.id_ambito, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN ambitos_lista a ON d.id_ambit = a.id_ambito LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE 1=1 ";
 		if (StringUtils.isNotEmpty(nombre)) {
 			query += " AND UPPER(d.nombre) like UPPER(?) ";
 		}
@@ -132,6 +132,7 @@ public final class DependenciaDAO {
 						dependenciaForm.setTag(tag);
 					}
 					dependenciaForm.setName(rs.getString("d.nombre"));
+					dependenciaForm.setAcronym(rs.getString("d.acronym"));
 					results.add(dependenciaForm);
 				}
 			}
@@ -151,7 +152,7 @@ public final class DependenciaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static DependenciaForm findById(Connection c, final Long id) throws SQLException {
-		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official FROM dependencia d WHERE d.id_dependencia = ? ";
+		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official, d.acronym FROM dependencia d WHERE d.id_dependencia = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, id);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -171,6 +172,7 @@ public final class DependenciaDAO {
 						dependenciaForm.setOfficial(true);
 					}
 					dependenciaForm.setName(rs.getString("d.nombre"));
+					dependenciaForm.setAcronym(rs.getString("d.acronym"));
 					return dependenciaForm;
 				}
 			}
@@ -190,7 +192,7 @@ public final class DependenciaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static DependenciaForm findByName(Connection c, final String name) throws SQLException {
-		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE d.nombre = ? ";
+		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE d.nombre = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, name);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -210,6 +212,7 @@ public final class DependenciaDAO {
 						dependenciaForm.setOfficial(true);
 					}
 					dependenciaForm.setName(rs.getString("d.nombre"));
+					dependenciaForm.setAcronym(rs.getString("d.acronym"));
 					if (rs.getInt("e.id_etiqueta") != 0) {
 						EtiquetaForm tag = new EtiquetaForm();
 						tag.setId(rs.getLong("e.id_etiqueta"));
@@ -258,7 +261,7 @@ public final class DependenciaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static void save(Connection c, DependenciaForm dependencia) throws SQLException {
-		final String query = "INSERT INTO dependencia(nombre, emails, send_auto, official,id_ambit,id_tag) VALUES (?,?,?,?,?,?)";
+		final String query = "INSERT INTO dependencia(nombre, emails, send_auto, official,id_ambit,id_tag, acronym) VALUES (?,?,?,?,?,?,?)";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, dependencia.getName());
 			ps.setString(2, dependencia.getEmails());
@@ -274,6 +277,7 @@ public final class DependenciaDAO {
 			} else {
 				ps.setString(6, null);
 			}
+			ps.setString(7, dependencia.getAcronym());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -290,7 +294,7 @@ public final class DependenciaDAO {
 	 */
 	public static void update(Connection c, DependenciaForm dependencia) throws SQLException {
 		// d.emails, d.send_auto, d.official
-		final String query = "UPDATE dependencia SET nombre = ?, emails = ?, send_auto = ? , official = ?, id_ambit = ?, id_tag = ?  WHERE id_dependencia = ?";
+		final String query = "UPDATE dependencia SET nombre = ?, emails = ?, send_auto = ? , official = ?, id_ambit = ?, id_tag = ?, acronym =?   WHERE id_dependencia = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, dependencia.getName());
 			ps.setString(2, dependencia.getEmails());
@@ -306,7 +310,8 @@ public final class DependenciaDAO {
 			} else {
 				ps.setString(6, null);
 			}
-			ps.setLong(7, dependencia.getId());
+			ps.setString(7, dependencia.getAcronym());
+			ps.setLong(8, dependencia.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -344,17 +349,18 @@ public final class DependenciaDAO {
 			c.setAutoCommit(false);
 			for (DependenciaForm dependency : dependencies) {
 				if (dependency.getId() != null) {
-					ps = c.prepareStatement("UPDATE dependencia SET  emails = ?, official = ?, id_tag = ?  WHERE id_dependencia = ?");
+					ps = c.prepareStatement("UPDATE dependencia SET  emails = ?, official = ?, id_tag = ?, acronym = ?  WHERE id_dependencia = ?");
 					ps.setString(1, dependency.getEmails());
 					ps.setBoolean(2, dependency.isOfficial());
 					ps.setNull(3, Types.BIGINT);
 					if (dependency.getTag() != null) {
 						ps.setLong(3, dependency.getTag().getId());
 					}
-					ps.setLong(4, dependency.getId());
+					ps.setString(4, dependency.getAcronym());
+					ps.setLong(5, dependency.getId());
 					ps.executeUpdate();
 				} else {
-					ps = c.prepareStatement("INSERT INTO dependencia(nombre, emails, official,id_tag) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE emails=?, official=?, id_tag=?");
+					ps = c.prepareStatement("INSERT INTO dependencia(nombre, emails, official,id_tag,acronym) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE emails=?, official=?, id_tag=?, acronym=?");
 					ps.setString(1, dependency.getName());
 					ps.setString(2, dependency.getEmails());
 					ps.setBoolean(3, dependency.isOfficial());
@@ -362,12 +368,15 @@ public final class DependenciaDAO {
 					if (dependency.getTag() != null) {
 						ps.setLong(4, dependency.getTag().getId());
 					}
-					ps.setString(5, dependency.getEmails());
-					ps.setBoolean(6, dependency.isOfficial());
+					ps.setString(5, dependency.getAcronym());
+					ps.setString(6, dependency.getEmails());
+					ps.setBoolean(7, dependency.isOfficial());
 					if (dependency.getTag() != null) {
-						ps.setLong(7, dependency.getTag().getId());
+						ps.setLong(8, dependency.getTag().getId());
+					} else {
+						ps.setNull(8, Types.BIGINT);
 					}
-					ps.setNull(7, Types.BIGINT);
+					ps.setString(9, dependency.getAcronym());
 					ps.executeUpdate();
 				}
 			}

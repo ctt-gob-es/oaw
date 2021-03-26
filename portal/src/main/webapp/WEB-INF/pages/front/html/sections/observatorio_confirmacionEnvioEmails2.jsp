@@ -158,7 +158,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 														colNameName,
 														colNameRange,
 														colNameTemplate,
-														colNameSendAuto, "" ],
+														colNameSendAuto, "","" ],
 												colModel : [
 														{
 															name : "id",
@@ -216,6 +216,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															}
 
 														},
+														{
+															name : "preview",
+															width: 10,
+															sortable: false,
+															formatter : previewFormatter
+														}
 
 												],
 												inlineEditing : {
@@ -279,7 +285,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															"td"), iCol = $.jgrid
 															.getCellIndex($td[0]);
 
-													if (this.p.colModel[iCol].name === "actions") {
+													if (this.p.colModel[iCol].name === "actions" || this.p.colModel[iCol].name === "preview") {
 														return false;
 													}
 
@@ -429,6 +435,52 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		}
 		return cellvalue;
 	}
+	
+	function previewFormatter(cellvalue, options, rowObject) {
+		return "<span style='cursor:pointer' onclick='previewEmail("
+		+ options.rowId
+		+ ")'class='glyphicon glyphicon-eye-open'></span><span class='sr-only'>Preview email</span></span>";
+		
+	}
+	
+	function previewEmail(rowId) {
+
+		var idExObs = $('[name=idExObs]').val();
+		var row = $('#grid').jqGrid('getRowData', rowId);
+		
+		 $.ajax({
+			 url : '/oaw/secure/ConfigSendResultsByMailAction.do?action=previewEmail&idExObs=' + idExObs + '&idSend='
+				+ row.id,
+			method : 'POST',
+			cache : false
+			
+			}).success(
+					function(response) {
+						var previewDialog = $('<div id="previewDialog"></div>');
+						
+						previewDialog.append(response.preview);
+						
+						previewDialog
+						.dialog({
+							autoOpen : false,
+							minHeight : $(window).height() * 0.5,
+							minWidth : $(window).width() * 0.5,
+							modal : true,
+							title : "",
+						});
+
+						previewDialog.dialog("open");
+
+					}).error(
+					function(response) {
+						alert("Error");
+
+					}
+
+			);
+		
+	}
+	
 </script>
 <script src="/oaw/js/ckeditor/ckeditor.js"></script>
 <div id="main">

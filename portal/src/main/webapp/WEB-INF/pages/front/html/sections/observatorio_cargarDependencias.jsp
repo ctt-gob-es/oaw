@@ -90,6 +90,8 @@ var colNameScope = '<bean:message key="colname.scope"/>';
 var colNameOfficial = '<bean:message key="colname.official"/>';
 var colNameSendAuto = '<bean:message key="colname.send.auto"/>';
 
+var colNameAcronym = '<bean:message key="colname.acronym"/>';
+
 
 	var scroll;
 	//Recarga el grid. Recibe como parámetro la url de la acción con la información
@@ -122,7 +124,7 @@ var colNameSendAuto = '<bean:message key="colname.send.auto"/>';
 											{
 												editUrl : '/oaw/secure/ViewDependenciasObservatorio.do?action=update',
 												colNames : [ colNameId, colNameName,
-													colNameOldName,colNameScope, colNameTags, "Emails", colNameSendAuto, colNameOfficial,
+													colNameOldName,colNameAcronym, colNameScope, colNameTags, "Emails", colNameSendAuto, colNameOfficial,
 													colNameRemove ],
 												colModel : [
 														{
@@ -145,6 +147,11 @@ var colNameSendAuto = '<bean:message key="colname.send.auto"/>';
 															formatter : nombreAntiguoFormatter,
 															hidden : true,
 															sortable : false
+														},
+														{
+															name : "acronym",
+															width : 20,
+															sortable : true
 														},
 														{														
 															name : "ambitoaux",
@@ -640,7 +647,7 @@ var colNameSendAuto = '<bean:message key="colname.send.auto"/>';
 
 					});
 
-	var windowWidth = $(window).width() * 0.3;
+	var windowWidth = $(window).width() * 0.4;
 	var windowHeight = $(window).height() * 0.5;
 
 	var dialog;
@@ -807,6 +814,16 @@ var colNameSendAuto = '<bean:message key="colname.send.auto"/>';
 					</label>
 					<div class="col-xs-8">
 						<input type="text" id="name" name="name" class="textoLargo form-control" />
+					</div>
+				</div>
+				<div class="row formItem">
+					<label for="acronym" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="colname.acronym" />
+						</strong>
+					</label>
+					<div class="col-xs-8">
+						<input type="text" id="name" name="acronym" class="textoLargo form-control" />
 					</div>
 				</div>
 				<!-- Ambito/Ambitoaux -->

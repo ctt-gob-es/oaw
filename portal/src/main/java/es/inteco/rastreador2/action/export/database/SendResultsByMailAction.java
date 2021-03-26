@@ -41,18 +41,25 @@ import es.inteco.rastreador2.action.observatorio.SemillasObservatorioAction;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
+import es.inteco.rastreador2.actionform.observatorio.TemplateRangeForm;
+import es.inteco.rastreador2.actionform.observatorio.UraSendResultForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
+import es.inteco.rastreador2.dao.dependencia.DependenciaDAO;
 import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.dao.export.database.Category;
 import es.inteco.rastreador2.dao.export.database.Observatory;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
+import es.inteco.rastreador2.dao.observatorio.TemplateRangeDAO;
+import es.inteco.rastreador2.dao.observatorio.UraSendResultDAO;
 import es.inteco.rastreador2.export.database.form.ComparisionForm;
 import es.inteco.rastreador2.manager.BaseManager;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
 import es.inteco.rastreador2.manager.export.database.DatabaseExportManager;
 import es.inteco.rastreador2.utils.AnnexUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
+import es.inteco.rastreador2.utils.SendResultsMailUtils;
 import es.inteco.rastreador2.utils.export.database.DatabaseExportUtils;
 
 /**
@@ -147,6 +154,8 @@ public class SendResultsByMailAction extends Action {
 						return mapping.findForward("sendResultsByMailAsync");
 					} else if (request.getParameter(Constants.ACTION).equals("observatoriesByTag")) {
 						observatoriesByTag(mapping, form, request, response);
+					} else if ("previewEmail".equalsIgnoreCase(request.getParameter(Constants.ACTION))) {
+						previewEmail(mapping, form, request, response);
 					}
 				}
 			} catch (Exception e) {
@@ -159,6 +168,15 @@ public class SendResultsByMailAction extends Action {
 		return null;
 	}
 
+	/**
+	 * Export resultados accesibilidad.
+	 *
+	 * @param messageResources     the message resources
+	 * @param idObservatory        the id observatory
+	 * @param c                    the c
+	 * @param fulfilledObservatory the fulfilled observatory
+	 * @throws Exception the exception
+	 */
 	private void exportResultadosAccesibilidad(final MessageResources messageResources, Long idObservatory, Connection c, ObservatorioRealizadoForm fulfilledObservatory) throws Exception {
 		Observatory observatory = DatabaseExportManager.getObservatory(fulfilledObservatory.getId());
 		if (observatory == null) {
@@ -219,6 +237,36 @@ public class SendResultsByMailAction extends Action {
 			String jsonObservatories = new Gson().toJson(ObservatorioDAO.getFulfilledObservatoriesByTag(c, idObservatory, -1, null, false, null, tagId));
 			PrintWriter pw = response.getWriter();
 			pw.write(jsonObservatories);
+			pw.flush();
+			pw.close();
+		} catch (Exception e) {
+			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return null;
+	}
+
+	/**
+	 * Preview email.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	public ActionForward previewEmail(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		try (Connection c = DataBaseManager.getConnection()) {
+			final Long idExObs = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
+			final Long idSend = Long.parseLong(request.getParameter("idSend"));
+			response.setContentType("text/json");
+			UraSendResultForm uraCustom = UraSendResultDAO.findById(c, idExObs, idSend);
+			DependenciaForm ura = DependenciaDAO.findById(c, uraCustom.getUra().getId());
+			final TemplateRangeForm template = TemplateRangeDAO.findById(c, idExObs, uraCustom.getRange().getId());
+			String mailBody = SendResultsMailUtils.composeMailBody(ura, uraCustom, template).toString();
+			PrintWriter pw = response.getWriter();
+//			pw.write("{\"preview\": \"" + StringEscapeUtils.escapeHtml4(mailBody) + "\" }");
+			pw.write("{\"preview\": " + new Gson().toJson(mailBody) + " }");
 			pw.flush();
 			pw.close();
 		} catch (Exception e) {
