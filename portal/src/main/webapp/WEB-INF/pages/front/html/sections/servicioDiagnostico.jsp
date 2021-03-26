@@ -55,6 +55,7 @@
 
 	var analysisTypeList = '<bean:message key="analysis.type.lis"/>';
 	var analysisTypeSource = '<bean:message key="analysis.type.source"/>';
+	var analysisTypeSourceMultiple = '<bean:message key="analysis.type.source.multiple"/>';
 
 	var others = '<bean:message key="other"/>';
 

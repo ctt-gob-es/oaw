@@ -101,7 +101,7 @@ public final class DiagnosisDAO {
 				ps.setString(11, basicServiceForm.getAnalysisType().getLabel());
 			} else if (basicServiceForm.getContents() != null && !basicServiceForm.getContents().isEmpty()) {
 				// TODO FUN10 TITLE
-				ps.setString(3, BasicServiceUtils.getTitleFromContent(basicServiceForm.getContents().get(0).getContent()));
+				ps.setString(3, basicServiceForm.getFileName());
 				ps.setString(11, BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE.getLabel());
 			} else if (StringUtils.isNotEmpty(basicServiceForm.getContent())) {
 				ps.setString(3, BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()));
