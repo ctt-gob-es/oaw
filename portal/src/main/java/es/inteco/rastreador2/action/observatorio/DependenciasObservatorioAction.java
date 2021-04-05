@@ -17,6 +17,9 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +67,8 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	private static final String EMPTY_STRING = "";
 	/** The Constant LITERAL_YES. */
 	private static final String LITERAL_YES = "Sí";
+	/** The Constant LITERAL_NO. */
+	private static final String LITERAL_NO = "No";
 	/** The Constant IMPORT_COLUMN_PROVINCE. */
 	private static final String IMPORT_COLUMN_PROVINCE = "Provincia";
 	/** The Constant IMPORT_COLUMN_OFFICIAL. */
@@ -356,36 +361,15 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		if (workbook.getNumberOfSheets() > 0) {
 			for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
 				XSSFSheet sheet = workbook.getSheetAt(i);
-				if (sheet.getRow(0) != null && sheet.getRow(0).getCell(0) != null && IMPORT_COLUMN_OFFICIAL.equalsIgnoreCase(sheet.getRow(0).getCell(0).getStringCellValue())) {
-					ArrayList<String> headerData = getHeaders(sheet);
-					for (int j = 1; j < sheet.getLastRowNum() + 1; j++) {
-						Row r = sheet.getRow(j);
-						DependenciaForm newDependency = new DependenciaForm();
-						String name = headerData.indexOf(IMPORT_COLUMN_NAME) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_NAME))) : EMPTY_STRING;
-						if (!StringUtils.isEmpty(name)) {
-							newDependency.setName(name);
-							String emails = headerData.indexOf(IMPORT_COLUMN_EMAILS) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_EMAILS))) : EMPTY_STRING;
-							newDependency.setEmails(emails);
-							String province = headerData.indexOf(IMPORT_COLUMN_PROVINCE) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_PROVINCE))) : EMPTY_STRING;
-							if (!StringUtils.isEmpty(province)) {
-								newDependency.setTag(EtiquetaDAO.getByName(c, province));
-							}
-							String official = headerData.indexOf(IMPORT_COLUMN_OFFICIAL) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_OFFICIAL))) : EMPTY_STRING;
-							if (!StringUtils.isEmpty(official)) {
-								newDependency.setOfficial(false);
-								if (LITERAL_YES.equalsIgnoreCase(official)) {
-									newDependency.setOfficial(true);
-								}
-							}
-							// Add to comparision
-							DependencyComparision comparision = new DependencyComparision();
-							final DependenciaForm databaseDependency = DependenciaDAO.findByName(c, newDependency.getName());
-							comparision.setDependency(databaseDependency);
-							if (databaseDependency != null) {
-								newDependency.setId(databaseDependency.getId());
-							}
-							comparision.setNewDependency(newDependency);
-							comparisionList.add(comparision);
+				if (sheet.getRow(0) != null && sheet.getRow(0).getCell(0) != null) {
+					String normalizedCellValue = Normalizer.normalize(sheet.getRow(0).getCell(0).getStringCellValue(), Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+					if (IMPORT_COLUMN_OFFICIAL.equalsIgnoreCase(normalizedCellValue)) {
+						// TODO Determine if is official or not by number of columns
+						if (sheet.getRow(0).getPhysicalNumberOfCells() == 13) {
+							getDependenciesFromSheet(comparisionList, c, sheet, false);
+						} else {
+							// Assumpt is unofficial sheet
+							getDependenciesFromSheet(comparisionList, c, sheet, true);
 						}
 					}
 				}
@@ -394,6 +378,56 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		workbook.close();
 		DataBaseManager.closeConnection(c);
 		return comparisionList;
+	}
+
+	/**
+	 * Gets the dependencies from sheet.
+	 *
+	 * @param comparisionList the comparision list
+	 * @param c               the c
+	 * @param sheet           the sheet
+	 * @param unofficial      the unofficial
+	 * @return the dependencies from sheet
+	 * @throws Exception    the exception
+	 * @throws SQLException the SQL exception
+	 */
+	private void getDependenciesFromSheet(final List<DependencyComparision> comparisionList, Connection c, XSSFSheet sheet, final boolean unofficial) throws Exception, SQLException {
+		ArrayList<String> headerData = getHeaders(sheet);
+		for (int j = 1; j < sheet.getLastRowNum() + 1; j++) {
+			Row r = sheet.getRow(j);
+			DependenciaForm newDependency = new DependenciaForm();
+			String name = headerData.indexOf(IMPORT_COLUMN_NAME) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_NAME))) : EMPTY_STRING;
+			if (!StringUtils.isEmpty(name)) {
+				String official = headerData.indexOf(IMPORT_COLUMN_OFFICIAL) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_OFFICIAL))) : EMPTY_STRING;
+				if (!StringUtils.isEmpty(official)) {
+					if (unofficial) {
+						if (LITERAL_NO.equalsIgnoreCase(official)) {
+							newDependency.setOfficial(false);
+						} else {
+							continue;
+						}
+					} else if (LITERAL_YES.equalsIgnoreCase(official)) {
+						newDependency.setOfficial(true);
+					}
+				}
+				newDependency.setName(name);
+				String emails = headerData.indexOf(IMPORT_COLUMN_EMAILS) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_EMAILS))) : EMPTY_STRING;
+				newDependency.setEmails(emails);
+				String province = headerData.indexOf(IMPORT_COLUMN_PROVINCE) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_PROVINCE))) : EMPTY_STRING;
+				if (!StringUtils.isEmpty(province)) {
+					newDependency.setTag(EtiquetaDAO.getByName(c, province));
+				}
+				// Add to comparision
+				DependencyComparision comparision = new DependencyComparision();
+				final DependenciaForm databaseDependency = DependenciaDAO.findByName(c, newDependency.getName());
+				comparision.setDependency(databaseDependency);
+				if (databaseDependency != null) {
+					newDependency.setId(databaseDependency.getId());
+				}
+				comparision.setNewDependency(newDependency);
+				comparisionList.add(comparision);
+			}
+		}
 	}
 
 	/**
