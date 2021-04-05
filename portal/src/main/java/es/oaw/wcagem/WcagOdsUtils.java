@@ -12,7 +12,6 @@ import org.jopendocument.dom.spreadsheet.MutableCell;
 import org.jopendocument.dom.spreadsheet.Sheet;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.semillas.PlantillaForm;
 import es.inteco.rastreador2.dao.plantilla.PlantillaDAO;
@@ -59,9 +58,7 @@ public final class WcagOdsUtils {
 	 * @throws Exception the exception
 	 */
 	public static SpreadSheet generateOds(final WcagEmReport report) throws Exception {
-		final PropertiesManager pmgr = new PropertiesManager();
-//		File inputFile = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.ods.template"));
-		// TODO Get file from database
+		// Get file from database
 		File inputFile = getOdsTemplate();
 		// Load template
 		final SpreadSheet workbook = SpreadSheet.createFromFile(inputFile);

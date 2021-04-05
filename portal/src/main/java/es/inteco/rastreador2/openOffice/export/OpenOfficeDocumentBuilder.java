@@ -218,7 +218,6 @@ public abstract class OpenOfficeDocumentBuilder {
 				// Cabecera
 				String vCount = resultC.getKey().substring(resultC.getKey().lastIndexOf(".") + 1, resultC.getKey().indexOf("_"));
 				replaceText(odt, odfFileContent, "-" + rowId + vCount + ".a" + index + "-", entry.getKey());
-//				String vCount = resultC.getKey().substring(resultC.getKey().lastIndexOf(".") + 1, resultC.getKey().indexOf("_"));
 				final String oldTextC = "-" + rowId + vCount + ".b" + index + ".c-";
 				final String oldTextNC = "-" + rowId + vCount + ".b" + index + ".nc-";
 				final String oldTextNA = "-" + rowId + vCount + ".b" + index + ".na-";
@@ -228,7 +227,7 @@ public abstract class OpenOfficeDocumentBuilder {
 				} else if (resultC.getKey().endsWith(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX)) {
 					replaceText(odt, odfFileContent, oldTextNC, getCellValue(resultC.getValue(), isPercentValue));
 				}
-				// TODO NOT APLLY
+				// NOT APLLY
 				else if (resultC.getKey().endsWith(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX)) {
 					replaceText(odt, odfFileContent, oldTextNA, getCellValue(resultC.getValue(), isPercentValue));
 				}

@@ -352,7 +352,7 @@ public final class OpenOfficeGlobalReportBuilder {
 			generateDatesSummaryTable(odt, odfFileContent, tagsToFiler, exObsIds, c);
 			// Todo total
 			generateClasificationStatiticsTableGlobal(odt, odfFileContent, tagsToFiler, exObsIds, c, "Discapacidad");
-			// TODO Generate Distribution
+			// Generate Distribution
 			generateClasificationStatiticsTableAmbit(odt, odfFileContent, tagsToFiler, exObsIds, c);
 			// By complex
 			generateClasificationStatiticsTableComplex(odt, odfFileContent, tagsToFiler, exObsIds, c);

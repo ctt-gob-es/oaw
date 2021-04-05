@@ -74,7 +74,6 @@ public final class ZipUtils {
 				}
 			}
 			generateZipFile(finalPath, finalZipPath, false);
-			// PENDING No eliminamos los temporales
 			FileUtils.removeFile(basePath + idObservatory + File.separator + idExecutionOb + File.separator + "temp" + File.separator);
 			CrawlerUtils.returnFile(response, finalZipPath, "application/zip", true);
 		} catch (Exception e) {
@@ -109,10 +108,6 @@ public final class ZipUtils {
 					}
 				}
 			}
-			// NO generate zip with sirectoruies
-			// generateZipFile(finalPath, finalZipPath, false);
-			// PENDING No eliminamos los temporales
-			// FileUtils.removeFile(basePath + idObservatory + File.separator + idExecutionOb + File.separator + "temp" + File.separator);
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
@@ -144,10 +139,6 @@ public final class ZipUtils {
 					}
 				}
 			}
-			// NO generate zip with sirectoruies
-			// generateZipFile(finalPath, finalZipPath, false);
-			// PENDING No eliminamos los temporales
-			// FileUtils.removeFile(basePath + idObservatory + File.separator + idExecutionOb + File.separator + "temp" + File.separator);
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}

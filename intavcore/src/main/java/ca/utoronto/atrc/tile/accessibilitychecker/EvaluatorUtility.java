@@ -864,7 +864,7 @@ public final class EvaluatorUtility {
 				cssUrl = new URL(styleSheet.getAttribute("href"));
 			}
 			final HttpURLConnection connection = EvaluatorUtils.getConnection(cssUrl.toString(), "GET", true);
-			// TODO Add accept text/css to prevent some cases that text/html accpet produces 406 on server
+			// Add accept text/css to prevent some cases that text/html accpet produces 406 on server
 			connection.setRequestProperty("Accept", "text/css;text/html");
 			connection.connect();
 			int responseCode = connection.getResponseCode();
@@ -935,55 +935,6 @@ public final class EvaluatorUtility {
 			} else {
 				contents = StringUtils.getContentAsString(inputStream, charset);
 			}
-//			final Document document;
-//			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//			final DocumentBuilder builder = factory.newDocumentBuilder();
-//			try {
-//				final PropertiesManager pmgr = new PropertiesManager();
-//				final HttpURLConnection connection = EvaluatorUtils.getConnection(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.validator"), "POST", true);
-//				connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-//				connection.setDoOutput(true);
-//				final OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-//				final URLCodec codec = new URLCodec();
-//				// TODO FOCE HTML5
-//				final String str = "output=soap12&doctype=HTML5&fragment=" + codec.encode(HTMLEntities.unhtmlAmpersand(HTMLEntities.htmlentities(contents)));
-//				writer.write(str);
-//				writer.flush();
-//				writer.close();
-//				connection.connect();
-//				// TODO Extract to xml to prevent non prolog first lines
-//				File tmpResponse = File.createTempFile("w3c_", ".txt");
-//				FileUtils.copyInputStreamToFile(connection.getInputStream(), tmpResponse);
-//				Scanner fileScanner = new Scanner(tmpResponse);
-//				File tmpResponseProcesesd = File.createTempFile("w3c_", ".txt");
-//				FileWriter fileStream = new FileWriter(tmpResponseProcesesd);
-//				BufferedWriter out = new BufferedWriter(fileStream);
-//				boolean copyLine = false;
-//				while (fileScanner.hasNextLine()) {
-//					String next = fileScanner.nextLine();
-//					if (!copyLine && next.startsWith("<?xml")) {
-//						copyLine = true;
-//					}
-//					if (copyLine) {
-//						out.write(next);
-//					}
-//				}
-//				out.close();
-//				fileScanner.close();
-//				// document = builder.parse(connection.getInputStream());
-//				document = builder.parse(tmpResponseProcesesd);
-//			} catch (Exception e) {
-//				addValidationSummary(validationErrors, checkAccessibility.getUrl());
-//				throw e;
-//			}
-//			final NodeList errorNodes = document.getElementsByTagName("m:error");
-//			if (errorNodes.getLength() > 0) {
-//				final String[] lines = contents.split("\\n");
-//				for (int i = 0; i < errorNodes.getLength(); i++) {
-//					final Node errorNode = errorNodes.item(i);
-//					validationErrors.add(getValidationError(errorNode, lines, IntavConstants.VALIDATION_ERROR_TYPE_ERROR));
-//				}
-//			}
 			validationErrors = W3CValidatorProxy.callService(contents);
 			// Corregimos el desajuste de una línea al meter el código en una plantilla HTML cuando viene del WS y es un fragmento de código
 			if (checkAccessibility.isWebService() && StringUtils.isNotEmpty(checkAccessibility.getTemplateContent())) {

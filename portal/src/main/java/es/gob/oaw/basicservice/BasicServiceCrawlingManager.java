@@ -108,7 +108,6 @@ public class BasicServiceCrawlingManager {
 		crawlerData.setFicheroNorma(includeBrokenLinksCheck(CrawlerUtils.getFicheroNorma(idGuideline), basicServiceForm.getReport()));
 		crawlerData.setDomains(es.inteco.utils.CrawlerUtils.addDomainsToList(basicServiceForm.getDomain(), true, Constants.ID_LISTA_SEMILLA));
 		crawlerData.setInDirectory(basicServiceForm.isInDirectory());
-		// TODO FUN 10 fill contents
 		if (BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE.equals(basicServiceForm.getAnalysisType())) {
 			if (basicServiceForm.getContents() != null && !basicServiceForm.getContents().isEmpty()) {
 				List<CrawlerFile> contents = new ArrayList<>();

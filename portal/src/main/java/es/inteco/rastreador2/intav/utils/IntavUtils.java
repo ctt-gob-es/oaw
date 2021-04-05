@@ -439,7 +439,6 @@ public final class IntavUtils {
 				}
 			}
 		}
-		// scoreForm.setTotalScore(scoreForm.getScoreLevelA().add(scoreForm.getScoreLevelAA()).divide(new BigDecimal(2)));
 		generateScoresVerificacion(messageResources, scoreForm, evaList);
 		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(evaList, Constants.OBS_PRIORITY_NONE);
 		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
@@ -448,9 +447,7 @@ public final class IntavUtils {
 		 */
 		if (!evaList.isEmpty()) {
 			scoreForm.setTotalScore(scoreForm.getTotalScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
-//			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
-//			scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
-			// TODO Calculate mid from score verificatrion
+			// Calculate mid from score verificatrion
 			BigDecimal sumL1 = new BigDecimal(0);
 			int countNA = 0;
 			for (Entry<String, BigDecimal> entry : resultL1.entrySet()) {
@@ -461,8 +458,7 @@ public final class IntavUtils {
 			}
 			scoreForm.setScoreLevelA(sumL1.divide(new BigDecimal(resultL1.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setScoreLevel1(sumL1.divide(new BigDecimal(resultL1.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
-			// scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
-			// TODO Calculate mid from score verificatrion
+			// Calculate mid from score verificatrion
 			BigDecimal sumL2 = new BigDecimal(0);
 			countNA = 0;
 			for (Entry<String, BigDecimal> entry : resultL2.entrySet()) {
@@ -473,7 +469,6 @@ public final class IntavUtils {
 			}
 			scoreForm.setScoreLevel2(sumL2.divide(new BigDecimal(resultL2.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setScoreLevelAA(sumL2.divide(new BigDecimal(resultL2.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
-			// scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
 			// REVIEW Calculated compliance
 			scoreForm.setCompliance(calculatedCompliance.get(evaList.get(0).getCrawlerExecutionId()));

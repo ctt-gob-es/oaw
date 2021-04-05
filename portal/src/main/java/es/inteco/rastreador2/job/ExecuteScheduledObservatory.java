@@ -153,11 +153,11 @@ public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJo
 					if (c != null && c.isClosed()) {
 						c = DataBaseManager.getConnection();
 					}
-					// TODO Relaunch not crawled seeds
+					// Relaunch not crawled seeds
 					if (ObservatorioDAO.getAutorelaunchFromConfig(c) == 1) {
 						List<Long> finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis(c, observatoryId,
 								idFulfilledObservatory);
-						// TODO Get seed less pages umbral
+						// Get seed less pages umbral
 						List<Long> lessThreshbold = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(c, idFulfilledObservatory, null, null);
 						List<Long> allToRelaunch = new ArrayList<Long>();
 						allToRelaunch.addAll(finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis);
@@ -293,12 +293,11 @@ public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJo
 		final DatosForm userData = LoginDAO.getUserDataByName(c, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"));
 		final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, idEjecucionObservatorio, Long.valueOf(userData.getId()));
 		final CrawlerData crawlerData = CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null);
-		// TODO set extend timeout
+		// set extend timeout
 		crawlerData.setExtendTimeout(true);
 		crawlerData.setExtendedTimeoutValue(ObservatorioDAO.getTimeoutFromConfig(c));
 		crawlerData.setExtendedDepth(ObservatorioDAO.getDepthFromConfig(c));
 		crawlerData.setExtendedWidth(ObservatorioDAO.getWidthFromConfig(c));
-		// CrawlerJobManager.startJob(crawlerData);
 		crawlerJob = new CrawlerJob();
 		crawlerJob.launchCrawler(crawlerData);
 		DataBaseManager.closeConnection(c);

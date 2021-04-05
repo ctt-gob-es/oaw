@@ -268,15 +268,10 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		table.setWidthPercentage(100);
 		table.setSpacingBefore(10);
 		table.setSpacingAfter(0);
-//		// Titulo
-//		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.title"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT,
-//				DEFAULT_PADDING, -1));
-//		table.addCell(PDFUtils.createTableCell(title, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 		// URL
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.url"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT,
 				DEFAULT_PADDING, -1));
 		table.addCell(PDFUtils.createLinkedTableCell(url, url, Color.WHITE, Element.ALIGN_LEFT, DEFAULT_PADDING));
-		// PENDING Add detail of accesibility links
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.urls.accesibilidad"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
 				Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
 		String urls = "";
@@ -284,15 +279,6 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 			// Only returns one value
 			urls = TAnalisisAccesibilidadDAO.getUrls(DataBaseManager.getConnection(), evaluationForm.getIdAnalysis());
 			table.addCell(PDFUtils.createTableCell(urls, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));// if (urls != null &&
-																																				// !org.apache.commons.lang3.StringUtils.isEmpty(urls))
-																																				// {
-//				java.util.List<String> list = Arrays.asList(urls.split(","));
-//				com.lowagie.text.List PDFlist = new com.lowagie.text.List();
-//				for (String str : list) {
-//					PDFUtils.addListItem(str, PDFlist, ConstantsFont.noteCellFont, false, true, Element.ALIGN_LEFT);
-//				}
-//				table.addCell(PDFUtils.createListTableCell(PDFlist, Color.WHITE, Element.ALIGN_LEFT, DEFAULT_PADDING));
-//			}
 		} catch (Exception e) {
 			Logger.putLog("Error al obtener las urls de accesibilidad analizadas", ObservatoryPageResultsPdfSectionBuilder.class, Logger.LOG_LEVEL_ERROR);
 		}

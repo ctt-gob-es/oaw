@@ -121,16 +121,13 @@ public final class ExportOpenOfficeUtils {
 					CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId()));
 			final OdfTextDocument odt = openOfficeDocumentBuilder.buildDocumentFiltered(request, filePath, graphicPath, date, includeEvolution(numberObservatoryExecutions), pageExecutionList,
 					categories, tagsToFilter, tagsToFilterFixed, grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate, idSegmentEvolTemplate, reportTitle);
-//			odt.save(filePath);
-//			removeAttributeFromFile(filePath, "META-INF/manifest.xml", "manifest:file-entry", "manifest:size", "text/xml");
-//			odt.close();
 		} catch (Exception e) {
 			Logger.putLog("Error al exportar los resultados a OpenOffice", ExportOpenOfficeAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 	}
 
 	/**
-	 * TODO Creates the open office documentglobal.
+	 * Creates the open office documentglobal.
 	 *
 	 * @param request        the request
 	 * @param filePath       the file path
@@ -143,7 +140,6 @@ public final class ExportOpenOfficeUtils {
 	public static void createOpenOfficeDocumentglobal(final HttpServletRequest request, final String filePath, final String graphicPath, String[] tagsToFilter, String[] exObsIds,
 			final String reportTitle, final Long idBaseTemplate) {
 		try (Connection c = DataBaseManager.getConnection()) {
-			// TODO
 			OpenOfficeGlobalReportBuilder.buildReport(request, filePath, graphicPath, tagsToFilter, exObsIds, reportTitle, idBaseTemplate);
 		} catch (Exception e) {
 			Logger.putLog("Error al exportar los resultados a OpenOffice", ExportOpenOfficeAction.class, Logger.LOG_LEVEL_ERROR, e);

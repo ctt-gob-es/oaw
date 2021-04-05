@@ -542,7 +542,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 			for (String currentNombre : nombres) {
 				EtiquetaForm etiqueta = new EtiquetaForm();
 				etiqueta.setName(currentNombre.trim());
-				// TODO Clasificacion
 				ClasificacionForm cls = new ClasificacionForm();
 				cls.setId("1");
 				etiqueta.setClasificacion(cls);
@@ -569,7 +568,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 			for (String currentNombre : nombres) {
 				EtiquetaForm etiqueta = new EtiquetaForm();
 				etiqueta.setName(currentNombre.trim());
-				// TODO Clasificacion
 				ClasificacionForm cls = new ClasificacionForm();
 				cls.setId("2");
 				etiqueta.setClasificacion(cls);
@@ -596,7 +594,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 			for (String currentNombre : nombres) {
 				EtiquetaForm etiqueta = new EtiquetaForm();
 				etiqueta.setName(currentNombre.trim());
-				// TODO Clasificacion
 				ClasificacionForm cls = new ClasificacionForm();
 				cls.setId("3");
 				etiqueta.setClasificacion(cls);
@@ -623,7 +620,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 			for (String currentNombre : nombres) {
 				EtiquetaForm etiqueta = new EtiquetaForm();
 				etiqueta.setName(currentNombre.trim());
-				// TODO Clasificacion
 				ClasificacionForm cls = new ClasificacionForm();
 				cls.setId("4");
 				etiqueta.setClasificacion(cls);

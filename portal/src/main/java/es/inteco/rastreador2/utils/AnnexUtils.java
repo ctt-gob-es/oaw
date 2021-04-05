@@ -522,8 +522,6 @@ public final class AnnexUtils {
 		Connection c = DataBaseManager.getConnection();
 		// Save config
 		ObservatorioDAO.saveConfig(c, idObsExecution, exObsIds, comparision);
-		// TODO Remove old customs if exists?
-		// UraCustomTextDAO.deleteAll(c, idObsExecution);
 		// Save new custom
 		UraSendResultDAO.save(c, uraCustomList);
 		DataBaseManager.closeConnection(c);
@@ -699,7 +697,7 @@ public final class AnnexUtils {
 		SummaryEvolution fixedSummaryFirst = new SummaryEvolution(websiteRanges);
 		SummaryEvolution fixedSummaryPrevious = new SummaryEvolution(websiteRanges);
 		for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-			// TODO Applu websites ranges
+			// Apply websites ranges
 			countEvolution(conn, comparision, globalSummaryPrevious, semillaEntry, false, null);
 			countEvolution(conn, comparision, globalSummaryFirst, semillaEntry, true, null);
 			countEvolution(conn, comparision, fixedSummaryPrevious, semillaEntry, false, tagsToFilterFixed);

@@ -18,7 +18,6 @@ import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.semillas.PlantillaForm;
 import es.inteco.rastreador2.dao.plantilla.PlantillaDAO;
@@ -65,9 +64,7 @@ public final class WcagXlsxUtils {
 	 * @throws Exception the exception
 	 */
 	public static Workbook generateXlsx(final WcagEmReport report) throws Exception {
-		final PropertiesManager pmgr = new PropertiesManager();
-		// File inputFile = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.xlsx.template"));
-		// TODO Get file from database
+		// Get file from database
 		File inputFile = getOdsTemplate();
 		FileInputStream inputStream = new FileInputStream(inputFile);
 		XSSFWorkbook workbook = new XSSFWorkbook(inputStream);

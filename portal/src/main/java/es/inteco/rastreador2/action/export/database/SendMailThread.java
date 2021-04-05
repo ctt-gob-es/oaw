@@ -1,5 +1,6 @@
 package es.inteco.rastreador2.action.export.database;
 
+import es.inteco.common.logging.Logger;
 import es.inteco.rastreador2.utils.SendResultsMailUtils;
 
 /**
@@ -16,6 +17,7 @@ public class SendMailThread extends Thread {
 	private String emailSubject;
 	/** The cco. */
 	private String cco;
+	/** The notify mail. */
 	private String notifyMail;
 
 	/**
@@ -26,6 +28,7 @@ public class SendMailThread extends Thread {
 	 * @param idCartucho     the id cartucho
 	 * @param emailSubject   the email subject
 	 * @param cco            the cco
+	 * @param notifyMail     the notify mail
 	 */
 	public SendMailThread(Long idObs, Long idObsExecution, Long idCartucho, String emailSubject, String cco, String notifyMail) {
 		this.idObsExecution = idObsExecution;
@@ -44,8 +47,7 @@ public class SendMailThread extends Thread {
 		try {
 			SendResultsMailUtils.generateAndSendData(idObs, idCartucho, idObsExecution, emailSubject, cco, notifyMail);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.putLog("Excepcion: ", SendMailThread.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 	}
 }

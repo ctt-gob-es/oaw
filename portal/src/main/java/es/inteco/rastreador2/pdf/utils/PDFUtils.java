@@ -856,8 +856,6 @@ public final class PDFUtils {
 		chunk.setAnchor(url);
 		chunk.setSplitCharacter(ANY_CHARACTER_WORD_SPLITTER);
 		final PdfPCell labelCell = new PdfPCell(new Paragraph(chunk));
-		// PENDING
-		// labelCell.setBackgroundColor(backgroundColor);
 		labelCell.setBackgroundColor(new BaseColor(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue()));
 		labelCell.setHorizontalAlignment(horizontalAlignment);
 		labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -886,8 +884,6 @@ public final class PDFUtils {
 		final Paragraph imageParagraph = PDFUtils.createImageTextParagraph(image, " " + text, font);
 		imageParagraph.setLeading(image.getHeight());
 		labelCell.addElement(imageParagraph);
-		// PENDING
-		// labelCell.setBackgroundColor(backgroundColor);
 		labelCell.setBackgroundColor(new BaseColor(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue()));
 		labelCell.setHorizontalAlignment(horizontalAlignment);
 		labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -927,8 +923,6 @@ public final class PDFUtils {
 	 */
 	public static PdfPCell createTableCell(final String text, final Color backgroundColor, final Font font, final int align, final int padding, final float height) {
 		final PdfPCell labelCell = new PdfPCell(new Paragraph(text, font));
-		// PENDING
-		// labelCell.setBackgroundColor(backgroundColor);
 		labelCell.setBackgroundColor(new BaseColor(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue()));
 		labelCell.setHorizontalAlignment(align);
 		labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -954,8 +948,6 @@ public final class PDFUtils {
 		final Chunk chunk = new Chunk(text, font);
 		chunk.setLocalGoto(anchorId);
 		final PdfPCell labelCell = new PdfPCell(new Paragraph(chunk));
-		// PENDING
-		// labelCell.setBackgroundColor(backgroundColor);
 		labelCell.setBackgroundColor(new BaseColor(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue()));
 		labelCell.setHorizontalAlignment(align);
 		labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -990,8 +982,6 @@ public final class PDFUtils {
 	public static PdfPCell createListTableCell(final List list, final Color backgroundColor, final int horizontalAlign, final int verticalAlign, final int margin) {
 		final PdfPCell labelCell = new PdfPCell();
 		labelCell.addElement(list);
-		// PENDING
-		// labelCell.setBackgroundColor(backgroundColor);
 		labelCell.setBackgroundColor(new BaseColor(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue()));
 		labelCell.setHorizontalAlignment(horizontalAlign);
 		labelCell.setVerticalAlignment(verticalAlign);

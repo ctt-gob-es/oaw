@@ -70,7 +70,6 @@ public class NuevoInformeGlobalObservatorioAction extends Action {
 					return null;
 				} else if (action.equalsIgnoreCase("config")) {
 					Connection c = DataBaseManager.getConnection();
-					// TODO LISTAR OBSERVATORIOS
 					request.setAttribute("plantillas", PlantillaDAO.findAll(c, -1));
 					request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getExecutedObservarories(c));
 					DataBaseManager.closeConnection(c);

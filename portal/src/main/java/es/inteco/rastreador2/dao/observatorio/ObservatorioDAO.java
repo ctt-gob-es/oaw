@@ -1804,7 +1804,7 @@ public final class ObservatorioDAO {
 						rsCrawls = psCrawls.executeQuery();
 						if (rsCrawls.next()) {
 							resultadoSemillaForm.setNumCrawls(rsCrawls.getInt("numCrawls"));
-							// TODO Calculate percent
+							// Calculate percent
 							if (rsCrawls.getInt("numCrawls") > 0) {
 								resultadoSemillaForm.setPercentNumCrawls(((rsCrawls.getInt("numCrawls") * 1.0) / ((rs.getInt("cxl.profundidad") * rs.getInt("cxl.amplitud")) + 1)) * 100);
 							}

@@ -94,7 +94,6 @@ public class ExportOpenOfficeAction extends Action {
 					request.setAttribute(Constants.ID_CARTUCHO, idCartucho);
 					return mapping.findForward(Constants.CONFIGURAR_FILTROS_AGREGADOS);
 				} else if (Constants.NORMATIVA_ACCESIBILIDAD.equals(application)) {
-					// TODO
 					AmbitoForm ambito = ObservatorioDAO.getAmbitByObservatoryId(connection, idObservatory);
 					if (ambito != null) {
 						request.setAttribute("ambito", ambito.getDescripcion());
@@ -107,7 +106,6 @@ public class ExportOpenOfficeAction extends Action {
 					request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
 					request.setAttribute(Constants.ID_CARTUCHO, idCartucho);
 					return mapping.findForward(Constants.CONFIGURAR_FILTROS_AGREGADOS);
-					// TODO VALORATE ALTERNATIVE FORWRADreturn mapping.findForward(Constants.CONFIGURAR_FILTROS_AGREGADOS_ACC);
 				} else {
 					return generateReportWithoutFilters(mapping, request, response, idExecution, idObservatory);
 				}
