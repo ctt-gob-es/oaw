@@ -397,7 +397,6 @@ public final class DatabaseExportUtils {
 			aspectScore.setPage(page);
 			page.getAspectScoreList().add(aspectScore);
 		}
-		// TODO Calculate compliance
 		return page;
 	}
 

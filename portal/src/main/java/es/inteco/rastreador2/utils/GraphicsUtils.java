@@ -284,7 +284,6 @@ public final class GraphicsUtils {
 	 * @param y                the y
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	// TODO Gropued stacked
 	public static void createBarChartGrouped(Map<String, Map<String, BigDecimal>> result, String title, String rowTitle, String columnTitle, String color, boolean withLegend, boolean percentage,
 			boolean labelRotated, final String filePath, String noDataMessage, final MessageResources messageResources, int x, int y) throws IOException {
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
@@ -334,17 +333,11 @@ public final class GraphicsUtils {
 				if (verficationC != null) {
 					if (verficationC.endsWith(Constants.OBS_VALUE_COMPILANCE_SUFFIX)) {
 						verificacionPoint = verficationC.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "");
-						// PENDING Checks this strings
-						// verificationText = Constants.OBS_COMPILANCE_FULL;
 						verificationText = Constants.OBS_COMPILANCE;
 						dataSet.addValue(valueC, date + " " + verificationText, verificacionPoint);
 					} else if (verficationC.endsWith(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX)) {
 						verificacionPoint = verficationC.replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "");
-						// PENDING Checks this strings
-//						verificationText = Constants.OBS_COMPILANCE_PARTIAL;
 						verificationText = Constants.OBS_COMPILANCE_NONE;
-//						dataSet.addValue(valueC, date + " " + verificationText, verificacionPoint);
-						// TODO Check if dataset contains value to add
 						try {
 							if (dataSet.getValue(date + " " + verificationText, verificacionPoint) != null) {
 								dataSet.addValue(((BigDecimal) dataSet.getValue(date + " " + verificationText, verificacionPoint)).add(valueC), date + " " + verificationText, verificacionPoint);
@@ -356,10 +349,7 @@ public final class GraphicsUtils {
 						}
 					} else if (verficationC.endsWith(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX)) {
 						verificacionPoint = verficationC.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "");
-						// PENDING Checks this strings
 						verificationText = Constants.OBS_COMPILANCE_NA;
-//						dataSet.addValue(valueC, date + " " + verificationText, verificacionPoint);
-						// TODO Check if dataset contains value to add
 						try {
 							if (dataSet.getValue(date + " " + verificationText, verificacionPoint) != null) {
 								dataSet.addValue(((BigDecimal) dataSet.getValue(date + " " + verificationText, verificacionPoint)).add(valueC), date + " " + verificationText, verificacionPoint);
@@ -470,18 +460,7 @@ public final class GraphicsUtils {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void createStackedBarChart(final ChartForm chartForm, final String noDataMess, final String filePath) throws IOException {
-		// PENDING Inverted to stack 0 on bottom?? Review if remove zero values do not alter other results
 		DefaultCategoryDataset dataset = chartForm.getDataSet();
-//		for (int i = 0; i < dataset.getRowCount(); i++) {
-//			for (int j = 0; j < dataset.getColumnCount(); j++) {
-//				// if current value is zero, remove from dataset to prevent print top of rows from diferent color if is zero
-//				if (dataset.getValue(i, j) != null && dataset.getValue(i, j).intValue() == 0) {
-//					dataset.removeValue(dataset.getRowKey(i), dataset.getColumnKey(j));
-//				}
-//			}
-//		}
-//		final JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), chartForm.getDataSet(), PlotOrientation.VERTICAL,
-//				chartForm.isPrintLegend(), true, false);
 		final JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), dataset, PlotOrientation.VERTICAL,
 				chartForm.isPrintLegend(), true, false);
 		chart.getTitle().setFont(TITLE_FONT);
@@ -704,7 +683,6 @@ public final class GraphicsUtils {
 	 * @param withRange               the with range
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	// TODO GROUPED 2D CHART
 	public static void createStandardGroupedBarChart(ChartForm observatoryGraphicsForm, String filePath, String noDataMess, MessageResources messageResources, boolean withRange) throws IOException {
 		final JFreeChart chart;
 		if (observatoryGraphicsForm.isTridimensional()) {
@@ -757,7 +735,7 @@ public final class GraphicsUtils {
 			}
 		}
 		KeyToGroupMap map = new KeyToGroupMap(dateText);
-		// TODO Review keys
+		// Review keys
 		for (int j = 0; j < dataset.getRowKeys().size(); j++) {
 			dateText = dataset.getRowKeys().get(j).toString();
 			if (!org.apache.commons.lang3.StringUtils.isEmpty(dateText)) {
@@ -773,10 +751,6 @@ public final class GraphicsUtils {
 		}
 		renderer.setSeriesToGroupMap(map);
 		renderer.setItemMargin(0.0);
-		// {220,220,220},{225,18,13},{38,187,8}
-//		Paint p1 = new Color(225, 18, 13);// red
-//		Paint p2 = new Color(38, 187, 8); // green
-//		Paint p3 = new Color(220, 220, 220);// gris
 		Paint p1 = new Color(220, 220, 220);// gray
 		Paint p2 = new Color(225, 18, 13); // red
 		Paint p3 = new Color(38, 187, 8);// green
@@ -1228,8 +1202,6 @@ public final class GraphicsUtils {
 				value = value * p;
 				float tmp = Math.round(value);
 				value = tmp / p;
-				// PENDING Labels as integers
-				// return key + "\n" + sectionLabel + dataset.getValue(key).toString() + "\n" + " (" + value.toString() + "%)";
 				return key + "\n" + sectionLabel + dataset.getValue(key).intValue() + "\n" + " (" + Math.round(value) + "%)";
 			} else {
 				return null;

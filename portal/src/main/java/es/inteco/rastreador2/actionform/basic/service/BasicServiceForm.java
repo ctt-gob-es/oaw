@@ -334,12 +334,15 @@ public class BasicServiceForm extends ValidatorForm {
 	 * @return true, if is content analysis
 	 */
 	public boolean isContentAnalysis() {
-		// TODO FUN10
 		return analysisType == BasicServiceAnalysisType.CODIGO_FUENTE;
 	}
 
+	/**
+	 * Checks if is content analysis multiple.
+	 *
+	 * @return true, if is content analysis multiple
+	 */
 	public boolean isContentAnalysisMultiple() {
-		// TODO FUN10
 		return analysisType == BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE;
 	}
 

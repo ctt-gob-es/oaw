@@ -226,9 +226,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 				contadorPagina++;
 			}
 			section.add(table);
-			// TODO
 			section.add(createTablaResumenResultadosPorNivelLeyenda(messageResources, observatoryLevelForm));
-//			section.add(createTablaResumenResultadosPorNivelLeyendaWithCompliance(messageResources, observatoryLevelForm));
 		}
 	}
 

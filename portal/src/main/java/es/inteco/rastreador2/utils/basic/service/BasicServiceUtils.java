@@ -155,7 +155,7 @@ public final class BasicServiceUtils {
 		if (request.getParameter("informe-nobroken") != null && Boolean.parseBoolean(request.getParameter("informe-nobroken"))) {
 			basicServiceForm.setReport(basicServiceForm.getReport() + "-nobroken");
 		}
-		// TODO Prevent full paths
+		// Prevent full paths
 		String parameterFileName = request.getParameter("filename");
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(parameterFileName)) {
 			String tmp;
@@ -171,7 +171,6 @@ public final class BasicServiceUtils {
 			}
 		}
 		basicServiceForm.setFileName(parameterFileName);
-		// TODO FUN10
 		final String contentParameter = request.getParameter(Constants.PARAM_CONTENT);
 		if (StringUtils.isNotEmpty(contentParameter)) {
 			getContent(basicServiceForm, parameterFileName, contentParameter);
@@ -215,9 +214,7 @@ public final class BasicServiceUtils {
 	 * @return the content
 	 */
 	public static void getContent(final BasicServiceForm basicServiceForm, String parameterFileName, final String contentParameter) {
-		// TODO FUN 10 CHECK IF IS ZIP
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(parameterFileName) && parameterFileName.toLowerCase().endsWith(".zip")) {
-			// TODO READ FILE AN GET HTML
 			try {
 				File tmp = File.createTempFile("oaw_basic_service_", ".zip");
 				org.apache.commons.io.FileUtils.writeByteArrayToFile(tmp, Base64.getUrlDecoder().decode(contentParameter.getBytes("UTF-8")));

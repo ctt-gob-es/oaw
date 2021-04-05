@@ -389,7 +389,7 @@ public final class AnalisisDatos {
 	}
 
 	/**
-	 * TODO Gets the evaluation ids from executed observatory.
+	 * Gets the evaluation ids from executed observatory.
 	 *
 	 * @param idExObs the id ex obs
 	 * @return the evaluation ids from executed observatory

@@ -232,7 +232,7 @@ public class DatabaseExportAction extends Action {
 	 * @param response     the response
 	 * @param tagsToFilter the tags to filter
 	 * @param exObsIds     the ex obs ids
-	 * @param comparision  the comparision TODO Apply
+	 * @param comparision  the comparision
 	 * @return the annexes
 	 * @throws Exception the exception
 	 */

@@ -416,7 +416,7 @@ public class Check {
 				// Las comprobaciones de CSS se ejecutan posteriormente en el
 				// método Evaluator.performEvaluation
 				if (!"css".equalsIgnoreCase(triggerElement)) {
-					// PENDING Add to checkcode the idAnalysys
+					// Add to checkcode the idAnalysys
 					checkCode.setIdAnalysis(idAnalysis);
 					if (evaluateCode(checkCode, elementGiven) != CheckFunctionConstants.CODE_RESULT_PROBLEM) {
 						return true;
@@ -3507,7 +3507,7 @@ public class Check {
 		if (nodeNode == null) {
 			return false;
 		}
-		// TODO If node is ul or ol and childs is li skip this verification
+		// If node is ul or ol and childs is li skip this verification
 		try {
 			int childLevel = -1;
 			if (checkCode.getFunctionAttribute1() != null && !checkCode.getFunctionAttribute1().equals("")) {
@@ -5972,7 +5972,7 @@ public class Check {
 			return false;
 		} else {
 			boolean hasSection = false;
-			// PENDING Save accesibility links
+			// Save accesibility links
 			try {
 				TAnalisisAccesibilidadDAO.insert(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLinks);
 			} catch (Exception e1) {
@@ -5982,13 +5982,12 @@ public class Check {
 				try {
 					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
 					if (document != null) {
-						// TODO Save html
+						// Save html
 						TAnalisisAccesibilidadDAO.saveDocument(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink, documentToHTML(document));
 						final boolean hasSection2 = AccesibilityDeclarationCheckUtils.hasSection(document, pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
 						if (hasSection2) {
 							TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 						}
-						// return hasSection2;
 						hasSection |= hasSection2;
 					}
 				} catch (Exception e) {
@@ -6059,7 +6058,6 @@ public class Check {
 							try {
 								Pattern patterAutocomplete = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 								if (patterAutocomplete.matcher(textSection).find()) {
-									// TODO INCREMENT CHECK OK IN DB
 									TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 									hasContact |= true;
 								}
@@ -6133,7 +6131,6 @@ public class Check {
 						try {
 							Pattern patterAutocomplete = Pattern.compile(pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2()), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 							if (patterAutocomplete.matcher(textSection).find()) {
-								// TODO INCREMENT CHECK OK IN DB
 								TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 								hasContact |= true;
 							}
@@ -6210,7 +6207,6 @@ public class Check {
 								try {
 									Element link = (Element) linksC.item(i);
 									if (link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("mailto")) {
-										// TODO INCREMENT CHECK OK IN DB
 										TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 										hasContact |= true;
 									}
@@ -6277,7 +6273,6 @@ public class Check {
 							Element section = (Element) elements.get(j); // Get links ins section
 							final NodeList linksC = section.getElementsByTagName(checkCode.getFunctionAttribute2());
 							if (linksC.getLength() > 0) {
-								// TODO INCREMENT CHECK OK IN DB
 								TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 								hasContact |= true;
 							}
@@ -6359,7 +6354,6 @@ public class Check {
 								String reviewYear = printMatches(reviewDate, "\\d{4}");
 								SimpleDateFormat sdf = new SimpleDateFormat("YYYY");
 								final boolean dateComparision = sdf.parse(reviewYear).compareTo(sdf.parse(preparedYear)) > 2;
-								// TODO INCREMENT CHECK OK IN DB
 								if (dateComparision) {
 									TAnalisisAccesibilidadDAO.incrementCheckOk(DataBaseManager.getConnection(), checkCode.getIdAnalysis(), accessibilityLink);
 								}

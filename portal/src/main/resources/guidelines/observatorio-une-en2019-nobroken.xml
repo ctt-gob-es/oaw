@@ -449,7 +449,6 @@
 				<!-- Cambios de contexto -->
 				<name>minhap.observatory.5_0.subgroup.2.3</name>
 				<checks>
-					<!-- TODO -->
 					<check id="478" />
 					<check id="479" />
 				</checks>

@@ -1908,7 +1908,7 @@ public interface Constants {
 	/** The observatorio une 2004. */
 	String OBSERVATORIO_UNE_2004 = "Observatorio UNE 2004";
 	/** The bc rojo inteco. */
-	// PENDING NEW BASE COLOR
+	// NEW BASE COLOR
 	BaseColor BC_ROJO_INTECO = new BaseColor(225, 18, 13);
 	/** The bc rosa inteco. */
 	BaseColor BC_ROSA_INTECO = new BaseColor(255, 225, 225);

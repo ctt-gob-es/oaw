@@ -409,7 +409,7 @@ public class CrawlerJob implements InterruptableJob {
 				crawlerData.setUrls(singleUrl);
 			}
 		} else {
-			// TODO if is a realaunched crawl, extend top depth antd width
+			// if is a realaunched crawl, extend top depth antd width
 			if (crawlerData.isRetry()) {
 				extendedDepth = crawlerData.getExtendedDepth();
 				extendedWidth = crawlerData.getExtendedWidth();
@@ -906,7 +906,7 @@ public class CrawlerJob implements InterruptableJob {
 						}
 					}
 					crawlerData.setProfundidad(crawlerData.getProfundidad() - 1);
-					// TODO Control retry depth
+					// Control retry depth
 					if (crawlerData.isRetry()) {
 						extendedDepth--;
 					}

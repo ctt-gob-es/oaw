@@ -567,7 +567,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 	 * @param filePath the file path
 	 */
 	private void createImage(final Section section, final String filePath, final String alternativeText) {
-		// TODO add alt
+		// Add alt
 		final com.itextpdf.text.Image image = PDFUtils.createImage(filePath, alternativeText);
 		if (image != null) {
 			image.scalePercent(60);

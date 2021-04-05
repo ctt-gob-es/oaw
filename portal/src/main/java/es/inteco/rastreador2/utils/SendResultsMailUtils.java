@@ -83,8 +83,6 @@ public final class SendResultsMailUtils {
 		final Map<Long, TemplateRangeForm> iterationRangesMap = iterationRanges.stream().collect(Collectors.toMap(TemplateRangeForm::getId, template -> template));
 		for (UraSendResultForm ura : uras) {
 			// Find Dependency
-			// TODO GET DEPENDENCY FILE FROM ANNEXPATH
-			// TODO GET PDF ZIP FROM ZIPS PATH
 			DependenciaForm dependency = DependenciaDAO.findById(c, ura.getUraId());
 			if (dependency.isSendAuto() && !StringUtils.isEmpty(dependency.getEmails())) {
 				String xlsxFilePath = annexPath + "/Dependencias/" + dependency.getName() + ".xlsx";
@@ -92,7 +90,7 @@ public final class SendResultsMailUtils {
 				File xlsx = new File(xlsxFilePath);
 				File pdfZip = new File(pdfZipPath);
 				if (xlsx.exists() && pdfZip.exists()) {
-					// TODO Make a zip with dependency xlsx and zipPdf
+					// Make a zip with dependency xlsx and zipPdf
 					File zipFileToSend = new File(exportPath + "/resultados_" + PDFUtils.formatSeedName(dependency.getName()) + ".zip");
 					FileOutputStream fos = new FileOutputStream(zipFileToSend);
 					ZipOutputStream zipOut = new ZipOutputStream(fos);
@@ -116,9 +114,8 @@ public final class SendResultsMailUtils {
 				}
 			}
 		}
-		// TODO Send email to notify end of process
+		// Send email to notify end of process
 		final MailService mailService = new MailService();
-		// send.mail.end.process.mail.body
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		StringBuilder mailBody = new StringBuilder("<p>" + messageResources.getMessage("send.mail.end.process.mail.body", new String[] { getObservatoryName(idObs) }) + "</p>");
 		List<UraSendResultForm> notSend = UraSendResultDAO.findAllNotSend(c, idObsExecution);
@@ -189,13 +186,12 @@ public final class SendResultsMailUtils {
 	 */
 	private static void sendMailToUra(final Long idObservatory, final DependenciaForm ura, final UraSendResultForm uraCustom, final Map<Long, TemplateRangeForm> iterationRangesMap,
 			final String attachUrl, final String attachName, final String emailSubject, final String cco) throws Exception {
-		// TODO Compose boy with template
-		// todo MARKS
+		// Compose boDy with template
 		TemplateRangeForm template = iterationRangesMap.get(uraCustom.getRange().getId());
 		StringBuilder mailBody = composeMailBody(ura, uraCustom, template);
-		// TODO Email subject
+		// Email subject
 		final MailService mailService = new MailService();
-		// TODO Get emails from URA
+		// Get emails from URA
 		List<String> mailsTo = new LinkedList<String>(Arrays.asList(ura.getEmails().split(";")));
 		// TODO Check if can send as cco
 		if (!StringUtils.isEmpty(cco)) {
@@ -207,10 +203,9 @@ public final class SendResultsMailUtils {
 			} else {
 				mailService.sendMail(mailsTo, emailSubject, mailBody.toString(), attachUrl, attachName, true);
 			}
-			// TODO Mark as send
+			// Mark as send
 			uraCustom.setSend(true);
 		} catch (MailException e) {
-			// TODO: handle exception
 			uraCustom.setSendError(e.getCause().getMessage());
 			uraCustom.setSend(false);
 		}
