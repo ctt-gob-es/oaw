@@ -50,6 +50,8 @@ import es.inteco.rastreador2.dao.dependencia.DependenciaDAO;
 import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.dao.export.database.Category;
 import es.inteco.rastreador2.dao.export.database.Observatory;
+import es.inteco.rastreador2.dao.login.DatosForm;
+import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.observatorio.TemplateRangeDAO;
 import es.inteco.rastreador2.dao.observatorio.UraSendResultDAO;
@@ -143,15 +145,25 @@ public class SendResultsByMailAction extends Action {
 					} else if (request.getParameter(Constants.ACTION).equals(Constants.CONFIRM)) {
 						Connection connection = DataBaseManager.getConnection();
 						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
+						final DatosForm userData = LoginDAO.getUserDataByName(connection, request.getSession().getAttribute(Constants.USER).toString());
 						DataBaseManager.closeConnection(connection);
 						final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 						final Long idObs = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 						final Long idCartucho = Long.valueOf(request.getParameter(Constants.ID_CARTUCHO));
 						final String emailSubject = request.getParameter("emailSubject");
-//						SendResultsMailUtils.generateAndSendData(idObs, idCartucho, idObsExecution);
-						final SendMailThread sendMailThread = new SendMailThread(idObs, idObsExecution, idCartucho, emailSubject);
+						final String cco = request.getParameter("cco");
+						final SendMailThread sendMailThread = new SendMailThread(idObs, idObsExecution, idCartucho, emailSubject, cco, userData.getEmail());
 						sendMailThread.start();
 						return mapping.findForward("sendResultsByMailAsync");
+					} else if (request.getParameter(Constants.ACTION).equals("save")) {
+						// TODO Save email subject and cco??
+						return mapping.findForward(Constants.CONFIRM);
+					} else if (request.getParameter(Constants.ACTION).equals("results")) {
+						Connection connection = DataBaseManager.getConnection();
+						final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+						request.setAttribute("uraSendResults", UraSendResultDAO.findAll(connection, idObsExecution));
+						DataBaseManager.closeConnection(connection);
+						return mapping.findForward("results");
 					} else if (request.getParameter(Constants.ACTION).equals("observatoriesByTag")) {
 						observatoriesByTag(mapping, form, request, response);
 					} else if ("previewEmail".equalsIgnoreCase(request.getParameter(Constants.ACTION))) {

@@ -6,7 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
@@ -93,7 +95,7 @@ public class UraSendResultDAO {
 //	id_observatory_execution, id_ura, id_range, custom_text
 	public static List<UraSendResultForm> findAll(Connection c, final Long idExObs) throws SQLException {
 		final List<UraSendResultForm> results = new ArrayList<>();
-		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ORDER BY c.id ASC";
+		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, c.send_date, c.send_error, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ORDER BY c.id ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idExObs);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -111,8 +113,51 @@ public class UraSendResultDAO {
 					ura.setId(rs.getLong("d.id_dependencia"));
 					ura.setName(rs.getString("d.nombre"));
 					ura.setSendAuto(rs.getBoolean("d.send_auto"));
+					ura.setEmails(rs.getString("d.emails"));
 					form.setUra(ura);
 					form.setSend(rs.getBoolean("c.send"));
+					form.setSendDate(rs.getDate("c.send_date"));
+					form.setSendError(rs.getString("c.send_error"));
+					results.add(form);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return results;
+	}
+
+	/**
+	 * Find all not send.
+	 *
+	 * @param c       the c
+	 * @param idExObs the id ex obs
+	 * @return the list
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<UraSendResultForm> findAllNotSend(Connection c, final Long idExObs) throws SQLException {
+		final List<UraSendResultForm> results = new ArrayList<>();
+		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, c.send_error, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.send=0 AND c.id_observatory_execution = ? ORDER BY c.id ASC";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(1, idExObs);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					final UraSendResultForm form = new UraSendResultForm();
+					form.setId(rs.getLong("c.id"));
+					form.setUraId(rs.getLong("d.id_dependencia"));
+					form.setUraName(rs.getString("d.nombre"));
+					final RangeForm range = new RangeForm();
+					range.setId(rs.getLong("r.id"));
+					range.setName(rs.getString("r.name"));
+					form.setRange(range);
+					final DependenciaForm ura = new DependenciaForm();
+					ura.setId(rs.getLong("d.id_dependencia"));
+					ura.setName(rs.getString("d.nombre"));
+					ura.setSendAuto(rs.getBoolean("d.send_auto"));
+					form.setUra(ura);
+					form.setSend(rs.getBoolean("c.send"));
+					form.setSendError(rs.getString("c.send_error"));
 					results.add(form);
 				}
 			}
@@ -304,11 +349,12 @@ public class UraSendResultDAO {
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	public static void markSend(Connection c, final UraSendResultForm form) throws SQLException, UnsupportedEncodingException {
-		// form.setSend(rs.getBoolean("c.send"));
-		final String query = "UPDATE observatorio_ura_send_results SET send= ? WHERE id = ?";
+		final String query = "UPDATE observatorio_ura_send_results SET send= ?, send_date =?, send_error = ?  WHERE id = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setBoolean(1, form.isSend());
-			ps.setLong(2, form.getId());
+			ps.setTimestamp(2, new Timestamp(new Date().getTime()));
+			ps.setString(3, form.getSendError());
+			ps.setLong(4, form.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);

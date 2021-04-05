@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,7 +65,7 @@ public final class SendResultsMailUtils {
 	 * @param emailSubject   the email subject
 	 * @throws Exception the exception
 	 */
-	public static void generateAndSendData(final Long idObs, final Long idCartucho, final Long idObsExecution, final String emailSubject) throws Exception {
+	public static void generateAndSendData(final Long idObs, final Long idCartucho, final Long idObsExecution, final String emailSubject, final String cco, final String notifyMail) throws Exception {
 		PropertiesManager pmgr = new PropertiesManager();
 		Connection c = DataBaseManager.getConnection();
 		final String[] exObsIds = ObservatorioDAO.getExObsIdsConfig(c, idObsExecution);
@@ -111,11 +112,51 @@ public final class SendResultsMailUtils {
 					}
 					zipOut.close();
 					fos.close();
-					sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName(), emailSubject);
+					sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName(), emailSubject, cco);
 				}
 			}
 		}
+		// TODO Send email to notify end of process
+		final MailService mailService = new MailService();
+		// send.mail.end.process.mail.body
+		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+		StringBuilder mailBody = new StringBuilder("<p>" + messageResources.getMessage("send.mail.end.process.mail.body", new String[] { getObservatoryName(idObs) }) + "</p>");
+		List<UraSendResultForm> notSend = UraSendResultDAO.findAllNotSend(c, idObsExecution);
+		if (notSend != null && !notSend.isEmpty()) {
+			mailBody.append("<p>" + messageResources.getMessage("send.mail.end.process.mail.notSend") + "</p>");
+			mailBody.append("<ul>");
+			for (UraSendResultForm uraSend : notSend) {
+				if (!StringUtils.isEmpty(uraSend.getSendError())) {
+					mailBody.append("<li>");
+					mailBody.append(uraSend.getUra().getName() + " (Error: " + uraSend.getSendError() + ")");
+					mailBody.append("</li>");
+				}
+			}
+			mailBody.append("</ul>");
+		}
+		List<String> mailsTo = new ArrayList<>();
+		mailsTo.add(notifyMail);
+		try {
+			mailService.sendMail(mailsTo, messageResources.getMessage("send.mail.end.process.mail.subject"), mailBody.toString(), true);
+		} catch (MailException e) {
+			Logger.putLog("Fallo al enviar el correo", SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
 		DataBaseManager.closeConnection(c);
+	}
+
+	/**
+	 * Gets the observatory name.
+	 *
+	 * @param idObservatory the id observatory
+	 * @return the observatory name
+	 */
+	private static String getObservatoryName(final Long idObservatory) {
+		try (Connection c = DataBaseManager.getConnection()) {
+			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
+			return observatoryForm.getNombre();
+		} catch (Exception e) {
+			return "";
+		}
 	}
 
 	/**
@@ -147,7 +188,7 @@ public final class SendResultsMailUtils {
 	 * @throws Exception the exception
 	 */
 	private static void sendMailToUra(final Long idObservatory, final DependenciaForm ura, final UraSendResultForm uraCustom, final Map<Long, TemplateRangeForm> iterationRangesMap,
-			final String attachUrl, final String attachName, final String emailSubject) throws Exception {
+			final String attachUrl, final String attachName, final String emailSubject, final String cco) throws Exception {
 		// TODO Compose boy with template
 		// todo MARKS
 		TemplateRangeForm template = iterationRangesMap.get(uraCustom.getRange().getId());
@@ -155,7 +196,11 @@ public final class SendResultsMailUtils {
 		// TODO Email subject
 		final MailService mailService = new MailService();
 		// TODO Get emails from URA
-		List<String> mailsTo = Arrays.asList(ura.getEmails().split(";"));
+		List<String> mailsTo = new LinkedList<String>(Arrays.asList(ura.getEmails().split(";")));
+		// TODO Check if can send as cco
+		if (!StringUtils.isEmpty(cco)) {
+			mailsTo.add(cco);
+		}
 		try {
 			if (!StringUtils.isEmpty(ura.getAcronym())) {
 				mailService.sendMail(mailsTo, "[" + ura.getAcronym() + "] " + emailSubject, mailBody.toString(), attachUrl, attachName, true);
@@ -166,6 +211,7 @@ public final class SendResultsMailUtils {
 			uraCustom.setSend(true);
 		} catch (MailException e) {
 			// TODO: handle exception
+			uraCustom.setSendError(e.getCause().getMessage());
 			uraCustom.setSend(false);
 		}
 		Connection c = DataBaseManager.getConnection();
@@ -201,21 +247,6 @@ public final class SendResultsMailUtils {
 		templateMail = templateMail.replace("_ura_custom_text_", uraCustom.getTemplate());
 		StringBuilder mailBody = new StringBuilder(templateMail);
 		return mailBody;
-	}
-
-	/**
-	 * Gets the observatory name.
-	 *
-	 * @param idObservatory the id observatory
-	 * @return the observatory name
-	 */
-	private static String getObservatoryName(final Long idObservatory) {
-		try (Connection c = DataBaseManager.getConnection()) {
-			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
-			return observatoryForm.getNombre();
-		} catch (Exception e) {
-			return "";
-		}
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package es.inteco.rastreador2.actionform.observatorio;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.apache.struts.validator.ValidatorForm;
 
@@ -34,6 +35,28 @@ public class UraSendResultForm extends ValidatorForm implements Serializable {
 	private Float rangeValue;
 	/** The send. */
 	private boolean send;
+	/** The send date. */
+	private Date sendDate;
+	/** The send error. */
+	private String sendError;
+
+	/**
+	 * Gets the send error.
+	 *
+	 * @return the send error
+	 */
+	public String getSendError() {
+		return sendError;
+	}
+
+	/**
+	 * Sets the send error.
+	 *
+	 * @param sendError the new send error
+	 */
+	public void setSendError(String sendError) {
+		this.sendError = sendError;
+	}
 
 	/**
 	 * Gets the id.
@@ -240,5 +263,23 @@ public class UraSendResultForm extends ValidatorForm implements Serializable {
 	 */
 	public void setRangeValue(Float rangeValue) {
 		this.rangeValue = rangeValue;
+	}
+
+	/**
+	 * Gets the send date.
+	 *
+	 * @return the send date
+	 */
+	public Date getSendDate() {
+		return sendDate;
+	}
+
+	/**
+	 * Sets the send date.
+	 *
+	 * @param sendDate the new send date
+	 */
+	public void setSendDate(Date sendDate) {
+		this.sendDate = sendDate;
 	}
 }

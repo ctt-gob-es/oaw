@@ -300,7 +300,7 @@
 		<forward name="generateAllReports" path=".generateAllReports" />
 
 		<forward name="generateReportAsync" path=".generateReportAsync" />
-		
+
 		<forward name="sendResultsByMailAsync" path=".sendResultsByMailAsync" />
 
 
@@ -344,7 +344,7 @@
 		<!-- Nuevo mantenimiento de dependencias -->
 		<forward name="observatoryDependencias" path="/secure/ViewDependenciasObservatorio.do?action=load" />
 		<forward name="importAllDependencies" path="/secure/ViewDependenciasObservatorio.do?action=importAll" />
-		
+
 
 		<forward name="relanzarObservatorio" path="/secure/RelanzarObservatorio.do" />
 
@@ -372,9 +372,14 @@
 
 		<forward name="configSendObservatoryResultsByMail"
 			path="/secure/ConfigSendResultsByMailAction.do?action=config" />
+		
+		<forward name="resultsSendObservatoryResultsByMail"
+			path="/secure/ConfigSendResultsByMailAction.do?action=results" />	
+			
 
 		<forward name="confirmSendObservatoryResultsByMail"
 			path="/secure/ConfigSendResultsByMailAction.do?action=confirm" />
+
 
 		<forward name="observatoryRanges" path="/secure/RangeObservatorio.do?action=load" />
 
@@ -1078,6 +1083,7 @@
 			type="es.inteco.rastreador2.action.export.database.SendResultsByMailAction" scope="request">
 			<forward name="config" path=".confirmSendObservatoryResultsByMail" />
 			<forward name="confirm" path=".confirmSendObservatoryResultsByMail2" />
+			<forward name="results" path=".resultsSendObservatoryResultsByMail" />
 			<forward name="exito" path=".Exito" />
 		</action>
 
