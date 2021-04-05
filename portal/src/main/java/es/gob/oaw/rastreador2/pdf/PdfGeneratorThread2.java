@@ -93,7 +93,6 @@ public class PdfGeneratorThread2 extends Thread {
 		StringBuilder mailBody = new StringBuilder(
 				String.format("El proceso de generación de informes ha finalizado para el observatorio %s. Puede descargar los informes agrupados por dependencia en los siguientes enlaces: <br/>",
 						observatoryName));
-		// http://localhost:8080/oaw/secure/primaryExportPdfAction.do?action=downloadFile&idExObs=118&id_observatorio=38&file=
 		for (String zip : zips) {
 			final String filename = zip.substring(zip.lastIndexOf(File.separator) + 1);
 			StringBuilder url = new StringBuilder(this.baseurl);

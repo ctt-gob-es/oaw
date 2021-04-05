@@ -149,7 +149,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 							total = data.paginador.total;
 
-
 							$('#grid')
 									.jqGrid(
 											{
@@ -158,7 +157,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 														colNameName,
 														colNameRange,
 														colNameTemplate,
-														colNameSendAuto, "","" ],
+														colNameSendAuto, "", "" ],
 												colModel : [
 														{
 															name : "id",
@@ -218,16 +217,16 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 														},
 														{
 															name : "preview",
-															width: 10,
-															sortable: false,
+															width : 10,
+															sortable : false,
 															formatter : previewFormatter
 														}
 
 												],
 												inlineEditing : {
-													restoreAfterError: true,
-							                        keys: true,
-							                        url : '/oaw/secure/UraCustomTextObservatorio.do?action=update'
+													restoreAfterError : true,
+													keys : true,
+													url : '/oaw/secure/UraCustomTextObservatorio.do?action=update'
 												},
 												cmTemplate : {
 													autoResizable : true,
@@ -285,7 +284,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															"td"), iCol = $.jgrid
 															.getCellIndex($td[0]);
 
-													if (this.p.colModel[iCol].name === "actions" || this.p.colModel[iCol].name === "preview") {
+													if (this.p.colModel[iCol].name === "actions"
+															|| this.p.colModel[iCol].name === "preview") {
 														return false;
 													}
 
@@ -322,7 +322,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 													$(window).scrollTop(scroll);
 												}
 											}).jqGrid('navGrid').jqGrid(
-											"inlineNav",{save:true, edit:true, add:true});
+											"inlineNav", {
+												save : true,
+												edit : true,
+												add : true
+											});
 
 							// Recargar el grid
 							$('#grid').jqGrid('setGridParam', {
@@ -435,52 +439,56 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		}
 		return cellvalue;
 	}
-	
+
 	function previewFormatter(cellvalue, options, rowObject) {
 		return "<span style='cursor:pointer' onclick='previewEmail("
-		+ options.rowId
-		+ ")'class='glyphicon glyphicon-eye-open'></span><span class='sr-only'>Preview email</span></span>";
-		
+				+ options.rowId
+				+ ")'class='glyphicon glyphicon-eye-open'></span><span class='sr-only'>Preview email</span></span>";
+
 	}
-	
+
 	function previewEmail(rowId) {
 
 		var idExObs = $('[name=idExObs]').val();
 		var row = $('#grid').jqGrid('getRowData', rowId);
-		
-		 $.ajax({
-			 url : '/oaw/secure/ConfigSendResultsByMailAction.do?action=previewEmail&idExObs=' + idExObs + '&idSend='
-				+ row.id,
-			method : 'POST',
-			cache : false
-			
-			}).success(
-					function(response) {
-						var previewDialog = $('<div id="previewDialog"></div>');
-						
-						previewDialog.append(response.preview);
-						
-						previewDialog
-						.dialog({
-							autoOpen : false,
-							minHeight : $(window).height() * 0.5,
-							minWidth : $(window).width() * 0.5,
-							modal : true,
-							title : "",
-						});
 
-						previewDialog.dialog("open");
+		$
+				.ajax(
+						{
+							url : '/oaw/secure/ConfigSendResultsByMailAction.do?action=previewEmail&idExObs='
+									+ idExObs + '&idSend=' + row.id,
+							method : 'POST',
+							cache : false
 
-					}).error(
-					function(response) {
-						alert("Error");
+						}).success(function(response) {
+					var previewDialog = $('<div id="previewDialog"></div>');
 
-					}
+					previewDialog.append(response.preview);
 
-			);
-		
+					previewDialog.dialog({
+						autoOpen : false,
+						minHeight : $(window).height() * 0.5,
+						minWidth : $(window).width() * 0.5,
+						modal : true,
+						title : "",
+					});
+
+					previewDialog.dialog("open");
+
+				}).error(function(response) {
+					alert("Error");
+
+				}
+
+				);
+
 	}
-	
+
+	function saveSendData() {
+		$('#sendMailForm').attr('action',
+				'/oaw/secure/ConfigSendResultsByMailAction.do?action=save');
+		$('#sendMailForm').submit();
+	}
 </script>
 <script src="/oaw/js/ckeditor/ckeditor.js"></script>
 <div id="main">
@@ -511,7 +519,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			</ol>
 		</div>
 		<div id="cajaformularios">
-			<form action="/oaw/secure/ConfigSendResultsByMailAction.do">
+			<form action="/oaw/secure/ConfigSendResultsByMailAction.do?action=confirm" method="post" id="sendMailForm">
 				<h2>
 					<bean:message key="send.results.observatory.title" />
 				</h2>
@@ -530,6 +538,16 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</label>
 						<div class="col-xs-6">
 							<input class="form-control" name="emailSubject" id="emailSubject" type="text" required />
+						</div>
+					</div>
+					<div class="row formItem">
+						<label for="cco" class="control-label">
+							<strong class="labelVisu">
+								<bean:message key="resultado.observatorio.rastreo.realizado.send.carbon.copy" />
+							</strong>
+						</label>
+						<div class="col-xs-6">
+							<input class="form-control" name="cco" id="emailSubject" type="text" />
 						</div>
 					</div>
 					<div class="row formItem">
@@ -573,11 +591,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</p>
 				</fieldset>
 				<div class="formButton">
-					<input type="hidden" name="action" value="confirm" />
+					<a class="btn btn-success btn-lg" onclick="saveSendData()">
+						<bean:message key="boton.guardar" />
+					</a>
+					<!-- 					<input type="hidden" name="action" value="confirm" /> -->
 					<input type="hidden" name="idCartucho" value="<c:out value="${param.idCartucho}"/>" />
 					<input type="hidden" name="id_observatorio" value="<c:out value="${param.id_observatorio}"/>" />
 					<input type="hidden" name="idExObs" value="<c:out value="${param.idExObs}"/>" />
-					<input type="submit" class="btn btn-primary btn-lg" value=<bean:message key="boton.aceptar" />>
+					<input type="submit" class="btn btn-primary btn-lg" value=<bean:message key="boton.enviar" />>
 					<html:link styleClass="btn btn-default btn-lg" forward="observatoryMenu">
 						<bean:message key="boton.cancelar" />
 					</html:link>

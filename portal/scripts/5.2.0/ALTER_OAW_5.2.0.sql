@@ -93,6 +93,10 @@ ALTER TABLE `observatorio_plantillas` ADD `type` VARCHAR(10) NULL;
 UPDATE `observatorio_plantillas` SET `type`= 'odt';
 
 ALTER TABLE `dependencia` ADD `acronym` TEXT NULL;
+ALTER TABLE `observatorio_ura_send_results` ADD `send_date` DATETIME NULL;
+ALTER TABLE `observatorio_ura_send_results` ADD `send_error` VARCHAR(255) NULL;
+
+
 
 
 

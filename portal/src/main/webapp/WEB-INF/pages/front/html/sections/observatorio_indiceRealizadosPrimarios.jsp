@@ -340,13 +340,13 @@ Email: observ.accesibilidad@correo.gob.es
 												<bean:message key="indice.rastreo.send.database.config" />
 											</span>
 										</html:link>
-										<!--<html:link forward="confirmSendObservatoryResultsByMail" name="paramsInformeAgregado">
-											<span class="glyphicon glyphicon-envelope" aria-hidden="true" data-toggle="tooltip"
-												title="<bean:message key="indice.rastreo.exportar.database" />"></span>
+										<html:link forward="resultsSendObservatoryResultsByMail" name="paramsInformeAgregado">
+											<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
+												title="<bean:message key="indice.rastreo.send.database.results" />"></span>
 											<span class="sr-only">
-												<bean:message key="indice.rastreo.send.database" />
+												<bean:message key="indice.rastreo.send.database.results" />
 											</span>
-										</html:link>-->
+										</html:link>
 									</td>
 									<td><jsp:useBean id="paramsDeleteExecution" class="java.util.HashMap" />
 										<c:set target="${paramsDeleteExecution}" property="id_observatorio" value="${id_observatorio}" />
