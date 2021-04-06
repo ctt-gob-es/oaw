@@ -29,16 +29,30 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Clase para comprobar si la etiqueta (elemento label) de un control de formulario está oculta mediante CSS y es el único elemento que proporciona el "name" del control (no dispone de title ni aria-label)
+ * Clase para comprobar si la etiqueta (elemento label) de un control de formulario está oculta mediante CSS y es el único elemento que proporciona el "name" del control (no dispone de title ni
+ * aria-label).
  */
 public class CSSLabelHiddenStyleParser implements CSSAnalyzer {
 
+    /** The document. */
     private final Document document;
 
+    /**
+	 * Instantiates a new CSS label hidden style parser.
+	 *
+	 * @param document the document
+	 */
     public CSSLabelHiddenStyleParser(final Document document) {
         this.document = document;
     }
 
+    /**
+	 * Evaluate.
+	 *
+	 * @param dom4jDocument the dom 4 j document
+	 * @param cssResources  the css resources
+	 * @return the list
+	 */
     @Override
     public List<CSSProblem> evaluate(final org.dom4j.Document dom4jDocument, final List<CSSResource> cssResources) {
         final List<CSSProblem> cssProblems = new ArrayList<>();
@@ -78,12 +92,12 @@ public class CSSLabelHiddenStyleParser implements CSSAnalyzer {
     }
 
     /**
-     * Método que comprueba si este elemento label es la única etiqueta del control al que está asociado (es decir, que el control no tiene a su vez title o aria-label)
-     *
-     * @param document     Document para comprobar si existe control asociado y si dispone de otros etiquetadores (title o aria-label)
-     * @param forAttribute valor del atributo for del elemento label
-     * @return true si es la única etiqueta del control, false en caso contrario (includo si la etiqueta no está asociada)
-     */
+	 * Método que comprueba si este elemento label es la única etiqueta del control al que está asociado (es decir, que el control no tiene a su vez title o aria-label).
+	 *
+	 * @param document     Document para comprobar si existe control asociado y si dispone de otros etiquetadores (title o aria-label)
+	 * @param forAttribute valor del atributo for del elemento label
+	 * @return true si es la única etiqueta del control, false en caso contrario (includo si la etiqueta no está asociada)
+	 */
     private boolean isUniqueLabel(final Document document, final String forAttribute) {
         if (forAttribute != null && !forAttribute.isEmpty()) {
             final Element control = document.getElementById(forAttribute);
@@ -96,6 +110,13 @@ public class CSSLabelHiddenStyleParser implements CSSAnalyzer {
         return false;
     }
 
+    /**
+	 * Creates the CSS problem.
+	 *
+	 * @param element     the element
+	 * @param declaration the declaration
+	 * @return the CSS problem
+	 */
     private CSSProblem createCSSProblem(final Element element, final Declaration declaration) {
         final CSSProblem cssProblem = new CSSProblem();
         cssProblem.setDate(new Date());
@@ -107,6 +128,12 @@ public class CSSLabelHiddenStyleParser implements CSSAnalyzer {
         return cssProblem;
     }
 
+    /**
+	 * Dispone atributo.
+	 *
+	 * @param atributo the atributo
+	 * @return true, if successful
+	 */
     private boolean disponeAtributo(final String atributo) {
         return atributo!=null && !atributo.trim().isEmpty();
     }

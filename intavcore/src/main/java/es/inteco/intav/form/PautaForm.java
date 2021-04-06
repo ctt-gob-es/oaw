@@ -19,35 +19,77 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class PautaForm.
+ */
 public class PautaForm implements Serializable {
+    
+    /** The name. */
     private String name;
+    
+    /** The pauta id. */
     private String pautaId;
+    
+    /** The problems. */
     private List<ProblemForm> problems;
 
+    /**
+	 * Instantiates a new pauta form.
+	 */
     public PautaForm() {
         problems = new ArrayList<>();
     }
 
+    /**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
     public String getName() {
         return name;
     }
 
+    /**
+	 * Sets the name.
+	 *
+	 * @param name the new name
+	 */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+	 * Gets the problems.
+	 *
+	 * @return the problems
+	 */
     public List<ProblemForm> getProblems() {
         return problems;
     }
 
+    /**
+	 * Sets the problems.
+	 *
+	 * @param problems the new problems
+	 */
     public void setProblems(List<ProblemForm> problems) {
         this.problems = problems;
     }
 
+    /**
+	 * Gets the pauta id.
+	 *
+	 * @return the pauta id
+	 */
     public String getPautaId() {
         return pautaId;
     }
 
+    /**
+	 * Sets the pauta id.
+	 *
+	 * @param pautaId the new pauta id
+	 */
     public void setPautaId(String pautaId) {
         this.pautaId = pautaId;
     }

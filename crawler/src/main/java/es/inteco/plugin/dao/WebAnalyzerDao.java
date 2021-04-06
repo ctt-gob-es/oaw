@@ -24,11 +24,24 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class WebAnalyzerDao.
+ */
 public final class WebAnalyzerDao {
 
+    /**
+	 * Instantiates a new web analyzer dao.
+	 */
     private WebAnalyzerDao() {
     }
 
+    /**
+	 * Gets the cartridge names.
+	 *
+	 * @param connection the connection
+	 * @param idTracking the id tracking
+	 * @return the cartridge names
+	 */
     public static List<String> getCartridgeNames(final Connection connection, final Long idTracking) {
         final List<String> cartridgeNames = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT nombre FROM cartucho c " +
@@ -47,6 +60,14 @@ public final class WebAnalyzerDao {
         return cartridgeNames;
     }
 
+    /**
+	 * Save broken links list.
+	 *
+	 * @param conn            the conn
+	 * @param idCrawling      the id crawling
+	 * @param brokenLinksList the broken links list
+	 * @throws Exception the exception
+	 */
     public static void saveBrokenLinksList(Connection conn, Long idCrawling, List<BrokenLinks> brokenLinksList) throws Exception {
         try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO enlaces_rotos VALUES (?, ?, ?)")) {
             for (BrokenLinks brokenLinks : brokenLinksList) {
@@ -62,6 +83,14 @@ public final class WebAnalyzerDao {
         }
     }
 
+    /**
+	 * Save broken links.
+	 *
+	 * @param conn        the conn
+	 * @param idCrawling  the id crawling
+	 * @param brokenLinks the broken links
+	 * @throws Exception the exception
+	 */
     public static void saveBrokenLinks(Connection conn, Long idCrawling, BrokenLinks brokenLinks) throws Exception {
         try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO enlaces_rotos VALUES (?, ?, ?)")) {
             pstmt.setLong(1, idCrawling);

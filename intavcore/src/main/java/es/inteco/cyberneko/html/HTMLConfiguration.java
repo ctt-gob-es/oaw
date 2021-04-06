@@ -15,11 +15,23 @@
 ******************************************************************************/
 package es.inteco.cyberneko.html;
 
+/**
+ * The Class HTMLConfiguration.
+ */
 public class HTMLConfiguration extends org.cyberneko.html.HTMLConfiguration {
+    
+    /**
+	 * Instantiates a new HTML configuration.
+	 */
     public HTMLConfiguration() {
         this(false);
     }
 
+    /**
+	 * Instantiates a new HTML configuration.
+	 *
+	 * @param balanceTags the balance tags
+	 */
     public HTMLConfiguration(boolean balanceTags) {
         super();
 

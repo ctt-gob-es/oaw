@@ -24,21 +24,33 @@ import java.net.URL;
 public class CSSStyleSheetResource implements CSSResource {
 
 
+    /** The html element. */
     private final Element htmlElement;
+    
+    /** The content. */
     private final String content;
+    
+    /** The base URL. */
     private final String baseURL;
 
     /**
-     * Instancia un nuevo recurso que representa los estilos definidos mediante un bloque style o una etiqueta link
-     *
-     * @param htmlElement el elemento (Element) que utiliza el atributo style
-     */
+	 * Instancia un nuevo recurso que representa los estilos definidos mediante un bloque style o una etiqueta link.
+	 *
+	 * @param baseUrl     the base url
+	 * @param htmlElement el elemento (Element) que utiliza el atributo style
+	 */
     public CSSStyleSheetResource(final String baseUrl, final Element htmlElement) {
         this.baseURL = baseUrl;
         this.htmlElement = htmlElement;
         this.content = extractContent(htmlElement);
     }
 
+    /**
+	 * Extract content.
+	 *
+	 * @param htmlElement the html element
+	 * @return the string
+	 */
     private String extractContent(final Element htmlElement) {
         if (htmlElement == null) {
             return "";
@@ -51,21 +63,41 @@ public class CSSStyleSheetResource implements CSSResource {
         }
     }
 
+    /**
+	 * Gets the HTML element.
+	 *
+	 * @return the HTML element
+	 */
     @Override
     public Element getHTMLElement() {
         return htmlElement;
     }
 
+    /**
+	 * Gets the content.
+	 *
+	 * @return the content
+	 */
     @Override
     public String getContent() {
         return content;
     }
 
+    /**
+	 * Checks if is inline.
+	 *
+	 * @return true, if is inline
+	 */
     @Override
     public boolean isInline() {
         return false;
     }
 
+    /**
+	 * Gets the string source.
+	 *
+	 * @return the string source
+	 */
     @Override
     public String getStringSource() {
         if ("style".equalsIgnoreCase(htmlElement.getNodeName())) {
@@ -81,16 +113,32 @@ public class CSSStyleSheetResource implements CSSResource {
         }
     }
 
+    /**
+	 * Checks if is imported.
+	 *
+	 * @return true, if is imported
+	 */
     @Override
     public boolean isImported() {
         return "link".equalsIgnoreCase(htmlElement.getNodeName());
     }
 
+    /**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
     @Override
     public int hashCode() {
         return getStringSource().hashCode();
     }
 
+    /**
+	 * Equals.
+	 *
+	 * @param o the o
+	 * @return true, if successful
+	 */
     @Override
     public boolean equals(Object o) {
         if (this == o) {

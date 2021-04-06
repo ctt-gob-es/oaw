@@ -15,59 +15,133 @@
 ******************************************************************************/
 package es.inteco.intav.comun;
 
+/**
+ * The Class Incidencia.
+ */
 public class Incidencia {
 
+    /** The codigo incidencia. */
     private int codigoIncidencia;
+    
+    /** The codigo comprobacion. */
     private int codigoComprobacion;
+    
+    /** The codigo analisis. */
     private long codigoAnalisis;
+    
+    /** The codigo linea fuente. */
     private int codigoLineaFuente;
+    
+    /** The codigo columna fuente. */
     private int codigoColumnaFuente;
+    
+    /** The codigo fuente. */
     private String codigoFuente;
 
+    /**
+	 * Gets the codigo incidencia.
+	 *
+	 * @return the codigo incidencia
+	 */
     public int getCodigoIncidencia() {
         return codigoIncidencia;
     }
 
+    /**
+	 * Sets the codigo incidencia.
+	 *
+	 * @param codigoIncidencia the new codigo incidencia
+	 */
     public void setCodigoIncidencia(int codigoIncidencia) {
         this.codigoIncidencia = codigoIncidencia;
     }
 
+    /**
+	 * Gets the codigo comprobacion.
+	 *
+	 * @return the codigo comprobacion
+	 */
     public int getCodigoComprobacion() {
         return codigoComprobacion;
     }
 
+    /**
+	 * Sets the codigo comprobacion.
+	 *
+	 * @param codigoComprobacion the new codigo comprobacion
+	 */
     public void setCodigoComprobacion(int codigoComprobacion) {
         this.codigoComprobacion = codigoComprobacion;
     }
 
+    /**
+	 * Gets the codigo linea fuente.
+	 *
+	 * @return the codigo linea fuente
+	 */
     public int getCodigoLineaFuente() {
         return codigoLineaFuente;
     }
 
+    /**
+	 * Sets the codigo linea fuente.
+	 *
+	 * @param codigoLineaFuente the new codigo linea fuente
+	 */
     public void setCodigoLineaFuente(int codigoLineaFuente) {
         this.codigoLineaFuente = codigoLineaFuente;
     }
 
+    /**
+	 * Gets the codigo columna fuente.
+	 *
+	 * @return the codigo columna fuente
+	 */
     public int getCodigoColumnaFuente() {
         return codigoColumnaFuente;
     }
 
+    /**
+	 * Sets the codigo columna fuente.
+	 *
+	 * @param codigoColumnaFuente the new codigo columna fuente
+	 */
     public void setCodigoColumnaFuente(int codigoColumnaFuente) {
         this.codigoColumnaFuente = codigoColumnaFuente;
     }
 
+    /**
+	 * Gets the codigo fuente.
+	 *
+	 * @return the codigo fuente
+	 */
     public String getCodigoFuente() {
         return codigoFuente;
     }
 
+    /**
+	 * Sets the codigo fuente.
+	 *
+	 * @param codigoFuente the new codigo fuente
+	 */
     public void setCodigoFuente(String codigoFuente) {
         this.codigoFuente = codigoFuente;
     }
 
+    /**
+	 * Gets the codigo analisis.
+	 *
+	 * @return the codigo analisis
+	 */
     public long getCodigoAnalisis() {
         return codigoAnalisis;
     }
 
+    /**
+	 * Sets the codigo analisis.
+	 *
+	 * @param codigoAnalisis the new codigo analisis
+	 */
     public void setCodigoAnalisis(long codigoAnalisis) {
         this.codigoAnalisis = codigoAnalisis;
     }

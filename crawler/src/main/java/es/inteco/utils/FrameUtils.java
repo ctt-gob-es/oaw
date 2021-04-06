@@ -21,9 +21,19 @@ import static es.inteco.utils.CrawlerDOMUtils.*;
  */
 public final class FrameUtils {
 
+    /**
+	 * Instantiates a new frame utils.
+	 */
     private FrameUtils() {
     }
 
+    /**
+	 * Gets the frame content.
+	 *
+	 * @param url the url
+	 * @return the frame content
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
     private static String getFrameContent(final String url) throws IOException {
         HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
         InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
@@ -36,6 +46,14 @@ public final class FrameUtils {
         return textContent;
     }
 
+    /**
+	 * Gets the frames source.
+	 *
+	 * @param rootUrl     the root url
+	 * @param textContent the text content
+	 * @return the frames source
+	 * @throws Exception the exception
+	 */
     public static String getFramesSource(final String rootUrl, final String textContent) throws Exception {
         Document document = getDocument(textContent);
         List<Element> frames = getElementsByTagName(document, "frame");
@@ -61,6 +79,14 @@ public final class FrameUtils {
         return framesSources.toString();
     }
 
+    /**
+	 * Append frames source.
+	 *
+	 * @param textContent  the text content
+	 * @param framesSource the frames source
+	 * @return the string
+	 * @throws Exception the exception
+	 */
     public static String appendFramesSource(final String textContent, final String framesSource) throws Exception {
         Document document = getDocument(textContent);
 
@@ -100,6 +126,12 @@ public final class FrameUtils {
         return CrawlerDOMUtils.serializeDocument(document);
     }
 
+    /**
+	 * Adds the frame document.
+	 *
+	 * @param element       the element
+	 * @param frameDocument the frame document
+	 */
     private static void addFrameDocument(final Element element, final Document frameDocument) {
         final NodeList frameChildren = frameDocument.getChildNodes();
 
@@ -110,6 +142,13 @@ public final class FrameUtils {
         }
     }
 
+    /**
+	 * Adds the frame document sibling.
+	 *
+	 * @param parentElement the parent element
+	 * @param element       the element
+	 * @param frameDocument the frame document
+	 */
     private static void addFrameDocumentSibling(final Element parentElement, final Element element, final Document frameDocument) {
         final NodeList frameChildren = frameDocument.getChildNodes();
 
@@ -120,6 +159,14 @@ public final class FrameUtils {
         }
     }
 
+    /**
+	 * Append iframes source.
+	 *
+	 * @param rootUrl     the root url
+	 * @param textContent the text content
+	 * @return the string
+	 * @throws Exception the exception
+	 */
     public static String appendIframesSource(String rootUrl, String textContent) throws Exception {
         final Document document = getDocument(textContent);
         final List<Element> iframes = getElementsByTagName(document, "iframe");
@@ -150,6 +197,14 @@ public final class FrameUtils {
     }
 
 
+    /**
+	 * Creates the absolute hrefs.
+	 *
+	 * @param textContent the text content
+	 * @param frameUrl    the frame url
+	 * @return the string
+	 * @throws Exception the exception
+	 */
     private static String createAbsoluteHrefs(String textContent, String frameUrl) throws Exception {
         Document frameDocument = getDocument(textContent);
         List<Element> links = getElementsByTagName(frameDocument, "a");

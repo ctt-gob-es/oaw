@@ -18,14 +18,29 @@ package es.inteco.flesch;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The Class FleschSpanishAnalyzer.
+ */
 public class FleschSpanishAnalyzer implements FleschAnalyzer {
 
+    /**
+	 * Count phrases.
+	 *
+	 * @param text the text
+	 * @return the int
+	 */
     public int countPhrases(String text) {
         String[] phrases = text.split("\\.");
 
         return phrases.length;
     }
 
+    /**
+	 * Count syllables.
+	 *
+	 * @param text the text
+	 * @return the int
+	 */
     public int countSyllables(String text) {
         final String[] words = text.split("[^a-zA-ZáéíóúÁÉÍÓÚñÑ]");
         final List<String> consonants = Arrays.asList("b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n",
@@ -80,15 +95,35 @@ public class FleschSpanishAnalyzer implements FleschAnalyzer {
         return count;
     }
 
+    /**
+	 * Count words.
+	 *
+	 * @param text the text
+	 * @return the int
+	 */
     public int countWords(String text) {
         return FleschUtils.countWords(text);
     }
 
+    /**
+	 * Calculate flesch value.
+	 *
+	 * @param numSyllables the num syllables
+	 * @param numWords     the num words
+	 * @param numPhrases   the num phrases
+	 * @return the double
+	 */
     public double calculateFleschValue(int numSyllables, int numWords, int numPhrases) {
         // return 206.84 - (60 * NS / NW) - (1.02 * NW / NP)
         return 206.84 - (60 * (double) numSyllables / (double) numWords) - (1.02 * (double) numWords / (double) numPhrases);
     }
 
+    /**
+	 * Gets the readability level.
+	 *
+	 * @param fleschValue the flesch value
+	 * @return the readability level
+	 */
     public int getReadabilityLevel(double fleschValue) {
         if (fleschValue > 90) {
             return FleschAnalyzer.FLESCH_LEVEL_VERY_EASY;

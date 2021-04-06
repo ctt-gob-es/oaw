@@ -15,22 +15,49 @@
 ******************************************************************************/
 package es.inteco.plugin;
 
+/**
+ * The Class BrokenLinks.
+ */
 public class BrokenLinks {
+    
+    /** The url. */
     private String url;
+    
+    /** The num broken links. */
     private int numBrokenLinks;
 
+    /**
+	 * Gets the url.
+	 *
+	 * @return the url
+	 */
     public String getUrl() {
         return url;
     }
 
+    /**
+	 * Sets the url.
+	 *
+	 * @param url the new url
+	 */
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+	 * Gets the num broken links.
+	 *
+	 * @return the num broken links
+	 */
     public int getNumBrokenLinks() {
         return numBrokenLinks;
     }
 
+    /**
+	 * Sets the num broken links.
+	 *
+	 * @param numBrokenLinks the new num broken links
+	 */
     public void setNumBrokenLinks(int numBrokenLinks) {
         this.numBrokenLinks = numBrokenLinks;
     }

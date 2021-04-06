@@ -26,11 +26,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The Class IncidenciaDatos.
+ */
 public final class IncidenciaDatos {
 
+    /**
+	 * Instantiates a new incidencia datos.
+	 */
     private IncidenciaDatos() {
     }
 
+    /**
+	 * Save incidence list.
+	 *
+	 * @param conn          the conn
+	 * @param idAnalisis    the id analisis
+	 * @param incidenceList the incidence list
+	 */
     public static void saveIncidenceList(final Connection conn, int idAnalisis, final List<Incidencia> incidenceList) {
         long time = System.currentTimeMillis();
         try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO tincidencia (COD_COMPROBACION, COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, DES_FUENTE) VALUES (?, ?, ?, ?, ?)")) {
@@ -51,6 +64,14 @@ public final class IncidenciaDatos {
         }
     }
 
+    /**
+	 * Gets the incidencias from analisis id.
+	 *
+	 * @param conn          the conn
+	 * @param idAnalisis    the id analisis
+	 * @param getOnlyChecks the get only checks
+	 * @return the incidencias from analisis id
+	 */
     public static List<Incidencia> getIncidenciasFromAnalisisId(final Connection conn, final long idAnalisis, final boolean getOnlyChecks) {
         if (getOnlyChecks) {
             return getIncidenciasIdFromAnalisisId(conn, idAnalisis);
@@ -59,6 +80,13 @@ public final class IncidenciaDatos {
         }
     }
 
+    /**
+	 * Gets the incidencias id from analisis id.
+	 *
+	 * @param conn       the conn
+	 * @param idAnalisis the id analisis
+	 * @return the incidencias id from analisis id
+	 */
     private static List<Incidencia> getIncidenciasIdFromAnalisisId(final Connection conn, final long idAnalisis) {
         try (PreparedStatement pstmt = conn.prepareStatement("SELECT COD_COMPROBACION FROM tincidencia WHERE COD_ANALISIS = ?")) {
             pstmt.setLong(1, idAnalisis);
@@ -79,6 +107,13 @@ public final class IncidenciaDatos {
         }
     }
 
+    /**
+	 * Gets the incidencias from analisis id.
+	 *
+	 * @param conn       the conn
+	 * @param idAnalisis the id analisis
+	 * @return the incidencias from analisis id
+	 */
     public static List<Incidencia> getIncidenciasFromAnalisisId(final Connection conn, final long idAnalisis) {
         try (PreparedStatement pstmt = conn.prepareStatement("SELECT COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, COD_COMPROBACION, COD_INCIDENCIA, DES_FUENTE FROM tincidencia WHERE COD_ANALISIS = ?")) {
             pstmt.setLong(1, idAnalisis);
@@ -106,6 +141,14 @@ public final class IncidenciaDatos {
         }
     }
 
+    /**
+	 * Gets the incidencias by analisis and comprobacion.
+	 *
+	 * @param conn           the conn
+	 * @param idAnalisis     the id analisis
+	 * @param idComprobacion the id comprobacion
+	 * @return the incidencias by analisis and comprobacion
+	 */
     public static List<Incidencia> getIncidenciasByAnalisisAndComprobacion(final Connection conn, final long idAnalisis, final long idComprobacion) {
         try (PreparedStatement pstmt = conn.prepareStatement("SELECT COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, COD_COMPROBACION, COD_INCIDENCIA, DES_FUENTE FROM tincidencia WHERE cod_analisis = ? AND cod_comprobacion = ?")) {
             pstmt.setLong(1, idAnalisis);
@@ -133,6 +176,13 @@ public final class IncidenciaDatos {
         }
     }
 
+    /**
+	 * Delete incidencias by analisis and comprobacion.
+	 *
+	 * @param conn           the conn
+	 * @param idAnalisis     the id analisis
+	 * @param idComprobacion the id comprobacion
+	 */
     public static void deleteIncidenciasByAnalisisAndComprobacion(final Connection conn, final long idAnalisis, final long idComprobacion) {
         try (PreparedStatement pstmt = conn.prepareStatement("DELETE FROM tincidencia WHERE cod_analisis = ? AND cod_comprobacion = ?")) {
             pstmt.setLong(1, idAnalisis);
@@ -143,6 +193,13 @@ public final class IncidenciaDatos {
         }
     }
 
+    /**
+	 * Gets the observatory incidencias from analisis id.
+	 *
+	 * @param conn       the conn
+	 * @param idAnalisis the id analisis
+	 * @return the observatory incidencias from analisis id
+	 */
     public static List<Incidencia> getObservatoryIncidenciasFromAnalisisId(final Connection conn, final long idAnalisis) {
         try (PreparedStatement pstmt = conn.prepareStatement("SELECT COD_ANALISIS, COD_COMPROBACION, COD_INCIDENCIA FROM tincidencia WHERE COD_ANALISIS = ?")) {
             pstmt.setLong(1, idAnalisis);

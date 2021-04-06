@@ -19,35 +19,77 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class GuidelineForm.
+ */
 public class GuidelineForm implements Serializable {
+    
+    /** The description. */
     private String description;
+    
+    /** The guideline id. */
     private String guidelineId;
+    
+    /** The pautas. */
     private List<PautaForm> pautas;
 
+    /**
+	 * Instantiates a new guideline form.
+	 */
     public GuidelineForm() {
         pautas = new ArrayList<>();
     }
 
+    /**
+	 * Gets the description.
+	 *
+	 * @return the description
+	 */
     public String getDescription() {
         return description;
     }
 
+    /**
+	 * Sets the description.
+	 *
+	 * @param description the new description
+	 */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+	 * Gets the pautas.
+	 *
+	 * @return the pautas
+	 */
     public List<PautaForm> getPautas() {
         return pautas;
     }
 
+    /**
+	 * Sets the pautas.
+	 *
+	 * @param pautas the new pautas
+	 */
     public void setPautas(List<PautaForm> pautas) {
         this.pautas = pautas;
     }
 
+    /**
+	 * Gets the guideline id.
+	 *
+	 * @return the guideline id
+	 */
     public String getGuidelineId() {
         return guidelineId;
     }
 
+    /**
+	 * Sets the guideline id.
+	 *
+	 * @param guidelineId the new guideline id
+	 */
     public void setGuidelineId(String guidelineId) {
         this.guidelineId = guidelineId;
     }

@@ -32,11 +32,23 @@ import java.awt.*;
  */
 public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
 
+	/** The background property. */
 	private LexicalUnit backgroundProperty;
+	
+	/** The foreground property. */
 	private LexicalUnit foregroundProperty;
+	
+	/** The font size property. */
 	private LexicalUnit fontSizeProperty;
+	
+	/** The font weight property. */
 	private LexicalUnit fontWeightProperty;
 
+	/**
+	 * On end style rule.
+	 *
+	 * @param cssStyleRule the css style rule
+	 */
 	@Override
 	public void onEndStyleRule(@Nonnull final CSSStyleRule cssStyleRule) {
 		// Si al finalizar de procesar un bloque de declaración de estilos tenemos ambas
@@ -52,6 +64,11 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
 		super.onEndStyleRule(cssStyleRule);
 	}
 
+	/**
+	 * On declaration.
+	 *
+	 * @param cssDeclaration the css declaration
+	 */
 	@Override
 	public void onDeclaration(@Nonnull final CSSDeclaration cssDeclaration) {
 		if (isValidMedia()) {
@@ -70,6 +87,11 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
 		}
 	}
 
+	/**
+	 * Need high contrast.
+	 *
+	 * @return true, if successful
+	 */
 	private boolean needHighContrast() {
 		final boolean isBold = isFontBold();
 		if (fontSizeProperty == null) {
@@ -87,6 +109,11 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
 		}
 	}
 
+	/**
+	 * Checks if is font bold.
+	 *
+	 * @return true, if is font bold
+	 */
 	private boolean isFontBold() {
 		if (fontWeightProperty != null) {
 			if (fontWeightProperty.getLexicalUnitType() == LexicalUnit.SAC_IDENT) {
@@ -98,6 +125,9 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
 		return false;
 	}
 
+	/**
+	 * Check color contrast.
+	 */
 	private void checkColorContrast() {
 		try {
 
@@ -131,6 +161,13 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
 		}
 	}
 
+	/**
+	 * Obtain color.
+	 *
+	 * @param colorValue the color value
+	 * @return the color
+	 * @throws NumberFormatException the number format exception
+	 */
 	private Color obtainColor(final LexicalUnit colorValue) throws NumberFormatException {
 		if (colorValue.getLexicalUnitType() == LexicalUnit.SAC_IDENT) {
 			if ("none".equalsIgnoreCase(colorValue.getStringValue())) {
@@ -158,6 +195,12 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
 		}
 	}
 
+	/**
+	 * Obtain luminance.
+	 *
+	 * @param color the color
+	 * @return the double
+	 */
 	private double obtainLuminance(final Color color) {
 		final float rRGB = (float) color.getRed() / 255;
 		final float gRGB = (float) color.getGreen() / 255;
@@ -170,6 +213,13 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
 		return (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
 	}
 
+	/**
+	 * Obtain contrast ratio.
+	 *
+	 * @param colorLuminance      the color luminance
+	 * @param backgroundLuminance the background luminance
+	 * @return the double
+	 */
 	private double obtainContrastRatio(final double colorLuminance, final double backgroundLuminance) {
 		// Obtenemos el valor mayor y menor para calcular el ratio
 		final double maxLuminance = Math.max(colorLuminance, backgroundLuminance);

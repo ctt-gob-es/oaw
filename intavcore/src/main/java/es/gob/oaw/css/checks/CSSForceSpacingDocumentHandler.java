@@ -19,11 +19,15 @@ import com.helger.css.decl.CSSDeclaration;
 import es.gob.oaw.css.OAWCSSVisitor;
 
 /**
- * Clase para detectar si se aplican 'line-height', 'letter-spacing',
- * 'word-spacing' con important
+ * Clase para detectar si se aplican 'line-height', 'letter-spacing', 'word-spacing' con important.
  */
 public class CSSForceSpacingDocumentHandler extends OAWCSSVisitor {
 
+	/**
+	 * On declaration.
+	 *
+	 * @param cssDeclaration the css declaration
+	 */
 	@Override
 	public void onDeclaration(@Nonnull final CSSDeclaration cssDeclaration) {
 		if (isValidMedia()) {
