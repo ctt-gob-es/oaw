@@ -19,53 +19,119 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class PriorityForm.
+ */
 public class PriorityForm implements Serializable {
+    
+    /** The num problems. */
     private int numProblems;
+    
+    /** The num warnings. */
     private int numWarnings;
+    
+    /** The num infos. */
     private int numInfos;
+    
+    /** The priority name. */
     private String priorityName;
+    
+    /** The guidelines. */
     private List<GuidelineForm> guidelines;
 
+    /**
+	 * Instantiates a new priority form.
+	 */
     public PriorityForm() {
         guidelines = new ArrayList<>();
     }
 
+    /**
+	 * Gets the num problems.
+	 *
+	 * @return the num problems
+	 */
     public int getNumProblems() {
         return numProblems;
     }
 
+    /**
+	 * Sets the num problems.
+	 *
+	 * @param numProblems the new num problems
+	 */
     public void setNumProblems(int numProblems) {
         this.numProblems = numProblems;
     }
 
+    /**
+	 * Gets the num warnings.
+	 *
+	 * @return the num warnings
+	 */
     public int getNumWarnings() {
         return numWarnings;
     }
 
+    /**
+	 * Sets the num warnings.
+	 *
+	 * @param numWarnings the new num warnings
+	 */
     public void setNumWarnings(int numWarnings) {
         this.numWarnings = numWarnings;
     }
 
+    /**
+	 * Gets the num infos.
+	 *
+	 * @return the num infos
+	 */
     public int getNumInfos() {
         return numInfos;
     }
 
+    /**
+	 * Sets the num infos.
+	 *
+	 * @param numInfos the new num infos
+	 */
     public void setNumInfos(int numInfos) {
         this.numInfos = numInfos;
     }
 
+    /**
+	 * Gets the guidelines.
+	 *
+	 * @return the guidelines
+	 */
     public List<GuidelineForm> getGuidelines() {
         return guidelines;
     }
 
+    /**
+	 * Sets the guidelines.
+	 *
+	 * @param guidelines the new guidelines
+	 */
     public void setGuidelines(List<GuidelineForm> guidelines) {
         this.guidelines = guidelines;
     }
 
+    /**
+	 * Gets the priority name.
+	 *
+	 * @return the priority name
+	 */
     public String getPriorityName() {
         return priorityName;
     }
 
+    /**
+	 * Sets the priority name.
+	 *
+	 * @param priorityName the new priority name
+	 */
     public void setPriorityName(String priorityName) {
         this.priorityName = priorityName;
     }

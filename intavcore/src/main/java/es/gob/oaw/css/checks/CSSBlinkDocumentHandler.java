@@ -20,10 +20,15 @@ import es.gob.oaw.css.utils.CSSSACUtils;
 import javax.annotation.Nonnull;
 
 /**
- * Clase para detectar si se produccen parpadeos generados desde CSS mediante text-decoration:blink o text-decoration-line:blink
+ * Clase para detectar si se produccen parpadeos generados desde CSS mediante text-decoration:blink o text-decoration-line:blink.
  */
 public class CSSBlinkDocumentHandler extends OAWCSSVisitor {
 
+    /**
+	 * On declaration.
+	 *
+	 * @param cssDeclaration the css declaration
+	 */
     @Override
     public void onDeclaration(@Nonnull final CSSDeclaration cssDeclaration) {
         if (isValidMedia()) {

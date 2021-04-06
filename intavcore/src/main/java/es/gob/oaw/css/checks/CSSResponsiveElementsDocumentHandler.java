@@ -44,8 +44,14 @@ public class CSSResponsiveElementsDocumentHandler extends OAWCSSVisitor {
 	private boolean hasGridTags = false;
 	/** The has flexbox tags. */
 	private boolean hasFlexboxTags = false;
+	
+	/** The count media queries. */
 	private int countMediaQueries;
+	
+	/** The count grid tags. */
 	private int countGridTags;
+	
+	/** The count felxbox. */
 	private int countFelxbox;
 
 	/**

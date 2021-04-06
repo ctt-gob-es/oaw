@@ -27,20 +27,38 @@ import java.util.Map.Entry;
  * see http://code.google.com/p/guess-language/
  */
 public class GuessLanguage {
+    
+    /** The Constant UNKNOWN_LANGUAGE. */
     // Valor utilizado para idiomas que no se pueden detectar
     public static final String UNKNOWN_LANGUAGE = "unknown";
 
+    /** The Constant ACTIVE_MODELS. */
     private static final String[] ACTIVE_MODELS = new String[]{"en", "eu",
             "ca", "es", "fr", "de", "it", "pt", "ru", "uk", "ar", "fa", "ps",
             "ur", "pt_BR", "pt_PT", "ast"};
 
+    /** The Constant BASIC_LATIN. */
     private final static List<String> BASIC_LATIN;
+    
+    /** The Constant EXTENDED_LATIN. */
     private final static List<String> EXTENDED_LATIN;
+    
+    /** The Constant ALL_LATIN. */
     private final static List<String> ALL_LATIN;
+    
+    /** The Constant CYRILLIC. */
     private final static List<String> CYRILLIC;
+    
+    /** The Constant ARABIC. */
     private final static List<String> ARABIC;
+    
+    /** The Constant DEVANAGARI. */
     private final static List<String> DEVANAGARI;
+    
+    /** The Constant SINGLETONS. */
     private final static Map<UnicodeBlock, String> SINGLETONS;
+    
+    /** The Constant PT. */
     private final static List<String> PT;
 
     static {
@@ -60,13 +78,20 @@ public class GuessLanguage {
         PT = Arrays.asList("pt_BR", "pt_PT");
     }
 
+    /** The models. */
     private final Map<String, Map<String, Integer>> models;
 
+    /** The Constant MIN_LENGTH. */
     // Longitud mínima de texto para poder aplicar el algoritmo con garantías
     private static final int MIN_LENGTH = 20;
+    
+    /** The Constant MAXGRAMS. */
     // Número de n-gramas usados
     private static final int MAXGRAMS = 300;
 
+    /**
+	 * Instantiates a new guess language.
+	 */
     public GuessLanguage() {
         models = new HashMap<>();
         if (models.isEmpty()) {
@@ -74,6 +99,12 @@ public class GuessLanguage {
         }
     }
 
+    /**
+	 * Guess language.
+	 *
+	 * @param text the text
+	 * @return the string
+	 */
     public String guessLanguage(final String text) {
         if (text.length() < MIN_LENGTH) {
             return UNKNOWN_LANGUAGE;
@@ -82,6 +113,12 @@ public class GuessLanguage {
         return identify(text, findRuns(text));
     }
 
+    /**
+	 * Checks if is supported language.
+	 *
+	 * @param language the language
+	 * @return true, if is supported language
+	 */
     public static boolean isSupportedLanguage(final String language) {
         if (language == null) {
             return true;
@@ -95,6 +132,12 @@ public class GuessLanguage {
         return false;
     }
 
+    /**
+	 * Find runs.
+	 *
+	 * @param text the text
+	 * @return the list
+	 */
     private List<UnicodeBlock> findRuns(final String text) {
         final Map<UnicodeBlock, Integer> runTypes = new HashMap<>();
         int count = 0;
@@ -148,6 +191,13 @@ public class GuessLanguage {
         return relevantRuns;
     }
 
+    /**
+	 * Identify.
+	 *
+	 * @param sample  the sample
+	 * @param scripts the scripts
+	 * @return the string
+	 */
     private String identify(final String sample,
                             final List<UnicodeBlock> scripts) {
         if (sample.length() < 3) {
@@ -218,6 +268,13 @@ public class GuessLanguage {
         return UNKNOWN_LANGUAGE;
     }
 
+    /**
+	 * Check.
+	 *
+	 * @param sample the sample
+	 * @param langs  the langs
+	 * @return the string
+	 */
     private String check(final String sample, final List<String> langs) {
         if (sample.length() < MIN_LENGTH) {
             return UNKNOWN_LANGUAGE;
@@ -241,6 +298,12 @@ public class GuessLanguage {
         return itr.next().getValue();
     }
 
+    /**
+	 * Creates the ordered model.
+	 *
+	 * @param content the content
+	 * @return the map
+	 */
     private Map<Integer, List<String>> createOrderedModel(final String content) {
         final HashMap<String, Integer> trigrams = new HashMap<>();
         // Map ORDENADO por KEY
@@ -276,6 +339,13 @@ public class GuessLanguage {
         return otrigrams;
     }
 
+    /**
+	 * Distance.
+	 *
+	 * @param model      the model
+	 * @param knownModel the known model
+	 * @return the int
+	 */
     private int distance(final Map<Integer, List<String>> model,
                          final Map<String, Integer> knownModel) {
         int counter = -1;
@@ -300,6 +370,9 @@ public class GuessLanguage {
         return dist;
     }
 
+    /**
+	 * Load models.
+	 */
     private void loadModels() {
         final ClassLoader loader = this.getClass().getClassLoader();
         for (String trigram : ACTIVE_MODELS) {

@@ -26,11 +26,22 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 import es.inteco.common.logging.Logger;
 
+/**
+ * The Class FileUtils.
+ */
 public final class FileUtils {
 
+    /**
+	 * Instantiates a new file utils.
+	 */
     private FileUtils() {
     }
 
+    /**
+	 * Delete dirs.
+	 *
+	 * @param paths the paths
+	 */
     public static void deleteDirs(final List<String> paths) {
         for (String path : paths) {
             Logger.putLog("Borrando el contenido del directorio: " + path, FileUtils.class, Logger.LOG_LEVEL_INFO);
@@ -40,11 +51,11 @@ public final class FileUtils {
     }
 
     /**
-     * Deletes recursively all files and subdirectories
-     *
-     * @param dir - directory to delete recursively
-     * @return true if all deletions were successful or false if a deletion fails and then the method returns inmediately
-     */
+	 * Deletes recursively all files and subdirectories.
+	 *
+	 * @param dir - directory to delete recursively
+	 * @return true if all deletions were successful or false if a deletion fails and then the method returns inmediately
+	 */
     public static boolean deleteDir(final File dir) {
         if (dir.exists()) {
             if (dir.isDirectory()) {
@@ -65,6 +76,11 @@ public final class FileUtils {
         }
     }
 
+    /**
+	 * Removes the file.
+	 *
+	 * @param tablePath the table path
+	 */
     public static void removeFile(final String tablePath) {
         final File file = new File(tablePath);
         if (file.exists()) {
@@ -72,6 +88,13 @@ public final class FileUtils {
         }
     }
 
+    /**
+	 * Copy directory.
+	 *
+	 * @param sourceLocation the source location
+	 * @param targetLocation the target location
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
     public static void copyDirectory(File sourceLocation, File targetLocation) throws IOException {
         if (sourceLocation.isDirectory()) {
             if (!targetLocation.exists() && !targetLocation.mkdirs()) {
@@ -97,6 +120,12 @@ public final class FileUtils {
         }
     }
 
+    /**
+	 * Open directory.
+	 *
+	 * @param name the name
+	 * @return the file
+	 */
     public static File openDirectory(final String name) {
         final File file = new File(name);
         if (!(name.endsWith("/"))) {

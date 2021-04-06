@@ -26,12 +26,15 @@ import es.inteco.common.logging.Logger;
  * Clase para extraer los recursos CSS que son importados (@import) desde otro recurso CSS.
  */
 public class ImportedCSSExtractor {
+	
+	/** The Constant UTF8_BOM. */
 	private static final String UTF8_BOM = "\uFEFF";
 
 	/**
 	 * Procesa un documento DOM (HTMLDocument) obtiene los recursos CSS que incluye, tanto los directamente enlazados como los que son importados (@import).
 	 *
-	 * @param htmlDocument
+	 * @param baseURL      the base URL
+	 * @param htmlDocument the html document
 	 * @return una lista con los recursos CSS que son importados mediate la regla @import
 	 */
 	public final List<CSSResource> extractFromHTMLDocument(final String baseURL, final HTMLDocument htmlDocument) {
@@ -74,6 +77,12 @@ public class ImportedCSSExtractor {
 		return extractedCSSResources;
 	}
 
+	/**
+	 * Extract.
+	 *
+	 * @param cssResource the css resource
+	 * @return the list
+	 */
 	public List<CSSResource> extract(final CSSResource cssResource) {
 		final List<CSSResource> importedCSSResources = new LinkedList<>();
 		if (!cssResource.getContent().isEmpty()) {
@@ -110,6 +119,12 @@ public class ImportedCSSExtractor {
 		}
 	}
 
+	/**
+	 * Extract imported CSS resources.
+	 *
+	 * @param cssResources the css resources
+	 * @return the list
+	 */
 	private List<CSSResource> extractImportedCSSResources(final List<CSSResource> cssResources) {
 		List<CSSResource> importedCSS = extract(cssResources);
 		while (!importedCSS.isEmpty()) {
@@ -122,6 +137,12 @@ public class ImportedCSSExtractor {
 		return cssResources;
 	}
 
+	/**
+	 * Checks if is screen media.
+	 *
+	 * @param allMediaQueries the all media queries
+	 * @return true, if is screen media
+	 */
 	private boolean isScreenMedia(final List<CSSMediaQuery> allMediaQueries) {
 		if (allMediaQueries == null || allMediaQueries.isEmpty()) {
 			return true;
@@ -136,6 +157,12 @@ public class ImportedCSSExtractor {
 		return false;
 	}
 
+	/**
+	 * Valid media.
+	 *
+	 * @param media the media
+	 * @return true, if successful
+	 */
 	private boolean validMedia(final String media) {
 		return media == null || media.trim().isEmpty() || media.contains("all") || media.contains("screen");
 	}

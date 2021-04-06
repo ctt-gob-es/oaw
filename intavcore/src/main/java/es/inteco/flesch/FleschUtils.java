@@ -33,11 +33,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * The Class FleschUtils.
+ */
 public final class FleschUtils {
 
+    /**
+	 * Instantiates a new flesch utils.
+	 */
     private FleschUtils() {
     }
 
+    /**
+	 * Gets the content from html.
+	 *
+	 * @param htmlSource the html source
+	 * @return the content from html
+	 */
     public static String getContentFromHtml(String htmlSource) {
         String initContent;
         String content;
@@ -53,6 +65,12 @@ public final class FleschUtils {
         return content;
     }
 
+    /**
+	 * Removes the tags.
+	 *
+	 * @param content the content
+	 * @return the string
+	 */
     private static String removeTags(String content) {
         content = Pattern.compile("<script[^>]*>(.*?)</script>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL).matcher(content).replaceAll("");
         content = Pattern.compile("<style[^>]*>(.*?)</style>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL).matcher(content).replaceAll("");
@@ -64,6 +82,12 @@ public final class FleschUtils {
         return content;
     }
 
+    /**
+	 * Gets the attributes text from DOM.
+	 *
+	 * @param content the content
+	 * @return the attributes text from DOM
+	 */
     private static String getAttributesTextFromDOM(String content) {
         StringBuilder result = new StringBuilder();
         try {
@@ -97,6 +121,12 @@ public final class FleschUtils {
         return result.toString();
     }
 
+    /**
+	 * Count words.
+	 *
+	 * @param text the text
+	 * @return the int
+	 */
     public static int countWords(String text) {
         String[] words = text.split("[^a-zA-ZáéíóúàèìòùÁÉÍÓÚÀÈÌÒÙñÑ]");
 
@@ -110,6 +140,14 @@ public final class FleschUtils {
         return count;
     }
 
+    /**
+	 * Generate text node list.
+	 *
+	 * @param node           the node
+	 * @param nodeList       the node list
+	 * @param maxNumElements the max num elements
+	 * @return the list
+	 */
     // Genera recursivamente una lista de nodos del documento
     private static List<Node> generateTextNodeList(Node node, List<Node> nodeList, int maxNumElements) {
         if ((node != null) && (nodeList.size() <= maxNumElements)) {
@@ -126,6 +164,12 @@ public final class FleschUtils {
         return nodeList;
     }
 
+    /**
+	 * Filter phrases.
+	 *
+	 * @param content the content
+	 * @return the string
+	 */
     private static String filterPhrases(String content) {
         StringBuilder filterContent = new StringBuilder();
         PropertiesManager pmgr = new PropertiesManager();

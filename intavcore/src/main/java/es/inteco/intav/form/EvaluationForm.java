@@ -19,54 +19,119 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class EvaluationForm.
+ */
 public class EvaluationForm implements Serializable {
+    
+    /** The entity. */
     private String entity;
+    
+    /** The url. */
     private String url;
+    
+    /** The guideline. */
     private String guideline;
+    
+    /** The source. */
     private String source;
 
+    /** The priorities. */
     private List<PriorityForm> priorities;
 
+    /**
+	 * Instantiates a new evaluation form.
+	 */
     public EvaluationForm() {
         priorities = new ArrayList<>();
     }
 
+    /**
+	 * Gets the source.
+	 *
+	 * @return the source
+	 */
     public String getSource() {
         return source;
     }
 
+    /**
+	 * Sets the source.
+	 *
+	 * @param source the new source
+	 */
     public void setSource(String source) {
         this.source = source;
     }
 
+    /**
+	 * Gets the entity.
+	 *
+	 * @return the entity
+	 */
     public String getEntity() {
         return entity;
     }
 
+    /**
+	 * Sets the entity.
+	 *
+	 * @param entity the new entity
+	 */
     public void setEntity(String entity) {
         this.entity = entity;
     }
 
+    /**
+	 * Gets the url.
+	 *
+	 * @return the url
+	 */
     public String getUrl() {
         return url;
     }
 
+    /**
+	 * Sets the url.
+	 *
+	 * @param url the new url
+	 */
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+	 * Gets the priorities.
+	 *
+	 * @return the priorities
+	 */
     public List<PriorityForm> getPriorities() {
         return priorities;
     }
 
+    /**
+	 * Sets the priorities.
+	 *
+	 * @param priorities the new priorities
+	 */
     public void setPriorities(List<PriorityForm> priorities) {
         this.priorities = priorities;
     }
 
+    /**
+	 * Gets the guideline.
+	 *
+	 * @return the guideline
+	 */
     public String getGuideline() {
         return guideline;
     }
 
+    /**
+	 * Sets the guideline.
+	 *
+	 * @param guideline the new guideline
+	 */
     public void setGuideline(String guideline) {
         this.guideline = guideline;
     }

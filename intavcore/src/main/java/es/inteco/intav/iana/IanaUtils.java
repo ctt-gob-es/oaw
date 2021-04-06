@@ -27,11 +27,23 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The Class IanaUtils.
+ */
 public final class IanaUtils {
 
+    /**
+	 * Instantiates a new iana utils.
+	 */
     private IanaUtils() {
     }
 
+    /**
+	 * Load iana registries.
+	 *
+	 * @param url the url
+	 * @return the string
+	 */
     public static String loadIanaRegistries(final String url) {
         InputStream inputStream = null;
         String content = null;
@@ -52,6 +64,13 @@ public final class IanaUtils {
         return content;
     }
 
+    /**
+	 * Gets the input stream.
+	 *
+	 * @param url the url
+	 * @return the input stream
+	 * @throws Exception the exception
+	 */
     private static InputStream getInputStream(final String url) throws Exception {
         // Si la url empieza por / suponemos que es un recurso interno
         if (url.startsWith("/")) {
@@ -72,6 +91,13 @@ public final class IanaUtils {
         }
     }
 
+    /**
+	 * Gets the iana list.
+	 *
+	 * @param ianaRegistries the iana registries
+	 * @param type           the type
+	 * @return the iana list
+	 */
     public static List<String> getIanaList(final String ianaRegistries, final String type) {
         final List<String> languages = new ArrayList<>();
         final Pattern pattern = Pattern.compile(String.format("type: %s\nsubtag: (.*?)\n", type), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);

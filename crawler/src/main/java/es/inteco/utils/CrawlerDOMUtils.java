@@ -33,11 +33,24 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The Class CrawlerDOMUtils.
+ */
 public final class CrawlerDOMUtils {
 
+    /**
+	 * Instantiates a new crawler DOM utils.
+	 */
     private CrawlerDOMUtils() {
     }
 
+    /**
+	 * Gets the elements by tag name.
+	 *
+	 * @param document the document
+	 * @param tag      the tag
+	 * @return the elements by tag name
+	 */
     public static List<Element> getElementsByTagName(Document document, String tag) {
         final List<Element> elements = new ArrayList<>();
 
@@ -52,6 +65,13 @@ public final class CrawlerDOMUtils {
         return elements;
     }
 
+    /**
+	 * Gets the elements by tag name.
+	 *
+	 * @param element the element
+	 * @param tag     the tag
+	 * @return the elements by tag name
+	 */
     public static List<Element> getElementsByTagName(final Element element, final String tag) {
         final List<Element> elements = new ArrayList<>();
 
@@ -66,6 +86,13 @@ public final class CrawlerDOMUtils {
         return elements;
     }
 
+    /**
+	 * Checks for attribute.
+	 *
+	 * @param element       the element
+	 * @param attributeName the attribute name
+	 * @return true, if successful
+	 */
     public static boolean hasAttribute(final Element element, final String attributeName) {
         final NamedNodeMap attributes = element.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
@@ -96,6 +123,13 @@ public final class CrawlerDOMUtils {
         return null;
     }
 
+    /**
+	 * Gets the document.
+	 *
+	 * @param textContent the text content
+	 * @return the document
+	 * @throws Exception the exception
+	 */
     public static Document getDocument(final String textContent) throws Exception {
         CheckerParser parser = new CheckerParser(false);
 
@@ -109,6 +143,12 @@ public final class CrawlerDOMUtils {
         return parser.getDocument();
     }
 
+    /**
+	 * Serialize document.
+	 *
+	 * @param document the document
+	 * @return the string
+	 */
     public static String serializeDocument(final Document document) {
         correctScriptTagSerialization(document);
 
@@ -118,6 +158,11 @@ public final class CrawlerDOMUtils {
         return (lsSerializer.writeToString(document));
     }
 
+    /**
+	 * Correct script tag serialization.
+	 *
+	 * @param document the document
+	 */
     private static void correctScriptTagSerialization(Document document) {
         List<Element> scripts = getElementsByTagName(document, "script");
         for (Element script : scripts) {
@@ -127,6 +172,12 @@ public final class CrawlerDOMUtils {
         }
     }
 
+    /**
+	 * Serialize node list.
+	 *
+	 * @param nodeList the node list
+	 * @return the string
+	 */
     public static String serializeNodeList(NodeList nodeList) {
         final StringBuilder text = new StringBuilder();
         for (int i = 0; i < nodeList.getLength(); i++) {
@@ -143,6 +194,12 @@ public final class CrawlerDOMUtils {
         return text.toString();
     }
 
+    /**
+	 * Gets the only body.
+	 *
+	 * @param textContent the text content
+	 * @return the only body
+	 */
     public static String getOnlyBody(String textContent) {
         PropertiesManager pmgr = new PropertiesManager();
         List<String> regExps = Arrays.asList(pmgr.getValue("crawler.core.properties", "frame.source.reg.exp.matcher").split(";"));
@@ -162,6 +219,13 @@ public final class CrawlerDOMUtils {
         return null;
     }
 
+    /**
+	 * Gets the meta redirect.
+	 *
+	 * @param url      the url
+	 * @param document the document
+	 * @return the meta redirect
+	 */
     public static String getMetaRedirect(String url, Document document) {
         List<Element> metas = getElementsByTagName(document, "meta");
         for (Element meta : metas) {
@@ -208,6 +272,12 @@ public final class CrawlerDOMUtils {
         return results;
     }
 
+    /**
+	 * Gets the base url.
+	 *
+	 * @param document the document
+	 * @return the base url
+	 */
     public static String getBaseUrl(final Document document) {
         final List<Element> bases = getElementsByTagName(document, "base");
 

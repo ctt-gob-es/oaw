@@ -52,12 +52,9 @@ public class ProxyDAO {
 	/**
 	 * Update.
 	 *
-	 * @param c
-	 *            the c
-	 * @param dependencia
-	 *            the dependencia
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c     the c
+	 * @param proxy the proxy
+	 * @throws SQLException the SQL exception
 	 */
 	public static void update(Connection c, ProxyForm proxy) throws SQLException {
 		final String query = "UPDATE observatorio_proxy SET status = ?, url = ?, port = ? WHERE 1=1";
