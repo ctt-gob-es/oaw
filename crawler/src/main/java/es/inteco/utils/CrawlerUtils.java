@@ -674,6 +674,7 @@ public final class CrawlerUtils {
 				}
 			}
 		} catch (IllegalArgumentException ie) {
+			Logger.putLog("Error reading cookie", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, ie);
 		}
 		return headerText.toString();
 	}

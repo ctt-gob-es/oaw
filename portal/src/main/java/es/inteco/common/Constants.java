@@ -1858,9 +1858,11 @@ public interface Constants {
 	/** The normativa accesibilidad. */
 	String NORMATIVA_ACCESIBILIDAD = "Accesibilidad";
 	/** The message resources 2012 b. */
-	String MESSAGE_RESOURCES_2012_B = "ApplicationResources-2012-b";
+	// String MESSAGE_RESOURCES_2012_B = "ApplicationResources-2012-b";
+	String MESSAGE_RESOURCES_2012_B = "ApplicationResources_xx_XX_2012B";
 	/** The message resources une en2019. */
-	String MESSAGE_RESOURCES_UNE_EN2019 = "ApplicationResources-UNEEN2019";
+	// String MESSAGE_RESOURCES_UNE_EN2019 = "ApplicationResources-UNEEN2019";
+	String MESSAGE_RESOURCES_UNE_EN2019 = "ApplicationResources_xx_XX_2019";
 	/** The message resources accesibilidad. */
 	String MESSAGE_RESOURCES_ACCESIBILIDAD = "ApplicationResources_es_AC";
 	/** The check global modality grpahics. */

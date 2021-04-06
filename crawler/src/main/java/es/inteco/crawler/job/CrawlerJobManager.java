@@ -30,6 +30,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.impl.triggers.SimpleTriggerImpl;
 
+import es.inteco.common.logging.Logger;
 import es.inteco.crawler.common.Constants;
 
 /**
@@ -94,7 +95,7 @@ public final class CrawlerJobManager {
 					// get job's trigger
 					List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
 					Date nextFireTime = triggers.get(0).getNextFireTime();
-					System.out.println("[jobName] : " + jobKey.getName() + " [groupName] : " + groupName + " - " + nextFireTime);
+					Logger.putLog("[jobName] : " + jobKey.getName() + " [groupName] : " + groupName + " - " + nextFireTime, CrawlerJobManager.class, Logger.LOG_LEVEL_ERROR);
 					scheduler.interrupt(jobKey);
 					scheduler.deleteJob(jobKey);
 				}
@@ -122,7 +123,7 @@ public final class CrawlerJobManager {
 			String type = t.isDaemon() ? "Daemon" : "Normal";
 			if (("RelanzarObservatorioThread_" + idExObs).equals(t.getName())) {
 				t.interrupt();
-				System.out.printf("%-20s \t %s \t %d \t %s\n", name, state, priority, type);
+				Logger.putLog(String.format("%-20s \t %s \t %d \t %s\n", name, state, priority, type), CrawlerJobManager.class, Logger.LOG_LEVEL_ERROR);
 			}
 		}
 	}

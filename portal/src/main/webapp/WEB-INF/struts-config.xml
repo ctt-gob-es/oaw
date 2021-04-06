@@ -372,10 +372,10 @@
 
 		<forward name="configSendObservatoryResultsByMail"
 			path="/secure/ConfigSendResultsByMailAction.do?action=config" />
-		
+
 		<forward name="resultsSendObservatoryResultsByMail"
-			path="/secure/ConfigSendResultsByMailAction.do?action=results" />	
-			
+			path="/secure/ConfigSendResultsByMailAction.do?action=results" />
+
 
 		<forward name="confirmSendObservatoryResultsByMail"
 			path="/secure/ConfigSendResultsByMailAction.do?action=confirm" />
@@ -1114,9 +1114,11 @@
 	<!-- Message Resources Definitions -->
 	<message-resources parameter="ApplicationResources" null="false" />
 
-	<message-resources parameter="ApplicationResources-2012-b" null="false" key="resources2012b" />
+	<!-- <message-resources parameter="ApplicationResources-2012-b" null="false" key="resources2012b" /> -->
+	<message-resources parameter="ApplicationResources_xx_XX_2012B" null="false" key="resources2012b" />
 
-	<message-resources parameter="ApplicationResources-UNEEN2019" null="false" key="resources2019" />
+	<!-- <message-resources parameter="ApplicationResources-UNEEN2019" null="false" key="resources2019" /> -->
+	<message-resources parameter="ApplicationResources_xx_XX_2019" null="false" key="resources2019" />
 
 	<!-- Tiles -->
 	<plug-in className="org.apache.struts.tiles.TilesPlugin">

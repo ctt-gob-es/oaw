@@ -656,12 +656,16 @@ public final class AnnexUtils {
 				if (pageObservatoryMapCat != null) {
 					String currentCategory = category.getName().substring(0, Math.min(category.getName().length(), 31));
 					final XSSFSheet categorySheet = wb.createSheet(currentCategory);
-					// TODO Extract to constants
+//					generateGlobalProgressEvolutionSheet(categorySheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapCat,
+//							"Evolución del nivel de adecuación estimado. Segmento " + category.getName() + ". Términos globales",
+//							"Evolución de la situación de cumplimiento estinada. Segmento " + category.getName() + ". Términos globales",
+//							"Evolución del nivel de adecuación estimado. Segmento " + category.getName() + ". Parte fija",
+//							"Evolución de la situación de cumplimiento estinada. Segmento " + category.getName() + ". Parte fija", true, 0, xlsxUtils);
 					generateGlobalProgressEvolutionSheet(categorySheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapCat,
-							"Evolución del nivel de adecuación estimado. Segmento " + category.getName() + ". Términos globales",
-							"Evolución de la situación de cumplimiento estinada. Segmento " + category.getName() + ". Términos globales",
-							"Evolución del nivel de adecuación estimado. Segmento " + category.getName() + ". Parte fija",
-							"Evolución de la situación de cumplimiento estinada. Segmento " + category.getName() + ". Parte fija", true, 0, xlsxUtils);
+							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.global.title", new String[] { category.getName() }),
+							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.global.title", new String[] { category.getName() }),
+							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.fixed.title", new String[] { category.getName() }),
+							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.fixed.title", new String[] { category.getName() }), true, 0, xlsxUtils);
 				}
 			}
 			// Final sheet comparision
