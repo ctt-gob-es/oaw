@@ -12,13 +12,20 @@
 ******************************************************************************/
 package es.gob.oaw.css;
 
-import org.dom4j.Document;
-
 import java.util.List;
 
+import org.dom4j.Document;
+
 /**
- *
+ * The Interface CSSAnalyzer.
  */
 public interface CSSAnalyzer {
-    List<CSSProblem> evaluate(Document document, List<CSSResource> cssResources);
+	/**
+	 * Evaluate.
+	 *
+	 * @param document     the document
+	 * @param cssResources the css resources
+	 * @return the list
+	 */
+	List<CSSProblem> evaluate(Document document, List<CSSResource> cssResources);
 }
