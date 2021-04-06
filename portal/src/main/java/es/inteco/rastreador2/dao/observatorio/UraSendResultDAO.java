@@ -116,7 +116,10 @@ public class UraSendResultDAO {
 					ura.setEmails(rs.getString("d.emails"));
 					form.setUra(ura);
 					form.setSend(rs.getBoolean("c.send"));
-					form.setSendDate(rs.getDate("c.send_date"));
+					Timestamp ts = rs.getTimestamp("c.send_date");
+					if (ts != null) {
+						form.setSendDate(new Date(ts.getTime()));
+					}
 					form.setSendError(rs.getString("c.send_error"));
 					results.add(form);
 				}

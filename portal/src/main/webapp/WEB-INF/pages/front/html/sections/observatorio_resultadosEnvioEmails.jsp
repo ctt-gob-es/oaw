@@ -51,32 +51,35 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<bean:message key="send.results.observatory.title.results" />
 			</h2>
 			<div class="pag">
-				<logic:empty name="uraSendResults">
-					<bean:message key="indice.observatorios.realizados.lista.vacia" />
-				</logic:empty>
-				<logic:notEmpty name="uraSendResults">
-					<table class="table table-stripped table-bordered table-hover">
+				<table class="table table-stripped table-bordered table-hover">
+					<tr>
+						<th>
+							<bean:message key="colname.name" />
+						</th>
+						<th>
+							<bean:message key="colname.email" />
+						</th>
+						<th>
+							<bean:message key="colname.send.auto" />
+						</th>
+						<th>
+							<bean:message key="colname.sended" />
+						</th>
+						<th>
+							<bean:message key="colname.date" />
+						</th>
+						<th>
+							<bean:message key="colname.error" />
+						</th>
+					</tr>
+					<logic:empty name="uraSendResults">
 						<tr>
-							<th>
-								<bean:message key="colname.name" />
-							</th>
-							<th>
-								<bean:message key="colname.email" />
-							</th>
-							<th>
-								<bean:message key="colname.send.auto" />
-							</th>
-							<th>
-								<bean:message key="colname.sended" />
-							</th>
-							<th>
-								<bean:message key="colname.date" />
-							</th>
-							<th>
-								<bean:message key="colname.error" />
-							</th>
-							
+							<td colspan="6">
+								<bean:message key="no.results" />
+							</td>
 						</tr>
+					</logic:empty>
+					<logic:notEmpty name="uraSendResults">
 						<logic:iterate name="uraSendResults" id="uraSend">
 							<tr>
 								<td>
@@ -102,16 +105,15 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									</logic:notEqual>
 								</td>
 								<td>
-									<bean:write name="uraSend" property="sendDate" />
+									<fmt:formatDate value="${uraSend.sendDate}" pattern="dd-MM-yyyy HH:mm" />
 								</td>
-								
-									<td>
+								<td>
 									<bean:write name="uraSend" property="sendError" />
 								</td>
 							</tr>
 						</logic:iterate>
-					</table>
-				</logic:notEmpty>
+					</logic:notEmpty>
+				</table>
 			</div>
 			<p id="pCenter">
 				<html:link styleClass="btn btn-default btn-lg" forward="observatoryMenu">
