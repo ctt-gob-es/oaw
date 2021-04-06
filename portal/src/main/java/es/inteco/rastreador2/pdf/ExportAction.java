@@ -36,8 +36,21 @@ import java.util.Map;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class ExportAction.
+ */
 public class ExportAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
         if (request.getSession().getAttribute(Constants.ROLE) == null ||
@@ -50,6 +63,16 @@ public class ExportAction extends Action {
 
     }
 
+    /**
+	 * List pdf.
+	 *
+	 * @param mapping     the mapping
+	 * @param form        the form
+	 * @param request     the request
+	 * @param response    the response
+	 * @param crawlerType the crawler type
+	 * @return the action forward
+	 */
     public ActionForward listPdf(ActionMapping mapping, ActionForm form, HttpServletRequest request,
                                  HttpServletResponse response, String crawlerType) {
 
@@ -87,6 +110,20 @@ public class ExportAction extends Action {
         return null;
     }
 
+    /**
+	 * Creates the intav pdf.
+	 *
+	 * @param mapping     the mapping
+	 * @param form        the form
+	 * @param request     the request
+	 * @param response    the response
+	 * @param idRastreo   the id rastreo
+	 * @param idTracking  the id tracking
+	 * @param language    the language
+	 * @param crawlerType the crawler type
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createIntavPdf(ActionMapping mapping, ActionForm form, HttpServletRequest request,
                                          HttpServletResponse response, long idRastreo, long idTracking, Locale language, String crawlerType) throws Exception {
 
@@ -133,6 +170,14 @@ public class ExportAction extends Action {
         return null;
     }
 
+    /**
+	 * Result evolution data.
+	 *
+	 * @param idRastreo  the id rastreo
+	 * @param idTracking the id tracking
+	 * @return the map
+	 * @throws Exception the exception
+	 */
     public static Map<Long, List<Long>> resultEvolutionData(Long idRastreo, Long idTracking) throws Exception {
         try (Connection c = DataBaseManager.getConnection()) {
             VerRastreoForm vrf = new VerRastreoForm();

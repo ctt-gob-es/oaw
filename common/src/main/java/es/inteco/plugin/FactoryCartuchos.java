@@ -18,21 +18,24 @@ package es.inteco.plugin;
 import es.inteco.common.logging.Logger;
 
 /**
- * @author a.mesas
- *         Implementa la factoria de cartuchos. Dado el nombre de un cartucho nos retorna
- *         una instancia del mismo.
+ * The Class FactoryCartuchos.
+ *
+ * @author a.mesas Implementa la factoria de cartuchos. Dado el nombre de un cartucho nos retorna una instancia del mismo.
  */
 public final class FactoryCartuchos {
 
+    /**
+	 * Instantiates a new factory cartuchos.
+	 */
     private FactoryCartuchos() {
     }
 
     /**
-     * Devuelve una instancia del cartucho que se solicita
-     *
-     * @param nombreCartucho nombre completo de la clase del cartucho
-     * @return un nuevo objeto de tipo Cartucho o null si se produce algún error
-     */
+	 * Devuelve una instancia del cartucho que se solicita.
+	 *
+	 * @param nombreCartucho nombre completo de la clase del cartucho
+	 * @return un nuevo objeto de tipo Cartucho o null si se produce algún error
+	 */
     public static Cartucho getCartucho(final String nombreCartucho) {
         try {
             final Class clase = Class.forName(nombreCartucho);

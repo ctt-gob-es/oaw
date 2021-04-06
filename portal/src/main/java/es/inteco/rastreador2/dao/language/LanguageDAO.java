@@ -25,11 +25,23 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class LanguageDAO.
+ */
 public final class LanguageDAO {
 
+    /**
+	 * Instantiates a new language DAO.
+	 */
     private LanguageDAO() {
     }
 
+    /**
+	 * Load languages.
+	 *
+	 * @param c the c
+	 * @return the list
+	 */
     public static List<LenguajeForm> loadLanguages(Connection c) {
         List<LenguajeForm> lenguajeFormList = new ArrayList<>();
         PreparedStatement ps = null;

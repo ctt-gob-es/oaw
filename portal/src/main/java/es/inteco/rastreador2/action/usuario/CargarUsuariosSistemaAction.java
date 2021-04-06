@@ -31,8 +31,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 
+/**
+ * The Class CargarUsuariosSistemaAction.
+ */
 public class CargarUsuariosSistemaAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         // Marcamos el menú
         request.getSession().setAttribute(Constants.MENU, Constants.MENU_USERS);

@@ -34,8 +34,11 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class MensajeSMS {
 
+    /** The cuerpo. */
     @XmlElement(name = "Cuerpo", required = true)
     protected String cuerpo;
+    
+    /** The destinatarios SMS. */
     @XmlElement(name = "DestinatariosSMS", required = true)
     protected DestinatariosSMS destinatariosSMS;
 

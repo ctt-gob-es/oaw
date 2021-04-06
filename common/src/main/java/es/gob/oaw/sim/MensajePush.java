@@ -40,14 +40,23 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class MensajePush {
 
+    /** The titulo. */
     @XmlElement(name = "Titulo", required = true)
     protected String titulo;
+    
+    /** The cuerpo. */
     @XmlElement(name = "Cuerpo", required = true)
     protected String cuerpo;
+    
+    /** The icono. */
     @XmlElement(name = "Icono")
     protected String icono;
+    
+    /** The sonido. */
     @XmlElement(name = "Sonido")
     protected String sonido;
+    
+    /** The destinatarios push. */
     @XmlElement(name = "DestinatariosPush")
     protected DestinatariosPush destinatariosPush;
 

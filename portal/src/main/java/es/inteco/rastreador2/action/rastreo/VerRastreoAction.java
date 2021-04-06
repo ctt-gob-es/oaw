@@ -36,8 +36,20 @@ import java.util.ArrayList;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class VerRastreoAction.
+ */
 public class VerRastreoAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         if (CrawlerUtils.hasAccess(request, "view.crawler")) {
 

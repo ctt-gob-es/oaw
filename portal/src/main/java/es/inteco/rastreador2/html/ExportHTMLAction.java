@@ -50,7 +50,21 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.utils.CrawlerUtils;
 import es.inteco.utils.FileUtils;
 
+/**
+ * The Class ExportHTMLAction.
+ */
 public class ExportHTMLAction extends Action {
+	
+	/**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
 	@Override
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		PropertiesManager pmgr = new PropertiesManager();
@@ -147,6 +161,13 @@ public class ExportHTMLAction extends Action {
 		return null;
 	}
 
+	/**
+	 * File path.
+	 *
+	 * @param type        the type
+	 * @param idExecution the id execution
+	 * @return the string
+	 */
 	private static String filePath(String type, String idExecution) {
 		PropertiesManager pmgr = new PropertiesManager();
 		String filePath = pmgr.getValue(CRAWLER_PROPERTIES, "html.path").replace("{0}", idExecution);

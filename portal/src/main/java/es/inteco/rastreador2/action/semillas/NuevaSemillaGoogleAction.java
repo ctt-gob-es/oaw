@@ -30,8 +30,20 @@ import java.sql.Connection;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+/**
+ * The Class NuevaSemillaGoogleAction.
+ */
 public class NuevaSemillaGoogleAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         // Marcamos el menú
         request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_GOOGLE);

@@ -26,10 +26,24 @@ import es.inteco.common.ConstantsFont;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 
+/**
+ * The Class AnonymousResultExportPdfSection2.
+ */
 public final class AnonymousResultExportPdfSection2 {
+	
+	/**
+	 * Instantiates a new anonymous result export pdf section 2.
+	 */
 	private AnonymousResultExportPdfSection2() {
 	}
 
+	/**
+	 * Creates the chapter 2.
+	 *
+	 * @param request         the request
+	 * @param chapter         the chapter
+	 * @param observatoryType the observatory type
+	 */
 	protected static void createChapter2(HttpServletRequest request, Chapter chapter, long observatoryType) {
 		ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p1.bold"));

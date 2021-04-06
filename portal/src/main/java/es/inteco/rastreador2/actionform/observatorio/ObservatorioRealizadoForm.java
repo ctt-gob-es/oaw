@@ -36,6 +36,8 @@ public class ObservatorioRealizadoForm {
 	private String fechaStr;
 	/** The ambito. */
 	private String ambito;
+	
+	/** The tags. */
 	private List<String> tags;
 
 	/**
@@ -147,6 +149,8 @@ public class ObservatorioRealizadoForm {
 	}
 
 	/**
+	 * Gets the tags.
+	 *
 	 * @return the tags
 	 */
 	public List<String> getTags() {
@@ -154,6 +158,8 @@ public class ObservatorioRealizadoForm {
 	}
 
 	/**
+	 * Sets the tags.
+	 *
 	 * @param tags the tags to set
 	 */
 	public void setTags(List<String> tags) {

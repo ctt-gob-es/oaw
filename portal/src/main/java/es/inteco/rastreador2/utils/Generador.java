@@ -18,14 +18,30 @@ package es.inteco.rastreador2.utils;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The Class Generador.
+ */
 public class Generador {
 
+    /** The ip 1. */
     String[] ip1;
+    
+    /** The ip 2. */
     String[] ip2;
+    
+    /** The ipo. */
     int[] ipo = new int[4];
+    
+    /** The ipd. */
     int[] ipd = new int[4];
 
 
+    /**
+	 * Instantiates a new generador.
+	 *
+	 * @param ipa the ipa
+	 * @param ipb the ipb
+	 */
     public Generador(String ipa, String ipb) {
         this.ip1 = ipa.split("\\.");
         this.ip2 = ipb.split("\\.");
@@ -36,6 +52,11 @@ public class Generador {
         }
     }
 
+    /**
+	 * Genera.
+	 *
+	 * @return the sets the
+	 */
     public Set<String> genera() {
         final Set<String> result = new HashSet<>();
 

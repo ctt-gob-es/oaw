@@ -22,64 +22,146 @@ import org.apache.struts.validator.ValidatorForm;
 import javax.servlet.http.HttpServletRequest;
 
 
+/**
+ * The Class NuevaSemillaGoogleForm.
+ */
 public class NuevaSemillaGoogleForm extends ValidatorForm {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The paginas. */
     private String paginas;
+    
+    /** The query. */
     private String query;
+    
+    /** The control. */
     private String control;
+    
+    /** The nombre semilla. */
     private String nombreSemilla;
+    
+    /** The categoria. */
     private CategoriaForm categoria;
+    
+    /** The ambito. */
     private AmbitoForm ambito;
 
+    /**
+	 * Gets the nombre semilla.
+	 *
+	 * @return the nombre semilla
+	 */
     public String getNombreSemilla() {
         return nombreSemilla;
     }
 
+    /**
+	 * Sets the nombre semilla.
+	 *
+	 * @param nombreSemilla the new nombre semilla
+	 */
     public void setNombreSemilla(String nombreSemilla) {
         this.nombreSemilla = nombreSemilla;
     }
 
+    /**
+	 * Gets the control.
+	 *
+	 * @return the control
+	 */
     public String getControl() {
         return control;
     }
 
+    /**
+	 * Sets the control.
+	 *
+	 * @param control the new control
+	 */
     public void setControl(String control) {
         this.control = control;
     }
 
+    /**
+	 * Gets the paginas.
+	 *
+	 * @return the paginas
+	 */
     public String getPaginas() {
         return paginas;
     }
 
+    /**
+	 * Sets the paginas.
+	 *
+	 * @param paginas the new paginas
+	 */
     public void setPaginas(String paginas) {
         this.paginas = paginas;
     }
 
+    /**
+	 * Gets the query.
+	 *
+	 * @return the query
+	 */
     public String getQuery() {
         return query;
     }
 
+    /**
+	 * Sets the query.
+	 *
+	 * @param query the new query
+	 */
     public void setQuery(String query) {
         this.query = query;
     }
 
+    /**
+	 * Gets the categoria.
+	 *
+	 * @return the categoria
+	 */
     public CategoriaForm getCategoria() {
         return categoria;
     }
 
+    /**
+	 * Sets the categoria.
+	 *
+	 * @param categoria the new categoria
+	 */
     public void setCategoria(CategoriaForm categoria) {
         this.categoria = categoria;
     }
 
+    /**
+	 * Gets the ambito.
+	 *
+	 * @return the ambito
+	 */
     public AmbitoForm getAmbito() {
         return ambito;
     }
 
+    /**
+	 * Sets the ambito.
+	 *
+	 * @param ambito the new ambito
+	 */
     public void setAmbito(AmbitoForm ambito) {
         this.ambito = ambito;
     }
     
+    /**
+	 * Reset.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 */
     @Override
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);

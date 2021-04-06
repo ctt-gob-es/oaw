@@ -85,7 +85,7 @@ public class ClasificacionForm extends ValidatorForm implements Serializable {
 	/**
 	 * Sets the name.
 	 *
-	 * @param  the new name
+	 * @param nombre the new nombre
 	 */
 	public void setNombre(String nombre) {
 		this.nombre = nombre;

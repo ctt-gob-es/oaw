@@ -43,8 +43,21 @@ import java.util.*;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class AnonymousHTMLAction.
+ */
 public class AnonymousHTMLAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -250,6 +263,13 @@ public class AnonymousHTMLAction extends Action {
         return null;
     }
 
+    /**
+	 * Return section.
+	 *
+	 * @param section    the section
+	 * @param sectionNum the section num
+	 * @return the section form
+	 */
     private SectionForm returnSection(SectionForm section, int sectionNum) {
         for (Object object : section.getObjectList()) {
             if (object instanceof es.inteco.rastreador2.imp.xml.result.SectionForm) {
@@ -266,6 +286,13 @@ public class AnonymousHTMLAction extends Action {
         return null;
     }
 
+    /**
+	 * Return section.
+	 *
+	 * @param introduction the introduction
+	 * @param sectionNum   the section num
+	 * @return the section form
+	 */
     private SectionForm returnSection(SectionSetForm introduction, int sectionNum) {
         for (SectionForm section : introduction.getSectionList()) {
             if (section.getSectionNumber() == sectionNum) {
@@ -279,6 +306,17 @@ public class AnonymousHTMLAction extends Action {
         return null;
     }
 
+    /**
+	 * Creates the global results.
+	 *
+	 * @param request           the request
+	 * @param mapping           the mapping
+	 * @param noDataMess        the no data mess
+	 * @param pageExecutionList the page execution list
+	 * @param filePath          the file path
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createGlobalResults(HttpServletRequest request, ActionMapping mapping, String noDataMess, java.util.List<ObservatoryEvaluationForm> pageExecutionList, String filePath) throws Exception {
         String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.title");
         String file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.name") + ".jpg";
@@ -288,6 +326,18 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.GLOBAL_RESULTS_FORWARD);
     }
 
+    /**
+	 * Creates the global results 2.
+	 *
+	 * @param request           the request
+	 * @param mapping           the mapping
+	 * @param noDataMess        the no data mess
+	 * @param pageExecutionList the page execution list
+	 * @param filePath          the file path
+	 * @param categories        the categories
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createGlobalResults2(HttpServletRequest request, ActionMapping mapping, String noDataMess, java.util.List<ObservatoryEvaluationForm> pageExecutionList, String filePath, List<CategoriaForm> categories) throws Exception {
         String file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segments.mark.name") + ".jpg";
         ResultadosAnonimosObservatorioIntavUtils.getGlobalMarkBySegmentsGroupGraphic(request, file, noDataMess, pageExecutionList, categories, true);
@@ -296,6 +346,18 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.GLOBAL_RESULTS2_FORWARD);
     }
 
+    /**
+	 * Creates the global results 3.
+	 *
+	 * @param request           the request
+	 * @param mapping           the mapping
+	 * @param noDataMess        the no data mess
+	 * @param pageExecutionList the page execution list
+	 * @param filePath          the file path
+	 * @param categories        the categories
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createGlobalResults3(HttpServletRequest request, ActionMapping mapping, String noDataMess, java.util.List<ObservatoryEvaluationForm> pageExecutionList, String filePath, List<CategoriaForm> categories) throws Exception {
         String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segment.strached.title");
         String file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segment.strached.name") + ".jpg";
@@ -305,6 +367,17 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.GLOBAL_RESULTS3_FORWARD);
     }
 
+    /**
+	 * Creates the global results 4.
+	 *
+	 * @param request           the request
+	 * @param mapping           the mapping
+	 * @param noDataMess        the no data mess
+	 * @param pageExecutionList the page execution list
+	 * @param filePath          the file path
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createGlobalResults4(HttpServletRequest request, ActionMapping mapping, String noDataMess, java.util.List<ObservatoryEvaluationForm> pageExecutionList, String filePath) throws Exception {
         PropertiesManager pmgr = new PropertiesManager();
         String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.title");
@@ -318,6 +391,17 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.GLOBAL_RESULTS4_FORWARD);
     }
 
+    /**
+	 * Creates the global results 5.
+	 *
+	 * @param request           the request
+	 * @param mapping           the mapping
+	 * @param noDataMess        the no data mess
+	 * @param pageExecutionList the page execution list
+	 * @param filePath          the file path
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createGlobalResults5(HttpServletRequest request, ActionMapping mapping, String noDataMess, java.util.List<ObservatoryEvaluationForm> pageExecutionList, String filePath) throws Exception {
         String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.title");
         String file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.name") + ".jpg";
@@ -330,6 +414,17 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.GLOBAL_RESULTS5_FORWARD);
     }
 
+    /**
+	 * Creates the global results 6.
+	 *
+	 * @param request           the request
+	 * @param mapping           the mapping
+	 * @param noDataMess        the no data mess
+	 * @param pageExecutionList the page execution list
+	 * @param filePath          the file path
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createGlobalResults6(HttpServletRequest request, ActionMapping mapping, String noDataMess, java.util.List<ObservatoryEvaluationForm> pageExecutionList, String filePath) throws Exception {
         PropertiesManager pmgr = new PropertiesManager();
         String file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspect.mid.name") + ".jpg";
@@ -340,6 +435,16 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.GLOBAL_RESULTS6_FORWARD);
     }
 
+    /**
+	 * Creates the segment results 1.
+	 *
+	 * @param request           the request
+	 * @param mapping           the mapping
+	 * @param pageExecutionList the page execution list
+	 * @param categoryName      the category name
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createSegmentResults1(HttpServletRequest request, ActionMapping mapping, java.util.List<ObservatoryEvaluationForm> pageExecutionList, String categoryName) throws Exception {
         Map<String, Integer> resultsMap = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
         request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, ResultadosAnonimosObservatorioIntavUtils.infoGlobalAccessibilityLevel(CrawlerUtils.getResources(request), resultsMap));
@@ -349,6 +454,15 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.SEGMENT_RESULTS_FORWARD_1);
     }
 
+    /**
+	 * Creates the segment results 2.
+	 *
+	 * @param request      the request
+	 * @param mapping      the mapping
+	 * @param categoryName the category name
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createSegmentResults2(HttpServletRequest request, ActionMapping mapping, String categoryName) throws Exception {
         request.setAttribute(Constants.HTML_SUBMENU, Constants.HTML_MENU_SEGMENT_RESULTS_2);
         request.setAttribute(Constants.HTML_MENU, Constants.HTML_MENU_SEGMENT_RESULTS);
@@ -356,6 +470,16 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.SEGMENT_RESULTS_FORWARD_2);
     }
 
+    /**
+	 * Creates the segment results 3.
+	 *
+	 * @param request           the request
+	 * @param mapping           the mapping
+	 * @param pageExecutionList the page execution list
+	 * @param categoryName      the category name
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createSegmentResults3(HttpServletRequest request, ActionMapping mapping, java.util.List<ObservatoryEvaluationForm> pageExecutionList, String categoryName) throws Exception {
         Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_1);
         Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_2);
@@ -367,6 +491,16 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.SEGMENT_RESULTS_FORWARD_3);
     }
 
+    /**
+	 * Creates the segment results 4.
+	 *
+	 * @param request           the request
+	 * @param mapping           the mapping
+	 * @param pageExecutionList the page execution list
+	 * @param categoryName      the category name
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createSegmentResults4(HttpServletRequest request, ActionMapping mapping, java.util.List<ObservatoryEvaluationForm> pageExecutionList, String categoryName) throws Exception {
         Map<String, BigDecimal> results1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_1);
         Map<String, BigDecimal> results2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_2);
@@ -379,6 +513,16 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.SEGMENT_RESULTS_FORWARD_4);
     }
 
+    /**
+	 * Creates the segment results 5.
+	 *
+	 * @param request           the request
+	 * @param mapping           the mapping
+	 * @param pageExecutionList the page execution list
+	 * @param categoryName      the category name
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createSegmentResults5(HttpServletRequest request, ActionMapping mapping, java.util.List<ObservatoryEvaluationForm> pageExecutionList, String categoryName) throws Exception {
         Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), pageExecutionList);
         request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMA, ResultadosAnonimosObservatorioIntavUtils.infoAspectMidsComparison(request, result));
@@ -389,6 +533,15 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.SEGMENT_RESULTS_FORWARD_5);
     }
 
+    /**
+	 * Creates the evolution results 1.
+	 *
+	 * @param request            the request
+	 * @param mapping            the mapping
+	 * @param pageObservatoryMap the page observatory map
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createEvolutionResults1(HttpServletRequest request, ActionMapping mapping, Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws Exception {
         Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioIntavUtils.getEvolutionObservatoriesSitesByType(request.getParameter(Constants.ID_OBSERVATORIO), request.getParameter(Constants.ID), pageObservatoryMap);
         Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_A);
@@ -402,6 +555,15 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.EVOLUTION_RESULTS_FORWARD1);
     }
 
+    /**
+	 * Creates the evolution results 2.
+	 *
+	 * @param request            the request
+	 * @param mapping            the mapping
+	 * @param pageObservatoryMap the page observatory map
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createEvolutionResults2(HttpServletRequest request, ActionMapping mapping, Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws Exception {
         Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateEvolutionPuntuationDataSet(pageObservatoryMap);
         request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_MID_PUNT, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkEvolutionGraphic(resultData));
@@ -410,6 +572,15 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.EVOLUTION_RESULTS_FORWARD2);
     }
 
+    /**
+	 * Creates the evolution results 3.
+	 *
+	 * @param request            the request
+	 * @param mapping            the mapping
+	 * @param pageObservatoryMap the page observatory map
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createEvolutionResults3(HttpServletRequest request, ActionMapping mapping, Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws Exception {
         Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION, pageObservatoryMap);
         final MessageResources messageResources = CrawlerUtils.getResources(request);
@@ -458,6 +629,15 @@ public class AnonymousHTMLAction extends Action {
         return mapping.findForward(Constants.EVOLUTION_RESULTS_FORWARD3);
     }
 
+    /**
+	 * Creates the evolution results 4.
+	 *
+	 * @param request            the request
+	 * @param mapping            the mapping
+	 * @param pageObservatoryMap the page observatory map
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward createEvolutionResults4(HttpServletRequest request, ActionMapping mapping, Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws Exception {
         Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
         for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {

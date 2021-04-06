@@ -57,7 +57,7 @@ public class ReducirTablasForm extends ValidatorForm implements Serializable {
 	/**
 	 * Sets the size.
 	 *
-	 * @param id the new size
+	 * @param size the new size
 	 */
 	public void setSize(Long size) {
 		this.size = size;
@@ -77,7 +77,7 @@ public class ReducirTablasForm extends ValidatorForm implements Serializable {
 	/**
 	 * Sets the name.
 	 *
-	 * @param  the new name
+	 * @param name the new name
 	 */
 	public void setName(String name) {
 		this.name = name;

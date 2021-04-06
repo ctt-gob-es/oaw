@@ -36,10 +36,15 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class MensajeRespuesta {
 
+    /** The id externo. */
     @XmlElement(required = true)
     protected String idExterno;
+    
+    /** The id mensaje. */
     @XmlElement(required = true)
     protected String idMensaje;
+    
+    /** The error mensaje. */
     @XmlElement(name = "ErrorMensaje")
     protected ResponseStatusType errorMensaje;
 

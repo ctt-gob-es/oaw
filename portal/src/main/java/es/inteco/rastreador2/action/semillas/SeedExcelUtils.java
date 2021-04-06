@@ -16,37 +16,81 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Utilities to read/write seeds from/to an xlsx file
- * */
+ * Utilities to read/write seeds from/to an xlsx file.
+ */
 public final class SeedExcelUtils {
 
+	/**
+	 * Instantiates a new seed excel utils.
+	 */
 	private SeedExcelUtils() {
 	}
 
 	/**
-	 * Enumeration to define column properties in the excel file (column_name, column_number )
+	 * Enumeration to define column properties in the excel file (column_name, column_number ).
 	 */
 	private enum SeedExcelColumns {
+		
+		/** The id. */
 		ID("id", 0),
+		
+		/** The nombre. */
 		NOMBRE("nombre", 1),
+		
+		/** The activa. */
 		ACTIVA("activa", 2),
+		
+		/** The eliminada. */
 		ELIMINADA("eliminada", 3),
+		
+		/** The urls. */
 		URLS("url", 4),
+		
+		/** The acronimo. */
 		ACRONIMO("acronimo", 5),
+		
+		/** The dependencia. */
 		DEPENDENCIA("depende_de", 6),
+		
+		/** The directorio. */
 		DIRECTORIO("en_directorio", 7),
+		
+		/** The segmento. */
 		SEGMENTO("segmento", 8),
+		
+		/** The ambito. */
 		AMBITO("ambito", 9),
+		
+		/** The complejidad. */
 		COMPLEJIDAD("complejidad", 10),
+		
+		/** The etiquetas tematica. */
 		ETIQUETAS_TEMATICA("tematica", 11),
+		
+		/** The etiquetas distribucion. */
 		ETIQUETAS_DISTRIBUCION("distribucion", 12),
+		
+		/** The etiquetas recurrencia. */
 		ETIQUETAS_RECURRENCIA("recurrencia", 13),
+		
+		/** The etiquetas otros. */
 		ETIQUETAS_OTROS("otros", 14),
+		
+		/** The observaciones. */
 		OBSERVACIONES("observaciones", 15);
 
+		/** The column name. */
 		private final String columnName;
+		
+		/** The column id. */
 		private final int columnId;
 
+		/**
+		 * Instantiates a new seed excel columns.
+		 *
+		 * @param name the name
+		 * @param id   the id
+		 */
 		SeedExcelColumns(String name, int id){
 			this.columnName = name;
 			this.columnId = id;
@@ -54,12 +98,22 @@ public final class SeedExcelUtils {
 	}
 
 	/**
-	 * Simple class to store cell information
+	 * Simple class to store cell information.
 	 */
 	private static class CellInfo {
+		
+		/** The column info. */
 		SeedExcelColumns columnInfo;
+		
+		/** The value. */
 		String value;
 
+		/**
+		 * Instantiates a new cell info.
+		 *
+		 * @param column the column
+		 * @param value  the value
+		 */
 		public CellInfo(SeedExcelColumns column, String value){
 			this.columnInfo = column;
 			this.value = value;
@@ -168,11 +222,11 @@ public final class SeedExcelUtils {
 	}
 
 	/**
-	 * Generates an .xlsx file from a list of seeds and  writes it on the
-	 * servlet response
-	 * @param response
-	 * @param seeds
-	 * @throws Exception
+	 * Generates an .xlsx file from a list of seeds and writes it on the servlet response
+	 *
+	 * @param response the response
+	 * @param seeds    the seeds
+	 * @throws Exception the exception
 	 */
 	public static void writeSeedsToXlsxResponse(HttpServletResponse response, List<SemillaForm> seeds) throws Exception {
 		Workbook wb = new XSSFWorkbook();
@@ -219,9 +273,10 @@ public final class SeedExcelUtils {
 
 	/**
 	 * Extracts a list of seeds from a .xlsx file encoded in an input stream
+	 *
 	 * @param inputStream .xlsx file in a stream
 	 * @return List of decoded seeds
-	 * @throws Exception
+	 * @throws Exception the exception
 	 */
 	public static List<SemillaForm> getSeedsFromXlsxFile(InputStream inputStream) throws Exception {
 		try {

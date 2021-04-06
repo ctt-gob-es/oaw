@@ -37,18 +37,25 @@ import es.inteco.rastreador2.actionform.usuario.VerUsuarioSistemaForm;
 import es.inteco.rastreador2.utils.EncryptUtils;
 import es.inteco.rastreador2.utils.ListadoUsuario;
 
+/**
+ * The Class LoginDAO.
+ */
 public final class LoginDAO {
+	
+	/**
+	 * Instantiates a new login DAO.
+	 */
 	private LoginDAO() {
 	}
 
 	/**
-	 * Comprueba si el usuario está registrado
+	 * Comprueba si el usuario está registrado.
 	 *
-	 * @param c
-	 * @param userName
-	 * @param password
-	 * @return
-	 * @throws Exception
+	 * @param c        the c
+	 * @param userName the user name
+	 * @param password the password
+	 * @return the registered user
+	 * @throws SQLException the SQL exception
 	 */
 	public static Usuario getRegisteredUser(final Connection c, final String userName, final String password) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM usuario u WHERE u.usuario = ? AND Password = md5(?)")) {
@@ -74,6 +81,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Gets the user rol type.
+	 *
+	 * @param c      the c
+	 * @param idUser the id user
+	 * @return the user rol type
+	 * @throws SQLException the SQL exception
+	 */
 	public static int getUserRolType(final Connection c, final Long idUser) throws SQLException {
 		try (PreparedStatement ps = c
 				.prepareStatement("SELECT id_tipo FROM roles r " + "JOIN usuario_rol ur ON (ur.id_rol = r.id_rol) " + "JOIN usuario u ON (ur.usuario = u.id_usuario) " + "WHERE u.id_usuario = ?")) {
@@ -91,6 +106,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Gets the user account.
+	 *
+	 * @param c      the c
+	 * @param idUser the id user
+	 * @return the user account
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<String> getUserAccount(final Connection c, final Long idUser) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT  DISTINCT(ccu.id_usuario), GROUP_CONCAT(DISTINCT(cc.nombre)) as nombre " + "FROM cuenta_cliente cc "
 				+ "JOIN cuenta_cliente_usuario ccu ON (cc.id_cuenta = ccu.id_cuenta) " + "WHERE ccu.id_usuario = ? GROUP BY ccu.id_usuario")) {
@@ -108,6 +131,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Gets the user account ids.
+	 *
+	 * @param c      the c
+	 * @param idUser the id user
+	 * @return the user account ids
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<String> getUserAccountIds(final Connection c, final Long idUser) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT id_cuenta FROM cuenta_cliente_usuario WHERE id_usuario = ?")) {
 			ps.setLong(1, idUser);
@@ -124,6 +155,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Gets the user observatory ids.
+	 *
+	 * @param c      the c
+	 * @param idUser the id user
+	 * @return the user observatory ids
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<String> getUserObservatoryIds(final Connection c, final Long idUser) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT id_observatorio FROM observatorio_usuario WHERE id_usuario = ?")) {
 			ps.setLong(1, idUser);
@@ -140,6 +179,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Gets the user cartridge.
+	 *
+	 * @param c      the c
+	 * @param idUser the id user
+	 * @return the user cartridge
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<CartuchoForm> getUserCartridge(final Connection c, final Long idUser) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement(
 				"SELECT c.id_cartucho, c.aplicacion FROM usuario_cartucho uc " + "JOIN cartucho c ON (c.id_cartucho = uc.id_cartucho) WHERE uc.id_usuario = ? AND c.instalado = true")) {
@@ -160,6 +207,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Gets the user roles.
+	 *
+	 * @param c      the c
+	 * @param idUser the id user
+	 * @return the user roles
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<Role> getUserRoles(final Connection c, final Long idUser) throws SQLException {
 		final List<Role> roleList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM usuario_rol ur " + "JOIN roles r ON (r.id_rol = ur.id_rol) WHERE ur.usuario = ?")) {
@@ -174,6 +229,13 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Gets the all user cartridge.
+	 *
+	 * @param c the c
+	 * @return the all user cartridge
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<CartuchoForm> getAllUserCartridge(Connection c) throws SQLException {
 		final List<CartuchoForm> cartridgeList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT c.id_cartucho, c.aplicacion FROM cartucho c WHERE c.instalado = 1"); ResultSet rs = ps.executeQuery()) {
@@ -190,6 +252,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Gets the all user roles.
+	 *
+	 * @param c           the c
+	 * @param userRolType the user rol type
+	 * @return the all user roles
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<Role> getAllUserRoles(Connection c, int userRolType) throws SQLException {
 		final List<Role> roleList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM roles WHERE id_tipo = ?")) {
@@ -204,6 +274,13 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Count users.
+	 *
+	 * @param c the c
+	 * @return the int
+	 * @throws SQLException the SQL exception
+	 */
 	public static int countUsers(Connection c) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM usuario u WHERE u.id_usuario != 1")) {
 			try (ResultSet rs = ps.executeQuery()) {
@@ -219,6 +296,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * User list.
+	 *
+	 * @param c    the c
+	 * @param page the page
+	 * @return the list
+	 * @throws Exception the exception
+	 */
 	public static List<ListadoUsuario> userList(Connection c, int page) throws Exception {
 		final List<ListadoUsuario> userList = new ArrayList<>();
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -251,6 +336,15 @@ public final class LoginDAO {
 		return userList;
 	}
 
+	/**
+	 * Gets the delete user.
+	 *
+	 * @param c                          the c
+	 * @param idUser                     the id user
+	 * @param eliminarUsuarioSistemaForm the eliminar usuario sistema form
+	 * @return the delete user
+	 * @throws Exception the exception
+	 */
 	public static EliminarUsuarioSistemaForm getDeleteUser(final Connection c, final Long idUser, final EliminarUsuarioSistemaForm eliminarUsuarioSistemaForm) throws Exception {
 		try (PreparedStatement ps = c
 				.prepareStatement("SELECT u.*, GROUP_CONCAT(DISTINCT(cc.nombre)) AS nombreCuentas " + "FROM usuario u " + "LEFT JOIN cuenta_cliente_usuario ccu ON (ccu.id_usuario = u.id_usuario) "
@@ -278,6 +372,13 @@ public final class LoginDAO {
 		return eliminarUsuarioSistemaForm;
 	}
 
+	/**
+	 * Delete user.
+	 *
+	 * @param c      the c
+	 * @param idUser the id user
+	 * @throws SQLException the SQL exception
+	 */
 	public static void deleteUser(Connection c, Long idUser) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM usuario WHERE id_usuario = ?")) {
 			ps.setLong(1, idUser);
@@ -288,6 +389,15 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Exist user with key.
+	 *
+	 * @param c        the c
+	 * @param passwold the passwold
+	 * @param idUser   the id user
+	 * @return true, if successful
+	 * @throws SQLException the SQL exception
+	 */
 	public static boolean existUserWithKey(Connection c, String passwold, Long idUser) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT 1 from usuario where id_usuario = ? AND password = md5(?);")) {
 			ps.setLong(1, idUser);
@@ -301,6 +411,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Update password.
+	 *
+	 * @param c                        the c
+	 * @param modificarUsuarioPassForm the modificar usuario pass form
+	 * @param idUser                   the id user
+	 * @throws SQLException the SQL exception
+	 */
 	public static void updatePassword(Connection c, ModificarUsuarioPassForm modificarUsuarioPassForm, Long idUser) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("UPDATE usuario SET Password = md5(?) where id_usuario = ?;")) {
 			ps.setString(1, modificarUsuarioPassForm.getPassword());
@@ -312,6 +430,16 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Gets the user dates to update.
+	 *
+	 * @param c                           the c
+	 * @param modificarUsuarioSistemaForm the modificar usuario sistema form
+	 * @param idUser                      the id user
+	 * @param userRolType                 the user rol type
+	 * @return the user dates to update
+	 * @throws Exception the exception
+	 */
 	public static void getUserDatesToUpdate(Connection c, ModificarUsuarioSistemaForm modificarUsuarioSistemaForm, Long idUser, int userRolType) throws Exception {
 		try {
 			DatosForm dataForm = getUserDataById(c, idUser);
@@ -347,6 +475,15 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Gets the user data to see.
+	 *
+	 * @param c                     the c
+	 * @param verUsuarioSistemaForm the ver usuario sistema form
+	 * @param idUser                the id user
+	 * @return the user data to see
+	 * @throws Exception the exception
+	 */
 	public static void getUserDataToSee(Connection c, VerUsuarioSistemaForm verUsuarioSistemaForm, Long idUser) throws Exception {
 		try {
 			DatosForm dataForm = getUserDataById(c, idUser);
@@ -364,6 +501,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Gets the user data by id.
+	 *
+	 * @param c      the c
+	 * @param idUser the id user
+	 * @return the user data by id
+	 * @throws SQLException the SQL exception
+	 */
 	public static DatosForm getUserDataById(Connection c, Long idUser) throws SQLException {
 		final DatosForm datosForm = new DatosForm();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM usuario u WHERE u.id_usuario = ?")) {
@@ -378,6 +523,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Gets the user data by name.
+	 *
+	 * @param c    the c
+	 * @param user the user
+	 * @return the user data by name
+	 * @throws SQLException the SQL exception
+	 */
 	public static DatosForm getUserDataByName(Connection c, String user) throws SQLException {
 		final DatosForm datosForm = new DatosForm();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM usuario u WHERE u.usuario = ?")) {
@@ -392,6 +545,13 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Populate user data from result set.
+	 *
+	 * @param userData  the user data
+	 * @param resultado the resultado
+	 * @throws SQLException the SQL exception
+	 */
 	private static void populateUserDataFromResultSet(final DatosForm userData, final ResultSet resultado) throws SQLException {
 		while (resultado.next()) {
 			userData.setNombre(resultado.getString("Nombre").trim());
@@ -404,12 +564,12 @@ public final class LoginDAO {
 	}
 
 	/**
-	 * Comprueba si ya existe una cuenta de usuario con un determinado nombre
+	 * Comprueba si ya existe una cuenta de usuario con un determinado nombre.
 	 *
 	 * @param c    conexión Connection a la BD
 	 * @param name cadena String con el nombre de usuario a comprobar
 	 * @return true si ya existe una cuenta de usuario con ese nombre o false en caso contrario
-	 * @throws SQLException
+	 * @throws SQLException the SQL exception
 	 */
 	public static boolean existUser(final Connection c, final String name) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM usuario WHERE usuario = ?")) {
@@ -423,6 +583,13 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Update user.
+	 *
+	 * @param c                           the c
+	 * @param modificarUsuarioSistemaForm the modificar usuario sistema form
+	 * @throws Exception the exception
+	 */
 	public static void updateUser(final Connection c, final ModificarUsuarioSistemaForm modificarUsuarioSistemaForm) throws Exception {
 		try {
 			c.setAutoCommit(false);
@@ -473,6 +640,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Insert usuario cartucho.
+	 *
+	 * @param c                 the c
+	 * @param idUsuario         the id usuario
+	 * @param selectedCartuchos the selected cartuchos
+	 * @throws SQLException the SQL exception
+	 */
 	private static void insertUsuarioCartucho(final Connection c, final long idUsuario, final String[] selectedCartuchos) throws SQLException {
 		try (PreparedStatement insertUsuarioCartuchoStatement = c.prepareStatement("INSERT INTO usuario_cartucho VALUES (?,?)")) {
 			for (String selectedCartucho : selectedCartuchos) {
@@ -484,6 +659,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Insert usuario roles.
+	 *
+	 * @param c             the c
+	 * @param idUsuario     the id usuario
+	 * @param selectedRoles the selected roles
+	 * @throws SQLException the SQL exception
+	 */
 	private static void insertUsuarioRoles(final Connection c, final long idUsuario, final String[] selectedRoles) throws SQLException {
 		try (PreparedStatement insertUsuarioRolStatement = c.prepareStatement("INSERT INTO usuario_rol VALUES (?,?)")) {
 			for (String selectedRole : selectedRoles) {
@@ -495,6 +678,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Insert cuenta cliente usuario.
+	 *
+	 * @param c                     the c
+	 * @param idUsuario             the id usuario
+	 * @param selectedCuentaCliente the selected cuenta cliente
+	 * @throws SQLException the SQL exception
+	 */
 	private static void insertCuentaClienteUsuario(final Connection c, final long idUsuario, final String[] selectedCuentaCliente) throws SQLException {
 		try (PreparedStatement insertCuentaClientStatement = c.prepareStatement("INSERT INTO cuenta_cliente_usuario VALUES (?,?)")) {
 			for (String aSelectedCuentaCliente : selectedCuentaCliente) {
@@ -506,6 +697,13 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Insert user.
+	 *
+	 * @param c                       the c
+	 * @param nuevoUsuarioSistemaForm the nuevo usuario sistema form
+	 * @throws Exception the exception
+	 */
 	public static void insertUser(final Connection c, final NuevoUsuarioSistemaForm nuevoUsuarioSistemaForm) throws Exception {
 		try {
 			c.setAutoCommit(false);
@@ -535,6 +733,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Insert into usuario.
+	 *
+	 * @param c                       the c
+	 * @param nuevoUsuarioSistemaForm the nuevo usuario sistema form
+	 * @return the long
+	 * @throws SQLException the SQL exception
+	 */
 	private static long insertIntoUsuario(final Connection c, NuevoUsuarioSistemaForm nuevoUsuarioSistemaForm) throws SQLException {
 		try (PreparedStatement insertUsuarioStatement = c.prepareStatement("INSERT INTO usuario(Usuario, Password,  Nombre, Apellidos, Departamento, Email) VALUES (?, md5(?), ?, ?, ?, ?)",
 				Statement.RETURN_GENERATED_KEYS)) {
@@ -555,6 +761,14 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Insert observatorio usuario.
+	 *
+	 * @param c                     the c
+	 * @param idUsuario             the id usuario
+	 * @param selectedObservatorios the selected observatorios
+	 * @throws SQLException the SQL exception
+	 */
 	private static void insertObservatorioUsuario(final Connection c, final long idUsuario, final String[] selectedObservatorios) throws SQLException {
 		try (PreparedStatement insertObservatorioUsuarioStatement = c.prepareStatement("INSERT INTO observatorio_usuario VALUES (?,?)")) {
 			for (String selectedObservatorio : selectedObservatorios) {
@@ -566,6 +780,15 @@ public final class LoginDAO {
 		}
 	}
 
+	/**
+	 * Load user data.
+	 *
+	 * @param c                     the c
+	 * @param user                  the user
+	 * @param redireccionConfigForm the redireccion config form
+	 * @return the redireccion config form
+	 * @throws Exception the exception
+	 */
 	public static RedireccionConfigForm loadUserData(Connection c, String user, RedireccionConfigForm redireccionConfigForm) throws Exception {
 		try (PreparedStatement ps = c.prepareStatement("SELECT id_cartucho, password, tipo FROM usuario WHERE usuario = ?")) {
 			ps.setString(1, user);
@@ -585,6 +808,12 @@ public final class LoginDAO {
 		return redireccionConfigForm;
 	}
 
+	/**
+	 * List from string.
+	 *
+	 * @param roleString the role string
+	 * @return the list
+	 */
 	private static List<String> listFromString(String roleString) {
 		final List<String> roleList = new ArrayList<>();
 		if (roleString != null) {
@@ -596,6 +825,14 @@ public final class LoginDAO {
 		return roleList;
 	}
 
+	/**
+	 * Gets the client account.
+	 *
+	 * @param c         the c
+	 * @param idAccount the id account
+	 * @return the client account
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<DatosForm> getClientAccount(Connection c, Long idAccount) throws SQLException {
 		final List<DatosForm> results = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT u.id_usuario, u.nombre, u.usuario, u.apellidos, u.departamento, u.email FROM usuario u "
@@ -622,6 +859,14 @@ public final class LoginDAO {
 		return results;
 	}
 
+	/**
+	 * Gets the mails by role.
+	 *
+	 * @param c      the c
+	 * @param idRole the id role
+	 * @return the mails by role
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<String> getMailsByRole(Connection c, Long idRole) throws SQLException {
 		final List<String> mails = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT email FROM usuario u " + "LEFT JOIN usuario_rol ur ON (u.id_usuario = ur.usuario) " + "WHERE ur.id_rol = ?;")) {
@@ -638,6 +883,13 @@ public final class LoginDAO {
 		return mails;
 	}
 
+	/**
+	 * Populate role list from result set.
+	 *
+	 * @param roleList the role list
+	 * @param rs       the rs
+	 * @throws SQLException the SQL exception
+	 */
 	private static void populateRoleListFromResultSet(final List<Role> roleList, final ResultSet rs) throws SQLException {
 		while (rs.next()) {
 			final Role role = new Role();

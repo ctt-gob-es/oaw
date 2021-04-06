@@ -23,8 +23,23 @@ import es.inteco.rastreador2.ws.utils.CrawlerWSUtils;
 
 import java.util.Calendar;
 
+/**
+ * The Class CrawlerWS.
+ */
 public class CrawlerWS {
 
+    /**
+	 * Web crawl.
+	 *
+	 * @param url            the url
+	 * @param depth          the depth
+	 * @param size           the size
+	 * @param guideline      the guideline
+	 * @param email          the email
+	 * @param schedulingDate the scheduling date
+	 * @param idUser         the id user
+	 * @return the integer
+	 */
     public Integer webCrawl(String url, int depth, int size, String guideline, String email, Calendar schedulingDate, String idUser) {
         BasicServiceForm basicServiceForm = CrawlerWSUtils.getBasicServiceForm(url, depth, size, guideline, email, schedulingDate, idUser);
 

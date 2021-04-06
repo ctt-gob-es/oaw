@@ -43,10 +43,23 @@ import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 
+/**
+ * The Class AnonymousResultExportPdfSectionCat.
+ */
 public final class AnonymousResultExportPdfSectionCat {
+	
+	/**
+	 * Instantiates a new anonymous result export pdf section cat.
+	 */
 	private AnonymousResultExportPdfSectionCat() {
 	}
 
+	/**
+	 * Creates the chapter 4.
+	 *
+	 * @param request the request
+	 * @param chapter the chapter
+	 */
 	protected static void createChapter4(HttpServletRequest request, Chapter chapter) {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.4.p1"), ConstantsFont.PARAGRAPH, chapter);
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.4.p2"), ConstantsFont.PARAGRAPH, chapter);
@@ -55,10 +68,27 @@ public final class AnonymousResultExportPdfSectionCat {
 	// RESULTADOS: CATEGORY
 	// **************************************************************************************************
 
+	/**
+	 * Creates the section cat.
+	 *
+	 * @param request  the request
+	 * @param section  the section
+	 * @param category the category
+	 */
 	protected static void createSectionCat(HttpServletRequest request, Section section, CategoriaForm category) {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat.p1", category.getName()), ConstantsFont.PARAGRAPH, section);
 	}
 
+	/**
+	 * Creates the section cat 1.
+	 *
+	 * @param request      the request
+	 * @param section      the section
+	 * @param graphicPath  the graphic path
+	 * @param execution_id the execution id
+	 * @param category     the category
+	 * @throws Exception the exception
+	 */
 	protected static void createSectionCat1(HttpServletRequest request, Section section, String graphicPath, String execution_id, CategoriaForm category) throws Exception {
 		try {
 			PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat1.p1"), ConstantsFont.PARAGRAPH, section);
@@ -90,6 +120,16 @@ public final class AnonymousResultExportPdfSectionCat {
 		}
 	}
 
+	/**
+	 * Creates the section cat 2.
+	 *
+	 * @param request           the request
+	 * @param section           the section
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @param category          the category
+	 * @throws Exception the exception
+	 */
 	protected static void createSectionCat2(HttpServletRequest request, Section section, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList, CategoriaForm category)
 			throws Exception {
 		try {
@@ -133,6 +173,16 @@ public final class AnonymousResultExportPdfSectionCat {
 		// AnonymousResultExportPdfVariableText.createVText4x2(request, result2, section);
 	}
 
+	/**
+	 * Creates the section cat 3.
+	 *
+	 * @param request           the request
+	 * @param section           the section
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @param category          the category
+	 * @throws Exception the exception
+	 */
 	protected static void createSectionCat3(HttpServletRequest request, Section section, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList, CategoriaForm category)
 			throws Exception {
 		final MessageResources messageResources = CrawlerUtils.getResources(request);
@@ -170,6 +220,16 @@ public final class AnonymousResultExportPdfSectionCat {
 		}
 	}
 
+	/**
+	 * Creates the section cat 4.
+	 *
+	 * @param request           the request
+	 * @param section           the section
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @param category          the category
+	 * @throws Exception the exception
+	 */
 	protected static void createSectionCat4(HttpServletRequest request, Section section, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList, CategoriaForm category)
 			throws Exception {
 		final MessageResources messageResources = CrawlerUtils.getResources(request);
@@ -192,6 +252,16 @@ public final class AnonymousResultExportPdfSectionCat {
 		section.add(PDFUtils.createTableMod(messageResources, ResultadosAnonimosObservatorioIntavUtils.infoLevelVerificationModalityComparison(results2)));
 	}
 
+	/**
+	 * Creates the section cat 5.
+	 *
+	 * @param request           the request
+	 * @param section           the section
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @param category          the category
+	 * @throws Exception the exception
+	 */
 	protected static void createSectionCat5(HttpServletRequest request, Section section, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList, CategoriaForm category)
 			throws Exception {
 		Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), pageExecutionList);

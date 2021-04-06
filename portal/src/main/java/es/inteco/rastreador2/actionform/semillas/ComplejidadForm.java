@@ -105,10 +105,10 @@ public class ComplejidadForm extends ValidatorForm implements Serializable {
     }
 
     /**
-     * Sets the profundidad.
-     *
-     * @param  the new profundidad
-     */
+	 * Sets the profundidad.
+	 *
+	 * @param profundidad the new profundidad
+	 */
     public void setProfundidad(int profundidad) {
         this.profundidad = profundidad;
     }
@@ -124,10 +124,10 @@ public class ComplejidadForm extends ValidatorForm implements Serializable {
     }
 
     /**
-     * Sets the amplitud.
-     *
-     * @param  the new amplitud
-     */
+	 * Sets the amplitud.
+	 *
+	 * @param amplitud the new amplitud
+	 */
     public void setAmplitud(int amplitud) {
         this.amplitud = amplitud;
     }

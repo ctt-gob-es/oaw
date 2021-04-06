@@ -40,8 +40,11 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class Adjunto {
 
+    /** The nombre. */
     @XmlElement(name = "Nombre", required = true)
     protected String nombre;
+    
+    /** The contenido. */
     @XmlElement(name = "Contenido", required = true)
     protected String contenido;
 

@@ -563,8 +563,9 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 	/**
 	 * Creates the image.
 	 *
-	 * @param section  the section
-	 * @param filePath the file path
+	 * @param section         the section
+	 * @param filePath        the file path
+	 * @param alternativeText the alternative text
 	 */
 	private void createImage(final Section section, final String filePath, final String alternativeText) {
 		// Add alt

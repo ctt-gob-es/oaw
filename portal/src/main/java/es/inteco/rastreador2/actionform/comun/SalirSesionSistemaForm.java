@@ -19,8 +19,12 @@ package es.inteco.rastreador2.actionform.comun;
 import org.apache.struts.action.ActionForm;
 
 
+/**
+ * The Class SalirSesionSistemaForm.
+ */
 public class SalirSesionSistemaForm extends ActionForm {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
 

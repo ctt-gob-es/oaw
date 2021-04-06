@@ -38,35 +38,38 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class Mensajes {
 
+    /** The mensaje SMS. */
     @XmlElement(name = "MensajeSMS")
     protected List<MensajeSMS> mensajeSMS;
+    
+    /** The mensaje email. */
     @XmlElement(name = "MensajeEmail")
     protected List<MensajeEmail> mensajeEmail;
+    
+    /** The mensaje push. */
     @XmlElement(name = "MensajePush")
     protected List<MensajePush> mensajePush;
 
     /**
-     * Gets the value of the mensajeSMS property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the mensajeSMS property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getMensajeSMS().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link MensajeSMS }
-     * 
-     * 
-     */
+	 * Gets the value of the mensajeSMS property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be present inside the JAXB object. This is why there is
+	 * not a <CODE>set</CODE> method for the mensajeSMS property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getMensajeSMS().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list {@link MensajeSMS }
+	 *
+	 * @return the mensaje SMS
+	 */
     public List<MensajeSMS> getMensajeSMS() {
         if (mensajeSMS == null) {
             mensajeSMS = new ArrayList<MensajeSMS>();
@@ -75,27 +78,25 @@ public class Mensajes {
     }
 
     /**
-     * Gets the value of the mensajeEmail property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the mensajeEmail property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getMensajeEmail().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link MensajeEmail }
-     * 
-     * 
-     */
+	 * Gets the value of the mensajeEmail property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be present inside the JAXB object. This is why there is
+	 * not a <CODE>set</CODE> method for the mensajeEmail property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getMensajeEmail().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list {@link MensajeEmail }
+	 *
+	 * @return the mensaje email
+	 */
     public List<MensajeEmail> getMensajeEmail() {
         if (mensajeEmail == null) {
             mensajeEmail = new ArrayList<MensajeEmail>();
@@ -104,27 +105,25 @@ public class Mensajes {
     }
 
     /**
-     * Gets the value of the mensajePush property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the mensajePush property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getMensajePush().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link MensajePush }
-     * 
-     * 
-     */
+	 * Gets the value of the mensajePush property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be present inside the JAXB object. This is why there is
+	 * not a <CODE>set</CODE> method for the mensajePush property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getMensajePush().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list {@link MensajePush }
+	 *
+	 * @return the mensaje push
+	 */
     public List<MensajePush> getMensajePush() {
         if (mensajePush == null) {
             mensajePush = new ArrayList<MensajePush>();

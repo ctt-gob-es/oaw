@@ -33,8 +33,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class ValidarLoginSistemaAction.
+ */
 public class ValidarLoginSistemaAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         try {
             ValidarLoginSistemaForm vlsForm = (ValidarLoginSistemaForm) form;
@@ -98,10 +110,22 @@ public class ValidarLoginSistemaAction extends Action {
         }
     }
 
+    /**
+	 * Removes the aplication name.
+	 *
+	 * @param path the path
+	 * @return the string
+	 */
     private String removeAplicationName(String path) {
         return path.substring((Constants.APLICATION_NAME.length()));
     }
 
+    /**
+	 * Gets the role id list.
+	 *
+	 * @param roleList the role list
+	 * @return the role id list
+	 */
     private List<String> getRoleIdList(List<Role> roleList) {
         List<String> roleIdList = new ArrayList<>();
         if (roleList != null) {

@@ -29,24 +29,42 @@ import java.util.ArrayList;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 
+/**
+ * The Class SessionTag.
+ */
 public class SessionTag extends TagSupport {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 7851110311230238272L;
+    
+    /** The action. */
     private String action = null;
 
 
     /**
-     * ************ METODOS JAVABEAN ***********************
-     */
+	 * ************ METODOS JAVABEAN ***********************.
+	 *
+	 * @return the action
+	 */
 
     public String getAction() {
         return (this.action);
     }
 
+    /**
+	 * Sets the action.
+	 *
+	 * @param action the new action
+	 */
     public void setAction(String action) {
         this.action = action;
     }
 
+    /**
+	 * Check session admin.
+	 *
+	 * @return true, if successful
+	 */
     private boolean checkSessionAdmin() {
         PropertiesManager pmgr = new PropertiesManager();
         HttpSession sesion = null;
@@ -65,6 +83,11 @@ public class SessionTag extends TagSupport {
         return false;
     }
 
+    /**
+	 * Checkpermission admin config.
+	 *
+	 * @return true, if successful
+	 */
     private boolean checkpermissionAdminConfig() {
         PropertiesManager pmgr = new PropertiesManager();
         HttpSession sesion = null;
@@ -85,6 +108,11 @@ public class SessionTag extends TagSupport {
     }
 
 
+    /**
+	 * Check session visor.
+	 *
+	 * @return true, if successful
+	 */
     private boolean checkSessionVisor() {
         PropertiesManager pmgr = new PropertiesManager();
         HttpSession sesion = null;
@@ -103,6 +131,11 @@ public class SessionTag extends TagSupport {
         return false;
     }
 
+    /**
+	 * Check session config.
+	 *
+	 * @return true, if successful
+	 */
     private boolean checkSessionConfig() {
         PropertiesManager pmgr = new PropertiesManager();
         HttpSession sesion = null;
@@ -122,6 +155,11 @@ public class SessionTag extends TagSupport {
     }
 
 
+    /**
+	 * Check session.
+	 *
+	 * @return true, if successful
+	 */
     private boolean checkSession() {
         HttpSession sesion = null;
         String sesionId = "";
@@ -145,6 +183,12 @@ public class SessionTag extends TagSupport {
         }
     }
 
+    /**
+	 * Do start tag.
+	 *
+	 * @return the int
+	 * @throws JspException the jsp exception
+	 */
     public int doStartTag() throws JspException {
         StringBuilder results = new StringBuilder("");
         String urlinicio = "../oaw/";
@@ -204,6 +248,12 @@ public class SessionTag extends TagSupport {
         return EVAL_BODY_INCLUDE;
     }
 
+    /**
+	 * Do end tag.
+	 *
+	 * @return the int
+	 * @throws JspException the jsp exception
+	 */
     public int doEndTag() throws JspException {
         // Imprime el elemento de cierre.
         JspWriter writer = pageContext.getOut();

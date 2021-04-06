@@ -95,11 +95,13 @@ public final class ExportOpenOfficeUtils {
 	 * @param tipoObservatorio            the tipo observatorio
 	 * @param numberObservatoryExecutions the number observatory executions
 	 * @param tagsToFilter                the tags to filter
+	 * @param tagsToFilterFixed           the tags to filter fixed
 	 * @param grpahicConditional          the grpahic conditional
 	 * @param exObsIds                    the ex obs ids
 	 * @param idBaseTemplate              the id base template
 	 * @param idSegmentTemplate           the id segment template
 	 * @param idComplexityTemplate        the id complexity template
+	 * @param idSegmentEvolTemplate       the id segment evol template
 	 * @param reportTitle                 the report title
 	 */
 	public static void createOpenOfficeDocumentFiltered(final HttpServletRequest request, final String filePath, final String graphicPath, final String date, final Long tipoObservatorio,

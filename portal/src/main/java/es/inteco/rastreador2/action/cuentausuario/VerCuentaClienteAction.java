@@ -29,8 +29,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 
+/**
+ * The Class VerCuentaClienteAction.
+ */
 public class VerCuentaClienteAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) {
 
@@ -59,6 +71,14 @@ public class VerCuentaClienteAction extends Action {
         return null;
     }
 
+    /**
+	 * List accounts.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward listAccounts(ActionMapping mapping, HttpServletRequest request) throws Exception {
         request.getSession().setAttribute(Constants.MENU, Constants.MENU_CLIENT_CRAWLINGS_ACCOUNT);
 
@@ -72,6 +92,14 @@ public class VerCuentaClienteAction extends Action {
         return mapping.findForward(Constants.LIST_ACCOUNTS);
     }
 
+    /**
+	 * Gets the detail.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the detail
+	 * @throws Exception the exception
+	 */
     private ActionForward getDetail(ActionMapping mapping, HttpServletRequest request) throws Exception {
         long idCuenta = 0;
         if (request.getParameter(Constants.ID_CUENTA) != null) {

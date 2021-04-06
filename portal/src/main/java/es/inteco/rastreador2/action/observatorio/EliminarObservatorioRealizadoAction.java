@@ -38,8 +38,20 @@ import java.util.List;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class EliminarObservatorioRealizadoAction.
+ */
 public class EliminarObservatorioRealizadoAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public final ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (CrawlerUtils.hasAccess(request, "delete.observatory.execution")) {
@@ -57,6 +69,13 @@ public class EliminarObservatorioRealizadoAction extends Action {
         }
     }
 
+    /**
+	 * Delete fulfilled observatory.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 */
     private ActionForward deleteFulfilledObservatory(ActionMapping mapping, HttpServletRequest request) {
         final Long idExecution = Long.valueOf(request.getParameter(Constants.ID));
         final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
@@ -87,6 +106,14 @@ public class EliminarObservatorioRealizadoAction extends Action {
         }
     }
 
+    /**
+	 * Borrar archivos asociados.
+	 *
+	 * @param c             the c
+	 * @param observatoryId the observatory id
+	 * @param executionId   the execution id
+	 * @throws SQLException the SQL exception
+	 */
     private void borrarArchivosAsociados(Connection c, final Long observatoryId, final Long executionId) throws SQLException {
         final PropertiesManager pmgr = new PropertiesManager();
         if ((observatoryId != null) && (executionId != null)) {
@@ -120,6 +147,12 @@ public class EliminarObservatorioRealizadoAction extends Action {
         }
     }
 
+    /**
+	 * Observatorio sin rastreo.
+	 *
+	 * @param rastreoDir the rastreo dir
+	 * @return true, if successful
+	 */
     private static boolean observatorioSinRastreo(final File rastreoDir) {
         if (rastreoDir.isDirectory()) {
             final String[] ficheros = rastreoDir.list();

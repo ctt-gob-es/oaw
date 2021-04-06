@@ -16,7 +16,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * The Class XlsxUtils.
  */
 public class XlsxUtils {
+	
+	/** The Constant PALE_BLUE_BACKGROUND_WHITE10_FONT. */
 	public static final String PALE_BLUE_BACKGROUND_WHITE10_FONT = "paleBlueBackgroundWhite10Font";
+	
+	/** The Constant ROYAL_BLUE_BACKGROUND_WHITE10_FONT. */
 	public static final String ROYAL_BLUE_BACKGROUND_WHITE10_FONT = "royalBlueBackgroundWhite10Font";
 	/** The Constant NORMAL_PERCENT11_CENTER_STYLE. */
 	public static final String NORMAL_PERCENT11_CENTER_STYLE = "normalPercent11CenterStyle";

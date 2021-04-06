@@ -395,6 +395,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param pageExecutionList     the page execution list
 	 * @param categories            the categories
 	 * @param tagsToFilter          the tags to filter
+	 * @param tagsToFilterFixed     the tags to filter fixed
 	 * @param grpahicConditional    the grpahic conditional
 	 * @param exObsIds              the ex obs ids
 	 * @param idBaseTemplate        the id base template
@@ -537,6 +538,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param odt              the odt
 	 * @param odfFileContent   the odf file content
 	 * @param tagsFilter       the tags filter
+	 * @param tagsFilterFixed  the tags filter fixed
 	 * @param exObsIds         the ex obs ids
 	 * @param categories       the categories
 	 * @throws IOException Signals that an I/O exception has occurred.

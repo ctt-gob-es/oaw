@@ -20,14 +20,29 @@ import java.io.FileFilter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The Class IntecoFileFilter.
+ */
 public class IntecoFileFilter implements FileFilter {
 
+    /** The pattern. */
     private final Pattern pattern;
 
+    /**
+	 * Instantiates a new inteco file filter.
+	 *
+	 * @param regExp the reg exp
+	 */
     public IntecoFileFilter(String regExp) {
         pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     }
 
+    /**
+	 * Accept.
+	 *
+	 * @param pathname the pathname
+	 * @return true, if successful
+	 */
     @Override
     public boolean accept(File pathname) {
         Matcher matcher = pattern.matcher(pathname.getName());

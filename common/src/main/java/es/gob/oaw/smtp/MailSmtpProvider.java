@@ -53,8 +53,8 @@ public class MailSmtpProvider implements MailProvider {
 
 	/**
 	 * Send mail.
-	 * 
-	 * @throws MailException
+	 *
+	 * @throws MailException the mail exception
 	 */
 	@Override
 	public void sendMail() throws MailException {

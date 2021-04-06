@@ -23,7 +23,7 @@ public class MailService {
 	 * @param mailTo      the mail to
 	 * @param mailSubject the mail subject
 	 * @param mailBody    the mail body
-	 * @throws MailException
+	 * @throws MailException the mail exception
 	 */
 	public void sendMail(final List<String> mailTo, final String mailSubject, final String mailBody) throws MailException {
 		final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
@@ -41,7 +41,7 @@ public class MailService {
 	 * @param mailBody    the mail body
 	 * @param attachUrl   the attach url
 	 * @param attachName  the attach name
-	 * @throws MailException
+	 * @throws MailException the mail exception
 	 */
 	public void sendMail(final List<String> mailTo, final String mailSubject, final String mailBody, final String attachUrl, final String attachName) throws MailException {
 		final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
@@ -61,7 +61,7 @@ public class MailService {
 	 * @param attachUrl   the attach url
 	 * @param attachName  the attach name
 	 * @param html        the html
-	 * @throws MailException
+	 * @throws MailException the mail exception
 	 */
 	public void sendMail(final List<String> mailTo, final String mailSubject, final String mailBody, final String attachUrl, final String attachName, final boolean html) throws MailException {
 		final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
@@ -80,7 +80,7 @@ public class MailService {
 	 * @param mailSubject the mail subject
 	 * @param mailBody    the mail body
 	 * @param html        the html
-	 * @throws MailException
+	 * @throws MailException the mail exception
 	 */
 	public void sendMail(final List<String> mailTo, final String mailSubject, final String mailBody, boolean html) throws MailException {
 		final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));

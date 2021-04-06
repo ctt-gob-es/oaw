@@ -17,41 +17,91 @@ package es.inteco.rastreador2.utils;
 
 import java.math.BigDecimal;
 
+/**
+ * The Class GraphicData.
+ */
 public class GraphicData {
 
+    /** The adecuation level. */
     private String adecuationLevel;
+    
+    /** The percentage P. */
     private String percentageP;
+    
+    /** The raw percentage. */
     private BigDecimal rawPercentage = BigDecimal.ZERO;
+    
+    /** The number P. */
     private String numberP;
 
+    /**
+	 * Gets the adecuation level.
+	 *
+	 * @return the adecuation level
+	 */
     public String getAdecuationLevel() {
         return adecuationLevel;
     }
 
+    /**
+	 * Sets the adecuation level.
+	 *
+	 * @param adecuationLevel the new adecuation level
+	 */
     public void setAdecuationLevel(String adecuationLevel) {
         this.adecuationLevel = adecuationLevel;
     }
 
+    /**
+	 * Gets the percentage P.
+	 *
+	 * @return the percentage P
+	 */
     public String getPercentageP() {
         return percentageP;
     }
 
+    /**
+	 * Sets the percentage P.
+	 *
+	 * @param percentageP the new percentage P
+	 */
     public void setPercentageP(String percentageP) {
         this.percentageP = percentageP;
     }
 
+    /**
+	 * Gets the number P.
+	 *
+	 * @return the number P
+	 */
     public String getNumberP() {
         return numberP;
     }
 
+    /**
+	 * Sets the number P.
+	 *
+	 * @param numberP the new number P
+	 */
     public void setNumberP(String numberP) {
         this.numberP = numberP;
     }
 
+    /**
+	 * Gets the raw percentage.
+	 *
+	 * @return the raw percentage
+	 */
     public BigDecimal getRawPercentage() {
         return rawPercentage;
     }
 
+    /**
+	 * Sets the raw percentage.
+	 *
+	 * @param rawPercentage the new raw percentage
+	 */
     public void setRawPercentage(BigDecimal rawPercentage) {
         this.rawPercentage = rawPercentage;
     }

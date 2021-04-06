@@ -15,42 +15,95 @@
 ******************************************************************************/
 package es.inteco.rastreador2.actionform.observatorio;
 
+/**
+ * The Class ModalityComparisonForm.
+ */
 public class ModalityComparisonForm {
+    
+    /** The verification. */
     private String verification;
+    
+    /** The red percentage. */
     private String redPercentage;
+    
+    /** The green percentage. */
     private String greenPercentage;
 
+    /**
+	 * Instantiates a new modality comparison form.
+	 */
     public ModalityComparisonForm() {
     }
 
+    /**
+	 * Instantiates a new modality comparison form.
+	 *
+	 * @param verification the verification
+	 */
     public ModalityComparisonForm(String verification) {
         this.verification = verification;
     }
 
+    /**
+	 * Gets the verification.
+	 *
+	 * @return the verification
+	 */
     public String getVerification() {
         return verification;
     }
 
+    /**
+	 * Sets the verification.
+	 *
+	 * @param verification the new verification
+	 */
     public void setVerification(String verification) {
         this.verification = verification;
     }
 
+    /**
+	 * Gets the red percentage.
+	 *
+	 * @return the red percentage
+	 */
     public String getRedPercentage() {
         return redPercentage;
     }
 
+    /**
+	 * Sets the red percentage.
+	 *
+	 * @param redPercentage the new red percentage
+	 */
     public void setRedPercentage(String redPercentage) {
         this.redPercentage = redPercentage;
     }
 
+    /**
+	 * Gets the green percentage.
+	 *
+	 * @return the green percentage
+	 */
     public String getGreenPercentage() {
         return greenPercentage;
     }
 
+    /**
+	 * Sets the green percentage.
+	 *
+	 * @param greenPercentage the new green percentage
+	 */
     public void setGreenPercentage(String greenPercentage) {
         this.greenPercentage = greenPercentage;
     }
 
+    /**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -60,6 +113,11 @@ public class ModalityComparisonForm {
         }
     }
 
+    /**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
     @Override
     public int hashCode() {
         return 0;

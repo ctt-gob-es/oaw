@@ -70,7 +70,7 @@ public class EtiquetaForm extends ValidatorForm implements Serializable {
 	/**
 	 * Sets the name.
 	 *
-	 * @param the new name
+	 * @param name the new name
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -88,7 +88,7 @@ public class EtiquetaForm extends ValidatorForm implements Serializable {
 	/**
 	 * Sets the clasificacion.
 	 *
-	 * @param complejidad the new clasificacion
+	 * @param clasificacion the new clasificacion
 	 */
 	public void setClasificacion(ClasificacionForm clasificacion) {
 		this.clasificacion = clasificacion;

@@ -44,15 +44,38 @@ import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 
+/**
+ * The Class AnonymousResultExportPdfSection4.
+ */
 public final class AnonymousResultExportPdfSection4 {
+	
+	/**
+	 * Instantiates a new anonymous result export pdf section 4.
+	 */
 	private AnonymousResultExportPdfSection4() {
 	}
 
+	/**
+	 * Creates the chapter 4.
+	 *
+	 * @param request the request
+	 * @param chapter the chapter
+	 */
 	protected static void createChapter4(HttpServletRequest request, Chapter chapter) {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.4.p1"), ConstantsFont.PARAGRAPH, chapter);
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.4.p2"), ConstantsFont.PARAGRAPH, chapter);
 	}
 
+	/**
+	 * Creates the section 41.
+	 *
+	 * @param request         the request
+	 * @param section         the section
+	 * @param graphicPath     the graphic path
+	 * @param res             the res
+	 * @param observatoryType the observatory type
+	 * @throws Exception the exception
+	 */
 	protected static void createSection41(HttpServletRequest request, Section section, String graphicPath, Map<String, Integer> res, long observatoryType) throws Exception {
 		if (observatoryType == Constants.OBSERVATORY_TYPE_AGE) {
 			PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.41.p1.AGE"), ConstantsFont.PARAGRAPH, section);
@@ -79,6 +102,18 @@ public final class AnonymousResultExportPdfSection4 {
 		section.add(table);
 	}
 
+	/**
+	 * Creates the section 42.
+	 *
+	 * @param request           the request
+	 * @param section           the section
+	 * @param graphicPath       the graphic path
+	 * @param id_execution      the id execution
+	 * @param pageExecutionList the page execution list
+	 * @param categories        the categories
+	 * @param observatoryType   the observatory type
+	 * @throws Exception the exception
+	 */
 	protected static void createSection42(HttpServletRequest request, Section section, String graphicPath, String id_execution, java.util.List<ObservatoryEvaluationForm> pageExecutionList,
 			java.util.List<CategoriaForm> categories, long observatoryType) throws Exception {
 		Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageResultsBySegmentMap(id_execution, pageExecutionList, categories);
@@ -112,6 +147,18 @@ public final class AnonymousResultExportPdfSection4 {
 		}
 	}
 
+	/**
+	 * Creates the section 43.
+	 *
+	 * @param request           the request
+	 * @param section           the section
+	 * @param graphicPath       the graphic path
+	 * @param execution_id      the execution id
+	 * @param observatory_id    the observatory id
+	 * @param pageExecutionList the page execution list
+	 * @param categories        the categories
+	 * @throws Exception the exception
+	 */
 	protected static void createSection43(HttpServletRequest request, Section section, String graphicPath, String execution_id, String observatory_id,
 			java.util.List<ObservatoryEvaluationForm> pageExecutionList, java.util.List<CategoriaForm> categories) throws Exception {
 		Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioIntavUtils.calculateMidPuntuationResultsBySegmentMap(execution_id, pageExecutionList, categories);
@@ -144,6 +191,15 @@ public final class AnonymousResultExportPdfSection4 {
 		}
 	}
 
+	/**
+	 * Creates the section 44.
+	 *
+	 * @param request           the request
+	 * @param section           the section
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @throws Exception the exception
+	 */
 	protected static void createSection44(HttpServletRequest request, Section section, String graphicPath, java.util.List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_1);
 		Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_2);
@@ -174,6 +230,15 @@ public final class AnonymousResultExportPdfSection4 {
 		subSection2.add(PDFUtils.createResultTable(labelsL2, headers));
 	}
 
+	/**
+	 * Creates the section 45.
+	 *
+	 * @param request           the request
+	 * @param section           the section
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @throws Exception the exception
+	 */
 	protected static void createSection45(HttpServletRequest request, Section section, String graphicPath, java.util.List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		Map<String, BigDecimal> results1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_1);
 		Map<String, BigDecimal> results2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_2);
@@ -195,6 +260,15 @@ public final class AnonymousResultExportPdfSection4 {
 		section.add(PDFUtils.createTableMod(messageResources, ResultadosAnonimosObservatorioIntavUtils.infoLevelVerificationModalityComparison(results2)));
 	}
 
+	/**
+	 * Creates the section 46.
+	 *
+	 * @param request           the request
+	 * @param section           the section
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @throws Exception the exception
+	 */
 	protected static void createSection46(HttpServletRequest request, Section section, String graphicPath, java.util.List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), pageExecutionList);
 		Map<Integer, SpecialChunk> anchorMap = new HashMap<>();

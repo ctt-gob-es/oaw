@@ -42,8 +42,20 @@ import java.util.List;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class InsertarRastreoAction.
+ */
 public class InsertarRastreoAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) {
 
@@ -170,6 +182,12 @@ public class InsertarRastreoAction extends Action {
     }
 
 
+    /**
+	 * Cargar datos generales.
+	 *
+	 * @param insertarRastreoForm the insertar rastreo form
+	 * @return the insertar rastreo form
+	 */
     private InsertarRastreoForm cargarDatosGenerales(InsertarRastreoForm insertarRastreoForm) {
         final PropertiesManager pmgr = new PropertiesManager();
         final Date date = new Date();
@@ -183,6 +201,13 @@ public class InsertarRastreoAction extends Action {
         return insertarRastreoForm;
     }
 
+    /**
+	 * Cargar datos inicio.
+	 *
+	 * @param mapping             the mapping
+	 * @param insertarRastreoForm the insertar rastreo form
+	 * @return the action forward
+	 */
     private ActionForward cargarDatosInicio(ActionMapping mapping, InsertarRastreoForm insertarRastreoForm) {
         insertarRastreoForm.setCodigo("");
         insertarRastreoForm.setSemilla("");

@@ -20,32 +20,67 @@ import es.inteco.intav.form.PautaForm;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class ISPDFPautaForm.
+ */
 public class ISPDFPautaForm {
 
+    /** The pauta. */
     public PautaForm pauta;
+    
+    /** The problem list. */
     public List<ISPDFProblemForm> problemList;
 
+    /**
+	 * Instantiates a new ISPDF pauta form.
+	 */
     public ISPDFPautaForm() {
         pauta = new PautaForm();
         problemList = new ArrayList<>();
     }
 
+    /**
+	 * Gets the pauta.
+	 *
+	 * @return the pauta
+	 */
     public PautaForm getPauta() {
         return pauta;
     }
 
+    /**
+	 * Sets the pauta.
+	 *
+	 * @param pauta the new pauta
+	 */
     public void setPauta(PautaForm pauta) {
         this.pauta = pauta;
     }
 
+    /**
+	 * Gets the problem list.
+	 *
+	 * @return the problem list
+	 */
     public List<ISPDFProblemForm> getProblemList() {
         return problemList;
     }
 
+    /**
+	 * Sets the problem list.
+	 *
+	 * @param problemList the new problem list
+	 */
     public void setProblemList(List<ISPDFProblemForm> problemList) {
         this.problemList = problemList;
     }
 
+    /**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ISPDFPautaForm) {
@@ -57,6 +92,11 @@ public class ISPDFPautaForm {
         return false;
     }
 
+    /**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
     @Override
     public int hashCode() {
         return pauta != null ? pauta.getName().hashCode() : 0;

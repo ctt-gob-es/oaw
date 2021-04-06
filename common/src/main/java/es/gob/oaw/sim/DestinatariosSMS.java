@@ -34,31 +34,30 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class DestinatariosSMS {
 
+    /** The destinatario SMS. */
     @XmlElement(name = "DestinatarioSMS", required = true)
     protected List<DestinatarioSMS> destinatarioSMS;
 
     /**
-     * Gets the value of the destinatarioSMS property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the destinatarioSMS property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getDestinatarioSMS().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link DestinatarioSMS }
-     * 
-     * 
-     */
+	 * Gets the value of the destinatarioSMS property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be present inside the JAXB object. This is why there is
+	 * not a <CODE>set</CODE> method for the destinatarioSMS property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getDestinatarioSMS().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list {@link DestinatarioSMS }
+	 *
+	 * @return the destinatario SMS
+	 */
     public List<DestinatarioSMS> getDestinatarioSMS() {
         if (destinatarioSMS == null) {
             destinatarioSMS = new ArrayList<DestinatarioSMS>();

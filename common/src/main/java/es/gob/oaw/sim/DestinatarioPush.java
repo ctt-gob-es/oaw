@@ -36,10 +36,15 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class DestinatarioPush {
 
+    /** The doc usuario. */
     @XmlElement(name = "DocUsuario")
     protected String docUsuario;
+    
+    /** The id externo. */
     @XmlElement(name = "IdExterno")
     protected String idExterno;
+    
+    /** The identificador usuario. */
     @XmlElement(name = "IdentificadorUsuario", required = true)
     protected String identificadorUsuario;
 

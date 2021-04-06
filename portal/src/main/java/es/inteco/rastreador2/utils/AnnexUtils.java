@@ -4412,6 +4412,11 @@ public final class AnnexUtils {
 		/** The range maps. */
 		private Map<String, Integer> rangeMaps = new TreeMap<>();
 
+		/**
+		 * Instantiates a new summary evolution.
+		 *
+		 * @param websiteRanges the website ranges
+		 */
 		public SummaryEvolution(final List<RangeForm> websiteRanges) {
 			// Init map
 			for (RangeForm range : websiteRanges) {
