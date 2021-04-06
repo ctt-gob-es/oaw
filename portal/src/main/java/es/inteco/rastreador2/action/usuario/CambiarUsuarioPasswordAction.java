@@ -32,8 +32,20 @@ import java.sql.Connection;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class CambiarUsuarioPasswordAction.
+ */
 public class CambiarUsuarioPasswordAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         String deMenu = request.getParameter(Constants.DE_MENU);
 
@@ -135,6 +147,13 @@ public class CambiarUsuarioPasswordAction extends Action {
         }
     }
 
+    /**
+	 * Gets the cancel forward.
+	 *
+	 * @param mapping  the mapping
+	 * @param roleType the role type
+	 * @return the cancel forward
+	 */
     private ActionForward getCancelForward(ActionMapping mapping, String roleType) {
         ActionForward forward;
 
@@ -151,6 +170,13 @@ public class CambiarUsuarioPasswordAction extends Action {
         return forward;
     }
 
+    /**
+	 * Gets the back button.
+	 *
+	 * @param roleType the role type
+	 * @param user     the user
+	 * @return the back button
+	 */
     private String getBackButton(String roleType, String user) {
         String backButton;
 

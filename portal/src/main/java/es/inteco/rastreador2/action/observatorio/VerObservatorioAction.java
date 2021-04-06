@@ -32,8 +32,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 
+/**
+ * The Class VerObservatorioAction.
+ */
 public class VerObservatorioAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (CrawlerUtils.hasAccess(request, "view.observatory")) {
@@ -56,6 +68,14 @@ public class VerObservatorioAction extends Action {
         return null;
     }
 
+    /**
+	 * Gets the detail.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the detail
+	 * @throws Exception the exception
+	 */
     private ActionForward getDetail(ActionMapping mapping, HttpServletRequest request) throws Exception {
         long idObservatorio = 0;
         if (request.getParameter(Constants.ID_OBSERVATORIO) != null) {

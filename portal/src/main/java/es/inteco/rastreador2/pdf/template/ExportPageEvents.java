@@ -147,11 +147,23 @@ public class ExportPageEvents extends PdfPageEventHelper {
 	 * Constant for the X resolution for the header image.
 	 */
 	private static final float SCALE_LOGO_Y = 65;
+	
+	/** The date X. */
 	private float dateX;
+	
+	/** The date Y. */
 	private float dateY;
+	
+	/** The date size. */
 	private int dateSize;
+	
+	/** The last page. */
 	private static boolean lastPage = false;
+	
+	/** The foot text. */
 	private String footText = "";
+	
+	/** The date. */
 	private String date = "";
 
 	/**
@@ -163,6 +175,12 @@ public class ExportPageEvents extends PdfPageEventHelper {
 		lastPage = lastPageParam;
 	}
 
+	/**
+	 * Instantiates a new export page events.
+	 *
+	 * @param footText the foot text
+	 * @param date     the date
+	 */
 	public ExportPageEvents(String footText, String date) {
 		this.footText = footText;
 		this.date = date;
@@ -235,6 +253,8 @@ public class ExportPageEvents extends PdfPageEventHelper {
 
 	/**
 	 * Get the dynamic properties.
+	 *
+	 * @return the dynamic properties head foot
 	 */
 	public final void getDynamicPropertiesHeadFoot() {
 		PropertiesManager properties = new PropertiesManager();

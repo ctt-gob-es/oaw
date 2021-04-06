@@ -35,8 +35,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.util.List;
 
+/**
+ * The Class CargarRastreosClienteAction.
+ */
 public class CargarRastreosClienteAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) {
 
@@ -66,6 +78,14 @@ public class CargarRastreosClienteAction extends Action {
         }
     }
 
+    /**
+	 * Load client crawlings.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward loadClientCrawlings(ActionMapping mapping, HttpServletRequest request) throws Exception {
         Connection c = null;
         //Para mostrar todos los Rastreos del Sistema
@@ -86,6 +106,14 @@ public class CargarRastreosClienteAction extends Action {
         return mapping.findForward(Constants.RASTREOS_CLIENTE);
     }
 
+    /**
+	 * Load client fulfilled crawlings.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward loadClientFulfilledCrawlings(ActionMapping mapping, HttpServletRequest request) throws Exception {
         Long idCrawling = Long.valueOf(request.getParameter(Constants.ID_RASTREO));
         String user = (String) request.getSession().getAttribute(Constants.USER);

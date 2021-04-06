@@ -22,37 +22,83 @@ import org.apache.struts.validator.ValidatorForm;
 import javax.servlet.http.HttpServletRequest;
 
 
+/**
+ * The Class NuevaSemillaWebsForm.
+ */
 public class NuevaSemillaWebsForm extends ValidatorForm {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The nombre semilla. */
     private String nombreSemilla;
+    
+    /** The ta 1. */
     private String ta1;
+    
+    /** The categoria. */
     private CategoriaForm categoria;
 
+    /**
+	 * Gets the nombre semilla.
+	 *
+	 * @return the nombre semilla
+	 */
     public String getNombreSemilla() {
         return nombreSemilla;
     }
 
+    /**
+	 * Sets the nombre semilla.
+	 *
+	 * @param nombreSemilla the new nombre semilla
+	 */
     public void setNombreSemilla(String nombreSemilla) {
         this.nombreSemilla = nombreSemilla;
     }
 
+    /**
+	 * Gets the ta 1.
+	 *
+	 * @return the ta 1
+	 */
     public String getTa1() {
         return ta1;
     }
 
+    /**
+	 * Sets the ta 1.
+	 *
+	 * @param ta1 the new ta 1
+	 */
     public void setTa1(String ta1) {
         this.ta1 = ta1;
     }
 
+    /**
+	 * Gets the categoria.
+	 *
+	 * @return the categoria
+	 */
     public CategoriaForm getCategoria() {
         return categoria;
     }
 
+    /**
+	 * Sets the categoria.
+	 *
+	 * @param categoria the new categoria
+	 */
     public void setCategoria(CategoriaForm categoria) {
         this.categoria = categoria;
     }
 
+    /**
+	 * Reset.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 */
     @Override
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);

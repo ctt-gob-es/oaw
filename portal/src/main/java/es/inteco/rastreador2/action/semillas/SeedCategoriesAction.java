@@ -663,6 +663,7 @@ public class SeedCategoriesAction extends Action {
 	 *
 	 * @param request  the request
 	 * @param response the response
+	 * @param format   the format
 	 * @return the category seeds file
 	 * @throws Exception the exception
 	 */

@@ -20,37 +20,77 @@ import es.inteco.intav.form.GuidelineForm;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class ISPDFGuidelineForm.
+ */
 public class ISPDFGuidelineForm {
 
+    /** The guideline. */
     public GuidelineForm guideline;
+    
+    /** The pauta list. */
     public List<ISPDFPautaForm> pautaList;
 
+    /**
+	 * Instantiates a new ISPDF guideline form.
+	 */
     public ISPDFGuidelineForm() {
         guideline = new GuidelineForm();
         pautaList = new ArrayList<>();
     }
 
+    /**
+	 * Gets the guideline.
+	 *
+	 * @return the guideline
+	 */
     public GuidelineForm getGuideline() {
         return guideline;
     }
 
+    /**
+	 * Sets the guideline.
+	 *
+	 * @param guideline the new guideline
+	 */
     public void setGuideline(GuidelineForm guideline) {
         this.guideline = guideline;
     }
 
+    /**
+	 * Gets the pauta list.
+	 *
+	 * @return the pauta list
+	 */
     public List<ISPDFPautaForm> getPautaList() {
         return pautaList;
     }
 
+    /**
+	 * Sets the pauta list.
+	 *
+	 * @param pautaList the new pauta list
+	 */
     public void setPautaList(List<ISPDFPautaForm> pautaList) {
         this.pautaList = pautaList;
     }
 
+    /**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
     @Override
     public int hashCode() {
         return guideline != null ? guideline.getDescription().hashCode() : 0;
     }
 
+    /**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ISPDFGuidelineForm) {

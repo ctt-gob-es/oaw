@@ -38,14 +38,32 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
  * Created by mikunis on 11/12/14.
  */
 public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
+	
+	/**
+	 * Instantiates a new anonymous result export pdf UNE 2004.
+	 */
 	public AnonymousResultExportPdfUNE2004() {
 		super(new BasicServiceForm());
 	}
 
+	/**
+	 * Instantiates a new anonymous result export pdf UNE 2004.
+	 *
+	 * @param basicServiceForm the basic service form
+	 */
 	public AnonymousResultExportPdfUNE2004(final BasicServiceForm basicServiceForm) {
 		super(basicServiceForm);
 	}
 
+	/**
+	 * Creates the introduction chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param titleFont        the title font
+	 * @throws Exception the exception
+	 */
 	@Override
 	public void createIntroductionChapter(MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont) throws Exception {
 		Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("ob.resAnon.intav.report.chapter1.title"), pdfTocManager, titleFont);
@@ -56,6 +74,12 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		document.add(chapter);
 	}
 
+	/**
+	 * Creates the chapter 1.
+	 *
+	 * @param resources the resources
+	 * @param chapter   the chapter
+	 */
 	protected void createChapter1(MessageResources resources, Chapter chapter) {
 		ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(resources.getMessage("ob.resAnon.intav.report.1.p1.bold"));
@@ -75,6 +99,12 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		// PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.1.p5"), ConstantsFont.PARAGRAPH, chapter);
 	}
 
+	/**
+	 * Creates the section 11.
+	 *
+	 * @param messageResources the message resources
+	 * @param section          the section
+	 */
 	protected void createSection11(MessageResources messageResources, Section section) {
 		ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.11.p4.bold"));
@@ -88,6 +118,17 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.11.p1"), ConstantsFont.PARAGRAPH, section);
 	}
 
+	/**
+	 * Creates the objetive chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param titleFont        the title font
+	 * @param evaList          the eva list
+	 * @param observatoryType  the observatory type
+	 * @throws DocumentException the document exception
+	 */
 	@Override
 	public void createObjetiveChapter(final MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont, java.util.List<ObservatoryEvaluationForm> evaList,
 			long observatoryType) throws DocumentException {
@@ -96,6 +137,13 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		document.add(chapter);
 	}
 
+	/**
+	 * Creates the chapter 2.
+	 *
+	 * @param messageResources the message resources
+	 * @param chapter          the chapter
+	 * @param observatoryType  the observatory type
+	 */
 	protected void createChapter2(final MessageResources messageResources, Chapter chapter, long observatoryType) {
 		ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.2.p1.bold"));
@@ -109,6 +157,18 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		}
 	}
 
+	/**
+	 * Creates the methodology chapter.
+	 *
+	 * @param resources             the resources
+	 * @param document              the document
+	 * @param pdfTocManager         the pdf toc manager
+	 * @param titleFont             the title font
+	 * @param primaryReportPageList the primary report page list
+	 * @param observatoryType       the observatory type
+	 * @param isBasicService        the is basic service
+	 * @throws Exception the exception
+	 */
 	@Override
 	public void createMethodologyChapter(final MessageResources resources, Document document, PdfTocManager pdfTocManager, Font titleFont,
 			java.util.List<ObservatoryEvaluationForm> primaryReportPageList, long observatoryType, boolean isBasicService) throws Exception {
@@ -154,6 +214,15 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		document.add(chapter);
 	}
 
+	/**
+	 * Creates the section 32.
+	 *
+	 * @param messageResources      the message resources
+	 * @param section               the section
+	 * @param primaryReportPageList the primary report page list
+	 * @param observatoryType       the observatory type
+	 * @param isBasicService        the is basic service
+	 */
 	protected void createSection32(final MessageResources messageResources, Section section, java.util.List<ObservatoryEvaluationForm> primaryReportPageList, long observatoryType,
 			boolean isBasicService) {
 		ArrayList<String> boldWords = new ArrayList<>();
@@ -206,6 +275,16 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		}
 	}
 
+	/**
+	 * Creates the section 33.
+	 *
+	 * @param messageResources the message resources
+	 * @param section          the section
+	 * @param observatoryType  the observatory type
+	 * @return the section
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected Section createSection33(final MessageResources messageResources, Section section, long observatoryType) throws BadElementException, IOException {
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.33.p1"), ConstantsFont.PARAGRAPH, section);
 		com.itextpdf.text.List list = new com.itextpdf.text.List();
@@ -292,6 +371,12 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		return section;
 	}
 
+	/**
+	 * Creates the methodology table 1.
+	 *
+	 * @param messageResources the message resources
+	 * @return the pdf P table
+	 */
 	protected PdfPTable createMethodologyTable1(final MessageResources messageResources) {
 		float[] widths = { 10f, 30f, 45f, 25f, 15f, 15f };
 		PdfPTable table = new PdfPTable(widths);
@@ -336,6 +421,12 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		return table;
 	}
 
+	/**
+	 * Creates the methodology table 2.
+	 *
+	 * @param messageResources the message resources
+	 * @return the pdf P table
+	 */
 	protected PdfPTable createMethodologyTable2(final MessageResources messageResources) {
 		float[] widths = { 10f, 30f, 45f, 25f, 15f, 15f };
 		PdfPTable table = new PdfPTable(widths);
@@ -380,6 +471,14 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		return table;
 	}
 
+	/**
+	 * Creates the section 331.
+	 *
+	 * @param messageResource the message resource
+	 * @param section         the section
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	private void createSection331(final MessageResources messageResource, Section section) throws BadElementException, IOException {
 		PDFUtils.addParagraph(messageResource.getMessage("ob.resAnon.intav.report.331.p1"), ConstantsFont.PARAGRAPH, section);
 		PDFUtils.addParagraph(messageResource.getMessage("ob.resAnon.intav.report.331.p2"), ConstantsFont.PARAGRAPH, section);
@@ -387,6 +486,12 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		section.add(create331Table(messageResource));
 	}
 
+	/**
+	 * Creates the 331 table.
+	 *
+	 * @param messageResources the message resources
+	 * @return the pdf P table
+	 */
 	private PdfPTable create331Table(final MessageResources messageResources) {
 		float[] widths = { 40f, 30f, 30f };
 		PdfPTable table = new PdfPTable(widths);
@@ -436,18 +541,39 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		return table;
 	}
 
+	/**
+	 * Creates the 331 hader table.
+	 *
+	 * @param messageResources the message resources
+	 * @param table            the table
+	 */
 	protected void create331HaderTable(final MessageResources messageResources, final PdfPTable table) {
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("ob.resAnon.intav.report.331.table.header1"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("ob.resAnon.intav.report.331.table.header2"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("ob.resAnon.intav.report.331.table.header3"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 	}
 
+	/**
+	 * Creates the 331 table row.
+	 *
+	 * @param messageResources the message resources
+	 * @param table            the table
+	 * @param verification     the verification
+	 * @param req              the req
+	 * @param verP             the ver P
+	 */
 	protected void create331TableRow(final MessageResources messageResources, PdfPTable table, String verification, com.itextpdf.text.List req, com.itextpdf.text.List verP) {
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(verification), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, 10, -1));
 		table.addCell(PDFUtils.createListTableCell(req, Color.WHITE, Element.ALIGN_CENTER, 0));
 		table.addCell(PDFUtils.createListTableCell(verP, Color.WHITE, Element.ALIGN_CENTER, 0));
 	}
 
+	/**
+	 * Creates the section 342.
+	 *
+	 * @param messageResources the message resources
+	 * @param section          the section
+	 */
 	protected void createSection342(final MessageResources messageResources, Section section) {
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.342.p1"), ConstantsFont.PARAGRAPH, section);
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.342.p2"), ConstantsFont.PARAGRAPH, section);
@@ -551,11 +677,32 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		section.add(list);
 	}
 
+	/**
+	 * Gets the mids comparation by verification level graphic.
+	 *
+	 * @param messageResources the message resources
+	 * @param level            the level
+	 * @param title            the title
+	 * @param filePath         the file path
+	 * @param noDataMess       the no data mess
+	 * @param evaList          the eva list
+	 * @param value            the value
+	 * @param b                the b
+	 * @return the mids comparation by verification level graphic
+	 * @throws Exception the exception
+	 */
 	@Override
 	public void getMidsComparationByVerificationLevelGraphic(MessageResources messageResources, String level, String title, String filePath, String noDataMess,
 			java.util.List<ObservatoryEvaluationForm> evaList, String value, boolean b) throws Exception {
 	}
 
+	/**
+	 * Generate scores verificacion.
+	 *
+	 * @param messageResources the message resources
+	 * @param scoreForm        the score form
+	 * @param evaList          the eva list
+	 */
 	@Override
 	protected void generateScoresVerificacion(MessageResources messageResources, ScoreForm scoreForm, java.util.List<ObservatoryEvaluationForm> evaList) {
 		final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_1);
@@ -566,11 +713,26 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 		scoreForm.setVerifications2(labelsL2);
 	}
 
+	/**
+	 * Gets the title.
+	 *
+	 * @return the title
+	 */
 	@Override
 	public String getTitle() {
 		return "UNE 139803:2004";
 	}
 
+	/**
+	 * Creates the introduction chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param titleFont        the title font
+	 * @param isBasicService   the is basic service
+	 * @throws Exception the exception
+	 */
 	@Override
 	public void createIntroductionChapter(MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont, boolean isBasicService) throws Exception {
 		this.createIntroductionChapter(messageResources, document, pdfTocManager, titleFont);

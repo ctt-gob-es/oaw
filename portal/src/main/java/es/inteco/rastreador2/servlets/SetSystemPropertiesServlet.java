@@ -24,10 +24,20 @@ import javax.servlet.*;
 import java.io.IOException;
 
 
+/**
+ * The Class SetSystemPropertiesServlet.
+ */
 public class SetSystemPropertiesServlet extends GenericServlet {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /**
+	 * Inits the.
+	 *
+	 * @param config the config
+	 * @throws ServletException the servlet exception
+	 */
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -41,6 +51,11 @@ public class SetSystemPropertiesServlet extends GenericServlet {
         setDefaultHostnameVerifier();
     }
 
+    /**
+	 * Sets the trust store.
+	 *
+	 * @param pmgr the new trust store
+	 */
     private void setTrustStore(PropertiesManager pmgr) {
         final String trustStorePath = pmgr.getValue("certificados.properties", "truststore.path");
         final String trustStorePass = pmgr.getValue("certificados.properties", "truststore.pass");
@@ -53,6 +68,11 @@ public class SetSystemPropertiesServlet extends GenericServlet {
         }
     }
 
+    /**
+	 * Sets the proxy.
+	 *
+	 * @param pmgr the new proxy
+	 */
     private void setProxy(PropertiesManager pmgr) {
         if (pmgr.getValue(Constants.INTAV_PROPERTIES, "http.proxy.active").equalsIgnoreCase(Boolean.TRUE.toString())) {
             String host = pmgr.getValue(Constants.INTAV_PROPERTIES, "http.proxy.host");
@@ -65,6 +85,9 @@ public class SetSystemPropertiesServlet extends GenericServlet {
         }
     }
 
+    /**
+	 * Sets the trusting all certs.
+	 */
     private void setTrustingAllCerts() {
         Logger.putLog("Configurando la aplicación para que no valide los certificados en SSL.", SetSystemPropertiesServlet.class, Logger.LOG_LEVEL_INFO);
         // Create a trust manager that does not validate certificate chains
@@ -103,6 +126,9 @@ public class SetSystemPropertiesServlet extends GenericServlet {
         }
     }
 
+    /**
+	 * Sets the default hostname verifier.
+	 */
     private void setDefaultHostnameVerifier() {
         HostnameVerifier hv = new HostnameVerifier() {
             // No validamos el nombre de HOST
@@ -113,6 +139,14 @@ public class SetSystemPropertiesServlet extends GenericServlet {
         HttpsURLConnection.setDefaultHostnameVerifier(hv);
     }
 
+    /**
+	 * Service.
+	 *
+	 * @param request  the request
+	 * @param response the response
+	 * @throws ServletException the servlet exception
+	 * @throws IOException      Signals that an I/O exception has occurred.
+	 */
     @Override
     public void service(ServletRequest request, ServletResponse response)
             throws ServletException, IOException {

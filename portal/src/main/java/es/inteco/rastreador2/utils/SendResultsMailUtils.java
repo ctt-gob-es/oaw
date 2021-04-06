@@ -56,6 +56,7 @@ import es.inteco.utils.FileUtils;
  * The Class SendResultsMailUtils.
  */
 public final class SendResultsMailUtils {
+	
 	/**
 	 * Generate and send data.
 	 *
@@ -63,6 +64,8 @@ public final class SendResultsMailUtils {
 	 * @param idCartucho     the id cartucho
 	 * @param idObsExecution the id obs execution
 	 * @param emailSubject   the email subject
+	 * @param cco            the cco
+	 * @param notifyMail     the notify mail
 	 * @throws Exception the exception
 	 */
 	public static void generateAndSendData(final Long idObs, final Long idCartucho, final Long idObsExecution, final String emailSubject, final String cco, final String notifyMail) throws Exception {
@@ -182,6 +185,7 @@ public final class SendResultsMailUtils {
 	 * @param attachUrl          the attach url
 	 * @param attachName         the attach name
 	 * @param emailSubject       the email subject
+	 * @param cco                the cco
 	 * @throws Exception the exception
 	 */
 	private static void sendMailToUra(final Long idObservatory, final DependenciaForm ura, final UraSendResultForm uraCustom, final Map<Long, TemplateRangeForm> iterationRangesMap,

@@ -23,11 +23,23 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * The Class EncryptUtils.
+ */
 public final class EncryptUtils {
 
+    /**
+	 * Instantiates a new encrypt utils.
+	 */
     private EncryptUtils() {
     }
 
+    /**
+	 * Decrypt.
+	 *
+	 * @param string the string
+	 * @return the string
+	 */
     public static String decrypt(String string) {
         try {
             SecretKeySpec skeySpec = new SecretKeySpec("414c4d4154454348".getBytes(), "AES");
@@ -45,6 +57,12 @@ public final class EncryptUtils {
         }
     }
 
+    /**
+	 * Encrypt.
+	 *
+	 * @param string the string
+	 * @return the string
+	 */
     public static String encrypt(String string) {
         try {
             KeyGenerator kgen = KeyGenerator.getInstance("AES");

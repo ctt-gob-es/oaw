@@ -15,43 +15,96 @@
 ******************************************************************************/
 package es.inteco.rastreador2.actionform.observatorio;
 
+/**
+ * The Class ValidationLanguageForm.
+ */
 public class ValidationLanguageForm {
+    
+    /** The language. */
     String language;
+    
+    /** The red percentage. */
     String redPercentage;
+    
+    /** The green percentage. */
     String greenPercentage;
 
+    /**
+	 * Instantiates a new validation language form.
+	 */
     public ValidationLanguageForm() {
 
     }
 
+    /**
+	 * Instantiates a new validation language form.
+	 *
+	 * @param language the language
+	 */
     public ValidationLanguageForm(String language) {
         this.language = language;
     }
 
+    /**
+	 * Gets the language.
+	 *
+	 * @return the language
+	 */
     public String getLanguage() {
         return language;
     }
 
+    /**
+	 * Sets the language.
+	 *
+	 * @param language the new language
+	 */
     public void setLanguage(String language) {
         this.language = language;
     }
 
+    /**
+	 * Gets the red percentage.
+	 *
+	 * @return the red percentage
+	 */
     public String getRedPercentage() {
         return redPercentage;
     }
 
+    /**
+	 * Sets the red percentage.
+	 *
+	 * @param redPercentage the new red percentage
+	 */
     public void setRedPercentage(String redPercentage) {
         this.redPercentage = redPercentage;
     }
 
+    /**
+	 * Gets the green percentage.
+	 *
+	 * @return the green percentage
+	 */
     public String getGreenPercentage() {
         return greenPercentage;
     }
 
+    /**
+	 * Sets the green percentage.
+	 *
+	 * @param greenPercentage the new green percentage
+	 */
     public void setGreenPercentage(String greenPercentage) {
         this.greenPercentage = greenPercentage;
     }
 
+    /**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -65,6 +118,11 @@ public class ValidationLanguageForm {
         }
     }
 
+    /**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
     @Override
     public int hashCode() {
         return 0;

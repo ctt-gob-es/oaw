@@ -22,19 +22,28 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+/**
+ * The Class BaseManager.
+ */
 public abstract class BaseManager {
 
+    /**
+	 * Gets the session.
+	 *
+	 * @return the session
+	 */
     protected static Session getSession() {
         SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
         return sessionFactory.openSession();
     }
 
     /**
-     * Salvar en base de datos
-     *
-     * @param analysis
-     * @return
-     */
+	 * Salvar en base de datos.
+	 *
+	 * @param object the object
+	 * @return the object
+	 * @throws HibernateException the hibernate exception
+	 */
     public static Object save(Object object) throws HibernateException {
         Session session = getSession();
         Transaction tx = null;
@@ -57,11 +66,12 @@ public abstract class BaseManager {
     }
 
     /**
-     * Actualizar en base de datos
-     *
-     * @param analysis
-     * @return
-     */
+	 * Actualizar en base de datos.
+	 *
+	 * @param object the object
+	 * @return the object
+	 * @throws HibernateException the hibernate exception
+	 */
     public static Object update(Object object) throws HibernateException {
         Session session = getSession();
         Transaction tx = null;
@@ -84,11 +94,12 @@ public abstract class BaseManager {
     }
 
     /**
-     * Borrar en base de datos
-     *
-     * @param analysis
-     * @return
-     */
+	 * Borrar en base de datos.
+	 *
+	 * @param object the object
+	 * @return the object
+	 * @throws HibernateException the hibernate exception
+	 */
     public static Object delete(Object object) throws HibernateException {
         Session session = getSession();
         Transaction tx = null;

@@ -728,6 +728,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	}
 
 	/**
+	 * Gets the sort col.
+	 *
 	 * @return the sortCol
 	 */
 	public String getSortCol() {
@@ -735,6 +737,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	}
 
 	/**
+	 * Sets the sort col.
+	 *
 	 * @param sortCol the sortCol to set
 	 */
 	public void setSortCol(String sortCol) {
@@ -742,6 +746,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	}
 
 	/**
+	 * Gets the sort order.
+	 *
 	 * @return the sortOrder
 	 */
 	public String getSortOrder() {
@@ -749,6 +755,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	}
 
 	/**
+	 * Sets the sort order.
+	 *
 	 * @param sortOrder the sortOrder to set
 	 */
 	public void setSortOrder(String sortOrder) {

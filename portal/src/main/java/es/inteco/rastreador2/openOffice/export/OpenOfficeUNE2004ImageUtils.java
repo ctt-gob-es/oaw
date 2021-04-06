@@ -24,6 +24,7 @@ import java.util.Map;
  */
 public final class OpenOfficeUNE2004ImageUtils {
 
+    /** The Constant AGE_IMAGES. */
     private static final Map<String, String> AGE_IMAGES = Collections.unmodifiableMap(
             new HashMap<String, String>() {
                 {
@@ -111,6 +112,7 @@ public final class OpenOfficeUNE2004ImageUtils {
                 }
             });
 
+    /** The Constant CCAA_IMAGES. */
     private static final Map<String, String> CCAA_IMAGES = Collections.unmodifiableMap(
             new HashMap<String, String>() {
                 {
@@ -221,6 +223,7 @@ public final class OpenOfficeUNE2004ImageUtils {
                 }
             });
 
+    /** The Constant EELL_IMAGES. */
     private static final Map<String, String> EELL_IMAGES = Collections.unmodifiableMap(
             new HashMap<String, String>() {
                 {
@@ -300,6 +303,9 @@ public final class OpenOfficeUNE2004ImageUtils {
                 }
             });
 
+    /**
+	 * Instantiates a new open office UNE 2004 image utils.
+	 */
     private OpenOfficeUNE2004ImageUtils() {
     }
 

@@ -35,9 +35,20 @@ import org.quartz.impl.triggers.CronTriggerImpl;
 import es.inteco.common.logging.Logger;
 import es.inteco.rastreador2.job.DeleteTempDirJob;
 
+/**
+ * The Class DeleteTempDirServlet.
+ */
 public class DeleteTempDirServlet extends GenericServlet {
+	
+	/** The scheduler. */
 	private Scheduler scheduler;
 
+	/**
+	 * Inits the.
+	 *
+	 * @param config the config
+	 * @throws ServletException the servlet exception
+	 */
 	@Override
 	public void init(final ServletConfig config) throws ServletException {
 		super.init(config);
@@ -54,6 +65,9 @@ public class DeleteTempDirServlet extends GenericServlet {
 		}
 	}
 
+	/**
+	 * Destroy.
+	 */
 	@Override
 	public void destroy() {
 		try {
@@ -64,6 +78,14 @@ public class DeleteTempDirServlet extends GenericServlet {
 		super.destroy();
 	}
 
+	/**
+	 * Service.
+	 *
+	 * @param request  the request
+	 * @param response the response
+	 * @throws ServletException the servlet exception
+	 * @throws IOException      Signals that an I/O exception has occurred.
+	 */
 	@Override
 	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
 	}

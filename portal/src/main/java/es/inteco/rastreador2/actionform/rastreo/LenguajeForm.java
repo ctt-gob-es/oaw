@@ -17,42 +17,94 @@ package es.inteco.rastreador2.actionform.rastreo;
 
 import org.apache.struts.action.ActionForm;
 
+/**
+ * The Class LenguajeForm.
+ */
 public class LenguajeForm extends ActionForm {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The id. */
     private Long id;
+    
+    /** The name. */
     private String name;
+    
+    /** The key name. */
     private String keyName;
+    
+    /** The codice. */
     private String codice;
 
+    /**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
     public Long getId() {
         return id;
     }
 
+    /**
+	 * Sets the id.
+	 *
+	 * @param id the new id
+	 */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
     public String getName() {
         return name;
     }
 
+    /**
+	 * Sets the name.
+	 *
+	 * @param name the new name
+	 */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+	 * Gets the codice.
+	 *
+	 * @return the codice
+	 */
     public String getCodice() {
         return codice;
     }
 
+    /**
+	 * Sets the codice.
+	 *
+	 * @param codice the new codice
+	 */
     public void setCodice(String codice) {
         this.codice = codice;
     }
 
+    /**
+	 * Gets the key name.
+	 *
+	 * @return the key name
+	 */
     public String getKeyName() {
         return keyName;
     }
 
+    /**
+	 * Sets the key name.
+	 *
+	 * @param keyName the new key name
+	 */
     public void setKeyName(String keyName) {
         this.keyName = keyName;
     }

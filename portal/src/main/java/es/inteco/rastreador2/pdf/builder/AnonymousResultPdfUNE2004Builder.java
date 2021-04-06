@@ -1361,6 +1361,8 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 	 * @param observatoryId          the observatory id
 	 * @param filePath               the file path
 	 * @param tagsFilter             the tags filter
+	 * @param tagsFilterFixed        the tags filter fixed
+	 * @param exObsIds               the ex obs ids
 	 * @throws Exception the exception
 	 */
 	@Override

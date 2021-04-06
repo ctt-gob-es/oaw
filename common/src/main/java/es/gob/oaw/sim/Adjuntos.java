@@ -34,31 +34,30 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class Adjuntos {
 
+    /** The adjunto. */
     @XmlElement(name = "Adjunto", required = true)
     protected List<Adjunto> adjunto;
 
     /**
-     * Gets the value of the adjunto property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the adjunto property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAdjunto().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Adjunto }
-     * 
-     * 
-     */
+	 * Gets the value of the adjunto property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be present inside the JAXB object. This is why there is
+	 * not a <CODE>set</CODE> method for the adjunto property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getAdjunto().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list {@link Adjunto }
+	 *
+	 * @return the adjunto
+	 */
     public List<Adjunto> getAdjunto() {
         if (adjunto == null) {
             adjunto = new ArrayList<Adjunto>();

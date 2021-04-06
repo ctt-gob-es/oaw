@@ -19,48 +19,104 @@ package es.inteco.rastreador2.actionform.rastreo;
 import org.apache.struts.action.ActionForm;
 
 
+/**
+ * The Class EliminarRastreoForm.
+ */
 public class EliminarRastreoForm extends ActionForm {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The norma analisis. */
     private String codigo, fecha, cartucho, idrastreo, normaAnalisis;
 
 
+    /**
+	 * Gets the idrastreo.
+	 *
+	 * @return the idrastreo
+	 */
     public String getIdrastreo() {
         return idrastreo;
     }
 
+    /**
+	 * Sets the idrastreo.
+	 *
+	 * @param idrastreo the new idrastreo
+	 */
     public void setIdrastreo(String idrastreo) {
         this.idrastreo = idrastreo;
     }
 
+    /**
+	 * Gets the codigo.
+	 *
+	 * @return the codigo
+	 */
     public String getCodigo() {
         return codigo;
     }
 
+    /**
+	 * Sets the codigo.
+	 *
+	 * @param codigo the new codigo
+	 */
     public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
 
+    /**
+	 * Gets the fecha.
+	 *
+	 * @return the fecha
+	 */
     public String getFecha() {
         return fecha;
     }
 
+    /**
+	 * Sets the fecha.
+	 *
+	 * @param fecha the new fecha
+	 */
     public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
+    /**
+	 * Gets the cartucho.
+	 *
+	 * @return the cartucho
+	 */
     public String getCartucho() {
         return cartucho;
     }
 
+    /**
+	 * Sets the cartucho.
+	 *
+	 * @param cartucho the new cartucho
+	 */
     public void setCartucho(String cartucho) {
         this.cartucho = cartucho;
     }
 
+    /**
+	 * Gets the norma analisis.
+	 *
+	 * @return the norma analisis
+	 */
     public String getNormaAnalisis() {
         return normaAnalisis;
     }
 
+    /**
+	 * Sets the norma analisis.
+	 *
+	 * @param normaAnalisis the new norma analisis
+	 */
     public void setNormaAnalisis(String normaAnalisis) {
         this.normaAnalisis = normaAnalisis;
     }

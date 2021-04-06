@@ -116,9 +116,11 @@ public final class PDFUtils {
 	 * Adds the new cover page.
 	 *
 	 * @param document     the document
-	 * @param titleText    the title text
+	 * @param titleText1   the title text 1
+	 * @param titleText2   the title text 2
 	 * @param subtitleText the subtitle text
 	 * @param noticeText   the notice text
+	 * @param noticeText2  the notice text 2
 	 * @throws DocumentException the document exception
 	 */
 	public static void addNewCoverPage(final Document document, final String titleText1, final String titleText2, final String subtitleText, final String noticeText, final String noticeText2)

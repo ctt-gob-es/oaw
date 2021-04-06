@@ -11,32 +11,59 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * The Class RandomSample.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "webpage"
 })
 public class RandomSample {
 
+    /** The webpage. */
     @JsonProperty("webpage")
     private List<Webpage_> webpage = null;
+    
+    /** The additional properties. */
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+    /**
+	 * Gets the webpage.
+	 *
+	 * @return the webpage
+	 */
     @JsonProperty("webpage")
     public List<Webpage_> getWebpage() {
         return webpage;
     }
 
+    /**
+	 * Sets the webpage.
+	 *
+	 * @param webpage the new webpage
+	 */
     @JsonProperty("webpage")
     public void setWebpage(List<Webpage_> webpage) {
         this.webpage = webpage;
     }
 
+    /**
+	 * Gets the additional properties.
+	 *
+	 * @return the additional properties
+	 */
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
     }
 
+    /**
+	 * Sets the additional property.
+	 *
+	 * @param name  the name
+	 * @param value the value
+	 */
     @JsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);

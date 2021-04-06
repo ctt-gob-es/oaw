@@ -17,23 +17,49 @@ package es.inteco.rastreador2.utils;
 
 import java.io.Serializable;
 
+/**
+ * The Class CartuchoSeleccion.
+ */
 public class CartuchoSeleccion implements Serializable {
 
+    /** The cartucho. */
     private String cartucho;
+    
+    /** The aplicacion. */
     private String aplicacion;
 
+    /**
+	 * Gets the cartucho.
+	 *
+	 * @return the cartucho
+	 */
     public String getCartucho() {
         return cartucho;
     }
 
+    /**
+	 * Sets the cartucho.
+	 *
+	 * @param cartucho the new cartucho
+	 */
     public void setCartucho(String cartucho) {
         this.cartucho = cartucho;
     }
 
+    /**
+	 * Gets the aplicacion.
+	 *
+	 * @return the aplicacion
+	 */
     public String getAplicacion() {
         return aplicacion;
     }
 
+    /**
+	 * Sets the aplicacion.
+	 *
+	 * @param aplicacion the new aplicacion
+	 */
     public void setAplicacion(String aplicacion) {
         this.aplicacion = aplicacion;
     }

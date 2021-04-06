@@ -27,8 +27,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class TestRastreoAction.
+ */
 public class TestRastreoAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 
         try {
@@ -52,10 +64,24 @@ public class TestRastreoAction extends Action {
         return null;
     }
 
+    /**
+	 * Load form.
+	 *
+	 * @param mapping the mapping
+	 * @return the action forward
+	 */
     private ActionForward loadForm(ActionMapping mapping) {
         return mapping.findForward(Constants.RASTREO_TEST);
     }
 
+    /**
+	 * Launch test.
+	 *
+	 * @param mapping the mapping
+	 * @param form    the form
+	 * @param request the request
+	 * @return the action forward
+	 */
     private ActionForward launchTest(ActionMapping mapping, ActionForm form, HttpServletRequest request) {
         if (!isCancelled(request)) {
             InsertarRastreoForm insertarRastreoForm = (InsertarRastreoForm) form;
@@ -78,6 +104,12 @@ public class TestRastreoAction extends Action {
         }
     }
 
+    /**
+	 * Creates the crawler data.
+	 *
+	 * @param insertarRastreoForm the insertar rastreo form
+	 * @return the crawler data
+	 */
     private CrawlerData createCrawlerData(InsertarRastreoForm insertarRastreoForm) {
         final CrawlerData crawlerData = new CrawlerData();
         crawlerData.setProfundidad(insertarRastreoForm.getProfundidad());

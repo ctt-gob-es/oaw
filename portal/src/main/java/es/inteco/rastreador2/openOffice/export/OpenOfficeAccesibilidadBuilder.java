@@ -178,6 +178,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 	 * @param ambits            the ambits
 	 * @param pageExecutionList the page execution list
 	 * @param executionId       the execution id
+	 * @param tagsFilter        the tags filter
 	 * @throws Exception the exception
 	 */
 	private static void replaceSectionGlobalComplianceByAmbit(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
@@ -562,6 +563,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 	 * @param pageExecutionList     the page execution list
 	 * @param categories            the categories
 	 * @param tagsToFilter          the tags to filter
+	 * @param tagsToFilterFixed     the tags to filter fixed
 	 * @param grpahicConditional    the grpahic conditional
 	 * @param exObsIds              the ex obs ids
 	 * @param idBaseTemplate        the id base template

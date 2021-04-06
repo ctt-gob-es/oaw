@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class MensajesRespuesta {
 
+    /** The mensaje. */
     @XmlElement(name = "Mensaje", required = true)
     protected MensajeRespuesta mensaje;
 

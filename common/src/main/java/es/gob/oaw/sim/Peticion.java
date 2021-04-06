@@ -48,20 +48,35 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Peticion")
 public class Peticion {
 
+    /** The usuario. */
     @XmlElement(name = "Usuario", required = true)
     protected String usuario;
+    
+    /** The password. */
     @XmlElement(name = "Password", required = true)
     protected String password;
+    
+    /** The nombre lote. */
     @XmlElement(name = "NombreLote", required = true)
     protected String nombreLote;
+    
+    /** The servicio. */
     @XmlElement(name = "Servicio", required = true)
     protected String servicio;
+    
+    /** The cod sia. */
     @XmlElement(name = "CodSia")
     protected String codSia;
+    
+    /** The cod organismo. */
     @XmlElement(name = "CodOrganismo")
     protected String codOrganismo;
+    
+    /** The cod organismo pagador SMS. */
     @XmlElement(name = "CodOrganismoPagadorSMS")
     protected String codOrganismoPagadorSMS;
+    
+    /** The mensajes. */
     @XmlElement(name = "Mensajes", required = true)
     protected Mensajes mensajes;
 

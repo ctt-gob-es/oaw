@@ -43,8 +43,16 @@ import java.util.List;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class ModificarRastreoAction.
+ */
 public class ModificarRastreoAction extends Action {
 
+    /**
+	 * Gets the hora actual.
+	 *
+	 * @return the hora actual
+	 */
     public static String getHoraActual() {
         //Consigue la hora actual
         Calendar horac = java.util.Calendar.getInstance();
@@ -68,6 +76,11 @@ public class ModificarRastreoAction extends Action {
         return horaText + ":" + minText + ":" + segText;
     }
 
+    /**
+	 * Gets the fecha actual.
+	 *
+	 * @return the fecha actual
+	 */
     public static String getFechaActual() {
         //Consigue la fecha actual.
         Calendar fechac = java.util.Calendar.getInstance();
@@ -88,6 +101,15 @@ public class ModificarRastreoAction extends Action {
         return a + "-" + mc + "-" + d;
     }
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) {
 
@@ -253,6 +275,12 @@ public class ModificarRastreoAction extends Action {
         }
     }
 
+    /**
+	 * Cargar datos.
+	 *
+	 * @param insertarRastreoForm the insertar rastreo form
+	 * @return the insertar rastreo form
+	 */
     private InsertarRastreoForm cargarDatos(InsertarRastreoForm insertarRastreoForm) {
         PropertiesManager pmgr = new PropertiesManager();
         if (insertarRastreoForm.getNormaAnalisis() != null) {

@@ -1004,8 +1004,9 @@ public final class GraphicsUtils {
 	/**
 	 * Generate legend.
 	 *
-	 * @param colors the colors
-	 * @param plot   the plot
+	 * @param colors       the colors
+	 * @param plot         the plot
+	 * @param legendLabels the legend labels
 	 * @return the legend item collection
 	 */
 	private static LegendItemCollection generateLegendG(List<Paint> colors, CategoryPlot plot, final String[] legendLabels) {

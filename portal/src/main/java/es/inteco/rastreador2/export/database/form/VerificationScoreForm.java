@@ -14,6 +14,8 @@ public class VerificationScoreForm {
 	private BigDecimal score;
 
 	/**
+	 * Gets the id.
+	 *
 	 * @return the id
 	 */
 	public Long getId() {
@@ -21,6 +23,8 @@ public class VerificationScoreForm {
 	}
 
 	/**
+	 * Sets the id.
+	 *
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
@@ -28,6 +32,8 @@ public class VerificationScoreForm {
 	}
 
 	/**
+	 * Gets the verification.
+	 *
 	 * @return the verification
 	 */
 	public String getVerification() {
@@ -35,6 +41,8 @@ public class VerificationScoreForm {
 	}
 
 	/**
+	 * Sets the verification.
+	 *
 	 * @param verification the verification to set
 	 */
 	public void setVerification(String verification) {
@@ -42,6 +50,8 @@ public class VerificationScoreForm {
 	}
 
 	/**
+	 * Gets the score.
+	 *
 	 * @return the score
 	 */
 	public BigDecimal getScore() {
@@ -49,6 +59,8 @@ public class VerificationScoreForm {
 	}
 
 	/**
+	 * Sets the score.
+	 *
 	 * @param score the score to set
 	 */
 	public void setScore(BigDecimal score) {

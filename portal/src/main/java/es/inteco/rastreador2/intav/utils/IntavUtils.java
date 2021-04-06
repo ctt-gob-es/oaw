@@ -346,7 +346,7 @@ public final class IntavUtils {
 	/**
 	 * Gets the validation level accesibility.
 	 *
-	 * @param scoreForm        the score form
+	 * @param resultData       the result data
 	 * @param messageResources the message resources
 	 * @return the validation level accesibility
 	 */

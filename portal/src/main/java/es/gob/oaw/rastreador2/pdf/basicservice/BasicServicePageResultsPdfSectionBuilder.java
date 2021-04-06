@@ -304,6 +304,16 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 		}
 	}
 
+	/**
+	 * Adds the check codes without levels without section.
+	 *
+	 * @param messageResources the message resources
+	 * @param evaluationForm   the evaluation form
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @throws IOException       Signals that an I/O exception has occurred.
+	 * @throws DocumentException the document exception
+	 */
 	public void addCheckCodesWithoutLevelsWithoutSection(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Document document,
 			final PdfTocManager pdfTocManager) throws IOException, DocumentException {
 		for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
@@ -316,6 +326,14 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 		}
 	}
 
+	/**
+	 * Process levels.
+	 *
+	 * @param messageResources the message resources
+	 * @param priority         the priority
+	 * @param prioritySection  the priority section
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private void processLevels(final MessageResources messageResources, ObservatoryLevelForm priority, final Section prioritySection) throws IOException {
 		for (ObservatorySuitabilityForm level : priority.getSuitabilityGroups()) {
 			if (hasProblems(level)) {

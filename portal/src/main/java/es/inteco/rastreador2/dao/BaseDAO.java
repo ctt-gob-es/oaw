@@ -18,36 +18,45 @@ package es.inteco.rastreador2.dao;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
+/**
+ * The Class BaseDAO.
+ */
 public abstract class BaseDAO {
 
     /**
-     * Salvar en base de datos
-     *
-     * @param analysis
-     * @return
-     */
+	 * Salvar en base de datos.
+	 *
+	 * @param session the session
+	 * @param object  the object
+	 * @return the object
+	 * @throws HibernateException the hibernate exception
+	 */
     public static Object save(Session session, Object object) throws HibernateException {
         session.save(object);
         return object;
     }
 
     /**
-     * Actualizar en base de datos
-     *
-     * @param analysis
-     * @return
-     */
+	 * Actualizar en base de datos.
+	 *
+	 * @param session the session
+	 * @param object  the object
+	 * @return the object
+	 * @throws HibernateException the hibernate exception
+	 */
     public static Object update(Session session, Object object) throws HibernateException {
         session.update(object);
         return object;
     }
 
     /**
-     * Borrar en base de datos
-     *
-     * @param analysis
-     * @return
-     */
+	 * Borrar en base de datos.
+	 *
+	 * @param session the session
+	 * @param object  the object
+	 * @return the object
+	 * @throws HibernateException the hibernate exception
+	 */
     public static Object delete(Session session, Object object) throws HibernateException {
         session.delete(object);
         return object;

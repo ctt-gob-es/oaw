@@ -18,17 +18,35 @@ package es.inteco.rastreador2.imp.xml.result;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class SectionSetForm.
+ */
 public class SectionSetForm {
+    
+    /** The section list. */
     private List<SectionForm> sectionList;
 
+    /**
+	 * Instantiates a new section set form.
+	 */
     public SectionSetForm() {
         sectionList = new ArrayList<>();
     }
 
+    /**
+	 * Gets the section list.
+	 *
+	 * @return the section list
+	 */
     public List<SectionForm> getSectionList() {
         return sectionList;
     }
 
+    /**
+	 * Sets the section list.
+	 *
+	 * @param sectionList the new section list
+	 */
     public void setSectionList(List<SectionForm> sectionList) {
         this.sectionList = sectionList;
     }

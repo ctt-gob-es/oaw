@@ -40,10 +40,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Respuesta", namespace = "http://misim.redsara.es/misim-bus-webapp/respuesta")
 public class Respuesta {
 
+    /** The status. */
     @XmlElement(name = "Status", namespace = "http://misim.redsara.es/misim-bus-webapp/respuesta", required = true)
     protected ResponseStatusType status;
+    
+    /** The lote. */
     @XmlElement(name = "Lote", namespace = "http://misim.redsara.es/misim-bus-webapp/respuesta")
     protected Lote lote;
+    
+    /** The mensajes. */
     @XmlElement(name = "Mensajes", namespace = "http://misim.redsara.es/misim-bus-webapp/respuesta")
     protected List<MensajesRespuesta> mensajes;
 
@@ -96,27 +101,25 @@ public class Respuesta {
     }
 
     /**
-     * Gets the value of the mensajes property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the mensajes property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getMensajes().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link MensajesRespuesta }
-     * 
-     * 
-     */
+	 * Gets the value of the mensajes property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be present inside the JAXB object. This is why there is
+	 * not a <CODE>set</CODE> method for the mensajes property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getMensajes().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list {@link MensajesRespuesta }
+	 *
+	 * @return the mensajes
+	 */
     public List<MensajesRespuesta> getMensajes() {
         if (mensajes == null) {
             mensajes = new ArrayList<MensajesRespuesta>();

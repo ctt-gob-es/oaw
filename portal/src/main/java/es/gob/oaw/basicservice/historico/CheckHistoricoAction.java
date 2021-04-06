@@ -24,6 +24,15 @@ import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
  */
 public class CheckHistoricoAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request, final HttpServletResponse response) {
         final CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
         // El parametro url debería venir encodeado (ej http%3A%2F%2Fwww.example.com)
@@ -42,6 +51,12 @@ public class CheckHistoricoAction extends Action {
         return mapping.findForward(Constants.EXITO);
     }
 
+    /**
+	 * Decode url param.
+	 *
+	 * @param urlParam the url param
+	 * @return the string
+	 */
     private String decodeUrlParam(final String urlParam) {
         String url;
         try {

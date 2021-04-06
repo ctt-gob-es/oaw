@@ -44,10 +44,29 @@ import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 
+/**
+ * The Class AnonymousResultExportPdfSections.
+ */
 public final class AnonymousResultExportPdfSections {
+	
+	/**
+	 * Instantiates a new anonymous result export pdf sections.
+	 */
 	private AnonymousResultExportPdfSections() {
 	}
 
+	/**
+	 * Creates the introduction chapter.
+	 *
+	 * @param request       the request
+	 * @param index         the index
+	 * @param document      the document
+	 * @param countSections the count sections
+	 * @param numChapter    the num chapter
+	 * @param titleFont     the title font
+	 * @return the int
+	 * @throws Exception the exception
+	 */
 	public static int createIntroductionChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont) throws Exception {
 		Chapter chapter = PDFUtils.createChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter1.title"), index, countSections++, numChapter, titleFont);
 		AnonymousResultExportPdfSection1.createChapter1(request, chapter);
@@ -58,6 +77,19 @@ public final class AnonymousResultExportPdfSections {
 		return countSections;
 	}
 
+	/**
+	 * Creates the objetive chapter.
+	 *
+	 * @param request         the request
+	 * @param index           the index
+	 * @param document        the document
+	 * @param countSections   the count sections
+	 * @param numChapter      the num chapter
+	 * @param titleFont       the title font
+	 * @param observatoryType the observatory type
+	 * @return the int
+	 * @throws DocumentException the document exception
+	 */
 	public static int createObjetiveChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, long observatoryType)
 			throws DocumentException {
 		Chapter chapter = PDFUtils.createChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter2.title"), index, countSections++, numChapter, titleFont);
@@ -66,6 +98,21 @@ public final class AnonymousResultExportPdfSections {
 		return countSections;
 	}
 
+	/**
+	 * Creates the methodology chapter.
+	 *
+	 * @param request               the request
+	 * @param index                 the index
+	 * @param document              the document
+	 * @param countSections         the count sections
+	 * @param numChapter            the num chapter
+	 * @param titleFont             the title font
+	 * @param primaryReportPageList the primary report page list
+	 * @param observatoryType       the observatory type
+	 * @param isBasicService        the is basic service
+	 * @return the int
+	 * @throws Exception the exception
+	 */
 	public static int createMethodologyChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont,
 			List<ObservatoryEvaluationForm> primaryReportPageList, long observatoryType, boolean isBasicService) throws Exception {
 		Chapter chapter = PDFUtils.createChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter3.title"), index, countSections++, numChapter, titleFont);
@@ -115,6 +162,18 @@ public final class AnonymousResultExportPdfSections {
 		return countSections;
 	}
 
+	/**
+	 * Creates the content chapter.
+	 *
+	 * @param request       the request
+	 * @param d             the d
+	 * @param contents      the contents
+	 * @param index         the index
+	 * @param numChapter    the num chapter
+	 * @param countSections the count sections
+	 * @return the int
+	 * @throws Exception the exception
+	 */
 	public static int createContentChapter(HttpServletRequest request, Document d, String contents, IndexEvents index, int numChapter, int countSections) throws Exception {
 		Chapter chapter = PDFUtils.createChapterWithTitle(CrawlerUtils.getResources(request).getMessage("basic.service.content.title"), index, countSections++, numChapter,
 				ConstantsFont.CHAPTER_TITLE_MP_FONT);
@@ -124,6 +183,23 @@ public final class AnonymousResultExportPdfSections {
 		return countSections;
 	}
 
+	/**
+	 * Creates the global results chapter.
+	 *
+	 * @param request         the request
+	 * @param index           the index
+	 * @param document        the document
+	 * @param countSections   the count sections
+	 * @param numChapter      the num chapter
+	 * @param titleFont       the title font
+	 * @param graphicPath     the graphic path
+	 * @param execution_id    the execution id
+	 * @param idObservatory   the id observatory
+	 * @param categories      the categories
+	 * @param observatoryType the observatory type
+	 * @return the int
+	 * @throws Exception the exception
+	 */
 	protected static int createGlobalResultsChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, String graphicPath,
 			String execution_id, Long idObservatory, List<CategoriaForm> categories, long observatoryType) throws Exception {
 		java.util.List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(execution_id, Constants.COMPLEXITY_SEGMENT_NONE, null);
@@ -161,6 +237,24 @@ public final class AnonymousResultExportPdfSections {
 		return countSections;
 	}
 
+	/**
+	 * Creates the category results chapter.
+	 *
+	 * @param request         the request
+	 * @param index           the index
+	 * @param document        the document
+	 * @param countSections   the count sections
+	 * @param numChapter      the num chapter
+	 * @param titleFont       the title font
+	 * @param graphicPath     the graphic path
+	 * @param execution_id    the execution id
+	 * @param conn            the conn
+	 * @param idObservatory   the id observatory
+	 * @param category        the category
+	 * @param observatoryType the observatory type
+	 * @return the int
+	 * @throws Exception the exception
+	 */
 	protected static int createCategoryResultsChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, String graphicPath,
 			String execution_id, Connection conn, Long idObservatory, CategoriaForm category, long observatoryType) throws Exception {
 		java.util.List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(execution_id, Long.parseLong(category.getId()), null);
@@ -190,6 +284,21 @@ public final class AnonymousResultExportPdfSections {
 		return countSections;
 	}
 
+	/**
+	 * Creates the evolution results chapter.
+	 *
+	 * @param request       the request
+	 * @param index         the index
+	 * @param document      the document
+	 * @param countSections the count sections
+	 * @param numChapter    the num chapter
+	 * @param titleFont     the title font
+	 * @param graphicPath   the graphic path
+	 * @param idExecution   the id execution
+	 * @param idObservatory the id observatory
+	 * @return the int
+	 * @throws Exception the exception
+	 */
 	protected static int createEvolutionResultsChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, String graphicPath,
 			String idExecution, Long idObservatory) throws Exception {
 		Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioIntavUtils.resultEvolutionData(idObservatory, Long.valueOf(idExecution));
@@ -338,6 +447,18 @@ public final class AnonymousResultExportPdfSections {
 		return countSections;
 	}
 
+	/**
+	 * Creates the summary chapter.
+	 *
+	 * @param request       the request
+	 * @param index         the index
+	 * @param document      the document
+	 * @param countSections the count sections
+	 * @param numChapter    the num chapter
+	 * @param titleFont     the title font
+	 * @return the int
+	 * @throws Exception the exception
+	 */
 	protected static int createSummaryChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont) throws Exception {
 		Chapter chapter = PDFUtils.createChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.summary.title"), index, countSections++, numChapter, titleFont);
 		// Incluir las conclusiones

@@ -37,19 +37,42 @@ import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 
+/**
+ * The Class AnonymousResultExportPdfSectionEv.
+ */
 public final class AnonymousResultExportPdfSectionEv {
+	
+	/**
+	 * Instantiates a new anonymous result export pdf section ev.
+	 */
 	private AnonymousResultExportPdfSectionEv() {
 	}
 	// **************************************************************************************************
 	// RESULTADOS: EVOLUCIÓN
 	// **************************************************************************************************
 
+	/**
+	 * Creates the chapter evolution.
+	 *
+	 * @param messageResources the message resources
+	 * @param chapter          the chapter
+	 */
 	protected static void createChapterEvolution(final MessageResources messageResources, Chapter chapter) {
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Ev.p1"), ConstantsFont.PARAGRAPH, chapter);
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Ev.p2"), ConstantsFont.PARAGRAPH, chapter);
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Ev.p3"), ConstantsFont.PARAGRAPH, chapter);
 	}
 
+	/**
+	 * Creates the section ev 1.
+	 *
+	 * @param request     the request
+	 * @param section     the section
+	 * @param graphicPath the graphic path
+	 * @param resultData  the result data
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv1(HttpServletRequest request, Section section, String graphicPath, Map<String, BigDecimal> resultData) throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.accesibility.evolution.approval.AA.name") + ".jpg",
 				CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev1.img.alt"), 80);
@@ -61,6 +84,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		section.add(PDFUtils.createResultTable(labels, headers));
 	}
 
+	/**
+	 * Creates the section ev 2.
+	 *
+	 * @param request     the request
+	 * @param section     the section
+	 * @param graphicPath the graphic path
+	 * @param resultData  the result data
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv2(HttpServletRequest request, Section section, String graphicPath, Map<String, BigDecimal> resultData) throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.accesibility.evolution.approval.A.name") + ".jpg",
 				CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev2.img.alt"), 80);
@@ -72,6 +105,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		section.add(PDFUtils.createResultTable(labels, headers));
 	}
 
+	/**
+	 * Creates the section ev 3.
+	 *
+	 * @param request     the request
+	 * @param section     the section
+	 * @param graphicPath the graphic path
+	 * @param resultData  the result data
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv3(HttpServletRequest request, Section section, String graphicPath, Map<String, BigDecimal> resultData) throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.accesibility.evolution.approval.NV.name") + ".jpg",
 				CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev3.img.alt"), 80);
@@ -83,6 +126,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		section.add(PDFUtils.createResultTable(labels, headers));
 	}
 
+	/**
+	 * Creates the section ev 4.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv4(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.mid.puntuation.name") + ".jpg",
@@ -96,6 +149,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		section.add(PDFUtils.createResultTable(labels, headers));
 	}
 
+	/**
+	 * Creates the section ev 5.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv5(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -105,6 +168,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 6.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv6(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -114,6 +187,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 7.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv7(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -123,6 +206,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 8.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv8(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -132,6 +225,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 9.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv9(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -141,6 +244,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_126_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 10.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv10(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -150,6 +263,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 11.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv11(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -159,6 +282,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 12.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv12(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -168,6 +301,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 13.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv13(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -177,6 +320,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_124_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 14.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv14(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -186,6 +339,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_125_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 15.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv15(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -195,6 +358,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 16.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv16(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -204,6 +377,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 17.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv17(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -213,6 +396,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 18.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv18(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -222,6 +415,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 19.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv19(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -231,6 +434,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_226_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 20.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv20(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -240,6 +453,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 21.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv21(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -249,6 +472,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 22.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv22(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -258,6 +491,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 23.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv23(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -267,6 +510,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_224_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 24.
+	 *
+	 * @param request            the request
+	 * @param section            the section
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv24(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section, graphicPath
@@ -276,6 +529,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_225_VERIFICATION);
 	}
 
+	/**
+	 * Creates the section ev 25.
+	 *
+	 * @param request         the request
+	 * @param section         the section
+	 * @param graphicPath     the graphic path
+	 * @param resultsByAspect the results by aspect
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv25(HttpServletRequest request, Section section, String graphicPath, Map<Date, Map<String, BigDecimal>> resultsByAspect)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section,
@@ -287,6 +550,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createAspectResults(CrawlerUtils.getResources(request), section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID);
 	}
 
+	/**
+	 * Creates the section ev 26.
+	 *
+	 * @param request         the request
+	 * @param section         the section
+	 * @param graphicPath     the graphic path
+	 * @param resultsByAspect the results by aspect
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv26(HttpServletRequest request, Section section, String graphicPath, Map<Date, Map<String, BigDecimal>> resultsByAspect)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section,
@@ -298,6 +571,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createAspectResults(CrawlerUtils.getResources(request), section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID);
 	}
 
+	/**
+	 * Creates the section ev 27.
+	 *
+	 * @param request         the request
+	 * @param section         the section
+	 * @param graphicPath     the graphic path
+	 * @param resultsByAspect the results by aspect
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv27(HttpServletRequest request, Section section, String graphicPath, Map<Date, Map<String, BigDecimal>> resultsByAspect)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section,
@@ -309,6 +592,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createAspectResults(CrawlerUtils.getResources(request), section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID);
 	}
 
+	/**
+	 * Creates the section ev 28.
+	 *
+	 * @param request         the request
+	 * @param section         the section
+	 * @param graphicPath     the graphic path
+	 * @param resultsByAspect the results by aspect
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv28(HttpServletRequest request, Section section, String graphicPath, Map<Date, Map<String, BigDecimal>> resultsByAspect)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section,
@@ -320,6 +613,16 @@ public final class AnonymousResultExportPdfSectionEv {
 		createAspectResults(CrawlerUtils.getResources(request), section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID);
 	}
 
+	/**
+	 * Creates the section ev 29.
+	 *
+	 * @param request         the request
+	 * @param section         the section
+	 * @param graphicPath     the graphic path
+	 * @param resultsByAspect the results by aspect
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSectionEv29(HttpServletRequest request, Section section, String graphicPath, Map<Date, Map<String, BigDecimal>> resultsByAspect)
 			throws BadElementException, IOException {
 		PDFUtils.addImageToSection(section,
@@ -331,6 +634,14 @@ public final class AnonymousResultExportPdfSectionEv {
 		createAspectResults(CrawlerUtils.getResources(request), section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID);
 	}
 
+	/**
+	 * Creates the verification results.
+	 *
+	 * @param messageResources   the message resources
+	 * @param section            the section
+	 * @param pageObservatoryMap the page observatory map
+	 * @param verification       the verification
+	 */
 	private static void createVerificationResults(final MessageResources messageResources, Section section, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap,
 			String verification) {
 		final Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(verification, pageObservatoryMap);
@@ -341,6 +652,14 @@ public final class AnonymousResultExportPdfSectionEv {
 		section.add(PDFUtils.createResultTable(labels, headers));
 	}
 
+	/**
+	 * Creates the aspect results.
+	 *
+	 * @param messageResources the message resources
+	 * @param section          the section
+	 * @param resultsByAspect  the results by aspect
+	 * @param aspect           the aspect
+	 */
 	private static void createAspectResults(final MessageResources messageResources, Section section, Map<Date, Map<String, BigDecimal>> resultsByAspect, String aspect) {
 		final Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateAspectEvolutionPuntuationDataSet(aspect, resultsByAspect);
 		final java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(messageResources, resultData);

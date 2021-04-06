@@ -136,6 +136,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param type                   Tipo de grafico. Si es MP cambia el color del gráfico
 	 * @param regenerate             Indica si hay que regenerar el gráfico o no.
 	 * @param tagsFilter             the tags filter
+	 * @param tagsFilterFixed        the tags filter fixed
 	 * @param exObsIds               the ex obs ids
 	 * @throws Exception Excepción lanzada
 	 */
@@ -477,6 +478,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param color            the color
 	 * @param regenerate       the regenerate
 	 * @param tagsFilter       the tags filter
+	 * @param tagsFilterFixed  the tags filter fixed
 	 * @param exObsIds         the ex obs ids
 	 * @return the map
 	 * @throws Exception the exception
@@ -1294,6 +1296,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		return dataSet;
 	}
 
+	/**
+	 * Creates the data set ambit.
+	 *
+	 * @param result           the result
+	 * @param messageResources the message resources
+	 * @return the default category dataset
+	 */
 	public static DefaultCategoryDataset createDataSetAmbit(final Map<AmbitoForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 		for (Map.Entry<AmbitoForm, Map<String, BigDecimal>> entry : result.entrySet()) {
@@ -1321,6 +1330,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		return dataSet;
 	}
 
+	/**
+	 * Creates the data set ambit compilance.
+	 *
+	 * @param result           the result
+	 * @param messageResources the message resources
+	 * @return the default category dataset
+	 */
 	public static DefaultCategoryDataset createDataSetAmbitCompilance(final Map<AmbitoForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 		for (Map.Entry<AmbitoForm, Map<String, BigDecimal>> entry : result.entrySet()) {
@@ -3237,6 +3253,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePath          the file path
 	 * @param noDataMess        the no data mess
 	 * @param complexitivities  the complexitivities
+	 * @param regenerate        the regenerate
 	 * @param tagsFilter        the tags filter
 	 * @return the global mark by complexitivity graphic
 	 * @throws Exception the exception

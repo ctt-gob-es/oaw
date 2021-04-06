@@ -39,8 +39,17 @@ import java.util.List;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class ExecuteScheduledCrawling.
+ */
 public class ExecuteScheduledCrawling implements StatefulJob {
 
+    /**
+	 * Execute.
+	 *
+	 * @param context the context
+	 * @throws JobExecutionException the job execution exception
+	 */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         final JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
@@ -76,6 +85,13 @@ public class ExecuteScheduledCrawling implements StatefulJob {
         }
     }
 
+    /**
+	 * Gets the mails from role.
+	 *
+	 * @param idRole the id role
+	 * @param users  the users
+	 * @return the mails from role
+	 */
     private List<String> getMailsFromRole(final Long idRole, final List<DatosForm> users) {
         final List<String> mails = new ArrayList<>();
 

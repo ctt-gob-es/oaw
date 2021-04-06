@@ -23,22 +23,65 @@ import com.itextpdf.text.pdf.events.IndexEvents;
 
 import es.inteco.rastreador2.imp.xml.result.SectionSetForm;
 
+/**
+ * The Class AnonymousResultExportPdfConclusionSection.
+ */
 public final class AnonymousResultExportPdfConclusionSection {
+	
+	/**
+	 * Instantiates a new anonymous result export pdf conclusion section.
+	 */
 	private AnonymousResultExportPdfConclusionSection() {
 	}
 
+	/**
+	 * Creates the section global results.
+	 *
+	 * @param request       the request
+	 * @param index         the index
+	 * @param countSections the count sections
+	 * @param conclusion    the conclusion
+	 * @param chapter       the chapter
+	 * @return the int
+	 */
 	protected static int createSectionGlobalResults(HttpServletRequest request, IndexEvents index, int countSections, SectionSetForm conclusion, Chapter chapter) {
 		return countSections;
 	}
 
+	/**
+	 * Creates the section segment results.
+	 *
+	 * @param request       the request
+	 * @param index         the index
+	 * @param countSections the count sections
+	 * @param conclusion    the conclusion
+	 * @param chapter       the chapter
+	 * @return the int
+	 */
 	protected static int createSectionSegmentResults(HttpServletRequest request, IndexEvents index, int countSections, SectionSetForm conclusion, Chapter chapter) {
 		return countSections;
 	}
 
+	/**
+	 * Creates the section evolution results.
+	 *
+	 * @param request       the request
+	 * @param index         the index
+	 * @param countSections the count sections
+	 * @param conclusion    the conclusion
+	 * @param chapter       the chapter
+	 * @return the int
+	 */
 	protected static int createSectionEvolutionResults(HttpServletRequest request, IndexEvents index, int countSections, SectionSetForm conclusion, Chapter chapter) {
 		return countSections;
 	}
 
+	/**
+	 * Creates the conclusion.
+	 *
+	 * @param conclusion the conclusion
+	 * @param section    the section
+	 */
 	private static void createConclusion(SectionSetForm conclusion, Section section) {
 	}
 }

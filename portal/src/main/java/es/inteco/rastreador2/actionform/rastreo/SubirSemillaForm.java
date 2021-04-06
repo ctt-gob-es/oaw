@@ -20,24 +20,52 @@ import org.apache.struts.action.ActionForm;
 
 import java.util.List;
 
+/**
+ * The Class SubirSemillaForm.
+ */
 public class SubirSemillaForm extends ActionForm {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The semillas. */
     private List<String> semillas;
+    
+    /** The semilla. */
     private String semilla;
 
+    /**
+	 * Gets the semillas.
+	 *
+	 * @return the semillas
+	 */
     public List<String> getSemillas() {
         return semillas;
     }
 
+    /**
+	 * Sets the semillas.
+	 *
+	 * @param semillas the new semillas
+	 */
     public void setSemillas(List<String> semillas) {
         this.semillas = semillas;
     }
 
+    /**
+	 * Gets the semilla.
+	 *
+	 * @return the semilla
+	 */
     public String getSemilla() {
         return semilla;
     }
 
+    /**
+	 * Sets the semilla.
+	 *
+	 * @param semilla the new semilla
+	 */
     public void setSemilla(String semilla) {
         this.semilla = semilla;
     }

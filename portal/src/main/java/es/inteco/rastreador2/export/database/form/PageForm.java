@@ -15,58 +15,133 @@
 ******************************************************************************/
 package es.inteco.rastreador2.export.database.form;
 
+/**
+ * The Class PageForm.
+ */
 public class PageForm {
+    
+    /** The id. */
     private String id;
+    
+    /** The url. */
     private String url;
+    
+    /** The score. */
     private String score;
+    
+    /** The score level 1. */
     private String scoreLevel1;
+    
+    /** The score level 2. */
     private String scoreLevel2;
+    
+    /** The level. */
     private String level;
 
+    /**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
     public String getId() {
         return id;
     }
 
+    /**
+	 * Sets the id.
+	 *
+	 * @param id the new id
+	 */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+	 * Gets the url.
+	 *
+	 * @return the url
+	 */
     public String getUrl() {
         return url;
     }
 
+    /**
+	 * Sets the url.
+	 *
+	 * @param url the new url
+	 */
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+	 * Gets the score.
+	 *
+	 * @return the score
+	 */
     public String getScore() {
         return score;
     }
 
+    /**
+	 * Sets the score.
+	 *
+	 * @param score the new score
+	 */
     public void setScore(String score) {
         this.score = score;
     }
 
+    /**
+	 * Gets the score level 1.
+	 *
+	 * @return the score level 1
+	 */
     public String getScoreLevel1() {
         return scoreLevel1;
     }
 
+    /**
+	 * Sets the score level 1.
+	 *
+	 * @param scoreLevel1 the new score level 1
+	 */
     public void setScoreLevel1(String scoreLevel1) {
         this.scoreLevel1 = scoreLevel1;
     }
 
+    /**
+	 * Gets the score level 2.
+	 *
+	 * @return the score level 2
+	 */
     public String getScoreLevel2() {
         return scoreLevel2;
     }
 
+    /**
+	 * Sets the score level 2.
+	 *
+	 * @param scoreLevel2 the new score level 2
+	 */
     public void setScoreLevel2(String scoreLevel2) {
         this.scoreLevel2 = scoreLevel2;
     }
 
+    /**
+	 * Gets the level.
+	 *
+	 * @return the level
+	 */
     public String getLevel() {
         return level;
     }
 
+    /**
+	 * Sets the level.
+	 *
+	 * @param level the new level
+	 */
     public void setLevel(String level) {
         this.level = level;
     }

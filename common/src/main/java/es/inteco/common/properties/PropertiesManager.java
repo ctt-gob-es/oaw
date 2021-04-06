@@ -25,14 +25,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * The Class PropertiesManager.
+ */
 public class PropertiesManager {
 
+    /** The Constant PROPERTIES_MAP. */
     private static final Map<String, Properties> PROPERTIES_MAP = new HashMap<>();
 
     static {
         initProperties();
     }
 
+    /**
+	 * Gets the properties.
+	 *
+	 * @param propertiesFile the properties file
+	 * @return the properties
+	 */
     public final Properties getProperties(final String propertiesFile) {
         try {
             if (!PROPERTIES_MAP.containsKey(propertiesFile)) {
@@ -46,10 +56,23 @@ public class PropertiesManager {
         }
     }
 
+    /**
+	 * Gets the value.
+	 *
+	 * @param propertiesFile the properties file
+	 * @param key            the key
+	 * @return the value
+	 */
     public final String getValue(final String propertiesFile, final String key) {
         return getProperties(propertiesFile).getProperty(key);
     }
 
+    /**
+	 * Load properties.
+	 *
+	 * @param propertiesFile the properties file
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
     private void loadProperties(final String propertiesFile) throws IOException {
         try {
             Properties properties = new Properties();
@@ -67,6 +90,9 @@ public class PropertiesManager {
         }
     }
 
+    /**
+	 * Inits the properties.
+	 */
     private static void initProperties() {
         final InputStream stream = PropertiesManager.class.getResourceAsStream("/propertiesmanager.properties");
 
@@ -98,6 +124,12 @@ public class PropertiesManager {
         }
     }
 
+    /**
+	 * Adds the property file.
+	 *
+	 * @param key  the key
+	 * @param file the file
+	 */
     private static void addPropertyFile(final String key, final String file) {
         if (key != null && file != null) {
             final Properties properties = loadPropertyFile(file);
@@ -111,6 +143,13 @@ public class PropertiesManager {
         }
     }
 
+    /**
+	 * Merge properties.
+	 *
+	 * @param properties1 the properties 1
+	 * @param properties2 the properties 2
+	 * @return the properties
+	 */
     private static Properties mergeProperties(final Properties properties1, final Properties properties2) {
         final Properties merged = new Properties();
         merged.putAll(properties1);
@@ -119,6 +158,12 @@ public class PropertiesManager {
         return merged;
     }
 
+    /**
+	 * Load property file.
+	 *
+	 * @param file the file
+	 * @return the properties
+	 */
     private static Properties loadPropertyFile(final String file) {
         try {
             final Properties properties = new Properties();

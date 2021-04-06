@@ -37,10 +37,23 @@ import java.sql.Connection;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class NuevoUsuarioSistemaAction.
+ */
 public class NuevoUsuarioSistemaAction extends Action {
 
+    /** The log. */
     private Log log = LogFactory.getLog(NuevoUsuarioSistemaAction.class);
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (CrawlerUtils.hasAccess(request, "new.user")) {
@@ -70,6 +83,14 @@ public class NuevoUsuarioSistemaAction extends Action {
         }
     }
 
+    /**
+	 * Load initial data.
+	 *
+	 * @param nuevoUsuarioSistemaForm the nuevo usuario sistema form
+	 * @param request                 the request
+	 * @return the nuevo usuario sistema form
+	 * @throws Exception the exception
+	 */
     private NuevoUsuarioSistemaForm loadInitialData(NuevoUsuarioSistemaForm nuevoUsuarioSistemaForm, HttpServletRequest request) throws Exception {
         final PropertiesManager pmgr = new PropertiesManager();
 
@@ -98,6 +119,15 @@ public class NuevoUsuarioSistemaAction extends Action {
         }
     }
 
+    /**
+	 * New system user.
+	 *
+	 * @param mapping                 the mapping
+	 * @param nuevoUsuarioSistemaForm the nuevo usuario sistema form
+	 * @param request                 the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward newSystemUser(ActionMapping mapping, NuevoUsuarioSistemaForm nuevoUsuarioSistemaForm, HttpServletRequest request) throws Exception {
         try (Connection c = DataBaseManager.getConnection()) {
             ActionErrors errors = nuevoUsuarioSistemaForm.validate(mapping, request);

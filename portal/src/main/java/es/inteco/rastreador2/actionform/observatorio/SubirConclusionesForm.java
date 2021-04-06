@@ -18,13 +18,28 @@ package es.inteco.rastreador2.actionform.observatorio;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.validator.ValidatorForm;
 
+/**
+ * The Class SubirConclusionesForm.
+ */
 public class SubirConclusionesForm extends ValidatorForm {
+    
+    /** The file. */
     private FormFile file;
 
+    /**
+	 * Gets the file.
+	 *
+	 * @return the file
+	 */
     public FormFile getFile() {
         return file;
     }
 
+    /**
+	 * Sets the file.
+	 *
+	 * @param file the new file
+	 */
     public void setFile(FormFile file) {
         this.file = file;
     }
