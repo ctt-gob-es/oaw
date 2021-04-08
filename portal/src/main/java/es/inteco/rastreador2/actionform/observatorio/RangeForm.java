@@ -7,7 +7,7 @@ import org.apache.struts.validator.ValidatorForm;
 /**
  * The Class RangeForm.
  */
-public class RangeForm extends ValidatorForm implements Serializable {
+public class RangeForm extends ValidatorForm implements Serializable, Comparable<RangeForm> {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 4984235581971279444L;
 	/** The id. */
@@ -22,6 +22,10 @@ public class RangeForm extends ValidatorForm implements Serializable {
 	private String minValueOperator;
 	/** The max value operator. */
 	private String maxValueOperator;
+	/** The weight. */
+	private Integer weight;
+	/** The color. */
+	private String color;
 
 	/**
 	 * Gets the id.
@@ -129,5 +133,101 @@ public class RangeForm extends ValidatorForm implements Serializable {
 	 */
 	public void setMaxValueOperator(String maxValueOperator) {
 		this.maxValueOperator = maxValueOperator;
+	}
+
+	/**
+	 * Gets the weight.
+	 *
+	 * @return the weight
+	 */
+	public Integer getWeight() {
+		return weight;
+	}
+
+	/**
+	 * Sets the weight.
+	 *
+	 * @param weight the new weight
+	 */
+	public void setWeight(Integer weight) {
+		this.weight = weight;
+	}
+
+	/**
+	 * Gets the color.
+	 *
+	 * @return the color
+	 */
+	public String getColor() {
+		return color;
+	}
+
+	/**
+	 * Sets the color.
+	 *
+	 * @param color the new color
+	 */
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	/**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	/**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RangeForm other = (RangeForm) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	/**
+	 * Compare to.
+	 *
+	 * @param o the o
+	 * @return the int
+	 */
+	@Override
+	public int compareTo(RangeForm o) {
+		return this.getWeight().compareTo(o.getWeight());
+	}
+
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("RangeForm [id=").append(id).append(", name=").append(name).append(", minValue=").append(minValue).append(", maxValue=").append(maxValue).append(", minValueOperator=")
+				.append(minValueOperator).append(", maxValueOperator=").append(maxValueOperator).append(", weight=").append(weight).append(", color=").append(color).append("]");
+		return builder.toString();
 	}
 }

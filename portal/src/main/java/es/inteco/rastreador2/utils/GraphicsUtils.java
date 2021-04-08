@@ -1367,6 +1367,10 @@ public final class GraphicsUtils {
 	 * The Class CustomRenderer3D.
 	 */
 	public static class CustomRenderer3D extends BarRenderer3D {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5509573551140317879L;
 		/** The colors. */
 		private Paint[] colors;
 

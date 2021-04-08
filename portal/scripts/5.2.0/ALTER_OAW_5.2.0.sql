@@ -96,7 +96,8 @@ ALTER TABLE `dependencia` ADD `acronym` TEXT NULL;
 ALTER TABLE `observatorio_ura_send_results` ADD `send_date` DATETIME NULL;
 ALTER TABLE `observatorio_ura_send_results` ADD `send_error` VARCHAR(255) NULL;
 
-
+ALTER TABLE `observatorio_range` ADD `weight` INT(11) NOT NULL;
+ALTER TABLE `observatorio_range` ADD `color` VARCHAR(7);
 
 
 

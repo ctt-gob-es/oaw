@@ -21,38 +21,35 @@ import org.apache.commons.logging.LogFactory;
 /**
  * The Class Logger.
  */
+@SuppressWarnings("rawtypes")
 public final class Logger {
-    
-    /** The Constant LOG_LEVEL_ERROR. */
-    public static final int LOG_LEVEL_ERROR = 1;
-    
-    /** The Constant LOG_LEVEL_DEBUG. */
-    public static final int LOG_LEVEL_DEBUG = 2;
-    
-    /** The Constant LOG_LEVEL_INFO. */
-    public static final int LOG_LEVEL_INFO = 3;
-    
-    /** The Constant LOG_LEVEL_WARNING. */
-    public static final int LOG_LEVEL_WARNING = 4;
+	/** The Constant LOG_LEVEL_ERROR. */
+	public static final int LOG_LEVEL_ERROR = 1;
+	/** The Constant LOG_LEVEL_DEBUG. */
+	public static final int LOG_LEVEL_DEBUG = 2;
+	/** The Constant LOG_LEVEL_INFO. */
+	public static final int LOG_LEVEL_INFO = 3;
+	/** The Constant LOG_LEVEL_WARNING. */
+	public static final int LOG_LEVEL_WARNING = 4;
 
-    /**
+	/**
 	 * Instantiates a new logger.
 	 */
-    private Logger() {
-    }
+	private Logger() {
+	}
 
-    /**
+	/**
 	 * Put log.
 	 *
 	 * @param message  the message
 	 * @param clazz    the clazz
 	 * @param logLevel the log level
 	 */
-    public static void putLog(final String message, final Class clazz, final int logLevel) {
-        writeLog(LogFactory.getLog(clazz), message, logLevel, null);
-    }
+	public static void putLog(final String message, final Class clazz, final int logLevel) {
+		writeLog(LogFactory.getLog(clazz), message, logLevel, null);
+	}
 
-    /**
+	/**
 	 * Put log.
 	 *
 	 * @param message  the message
@@ -60,11 +57,11 @@ public final class Logger {
 	 * @param logLevel the log level
 	 * @param ex       the ex
 	 */
-    public static void putLog(final String message, final Class clazz, final int logLevel, final Exception ex) {
-        writeLog(LogFactory.getLog(clazz), message, logLevel, ex);
-    }
+	public static void putLog(final String message, final Class clazz, final int logLevel, final Exception ex) {
+		writeLog(LogFactory.getLog(clazz), message, logLevel, ex);
+	}
 
-    /**
+	/**
 	 * Write log.
 	 *
 	 * @param logger    the logger
@@ -72,16 +69,15 @@ public final class Logger {
 	 * @param logLevel  the log level
 	 * @param exception the exception
 	 */
-    private static void writeLog(final Log logger, final String message, final int logLevel, final Exception exception) {
-        if (logLevel == LOG_LEVEL_ERROR) {
-            logger.error(message, exception);
-        } else if (logLevel == LOG_LEVEL_DEBUG) {
-            logger.debug(message, exception);
-        } else if (logLevel == LOG_LEVEL_INFO) {
-            logger.info(message, exception);
-        } else if (logLevel == LOG_LEVEL_WARNING) {
-            logger.warn(message, exception);
-        }
-    }
-
+	private static void writeLog(final Log logger, final String message, final int logLevel, final Exception exception) {
+		if (logLevel == LOG_LEVEL_ERROR) {
+			logger.error(message, exception);
+		} else if (logLevel == LOG_LEVEL_DEBUG) {
+			logger.debug(message, exception);
+		} else if (logLevel == LOG_LEVEL_INFO) {
+			logger.info(message, exception);
+		} else if (logLevel == LOG_LEVEL_WARNING) {
+			logger.warn(message, exception);
+		}
+	}
 }

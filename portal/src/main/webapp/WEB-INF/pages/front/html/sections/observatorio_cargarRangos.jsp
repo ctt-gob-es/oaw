@@ -40,6 +40,11 @@ var colNameMinValue = '<bean:message key="colname.min.value"/>';
 var colNameMaxValue = '<bean:message key="colname.max.value"/>';
 var colNameMinValueOperator = '<bean:message key="colname.min.value.operator"/>';
 var colNameMaxValueOperator = '<bean:message key="colname.max.value.operator"/>';
+var colNameWeight = '<bean:message key="colname.weight"/>';
+
+var colNameColor = '<bean:message key="colname.color"/>'
+
+
 var colNameRemove = '<bean:message key="colname.remove"/>';
 
 
@@ -156,14 +161,24 @@ function reloadGrid(path) {
 					.jqGrid(
 						{
 							editUrl: '/oaw/secure/RangeObservatorio.do?action=update',
-							colNames: [colNameId, colNameName, colNameMinValue, colNameMinValueOperator, "x",
-								colNameMaxValueOperator, colNameMaxValue,
+							colNames: [colNameId, colNameWeight, colNameName, colNameMinValue, colNameMinValueOperator, "x",
+								colNameMaxValueOperator, colNameMaxValue, colNameColor,
 								colNameRemove],
 							colModel: [
 								{
 									name: "id",
 									hidden: true,
 									sortable: false
+								},
+								{
+									name: "weight",
+									width: 15,
+									sortable: true,
+									editrules: {
+										number: true,
+									},
+									align: "center",
+									formatter: cellFormatter,
 								},
 								{
 									name: "name",
@@ -183,6 +198,7 @@ function reloadGrid(path) {
 										number: true,
 									},
 									align: "center",
+									formatter: cellFormatter,
 									sortable: true
 
 								},
@@ -226,7 +242,24 @@ function reloadGrid(path) {
 									align: "center",
 									sortable: true,
 
-								},								
+								},
+								{
+									name: "color",
+									width: 20,
+									editrules: {
+										required: true
+									},
+									edittype : 'custom',
+									sortable : false,
+									editoptions : {
+										custom_element : colorEdit,
+										custom_value : colorEditValue
+									},
+									formatter: colorFormatter,
+									unformat: colorUnformat,
+									align: "center",
+
+								},
 								{
 									name: "eliminar",
 									width: 20,
@@ -394,13 +427,31 @@ function reloadGrid(path) {
 }
 
 
+function colorEdit(value, options) {
+	var element = document.createElement('input');
+	element.setAttribute("name", "color");
+	element.setAttribute("id", "color");
+	element.setAttribute("type", "color");
+	element.setAttribute("value", value);
+	return element;
+}
 
+function colorEditValue(elem, operation, value) {
+	if (operation === 'get') {
+		return $(elem).val();
+	} else if (operation === 'set') {
+		$('input', elem).val(value);
+	}
+}
 
+function colorUnformat(cellvalue, options, cell){
+	return $('#grid').jqGrid('getLocalRow', options.rowId).color;
+}
 
 var dialog;
 
 var windowWidth = $(window).width() * 0.4;
-var windowHeight = $(window).height() * 0.3;
+var windowHeight = $(window).height() * 0.5;
 
 
 function dialogNewRange() {
@@ -511,6 +562,14 @@ function cellFormatter(cellvalue, options, rowObject) {
 }
 
 
+function colorFormatter(cellvalue, options, rowObject) {
+	if(cellvalue){
+		return "<div style='background-color:"+cellvalue+";width:100%;height:100%'/>";
+	} else {
+		return "";
+	}
+}
+
 </script>
 <!-- observatorio_cargarRanges.jsp -->
 <div id="main">
@@ -541,6 +600,17 @@ function cellFormatter(cellvalue, options, rowObject) {
 					</div>
 				</div>
 				<div class="row formItem">
+					<label for="weight" class="control-label">
+						<strong class="labelVisu">
+							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
+							<bean:message key="colname.weight" />
+						</strong>
+					</label>
+					<div class="col-xs-2">
+						<input type="number" id="weight" name="weight" class="form-control" step="1" min="1" />
+					</div>
+				</div>
+				<div class="row formItem">
 					<label for="minValue" class="control-label">
 						<strong class="labelVisu">
 							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
@@ -567,6 +637,17 @@ function cellFormatter(cellvalue, options, rowObject) {
 					</div>
 					<div class="col-xs-2">
 						<input type="number" id="maxValue" name="maxValue" class="form-control" step="0.1" />
+					</div>
+				</div>
+				<div class="row formItem">
+					<label for="color" class="control-label">
+						<strong class="labelVisu">
+							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
+							<bean:message key="colname.color" />
+						</strong>
+					</label>
+					<div class="col-xs-2">
+						<input type="color" id="color" name="color" class="form-control" step="1" min="1" />
 					</div>
 				</div>
 			</form>
