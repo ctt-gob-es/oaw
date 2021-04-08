@@ -87,10 +87,7 @@ public class DatabaseExportAction extends Action {
 			try {
 				if (request.getParameter(Constants.ACTION) != null) {
 					if (request.getParameter(Constants.ACTION).equals(Constants.EXPORT)) {
-						String[] tagsToFilter = null;
-						if (request.getParameter("tags") != null && !StringUtils.isEmpty(request.getParameter("tags"))) {
-							tagsToFilter = request.getParameter("tags").split(",");
-						}
+						String[] tagsToFilter = request.getParameterValues("tags");
 						// Evol executions ids
 						String[] exObsIds = request.getParameterValues("evol");
 						if (exObsIds == null) {

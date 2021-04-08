@@ -236,9 +236,9 @@ public final class AnnexUtils {
 	/** The Constant NV_PREFFIX. */
 	private static final String NV_PREFFIX = "NV_";
 	/** The Constant COMPLIANCE_EVOLUTION_TITLE. */
-	private static final String COMPLIANCE_EVOLUTION_TITLE = "Evolución del cumplimiento estimado";
+	private static final String COMPLIANCE_EVOLUTION_TITLE = "Evolución de la Situación de cumplimiento estimada";
 	/** The Constant ALLOCATION_EVOLUTION_TITLE. */
-	private static final String ALLOCATION_EVOLUTION_TITLE = "Evolución de la adecuación";
+	private static final String ALLOCATION_EVOLUTION_TITLE = "Evolución del Nivel de adecuación estimado";
 	/** The Constant COMPLIANCE_LEVEL_TITLE. */
 	private static final String COMPLIANCE_LEVEL_TITLE = "Situación de cumplimiento estimada";
 	/** The Constant ALLOCATION_LEVEL_TITLE. */
@@ -730,100 +730,121 @@ public final class AnnexUtils {
 		Row r;
 		Cell c;
 		XlsxUtils xlsxUtils = new XlsxUtils(improvementSheet.getWorkbook());
-		r = improvementSheet.createRow(currentRow);
-		c = r.createCell(0);
-		c.setCellValue(title);
 		final CellStyle whiteCell = xlsxUtils.getCellStyleByName(XlsxUtils.WHITE_BACKGROUND_BLACK_BOLD10);
 		final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_BLACK_BOLD10_CENTER);
 		final CellStyle headerStyleLeft = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_BLACK_BOLD10_LEFT);
 		final CellStyle percentStyle = xlsxUtils.getCellStyleByName(XlsxUtils.NORMAL_PERCENT11_CENTER_STYLE);
-		c.setCellStyle(whiteCell);
-		int col = 1;
-		for (Map.Entry<String, Integer> range : globalSummary.getRangeMaps().entrySet()) {
-			c = r.createCell(col);
-			col++;
+		// If all values a 0, the graphic fails
+		if (globalSummary.isAllZero()) {
+			r = improvementSheet.createRow(currentRow);
+			c = r.createCell(0);
+			c.setCellValue(title);
+			currentRow++;
+			r = improvementSheet.createRow(currentRow);
+			c = r.createCell(0);
+			c.setCellValue("Sin resultados");
+		} else {
+			r = improvementSheet.createRow(currentRow);
+			c = r.createCell(0);
+			c.setCellValue(title);
+			c.setCellStyle(whiteCell);
+			int col = 1;
+			for (Map.Entry<RangeForm, Integer> range : globalSummary.getRangeMaps().entrySet()) {
+				c = r.createCell(col);
+				col++;
+			}
+			improvementSheet.addMergedRegion(new CellRangeAddress(currentRow, currentRow, 0, col - 1));
+			currentRow++;
+			// Headers
+			r = improvementSheet.createRow(currentRow);
+			col = 1;
+			for (Map.Entry<RangeForm, Integer> range : globalSummary.getRangeMaps().entrySet()) {
+				c = r.createCell(col);
+				c.setCellValue(range.getKey().getName());
+				c.setCellStyle(headerStyle);
+				improvementSheet.autoSizeColumn(col);
+				col++;
+			}
+			currentRow++;
+			// Percentages
+			r = improvementSheet.createRow(currentRow);
+			c = r.createCell(0);
+			c.setCellValue(PERCENTAGE_OF_SITES);
+			c.setCellStyle(headerStyleLeft);
+			Integer total = 0;
+			for (Map.Entry<RangeForm, Integer> range : globalSummary.getRangeMaps().entrySet()) {
+				total += range.getValue();
+			}
+			col = 1;
+			for (Map.Entry<RangeForm, Integer> range : globalSummary.getRangeMaps().entrySet()) {
+				c = r.createCell(col);
+				c.setCellValue((double) range.getValue() / (double) total);
+				c.setCellStyle(percentStyle);
+				col++;
+			}
+			currentRow++;
+			// Number of sites
+			r = improvementSheet.createRow(currentRow);
+			c = r.createCell(0); // Percentaje
+			c.setCellValue(NUMBER_OF_SITES);
+			c.setCellStyle(headerStyleLeft);
+			col = 1;
+			for (Map.Entry<RangeForm, Integer> range : globalSummary.getRangeMaps().entrySet()) {
+				c = r.createCell(col);
+				c.setCellValue(range.getValue());
+				improvementSheet.autoSizeColumn(col);
+				col++;
+			}
+			// Graphic
+			XSSFDrawing drawing = improvementSheet.createDrawingPatriarch();
+			XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 7, currentRow - 2, 16, currentRow + 8);
+			XSSFChart chart = drawing.createChart(anchor);
+			chart.setTitleText(title);
+			chart.setTitleOverlay(false);
+			XDDFChartLegend legend = chart.getOrAddLegend();
+			legend.setPosition(LegendPosition.TOP_RIGHT);
+//			XDDFDataSource<String> labels = XDDFDataSourcesFactory.fromStringCellRange(improvementSheet, new CellRangeAddress(currentRow - 2, currentRow - 2, 1, 5));
+//			XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(improvementSheet, new CellRangeAddress(currentRow - 1, currentRow - 1, 1, 5));
+			XDDFDataSource<String> labels = XDDFDataSourcesFactory.fromStringCellRange(improvementSheet, new CellRangeAddress(currentRow - 2, currentRow - 2, 1, globalSummary.getRangeMaps().size()));
+			XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(improvementSheet,
+					new CellRangeAddress(currentRow - 1, currentRow - 1, 1, globalSummary.getRangeMaps().size()));
+			XDDFChartData data = chart.createData(ChartTypes.PIE3D, null, null);
+			data.setVaryColors(true);
+			data.addSeries(labels, values);
+			// show labels
+			if (!chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).isSetDLbls()) {
+				chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDLbls();
+			}
+			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowLegendKey().setVal(false);
+			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowPercent().setVal(true);
+			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowLeaderLines().setVal(false);
+			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowVal().setVal(false);
+			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowCatName().setVal(false);
+			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowSerName().setVal(false);
+			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowBubbleSize().setVal(false);
+			// angle
+			chart.getCTChart().addNewView3D().addNewRotX().setVal((byte) 25);
+			// TODO colors
+			// iterate ranges
+			int idx = 0;
+			for (Map.Entry<RangeForm, Integer> range : globalSummary.getRangeMaps().entrySet()) {
+				chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(idx);
+				chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(idx).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(range.getKey().getColor()));
+				idx++;
+			}
+//			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(0);
+//			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(0).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(MUCH_WORST_COLOR));
+//			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(1);
+//			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(1).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(WORST_COLOR));
+//			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(2);
+//			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(2).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(STABLE_COLOR));
+//			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(3);
+//			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(3).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(BETTER_COLOR));
+//			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(4);
+//			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(4).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(MUCH_BETTER_COLOR));
+			chart.plot(data);
+			setRoundedCorners(chart, false);
 		}
-		improvementSheet.addMergedRegion(new CellRangeAddress(currentRow, currentRow, 0, col - 1));
-		currentRow++;
-		// Headers
-		r = improvementSheet.createRow(currentRow);
-		col = 1;
-		for (Map.Entry<String, Integer> range : globalSummary.getRangeMaps().entrySet()) {
-			c = r.createCell(col);
-			c.setCellValue(range.getKey());
-			c.setCellStyle(headerStyle);
-			improvementSheet.autoSizeColumn(col);
-			col++;
-		}
-		currentRow++;
-		// Percenages
-		r = improvementSheet.createRow(currentRow);
-		c = r.createCell(0);
-		c.setCellValue(PERCENTAGE_OF_SITES);
-		c.setCellStyle(headerStyleLeft);
-		Integer total = 0;
-		for (Map.Entry<String, Integer> range : globalSummary.getRangeMaps().entrySet()) {
-			total += range.getValue();
-		}
-		col = 1;
-		for (Map.Entry<String, Integer> range : globalSummary.getRangeMaps().entrySet()) {
-			c = r.createCell(col);
-			c.setCellValue((double) range.getValue() / (double) total);
-			c.setCellStyle(percentStyle);
-			col++;
-		}
-		currentRow++;
-		// Number of sites
-		r = improvementSheet.createRow(currentRow);
-		c = r.createCell(0); // Percentaje
-		c.setCellValue(NUMBER_OF_SITES);
-		c.setCellStyle(headerStyleLeft);
-		col = 1;
-		for (Map.Entry<String, Integer> range : globalSummary.getRangeMaps().entrySet()) {
-			c = r.createCell(col);
-			c.setCellValue(range.getValue());
-			improvementSheet.autoSizeColumn(col);
-			col++;
-		}
-		// Graphic
-		XSSFDrawing drawing = improvementSheet.createDrawingPatriarch();
-		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 7, currentRow - 2, 16, currentRow + 8);
-		XSSFChart chart = drawing.createChart(anchor);
-		chart.setTitleText(title);
-		chart.setTitleOverlay(false);
-		XDDFChartLegend legend = chart.getOrAddLegend();
-		legend.setPosition(LegendPosition.TOP_RIGHT);
-		XDDFDataSource<String> labels = XDDFDataSourcesFactory.fromStringCellRange(improvementSheet, new CellRangeAddress(currentRow - 2, currentRow - 2, 1, 5));
-		XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(improvementSheet, new CellRangeAddress(currentRow - 1, currentRow - 1, 1, 5));
-		XDDFChartData data = chart.createData(ChartTypes.PIE3D, null, null);
-		data.setVaryColors(true);
-		data.addSeries(labels, values);
-		// show labels
-		if (!chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).isSetDLbls()) {
-			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDLbls();
-		}
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowLegendKey().setVal(false);
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowPercent().setVal(true);
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowLeaderLines().setVal(false);
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowVal().setVal(false);
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowCatName().setVal(false);
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowSerName().setVal(false);
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowBubbleSize().setVal(false);
-		// angle
-		chart.getCTChart().addNewView3D().addNewRotX().setVal((byte) 25);
-		// colors
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(0);
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(0).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(MUCH_WORST_COLOR));
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(1);
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(1).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(WORST_COLOR));
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(2);
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(2).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(STABLE_COLOR));
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(3);
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(3).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(BETTER_COLOR));
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(4);
-		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(4).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(MUCH_BETTER_COLOR));
-		chart.plot(data);
-		setRoundedCorners(chart, false);
 	}
 
 	/**
@@ -841,7 +862,7 @@ public final class AnnexUtils {
 	private static void countEvolution(final Connection c, final List<ComparisionForm> comparision, SummaryEvolution globalSummary, Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry,
 			final boolean isFirst, final String[] tagsToFilterFixed) throws SQLException, ScriptException {
 		final SemillaForm semillaForm = semillaEntry.getKey();
-		Map<String, Integer> rangeMap = globalSummary.getRangeMaps();
+		Map<RangeForm, Integer> rangeMap = globalSummary.getRangeMaps();
 		if (semillaForm != null && semillaForm.getId() != 0) {
 			// last puntuiaction
 			Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
@@ -876,7 +897,7 @@ public final class AnnexUtils {
 									} else {
 										val = 1;
 									}
-									rangeMap.put(range.getName(), val);
+									rangeMap.put(range, val);
 									break;
 								}
 							}
@@ -914,13 +935,13 @@ public final class AnnexUtils {
 					for (RangeForm range : websiteRanges) {
 						String expression = generateRangeJsExpression(diffScore, range.getMinValueOperator(), range.getMaxValueOperator(), range.getMinValue(), range.getMaxValue());
 						if ((boolean) scriptEngine.eval(expression)) {
-							Integer val = rangeMap.get(range.getName());
+							Integer val = rangeMap.get(range);
 							if (val != null) {
 								val++;
 							} else {
 								val = 1;
 							}
-							rangeMap.put(range.getName(), val);
+							rangeMap.put(range, val);
 						}
 					}
 				}
@@ -1265,17 +1286,23 @@ public final class AnnexUtils {
 			}
 			// Set poduim cells
 			ref = new CellReference(A2);
-			c = rankingSheet.getRow(ref.getRow()).createCell(ref.getCol());
-			c.setCellValue(RANKING_1ST);
-			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.FIRST_STYLE));
+			if (rankingSheet.getRow(ref.getRow()) != null) {
+				c = rankingSheet.getRow(ref.getRow()).createCell(ref.getCol());
+				c.setCellValue(RANKING_1ST);
+				c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.FIRST_STYLE));
+			}
 			ref = new CellReference(A3);
-			c = rankingSheet.getRow(ref.getRow()).createCell(ref.getCol());
-			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.SECOND_STYLE));
-			c.setCellValue(RANKING_2ND);
+			if (rankingSheet.getRow(ref.getRow()) != null) {
+				c = rankingSheet.getRow(ref.getRow()).createCell(ref.getCol());
+				c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.SECOND_STYLE));
+				c.setCellValue(RANKING_2ND);
+			}
 			ref = new CellReference(A4);
-			c = rankingSheet.getRow(ref.getRow()).createCell(ref.getCol());
-			c.setCellValue(RANKING_3RD);
-			c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.THIRD_STYLE));
+			if (rankingSheet.getRow(ref.getRow()) != null) {
+				c = rankingSheet.getRow(ref.getRow()).createCell(ref.getCol());
+				c.setCellValue(RANKING_3RD);
+				c.setCellStyle(xlsxUtils.getCellStyleByName(XlsxUtils.THIRD_STYLE));
+			}
 			// Set auto size
 			columnIndex = 1;
 			for (int i = 0; i < columnNames.length; i++) {
@@ -2830,10 +2857,10 @@ public final class AnnexUtils {
 				rowIndex++;
 			}
 			// Loop to insert adecuation evolution compare with first .
-			ColumnNames.add(EVOL_ADECUACION_ANT);
+			ColumnNames.add("evol_adecuacion_primer");
 			headerRow = sheet.getRow(0);
 			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue(EVOL_ADECUACION_ANT);
+			cellInHeader.setCellValue("evol_adecuacion_primer");
 			cellInHeader.setCellStyle(headerStyle);
 			rowIndex = 1;
 			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
@@ -2859,9 +2886,9 @@ public final class AnnexUtils {
 				rowIndex++;
 			}
 			int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
-			String title = "Datos de evolución anterior iteración de portales por segmento.";
+			String title = "Datos de evolución de PUNTUACIÓN con respecto a la ITERACION ANTERIOR (Nº de sitios web por segmentos)";
 			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.size() - 3, title);
-			title = "Datos de evolución primera iteración de portales por segmento.";
+			title = "Datos de evolución de PUNTUACIÓN con respecto a la PRIMERA ITERACIÓN (Nº de sitios web por segmentos)";
 			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.size() - 3, title);
 			// Insert graph sheets per category
 			for (String category : categories) {
@@ -3389,7 +3416,7 @@ public final class AnnexUtils {
 		String columnResumeNameFirst = GetExcelColumnNameForNumber(ColumnNames.size());
 		row = sheet.createRow(RowStartPosition);
 		cell = row.createCell(0);
-		cell.setCellValue("Datos de evolución de portales por nivel de adecuación");
+		cell.setCellValue("Datos de evolución de NIVEL DE ADECUACIÓN (Nº de sitios web");
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(1);
 		cell.setCellValue("Anterior");
@@ -4410,7 +4437,7 @@ public final class AnnexUtils {
 	 */
 	public static class SummaryEvolution {
 		/** The range maps. */
-		private Map<String, Integer> rangeMaps = new TreeMap<>();
+		private Map<RangeForm, Integer> rangeMaps = new TreeMap<>();
 
 		/**
 		 * Instantiates a new summary evolution.
@@ -4420,7 +4447,7 @@ public final class AnnexUtils {
 		public SummaryEvolution(final List<RangeForm> websiteRanges) {
 			// Init map
 			for (RangeForm range : websiteRanges) {
-				rangeMaps.put(range.getName(), 0);
+				rangeMaps.put(range, 0);
 			}
 		}
 
@@ -4429,7 +4456,7 @@ public final class AnnexUtils {
 		 *
 		 * @return the range maps
 		 */
-		public Map<String, Integer> getRangeMaps() {
+		public Map<RangeForm, Integer> getRangeMaps() {
 			return rangeMaps;
 		}
 
@@ -4438,8 +4465,24 @@ public final class AnnexUtils {
 		 *
 		 * @param rangeMaps the range maps
 		 */
-		public void setRangeMaps(Map<String, Integer> rangeMaps) {
+		public void setRangeMaps(Map<RangeForm, Integer> rangeMaps) {
 			this.rangeMaps = rangeMaps;
+		}
+
+		/**
+		 * Checks if is all zero.
+		 *
+		 * @return true, if is all zero
+		 */
+		public boolean isAllZero() {
+			boolean isAllZero = true;
+			for (Map.Entry<RangeForm, Integer> entry : rangeMaps.entrySet()) {
+				if (entry.getValue() != null && entry.getValue() != 0) {
+					isAllZero = false;
+					break;
+				}
+			}
+			return isAllZero;
 		}
 	}
 }

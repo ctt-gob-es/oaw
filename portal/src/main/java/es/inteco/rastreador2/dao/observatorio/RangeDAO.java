@@ -58,17 +58,19 @@ public class RangeDAO {
 	 */
 	public static List<RangeForm> findAll(Connection c) throws SQLException {
 		final List<RangeForm> results = new ArrayList<>();
-		String query = "SELECT id, name, min_value, max_value, min_value_operator, max_value_operator FROM observatorio_range WHERE 1=1  ORDER BY UPPER(name) ASC, UPPER(name) ASC";
+		String query = "SELECT id, weight, name, min_value, max_value, min_value_operator, max_value_operator, color FROM observatorio_range WHERE 1=1  ORDER BY weight ASC, UPPER(name) ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					final RangeForm form = new RangeForm();
 					form.setId(rs.getLong("id"));
+					form.setWeight(rs.getInt("weight"));
 					form.setName(rs.getString("name"));
 					form.setMinValue(rs.getFloat("min_value"));
 					form.setMaxValue(rs.getFloat("max_value"));
 					form.setMinValueOperator(rs.getString("min_value_operator"));
 					form.setMaxValueOperator(rs.getString("max_value_operator"));
+					form.setColor(rs.getString("color"));
 					results.add(form);
 				}
 			}
@@ -90,12 +92,15 @@ public class RangeDAO {
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
-			ps = c.prepareStatement("INSERT INTO observatorio_range(name, min_value, max_value, min_value_operator, max_value_operator) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			ps = c.prepareStatement("INSERT INTO observatorio_range(name, min_value, max_value, min_value_operator, max_value_operator, weight, color) VALUES (?,?,?,?,?,?,?)",
+					Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, form.getName());
 			ps.setFloat(2, form.getMinValue());
 			ps.setFloat(3, form.getMaxValue());
 			ps.setString(4, form.getMinValueOperator());
 			ps.setString(5, form.getMaxValueOperator());
+			ps.setInt(6, form.getWeight());
+			ps.setString(7, form.getColor());
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 0) {
 				throw new SQLException("Creating range failed, no rows affected.");
@@ -118,14 +123,16 @@ public class RangeDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static void update(Connection c, final RangeForm form) throws SQLException {
-		final String query = "UPDATE observatorio_range SET name = ?, min_value = ?, max_value = ?, min_value_operator = ?, max_value_operator = ? WHERE id = ?";
+		final String query = "UPDATE observatorio_range SET name = ?, min_value = ?, max_value = ?, min_value_operator = ?, max_value_operator = ?, weight = ?, color = ? WHERE id = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, form.getName());
 			ps.setFloat(2, form.getMinValue());
 			ps.setFloat(3, form.getMaxValue());
 			ps.setString(4, form.getMinValueOperator());
 			ps.setString(5, form.getMaxValueOperator());
-			ps.setLong(6, form.getId());
+			ps.setInt(6, form.getWeight());
+			ps.setString(7, form.getColor());
+			ps.setLong(8, form.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", RangeDAO.class, Logger.LOG_LEVEL_ERROR, e);
