@@ -344,6 +344,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		try (Connection c = DataBaseManager.getConnection()) {
 			DependenciaDAO.saveOrUpdate(c, dependencies);
 		} catch (Exception e) {
+			Logger.putLog("Error", DependencyComparision.class, Logger.LOG_LEVEL_ERROR, e);
 			return mapping.findForward("observatoryDependencias");
 		}
 		return mapping.findForward("observatoryDependencias");
@@ -409,11 +410,20 @@ public class DependenciasObservatorioAction extends DispatchAction {
 				newDependency.setEmails(emails);
 				String province = headerData.indexOf(IMPORT_COLUMN_PROVINCE) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_PROVINCE))) : EMPTY_STRING;
 				if (!StringUtils.isEmpty(province)) {
-					newDependency.setTag(EtiquetaDAO.getByName(c, province));
+					EtiquetaForm tag = EtiquetaDAO.getByName(c, province);
+					if (tag != null) {
+						newDependency.setTag(tag);
+					} else {
+						EtiquetaForm newTag = new EtiquetaForm();
+						newTag.setName(province);
+						newDependency.setTag(newTag);
+					}
 				}
 				// Acronym
 				String acronym = headerData.indexOf(IMPORT_COLUMN_ACRONYM) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_ACRONYM))) : EMPTY_STRING;
 				newDependency.setAcronym(acronym);
+				// By default all send auto
+				newDependency.setSendAuto(true);
 				// Add to comparision
 				DependencyComparision comparision = new DependencyComparision();
 				final DependenciaForm databaseDependency = DependenciaDAO.findByName(c, newDependency.getName());

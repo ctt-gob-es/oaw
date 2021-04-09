@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -348,6 +349,30 @@ public final class DependenciaDAO {
 		try {
 			c.setAutoCommit(false);
 			for (DependenciaForm dependency : dependencies) {
+				// Insert new tags if required
+				if (dependency.getTag() != null && dependency.getTag().getId() == null) {
+					EtiquetaForm newTag = dependency.getTag();
+					if (org.apache.commons.lang3.StringUtils.isNotEmpty(newTag.getName())) {
+						PreparedStatement psCreateEtiqueta = c.prepareStatement(
+								"INSERT INTO etiqueta(nombre,id_clasificacion) VALUES (?, ?) ON DUPLICATE KEY UPDATE id_etiqueta=LAST_INSERT_ID(id_etiqueta), nombre = ?, id_clasificacion = ?",
+								Statement.RETURN_GENERATED_KEYS);
+						psCreateEtiqueta.setString(1, newTag.getName());
+						psCreateEtiqueta.setString(2, "2");
+						psCreateEtiqueta.setString(3, newTag.getName());
+						psCreateEtiqueta.setString(4, "2");
+						int affectedRowsD = psCreateEtiqueta.executeUpdate();
+						if (affectedRowsD == 0) {
+							throw new SQLException("Creating user failed, no rows affected.");
+						}
+						ResultSet generatedKeysD = psCreateEtiqueta.getGeneratedKeys();
+						if (generatedKeysD.next()) {
+							newTag.setId(generatedKeysD.getLong(1));
+						} else {
+							throw new SQLException("Creating etiquetas failed, no ID obtained.");
+						}
+					}
+					dependency.setTag(newTag);
+				}
 				if (dependency.getId() != null) {
 					ps = c.prepareStatement("UPDATE dependencia SET  emails = ?, official = ?, id_tag = ?, acronym = ?  WHERE id_dependencia = ?");
 					ps.setString(1, dependency.getEmails());
