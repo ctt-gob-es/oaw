@@ -38,6 +38,13 @@ public interface MailProvider {
 	void setMailTo(List<String> mailTo);
 
 	/**
+	 * Sets the mail to cco.
+	 *
+	 * @param mailToCco the new mail to cco
+	 */
+	void setMailToCco(List<String> mailToCco);
+
+	/**
 	 * Sets the attachment.
 	 *
 	 * @param attachName the attach name

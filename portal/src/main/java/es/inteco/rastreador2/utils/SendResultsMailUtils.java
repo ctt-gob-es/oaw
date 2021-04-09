@@ -56,7 +56,6 @@ import es.inteco.utils.FileUtils;
  * The Class SendResultsMailUtils.
  */
 public final class SendResultsMailUtils {
-	
 	/**
 	 * Generate and send data.
 	 *
@@ -198,14 +197,15 @@ public final class SendResultsMailUtils {
 		// Get emails from URA
 		List<String> mailsTo = new LinkedList<String>(Arrays.asList(ura.getEmails().split(";")));
 		// TODO Check if can send as cco
+		List<String> mailsToCco = new ArrayList<>();
 		if (!StringUtils.isEmpty(cco)) {
-			mailsTo.add(cco);
+			mailsToCco.add(cco);
 		}
 		try {
 			if (!StringUtils.isEmpty(ura.getAcronym())) {
-				mailService.sendMail(mailsTo, "[" + ura.getAcronym() + "] " + emailSubject, mailBody.toString(), attachUrl, attachName, true);
+				mailService.sendMail(mailsTo, mailsToCco, "[" + ura.getAcronym() + "] " + emailSubject, mailBody.toString(), attachUrl, attachName, true);
 			} else {
-				mailService.sendMail(mailsTo, emailSubject, mailBody.toString(), attachUrl, attachName, true);
+				mailService.sendMail(mailsTo, mailsToCco, emailSubject, mailBody.toString(), attachUrl, attachName, true);
 			}
 			// Mark as send
 			uraCustom.setSend(true);

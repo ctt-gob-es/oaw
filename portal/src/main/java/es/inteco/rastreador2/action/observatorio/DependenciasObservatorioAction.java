@@ -75,6 +75,8 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	private static final String IMPORT_COLUMN_OFFICIAL = "Designacion oficial";
 	/** The Constant IMPORT_COLUMN_EMAILS. */
 	private static final String IMPORT_COLUMN_EMAILS = "Correo Electrónico";
+	/** The Constant IMPORT_COLUMN_ACRONYM. */
+	private static final String IMPORT_COLUMN_ACRONYM = "Acrónimo";
 	/** The Constant IMPORT_COLUMN_NAME. */
 	private static final String IMPORT_COLUMN_NAME = "Nombre";
 
@@ -417,6 +419,9 @@ public class DependenciasObservatorioAction extends DispatchAction {
 				if (!StringUtils.isEmpty(province)) {
 					newDependency.setTag(EtiquetaDAO.getByName(c, province));
 				}
+				// Acronym
+				String acronym = headerData.indexOf(IMPORT_COLUMN_ACRONYM) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_ACRONYM))) : EMPTY_STRING;
+				newDependency.setAcronym(acronym);
 				// Add to comparision
 				DependencyComparision comparision = new DependencyComparision();
 				final DependenciaForm databaseDependency = DependenciaDAO.findByName(c, newDependency.getName());
@@ -519,7 +524,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		/** The new dependency. */
 		private DependenciaForm newDependency;
 		/** The same official. */
-		private boolean sameProvince, sameEmails, sameOfficial, isNew, inInalterable;
+		private boolean sameProvince, sameEmails, sameOfficial, isNew, inInalterable, sameAcronym;
 
 		/**
 		 * Checks if is new.
@@ -556,7 +561,16 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		 * @return true, if is same emails
 		 */
 		public boolean isSameEmails() {
-			return (dependency != null && newDependency != null && dependency.getEmails().equals(newDependency.getEmails()));
+			return (dependency != null && newDependency != null && StringUtils.equals(dependency.getEmails(), newDependency.getEmails()));
+		}
+
+		/**
+		 * Checks if is same acronym.
+		 *
+		 * @return true, if is same acronym
+		 */
+		public boolean isSameAcronym() {
+			return (dependency != null && newDependency != null && StringUtils.equals(dependency.getAcronym(), newDependency.getAcronym()));
 		}
 
 		/**

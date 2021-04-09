@@ -24,6 +24,8 @@ public class MailSimProvider implements MailProvider {
 	private final ObjectFactory factory = new ObjectFactory();
 	/** The mail to. */
 	private List<String> mailTo;
+	/** The mail to cco. */
+	private List<String> mailToCco;
 	/** The subject. */
 	private String subject;
 	/** The body. */
@@ -98,6 +100,16 @@ public class MailSimProvider implements MailProvider {
 	}
 
 	/**
+	 * Sets the mail to cco.
+	 *
+	 * @param mailToCco the new mail to cco
+	 */
+	@Override
+	public void setMailToCco(final List<String> mailToCco) {
+		this.mailToCco = mailToCco;
+	}
+
+	/**
 	 * Sets the attachment.
 	 *
 	 * @param attachName the attach name
@@ -160,6 +172,12 @@ public class MailSimProvider implements MailProvider {
 		final Iterator<String> mailToiterator = mailTo.iterator();
 		if (mailToiterator.hasNext()) {
 			destinatarios.setTo(mailToiterator.next());
+		}
+		if (mailToCco != null) {
+			final Iterator<String> mailToCcoiterator = mailToCco.iterator();
+			if (mailToCcoiterator.hasNext()) {
+				destinatarios.setBcc(mailToCcoiterator.next());
+			}
 		}
 		destinatarioMail.setDestinatarios(destinatarios);
 		destinatariosMail.getDestinatarioMail().add(destinatarioMail);

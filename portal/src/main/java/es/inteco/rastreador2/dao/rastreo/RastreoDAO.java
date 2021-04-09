@@ -1421,12 +1421,13 @@ public final class RastreoDAO {
 	public static void updateRastreo(Connection c, boolean esMenu, InsertarRastreoForm insertarRastreoForm, Long idRastreo) throws SQLException {
 		PreparedStatement ps = null;
 		try {
-			ps = c.prepareStatement("UPDATE rastreo SET profundidad = ?, topn = ?, in_directory = ?, id_guideline= ? WHERE id_rastreo = ?");
+			ps = c.prepareStatement("UPDATE rastreo SET profundidad = ?, topn = ?, in_directory = ?, id_guideline= ?, id_language = ? WHERE id_rastreo = ?");
 			ps.setInt(1, insertarRastreoForm.getProfundidad());
 			ps.setLong(2, insertarRastreoForm.getTopN());
 			ps.setBoolean(3, insertarRastreoForm.isInDirectory());
 			ps.setString(4, insertarRastreoForm.getCartucho());
-			ps.setLong(5, idRastreo);
+			ps.setLong(5, insertarRastreoForm.getLenguaje());
+			ps.setLong(6, idRastreo);
 			ps.executeUpdate();
 			// Update cartucho_rastreo
 			DAOUtils.closeQueries(ps, null);

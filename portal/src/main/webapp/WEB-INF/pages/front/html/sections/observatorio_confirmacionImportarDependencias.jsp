@@ -50,8 +50,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<bean:size id="beansize" name="errorDependencies" />
 						<bean:message key="importar.dependencias.error.title.total">
 							<jsp:attribute name="arg0">
-                            <bean:write name="beansize" />
-                        </jsp:attribute>
+								<bean:write name="beansize" />
+							</jsp:attribute>
 						</bean:message>
 						<logic:iterate name="errorDependencies" id="dependency">
 							<table class="table table-stripped table-bordered table-hover">
@@ -71,6 +71,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											<bean:message key="colname.name" />
 										</th>
 										<th>
+											<bean:message key="colname.acronym" />
+										</th>
+										<th>
 											<bean:message key="colname.province" />
 										</th>
 										<th>
@@ -87,6 +90,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										<td>
 											<bean:write name="dependency" property="name" />
 										</td>
+										<th>
+											<bean:write name="dependency" property="acronym" />
+										</th>
 										<td>
 											<logic:notEmpty name="dependency" property="tag">
 												<bean:write name="dependency" property="tag.name" />
@@ -127,8 +133,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<bean:size id="beansize" name="updatedDependencies" />
 						<bean:message key="importar.dependencias.updated.title.total">
 							<jsp:attribute name="arg0">
-                            <bean:write name="beansize" />
-                        </jsp:attribute>
+								<bean:write name="beansize" />
+							</jsp:attribute>
 						</bean:message>
 						<logic:iterate name="updatedDependencies" id="dependency">
 							<table class="table table-stripped table-bordered table-hover">
@@ -137,7 +143,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								</caption>
 								<colgroup>
 									<col style="width: 10%">
-									<col style="width: 40%">
+									<col style="width: 30%">
+									<col style="width: 10%">
 									<col style="width: 10%">
 									<col style="width: 10%">
 									<col style="width: 30%">
@@ -147,6 +154,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										<th></th>
 										<th>
 											<bean:message key="colname.name" />
+										</th>
+										<th>
+											<bean:message key="colname.acronym" />
 										</th>
 										<th>
 											<bean:message key="colname.province" />
@@ -162,6 +172,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										<td>Valor actual</td>
 										<td>
 											<bean:write name="dependency" property="dependency.name" />
+										</td>
+										<td>
+											<bean:write name="dependency" property="dependency.acronym" />
 										</td>
 										<td>
 											<logic:notEmpty name="dependency" property="dependency.tag">
@@ -184,6 +197,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										<td>Valor nuevo</td>
 										<td>
 											<bean:write name="dependency" property="newDependency.name" />
+										</td>
+										<td class="<c:if test="${dependency.sameAcronym!=true}">warning-import</c:if>">
+											<bean:write name="dependency" property="newDependency.acronym" />
 										</td>
 										<td class="<c:if test="${dependency.sameProvince!=true}">warning-import</c:if>">
 											<logic:notEmpty name="dependency" property="newDependency.tag">
@@ -216,8 +232,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<bean:size id="beansize" name="newDependencies" />
 						<bean:message key="importar.dependencias.new.title.total">
 							<jsp:attribute name="arg0">
-                            <bean:write name="beansize" />
-                        </jsp:attribute>
+								<bean:write name="beansize" />
+							</jsp:attribute>
 						</bean:message>
 						<logic:iterate name="newDependencies" id="dependency">
 							<table class="table table-stripped table-bordered table-hover">
@@ -225,7 +241,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<bean:message key="lista.semillas.observatorio" />
 								</caption>
 								<colgroup>
-									<col style="width: 50%">
+									<col style="width: 40%">
+									<col style="width: 10%">
 									<col style="width: 10%">
 									<col style="width: 10%">
 									<col style="width: 30%">
@@ -234,6 +251,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<tr>
 										<th>
 											<bean:message key="colname.name" />
+										</th>
+										<th>
+											<bean:message key="colname.acronym" />
 										</th>
 										<th>
 											<bean:message key="colname.province" />
@@ -248,6 +268,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<tr>
 										<td>
 											<bean:write name="dependency" property="name" />
+										</td>
+										<td>
+											<bean:write name="dependency" property="acronym" />
 										</td>
 										<td>
 											<logic:notEmpty name="dependency" property="tag">
@@ -280,8 +303,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<bean:size id="beansize" name="inalterableDependencies" />
 						<bean:message key="importar.dependencias.inalterable.title.total">
 							<jsp:attribute name="arg0">
-                            <bean:write name="beansize" />
-                        </jsp:attribute>
+								<bean:write name="beansize" />
+							</jsp:attribute>
 						</bean:message>
 						<logic:iterate name="inalterableDependencies" id="dependency">
 							<table class="table table-stripped table-bordered table-hover">
@@ -289,7 +312,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<bean:message key="lista.semillas.observatorio" />
 								</caption>
 								<colgroup>
-									<col style="width: 50%">
+									<col style="width: 40%">
+									<col style="width: 10%">
 									<col style="width: 10%">
 									<col style="width: 10%">
 									<col style="width: 30%">
@@ -298,6 +322,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<tr>
 										<th>
 											<bean:message key="colname.name" />
+										</th>
+										<th>
+											<bean:message key="colname.acronym" />
 										</th>
 										<th>
 											<bean:message key="colname.province" />

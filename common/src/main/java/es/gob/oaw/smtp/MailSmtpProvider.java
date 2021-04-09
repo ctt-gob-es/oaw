@@ -31,6 +31,8 @@ public class MailSmtpProvider implements MailProvider {
 	private String fromName;
 	/** The mail to. */
 	private List<String> mailTo;
+	/** The mail to cco. */
+	private List<String> mailToCco;
 	/** The subject. */
 	private String subject;
 	/** The body. */
@@ -62,6 +64,11 @@ public class MailSmtpProvider implements MailProvider {
 			// Create the email message
 			final MultiPartEmail email = createEmail();
 			setEmailInfo(email, mailTo, fromAddress, fromName, subject, body);
+			if (mailToCco != null && mailToCco.isEmpty()) {
+				for (String addressStr : mailToCco) {
+					email.addTo(addressStr);
+				}
+			}
 			if (attachUrl != null && attachName != null) {
 				// Create the attachment
 				EmailAttachment attachment = new EmailAttachment();
@@ -267,5 +274,15 @@ public class MailSmtpProvider implements MailProvider {
 		} catch (Exception e) {
 			Logger.putLog("Excepción: ", MailSmtpProvider.class, Logger.LOG_LEVEL_ERROR, e);
 		}
+	}
+
+	/**
+	 * Sets the mail to cco.
+	 *
+	 * @param mailToCco the new mail to cco
+	 */
+	@Override
+	public void setMailToCco(List<String> mailToCco) {
+		this.mailToCco = mailToCco;
 	}
 }
