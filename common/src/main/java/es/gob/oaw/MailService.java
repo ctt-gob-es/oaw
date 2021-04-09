@@ -77,6 +77,30 @@ public class MailService {
 	 * Send mail.
 	 *
 	 * @param mailTo      the mail to
+	 * @param mailToCco   the mail to cco
+	 * @param mailSubject the mail subject
+	 * @param mailBody    the mail body
+	 * @param attachUrl   the attach url
+	 * @param attachName  the attach name
+	 * @param html        the html
+	 * @throws MailException the mail exception
+	 */
+	public void sendMail(final List<String> mailTo, final List<String> mailToCco, final String mailSubject, final String mailBody, final String attachUrl, final String attachName, final boolean html)
+			throws MailException {
+		final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
+		mailProvider.setSubject(mailSubject);
+		mailProvider.setBody(mailBody);
+		mailProvider.setMailTo(mailTo);
+		mailProvider.setMailToCco(mailToCco);
+		mailProvider.setAttachment(attachName, attachUrl);
+		mailProvider.setHtml(html);
+		mailProvider.sendMail();
+	}
+
+	/**
+	 * Send mail.
+	 *
+	 * @param mailTo      the mail to
 	 * @param mailSubject the mail subject
 	 * @param mailBody    the mail body
 	 * @param html        the html

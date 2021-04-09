@@ -2090,6 +2090,7 @@ public final class ObservatorioDAO {
 				insertarRastreoForm.setId_semilla(semillaForm.getId());
 				insertarRastreoForm.setId_observatorio(idObservatory);
 				insertarRastreoForm.setInDirectory(semillaForm.isInDirectory());
+				insertarRastreoForm.setLenguaje(observatorioForm.getLenguaje());
 				final Long idCrawler = ObservatorioDAO.existObservatoryCrawl(c, idObservatory, semillaForm.getId());
 				if (idCrawler == -1) {
 					insertarRastreoForm.setActive(semillaForm.isActiva());
@@ -2138,6 +2139,7 @@ public final class ObservatorioDAO {
 					insertarRastreoForm.setTopN(observatorioForm.getAmplitud());
 					insertarRastreoForm.setCartucho(String.valueOf(observatorioForm.getCartucho().getId()));
 					insertarRastreoForm.setNormaAnalisis(String.valueOf(observatorioForm.getCartucho().getId()));
+					insertarRastreoForm.setLenguaje(observatorioForm.getLenguaje());
 					final Long idCrawler = ObservatorioDAO.existObservatoryCrawl(c, idObservatory, semillaForm.getId());
 					if (idCrawler == -1) {
 						insertarRastreoForm.setActive(semillaForm.isActiva());

@@ -176,7 +176,7 @@ public final class AnnexUtils {
 	/** The Constant A1. */
 	private static final String A1 = "A1";
 	/** The Constant COLUMN_TITLE_NO_CONFORMES. */
-	private static final String COLUMN_TITLE_NO_CONFORMES = "% NO CONFORMES";
+	private static final String COLUMN_TITLE_NO_CONFORMES = "% PC+NC";
 	/** The Constant COLUMN_TITLE_NOTA_MEDIA_NC. */
 	private static final String COLUMN_TITLE_NOTA_MEDIA_NC = "NOTA MEDIA NC";
 	/** The Constant COLUMN_TITLE_PERCENT_NC. */
@@ -588,7 +588,7 @@ public final class AnnexUtils {
 		final String[] columnNamesAllocation = new String[] { COLUMN_TITLE_ORGANISMO, COLUMN_TITLE_TOTAL_PORTALES_AA, COLUMN_TITLE_AA, COLUMN_TITLE_NOTA_MEDIA_AA, COLUMN_TITLE_TOTAL_PORTALES_A,
 				COLUMN_TITLE_PERCENT_A, COLUMN_TITLE_NOTA_MEDIA_A, COLUMN_TITLE_TOTAL_PORTALES_NV, COLUMN_TITLE_NV, COLUMN_TITLE_NOTA_MEDIA_NV, COLUMN_TITLE_NO_CUMPLEN, COLUMN_TITLE_TOTAL_PORTALES };
 		// In order left to right
-		final String[] columnResultsAllocation = new String[] { "R", "P", "Q" };
+		final String[] columnResultsAllocation = new String[] { "R", "Q", "P" };
 		final String[] columnResultsCompliance = new String[] { "U", "T", "S" };
 		final String[] columnNamesCompliance = new String[] { COLUMN_TITLE_ORGANISMO, COLUMN_TITLE_TOTAL_PORTALES_TC, COLUMN_TITLE_PERCENT_TC, COLUMN_TITLE_NOTA_MEDIA_TC,
 				COLUMN_TITLE_TOTAL_PORTALES_PC, COLUMN_TITLE_PERCENT_PC, COLUMN_TITLE_NOTA_MEDIA_PC, COLUMN_TITLE_TOTAL_PORTALES_NC, COLUMN_TITLE_PERCENT_NC, COLUMN_TITLE_NOTA_MEDIA_NC,
@@ -891,7 +891,7 @@ public final class AnnexUtils {
 							for (RangeForm range : websiteRanges) {
 								String expression = generateRangeJsExpression(diffScore, range.getMinValueOperator(), range.getMaxValueOperator(), range.getMinValue(), range.getMaxValue());
 								if ((boolean) scriptEngine.eval(expression)) {
-									Integer val = rangeMap.get(range.getName());
+									Integer val = rangeMap.get(range);
 									if (val != null) {
 										val++;
 									} else {
