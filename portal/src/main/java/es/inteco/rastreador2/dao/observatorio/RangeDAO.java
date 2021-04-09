@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,10 +67,18 @@ public class RangeDAO {
 					form.setId(rs.getLong("id"));
 					form.setWeight(rs.getInt("weight"));
 					form.setName(rs.getString("name"));
-					form.setMinValue(rs.getFloat("min_value"));
-					form.setMaxValue(rs.getFloat("max_value"));
 					form.setMinValueOperator(rs.getString("min_value_operator"));
+					if (!org.apache.commons.lang3.StringUtils.isEmpty(form.getMinValueOperator())) {
+						form.setMinValue(rs.getFloat("min_value"));
+					} else {
+						form.setMinValue(null);
+					}
 					form.setMaxValueOperator(rs.getString("max_value_operator"));
+					if (!org.apache.commons.lang3.StringUtils.isEmpty(form.getMaxValueOperator())) {
+						form.setMaxValue(rs.getFloat("max_value"));
+					} else {
+						form.setMaxValue(null);
+					}
 					form.setColor(rs.getString("color"));
 					results.add(form);
 				}
@@ -126,8 +135,16 @@ public class RangeDAO {
 		final String query = "UPDATE observatorio_range SET name = ?, min_value = ?, max_value = ?, min_value_operator = ?, max_value_operator = ?, weight = ?, color = ? WHERE id = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, form.getName());
-			ps.setFloat(2, form.getMinValue());
-			ps.setFloat(3, form.getMaxValue());
+			if (!StringUtils.isEmpty(form.getMinValueOperator())) {
+				ps.setFloat(2, form.getMinValue());
+			} else {
+				ps.setNull(2, Types.FLOAT);
+			}
+			if (!StringUtils.isEmpty(form.getMaxValueOperator())) {
+				ps.setFloat(3, form.getMaxValue());
+			} else {
+				ps.setNull(3, Types.FLOAT);
+			}
 			ps.setString(4, form.getMinValueOperator());
 			ps.setString(5, form.getMaxValueOperator());
 			ps.setInt(6, form.getWeight());

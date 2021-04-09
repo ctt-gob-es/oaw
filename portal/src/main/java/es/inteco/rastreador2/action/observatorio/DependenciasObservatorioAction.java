@@ -66,19 +66,19 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	/** The Constant EMPTY_STRING. */
 	private static final String EMPTY_STRING = "";
 	/** The Constant LITERAL_YES. */
-	private static final String LITERAL_YES = "Sí";
+	private static final String LITERAL_YES = Normalizer.normalize("Sí", Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 	/** The Constant LITERAL_NO. */
-	private static final String LITERAL_NO = "No";
+	private static final String LITERAL_NO = Normalizer.normalize("No", Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 	/** The Constant IMPORT_COLUMN_PROVINCE. */
-	private static final String IMPORT_COLUMN_PROVINCE = "Provincia";
+	private static final String IMPORT_COLUMN_PROVINCE = Normalizer.normalize("Provincia", Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 	/** The Constant IMPORT_COLUMN_OFFICIAL. */
-	private static final String IMPORT_COLUMN_OFFICIAL = "Designacion oficial";
+	private static final String IMPORT_COLUMN_OFFICIAL = Normalizer.normalize("Designacion oficial", Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 	/** The Constant IMPORT_COLUMN_EMAILS. */
-	private static final String IMPORT_COLUMN_EMAILS = "Correo Electrónico";
+	private static final String IMPORT_COLUMN_EMAILS = Normalizer.normalize("Correo Electrónico", Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 	/** The Constant IMPORT_COLUMN_ACRONYM. */
-	private static final String IMPORT_COLUMN_ACRONYM = "Acrónimo";
+	private static final String IMPORT_COLUMN_ACRONYM = Normalizer.normalize("Acrónimo", Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 	/** The Constant IMPORT_COLUMN_NAME. */
-	private static final String IMPORT_COLUMN_NAME = "Nombre";
+	private static final String IMPORT_COLUMN_NAME = Normalizer.normalize("Nombre", Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 
 	/**
 	 * Load. Carga de la página.
@@ -366,13 +366,8 @@ public class DependenciasObservatorioAction extends DispatchAction {
 				if (sheet.getRow(0) != null && sheet.getRow(0).getCell(0) != null) {
 					String normalizedCellValue = Normalizer.normalize(sheet.getRow(0).getCell(0).getStringCellValue(), Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 					if (IMPORT_COLUMN_OFFICIAL.equalsIgnoreCase(normalizedCellValue)) {
-						// TODO Determine if is official or not by number of columns
-						if (sheet.getRow(0).getPhysicalNumberOfCells() == 13) {
-							getDependenciesFromSheet(comparisionList, c, sheet, false);
-						} else {
-							// Assumpt is unofficial sheet
-							getDependenciesFromSheet(comparisionList, c, sheet, true);
-						}
+						// TODO Determine if is official or not by number of columns??
+						getDependenciesFromSheet(comparisionList, c, sheet);
 					}
 				}
 			}
@@ -393,7 +388,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	 * @throws Exception    the exception
 	 * @throws SQLException the SQL exception
 	 */
-	private void getDependenciesFromSheet(final List<DependencyComparision> comparisionList, Connection c, XSSFSheet sheet, final boolean unofficial) throws Exception, SQLException {
+	private void getDependenciesFromSheet(final List<DependencyComparision> comparisionList, Connection c, XSSFSheet sheet) throws Exception, SQLException {
 		ArrayList<String> headerData = getHeaders(sheet);
 		for (int j = 1; j < sheet.getLastRowNum() + 1; j++) {
 			Row r = sheet.getRow(j);
@@ -402,12 +397,9 @@ public class DependenciasObservatorioAction extends DispatchAction {
 			if (!StringUtils.isEmpty(name)) {
 				String official = headerData.indexOf(IMPORT_COLUMN_OFFICIAL) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_OFFICIAL))) : EMPTY_STRING;
 				if (!StringUtils.isEmpty(official)) {
-					if (unofficial) {
-						if (LITERAL_NO.equalsIgnoreCase(official)) {
-							newDependency.setOfficial(false);
-						} else {
-							continue;
-						}
+					official = Normalizer.normalize(official, Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+					if (LITERAL_NO.equalsIgnoreCase(official)) {
+						newDependency.setOfficial(false);
 					} else if (LITERAL_YES.equalsIgnoreCase(official)) {
 						newDependency.setOfficial(true);
 					}
@@ -472,7 +464,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 				}
 				break;
 			case STRING:
-				headerData.add(cell.getStringCellValue());
+				headerData.add(Normalizer.normalize(cell.getStringCellValue(), Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", ""));
 				break;
 			case BOOLEAN:
 				headerData.add(String.valueOf(cell.getBooleanCellValue()));
