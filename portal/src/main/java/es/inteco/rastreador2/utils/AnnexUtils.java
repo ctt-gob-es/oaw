@@ -17,6 +17,7 @@ package es.inteco.rastreador2.utils;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -88,13 +89,16 @@ import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFTable;
+import org.apache.poi.xssf.usermodel.XSSFTextBox;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.struts.util.MessageResources;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTPlotArea;
 import org.openxmlformats.schemas.drawingml.x2006.main.CTTextBody;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTTextCharacterProperties;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTCol;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -643,11 +647,13 @@ public final class AnnexUtils {
 			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMap,
 					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_IN_GLOBAL_TERMS, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_INTENDED_TO_BE_IMPLEMENTED_IN_GLOBAL_TERMS, null, null, false, 0, xlsxUtils);
 			// Second sheet fixed part
-			final XSSFSheet fixedSheet = wb.createSheet("Fijos");
+//			final XSSFSheet fixedSheet = wb.createSheet("Fijos");
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(idObs, idObsExecution, tagsToFilterFixed,
 					exObsIds);
-			generateGlobalProgressEvolutionSheet(fixedSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed,
-					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 0, xlsxUtils);
+//			generateGlobalProgressEvolutionSheet(fixedSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed,
+//					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 0, xlsxUtils);
+			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed,
+					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 40, xlsxUtils);
 			// N sheets by segment
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idObsExecution);
 			for (CategoriaForm category : categories) {
@@ -716,6 +722,27 @@ public final class AnnexUtils {
 		generateSummaryData(fixedSummaryPrevious, improvementSheet, currentRow, FIRST_ITERATION_FIXED_TITLE);
 		currentRow = 55;
 		generateSummaryData(fixedSummaryFirst, improvementSheet, currentRow, PREVIOUS_ITERATION_FIXED_TITLE);
+		// TODO Add a legend
+		XSSFDrawing draw = improvementSheet.createDrawingPatriarch();
+		XSSFTextBox tb1 = draw.createTextbox(new XSSFClientAnchor(0, 0, 0, 0, 0, 0, 10, 6));
+		tb1.setLineStyleColor(0, 0, 0);
+		tb1.setLineWidth(1);
+		Color col = Color.WHITE;
+		tb1.setFillColor(col.getRed(), col.getGreen(), col.getBlue());
+		StringBuilder sb = new StringBuilder("Los rangos en base a los cuales se ha calculado la evolución de la puntuación de los sitios web son los siguientes:");
+		sb.append("\n");
+		for (RangeForm range : websiteRanges) {
+			sb.append(range.getName() + ": " + (range.getMinValue() != null ? range.getMinValue() : "") + " " + range.getMinValueOperator() + " x " + range.getMaxValueOperator() + " "
+					+ (range.getMaxValue() != null ? range.getMaxValue() : "") + "\n");
+		}
+		// websiteRanges
+		XSSFRichTextString address = new XSSFRichTextString(sb.toString());
+		tb1.setText(address);
+		CTTextCharacterProperties rpr = tb1.getCTShape().getTxBody().getPArray(0).getRArray(0).getRPr();
+		// rpr.addNewLatin().setTypeface("Trebuchet MS");
+		rpr.setSz(1000); // 9 pt
+		col = Color.BLACK;
+		rpr.addNewSolidFill().addNewSrgbClr().setVal(new byte[] { (byte) col.getRed(), (byte) col.getGreen(), (byte) col.getBlue() });
 	}
 
 	/**
@@ -1105,11 +1132,11 @@ public final class AnnexUtils {
 		leftAxis.setCrossBetween(AxisCrossBetween.BETWEEN);
 		XDDFChartData data = chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
 		XDDFChartData.Series series1 = data.addSeries(date, lowLevel);
-		series1.setTitle("lowLevel", new CellReference(sheet.getSheetName(), 0, 1, true, true));
+		series1.setTitle("lowLevel", new CellReference(sheet.getSheetName(), firstRow - 1, 1, true, true));
 		XDDFChartData.Series series2 = data.addSeries(date, mediumLevel);
-		series2.setTitle("mediumLevel", new CellReference(sheet.getSheetName(), 0, 2, true, true));
+		series2.setTitle("mediumLevel", new CellReference(sheet.getSheetName(), firstRow - 1, 2, true, true));
 		XDDFChartData.Series series3 = data.addSeries(date, highLevel);
-		series3.setTitle("highLevel", new CellReference(sheet.getSheetName(), 0, 3, true, true));
+		series3.setTitle("highLevel", new CellReference(sheet.getSheetName(), firstRow - 1, 3, true, true));
 		chart.plot(data);
 		XDDFBarChartData bar = (XDDFBarChartData) data;
 		bar.setBarDirection(BarDirection.COL);
@@ -3053,7 +3080,7 @@ public final class AnnexUtils {
 				final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
 				final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
 				row = sheet.createRow(rowIndex);
-				for (int i = 0; i < ColumnNames.size() - 2; i++) {
+				for (int i = 0; i < ColumnNames.size() - 4; i++) {
 					cell = row.createCell(columnIndex);
 					cell.setCellValue(ColumnNames.get(i));
 					cell.setCellStyle(headerStyle);
@@ -3182,7 +3209,7 @@ public final class AnnexUtils {
 				}
 				XSSFSheet currentSheet = wb.createSheet("Evolución SW");
 				XSSFSheet currentSheet2 = wb.createSheet("Iteración SW");
-				XSSFSheet currentSheet3 = wb.createSheet("Evolución Agregada");
+				XSSFSheet currentSheet3 = wb.createSheet("Iteración Global");
 				if (rowIndex > 1) {
 					InsertGraphIntoSheetByDependency(currentSheet, rowIndex, true, numberOfFixedColumns, false);
 					InsertGraphIntoSheetByDependency(currentSheet, rowIndex, false, numberOfFixedColumns, false);
@@ -3216,8 +3243,10 @@ public final class AnnexUtils {
 	private static void InsertAgregatePieChar(XSSFSheet currentSheet3, int rowIndex, List<String> columnNames, final XlsxUtils xlsxUtils) {
 		int adecuationColumn = 0;
 		for (int i = columnNames.size() - 1; i > 5; i--) {
-			if (columnNames.get(i).contains("adecuacion") && !columnNames.get(i).contains("ant")) {
+			if (columnNames.get(i).contains("adecuacion") && !columnNames.get(i).contains("ant") && !columnNames.get(i).contains("primer")) {
 				adecuationColumn = i + 1;
+				// first apareance is last iteration
+				break;
 			}
 		}
 		CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
@@ -3226,10 +3255,10 @@ public final class AnnexUtils {
 		// "Headers"
 		XSSFRow row = currentSheet3.createRow(0);
 		XSSFCell cell = row.createCell(1);
-		cell.setCellValue("Número de páginas.");
+		cell.setCellValue("Número de sitios web");
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(2);
-		cell.setCellValue("Porcentaje sobre el total.");
+		cell.setCellValue("Porcentaje sobre el total");
 		cell.setCellStyle(headerStyle);
 		// "AA"
 		row = currentSheet3.createRow(1);
@@ -3295,8 +3324,10 @@ public final class AnnexUtils {
 		// COMPLIANCE
 		int complianceColumn = 0;
 		for (int i = columnNames.size() - 1; i > 5; i--) {
-			if (columnNames.get(i).contains("cumplimiento") && !columnNames.get(i).contains("ant")) {
+			if (columnNames.get(i).contains("cumplimiento") && !columnNames.get(i).contains("ant") && !columnNames.get(i).contains("primer")) {
 				complianceColumn = i + 1;
+				// first is last
+				break;
 			}
 		}
 		// "Headers"
@@ -3796,7 +3827,7 @@ public final class AnnexUtils {
 						new CellRangeAddress(1, rowIndex - 1, firstSerieColumn + (isFirst ? 2 : 5), firstSerieColumn + (isFirst ? 2 : 5)));
 				XDDFChartData.Series series3 = data.addSeries(agencies, values3);
 				series3.setTitle((isFirst ? AA_PREFFIX : TC_PREFFIX) + date, null);
-				solidFillSeries(data, iteration++, PresetColor.RED);
+				solidFillSeries(data, iteration++, PresetColor.GREEN);
 			}
 			i++;
 		}
