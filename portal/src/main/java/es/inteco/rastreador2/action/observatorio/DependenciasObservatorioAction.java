@@ -54,6 +54,7 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
+import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
 import es.inteco.rastreador2.dao.dependencia.DependenciaDAO;
 import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.json.JsonMessage;
@@ -113,14 +114,28 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	 */
 	public ActionForward search(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
-			String nombre = request.getParameter("nombre");
-			if (!StringUtils.isEmpty(nombre)) {
-				nombre = es.inteco.common.utils.StringUtils.corregirEncoding(nombre);
+			DependenciaForm dependency = (DependenciaForm) form;
+			if (!StringUtils.isEmpty(dependency.getName())) {
+				dependency.setName(es.inteco.common.utils.StringUtils.corregirEncoding(dependency.getName()));
+			}
+			String idAmbit = request.getParameter("ambitoaux");
+			AmbitoForm ambit = new AmbitoForm();
+			ambit.setId(idAmbit);
+			dependency.setAmbito(ambit);
+			if (StringUtils.isEmpty(request.getParameter("official"))) {
+				dependency.setOfficial(null);
+			}
+			if (StringUtils.isEmpty(request.getParameter("sendAuto"))) {
+				dependency.setSendAuto(null);
+			}
+			String[] tagArr = null;
+			if (!StringUtils.isEmpty(request.getParameter("tagaux"))) {
+				tagArr = request.getParameter("tagaux").split(",");
 			}
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
-			final int numResult = DependenciaDAO.countDependencias(c, nombre);
+			final int numResult = DependenciaDAO.countDependencias(c, dependency, tagArr);
 			response.setContentType("text/json");
-			List<DependenciaForm> listaDependencias = DependenciaDAO.getDependencias(c, nombre, (pagina - 1));
+			List<DependenciaForm> listaDependencias = DependenciaDAO.getDependencias(c, dependency, tagArr, (pagina - 1));
 			String jsonSeeds = new Gson().toJson(listaDependencias);
 			// Paginacion
 			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
@@ -384,7 +399,6 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	 * @param comparisionList the comparision list
 	 * @param c               the c
 	 * @param sheet           the sheet
-	 * @param unofficial      the unofficial
 	 * @return the dependencies from sheet
 	 * @throws Exception    the exception
 	 * @throws SQLException the SQL exception
@@ -418,6 +432,14 @@ public class DependenciasObservatorioAction extends DispatchAction {
 						newTag.setName(province);
 						newDependency.setTag(newTag);
 					}
+				}
+				// Ambit by sheet name
+				AmbitoForm ambitBySheetName = AmbitoDAO.getAmbitByName(c, sheet.getSheetName());
+				if (ambitBySheetName != null) {
+					newDependency.setAmbito(ambitBySheetName);
+				} else {
+					// By default set ambit others
+					newDependency.setAmbito(AmbitoDAO.getAmbitByID(c, "4"));
 				}
 				// Acronym
 				String acronym = headerData.indexOf(IMPORT_COLUMN_ACRONYM) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_ACRONYM))) : EMPTY_STRING;
@@ -526,7 +548,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		/** The new dependency. */
 		private DependenciaForm newDependency;
 		/** The same official. */
-		private boolean sameProvince, sameEmails, sameOfficial, isNew, inInalterable, sameAcronym;
+		private boolean sameProvince, sameEmails, sameOfficial, isNew, inInalterable, sameAcronym, sameAmbit;
 
 		/**
 		 * Checks if is new.
@@ -543,7 +565,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		 * @return true, if successful
 		 */
 		public boolean isInalterable() {
-			return isSameEmails() && isSameOfficial() && isSameProvince();
+			return isSameEmails() && isSameOfficial() && isSameProvince() && isSameAcronym() && isSameAmbit();
 		}
 
 		/**
@@ -555,6 +577,17 @@ public class DependenciasObservatorioAction extends DispatchAction {
 			// return (dependency!=null && newDependency!=null &&;
 			return ((dependency != null && newDependency != null && dependency.getTag() == null && newDependency.getTag() == null)
 					|| (dependency != null && newDependency != null && dependency.getTag() != null && newDependency.getTag() != null && dependency.getTag().equals(newDependency.getTag())));
+		}
+
+		/**
+		 * Checks if is same ambit.
+		 *
+		 * @return true, if is same ambit
+		 */
+		public boolean isSameAmbit() {
+			// return (dependency!=null && newDependency!=null &&;
+			return ((dependency != null && newDependency != null && dependency.getAmbito() == null && newDependency.getAmbito() == null) || (dependency != null && newDependency != null
+					&& dependency.getAmbito() != null && newDependency.getAmbito() != null && dependency.getAmbito().equals(newDependency.getAmbito())));
 		}
 
 		/**

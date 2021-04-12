@@ -283,6 +283,7 @@ var translatedColNames = [ colNameId, colNameOldName,
 	
 	function limpiar(){
 		$('#SemillaSearchForm')[0].reset();
+		$('#SemillaSearchForm .tagbox-token a').click();
 		reloadGrid('/oaw/secure/JsonViewSemillasObservatorio.do?action=buscar&'
 				+ $('#SemillaSearchForm')
 						.serialize());
