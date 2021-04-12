@@ -155,11 +155,11 @@ public final class DependenciaDAO {
 		if (dependency.getAmbito() != null && !org.apache.commons.lang3.StringUtils.isEmpty(dependency.getAmbito().getId())) {
 			ps.setString(count++, dependency.getAmbito().getId());
 		}
-		if (dependency.isOfficial() != null) {
-			ps.setBoolean(count++, dependency.isOfficial());
+		if (dependency.getOfficial() != null) {
+			ps.setBoolean(count++, dependency.getOfficial());
 		}
-		if (dependency.isSendAuto() != null) {
-			ps.setBoolean(count++, dependency.isSendAuto());
+		if (dependency.getSendAuto() != null) {
+			ps.setBoolean(count++, dependency.getSendAuto());
 		}
 		if (tagArr != null && tagArr.length > 0) {
 			for (int i = 0; i < tagArr.length; i++) {
@@ -184,10 +184,10 @@ public final class DependenciaDAO {
 		if (dependency.getAmbito() != null && !org.apache.commons.lang3.StringUtils.isEmpty(dependency.getAmbito().getId())) {
 			query += " AND d.id_ambit = ?  ";
 		}
-		if (dependency.isOfficial() != null) {
+		if (dependency.getOfficial() != null) {
 			query += " AND d.official = ?  ";
 		}
-		if (dependency.isSendAuto() != null) {
+		if (dependency.getSendAuto() != null) {
 			query += " AND d.send_auto = ?  ";
 		}
 		if (tagArr != null && tagArr.length > 0) {
@@ -322,8 +322,8 @@ public final class DependenciaDAO {
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, dependencia.getName());
 			ps.setString(2, dependencia.getEmails());
-			ps.setBoolean(3, dependencia.isSendAuto());
-			ps.setBoolean(4, dependencia.isOfficial());
+			ps.setBoolean(3, dependencia.getSendAuto());
+			ps.setBoolean(4, dependencia.getOfficial());
 			if (dependencia.getAmbito() != null && StringUtils.isNotEmpty(dependencia.getAmbito().getId())) {
 				ps.setString(5, dependencia.getAmbito().getId());
 			} else {
@@ -355,8 +355,8 @@ public final class DependenciaDAO {
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, dependencia.getName());
 			ps.setString(2, dependencia.getEmails());
-			ps.setBoolean(3, dependencia.isSendAuto());
-			ps.setBoolean(4, dependencia.isOfficial());
+			ps.setBoolean(3, dependencia.getSendAuto());
+			ps.setBoolean(4, dependencia.getOfficial());
 			if (dependencia.getAmbito() != null && StringUtils.isNotEmpty(dependencia.getAmbito().getId())) {
 				ps.setString(5, dependencia.getAmbito().getId());
 			} else {
@@ -432,7 +432,7 @@ public final class DependenciaDAO {
 				if (dependency.getId() != null) {
 					ps = c.prepareStatement("UPDATE dependencia SET  emails = ?, official = ?, id_tag = ?, acronym = ?, id_ambit=?  WHERE id_dependencia = ?");
 					ps.setString(1, dependency.getEmails());
-					ps.setBoolean(2, dependency.isOfficial());
+					ps.setBoolean(2, dependency.getOfficial());
 					ps.setNull(3, Types.BIGINT);
 					if (dependency.getTag() != null) {
 						ps.setLong(3, dependency.getTag().getId());
@@ -448,7 +448,7 @@ public final class DependenciaDAO {
 							"INSERT INTO dependencia(nombre, emails, official,id_tag,acronym,id_ambit) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE emails=?, official=?, id_tag=?, acronym=?, id_ambit=?");
 					ps.setString(1, dependency.getName());
 					ps.setString(2, dependency.getEmails());
-					ps.setBoolean(3, dependency.isOfficial());
+					ps.setBoolean(3, dependency.getOfficial());
 					ps.setNull(4, Types.BIGINT);
 					if (dependency.getTag() != null) {
 						ps.setLong(4, dependency.getTag().getId());
@@ -459,7 +459,7 @@ public final class DependenciaDAO {
 						ps.setString(6, dependency.getAmbito().getId());
 					}
 					ps.setString(7, dependency.getEmails());
-					ps.setBoolean(8, dependency.isOfficial());
+					ps.setBoolean(8, dependency.getOfficial());
 					if (dependency.getTag() != null) {
 						ps.setLong(9, dependency.getTag().getId());
 					} else {

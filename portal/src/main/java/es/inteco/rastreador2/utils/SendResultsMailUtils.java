@@ -86,7 +86,7 @@ public final class SendResultsMailUtils {
 		for (UraSendResultForm ura : uras) {
 			// Find Dependency
 			DependenciaForm dependency = DependenciaDAO.findById(c, ura.getUraId());
-			if (dependency.isSendAuto() && !StringUtils.isEmpty(dependency.getEmails())) {
+			if (dependency.getSendAuto() && !StringUtils.isEmpty(dependency.getEmails())) {
 				String xlsxFilePath = annexPath + "/Dependencias/" + dependency.getName() + ".xlsx";
 				String pdfZipPath = pdfZipsPath.get(PDFUtils.formatSeedName(dependency.getName()));
 				File xlsx = new File(xlsxFilePath);
@@ -229,7 +229,7 @@ public final class SendResultsMailUtils {
 	public static StringBuilder composeMailBody(final DependenciaForm ura, final UraSendResultForm uraCustom, TemplateRangeForm template) {
 		String templateMail = template.getTemplate();
 		templateMail.replace("_ura_name_", ura.getName());
-		if (ura.isOfficial()) {
+		if (ura.getOfficial()) {
 			templateMail = templateMail.replace(StringUtils.substringBetween(templateMail, "[oficiosa]", "[/oficiosa]"), "");
 			templateMail = templateMail.replace("[oficial]", "");
 			templateMail = templateMail.replace("[/oficial]", "");
