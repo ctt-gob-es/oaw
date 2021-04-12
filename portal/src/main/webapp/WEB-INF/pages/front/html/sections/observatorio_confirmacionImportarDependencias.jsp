@@ -59,7 +59,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<bean:message key="lista.semillas.observatorio" />
 								</caption>
 								<colgroup>
-									<col style="width: 50%">
+									<col style="width: 40%">
+									<col style="width: 10%">
 									<col style="width: 10%">
 									<col style="width: 10%">
 									<col style="width: 10%">
@@ -75,6 +76,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</th>
 										<th>
 											<bean:message key="colname.province" />
+										</th>
+										<th>
+											<bean:message key="colname.ambit" />
 										</th>
 										<th>
 											<bean:message key="colname.official" />
@@ -96,6 +100,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										<td>
 											<logic:notEmpty name="dependency" property="tag">
 												<bean:write name="dependency" property="tag.name" />
+											</logic:notEmpty>
+										</td>
+										<td>
+											<logic:notEmpty name="dependency" property="ambito">
+												<bean:write name="dependency" property="ambito.name" />
 											</logic:notEmpty>
 										</td>
 										<td>
@@ -162,6 +171,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											<bean:message key="colname.province" />
 										</th>
 										<th>
+											<bean:message key="colname.ambit" />
+										</th>
+										<th>
 											<bean:message key="colname.official" />
 										</th>
 										<th>
@@ -179,6 +191,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										<td>
 											<logic:notEmpty name="dependency" property="dependency.tag">
 												<bean:write name="dependency" property="dependency.tag.name" />
+											</logic:notEmpty>
+										</td>
+										<td>
+											<logic:notEmpty name="dependency" property="dependency.ambito">
+												<bean:write name="dependency" property="dependency.ambito.name" />
 											</logic:notEmpty>
 										</td>
 										<td>
@@ -204,6 +221,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										<td class="<c:if test="${dependency.sameProvince!=true}">warning-import</c:if>">
 											<logic:notEmpty name="dependency" property="newDependency.tag">
 												<bean:write name="dependency" property="newDependency.tag.name" />
+											</logic:notEmpty>
+										</td>
+										<td class="<c:if test="${dependency.sameAmbit!=true}">warning-import</c:if>">
+											<logic:notEmpty name="dependency" property="newDependency.ambito">
+												<bean:write name="dependency" property="newDependency.ambito.name" />
 											</logic:notEmpty>
 										</td>
 										<td class="<c:if test="${dependency.sameOfficial!=true}">warning-import</c:if>">
@@ -259,6 +281,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											<bean:message key="colname.province" />
 										</th>
 										<th>
+											<bean:message key="colname.ambit" />
+										</th>
+										<th>
 											<bean:message key="colname.official" />
 										</th>
 										<th>
@@ -275,6 +300,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										<td>
 											<logic:notEmpty name="dependency" property="tag">
 												<bean:write name="dependency" property="tag.name" />
+											</logic:notEmpty>
+										</td>
+										<td>
+											<logic:notEmpty name="dependency" property="ambito">
+												<bean:write name="dependency" property="ambito.name" />
 											</logic:notEmpty>
 										</td>
 										<td>
@@ -312,7 +342,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<bean:message key="lista.semillas.observatorio" />
 								</caption>
 								<colgroup>
-									<col style="width: 40%">
+									<col style="width: 30%">
+									<col style="width: 10%">
 									<col style="width: 10%">
 									<col style="width: 10%">
 									<col style="width: 10%">
@@ -330,6 +361,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											<bean:message key="colname.province" />
 										</th>
 										<th>
+											<bean:message key="colname.ambit" />
+										</th>
+										<th>
 											<bean:message key="colname.official" />
 										</th>
 										<th>
@@ -341,8 +375,16 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											<bean:write name="dependency" property="name" />
 										</td>
 										<td>
+											<bean:write name="dependency" property="acronym" />
+										</td>
+										<td>
 											<logic:notEmpty name="dependency" property="tag">
 												<bean:write name="dependency" property="tag.name" />
+											</logic:notEmpty>
+										</td>
+										<td>
+											<logic:notEmpty name="dependency" property="ambito">
+												<bean:write name="dependency" property="ambito.name" />
 											</logic:notEmpty>
 										</td>
 										<td>

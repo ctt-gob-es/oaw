@@ -593,6 +593,7 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 	
 	function limpiar(){
 		$('#buscadorDependencias')[0].reset();
+		$('#buscadorDependencias .tagbox-token a').click();
 		reloadGrid('/oaw/secure/ViewDependenciasObservatorio.do?action=search&'
 				+ $('#buscadorDependencias').serialize());
 	}
@@ -644,6 +645,44 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 							})
 
 						});
+						
+						
+						$.ajax({
+							url : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
+						}).done(
+								function(data) {
+
+									var response = $.parseJSON(data);
+
+									$('#selectAmbitsSearch').append(
+											"<option value=''></option>");
+									if (response && response.length) {
+										for (var i = 0, l = response.length; i < l; i++) {
+											var ri = response[i];
+											$('#selectAmbitsSearch').append(
+													'<option value="'+ri.id+'">' + ri.name
+															+ '</option>');
+										}
+									}
+								});
+						
+						$.ajax({
+							url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=clasification&clasification=2',
+							method : 'POST',
+							cache : false
+						}).done(function(response) {
+
+							$('#tagsFilterSearch').tagbox({
+								items : response.etiquetas,
+								searchIn : [ 'name' ],
+								rowFormat : '<span class="name">{{name}}</span>',
+								tokenFormat : '{{name}}',
+								valueField : 'id',
+								itemClass : 'user'
+							});
+
+						});
+						
 
 					});
 
@@ -888,6 +927,7 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 							<option value="false"><bean:message key="select.no" /></option>
 						</select>
 					</div>
+				</div>
 			</form>
 		</div>
 	</div>
@@ -924,13 +964,65 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 				</legend>
 				<jsp:include page="/common/crawler_messages.jsp" />
 				<div class="formItem">
-					<label for="nombre" class="control-label">
+					<label for="name" class="control-label">
 						<strong class="labelVisu">
 							<bean:message key="nueva.dependencia.observatorio.nombre" />
 						</strong>
 					</label>
-					<input type="text" class="texto form-control" id="nombre" name="nombre" />
+					<input type="text" class="texto form-control" id="name" name="name" />
 				</div>
+				<!-- Ambito/Ambitoaux -->
+				<div class="row formItem">
+					<label for="ambitoaux" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="nueva.semilla.webs.ambito" />
+						</strong>
+					</label>
+					<div class="col-xs-4">
+						<select name="ambitoaux" id="selectAmbitsSearch" class="textoSelect form-control"></select>
+					</div>
+				</div>
+				<!-- Etiquetas -->
+				<div class="row formItem">
+					<label for="tagaux" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="colname.province" />
+						</strong>
+					</label>
+					<div class="col-xs-6">
+						<input name="tagaux" autocapitalize="off" placeholder="Escriba para buscar..." autofocus id="tagsFilterSearch"
+							type="text" value="" />
+					</div>
+				</div>
+				<!-- Official -->
+				<div class="row formItem">
+					<label for="official" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="colname.official" />
+						</strong>
+					</label>
+					<div class="col-xs-4">
+						<select name="official" class="textoSelect form-control">
+							<option value=""></option>
+							<option value="true"><bean:message key="select.yes" /></option>
+							<option value="false"><bean:message key="select.no" /></option>
+						</select>
+					</div>
+				</div>
+				<!-- Send Auto -->
+				<div class="row formItem">
+					<label for="sendAuto" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="colname.send.auto" />
+						</strong>
+					</label>
+					<div class="col-xs-4">
+						<select name="sendAuto" class="textoSelect form-control">
+							<option value=""></option>
+							<option value="true"><bean:message key="select.yes" /></option>
+							<option value="false"><bean:message key="select.no" /></option>
+						</select>
+					</div
 				<div class="formButton">
 					<span onclick="buscar()" class="btn btn-default btn-lg">
 						<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -941,6 +1033,8 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						<bean:message key="boton.limpiar" />
 					</span>
 				</div>
+			
+			
 			</fieldset>
 		</form>
 		<!-- Nueva semilla -->

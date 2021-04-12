@@ -67,13 +67,14 @@ public class AmbitoDAO {
 					ambit = new AmbitoForm();
 					ambit.setId(rs.getString("c.id_ambito"));
 					ambit.setName(rs.getString("c.nombre"));
+					return ambit;
 				}
 			}
 		} catch (SQLException e) {
 			Logger.putLog(SQL_EXCEPTION, ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-		return ambit;
+		return null;
 	}
 
 	/**

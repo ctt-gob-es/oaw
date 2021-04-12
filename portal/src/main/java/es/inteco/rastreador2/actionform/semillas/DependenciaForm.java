@@ -35,9 +35,9 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	/** The nombre antiguo. */
 	private String nombreAntiguo;
 	/** The send auto. */
-	private boolean sendAuto;
+	private Boolean sendAuto;
 	/** The official. */
-	private boolean official;
+	private Boolean official;
 	/** The emails. */
 	private String emails;
 	/** The ambito. */
@@ -123,7 +123,7 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	 *
 	 * @return the sendAuto
 	 */
-	public boolean isSendAuto() {
+	public Boolean isSendAuto() {
 		return sendAuto;
 	}
 
@@ -132,7 +132,7 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	 *
 	 * @param sendAuto the sendAuto to set
 	 */
-	public void setSendAuto(boolean sendAuto) {
+	public void setSendAuto(Boolean sendAuto) {
 		this.sendAuto = sendAuto;
 	}
 
@@ -195,7 +195,7 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	 *
 	 * @return the official
 	 */
-	public boolean isOfficial() {
+	public Boolean isOfficial() {
 		return official;
 	}
 
@@ -204,7 +204,7 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	 *
 	 * @param official the official to set
 	 */
-	public void setOfficial(boolean official) {
+	public void setOfficial(Boolean official) {
 		this.official = official;
 	}
 

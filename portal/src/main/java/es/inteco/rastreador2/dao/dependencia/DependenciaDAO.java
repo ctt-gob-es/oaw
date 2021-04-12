@@ -45,21 +45,18 @@ public final class DependenciaDAO {
 	/**
 	 * Count dependencias.
 	 *
-	 * @param c      the c
-	 * @param nombre the nombre
+	 * @param c          the c
+	 * @param dependency the dependency
+	 * @param tagArr     the tag arr
 	 * @return the int
 	 * @throws SQLException the SQL exception
 	 */
-	public static int countDependencias(Connection c, String nombre) throws SQLException {
+	public static int countDependencias(Connection c, final DependenciaForm dependency, final String[] tagArr) throws SQLException {
 		int count = 1;
 		String query = "SELECT COUNT(*) FROM dependencia d WHERE 1=1 ";
-		if (StringUtils.isNotEmpty(nombre)) {
-			query += " AND UPPER(d.nombre) like UPPER(?) ";
-		}
+		query = appendWhereClauses(dependency, tagArr, query);
 		try (PreparedStatement ps = c.prepareStatement(query)) {
-			if (StringUtils.isNotEmpty(nombre)) {
-				ps.setString(count++, "%" + nombre + "%");
-			}
+			count = fillWhereClauses(dependency, tagArr, ps, count);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					return rs.getInt(1);
@@ -76,27 +73,24 @@ public final class DependenciaDAO {
 	/**
 	 * Gets the dependencias.
 	 *
-	 * @param c      the c
-	 * @param nombre the nombre
-	 * @param page   the page
+	 * @param c          the c
+	 * @param dependency the dependency
+	 * @param tagArr     the tag arr
+	 * @param page       the page
 	 * @return the dependencias
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<DependenciaForm> getDependencias(Connection c, String nombre, int page) throws SQLException {
+	public static List<DependenciaForm> getDependencias(Connection c, final DependenciaForm dependency, final String[] tagArr, int page) throws SQLException {
 		final List<DependenciaForm> results = new ArrayList<>();
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official, d.acronym, a.nombre, a.id_ambito, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN ambitos_lista a ON d.id_ambit = a.id_ambito LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE 1=1 ";
-		if (StringUtils.isNotEmpty(nombre)) {
-			query += " AND UPPER(d.nombre) like UPPER(?) ";
-		}
+		query = appendWhereClauses(dependency, tagArr, query);
 		query += "ORDER BY UPPER(d.nombre) ASC ";
 		if (page != Constants.NO_PAGINACION) {
 			query += "LIMIT ? OFFSET ?";
 		}
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			int count = 1;
-			if (StringUtils.isNotEmpty(nombre)) {
-				ps.setString(count++, "%" + nombre + "%");
-			}
+			count = fillWhereClauses(dependency, tagArr, ps, count);
 			if (page != Constants.NO_PAGINACION) {
 				PropertiesManager pmgr = new PropertiesManager();
 				int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
@@ -142,6 +136,68 @@ public final class DependenciaDAO {
 			throw e;
 		}
 		return results;
+	}
+
+	/**
+	 * Fill where clauses.
+	 *
+	 * @param dependency the dependency
+	 * @param tagArr     the tag arr
+	 * @param ps         the ps
+	 * @param count      the count
+	 * @return the int
+	 * @throws SQLException the SQL exception
+	 */
+	private static int fillWhereClauses(final DependenciaForm dependency, final String[] tagArr, PreparedStatement ps, int count) throws SQLException {
+		if (!org.apache.commons.lang3.StringUtils.isEmpty(dependency.getName())) {
+			ps.setString(count++, "%" + dependency.getName() + "%");
+		}
+		if (dependency.getAmbito() != null && !org.apache.commons.lang3.StringUtils.isEmpty(dependency.getAmbito().getId())) {
+			ps.setString(count++, dependency.getAmbito().getId());
+		}
+		if (dependency.isOfficial() != null) {
+			ps.setBoolean(count++, dependency.isOfficial());
+		}
+		if (dependency.isSendAuto() != null) {
+			ps.setBoolean(count++, dependency.isSendAuto());
+		}
+		if (tagArr != null && tagArr.length > 0) {
+			for (int i = 0; i < tagArr.length; i++) {
+				ps.setLong(count++, Long.parseLong(tagArr[i]));
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * Append where clauses.
+	 *
+	 * @param dependency the dependency
+	 * @param tagArr     the tag arr
+	 * @param query      the query
+	 * @return the string
+	 */
+	private static String appendWhereClauses(final DependenciaForm dependency, final String[] tagArr, String query) {
+		if (!org.apache.commons.lang3.StringUtils.isEmpty(dependency.getName())) {
+			query += " AND UPPER(d.nombre) like UPPER(?) ";
+		}
+		if (dependency.getAmbito() != null && !org.apache.commons.lang3.StringUtils.isEmpty(dependency.getAmbito().getId())) {
+			query += " AND d.id_ambit = ?  ";
+		}
+		if (dependency.isOfficial() != null) {
+			query += " AND d.official = ?  ";
+		}
+		if (dependency.isSendAuto() != null) {
+			query += " AND d.send_auto = ?  ";
+		}
+		if (tagArr != null && tagArr.length > 0) {
+			query = query + " AND ( 1=0 ";
+			for (int i = 0; i < tagArr.length; i++) {
+				query = query + " OR d.id_tag= ?";
+			}
+			query = query + ")";
+		}
+		return query;
 	}
 
 	/**
@@ -374,7 +430,7 @@ public final class DependenciaDAO {
 					dependency.setTag(newTag);
 				}
 				if (dependency.getId() != null) {
-					ps = c.prepareStatement("UPDATE dependencia SET  emails = ?, official = ?, id_tag = ?, acronym = ?  WHERE id_dependencia = ?");
+					ps = c.prepareStatement("UPDATE dependencia SET  emails = ?, official = ?, id_tag = ?, acronym = ?, id_ambit=?  WHERE id_dependencia = ?");
 					ps.setString(1, dependency.getEmails());
 					ps.setBoolean(2, dependency.isOfficial());
 					ps.setNull(3, Types.BIGINT);
@@ -382,10 +438,14 @@ public final class DependenciaDAO {
 						ps.setLong(3, dependency.getTag().getId());
 					}
 					ps.setString(4, dependency.getAcronym());
-					ps.setLong(5, dependency.getId());
+					if (dependency.getAmbito() != null) {
+						ps.setString(5, dependency.getAmbito().getId());
+					}
+					ps.setLong(6, dependency.getId());
 					ps.executeUpdate();
 				} else {
-					ps = c.prepareStatement("INSERT INTO dependencia(nombre, emails, official,id_tag,acronym) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE emails=?, official=?, id_tag=?, acronym=?");
+					ps = c.prepareStatement(
+							"INSERT INTO dependencia(nombre, emails, official,id_tag,acronym,id_ambit) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE emails=?, official=?, id_tag=?, acronym=?, id_ambit=?");
 					ps.setString(1, dependency.getName());
 					ps.setString(2, dependency.getEmails());
 					ps.setBoolean(3, dependency.isOfficial());
@@ -394,14 +454,22 @@ public final class DependenciaDAO {
 						ps.setLong(4, dependency.getTag().getId());
 					}
 					ps.setString(5, dependency.getAcronym());
-					ps.setString(6, dependency.getEmails());
-					ps.setBoolean(7, dependency.isOfficial());
-					if (dependency.getTag() != null) {
-						ps.setLong(8, dependency.getTag().getId());
-					} else {
-						ps.setNull(8, Types.BIGINT);
+					ps.setNull(6, Types.BIGINT);
+					if (dependency.getAmbito() != null) {
+						ps.setString(6, dependency.getAmbito().getId());
 					}
-					ps.setString(9, dependency.getAcronym());
+					ps.setString(7, dependency.getEmails());
+					ps.setBoolean(8, dependency.isOfficial());
+					if (dependency.getTag() != null) {
+						ps.setLong(9, dependency.getTag().getId());
+					} else {
+						ps.setNull(9, Types.BIGINT);
+					}
+					ps.setString(10, dependency.getAcronym());
+					ps.setNull(11, Types.BIGINT);
+					if (dependency.getAmbito() != null) {
+						ps.setString(11, dependency.getAmbito().getId());
+					}
 					ps.executeUpdate();
 				}
 			}
