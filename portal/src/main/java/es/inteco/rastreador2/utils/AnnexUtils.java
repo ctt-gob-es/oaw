@@ -145,6 +145,10 @@ import es.oaw.wcagem.util.ValidationDetails;
  */
 @SuppressWarnings("deprecation")
 public final class AnnexUtils {
+	/** The Constant EVOL_ADECUACION_PRIMER. */
+	private static final String EVOL_ADECUACION_PRIMER = "evol_adecuacion_primer";
+	/** The Constant EVOL_PUNTUACION_PRIMER. */
+	private static final String EVOL_PUNTUACION_PRIMER = "evol_puntuacion_primer";
 	/** The Constant EVOL_ADECUACION_ANT. */
 	private static final String EVOL_ADECUACION_ANT = "evol_adecuacion_ant";
 	/** The Constant NV_LITERAL. */
@@ -2855,12 +2859,42 @@ public final class AnnexUtils {
 				}
 				rowIndex++;
 			}
-			// Loop to insert puntuation evolution compare with first
-			// To select comparision column in comparision object, check if seed has tagId of comparision to select column by date
-			ColumnNames.add("evol_puntuacion_primer");
+//TODO COLUMNS OF COMPLIANCE EVOLUTION
+			// Loop to insert adecuation evolution compare with previous
+			ColumnNames.add("evol_cumplimiento_ant");
 			headerRow = sheet.getRow(0);
 			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue("evol_puntuacion_primer");
+			cellInHeader.setCellValue("evol_cumplimiento_ant");
+			cellInHeader.setCellStyle(headerStyle);
+			rowIndex = 1;
+			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+				final SemillaForm semillaForm = semillaEntry.getKey();
+				// On each category iteration we filter the other categories.
+				if (semillaForm.getId() != 0) {
+					row = sheet.getRow(rowIndex);
+					if (row != null) {
+						// Discard rows without the last execution
+						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
+						if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "cumplimiento", false);
+							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.size() - 1);
+							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
+									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
+									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+					}
+				}
+				rowIndex++;
+			}
+			// Loop to insert puntuation evolution compare with first
+			// To select comparision column in comparision object, check if seed has tagId of comparision to select column by date
+			ColumnNames.add(EVOL_PUNTUACION_PRIMER);
+			headerRow = sheet.getRow(0);
+			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+			cellInHeader.setCellValue(EVOL_PUNTUACION_PRIMER);
 			cellInHeader.setCellStyle(headerStyle);
 			rowIndex = 1;
 			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
@@ -2884,10 +2918,10 @@ public final class AnnexUtils {
 				rowIndex++;
 			}
 			// Loop to insert adecuation evolution compare with first .
-			ColumnNames.add("evol_adecuacion_primer");
+			ColumnNames.add(EVOL_ADECUACION_PRIMER);
 			headerRow = sheet.getRow(0);
 			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue("evol_adecuacion_primer");
+			cellInHeader.setCellValue(EVOL_ADECUACION_PRIMER);
 			cellInHeader.setCellStyle(headerStyle);
 			rowIndex = 1;
 			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
@@ -2912,7 +2946,39 @@ public final class AnnexUtils {
 				}
 				rowIndex++;
 			}
+			// TODO COLUMNS OF COMPLIANCE EVOLUTION
+			// Loop to insert adecuation evolution compare with previous
+			ColumnNames.add("evol_cumplimiento_primer");
+			headerRow = sheet.getRow(0);
+			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+			cellInHeader.setCellValue("evol_cumplimiento_primer");
+			cellInHeader.setCellStyle(headerStyle);
+			rowIndex = 1;
+			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+				final SemillaForm semillaForm = semillaEntry.getKey();
+				// On each category iteration we filter the other categories.
+				if (semillaForm.getId() != 0) {
+					row = sheet.getRow(rowIndex);
+					if (row != null) {
+						// Discard rows without the last execution
+						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
+						if (tmpCell != null && !tmpCell.getCellFormula().equals("")) {
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "cumplimiento", true);
+							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.size() - 1);
+							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
+									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
+									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+					}
+				}
+				rowIndex++;
+			}
 			int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
+			// TODO TABLE Compliance
+			nextStartPos = InsertSummaryTableCompliance(sheet, nextStartPos + 5, ColumnNames, headerStyle, shadowStyle);
 			String title = "Datos de evolución de PUNTUACIÓN con respecto a la ITERACION ANTERIOR (Nº de sitios web por segmentos)";
 			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.size() - 3, title);
 			title = "Datos de evolución de PUNTUACIÓN con respecto a la PRIMERA ITERACIÓN (Nº de sitios web por segmentos)";
@@ -3443,8 +3509,8 @@ public final class AnnexUtils {
 		XSSFCell cell;
 		XSSFRow row;
 		// Insert Summary table.
-		String columnResumeNamePrevious = GetExcelColumnNameForNumber(ColumnNames.size() - 2);
-		String columnResumeNameFirst = GetExcelColumnNameForNumber(ColumnNames.size());
+		String columnResumeNamePrevious = GetExcelColumnNameForNumber(ColumnNames.size() - 4);
+		String columnResumeNameFirst = GetExcelColumnNameForNumber(ColumnNames.size() - 1);
 		row = sheet.createRow(RowStartPosition);
 		cell = row.createCell(0);
 		cell.setCellValue("Datos de evolución de NIVEL DE ADECUACIÓN (Nº de sitios web");
@@ -3508,6 +3574,114 @@ public final class AnnexUtils {
 		row = sheet.createRow(RowStartPosition + 6);
 		cell = row.createCell(0);
 		cell.setCellValue("De A a NV");
+		cell.setCellStyle(headerStyle);
+		cell = row.createCell(1);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",-1)");
+		cell = row.createCell(2);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",-1)");
+		row = sheet.createRow(RowStartPosition + 7);
+		cell = row.createCell(0);
+		cell.setCellValue("Total cambian: ");
+		cell.setCellStyle(headerStyle);
+		cell = row.createCell(1);
+		cell.setCellStyle(headerStyle);
+		cell.setCellFormula("SUM(C" + (RowStartPosition + 2) + ":C" + (RowStartPosition + 7) + ")");
+		cell = row.createCell(2);
+		cell.setCellStyle(headerStyle);
+		cell.setCellFormula("SUM(C" + (RowStartPosition + 2) + ":C" + (RowStartPosition + 7) + ")");
+		return RowStartPosition + 7;
+	}
+
+	/**
+	 * Insert summary table compliance.
+	 *
+	 * @param sheet            the sheet
+	 * @param RowStartPosition the row start position
+	 * @param ColumnNames      the column names
+	 * @param headerStyle      the header style
+	 * @param shadowStyle      the shadow style
+	 * @return the int
+	 */
+	private static int InsertSummaryTableCompliance(XSSFSheet sheet, int RowStartPosition, List<String> ColumnNames, CellStyle headerStyle, CellStyle shadowStyle) {
+		// create light shadow cell style CENTERED
+		CellStyle shadowStyleCentered = sheet.getWorkbook().createCellStyle();
+		shadowStyleCentered.setWrapText(true);
+		shadowStyleCentered.setAlignment(HorizontalAlignment.CENTER);
+		shadowStyleCentered.setVerticalAlignment(VerticalAlignment.CENTER);
+		shadowStyleCentered.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
+		shadowStyleCentered.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		XSSFCell cell;
+		XSSFRow row;
+		// Insert Summary table.
+//		String columnResumeNamePrevious = GetExcelColumnNameForNumber(ColumnNames.size() - 2);
+//		String columnResumeNameFirst = GetExcelColumnNameForNumber(ColumnNames.size());
+		String columnResumeNamePrevious = GetExcelColumnNameForNumber(ColumnNames.size() - 3);
+		String columnResumeNameFirst = GetExcelColumnNameForNumber(ColumnNames.size());
+		row = sheet.createRow(RowStartPosition);
+		cell = row.createCell(0);
+		cell.setCellValue("Datos de evolución SITUACIÓN DE CUMPLIMIENTO (Nº de sitios web)");
+		cell.setCellStyle(headerStyle);
+		cell = row.createCell(1);
+		cell.setCellValue("Anterior");
+		cell.setCellStyle(headerStyle);
+		cell = row.createCell(2);
+		cell.setCellValue("Primera");
+		cell.setCellStyle(headerStyle);
+		row = sheet.createRow(RowStartPosition + 1);
+		cell = row.createCell(0);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("De NC a PC");
+		cell = row.createCell(1);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",1)");
+		cell = row.createCell(2);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",1)");
+		row = sheet.createRow(RowStartPosition + 2);
+		cell = row.createCell(0);
+		cell.setCellValue("De NC a TC");
+		cell.setCellStyle(headerStyle);
+		cell = row.createCell(1);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",3)");
+		cell = row.createCell(2);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",3)");
+		row = sheet.createRow(RowStartPosition + 3);
+		cell = row.createCell(0);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("De PC a TC");
+		cell = row.createCell(1);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",2)");
+		cell = row.createCell(2);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",2)");
+		row = sheet.createRow(RowStartPosition + 4);
+		cell = row.createCell(0);
+		cell.setCellValue("De TC a PC");
+		cell.setCellStyle(headerStyle);
+		cell = row.createCell(1);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",-2)");
+		cell = row.createCell(2);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",-2)");
+		row = sheet.createRow(RowStartPosition + 5);
+		cell = row.createCell(0);
+		cell.setCellStyle(headerStyle);
+		cell.setCellValue("De TC a NC");
+		cell = row.createCell(1);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNamePrevious + ":" + columnResumeNamePrevious + ",-3)");
+		cell = row.createCell(2);
+		cell.setCellStyle(shadowStyleCentered);
+		cell.setCellFormula("COUNTIF(" + columnResumeNameFirst + ":" + columnResumeNameFirst + ",-3)");
+		row = sheet.createRow(RowStartPosition + 6);
+		cell = row.createCell(0);
+		cell.setCellValue("De PC a NC");
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(1);
 		cell.setCellStyle(shadowStyleCentered);
