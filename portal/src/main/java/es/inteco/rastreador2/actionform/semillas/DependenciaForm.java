@@ -123,7 +123,7 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	 *
 	 * @return the sendAuto
 	 */
-	public Boolean isSendAuto() {
+	public Boolean getSendAuto() {
 		return sendAuto;
 	}
 
@@ -195,7 +195,7 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	 *
 	 * @return the official
 	 */
-	public Boolean isOfficial() {
+	public Boolean getOfficial() {
 		return official;
 	}
 
