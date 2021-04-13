@@ -433,9 +433,30 @@ public final class AnnexUtils {
 		observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
 		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds);
 		Connection c = DataBaseManager.getConnection();
+		// TODO Fill all execution dateso
+		fillExecutionDates(idObsExecution, exObsIds, c);
 		websiteRanges = RangeDAO.findAll(c);
 		iterationRanges = TemplateRangeDAO.findAll(c, idObsExecution);
 		DataBaseManager.closeConnection(c);
+	}
+
+	/**
+	 * Fill execution dates.
+	 *
+	 * @param idObsExecution the id obs execution
+	 * @param exObsIds       the ex obs ids
+	 * @param c              the c
+	 * @throws SQLException the SQL exception
+	 */
+	private static void fillExecutionDates(final Long idObsExecution, final String[] exObsIds, Connection c) throws SQLException {
+		final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
+		final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
+		final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(), false,
+				exObsIds);
+		for (ObservatorioRealizadoForm obsR : observatoriesList) {
+			final String executionDateAux = obsR.getFechaStr().substring(0, obsR.getFechaStr().indexOf(" ")).replace("/", "_");
+			executionDates.add(executionDateAux);
+		}
 	}
 
 	/**
@@ -2657,6 +2678,7 @@ public final class AnnexUtils {
 							execution.setAdequacy(adequacy);
 							execution.setCompliance(compliance);
 							excelLine.addExecution(execution);
+							// TODO
 							// PUNTUACIÓN
 							// Add header if it is not already created
 							if (!ColumnNames.contains("puntuacion_" + executionDateAux)) {
@@ -2665,7 +2687,11 @@ public final class AnnexUtils {
 								XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
 								cellInHeader.setCellValue("puntuacion_" + executionDateAux);
 								cellInHeader.setCellStyle(headerStyle);
+								// TODO First column index
+								columnIndex = (ColumnNames.size() - 1);
 							}
+							// TODO Set the first column based on header
+							columnIndex = ColumnNames.indexOf("puntuacion_" + executionDateAux);
 							cell = row.createCell(columnIndex++);
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellValue(score);
