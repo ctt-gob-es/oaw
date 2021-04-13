@@ -30,6 +30,7 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
+import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
 import es.inteco.rastreador2.utils.DAOUtils;
 
 /**
@@ -249,7 +250,7 @@ public final class DependenciaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static DependenciaForm findByName(Connection c, final String name) throws SQLException {
-		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE d.nombre = ? ";
+		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,id_ambit, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE d.nombre = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, name);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -275,6 +276,9 @@ public final class DependenciaDAO {
 						tag.setId(rs.getLong("e.id_etiqueta"));
 						tag.setName(rs.getString("e.nombre"));
 						dependenciaForm.setTag(tag);
+					}
+					if (!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("d.id_ambit"))) {
+						dependenciaForm.setAmbito(AmbitoDAO.getAmbitByID(c, rs.getString("d.id_ambit")));
 					}
 					return dependenciaForm;
 				}
@@ -432,7 +436,10 @@ public final class DependenciaDAO {
 				if (dependency.getId() != null) {
 					ps = c.prepareStatement("UPDATE dependencia SET  emails = ?, official = ?, id_tag = ?, acronym = ?, id_ambit=?  WHERE id_dependencia = ?");
 					ps.setString(1, dependency.getEmails());
-					ps.setBoolean(2, dependency.getOfficial());
+					ps.setNull(2, Types.BIGINT);
+					if (dependency.getOfficial() != null) {
+						ps.setBoolean(2, dependency.getOfficial());
+					}
 					ps.setNull(3, Types.BIGINT);
 					if (dependency.getTag() != null) {
 						ps.setLong(3, dependency.getTag().getId());
@@ -445,10 +452,13 @@ public final class DependenciaDAO {
 					ps.executeUpdate();
 				} else {
 					ps = c.prepareStatement(
-							"INSERT INTO dependencia(nombre, emails, official,id_tag,acronym,id_ambit) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE emails=?, official=?, id_tag=?, acronym=?, id_ambit=?");
+							"INSERT INTO dependencia(nombre, emails, official,id_tag,acronym,id_ambit, send_auto) VALUES (?,?,?,?,?,?, 1) ON DUPLICATE KEY UPDATE emails=?, official=?, id_tag=?, acronym=?, id_ambit=?");
 					ps.setString(1, dependency.getName());
 					ps.setString(2, dependency.getEmails());
-					ps.setBoolean(3, dependency.getOfficial());
+					ps.setNull(3, Types.BIGINT);
+					if (dependency.getOfficial() != null) {
+						ps.setBoolean(3, dependency.getOfficial());
+					}
 					ps.setNull(4, Types.BIGINT);
 					if (dependency.getTag() != null) {
 						ps.setLong(4, dependency.getTag().getId());
