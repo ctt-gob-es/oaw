@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.util.MessageResources;
 import org.apache.struts.util.PropertyMessageResources;
@@ -87,9 +88,7 @@ public final class SendResultsMailUtils {
 		final List<FulFilledCrawling> fulfilledCrawlings = ObservatorioDAO.getFulfilledCrawlingByObservatoryExecution(c, idObsExecution);
 		final Map<String, String> pdfZipsPath = getPdfs(idObs, idObsExecution, fulfilledCrawlings);
 		// Get dependecies info
-		// List<DependenciaForm> dependencies = ObservatorioDAO.getDependenciesByIdExObs(c, idObsExecution);
 		final List<UraSendResultForm> uras = UraSendResultDAO.findAll(c, idObsExecution);
-		final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
 		final List<TemplateRangeForm> iterationRanges = TemplateRangeDAO.findAll(c, idObsExecution);
 		final Map<Long, TemplateRangeForm> iterationRangesMap = iterationRanges.stream().collect(Collectors.toMap(TemplateRangeForm::getId, template -> template));
 		for (UraSendResultForm ura : uras) {
@@ -98,16 +97,18 @@ public final class SendResultsMailUtils {
 			if (dependency.getSendAuto() && !StringUtils.isEmpty(dependency.getEmails())) {
 				String xlsxFilePath = annexPath + "/Dependencias/" + dependency.getName() + ".xlsx";
 				String pdfZipPath = pdfZipsPath.get(PDFUtils.formatSeedName(dependency.getName()));
-				File xlsx = new File(xlsxFilePath);
-				File pdfZip = new File(pdfZipPath);
-				if (xlsx.exists() && pdfZip.exists()) {
-					// Make a zip with dependency xlsx and zipPdf
-					final String passString = generatePassayPassword();
-					final String randomUUID = UUID.randomUUID().toString();
-					File zipFileToSend = generateProtectedZip(exportPath, dependency, xlsx, pdfZip, passString, randomUUID);
-					ura.setFileLink(zipFileToSend.getPath());
-					ura.setFilePass(passString);
-					sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName(), emailSubject, cco, passString, randomUUID);
+				if (!StringUtils.isEmpty(pdfZipPath) && !StringUtils.isEmpty(xlsxFilePath)) {
+					File xlsx = new File(xlsxFilePath);
+					File pdfZip = new File(pdfZipPath);
+					if (xlsx.exists() && pdfZip.exists()) {
+						// Make a zip with dependency xlsx and zipPdf
+						final String passString = generatePassayPassword();
+						final String randomUUID = UUID.randomUUID().toString();
+						File zipFileToSend = generateProtectedZip(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.send.path"), dependency, xlsx, pdfZip, passString, randomUUID);
+						ura.setFileLink(zipFileToSend.getPath());
+						ura.setFilePass(passString);
+						sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName(), emailSubject, cco, passString, randomUUID);
+					}
 				}
 			}
 		}
@@ -151,6 +152,10 @@ public final class SendResultsMailUtils {
 	 */
 	private static File generateProtectedZip(final String exportPath, final DependenciaForm dependency, final File xlsx, final File pdfZip, final String passString, final String randomUUID)
 			throws FileNotFoundException, IOException {
+		File directory = new File(exportPath);
+		if (!directory.exists() && !directory.mkdirs()) {
+			Logger.putLog("Fail creating export send file directoru", SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR);
+		}
 		ZipParameters zipParameters = new ZipParameters();
 		zipParameters.setEncryptFiles(true);
 		zipParameters.setEncryptionMethod(EncryptionMethod.AES);
@@ -212,7 +217,7 @@ public final class SendResultsMailUtils {
 			final String attachUrl, final String attachName, final String emailSubject, final String cco, final String passString, final String randomUUID) throws Exception {
 		// Compose boDy with template
 		TemplateRangeForm template = iterationRangesMap.get(uraCustom.getRange().getId());
-		StringBuilder mailBody = composeMailBody(ura, uraCustom, template, attachUrl, passString);
+		String mailBody = composeMailBody(ura, uraCustom, template, attachUrl, passString);
 		// Email subject
 		final MailService mailService = new MailService();
 		// Get emails from URA
@@ -224,9 +229,9 @@ public final class SendResultsMailUtils {
 		}
 		try {
 			if (!StringUtils.isEmpty(ura.getAcronym())) {
-				mailService.sendMail(mailsTo, mailsToCco, "[" + ura.getAcronym() + "] " + emailSubject, mailBody.toString(), true);
+				mailService.sendMail(mailsTo, mailsToCco, "[" + ura.getAcronym() + "] " + emailSubject, mailBody, true);
 			} else {
-				mailService.sendMail(mailsTo, mailsToCco, emailSubject, mailBody.toString(), true);
+				mailService.sendMail(mailsTo, mailsToCco, emailSubject, mailBody, true);
 			}
 			// Mark as send
 			uraCustom.setSend(true);
@@ -247,7 +252,7 @@ public final class SendResultsMailUtils {
 	 * @param template  the template
 	 * @return the string builder
 	 */
-	public static StringBuilder composeMailBody(final DependenciaForm ura, final UraSendResultForm uraCustom, final TemplateRangeForm template, final String fileLink, final String filePassword) {
+	public static String composeMailBody(final DependenciaForm ura, final UraSendResultForm uraCustom, final TemplateRangeForm template, final String fileLink, final String filePassword) {
 		String templateMail = template.getTemplate();
 		templateMail.replace("_ura_name_", ura.getName());
 		if (ura.getOfficial()) {
@@ -272,7 +277,10 @@ public final class SendResultsMailUtils {
 		templateMail = templateMail.replace("_ura_download_link_", "<a href='" + fileLink + "'>" + fileLink + "</a>");
 		templateMail = templateMail.replace("_ura_download_pass_", filePassword);
 		StringBuilder mailBody = new StringBuilder(templateMail);
-		return mailBody;
+		// replace > and < to unicode
+		String mailBodyString = mailBody.toString();
+//		mailBodyString = StringEscapeUtils.escapeHtml(mailBodyString).replace(">", "\\003E").replaceAll("<", "\\003C");
+		return StringEscapeUtils.unescapeHtml(mailBodyString);
 	}
 
 	/**
