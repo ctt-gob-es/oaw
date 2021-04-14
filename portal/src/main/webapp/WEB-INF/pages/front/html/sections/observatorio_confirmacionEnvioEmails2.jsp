@@ -217,6 +217,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 														},
 														{
 															name : "preview",
+															editable : false,
 															width : 10,
 															sortable : false,
 															formatter : previewFormatter
