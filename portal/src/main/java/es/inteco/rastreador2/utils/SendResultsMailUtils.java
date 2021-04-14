@@ -280,6 +280,7 @@ public final class SendResultsMailUtils {
 		// replace > and < to unicode
 		String mailBodyString = mailBody.toString();
 //		mailBodyString = StringEscapeUtils.escapeHtml(mailBodyString).replace(">", "\\003E").replaceAll("<", "\\003C");
+		mailBodyString = mailBodyString.replace("<br />", "").replace("<br/>", "").replace("<br>", "");
 		return StringEscapeUtils.unescapeHtml(mailBodyString);
 	}
 
