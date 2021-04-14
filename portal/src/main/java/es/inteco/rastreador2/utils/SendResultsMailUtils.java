@@ -1,23 +1,28 @@
+/*
+ * 
+ */
 package es.inteco.rastreador2.utils;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.util.MessageResources;
 import org.apache.struts.util.PropertyMessageResources;
+import org.passay.CharacterRule;
+import org.passay.EnglishCharacterData;
+import org.passay.PasswordGenerator;
 
 import es.gob.oaw.MailException;
 import es.gob.oaw.MailService;
@@ -51,6 +56,10 @@ import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
 import es.inteco.rastreador2.pdf.utils.ZipUtils;
 import es.inteco.utils.FileUtils;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.model.enums.AesKeyStrength;
+import net.lingala.zip4j.model.enums.EncryptionMethod;
 
 /**
  * The Class SendResultsMailUtils.
@@ -93,26 +102,12 @@ public final class SendResultsMailUtils {
 				File pdfZip = new File(pdfZipPath);
 				if (xlsx.exists() && pdfZip.exists()) {
 					// Make a zip with dependency xlsx and zipPdf
-					File zipFileToSend = new File(exportPath + "/resultados_" + PDFUtils.formatSeedName(dependency.getName()) + ".zip");
-					FileOutputStream fos = new FileOutputStream(zipFileToSend);
-					ZipOutputStream zipOut = new ZipOutputStream(fos);
-					List<File> files = new ArrayList<>();
-					files.add(pdfZip);
-					files.add(xlsx);
-					for (File file : files) {
-						FileInputStream fis = new FileInputStream(file);
-						ZipEntry zipEntry = new ZipEntry(file.getName());
-						zipOut.putNextEntry(zipEntry);
-						byte[] bytes = new byte[1024];
-						int length;
-						while ((length = fis.read(bytes)) >= 0) {
-							zipOut.write(bytes, 0, length);
-						}
-						fis.close();
-					}
-					zipOut.close();
-					fos.close();
-					sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName(), emailSubject, cco);
+					final String passString = generatePassayPassword();
+					final String randomUUID = UUID.randomUUID().toString();
+					File zipFileToSend = generateProtectedZip(exportPath, dependency, xlsx, pdfZip, passString, randomUUID);
+					ura.setFileLink(zipFileToSend.getPath());
+					ura.setFilePass(passString);
+					sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName(), emailSubject, cco, passString, randomUUID);
 				}
 			}
 		}
@@ -141,6 +136,32 @@ public final class SendResultsMailUtils {
 			Logger.putLog("Fallo al enviar el correo", SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		DataBaseManager.closeConnection(c);
+	}
+
+	/**
+	 * Generate zip.
+	 *
+	 * @param exportPath the export path
+	 * @param dependency the dependency
+	 * @param xlsx       the xlsx
+	 * @param pdfZip     the pdf zip
+	 * @return the file
+	 * @throws FileNotFoundException the file not found exception
+	 * @throws IOException           Signals that an I/O exception has occurred.
+	 */
+	private static File generateProtectedZip(final String exportPath, final DependenciaForm dependency, final File xlsx, final File pdfZip, final String passString, final String randomUUID)
+			throws FileNotFoundException, IOException {
+		ZipParameters zipParameters = new ZipParameters();
+		zipParameters.setEncryptFiles(true);
+		zipParameters.setEncryptionMethod(EncryptionMethod.AES);
+		// Below line is optional. AES 256 is used by default. You can override it to use AES 128. AES 192 is supported only for extracting.
+		zipParameters.setAesKeyStrength(AesKeyStrength.KEY_STRENGTH_256);
+		List<File> files = new ArrayList<>();
+		files.add(pdfZip);
+		files.add(xlsx);
+		ZipFile zipFile = new ZipFile(exportPath + "/" + randomUUID + ".zip", passString.toCharArray());
+		zipFile.addFiles(files, zipParameters);
+		return zipFile.getFile();
 	}
 
 	/**
@@ -188,10 +209,10 @@ public final class SendResultsMailUtils {
 	 * @throws Exception the exception
 	 */
 	private static void sendMailToUra(final Long idObservatory, final DependenciaForm ura, final UraSendResultForm uraCustom, final Map<Long, TemplateRangeForm> iterationRangesMap,
-			final String attachUrl, final String attachName, final String emailSubject, final String cco) throws Exception {
+			final String attachUrl, final String attachName, final String emailSubject, final String cco, final String passString, final String randomUUID) throws Exception {
 		// Compose boDy with template
 		TemplateRangeForm template = iterationRangesMap.get(uraCustom.getRange().getId());
-		StringBuilder mailBody = composeMailBody(ura, uraCustom, template);
+		StringBuilder mailBody = composeMailBody(ura, uraCustom, template, attachUrl, passString);
 		// Email subject
 		final MailService mailService = new MailService();
 		// Get emails from URA
@@ -203,9 +224,9 @@ public final class SendResultsMailUtils {
 		}
 		try {
 			if (!StringUtils.isEmpty(ura.getAcronym())) {
-				mailService.sendMail(mailsTo, mailsToCco, "[" + ura.getAcronym() + "] " + emailSubject, mailBody.toString(), attachUrl, attachName, true);
+				mailService.sendMail(mailsTo, mailsToCco, "[" + ura.getAcronym() + "] " + emailSubject, mailBody.toString(), true);
 			} else {
-				mailService.sendMail(mailsTo, mailsToCco, emailSubject, mailBody.toString(), attachUrl, attachName, true);
+				mailService.sendMail(mailsTo, mailsToCco, emailSubject, mailBody.toString(), true);
 			}
 			// Mark as send
 			uraCustom.setSend(true);
@@ -226,24 +247,30 @@ public final class SendResultsMailUtils {
 	 * @param template  the template
 	 * @return the string builder
 	 */
-	public static StringBuilder composeMailBody(final DependenciaForm ura, final UraSendResultForm uraCustom, TemplateRangeForm template) {
+	public static StringBuilder composeMailBody(final DependenciaForm ura, final UraSendResultForm uraCustom, final TemplateRangeForm template, final String fileLink, final String filePassword) {
 		String templateMail = template.getTemplate();
 		templateMail.replace("_ura_name_", ura.getName());
 		if (ura.getOfficial()) {
-			templateMail = templateMail.replace(StringUtils.substringBetween(templateMail, "[oficiosa]", "[/oficiosa]"), "");
-			templateMail = templateMail.replace("[oficial]", "");
-			templateMail = templateMail.replace("[/oficial]", "");
-			templateMail = templateMail.replace("[oficiosa]", "");
-			templateMail = templateMail.replace("[/oficiosa]", "");
+			if (StringUtils.substringBetween(templateMail, "[oficiosa]", "[/oficiosa]") != null) {
+				templateMail = templateMail.replace(StringUtils.substringBetween(templateMail, "[oficiosa]", "[/oficiosa]"), "");
+				templateMail = templateMail.replace("[oficial]", "");
+				templateMail = templateMail.replace("[/oficial]", "");
+				templateMail = templateMail.replace("[oficiosa]", "");
+				templateMail = templateMail.replace("[/oficiosa]", "");
+			}
 		} else {
-			templateMail = templateMail.replace(StringUtils.substringBetween(templateMail, "[oficial]", "[/oficial]"), "");
-			templateMail = templateMail.replace("[oficial]", "");
-			templateMail = templateMail.replace("[/oficial]", "");
-			templateMail = templateMail.replace("[oficiosa]", "");
-			templateMail = templateMail.replace("[/oficiosa]", "");
+			if (StringUtils.substringBetween(templateMail, "[oficial]", "[/oficial]") != null) {
+				templateMail = templateMail.replace(StringUtils.substringBetween(templateMail, "[oficial]", "[/oficial]"), "");
+				templateMail = templateMail.replace("[oficial]", "");
+				templateMail = templateMail.replace("[/oficial]", "");
+				templateMail = templateMail.replace("[oficiosa]", "");
+				templateMail = templateMail.replace("[/oficiosa]", "");
+			}
 		}
 		templateMail = templateMail.replace("_ura_name_", ura.getName());
 		templateMail = templateMail.replace("_ura_custom_text_", uraCustom.getTemplate());
+		templateMail = templateMail.replace("_ura_download_link_", "<a href='" + fileLink + "'>" + fileLink + "</a>");
+		templateMail = templateMail.replace("_ura_download_pass_", filePassword);
 		StringBuilder mailBody = new StringBuilder(templateMail);
 		return mailBody;
 	}
@@ -364,7 +391,7 @@ public final class SendResultsMailUtils {
 			} else if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
 				messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 			}
-			AnnexUtils.generateEmailAnnex(messageResources, idObs, idObsExecution, idOperation, exObsIds, comparision);
+			AnnexUtils.generateEmailAnnex(messageResources, idObs, idObsExecution, idOperation, exObsIds, comparision, tagsToFilter);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
 			return exportPath + idOperation;
@@ -372,5 +399,22 @@ public final class SendResultsMailUtils {
 			Logger.putLog("Exception generando los anexos.", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		return null;
+	}
+
+	/**
+	 * Generate passay password.
+	 *
+	 * @return the string
+	 */
+	private static String generatePassayPassword() {
+		PasswordGenerator gen = new PasswordGenerator();
+		CharacterRule lowerCaseRule = new CharacterRule(EnglishCharacterData.LowerCase);
+		lowerCaseRule.setNumberOfCharacters(2);
+		CharacterRule upperCaseRule = new CharacterRule(EnglishCharacterData.UpperCase);
+		upperCaseRule.setNumberOfCharacters(2);
+		CharacterRule digitRule = new CharacterRule(EnglishCharacterData.Digit);
+		digitRule.setNumberOfCharacters(2);
+		String password = gen.generatePassword(10, lowerCaseRule, upperCaseRule, digitRule);
+		return password;
 	}
 }

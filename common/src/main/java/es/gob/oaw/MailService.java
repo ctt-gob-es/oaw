@@ -114,4 +114,24 @@ public class MailService {
 		mailProvider.setHtml(html);
 		mailProvider.sendMail();
 	}
+
+	/**
+	 * Send mail.
+	 *
+	 * @param mailTo      the mail to
+	 * @param mailToCCo   the mail to C co
+	 * @param mailSubject the mail subject
+	 * @param mailBody    the mail body
+	 * @param html        the html
+	 * @throws MailException the mail exception
+	 */
+	public void sendMail(final List<String> mailTo, final List<String> mailToCCo, final String mailSubject, final String mailBody, boolean html) throws MailException {
+		final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
+		mailProvider.setSubject(mailSubject);
+		mailProvider.setBody(mailBody);
+		mailProvider.setMailTo(mailTo);
+		mailProvider.setMailToCco(mailToCCo);
+		mailProvider.setHtml(html);
+		mailProvider.sendMail();
+	}
 }

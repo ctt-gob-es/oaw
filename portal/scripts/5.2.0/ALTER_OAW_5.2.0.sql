@@ -100,4 +100,6 @@ ALTER TABLE `observatorio_range` ADD `weight` INT(11) NOT NULL;
 ALTER TABLE `observatorio_range` ADD `color` VARCHAR(7);
 
 
+ALTER TABLE `observatorio_ura_send_results` ADD `file_link` VARCHAR(1024) NULL , ADD `file_pass` VARCHAR(64) NULL ;
 
+INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.files.expiration.days','files_expiration', '60');

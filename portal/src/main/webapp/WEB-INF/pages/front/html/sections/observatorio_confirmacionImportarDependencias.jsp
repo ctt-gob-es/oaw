@@ -324,6 +324,164 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</logic:iterate>
 					</logic:notEmpty>
 				</logic:present>
+				<!-- Delete -->
+				<logic:present name="deletableDependencies">
+					<logic:notEmpty name="deletableDependencies">
+						<h3>
+							<bean:message key="importar.dependencias.delete.title" />
+						</h3>
+						<bean:size id="beansizeDelete" name="deletableDependencies" />
+						<bean:message key="importar.dependencias.delete.title.total">
+							<jsp:attribute name="arg0">
+								<bean:write name="beansizeDelete" />
+							</jsp:attribute>
+						</bean:message>
+						<logic:iterate name="deletableDependencies" id="dependency">
+							<table class="table table-stripped table-bordered table-hover">
+								<caption>
+									<bean:message key="lista.semillas.observatorio" />
+								</caption>
+								<colgroup>
+									<col style="width: 40%">
+									<col style="width: 10%">
+									<col style="width: 10%">
+									<col style="width: 10%">
+									<col style="width: 30%">
+								</colgroup>
+								<tbody>
+									<tr>
+										<th>
+											<bean:message key="colname.name" />
+										</th>
+										<th>
+											<bean:message key="colname.acronym" />
+										</th>
+										<th>
+											<bean:message key="colname.province" />
+										</th>
+										<th>
+											<bean:message key="colname.ambit" />
+										</th>
+										<th>
+											<bean:message key="colname.official" />
+										</th>
+										<th>
+											<bean:message key="colname.email" />
+										</th>
+									</tr>
+									<tr>
+										<td>
+											<bean:write name="dependency" property="name" />
+										</td>
+										<td>
+											<bean:write name="dependency" property="acronym" />
+										</td>
+										<td>
+											<logic:notEmpty name="dependency" property="tag">
+												<bean:write name="dependency" property="tag.name" />
+											</logic:notEmpty>
+										</td>
+										<td>
+											<logic:notEmpty name="dependency" property="ambito">
+												<bean:write name="dependency" property="ambito.name" />
+											</logic:notEmpty>
+										</td>
+										<td>
+											<logic:equal name="dependency" property="official" value="true">
+												<bean:message key="si" />
+											</logic:equal>
+											<logic:equal name="dependency" property="official" value="false">
+												<bean:message key="no" />
+											</logic:equal>
+										</td>
+										<td>
+											<bean:write name="dependency" property="emails" />
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</logic:iterate>
+					</logic:notEmpty>
+				</logic:present>
+				<!-- Cant Delete -->
+				<logic:present name="undeletableDependencies">
+					<logic:notEmpty name="undeletableDependencies">
+						<h3>
+							<bean:message key="importar.dependencias.undelete.title" />
+						</h3>
+						<bean:size id="beansizeUnDelete" name="undeletableDependencies" />
+						<bean:message key="importar.dependencias.undelete.title.total">
+							<jsp:attribute name="arg0">
+								<bean:write name="beansizeUnDelete" />
+							</jsp:attribute>
+						</bean:message>
+						<logic:iterate name="undeletableDependencies" id="dependency">
+							<table class="table table-stripped table-bordered table-hover">
+								<caption>
+									<bean:message key="lista.semillas.observatorio" />
+								</caption>
+								<colgroup>
+									<col style="width: 40%">
+									<col style="width: 10%">
+									<col style="width: 10%">
+									<col style="width: 10%">
+									<col style="width: 30%">
+								</colgroup>
+								<tbody>
+									<tr>
+										<th>
+											<bean:message key="colname.name" />
+										</th>
+										<th>
+											<bean:message key="colname.acronym" />
+										</th>
+										<th>
+											<bean:message key="colname.province" />
+										</th>
+										<th>
+											<bean:message key="colname.ambit" />
+										</th>
+										<th>
+											<bean:message key="colname.official" />
+										</th>
+										<th>
+											<bean:message key="colname.email" />
+										</th>
+									</tr>
+									<tr>
+										<td>
+											<bean:write name="dependency" property="name" />
+										</td>
+										<td>
+											<bean:write name="dependency" property="acronym" />
+										</td>
+										<td>
+											<logic:notEmpty name="dependency" property="tag">
+												<bean:write name="dependency" property="tag.name" />
+											</logic:notEmpty>
+										</td>
+										<td>
+											<logic:notEmpty name="dependency" property="ambito">
+												<bean:write name="dependency" property="ambito.name" />
+											</logic:notEmpty>
+										</td>
+										<td>
+											<logic:equal name="dependency" property="official" value="true">
+												<bean:message key="si" />
+											</logic:equal>
+											<logic:equal name="dependency" property="official" value="false">
+												<bean:message key="no" />
+											</logic:equal>
+										</td>
+										<td>
+											<bean:write name="dependency" property="emails" />
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</logic:iterate>
+					</logic:notEmpty>
+				</logic:present>
 				<!-- Inalterable -->
 				<logic:present name="inalterableDependencies">
 					<logic:notEmpty name="inalterableDependencies">

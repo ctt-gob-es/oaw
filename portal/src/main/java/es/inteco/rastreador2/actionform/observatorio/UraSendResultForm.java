@@ -39,6 +39,46 @@ public class UraSendResultForm extends ValidatorForm implements Serializable {
 	private Date sendDate;
 	/** The send error. */
 	private String sendError;
+	/** The file link. */
+	private String fileLink;
+	/** The file pass. */
+	private String filePass;
+
+	/**
+	 * Gets the file link.
+	 *
+	 * @return the file link
+	 */
+	public String getFileLink() {
+		return fileLink;
+	}
+
+	/**
+	 * Sets the file link.
+	 *
+	 * @param fileLink the new file link
+	 */
+	public void setFileLink(String fileLink) {
+		this.fileLink = fileLink;
+	}
+
+	/**
+	 * Gets the file pass.
+	 *
+	 * @return the file pass
+	 */
+	public String getFilePass() {
+		return filePass;
+	}
+
+	/**
+	 * Sets the file pass.
+	 *
+	 * @param filePass the new file pass
+	 */
+	public void setFilePass(String filePass) {
+		this.filePass = filePass;
+	}
 
 	/**
 	 * Gets the send error.

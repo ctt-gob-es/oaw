@@ -2926,6 +2926,35 @@ public final class ObservatorioDAO {
 	}
 
 	/**
+	 * Gets the file expiration from config.
+	 *
+	 * @param c the c
+	 * @return the file expiration from config
+	 * @throws SQLException the SQL exception
+	 */
+	public static int getFileExpirationFromConfig(Connection c) throws SQLException {
+		int timeout = 0;
+		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'files_expiration'";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					String value = rs.getString("V_ID");
+					try {
+						timeout = Integer.parseInt(value);
+						return timeout;
+					} catch (Exception e) {
+						return 0;
+					}
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getTimeoutFromConfig", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return timeout;
+	}
+
+	/**
 	 * Gets the depth from config.
 	 *
 	 * @param c the c
