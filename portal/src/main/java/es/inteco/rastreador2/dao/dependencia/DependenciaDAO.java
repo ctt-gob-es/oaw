@@ -291,6 +291,136 @@ public final class DependenciaDAO {
 	}
 
 	/**
+	 * Find not exists or associated.
+	 *
+	 * @param c                         the c
+	 * @param updatedAndNewDependencies the updated and new dependencies
+	 * @return the list
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<DependenciaForm> findNotExistsAnNotAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws SQLException {
+		List<DependenciaForm> list = new ArrayList<>();
+		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,id_ambit,e.id_etiqueta, e.nombre "
+				+ "FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag  " + "WHERE d.id_dependencia NOT IN (SELECT sd.id_dependencia FROM semilla_dependencia sd) ";
+		if (updatedAndNewDependencies != null && !updatedAndNewDependencies.isEmpty()) {
+			query = query + "AND UPPER(d.nombre) NOT IN (";
+			for (int i = 0; i < updatedAndNewDependencies.size(); i++) {
+				query = query + "UPPER(?)";
+				if (i < updatedAndNewDependencies.size() - 1) {
+					query = query + ",";
+				}
+			}
+			query = query + ")";
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			if (updatedAndNewDependencies != null && !updatedAndNewDependencies.isEmpty()) {
+				for (int i = 0; i < updatedAndNewDependencies.size(); i++) {
+					ps.setString(i + 1, updatedAndNewDependencies.get(i).getName());
+				}
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					DependenciaForm dependenciaForm = new DependenciaForm();
+					dependenciaForm.setId(rs.getLong("d.id_dependencia"));
+					dependenciaForm.setName(rs.getString("d.nombre"));
+					dependenciaForm.setEmails(rs.getString("d.emails"));
+					if (rs.getInt("d.send_auto") == 0) {
+						dependenciaForm.setSendAuto(false);
+					} else {
+						dependenciaForm.setSendAuto(true);
+					}
+					if (rs.getInt("d.official") == 0) {
+						dependenciaForm.setOfficial(false);
+					} else {
+						dependenciaForm.setOfficial(true);
+					}
+					dependenciaForm.setName(rs.getString("d.nombre"));
+					dependenciaForm.setAcronym(rs.getString("d.acronym"));
+					if (rs.getInt("e.id_etiqueta") != 0) {
+						EtiquetaForm tag = new EtiquetaForm();
+						tag.setId(rs.getLong("e.id_etiqueta"));
+						tag.setName(rs.getString("e.nombre"));
+						dependenciaForm.setTag(tag);
+					}
+					if (!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("d.id_ambit"))) {
+						dependenciaForm.setAmbito(AmbitoDAO.getAmbitByID(c, rs.getString("d.id_ambit")));
+					}
+					list.add(dependenciaForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return list;
+	}
+
+	/**
+	 * Find not exists associated.
+	 *
+	 * @param c                         the c
+	 * @param updatedAndNewDependencies the updated and new dependencies
+	 * @return the list
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<DependenciaForm> findNotExistsAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws SQLException {
+		List<DependenciaForm> list = new ArrayList<>();
+		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,id_ambit,e.id_etiqueta, e.nombre "
+				+ "FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag  " + "WHERE d.id_dependencia IN (SELECT sd.id_dependencia FROM semilla_dependencia sd) ";
+		if (updatedAndNewDependencies != null && !updatedAndNewDependencies.isEmpty()) {
+			query = query + "AND UPPER(d.nombre) NOT IN (";
+			for (int i = 0; i < updatedAndNewDependencies.size(); i++) {
+				query = query + "UPPER(?)";
+				if (i < updatedAndNewDependencies.size() - 1) {
+					query = query + ",";
+				}
+			}
+			query = query + ")";
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			if (updatedAndNewDependencies != null && !updatedAndNewDependencies.isEmpty()) {
+				for (int i = 0; i < updatedAndNewDependencies.size(); i++) {
+					ps.setString(i + 1, updatedAndNewDependencies.get(i).getName());
+				}
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					DependenciaForm dependenciaForm = new DependenciaForm();
+					dependenciaForm.setId(rs.getLong("d.id_dependencia"));
+					dependenciaForm.setName(rs.getString("d.nombre"));
+					dependenciaForm.setEmails(rs.getString("d.emails"));
+					if (rs.getInt("d.send_auto") == 0) {
+						dependenciaForm.setSendAuto(false);
+					} else {
+						dependenciaForm.setSendAuto(true);
+					}
+					if (rs.getInt("d.official") == 0) {
+						dependenciaForm.setOfficial(false);
+					} else {
+						dependenciaForm.setOfficial(true);
+					}
+					dependenciaForm.setName(rs.getString("d.nombre"));
+					dependenciaForm.setAcronym(rs.getString("d.acronym"));
+					if (rs.getInt("e.id_etiqueta") != 0) {
+						EtiquetaForm tag = new EtiquetaForm();
+						tag.setId(rs.getLong("e.id_etiqueta"));
+						tag.setName(rs.getString("e.nombre"));
+						dependenciaForm.setTag(tag);
+					}
+					if (!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("d.id_ambit"))) {
+						dependenciaForm.setAmbito(AmbitoDAO.getAmbitByID(c, rs.getString("d.id_ambit")));
+					}
+					list.add(dependenciaForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return list;
+	}
+
+	/**
 	 * Exists dependencia.
 	 *
 	 * @param c           the c
@@ -394,6 +524,21 @@ public final class DependenciaDAO {
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
+		}
+	}
+
+	/**
+	 * Delete.
+	 *
+	 * @param c            the c
+	 * @param dependencies the dependencies
+	 * @throws SQLException the SQL exception
+	 */
+	public static void delete(Connection c, final List<DependenciaForm> dependencies) throws SQLException {
+		if (dependencies != null && !dependencies.isEmpty()) {
+			for (DependenciaForm dependecy : dependencies) {
+				delete(c, dependecy.getId());
+			}
 		}
 	}
 

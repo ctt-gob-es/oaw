@@ -95,7 +95,7 @@ public class UraSendResultDAO {
 //	id_observatory_execution, id_ura, id_range, custom_text
 	public static List<UraSendResultForm> findAll(Connection c, final Long idExObs) throws SQLException {
 		final List<UraSendResultForm> results = new ArrayList<>();
-		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, c.send_date, c.send_error, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ORDER BY c.id ASC";
+		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, c.send_date, c.send_error, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ORDER BY c.id ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idExObs);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -121,6 +121,8 @@ public class UraSendResultDAO {
 						form.setSendDate(new Date(ts.getTime()));
 					}
 					form.setSendError(rs.getString("c.send_error"));
+					form.setFileLink(rs.getString("c.file_link"));
+					form.setFilePass(rs.getString("c.file_pass"));
 					results.add(form);
 				}
 			}
@@ -183,7 +185,7 @@ public class UraSendResultDAO {
 	public static List<UraSendResultForm> findByIds(Connection c, final Long idExObs, final String[] ids) throws SQLException {
 		final List<UraSendResultForm> results = new ArrayList<>();
 		if (ids != null && ids.length > 0) {
-			String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ";
+			String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ";
 			query = query + " AND c.id_ura IN (" + ids[0];
 			for (int i = 1; i < ids.length; i++) {
 				query = query + "," + ids[i];
@@ -206,6 +208,8 @@ public class UraSendResultDAO {
 						ura.setId(rs.getLong("d.id_dependencia"));
 						ura.setName(rs.getString("d.nombre"));
 						ura.setSendAuto(rs.getBoolean("d.send_auto"));
+						form.setFileLink(rs.getString("c.file_link"));
+						form.setFilePass(rs.getString("c.file_pass"));
 						form.setUra(ura);
 						results.add(form);
 					}
@@ -352,12 +356,14 @@ public class UraSendResultDAO {
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	public static void markSend(Connection c, final UraSendResultForm form) throws SQLException, UnsupportedEncodingException {
-		final String query = "UPDATE observatorio_ura_send_results SET send= ?, send_date =?, send_error = ?  WHERE id = ?";
+		final String query = "UPDATE observatorio_ura_send_results SET send= ?, send_date =?, send_error = ?, file_link = ?, file_pass = ?  WHERE id = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setBoolean(1, form.isSend());
 			ps.setTimestamp(2, new Timestamp(new Date().getTime()));
 			ps.setString(3, form.getSendError());
-			ps.setLong(4, form.getId());
+			ps.setString(4, form.getFileLink());
+			ps.setString(5, form.getFilePass());
+			ps.setLong(6, form.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);

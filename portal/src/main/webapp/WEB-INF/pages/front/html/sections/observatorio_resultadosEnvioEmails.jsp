@@ -71,6 +71,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<th>
 							<bean:message key="colname.error" />
 						</th>
+						<th>
+							<bean:message key="colname.file" />
+						</th>
+						<th>
+							<bean:message key="colname.password" />
+						</th>
 					</tr>
 					<logic:empty name="uraSendResults">
 						<tr>
@@ -109,6 +115,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								</td>
 								<td>
 									<bean:write name="uraSend" property="sendError" />
+								</td>
+								<td>
+									<a href='<bean:write name="uraSend" property="fileLink" />'>
+										<span class="glyphicon glyphicon-file"></span>
+									</a>
+								</td>
+								<td>
+									<bean:write name="uraSend" property="filePass" />
 								</td>
 							</tr>
 						</logic:iterate>

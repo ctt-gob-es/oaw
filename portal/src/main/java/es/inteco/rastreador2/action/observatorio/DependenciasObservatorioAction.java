@@ -333,6 +333,10 @@ public class DependenciasObservatorioAction extends DispatchAction {
 			}
 			updatedAndNewDependencies.add(comparision.getNewDependency());
 		}
+		Connection c = DataBaseManager.getConnection();
+		final List<DependenciaForm> findNotExistsAnNotAssociated = DependenciaDAO.findNotExistsAnNotAssociated(c, updatedAndNewDependencies);
+		request.setAttribute("deletableDependencies", findNotExistsAnNotAssociated);
+		request.setAttribute("undeletableDependencies", DependenciaDAO.findNotExistsAssociated(c, updatedAndNewDependencies));
 		request.setAttribute("updatedDependencies", updatedDependencies);
 		request.setAttribute("newDependencies", newDependencies);
 		request.setAttribute("inalterableDependencies", inalterableDependencies);
@@ -340,6 +344,8 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		// Store list in session
 		HttpSession session = request.getSession();
 		session.setAttribute("updatedAndNewDependencies", updatedAndNewDependencies);
+		session.setAttribute("deletableDependencies", findNotExistsAnNotAssociated);
+		DataBaseManager.closeConnection(c);
 		return mapping.findForward(Constants.CONFIRMACION_IMPORTAR);
 	}
 
@@ -355,9 +361,9 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	 */
 	public ActionForward importAll(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpSession session = request.getSession();
-		List<DependenciaForm> dependencies = (List<DependenciaForm>) session.getAttribute("updatedAndNewDependencies");
 		try (Connection c = DataBaseManager.getConnection()) {
-			DependenciaDAO.saveOrUpdate(c, dependencies);
+			DependenciaDAO.saveOrUpdate(c, (List<DependenciaForm>) session.getAttribute("updatedAndNewDependencies"));
+			DependenciaDAO.delete(c, (List<DependenciaForm>) session.getAttribute("deletableDependencies"));
 		} catch (Exception e) {
 			Logger.putLog("Error", DependencyComparision.class, Logger.LOG_LEVEL_ERROR, e);
 			return mapping.findForward("observatoryDependencias");
