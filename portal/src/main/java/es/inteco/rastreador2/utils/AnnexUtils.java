@@ -145,6 +145,8 @@ import es.oaw.wcagem.util.ValidationDetails;
  */
 @SuppressWarnings("deprecation")
 public final class AnnexUtils {
+	private static final String EVOL_CUMPLIMIENTO_ANT = "evol_cumplimiento_ant";
+	private static final String EVOL_CUMPLIMIENTO_PRIMER = "evol_cumplimiento_primer";
 	private static final String GREEN_OAW_HTML = "#008000";
 	/** The Constant EVOL_ADECUACION_PRIMER. */
 	private static final String EVOL_ADECUACION_PRIMER = "evol_adecuacion_primer";
@@ -2850,10 +2852,10 @@ public final class AnnexUtils {
 				rowIndex++;
 			}
 			// Loop to insert adecuation evolution compare with previous
-			ColumnNames.add("evol_cumplimiento_ant");
+			ColumnNames.add(EVOL_CUMPLIMIENTO_ANT);
 			headerRow = sheet.getRow(0);
 			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue("evol_cumplimiento_ant");
+			cellInHeader.setCellValue(EVOL_CUMPLIMIENTO_ANT);
 			cellInHeader.setCellStyle(headerStyle);
 			rowIndex = 1;
 			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
@@ -2937,10 +2939,10 @@ public final class AnnexUtils {
 			}
 			// TODO COLUMNS OF COMPLIANCE EVOLUTION
 			// Loop to insert adecuation evolution compare with previous
-			ColumnNames.add("evol_cumplimiento_primer");
+			ColumnNames.add(EVOL_CUMPLIMIENTO_PRIMER);
 			headerRow = sheet.getRow(0);
 			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue("evol_cumplimiento_primer");
+			cellInHeader.setCellValue(EVOL_CUMPLIMIENTO_PRIMER);
 			cellInHeader.setCellStyle(headerStyle);
 			rowIndex = 1;
 			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
@@ -3087,7 +3089,7 @@ public final class AnnexUtils {
 						break;
 					}
 				}
-				if (previousDate != "") {
+				if (!StringUtils.isEmpty(previousDate)) {
 					int i = 1;
 					for (String s : columnNames) {
 						if (s.contains(columnName) && s.contains(previousDate)) {
@@ -3148,7 +3150,8 @@ public final class AnnexUtils {
 				final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
 				final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
 				row = sheet.createRow(rowIndex);
-				for (int i = 0; i < ColumnNames.size() - 4; i++) {
+				// Remove evol_ columns
+				for (int i = 0; i < ColumnNames.size() - 6; i++) {
 					cell = row.createCell(columnIndex);
 					cell.setCellValue(ColumnNames.get(i));
 					cell.setCellStyle(headerStyle);

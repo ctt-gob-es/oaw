@@ -348,6 +348,27 @@ public class UraSendResultDAO {
 	}
 
 	/**
+	 * Update.
+	 *
+	 * @param c              the c
+	 * @param idObsExecution the id obs execution
+	 * @param error          the error
+	 * @throws SQLException                 the SQL exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
+	public static void updateErrorAll(Connection c, final Long idObsExecution, final String error) throws SQLException, UnsupportedEncodingException {
+		final String query = "UPDATE observatorio_ura_send_results SET send = 0, send_error = ?  WHERE id_observatory_execution = ?";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setString(1, error);
+			ps.setLong(2, idObsExecution);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
 	 * Mark send.
 	 *
 	 * @param c    the c

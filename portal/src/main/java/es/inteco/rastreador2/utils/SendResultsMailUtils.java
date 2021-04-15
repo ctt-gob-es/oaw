@@ -84,63 +84,69 @@ public final class SendResultsMailUtils {
 	public static void generateAndSendData(final Long idObs, final Long idCartucho, final Long idObsExecution, final String emailSubject, final String cco, final String notifyMail) throws Exception {
 		PropertiesManager pmgr = new PropertiesManager();
 		Connection c = DataBaseManager.getConnection();
-		final String[] exObsIds = ObservatorioDAO.getExObsIdsConfig(c, idObsExecution);
-		final List<ComparisionForm> comparision = ObservatorioDAO.getComparisionConfig(c, idObsExecution);
-		// Generate Annex
-		final String annexPath = getAnnexes(idObs, idCartucho, idObsExecution, null, exObsIds, comparision);
-		// Generate Zip pdf
-		final List<FulFilledCrawling> fulfilledCrawlings = ObservatorioDAO.getFulfilledCrawlingByObservatoryExecution(c, idObsExecution);
-		final Map<String, String> pdfZipsPath = getPdfs(idObs, idObsExecution, fulfilledCrawlings);
-		// Get dependecies info
-		final List<UraSendResultForm> uras = UraSendResultDAO.findAll(c, idObsExecution);
-		final List<TemplateRangeForm> iterationRanges = TemplateRangeDAO.findAll(c, idObsExecution);
-		final Map<Long, TemplateRangeForm> iterationRangesMap = iterationRanges.stream().collect(Collectors.toMap(TemplateRangeForm::getId, template -> template));
-		for (UraSendResultForm ura : uras) {
-			// Find Dependency
-			DependenciaForm dependency = DependenciaDAO.findById(c, ura.getUraId());
-			if (dependency.getSendAuto() && !StringUtils.isEmpty(dependency.getEmails())) {
-				String xlsxFilePath = annexPath + "/Dependencias/" + dependency.getName() + ".xlsx";
-				String pdfZipPath = pdfZipsPath.get(PDFUtils.formatSeedName(dependency.getName()));
-				if (!StringUtils.isEmpty(pdfZipPath) && !StringUtils.isEmpty(xlsxFilePath)) {
-					File xlsx = new File(xlsxFilePath);
-					File pdfZip = new File(pdfZipPath);
-					if (xlsx.exists() && pdfZip.exists()) {
-						// Make a zip with dependency xlsx and zipPdf
-						final String passString = generatePassayPassword();
-						final String randomUUID = UUID.randomUUID().toString();
-						File zipFileToSend = generateProtectedZip(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.send.path"), dependency, xlsx, pdfZip, passString, randomUUID);
-						ura.setFileLink(zipFileToSend.getPath());
-						ura.setFilePass(passString);
-						sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName(), emailSubject, cco, passString, randomUUID);
+		try {
+			final String[] exObsIds = ObservatorioDAO.getExObsIdsConfig(c, idObsExecution);
+			final List<ComparisionForm> comparision = ObservatorioDAO.getComparisionConfig(c, idObsExecution);
+			// Generate Annex
+			final String annexPath = getAnnexes(idObs, idCartucho, idObsExecution, null, exObsIds, comparision);
+			// Generate Zip pdf
+			final List<FulFilledCrawling> fulfilledCrawlings = ObservatorioDAO.getFulfilledCrawlingByObservatoryExecution(c, idObsExecution);
+			final Map<String, String> pdfZipsPath = getPdfs(idObs, idObsExecution, fulfilledCrawlings);
+			// Get dependecies info
+			final List<UraSendResultForm> uras = UraSendResultDAO.findAll(c, idObsExecution);
+			final List<TemplateRangeForm> iterationRanges = TemplateRangeDAO.findAll(c, idObsExecution);
+			final Map<Long, TemplateRangeForm> iterationRangesMap = iterationRanges.stream().collect(Collectors.toMap(TemplateRangeForm::getId, template -> template));
+			for (UraSendResultForm ura : uras) {
+				// Find Dependency
+				DependenciaForm dependency = DependenciaDAO.findById(c, ura.getUraId());
+				if (dependency.getSendAuto() && !StringUtils.isEmpty(dependency.getEmails())) {
+					String xlsxFilePath = annexPath + "/Dependencias/" + dependency.getName() + ".xlsx";
+					String pdfZipPath = pdfZipsPath.get(PDFUtils.formatSeedName(dependency.getName()));
+					if (!StringUtils.isEmpty(pdfZipPath) && !StringUtils.isEmpty(xlsxFilePath)) {
+						File xlsx = new File(xlsxFilePath);
+						File pdfZip = new File(pdfZipPath);
+						if (xlsx.exists() && pdfZip.exists()) {
+							// Make a zip with dependency xlsx and zipPdf
+							final String passString = generatePassayPassword();
+							final String randomUUID = UUID.randomUUID().toString();
+							File zipFileToSend = generateProtectedZip(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.send.path"), dependency, xlsx, pdfZip, passString, randomUUID);
+							ura.setFileLink(zipFileToSend.getPath());
+							ura.setFilePass(passString);
+							sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName(), emailSubject, cco, passString, randomUUID);
+						}
 					}
 				}
 			}
-		}
-		// Send email to notify end of process
-		final MailService mailService = new MailService();
-		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
-		StringBuilder mailBody = new StringBuilder("<p>" + messageResources.getMessage("send.mail.end.process.mail.body", new String[] { getObservatoryName(idObs) }) + "</p>");
-		List<UraSendResultForm> notSend = UraSendResultDAO.findAllNotSend(c, idObsExecution);
-		if (notSend != null && !notSend.isEmpty()) {
-			mailBody.append("<p>" + messageResources.getMessage("send.mail.end.process.mail.notSend") + "</p>");
-			mailBody.append("<ul>");
-			for (UraSendResultForm uraSend : notSend) {
-				if (!StringUtils.isEmpty(uraSend.getSendError())) {
-					mailBody.append("<li>");
-					mailBody.append(uraSend.getUra().getName() + " (Error: " + uraSend.getSendError() + ")");
-					mailBody.append("</li>");
+			// Send email to notify end of process
+			final MailService mailService = new MailService();
+			MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+			StringBuilder mailBody = new StringBuilder("<p>" + messageResources.getMessage("send.mail.end.process.mail.body", new String[] { getObservatoryName(idObs) }) + "</p>");
+			List<UraSendResultForm> notSend = UraSendResultDAO.findAllNotSend(c, idObsExecution);
+			if (notSend != null && !notSend.isEmpty()) {
+				mailBody.append("<p>" + messageResources.getMessage("send.mail.end.process.mail.notSend") + "</p>");
+				mailBody.append("<ul>");
+				for (UraSendResultForm uraSend : notSend) {
+					if (!StringUtils.isEmpty(uraSend.getSendError())) {
+						mailBody.append("<li>");
+						mailBody.append(uraSend.getUra().getName() + " (Error: " + uraSend.getSendError() + ")");
+						mailBody.append("</li>");
+					}
 				}
+				mailBody.append("</ul>");
 			}
-			mailBody.append("</ul>");
+			List<String> mailsTo = new ArrayList<>();
+			mailsTo.add(notifyMail);
+			try {
+				mailService.sendMail(mailsTo, messageResources.getMessage("send.mail.end.process.mail.subject"), mailBody.toString(), true);
+			} catch (MailException e) {
+				Logger.putLog("Fallo al enviar el correo", SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+			DataBaseManager.closeConnection(c);
+		} catch (Exception e) {
+			Connection conn = DataBaseManager.getConnection();
+			UraSendResultDAO.updateErrorAll(conn, idObsExecution, e.getLocalizedMessage());
+			DataBaseManager.closeConnection(conn);
 		}
-		List<String> mailsTo = new ArrayList<>();
-		mailsTo.add(notifyMail);
-		try {
-			mailService.sendMail(mailsTo, messageResources.getMessage("send.mail.end.process.mail.subject"), mailBody.toString(), true);
-		} catch (MailException e) {
-			Logger.putLog("Fallo al enviar el correo", SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR, e);
-		}
-		DataBaseManager.closeConnection(c);
 	}
 
 	/**
