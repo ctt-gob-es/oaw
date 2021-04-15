@@ -3042,6 +3042,34 @@ public final class ObservatorioDAO {
 	}
 
 	/**
+	 * Gets the mapping from config.
+	 *
+	 * @param c the c
+	 * @return the mapping from config
+	 * @throws SQLException the SQL exception
+	 */
+	public static String getMappingFromConfig(Connection c) throws SQLException {
+		String mapping = "";
+		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'file_mapping'";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					try {
+						mapping = rs.getString("V_ID");
+						return mapping;
+					} catch (Exception e) {
+						return "";
+					}
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getTresholdFromConfig", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return mapping;
+	}
+
+	/**
 	 * Save extra configurarion.
 	 *
 	 * @param c           the c

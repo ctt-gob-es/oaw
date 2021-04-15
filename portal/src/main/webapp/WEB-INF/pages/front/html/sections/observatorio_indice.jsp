@@ -149,18 +149,18 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 													sortable : false
 												}, {
 													name : "name",
-													width : 80,
+													width : 70,
 													sortable : false,
 													align : "left",
 													editable : false,
 													formatter: nameFormatter
 												}, {
 													name : "value",
-													width : 20,
+													width : 30,
 													formatter : valueFormatter,
 													editrules : {
 														required : false,
-														number:true
+														//number:true
 													},
 													sortable : false,
 													align : "left"
@@ -289,7 +289,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 	var dialog;
 
-	var windowWidth = $jq(window).width() * 0.3;
+	var windowWidth = $jq(window).width() * 0.5;
 	var windowHeight = $jq(window).height() * 0.3;
 
 	function extraConfigDialog() {

@@ -63,9 +63,11 @@ public class CleanSendResultsJob implements StatefulJob {
 				Arrays.sort(files, Comparator.comparingLong(File::lastModified));
 				for (int i = 0; i < files.length; i++) {
 					File file = files[i];
-					long diff = new Date().getTime() - file.lastModified();
-					if (diff > days * 24 * 60 * 60 * 1000) {
-						file.delete();
+					if (file != null && file.getName().endsWith(".zip")) {
+						long diff = new Date().getTime() - file.lastModified();
+						if (diff > days * 24 * 60 * 60 * 1000) {
+							file.delete();
+						}
 					}
 				}
 			}
