@@ -9,8 +9,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -217,7 +221,7 @@ public final class SendResultsMailUtils {
 			final String attachUrl, final String attachName, final String emailSubject, final String cco, final String passString, final String randomUUID) throws Exception {
 		// Compose boDy with template
 		TemplateRangeForm template = iterationRangesMap.get(uraCustom.getRange().getId());
-		String mailBody = composeMailBody(ura, uraCustom, template, attachUrl, passString);
+		String mailBody = composeMailBody(ura, uraCustom, template, attachName, passString);
 		// Email subject
 		final MailService mailService = new MailService();
 		// Get emails from URA
@@ -253,6 +257,8 @@ public final class SendResultsMailUtils {
 	 * @return the string builder
 	 */
 	public static String composeMailBody(final DependenciaForm ura, final UraSendResultForm uraCustom, final TemplateRangeForm template, final String fileLink, final String filePassword) {
+		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+		PropertiesManager pmgr = new PropertiesManager();
 		String templateMail = template.getTemplate();
 		templateMail.replace("_ura_name_", ura.getName());
 		if (ura.getOfficial()) {
@@ -274,13 +280,25 @@ public final class SendResultsMailUtils {
 		}
 		templateMail = templateMail.replace("_ura_name_", ura.getName());
 		templateMail = templateMail.replace("_ura_custom_text_", uraCustom.getTemplate());
-		templateMail = templateMail.replace("_ura_download_link_", "<a href='" + fileLink + "'>" + fileLink + "</a>");
+		try {
+			Connection c = DataBaseManager.getConnection();
+			String mapping = ObservatorioDAO.getMappingFromConfig(c);
+			int days = ObservatorioDAO.getFileExpirationFromConfig(c);
+			DataBaseManager.closeConnection(c);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(new Date());
+			calendar.add(Calendar.DAY_OF_YEAR, days);
+			calendar.getTime();
+			final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
+			templateMail = templateMail.replace("_ura_download_link_", "<a href='" + mapping + "/" + fileLink + "'>" + mapping + "/" + fileLink + "</a> "
+					+ messageResources.getMessage("send.mail.end.process.mail.expiration.date", new String[] { df.format(calendar.getTime()) }));
+		} catch (Exception e) {
+			Logger.putLog("Error getting file config", SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR);
+		}
 		templateMail = templateMail.replace("_ura_download_pass_", filePassword);
 		StringBuilder mailBody = new StringBuilder(templateMail);
-		// replace > and < to unicode
 		String mailBodyString = mailBody.toString();
-//		mailBodyString = StringEscapeUtils.escapeHtml(mailBodyString).replace(">", "\\003E").replaceAll("<", "\\003C");
-		mailBodyString = mailBodyString.replace("<br />", "").replace("<br/>", "").replace("<br>", "");
+		mailBodyString = mailBodyString.replace("<br />", "").replace("<br/>", "").replace("<br>", "").replace("\n", "");
 		return StringEscapeUtils.unescapeHtml(mailBodyString);
 	}
 
