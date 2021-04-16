@@ -394,7 +394,7 @@ public final class AnnexUtils {
 		createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 		createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-		createAnnexXLSX2(messageResources, idObsExecution, idOperation);
+		createAnnexXLSX2(messageResources, idObsExecution, idOperation, tagsToFilter);
 		createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
 		createAnnexXLSX_PerDependency(idOperation);
 		createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
@@ -2164,7 +2164,7 @@ public final class AnnexUtils {
 	 * @param idOperation      the id operation
 	 * @throws Exception the exception
 	 */
-	public static void createAnnexXLSX2(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+	public static void createAnnexXLSX2(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter) throws Exception {
 		ColumnNames = new ArrayList<>();
 		Logger.putLog("Generando anexo: " + FILE_2_ITERATION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_2_ITERATION_XLSX_NAME)) {
@@ -2198,7 +2198,7 @@ public final class AnnexUtils {
 				if (categoryForm != null) {
 					for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 						final SemillaForm semillaForm = semillaEntry.getKey();
-						if (categoryForm.getName().equals(semillaForm.getCategoria().getName())) {
+						if (categoryForm.getName().equals(semillaForm.getCategoria().getName()) && hasTags(semillaForm, tagsToFilter)) {
 							// Multidependence
 							StringBuilder dependencias = new StringBuilder();
 							if (semillaForm.getDependencias() != null) {
@@ -2502,6 +2502,13 @@ public final class AnnexUtils {
 					ColumnNames.add(TC_PREFFIX + executionDateAux);
 				}
 			}
+			ColumnNames.add(EVOL_PUNTUACION_ANT);
+			ColumnNames.add(EVOL_ADECUACION_ANT);
+			ColumnNames.add(EVOL_CUMPLIMIENTO_ANT);
+			ColumnNames.add(EVOL_PUNTUACION_PRIMER);
+			ColumnNames.add(EVOL_ADECUACION_PRIMER);
+			ColumnNames.add(EVOL_CUMPLIMIENTO_PRIMER);
+//			
 			row = sheet.createRow(rowIndex);
 			for (String name : ColumnNames) {
 				cell = row.createCell(columnIndex);
@@ -2733,19 +2740,6 @@ public final class AnnexUtils {
 							cell.setCellValue(compliance);
 							cell.setCellStyle(shadowStyle);
 						}
-						excelLines.put(rowIndex, excelLine);
-						rowIndex++;
-					}
-				}
-			}
-			// Loop to insert executions values.
-			rowIndex = 0;
-			for (String currentCategory : categories) {
-				for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-					final SemillaForm semillaForm = semillaEntry.getKey();
-					// On each category iteration we filter the other categories.
-					if (semillaForm.getId() != 0 && semillaForm.getCategoria().getName().equals(currentCategory) && hasTags(semillaForm, tagsToFilter)) {
-						rowIndex++;
 						int numberOfDate = 0;
 						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
 							final String date = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
@@ -2791,182 +2785,303 @@ public final class AnnexUtils {
 								numberOfDate++;
 							}
 						}
+						// Evol score previous iteration
+						{
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", false);
+							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.indexOf(EVOL_PUNTUACION_ANT));
+							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol allocation previous iteration
+						{
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "adecuacion", false);
+							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.indexOf(EVOL_ADECUACION_ANT));
+							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
+									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
+									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol compliance previous iteration
+						{
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "cumplimiento", false);
+							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.indexOf(EVOL_CUMPLIMIENTO_ANT));
+							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
+									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
+									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol score first iteration
+						{
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", true);
+							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER));
+							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol allocation first iteration
+						{
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "adecuacion", true);
+							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.indexOf(EVOL_ADECUACION_PRIMER));
+							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
+									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
+									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol compliance first iteration
+						{
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "cumplimiento", true);
+							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.size() - 1);
+							cell = row.createCell(ColumnNames.indexOf(EVOL_CUMPLIMIENTO_PRIMER));
+							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
+									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
+									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						excelLines.put(rowIndex, excelLine);
+						rowIndex++;
+					}
+				}
+			}
+			// Loop to insert executions values.
+			rowIndex = 0;
+			for (String currentCategory : categories) {
+				for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+					final SemillaForm semillaForm = semillaEntry.getKey();
+					// On each category iteration we filter the other categories.
+					if (semillaForm.getId() != 0 && semillaForm.getCategoria().getName().equals(currentCategory) && hasTags(semillaForm, tagsToFilter)) {
+						rowIndex++;
+						int numberOfDate = 0;
+//						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+//							final String date = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+//							// Previously we ignore the minor date of the day when there is a day with more than one executions.
+//							// Now we also ignore it to keep coherence.
+//							if (executionDatesWithFormat_Valid.contains(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)))) {
+//								row = sheet.getRow(rowIndex);
+//								String columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.indexOf(date)));
+//								String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 1) + (3 * executionDates.indexOf(date)));
+//								// "NV_" + date
+//								// Set the first column based on header
+//								columnIndex = ColumnNames.indexOf(NV_PREFFIX + date);
+//								cell = row.createCell(columnIndex++);
+//								cell.setCellType(CellType.NUMERIC);
+//								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+//								cell.setCellStyle(shadowStyle);
+//								// "A_" + date
+//								cell = row.createCell(columnIndex++);
+//								cell.setCellType(CellType.NUMERIC);
+//								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"A\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+//								cell.setCellStyle(shadowStyle);
+//								// "AA_" + date
+//								cell = row.createCell(columnIndex++);
+//								cell.setCellType(CellType.NUMERIC);
+//								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+//								cell.setCellStyle(shadowStyle);
+//								columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.indexOf(date)));
+//								// "NC_" + date
+//								cell = row.createCell(columnIndex++);
+//								cell.setCellType(CellType.NUMERIC);
+//								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+//								cell.setCellStyle(shadowStyle);
+//								// "PC_" + date
+//								cell = row.createCell(columnIndex++);
+//								cell.setCellType(CellType.NUMERIC);
+//								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+//								cell.setCellStyle(shadowStyle);
+//								// "TC_" + date
+//								cell = row.createCell(columnIndex++);
+//								cell.setCellType(CellType.NUMERIC);
+//								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+//								cell.setCellStyle(shadowStyle);
+//								numberOfDate++;
+//							}
+//						}
 					}
 				}
 			}
 			// Loop to insert puntuation evolution compare with previous.
 			// To select comparision column in comparision object, check if seed has tagId of comparision to select column by date
-			ColumnNames.add(EVOL_PUNTUACION_ANT);
-			XSSFRow headerRow = sheet.getRow(0);
-			XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue(EVOL_PUNTUACION_ANT);
-			cellInHeader.setCellStyle(headerStyle);
-			rowIndex = 1;
-			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = semillaEntry.getKey();
-				// On each category iteration we filter the other categories.
-				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
-					row = sheet.getRow(rowIndex);
-					if (row != null) {
-						// Discard rows without the last execution
-						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
-						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
-							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", false);
-							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
-							cell = row.createCell(ColumnNames.size() - 1);
-							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-					}
-				}
-				rowIndex++;
-			}
+//			ColumnNames.add(EVOL_PUNTUACION_ANT);
+//			XSSFRow headerRow = sheet.getRow(0);
+//			XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+//			cellInHeader.setCellValue(EVOL_PUNTUACION_ANT);
+//			cellInHeader.setCellStyle(headerStyle);
+//			rowIndex = 1;
+//			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+//				final SemillaForm semillaForm = semillaEntry.getKey();
+//				// On each category iteration we filter the other categories.
+//				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
+//					row = sheet.getRow(rowIndex);
+//					if (row != null) {
+//						// Discard rows without the last execution
+//						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
+//						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
+//							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", false);
+//							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
+//							cell = row.createCell(ColumnNames.size() - 1);
+//							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
+//							cell.setCellFormula(formula);
+//							cell.setCellStyle(shadowStyle);
+//						}
+//					}
+//					rowIndex++;
+//				}
+//			}
 			// Loop to insert adecuation evolution compare with previous
-			ColumnNames.add(EVOL_ADECUACION_ANT);
-			headerRow = sheet.getRow(0);
-			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue(EVOL_ADECUACION_ANT);
-			cellInHeader.setCellStyle(headerStyle);
-			rowIndex = 1;
-			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = semillaEntry.getKey();
-				// On each category iteration we filter the other categories.
-				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
-					row = sheet.getRow(rowIndex);
-					if (row != null) {
-						// Discard rows without the last execution
-						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
-						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
-							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "adecuacion", false);
-							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
-							cell = row.createCell(ColumnNames.size() - 1);
-							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
-									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
-									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-					}
-				}
-				rowIndex++;
-			}
+//			ColumnNames.add(EVOL_ADECUACION_ANT);
+//			headerRow = sheet.getRow(0);
+//			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+//			cellInHeader.setCellValue(EVOL_ADECUACION_ANT);
+//			cellInHeader.setCellStyle(headerStyle);
+//			rowIndex = 1;
+//			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+//				final SemillaForm semillaForm = semillaEntry.getKey();
+//				// On each category iteration we filter the other categories.
+//				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
+//					row = sheet.getRow(rowIndex);
+//					if (row != null) {
+//						// Discard rows without the last execution
+//						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
+//						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
+//							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "adecuacion", false);
+//							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
+//							cell = row.createCell(ColumnNames.size() - 1);
+//							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
+//									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
+//									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
+//							cell.setCellFormula(formula);
+//							cell.setCellStyle(shadowStyle);
+//						}
+//					}
+//					rowIndex++;
+//				}
+//			}
 			// Loop to insert adecuation evolution compare with previous
-			ColumnNames.add(EVOL_CUMPLIMIENTO_ANT);
-			headerRow = sheet.getRow(0);
-			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue(EVOL_CUMPLIMIENTO_ANT);
-			cellInHeader.setCellStyle(headerStyle);
-			rowIndex = 1;
-			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = semillaEntry.getKey();
-				// On each category iteration we filter the other categories.
-				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
-					row = sheet.getRow(rowIndex);
-					if (row != null) {
-						// Discard rows without the last execution
-						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
-						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
-							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "cumplimiento", false);
-							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
-							cell = row.createCell(ColumnNames.size() - 1);
-							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
-									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
-									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-					}
-				}
-				rowIndex++;
-			}
+//			ColumnNames.add(EVOL_CUMPLIMIENTO_ANT);
+//			headerRow = sheet.getRow(0);
+//			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+//			cellInHeader.setCellValue(EVOL_CUMPLIMIENTO_ANT);
+//			cellInHeader.setCellStyle(headerStyle);
+//			rowIndex = 1;
+//			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+//				final SemillaForm semillaForm = semillaEntry.getKey();
+//				// On each category iteration we filter the other categories.
+//				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
+//					row = sheet.getRow(rowIndex);
+//					if (row != null) {
+//						// Discard rows without the last execution
+//						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
+//						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
+//							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "cumplimiento", false);
+//							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
+//							cell = row.createCell(ColumnNames.size() - 1);
+//							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
+//									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
+//									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
+//							cell.setCellFormula(formula);
+//							cell.setCellStyle(shadowStyle);
+//						}
+//					}
+//					rowIndex++;
+//				}
+//			}
 			// Loop to insert puntuation evolution compare with first
 			// To select comparision column in comparision object, check if seed has tagId of comparision to select column by date
-			ColumnNames.add(EVOL_PUNTUACION_PRIMER);
-			headerRow = sheet.getRow(0);
-			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue(EVOL_PUNTUACION_PRIMER);
-			cellInHeader.setCellStyle(headerStyle);
-			rowIndex = 1;
-			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = semillaEntry.getKey();
-				// On each category iteration we filter the other categories.
-				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
-					row = sheet.getRow(rowIndex);
-					if (row != null) {
-						// Discard rows without the last execution
-						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
-						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
-							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", true);
-							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
-							cell = row.createCell(ColumnNames.size() - 1);
-							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-					}
-				}
-				rowIndex++;
-			}
+//			ColumnNames.add(EVOL_PUNTUACION_PRIMER);
+//			headerRow = sheet.getRow(0);
+//			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+//			cellInHeader.setCellValue(EVOL_PUNTUACION_PRIMER);
+//			cellInHeader.setCellStyle(headerStyle);
+//			rowIndex = 1;
+//			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+//				final SemillaForm semillaForm = semillaEntry.getKey();
+//				// On each category iteration we filter the other categories.
+//				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
+//					row = sheet.getRow(rowIndex);
+//					if (row != null) {
+//						// Discard rows without the last execution
+//						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
+//						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
+//							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", true);
+//							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
+//							cell = row.createCell(ColumnNames.size() - 1);
+//							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
+//							cell.setCellFormula(formula);
+//							cell.setCellStyle(shadowStyle);
+//						}
+//					}
+//					rowIndex++;
+//				}
+//			}
 			// Loop to insert adecuation evolution compare with first .
-			ColumnNames.add(EVOL_ADECUACION_PRIMER);
-			headerRow = sheet.getRow(0);
-			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue(EVOL_ADECUACION_PRIMER);
-			cellInHeader.setCellStyle(headerStyle);
-			rowIndex = 1;
-			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = semillaEntry.getKey();
-				// On each category iteration we filter the other categories.
-				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
-					row = sheet.getRow(rowIndex);
-					if (row != null) {
-						// Discard rows without the last execution
-						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
-						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
-							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "adecuacion", true);
-							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
-							cell = row.createCell(ColumnNames.size() - 1);
-							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
-									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
-									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-					}
-				}
-				rowIndex++;
-			}
+//			ColumnNames.add(EVOL_ADECUACION_PRIMER);
+//			headerRow = sheet.getRow(0);
+//			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+//			cellInHeader.setCellValue(EVOL_ADECUACION_PRIMER);
+//			cellInHeader.setCellStyle(headerStyle);
+//			rowIndex = 1;
+//			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+//				final SemillaForm semillaForm = semillaEntry.getKey();
+//				// On each category iteration we filter the other categories.
+//				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
+//					row = sheet.getRow(rowIndex);
+//					if (row != null) {
+//						// Discard rows without the last execution
+//						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
+//						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
+//							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "adecuacion", true);
+//							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
+//							cell = row.createCell(ColumnNames.size() - 1);
+//							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
+//									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
+//									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
+//							cell.setCellFormula(formula);
+//							cell.setCellStyle(shadowStyle);
+//						}
+//					}
+//					rowIndex++;
+//				}
+//			}
 			// TODO COLUMNS OF COMPLIANCE EVOLUTION
 			// Loop to insert adecuation evolution compare with previous
-			ColumnNames.add(EVOL_CUMPLIMIENTO_PRIMER);
-			headerRow = sheet.getRow(0);
-			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-			cellInHeader.setCellValue(EVOL_CUMPLIMIENTO_PRIMER);
-			cellInHeader.setCellStyle(headerStyle);
-			rowIndex = 1;
-			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = semillaEntry.getKey();
-				// On each category iteration we filter the other categories.
-				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
-					row = sheet.getRow(rowIndex);
-					if (row != null) {
-						// Discard rows without the last execution
-						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
-						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
-							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "cumplimiento", true);
-							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
-							cell = row.createCell(ColumnNames.size() - 1);
-							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
-									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
-									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-					}
-				}
-				rowIndex++;
-			}
+//			ColumnNames.add(EVOL_CUMPLIMIENTO_PRIMER);
+//			headerRow = sheet.getRow(0);
+//			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
+//			cellInHeader.setCellValue(EVOL_CUMPLIMIENTO_PRIMER);
+//			cellInHeader.setCellStyle(headerStyle);
+//			rowIndex = 1;
+//			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+//				final SemillaForm semillaForm = semillaEntry.getKey();
+//				// On each category iteration we filter the other categories.
+//				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
+//					row = sheet.getRow(rowIndex);
+//					if (row != null) {
+//						// Discard rows without the last execution
+//						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
+//						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
+//							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "cumplimiento", true);
+//							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
+//							cell = row.createCell(ColumnNames.size() - 1);
+//							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
+//									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
+//									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
+//							cell.setCellFormula(formula);
+//							cell.setCellStyle(shadowStyle);
+//						}
+//					}
+//					rowIndex++;
+//				}
+//			}
 			int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
 			// TODO TABLE Compliance
 			nextStartPos = InsertSummaryTableCompliance(sheet, nextStartPos + 5, ColumnNames, headerStyle, shadowStyle);
