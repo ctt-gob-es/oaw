@@ -145,8 +145,14 @@ import es.oaw.wcagem.util.ValidationDetails;
  */
 @SuppressWarnings("deprecation")
 public final class AnnexUtils {
+	private static final String[] ALL_WCAG_EM_POINTS = new String[] { "1.1.1", "1.2.1", "1.2.2", "1.2.3", "1.2.4", "1.2.5", "1.3.1", "1.3.2", "1.3.3", "1.3.4", "1.3.5", "1.4.1", "1.4.2", "1.4.3",
+			"1.4.4", "1.4.5", "1.4.10", "1.4.11", "1.4.12", "1.4.13", "2.1.1", "2.1.2", "2.1.4", "2.2.1", "2.2.2", "2.3.1", "2.4.1", "2.4.2", "2.4.3", "2.4.4", "2.4.5", "2.4.6", "2.4.7", "2.5.1",
+			"2.5.2", "2.5.3", "2.5.4", "3.1.1", "3.1.2", "3.2.1", "3.2.2", "3.2.3", "3.2.4", "3.3.1", "3.3.2", "3.3.3", "3.3.4", "4.1.1", "4.1.2", "4.1.3" };
+	/** The Constant EVOL_CUMPLIMIENTO_ANT. */
 	private static final String EVOL_CUMPLIMIENTO_ANT = "evol_cumplimiento_ant";
+	/** The Constant EVOL_CUMPLIMIENTO_PRIMER. */
 	private static final String EVOL_CUMPLIMIENTO_PRIMER = "evol_cumplimiento_primer";
+	/** The Constant GREEN_OAW_HTML. */
 	private static final String GREEN_OAW_HTML = "#008000";
 	/** The Constant EVOL_ADECUACION_PRIMER. */
 	private static final String EVOL_ADECUACION_PRIMER = "evol_adecuacion_primer";
@@ -416,7 +422,7 @@ public final class AnnexUtils {
 		observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
 		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds);
 		Connection c = DataBaseManager.getConnection();
-		// TODO Fill all execution dateso
+		// Fill all execution dates
 		fillExecutionDates(idObsExecution, exObsIds, c);
 		websiteRanges = RangeDAO.findAll(c);
 		iterationRanges = TemplateRangeDAO.findAll(c, idObsExecution);
@@ -655,21 +661,23 @@ public final class AnnexUtils {
 			// First sheet global part
 			XlsxUtils xlsxUtils = new XlsxUtils(wb);
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(idObs, idObsExecution, tagsToFilter, exObsIds);
-			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMap,
+			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMap, null,
 					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_IN_GLOBAL_TERMS, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_INTENDED_TO_BE_IMPLEMENTED_IN_GLOBAL_TERMS, null, null, false, 0, xlsxUtils);
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(idObs, idObsExecution, tagsToFilterFixed,
 					exObsIds);
-			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed,
+			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed, null,
 					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 40, xlsxUtils);
 			// N sheets by segment
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idObsExecution);
 			for (CategoriaForm category : categories) {
 				final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution,
 						Long.valueOf(category.getId()), tagsToFilter, exObsIds);
+				final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCatFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution,
+						Long.valueOf(category.getId()), tagsToFilterFixed, exObsIds);
 				if (pageObservatoryMapCat != null) {
 					String currentCategory = category.getName().substring(0, Math.min(category.getName().length(), 31));
 					final XSSFSheet categorySheet = wb.createSheet(currentCategory);
-					generateGlobalProgressEvolutionSheet(categorySheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapCat,
+					generateGlobalProgressEvolutionSheet(categorySheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapCat, pageObservatoryMapCatFixed,
 							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.global.title", new String[] { category.getName() }),
 							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.global.title", new String[] { category.getName() }),
 							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.fixed.title", new String[] { category.getName() }),
@@ -717,14 +725,14 @@ public final class AnnexUtils {
 		}
 		XSSFSheet improvementSheet = wb.createSheet(SHEET_IMPROVMENTS_TITLE);
 		int currentRow = 10;
-		generateSummaryData(globalSummaryPrevious, improvementSheet, currentRow, FIRST_ITERATION_GLOBAL_TITLE);
+		generateSummaryData(globalSummaryFirst, improvementSheet, currentRow, FIRST_ITERATION_GLOBAL_TITLE);
 		currentRow = 25;
-		generateSummaryData(globalSummaryFirst, improvementSheet, currentRow, PREVIOUS_ITERATION_GLOBAL_TITLE);
+		generateSummaryData(globalSummaryPrevious, improvementSheet, currentRow, PREVIOUS_ITERATION_GLOBAL_TITLE);
 		currentRow = 40;
-		generateSummaryData(fixedSummaryPrevious, improvementSheet, currentRow, FIRST_ITERATION_FIXED_TITLE);
+		generateSummaryData(fixedSummaryFirst, improvementSheet, currentRow, FIRST_ITERATION_FIXED_TITLE);
 		currentRow = 55;
-		generateSummaryData(fixedSummaryFirst, improvementSheet, currentRow, PREVIOUS_ITERATION_FIXED_TITLE);
-		// TODO Add a legend
+		generateSummaryData(fixedSummaryPrevious, improvementSheet, currentRow, PREVIOUS_ITERATION_FIXED_TITLE);
+		// Add a legend with custom text
 		XSSFDrawing draw = improvementSheet.createDrawingPatriarch();
 		XSSFTextBox tb1 = draw.createTextbox(new XSSFClientAnchor(0, 0, 0, 0, 0, 0, 10, 6));
 		tb1.setLineStyleColor(0, 0, 0);
@@ -850,8 +858,7 @@ public final class AnnexUtils {
 			chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDLbls().addNewShowBubbleSize().setVal(false);
 			// angle
 			chart.getCTChart().addNewView3D().addNewRotX().setVal((byte) 25);
-			// TODO colors
-			// iterate ranges
+			// iterate ranges to apply colrs
 			int idx = 0;
 			for (Map.Entry<RangeForm, Integer> range : globalSummary.getRangeMaps().entrySet()) {
 				chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(idx);
@@ -888,11 +895,14 @@ public final class AnnexUtils {
 				for (ComparisionForm com : comparision) {
 					// exclude if selected tags fixed
 					if (tagsToFilterFixed != null && tagsToFilterFixed.length > 0) {
-						if (Arrays.asList(tagsToFilterFixed).contains(String.valueOf(com.getIdTag()))) {
+						if (!Arrays.asList(tagsToFilterFixed).contains(String.valueOf(com.getIdTag()))) {
 							continue;
 						}
 					}
 					for (EtiquetaForm label : semillaForm.getEtiquetas()) {
+						if (tagsToFilterFixed != null && tagsToFilterFixed.length > 0 && !hasTags(semillaForm, tagsToFilterFixed)) {
+							continue;
+						}
 						if (com.getIdTag() == label.getId()) {
 							BigDecimal scoreComparision = BigDecimal.ZERO;
 							final String key = isFirst ? com.getFirst() : com.getPrevious();
@@ -902,7 +912,6 @@ public final class AnnexUtils {
 									break;
 								}
 							}
-//							BigDecimal scoreComparision = semillaEntry.getValue().get(isFirst ? com.getFirst() : com.getPrevious()).getTotalScore();
 							BigDecimal diffScore = lastScore.subtract(scoreComparision);
 							for (RangeForm range : websiteRanges) {
 								String expression = generateRangeJsExpression(diffScore, range.getMinValueOperator(), range.getMaxValueOperator(), range.getMinValue(), range.getMaxValue());
@@ -976,6 +985,7 @@ public final class AnnexUtils {
 	 * @param tagsToFilter                 the tags to filter
 	 * @param exObsIds                     the ex obs ids
 	 * @param pageObservatoryMap           the page observatory map
+	 * @param pageObservatoryMapFixed      the page observatory map fixed
 	 * @param titleAllocationGraphicGlobal the title allocation graphic
 	 * @param titleComplianceGraphicGlobal the title compliance graphic global
 	 * @param titleAllocationGraphicFixed  the title allocation graphic fixed (only if generateFixedGraphics is true is required)
@@ -985,9 +995,9 @@ public final class AnnexUtils {
 	 * @param xlsxUtils                    the xlsx utils
 	 */
 	private static void generateGlobalProgressEvolutionSheet(final XSSFSheet sheet, final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation,
-			final String[] tagsToFilter, final String[] exObsIds, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final String titleAllocationGraphicGlobal,
-			final String titleComplianceGraphicGlobal, final String titleAllocationGraphicFixed, final String titleComplianceGrpahicFixed, final boolean generateFixedGraphics, final int initRow,
-			final XlsxUtils xlsxUtils) {
+			final String[] tagsToFilter, final String[] exObsIds, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed, final String titleAllocationGraphicGlobal, final String titleComplianceGraphicGlobal,
+			final String titleAllocationGraphicFixed, final String titleComplianceGrpahicFixed, final boolean generateFixedGraphics, final int initRow, final XlsxUtils xlsxUtils) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, KEY_DATE_FORMAT_EVOLUTION));
 		final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByType(String.valueOf(idObs),
@@ -1077,7 +1087,7 @@ public final class AnnexUtils {
 		generateStackedBarGraphic(sheet, firstRow, rowCount, 1, 3, titleComplianceGraphicGlobal);
 		// Generate 2 extra graphics for fixed part if required
 		if (generateFixedGraphics) {
-			generateGlobalProgressEvolutionSheet(sheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMap, titleAllocationGraphicFixed,
+			generateGlobalProgressEvolutionSheet(sheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed, null, titleAllocationGraphicFixed,
 					titleComplianceGrpahicFixed, null, null, false, rowCount + 15, xlsxUtils);
 		}
 		sheet.autoSizeColumn(0);
@@ -1235,7 +1245,7 @@ public final class AnnexUtils {
 				/******** NV/NC **********/
 				cellCount = generateColumnCount(columnResults, resultColumnDependecy, dataStyleBold, cellCount, r, 2);
 				cellCount = generateColumnPercent(dataStyleBold, format, cellCount, r, RANGE_TOTAL_PORTALS_RANKING, RANGE_THIRD_COLUMN_RANKING, xlsxUtils);
-				cellCount = generetaColumnAverage(columnResults, resultColumnDependecy, dataStyleNormal, format, cellCount, r, 1, RANGE_THIRD_COLUMN_RANKING);
+				cellCount = generetaColumnAverage(columnResults, resultColumnDependecy, dataStyleNormal, format, cellCount, r, 2, RANGE_THIRD_COLUMN_RANKING);
 				/******** SUMS **********/
 				c = r.createCell(cellCount);
 				c.setCellFormula("J:J+G:G");
@@ -1840,21 +1850,36 @@ public final class AnnexUtils {
 									// WCAG Criterias
 									if (criterias) {
 										Map<String, ValidationDetails> details = wcagCompliance.get(pageForm.getUrl());
-										for (WcagEmPointKey wcagEmPoint : WcagEmPointKey.values()) {
-											// do what you want
-											String compliance = messageResources.getMessage("modality.pass");
-											if (EARL_FAILED.equalsIgnoreCase(details.get(wcagEmPoint.getWcagEmId()).getResult())) {
-												compliance = messageResources.getMessage("modality.fail");
-											} else if (EARL_INAPPLICABLE.equalsIgnoreCase(details.get(wcagEmPoint.getWcagEmId()).getResult())) {
-												compliance = messageResources.getMessage("resultados.anonimos.porc.portales.na");
+//										for (WcagEmPointKey wcagEmPoint : WcagEmPointKey.values()) {
+										for (String sWcagEmPoint : ALL_WCAG_EM_POINTS) {
+											String compliance = "";
+											WcagEmPointKey wcagEmPoint = WcagEmPointKey.findByPoint(sWcagEmPoint);
+											if (wcagEmPoint != null) {
+												// do what you want
+												compliance = messageResources.getMessage("modality.pass");
+												final ValidationDetails validationDetails = details.get(wcagEmPoint.getWcagEmId());
+												if (validationDetails != null) {
+													if (EARL_FAILED.equalsIgnoreCase(validationDetails.getResult())) {
+														compliance = messageResources.getMessage("modality.fail");
+													} else if (EARL_INAPPLICABLE.equalsIgnoreCase(validationDetails.getResult())) {
+														compliance = messageResources.getMessage("resultados.anonimos.porc.portales.na");
+													}
+												} else {
+													compliance = "N/T";
+												}
+											} else {
+												compliance = "N/T";
 											}
-											writeTag(hd, "C_" + wcagEmPoint.getWcagPoint().replace(".", "_"), compliance);
+											writeTag(hd, "C_" + sWcagEmPoint.replace(".", "_"), compliance);
 										}
 									}
 									hd.endElement(EMPTY_STRING, EMPTY_STRING, "pagina");
 								}
 							}
 							hd.endElement(EMPTY_STRING, EMPTY_STRING, "paginas");
+							if (criterias) {
+								writeTag(hd, "nota", messageResources.getMessage("annex.xml.criteria.pages.note"));
+							}
 							hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 						}
 					}
@@ -2092,38 +2117,45 @@ public final class AnnexUtils {
 						final List<Long> analysisIdsByTracking = AnalisisDatos.getEvaluationIdsFromExecutedObservatoryAndIdSeed(idObsExecution, semillaForm.getId());
 						final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
 						Map<String, Map<String, ValidationDetails>> wcagCompliance = WcagEmUtils.generateEquivalenceMap(currentEvaluationPageList);
-						for (WcagEmPointKey wcagEmPointKey : WcagEmPointKey.values()) {
+						for (String sWcagEmPoint : ALL_WCAG_EM_POINTS) {
+							String compliance = "";
+							WcagEmPointKey wcagEmPointKey = WcagEmPointKey.findByPoint(sWcagEmPoint);
 							// Iterate WCAG Points
 							if (wcagCompliance != null && !wcagCompliance.isEmpty()) {
-								// Iterate evl list to preserve order
-								String compliance = messageResources.getMessage("observatory.graphic.compilance.green");
-								int countFailed = 0;
-								int countNA = 0;
-								for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
-									Map<String, ValidationDetails> result = wcagCompliance.get(eval.getUrl());
-									// if cointain current wcag rule
-									if (result.containsKey(wcagEmPointKey.getWcagEmId())) {
-										final String validationResult = result.get(wcagEmPointKey.getWcagEmId()).getResult();
-										// if one of this has earl:failed, all result marked as failed
-										// do what you want
-										if (EARL_FAILED.equals(validationResult)) {
-											countFailed++;
-											// compliance = messageResources.getMessage("observatory.graphic.compilance.red");
-										} else if (EARL_INAPPLICABLE.equals(validationResult)) {
-											// compliance = messageResources.getMessage("observatory.graphic.compilance.gray");
-											countNA++;
+								if (wcagEmPointKey != null) {
+									// Iterate evl list to preserve order
+									compliance = messageResources.getMessage("observatory.graphic.compilance.green");
+									int countFailed = 0;
+									int countNA = 0;
+									for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
+										Map<String, ValidationDetails> result = wcagCompliance.get(eval.getUrl());
+										// if cointain current wcag rule
+										if (result.containsKey(wcagEmPointKey.getWcagEmId())) {
+											final String validationResult = result.get(wcagEmPointKey.getWcagEmId()).getResult();
+											// if one of this has earl:failed, all result marked as failed
+											// do what you want
+											if (EARL_FAILED.equals(validationResult)) {
+												countFailed++;
+											} else if (EARL_INAPPLICABLE.equals(validationResult)) {
+												countNA++;
+											}
 										}
 									}
+									if (countFailed > currentEvaluationPageList.size() / 10) {
+										compliance = messageResources.getMessage("observatory.graphic.compilance.red");
+									}
+									if (countNA == currentEvaluationPageList.size()) {
+										compliance = messageResources.getMessage("observatory.graphic.compilance.gray");
+									}
+								} else {
+									compliance = "N/T";
 								}
-								if (countFailed > currentEvaluationPageList.size() / 10) {
-									compliance = messageResources.getMessage("observatory.graphic.compilance.red");
-								}
-								if (countNA == currentEvaluationPageList.size()) {
-									compliance = messageResources.getMessage("observatory.graphic.compilance.gray");
-								}
-								writeTag(hd, "C_" + wcagEmPointKey.getWcagPoint().replace(".", "_"), compliance);
+								writeTag(hd, "C_" + sWcagEmPoint.replace(".", "_"), compliance);
 							}
 						}
+					}
+					if (criterias) {
+						writeTag(hd, "nota", messageResources.getMessage("annex.xml.criteria.note"));
 					}
 					hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 				}
@@ -2162,6 +2194,7 @@ public final class AnnexUtils {
 	 * @param messageResources the message resources
 	 * @param idObsExecution   the id obs execution
 	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
 	 * @throws Exception the exception
 	 */
 	public static void createAnnexXLSX2(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter) throws Exception {
@@ -2534,7 +2567,7 @@ public final class AnnexUtils {
 			// Loop to insert fixed values
 			for (String currentCategory : categories) {
 				for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-					// TODO Filter if not has tags
+					// Filter if not has tags
 					final SemillaForm semillaForm = semillaEntry.getKey();
 					String namecat = semillaForm.getCategoria().getName();
 					// On each category iteration we filter the other categories.
@@ -2853,242 +2886,13 @@ public final class AnnexUtils {
 					}
 				}
 			}
-			// Loop to insert executions values.
-			rowIndex = 0;
-			for (String currentCategory : categories) {
-				for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-					final SemillaForm semillaForm = semillaEntry.getKey();
-					// On each category iteration we filter the other categories.
-					if (semillaForm.getId() != 0 && semillaForm.getCategoria().getName().equals(currentCategory) && hasTags(semillaForm, tagsToFilter)) {
-						rowIndex++;
-						int numberOfDate = 0;
-//						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-//							final String date = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
-//							// Previously we ignore the minor date of the day when there is a day with more than one executions.
-//							// Now we also ignore it to keep coherence.
-//							if (executionDatesWithFormat_Valid.contains(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)))) {
-//								row = sheet.getRow(rowIndex);
-//								String columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.indexOf(date)));
-//								String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 1) + (3 * executionDates.indexOf(date)));
-//								// "NV_" + date
-//								// Set the first column based on header
-//								columnIndex = ColumnNames.indexOf(NV_PREFFIX + date);
-//								cell = row.createCell(columnIndex++);
-//								cell.setCellType(CellType.NUMERIC);
-//								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-//								cell.setCellStyle(shadowStyle);
-//								// "A_" + date
-//								cell = row.createCell(columnIndex++);
-//								cell.setCellType(CellType.NUMERIC);
-//								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"A\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-//								cell.setCellStyle(shadowStyle);
-//								// "AA_" + date
-//								cell = row.createCell(columnIndex++);
-//								cell.setCellType(CellType.NUMERIC);
-//								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-//								cell.setCellStyle(shadowStyle);
-//								columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.indexOf(date)));
-//								// "NC_" + date
-//								cell = row.createCell(columnIndex++);
-//								cell.setCellType(CellType.NUMERIC);
-//								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-//								cell.setCellStyle(shadowStyle);
-//								// "PC_" + date
-//								cell = row.createCell(columnIndex++);
-//								cell.setCellType(CellType.NUMERIC);
-//								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-//								cell.setCellStyle(shadowStyle);
-//								// "TC_" + date
-//								cell = row.createCell(columnIndex++);
-//								cell.setCellType(CellType.NUMERIC);
-//								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-//								cell.setCellStyle(shadowStyle);
-//								numberOfDate++;
-//							}
-//						}
-					}
-				}
-			}
-			// Loop to insert puntuation evolution compare with previous.
-			// To select comparision column in comparision object, check if seed has tagId of comparision to select column by date
-//			ColumnNames.add(EVOL_PUNTUACION_ANT);
-//			XSSFRow headerRow = sheet.getRow(0);
-//			XSSFCell cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-//			cellInHeader.setCellValue(EVOL_PUNTUACION_ANT);
-//			cellInHeader.setCellStyle(headerStyle);
-//			rowIndex = 1;
-//			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-//				final SemillaForm semillaForm = semillaEntry.getKey();
-//				// On each category iteration we filter the other categories.
-//				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
-//					row = sheet.getRow(rowIndex);
-//					if (row != null) {
-//						// Discard rows without the last execution
-//						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
-//						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
-//							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", false);
-//							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
-//							cell = row.createCell(ColumnNames.size() - 1);
-//							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
-//							cell.setCellFormula(formula);
-//							cell.setCellStyle(shadowStyle);
-//						}
-//					}
-//					rowIndex++;
-//				}
-//			}
-			// Loop to insert adecuation evolution compare with previous
-//			ColumnNames.add(EVOL_ADECUACION_ANT);
-//			headerRow = sheet.getRow(0);
-//			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-//			cellInHeader.setCellValue(EVOL_ADECUACION_ANT);
-//			cellInHeader.setCellStyle(headerStyle);
-//			rowIndex = 1;
-//			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-//				final SemillaForm semillaForm = semillaEntry.getKey();
-//				// On each category iteration we filter the other categories.
-//				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
-//					row = sheet.getRow(rowIndex);
-//					if (row != null) {
-//						// Discard rows without the last execution
-//						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
-//						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
-//							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "adecuacion", false);
-//							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
-//							cell = row.createCell(ColumnNames.size() - 1);
-//							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
-//									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
-//									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
-//							cell.setCellFormula(formula);
-//							cell.setCellStyle(shadowStyle);
-//						}
-//					}
-//					rowIndex++;
-//				}
-//			}
-			// Loop to insert adecuation evolution compare with previous
-//			ColumnNames.add(EVOL_CUMPLIMIENTO_ANT);
-//			headerRow = sheet.getRow(0);
-//			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-//			cellInHeader.setCellValue(EVOL_CUMPLIMIENTO_ANT);
-//			cellInHeader.setCellStyle(headerStyle);
-//			rowIndex = 1;
-//			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-//				final SemillaForm semillaForm = semillaEntry.getKey();
-//				// On each category iteration we filter the other categories.
-//				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
-//					row = sheet.getRow(rowIndex);
-//					if (row != null) {
-//						// Discard rows without the last execution
-//						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
-//						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
-//							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "cumplimiento", false);
-//							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
-//							cell = row.createCell(ColumnNames.size() - 1);
-//							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
-//									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
-//									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
-//							cell.setCellFormula(formula);
-//							cell.setCellStyle(shadowStyle);
-//						}
-//					}
-//					rowIndex++;
-//				}
-//			}
-			// Loop to insert puntuation evolution compare with first
-			// To select comparision column in comparision object, check if seed has tagId of comparision to select column by date
-//			ColumnNames.add(EVOL_PUNTUACION_PRIMER);
-//			headerRow = sheet.getRow(0);
-//			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-//			cellInHeader.setCellValue(EVOL_PUNTUACION_PRIMER);
-//			cellInHeader.setCellStyle(headerStyle);
-//			rowIndex = 1;
-//			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-//				final SemillaForm semillaForm = semillaEntry.getKey();
-//				// On each category iteration we filter the other categories.
-//				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
-//					row = sheet.getRow(rowIndex);
-//					if (row != null) {
-//						// Discard rows without the last execution
-//						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
-//						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
-//							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "puntuacion", true);
-//							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
-//							cell = row.createCell(ColumnNames.size() - 1);
-//							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
-//							cell.setCellFormula(formula);
-//							cell.setCellStyle(shadowStyle);
-//						}
-//					}
-//					rowIndex++;
-//				}
-//			}
-			// Loop to insert adecuation evolution compare with first .
-//			ColumnNames.add(EVOL_ADECUACION_PRIMER);
-//			headerRow = sheet.getRow(0);
-//			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-//			cellInHeader.setCellValue(EVOL_ADECUACION_PRIMER);
-//			cellInHeader.setCellStyle(headerStyle);
-//			rowIndex = 1;
-//			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-//				final SemillaForm semillaForm = semillaEntry.getKey();
-//				// On each category iteration we filter the other categories.
-//				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
-//					row = sheet.getRow(rowIndex);
-//					if (row != null) {
-//						// Discard rows without the last execution
-//						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
-//						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
-//							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "adecuacion", true);
-//							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
-//							cell = row.createCell(ColumnNames.size() - 1);
-//							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
-//									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
-//									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
-//							cell.setCellFormula(formula);
-//							cell.setCellStyle(shadowStyle);
-//						}
-//					}
-//					rowIndex++;
-//				}
-//			}
-			// TODO COLUMNS OF COMPLIANCE EVOLUTION
-			// Loop to insert adecuation evolution compare with previous
-//			ColumnNames.add(EVOL_CUMPLIMIENTO_PRIMER);
-//			headerRow = sheet.getRow(0);
-//			cellInHeader = headerRow.createCell(ColumnNames.size() - 1);
-//			cellInHeader.setCellValue(EVOL_CUMPLIMIENTO_PRIMER);
-//			cellInHeader.setCellStyle(headerStyle);
-//			rowIndex = 1;
-//			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-//				final SemillaForm semillaForm = semillaEntry.getKey();
-//				// On each category iteration we filter the other categories.
-//				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
-//					row = sheet.getRow(rowIndex);
-//					if (row != null) {
-//						// Discard rows without the last execution
-//						XSSFCell tmpCell = row.getCell(ColumnNames.size() - 3);
-//						if (tmpCell != null && CellType.FORMULA.equals(tmpCell.getCellType()) && !tmpCell.getCellFormula().equals("")) {
-//							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, "cumplimiento", true);
-//							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
-//							cell = row.createCell(ColumnNames.size() - 1);
-//							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
-//									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
-//									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
-//							cell.setCellFormula(formula);
-//							cell.setCellStyle(shadowStyle);
-//						}
-//					}
-//					rowIndex++;
-//				}
-//			}
 			int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
-			// TODO TABLE Compliance
+			// Compliance
 			nextStartPos = InsertSummaryTableCompliance(sheet, nextStartPos + 5, ColumnNames, headerStyle, shadowStyle);
 			String title = "Datos de evolución de PUNTUACIÓN con respecto a la ITERACION ANTERIOR (Nº de sitios web por segmentos)";
-			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.size() - 3, title);
+			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.indexOf(EVOL_PUNTUACION_ANT) + 1, title);
 			title = "Datos de evolución de PUNTUACIÓN con respecto a la PRIMERA ITERACIÓN (Nº de sitios web por segmentos)";
-			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.size() - 3, title);
+			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER) + 1, title);
 			// Insert graph sheets per category
 			for (String category : categories) {
 				/*
@@ -3099,18 +2903,19 @@ public final class AnnexUtils {
 				// Search category initial and final row.
 				int categoryFirstRow = 0;
 				int categoryLastRow = 0;
-				for (int i = 0; i < rowIndex; i++) {
+				// Starts 1 because always first row was header
+				for (int i = 1; i < rowIndex; i++) {
 					row = sheet.getRow(i);
 					if (row != null) {
 						cell = row.getCell(2);
-						if (categoryFirstRow == 0 && cell.getStringCellValue().equals(category))
-							categoryFirstRow = i;
-						if (categoryLastRow == 0 && !cell.getStringCellValue().equals(category) && categoryFirstRow != 0)
+						if (cell.getStringCellValue().equals(category)) {
+							if (categoryFirstRow == 0) {
+								categoryFirstRow = i;
+							}
 							categoryLastRow = i;
+						}
 					}
 				}
-				if (categories.indexOf(category) == categories.size() - 1)
-					categoryLastRow = rowIndex;
 				if (wb.getSheet(categorySheetName) == null && categoryFirstRow != 0 && categoryLastRow != 0) {
 					wb.createSheet(categorySheetName);
 					XSSFSheet currentSheet = wb.getSheet(categorySheetName);
@@ -3123,7 +2928,7 @@ public final class AnnexUtils {
 				sheet.autoSizeColumn(i);
 			}
 			XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
-			// TODO Clear -1 cell values
+			// Clear -1 cell values
 			for (int i = 0; i < sheet.getLastRowNum(); i++) {
 				Row r = sheet.getRow(i);
 				if (r != null) {
@@ -3629,8 +3434,8 @@ public final class AnnexUtils {
 		XSSFCell cell;
 		XSSFRow row;
 		// Insert Summary table.
-		String columnResumeNamePrevious = GetExcelColumnNameForNumber(ColumnNames.size() - 4);
-		String columnResumeNameFirst = GetExcelColumnNameForNumber(ColumnNames.size() - 1);
+		String columnResumeNamePrevious = GetExcelColumnNameForNumber(ColumnNames.indexOf(EVOL_ADECUACION_ANT) + 1);
+		String columnResumeNameFirst = GetExcelColumnNameForNumber(ColumnNames.indexOf(EVOL_ADECUACION_PRIMER) + 1);
 		row = sheet.createRow(RowStartPosition);
 		cell = row.createCell(0);
 		cell.setCellValue("Datos de evolución de NIVEL DE ADECUACIÓN (Nº de sitios web");
@@ -3735,10 +3540,8 @@ public final class AnnexUtils {
 		XSSFCell cell;
 		XSSFRow row;
 		// Insert Summary table.
-//		String columnResumeNamePrevious = GetExcelColumnNameForNumber(ColumnNames.size() - 2);
-//		String columnResumeNameFirst = GetExcelColumnNameForNumber(ColumnNames.size());
-		String columnResumeNamePrevious = GetExcelColumnNameForNumber(ColumnNames.size() - 3);
-		String columnResumeNameFirst = GetExcelColumnNameForNumber(ColumnNames.size());
+		String columnResumeNamePrevious = GetExcelColumnNameForNumber(ColumnNames.indexOf(EVOL_CUMPLIMIENTO_ANT) + 1);
+		String columnResumeNameFirst = GetExcelColumnNameForNumber(ColumnNames.indexOf(EVOL_CUMPLIMIENTO_PRIMER) + 1);
 		row = sheet.createRow(RowStartPosition);
 		cell = row.createCell(0);
 		cell.setCellValue("Datos de evolución SITUACIÓN DE CUMPLIMIENTO (Nº de sitios web)");
@@ -3976,9 +3779,8 @@ public final class AnnexUtils {
 			solidFillSeries(data, 2, PresetColor.GREEN);
 			XDDFBarChartData bar = (XDDFBarChartData) data;
 			bar.setBarDirection(BarDirection.COL);
-			bar.setBarGrouping(BarGrouping.CLUSTERED);
-			bar.setBarDirection(BarDirection.COL);
-			bar.setBarGrouping(BarGrouping.CLUSTERED);
+			bar.setBarGrouping(BarGrouping.STANDARD);
+			chart.getCTChart().getPlotArea().getBarChartArray(0).addNewOverlap().setVal((byte) -100);
 			// Rotate labels bottom axis
 			CTTextBody text = chart.getCTChart().getPlotArea().getCatAxArray(0).getTxPr();
 			int rotAngle = 0;
@@ -4021,29 +3823,29 @@ public final class AnnexUtils {
 		plotArea.getValAxArray(0).getScaling().addNewMax().setVal(10);
 		plotArea.getValAxArray(0).getScaling().addNewMin().setVal(0);
 		// Get agency names
-		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, 1, 1));
+		XDDFDataSource<String> agencies = XDDFDataSourcesFactory.fromStringCellRange(wb.getSheetAt(0), new CellRangeAddress(categoryFirstRow, categoryLastRow, 1, 1));
 		// Iterate through the executions
 		int iteration = 0;
 		for (String date : executionDates) {
 			int firstSerieColumn = numberOfFixedColumns + (executionDates.size() * 3) + (6 * executionDates.indexOf(date));
 			// First serie ("No válido" / "No Conforme")
-			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 0 : 3));
+			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow, firstSerieColumn + (isFirst ? 0 : 3));
 			XDDFNumericalDataSource<Double> values1 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 0 : 3), firstSerieColumn + (isFirst ? 0 : 3)));
+					new CellRangeAddress(categoryFirstRow, categoryLastRow, firstSerieColumn + (isFirst ? 0 : 3), firstSerieColumn + (isFirst ? 0 : 3)));
 			XDDFChartData.Series series1 = data.addSeries(agencies, values1);
 			series1.setTitle((isFirst ? NV_PREFFIX : NC_PREFFIX) + date, null);
 			solidFillSeries(data, iteration++, PresetColor.RED);
 			// Second serie ("A" / "Parcialmente conforme")
-			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 1 : 4));
+			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow, firstSerieColumn + (isFirst ? 1 : 4));
 			XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 1 : 4), firstSerieColumn + (isFirst ? 1 : 4)));
+					new CellRangeAddress(categoryFirstRow, categoryLastRow, firstSerieColumn + (isFirst ? 1 : 4), firstSerieColumn + (isFirst ? 1 : 4)));
 			XDDFChartData.Series series2 = data.addSeries(agencies, values2);
 			series2.setTitle((isFirst ? A_PREFFIX : PC_PREFFIX) + date, null);
 			solidFillSeries(data, iteration++, XDDFColor.from(hex2Rgb(YELLOW_OAW_HTML)));
 			// Third serie ("AA" / "Plenamente conforme")
-			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 2 : 5));
+			FillNullCellInRange(wb.getSheetAt(0), categoryFirstRow, categoryLastRow, firstSerieColumn + (isFirst ? 2 : 5));
 			XDDFNumericalDataSource<Double> values3 = XDDFDataSourcesFactory.fromNumericCellRange(wb.getSheetAt(0),
-					new CellRangeAddress(categoryFirstRow, categoryLastRow - 1, firstSerieColumn + (isFirst ? 2 : 5), firstSerieColumn + (isFirst ? 2 : 5)));
+					new CellRangeAddress(categoryFirstRow, categoryLastRow, firstSerieColumn + (isFirst ? 2 : 5), firstSerieColumn + (isFirst ? 2 : 5)));
 			XDDFChartData.Series series3 = data.addSeries(agencies, values3);
 			series3.setTitle((isFirst ? AA_PREFFIX : TC_PREFFIX) + date, null);
 			solidFillSeries(data, iteration++, PresetColor.GREEN);
@@ -4051,9 +3853,8 @@ public final class AnnexUtils {
 		chart.plot(data);
 		XDDFBarChartData bar = (XDDFBarChartData) data;
 		bar.setBarDirection(BarDirection.COL);
-		bar.setBarGrouping(BarGrouping.CLUSTERED);
-		bar.setBarDirection(BarDirection.COL);
-		bar.setBarGrouping(BarGrouping.CLUSTERED);
+		bar.setBarGrouping(BarGrouping.STANDARD);
+		chart.getCTChart().getPlotArea().getBarChartArray(0).addNewOverlap().setVal((byte) -100);
 		// Rotate labels bottom axis
 		CTTextBody text = chart.getCTChart().getPlotArea().getCatAxArray(0).getTxPr();
 		int rotAngle = 0;
@@ -4128,7 +3929,8 @@ public final class AnnexUtils {
 		chart.plot(data);
 		XDDFBarChartData bar = (XDDFBarChartData) data;
 		bar.setBarDirection(BarDirection.COL);
-		bar.setBarGrouping(BarGrouping.CLUSTERED);
+		bar.setBarGrouping(BarGrouping.STANDARD);
+		chart.getCTChart().getPlotArea().getBarChartArray(0).addNewOverlap().setVal((byte) -100);
 		// Rotate labels bottom axis
 		CTTextBody text = chart.getCTChart().getPlotArea().getCatAxArray(0).getTxPr();
 		int rotAngle = 0;
