@@ -356,7 +356,7 @@ function reloadGrid(path) {
 														response) {
 														reloadGrid(lastUrl);
 													},
-													url: '/oaw/secure/ViewRangesObservatorio.do?action=update',
+													url: '/oaw/secure/RangeObservatorio.do?action=update',
 													restoreAfterError: false,
 												});
 
