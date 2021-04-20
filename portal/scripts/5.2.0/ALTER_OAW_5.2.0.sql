@@ -106,8 +106,48 @@ INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES (
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.files.mapping','file_mapping', 'http://des-oaw.redsara.es/');
 
 
+-- historico
 
 
+CREATE TABLE `observatorio_send_historic` ( 
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`ids_observatory_execution` INT NOT NULL,
+	`cco` VARCHAR(255),
+	`aubject` VARCHAR(255),
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE `observatorio_send_historic_comparision` ( 
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`id_send_historic` INT NOT NULL,
+	`id_tag` INT NOT NULL,
+	`date_first` VARCHAR(255),
+	`date_previous` VARCHAR(255),
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE `observatorio_send_historic_ranges` ( 
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`id_send_historic` INT NOT NULL,
+	`name` VARCHAR(255) NOT NULL ,
+	`min_value` float(4,2) NOT NULL , 
+	`max_value` float(4,2) ,
+	`min_value_operator` VARCHAR(255) NOT NULL ,
+	`max_value_operator` VARCHAR(255), 
+	`template` mediumtext NOT NULL,
+    PRIMARY KEY(`id`)
+);
+
+CREATE TABLE `observatorio_send_historic_results` ( 
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`id_send_historic` INT NOT NULL,
+	`id_ura` INT NOT NULL,
+	`id_range` INT NOT NULL,
+	`range_value` float(4,2) ,
+	`custom_text` mediumtext NOT NULL,
+	`send` int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY(`id`)
+);
 
 
 

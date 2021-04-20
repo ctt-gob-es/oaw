@@ -398,6 +398,33 @@ public final class EtiquetaDAO {
 	}
 
 	/**
+	 * Gets the by id.
+	 *
+	 * @param c     the c
+	 * @param idTag the id tag
+	 * @return the by id
+	 * @throws Exception the exception
+	 */
+	public static EtiquetaForm getById(Connection c, final int idTag) throws SQLException {
+		EtiquetaForm tag = null;
+		String query = "SELECT c.id_etiqueta, c.nombre FROM etiqueta c WHERE c.id_etiqueta = ?";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setInt(1, idTag);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					tag = new EtiquetaForm();
+					tag.setId(Long.parseLong(rs.getString("c.id_etiqueta")));
+					tag.setName(rs.getString("c.nombre"));
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return tag;
+	}
+
+	/**
 	 * Gets the ids fixed tags.
 	 *
 	 * @param c the c

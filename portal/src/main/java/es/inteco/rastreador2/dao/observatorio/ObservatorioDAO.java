@@ -64,6 +64,7 @@ import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
+import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.dao.login.CartuchoForm;
 import es.inteco.rastreador2.dao.login.DatosForm;
 import es.inteco.rastreador2.dao.login.LoginDAO;
@@ -3301,6 +3302,10 @@ public final class ObservatorioDAO {
 				cmp.setIdTag(rs.getInt("id_tag"));
 				cmp.setFirst(rs.getString("date_first"));
 				cmp.setFirst(rs.getString("date_previous"));
+				EtiquetaForm tag = EtiquetaDAO.getById(c, cmp.getIdTag());
+				if (tag != null) {
+					cmp.setTagName(tag.getName());
+				}
 				list.add(cmp);
 			}
 		} catch (SQLException e) {

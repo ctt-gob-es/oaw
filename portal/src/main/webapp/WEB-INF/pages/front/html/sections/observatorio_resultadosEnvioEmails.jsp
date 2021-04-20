@@ -50,6 +50,30 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			<h2>
 				<bean:message key="send.results.observatory.title.results" />
 			</h2>
+			<logic:notEmpty name="comparision">
+				<strong>
+					<bean:message key="report.config.etiquetas.filter.title" />
+				</strong>
+				<logic:iterate name="comparision" id="comp">
+					<span>
+						<bean:write name="comp" property="tagName" />
+						(
+						<bean:write name="comp" property="previous" />
+						)
+					</span>
+				</logic:iterate>
+			</logic:notEmpty>
+			<logic:notEmpty name="exObs">
+				<strong>
+					<bean:message key="report.config.observatorios.filter.title" />
+				</strong>
+				<logic:iterate name="exObs" id="obs">
+					<span>
+						<bean:write name="obs" property="fechaStr" />
+					</span>
+				</logic:iterate>
+			</logic:notEmpty>
+			<!-- 			comparision exObs iterationRanges -->
 			<div class="pag">
 				<table class="table table-stripped table-bordered table-hover">
 					<tr>
