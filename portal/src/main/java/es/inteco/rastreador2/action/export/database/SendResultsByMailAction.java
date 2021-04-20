@@ -161,6 +161,13 @@ public class SendResultsByMailAction extends Action {
 					} else if (request.getParameter(Constants.ACTION).equals("results")) {
 						Connection connection = DataBaseManager.getConnection();
 						final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+						// List<ObservatorioRealizadoForm> exObs
+						request.setAttribute("exObs",
+								ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, Constants.NO_PAGINACION, null, ObservatorioDAO.getExObsIdsConfig(connection, idObsExecution)));
+						// final List<ComparisionForm> comparision = ;
+						request.setAttribute("comparision", ObservatorioDAO.getComparisionConfig(connection, idObsExecution));
+						// final List<TemplateRangeForm> iterationRanges =
+						request.setAttribute("iterationRanges", TemplateRangeDAO.findAll(connection, idObsExecution));
 						request.setAttribute("uraSendResults", UraSendResultDAO.findAll(connection, idObsExecution));
 						DataBaseManager.closeConnection(connection);
 						return mapping.findForward("results");

@@ -10,6 +10,8 @@ public class ComparisionForm {
 	private String first;
 	/** The previous. */
 	private String previous;
+	/** The tag name. */
+	private String tagName;
 
 	/**
 	 * Gets the id tag.
@@ -63,5 +65,23 @@ public class ComparisionForm {
 	 */
 	public void setPrevious(String previous) {
 		this.previous = previous;
+	}
+
+	/**
+	 * Gets the tag name.
+	 *
+	 * @return the tag name
+	 */
+	public String getTagName() {
+		return tagName;
+	}
+
+	/**
+	 * Sets the tag name.
+	 *
+	 * @param tagName the new tag name
+	 */
+	public void setTagName(String tagName) {
+		this.tagName = tagName;
 	}
 }
