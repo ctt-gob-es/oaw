@@ -43,6 +43,10 @@ public class UraSendResultForm extends ValidatorForm implements Serializable {
 	private String fileLink;
 	/** The file pass. */
 	private String filePass;
+	/** The mail. */
+	private String mail;
+	/** The valid date. */
+	private Date validDate;
 
 	/**
 	 * Gets the file link.
@@ -321,5 +325,41 @@ public class UraSendResultForm extends ValidatorForm implements Serializable {
 	 */
 	public void setSendDate(Date sendDate) {
 		this.sendDate = sendDate;
+	}
+
+	/**
+	 * Gets the mail.
+	 *
+	 * @return the mail
+	 */
+	public String getMail() {
+		return mail;
+	}
+
+	/**
+	 * Sets the mail.
+	 *
+	 * @param mail the new mail
+	 */
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	/**
+	 * Gets the valid date.
+	 *
+	 * @return the valid date
+	 */
+	public Date getValidDate() {
+		return validDate;
+	}
+
+	/**
+	 * Sets the valid date.
+	 *
+	 * @param validDate the new valid date
+	 */
+	public void setValidDate(Date validDate) {
+		this.validDate = validDate;
 	}
 }

@@ -939,7 +939,7 @@ div.detail p {
 	border: 2px solid #CCC
 }
 
-#container_der table th, #fullwidthgrid table th, #extraConfigDialog table th {
+#container_der table th, #fullwidthgrid table th, #extraConfigDialog table th, .summaryModalTable th {
 	text-align: center;
 	background: #e1120d;
 	background: -moz-linear-gradient(top, #e1120d 0%, #ff8e8e 100%);
@@ -950,6 +950,7 @@ div.detail p {
 	border: 1px solid #CCC;
 	font-variant: petite-caps;
 }
+
 
 #container_der table tr.suitability th, #fullwidthgrid table tr.suitability th {
 	background: silver
@@ -1364,4 +1365,8 @@ to {
 }
 #filterResultsThreshold input {
 	margin-right:15px;
+}
+
+.summaryEntry {
+	margin-bottom:10px;
 }

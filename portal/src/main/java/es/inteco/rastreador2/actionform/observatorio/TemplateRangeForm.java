@@ -13,7 +13,7 @@ public class TemplateRangeForm extends ValidatorForm implements Serializable {
 	/** The id. */
 	private Long id;
 	/** The id observatory execution. */
-	private Long idSendHistoric;
+	private Long idObservatoryExecution;
 	/** The name. */
 	private String name;
 	/** The min value. */
@@ -46,21 +46,21 @@ public class TemplateRangeForm extends ValidatorForm implements Serializable {
 	}
 
 	/**
-	 * Gets the id send historic.
+	 * Gets the id observatory execution.
 	 *
-	 * @return the id send historic
+	 * @return the id observatory execution
 	 */
-	public Long getIdSendHistoric() {
-		return idSendHistoric;
+	public Long getIdObservatoryExecution() {
+		return idObservatoryExecution;
 	}
 
 	/**
-	 * Sets the id send historic.
+	 * Sets the id observatory execution.
 	 *
-	 * @param idSendHistoric the new id send historic
+	 * @param idObservatoryExecution the new id observatory execution
 	 */
-	public void setIdSendHistoric(Long idSendHistoric) {
-		this.idSendHistoric = idSendHistoric;
+	public void setIdObservatoryExecution(Long idObservatoryExecution) {
+		this.idObservatoryExecution = idObservatoryExecution;
 	}
 
 	/**

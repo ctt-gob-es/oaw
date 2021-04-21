@@ -50,6 +50,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	
 	    var $jq = $.noConflict();
 	    $jq(document).ready(function() {
+	    	
 	        $.ajax({
 	            url: '/oaw/secure/ViewEtiquetasObservatorio.do?action=all',
 	            method: 'POST',
@@ -68,6 +69,16 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	        });
 	
 	    });
+	    
+	    
+	    $.each($(".checkTag"), function(index, value) {
+	    	if ($(this).is(":checked")) {
+	            $('#fieldset_' + $(this).val()).show();
+	        } else {
+	            $('#fieldset_' + $(this).val()).hide();
+	        }
+        });
+
 	
 	});
 	
@@ -82,6 +93,32 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 		return [ year, month, day ].join('-');
 	}
+	
+	var configComparision = "<s:property value='configComparision'/>";
+	
+	
+	var cmpArray=new Array();
+
+	var rowCounter=0;
+	
+	<c:forEach items="${configComparision}" var="cmp">
+
+    var fieldObj=new Object();
+
+    fieldObj.idTag='<c:out value="${cmp.idTag}"/>';
+    fieldObj.previous='<c:out value="${cmp.previous}"/>';
+
+    cmpArray[rowCounter]=fieldObj;
+
+    rowCounter++;
+
+	</c:forEach>
+	
+	$.each(cmpArray,function(key,value){
+		console.log(key)
+		console.log(value)
+	})
+	
 	
 	function loadOptions(idObs, tagId, element) {
 	    $.ajaxSetup({
@@ -99,11 +136,21 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	                        .each(
 	                            data,
 	                            function(key, value) {
+	                            	
+	                            	var isSelected = false;
+	                            	$.each(cmpArray,function(k,v){
+	                            		if(!isSelected && v.idTag == tagId && v.previous == formatDate(value.fecha)){
+	                            			console.log(value.fecha);
+	                            			isSelected = true;
+	                            		}  
+	                            	});
+	                            	
+	                            	
 	                                $(element)
 	                                    .append(
-	                                        "<option value=" +
+	                                        "<option " +(isSelected ? " selected ": "") + " value=" +
 	                                        formatDate(value.fecha) +
-	                                        ">" +
+	                                        ">" + 
 	                                        value.fechaStr +
 	                                        "</option>");
 	                            });
@@ -523,7 +570,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	
 	function xFormatter(cellvalue, options, rowObject) {
 		return "X";
-}
+	}
 	
 	function templateUnformat(cellvalue, options, cell){
 		return cellvalue;
@@ -750,8 +797,22 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					<div class="formItem">
 						<logic:iterate name="tagList" id="tag">
 							<div class="tagList">
-								<input type="checkbox" value="<c:out value="${tag.id}" />" name="tags" id="check_<c:out value="${tag.id}" />"
-									class="checkTag">
+								<c:set var="contains" value="false" />
+								<logic:notEmpty name="configComparision">
+									<logic:iterate name="configComparision" id="configCmp">
+										<c:if test="${tag.id == configCmp.idTag}">
+											<c:set var="contains" value="true" />
+										</c:if>
+									</logic:iterate>
+								</logic:notEmpty>
+								<c:if test="${contains == true}">
+									<input type="checkbox" checked="checked" value="<c:out value="${tag.id}" />" name="tags"
+										id="check_<c:out value="${tag.id}" />" class="checkTag">
+								</c:if>
+								<c:if test="${contains == false}">
+									<input type="checkbox" value="<c:out value="${tag.id}" />" name="tags" id="check_<c:out value="${tag.id}" />"
+										class="checkTag">
+								</c:if>
 								<bean:write name="tag" property="name" />
 							</div>
 						</logic:iterate>
@@ -798,10 +859,26 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								</label>
 							</c:if>
 							<c:if test="${fulfilledObservatory.id != param.idExObs}">
-								<label class="label100">
-									<input type="checkbox" value="<c:out value="${fulfilledObservatory.id}" />" name="evol">
-									<bean:write name="fulfilledObservatory" property="fechaStr" />
-								</label>
+								<c:set var="contains" value="false" />
+								<logic:notEmpty name="configExecutedObs">
+									<logic:iterate name="configExecutedObs" id="configEx">
+										<c:if test="${fulfilledObservatory.id == configEx}">
+											<c:set var="contains" value="true" />
+										</c:if>
+									</logic:iterate>
+								</logic:notEmpty>
+								<c:if test="${contains == true}">
+									<label class="label100">
+										<input type="checkbox" checked value="<c:out value="${fulfilledObservatory.id}" />" name="evol">
+										<bean:write name="fulfilledObservatory" property="fechaStr" />
+									</label>
+								</c:if>
+								<c:if test="${contains == false}">
+									<label class="label100">
+										<input type="checkbox" value="<c:out value="${fulfilledObservatory.id}" />" name="evol">
+										<bean:write name="fulfilledObservatory" property="fechaStr" />
+									</label>
+								</c:if>
 							</c:if>
 						</logic:iterate>
 					</div>
