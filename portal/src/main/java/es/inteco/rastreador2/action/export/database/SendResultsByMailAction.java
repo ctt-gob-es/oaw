@@ -17,8 +17,11 @@ package es.inteco.rastreador2.action.export.database;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +45,7 @@ import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.observatorio.TemplateRangeForm;
+import es.inteco.rastreador2.actionform.observatorio.UraSendHistoric;
 import es.inteco.rastreador2.actionform.observatorio.UraSendResultForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
@@ -86,7 +90,13 @@ public class SendResultsByMailAction extends Action {
 			try {
 				if (request.getParameter(Constants.ACTION) != null) {
 					if (request.getParameter(Constants.ACTION).equals(Constants.CONFIG)) {
+						final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 						Connection connection = DataBaseManager.getConnection();
+						// Get existing data
+						final String[] exObsIds = ObservatorioDAO.getExObsIdsConfig(connection, idObsExecution);
+						final List<ComparisionForm> comparision = ObservatorioDAO.getComparisionConfig(connection, idObsExecution);
+						request.setAttribute("configExecutedObs", exObsIds);
+						request.setAttribute("configComparision", comparision);
 						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
 						DataBaseManager.closeConnection(connection);
 						return config(mapping, request);
@@ -161,14 +171,9 @@ public class SendResultsByMailAction extends Action {
 					} else if (request.getParameter(Constants.ACTION).equals("results")) {
 						Connection connection = DataBaseManager.getConnection();
 						final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
-						// List<ObservatorioRealizadoForm> exObs
-						request.setAttribute("exObs",
-								ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, Constants.NO_PAGINACION, null, ObservatorioDAO.getExObsIdsConfig(connection, idObsExecution)));
-						// final List<ComparisionForm> comparision = ;
-						request.setAttribute("comparision", ObservatorioDAO.getComparisionConfig(connection, idObsExecution));
-						// final List<TemplateRangeForm> iterationRanges =
-						request.setAttribute("iterationRanges", TemplateRangeDAO.findAll(connection, idObsExecution));
-						request.setAttribute("uraSendResults", UraSendResultDAO.findAll(connection, idObsExecution));
+						idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
+						final List<UraSendHistoric> sendHistoric = UraSendResultDAO.getSendHistoric(connection, idObsExecution, idObservatory);
+						request.setAttribute("results", sendHistoric);
 						DataBaseManager.closeConnection(connection);
 						return mapping.findForward("results");
 					} else if (request.getParameter(Constants.ACTION).equals("observatoriesByTag")) {
@@ -282,7 +287,7 @@ public class SendResultsByMailAction extends Action {
 			UraSendResultForm uraCustom = UraSendResultDAO.findById(c, idExObs, idSend);
 			DependenciaForm ura = DependenciaDAO.findById(c, uraCustom.getUra().getId());
 			final TemplateRangeForm template = TemplateRangeDAO.findById(c, idExObs, uraCustom.getRange().getId());
-			String mailBody = SendResultsMailUtils.composeMailBody(ura, uraCustom, template, "https://example.com", "examplePassword").toString();
+			String mailBody = SendResultsMailUtils.composeMailBody(ura, uraCustom, template, "https://example.com", "examplePassword", calculateExpirationDate(c)).toString();
 			PrintWriter pw = response.getWriter();
 //			pw.write("{\"preview\": \"" + StringEscapeUtils.escapeHtml4(mailBody) + "\" }");
 			pw.write("{\"preview\": " + new Gson().toJson(mailBody) + " }");
@@ -292,5 +297,22 @@ public class SendResultsByMailAction extends Action {
 			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		return null;
+	}
+
+	/**
+	 * Calculate expiration date.
+	 *
+	 * @param c the c
+	 * @return the calendar
+	 * @throws SQLException the SQL exception
+	 */
+	private static Calendar calculateExpirationDate(Connection c) throws SQLException {
+		int days = ObservatorioDAO.getFileExpirationFromConfig(c);
+		DataBaseManager.closeConnection(c);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		calendar.add(Calendar.DAY_OF_YEAR, days);
+		calendar.getTime();
+		return calendar;
 	}
 }

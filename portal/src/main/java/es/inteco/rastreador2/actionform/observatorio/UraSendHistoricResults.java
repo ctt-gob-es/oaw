@@ -12,11 +12,11 @@ import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
  */
 public class UraSendHistoricResults extends ValidatorForm implements Serializable {
 	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 5141470638405603314L;
+	private static final long serialVersionUID = -4467598358767303266L;
 	/** The id. */
 	private Long id;
 	/** The id observatory execution. */
-	private Long idObservatoryExecution;
+	private Long idSendHistoric;
 	/** The id ura. */
 	private Long idUra;
 	/** The id range. */
@@ -29,6 +29,8 @@ public class UraSendHistoricResults extends ValidatorForm implements Serializabl
 	private RangeForm range;
 	/** The ura name. */
 	private String uraName;
+	/** The range name. */
+	private String rangeName;
 	/** The ura id. */
 	private Long uraId;
 	/** The range value. */
@@ -43,6 +45,10 @@ public class UraSendHistoricResults extends ValidatorForm implements Serializabl
 	private String fileLink;
 	/** The file pass. */
 	private String filePass;
+	/** The mail. */
+	private String mail;
+	/** The valid date. */
+	private Date validDate;
 
 	/**
 	 * Gets the file link.
@@ -135,21 +141,21 @@ public class UraSendHistoricResults extends ValidatorForm implements Serializabl
 	}
 
 	/**
-	 * Gets the id observatory execution.
+	 * Gets the id send historic.
 	 *
-	 * @return the id observatory execution
+	 * @return the id send historic
 	 */
-	public Long getIdObservatoryExecution() {
-		return idObservatoryExecution;
+	public Long getIdSendHistoric() {
+		return idSendHistoric;
 	}
 
 	/**
-	 * Sets the id observatory execution.
+	 * Sets the id send historic.
 	 *
-	 * @param idObservatoryExecution the new id observatory execution
+	 * @param idSendHistoric the new id send historic
 	 */
-	public void setIdObservatoryExecution(Long idObservatoryExecution) {
-		this.idObservatoryExecution = idObservatoryExecution;
+	public void setIdSendHistoric(Long idSendHistoric) {
+		this.idSendHistoric = idSendHistoric;
 	}
 
 	/**
@@ -243,15 +249,6 @@ public class UraSendHistoricResults extends ValidatorForm implements Serializabl
 	}
 
 	/**
-	 * Gets the serialversionuid.
-	 *
-	 * @return the serialversionuid
-	 */
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	/**
 	 * Gets the ura name.
 	 *
 	 * @return the ura name
@@ -321,5 +318,59 @@ public class UraSendHistoricResults extends ValidatorForm implements Serializabl
 	 */
 	public void setSendDate(Date sendDate) {
 		this.sendDate = sendDate;
+	}
+
+	/**
+	 * Gets the mail.
+	 *
+	 * @return the mail
+	 */
+	public String getMail() {
+		return mail;
+	}
+
+	/**
+	 * Sets the mail.
+	 *
+	 * @param mail the new mail
+	 */
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	/**
+	 * Gets the range name.
+	 *
+	 * @return the range name
+	 */
+	public String getRangeName() {
+		return rangeName;
+	}
+
+	/**
+	 * Sets the range name.
+	 *
+	 * @param rangeName the new range name
+	 */
+	public void setRangeName(String rangeName) {
+		this.rangeName = rangeName;
+	}
+
+	/**
+	 * Gets the valid date.
+	 *
+	 * @return the valid date
+	 */
+	public Date getValidDate() {
+		return validDate;
+	}
+
+	/**
+	 * Sets the valid date.
+	 *
+	 * @param validDate the new valid date
+	 */
+	public void setValidDate(Date validDate) {
+		this.validDate = validDate;
 	}
 }

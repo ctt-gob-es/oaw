@@ -18,11 +18,11 @@ public class UraSendHistoricComparision extends ValidatorForm implements Seriali
 	/** The id send historic. */
 	private Long idSendHistoric;
 	/** The id tag. */
-	private Integer idTag;
+	private int idTag;
 	/** The tag name. */
 	private String tagName;
 	/** The previous date. */
-	private String previousDate;
+	private String previous;
 
 	/**
 	 * Gets the id.
@@ -65,7 +65,7 @@ public class UraSendHistoricComparision extends ValidatorForm implements Seriali
 	 *
 	 * @return the id tag
 	 */
-	public Integer getIdTag() {
+	public int getIdTag() {
 		return idTag;
 	}
 
@@ -74,7 +74,7 @@ public class UraSendHistoricComparision extends ValidatorForm implements Seriali
 	 *
 	 * @param idTag the new id tag
 	 */
-	public void setIdTag(Integer idTag) {
+	public void setIdTag(int idTag) {
 		this.idTag = idTag;
 	}
 
@@ -97,20 +97,20 @@ public class UraSendHistoricComparision extends ValidatorForm implements Seriali
 	}
 
 	/**
-	 * Gets the previous date.
+	 * Gets the previous.
 	 *
-	 * @return the previous date
+	 * @return the previous
 	 */
-	public String getPreviousDate() {
-		return previousDate;
+	public String getPrevious() {
+		return previous;
 	}
 
 	/**
-	 * Sets the previous date.
+	 * Sets the previous.
 	 *
-	 * @param previousDate the new previous date
+	 * @param previous the new previous
 	 */
-	public void setPreviousDate(String previousDate) {
-		this.previousDate = previousDate;
+	public void setPrevious(String previous) {
+		this.previous = previous;
 	}
 }

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.util.MessageResources;
@@ -41,6 +43,10 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.observatorio.ResultadosObservatorioAction;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.TemplateRangeForm;
+import es.inteco.rastreador2.actionform.observatorio.UraSendHistoric;
+import es.inteco.rastreador2.actionform.observatorio.UraSendHistoricComparision;
+import es.inteco.rastreador2.actionform.observatorio.UraSendHistoricRange;
+import es.inteco.rastreador2.actionform.observatorio.UraSendHistoricResults;
 import es.inteco.rastreador2.actionform.observatorio.UraSendResultForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
@@ -93,7 +99,7 @@ public final class SendResultsMailUtils {
 			final List<FulFilledCrawling> fulfilledCrawlings = ObservatorioDAO.getFulfilledCrawlingByObservatoryExecution(c, idObsExecution);
 			final Map<String, String> pdfZipsPath = getPdfs(idObs, idObsExecution, fulfilledCrawlings);
 			// Get dependecies info
-			final List<UraSendResultForm> uras = UraSendResultDAO.findAll(c, idObsExecution);
+			List<UraSendResultForm> uras = UraSendResultDAO.findAll(c, idObsExecution);
 			final List<TemplateRangeForm> iterationRanges = TemplateRangeDAO.findAll(c, idObsExecution);
 			final Map<Long, TemplateRangeForm> iterationRangesMap = iterationRanges.stream().collect(Collectors.toMap(TemplateRangeForm::getId, template -> template));
 			for (UraSendResultForm ura : uras) {
@@ -112,7 +118,11 @@ public final class SendResultsMailUtils {
 							File zipFileToSend = generateProtectedZip(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.send.path"), dependency, xlsx, pdfZip, passString, randomUUID);
 							ura.setFileLink(zipFileToSend.getPath());
 							ura.setFilePass(passString);
-							sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName(), emailSubject, cco, passString, randomUUID);
+							Calendar expirationDate = calculateExpirationDate(c);
+							ura.setValidDate(expirationDate.getTime());
+							String mailBody = sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName(), emailSubject, cco, passString, randomUUID,
+									expirationDate);
+							ura.setMail(mailBody);
 						}
 					}
 				}
@@ -121,7 +131,8 @@ public final class SendResultsMailUtils {
 			final MailService mailService = new MailService();
 			MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 			StringBuilder mailBody = new StringBuilder("<p>" + messageResources.getMessage("send.mail.end.process.mail.body", new String[] { getObservatoryName(idObs) }) + "</p>");
-			List<UraSendResultForm> notSend = UraSendResultDAO.findAllNotSend(c, idObsExecution);
+			Connection conn = DataBaseManager.getConnection();
+			List<UraSendResultForm> notSend = UraSendResultDAO.findAllNotSend(conn, idObsExecution);
 			if (notSend != null && !notSend.isEmpty()) {
 				mailBody.append("<p>" + messageResources.getMessage("send.mail.end.process.mail.notSend") + "</p>");
 				mailBody.append("<ul>");
@@ -141,6 +152,9 @@ public final class SendResultsMailUtils {
 			} catch (MailException e) {
 				Logger.putLog("Fallo al enviar el correo", SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			}
+			// Registry historic
+			registryHistoric(idObsExecution, exObsIds, cco, emailSubject, comparision, iterationRanges, uras);
+			DataBaseManager.closeConnection(conn);
 			DataBaseManager.closeConnection(c);
 		} catch (Exception e) {
 			Connection conn = DataBaseManager.getConnection();
@@ -150,12 +164,66 @@ public final class SendResultsMailUtils {
 	}
 
 	/**
+	 * Registry historic.
+	 *
+	 * @param idObsExecution the id obs execution
+	 * @param idsExObs       the ids ex obs
+	 * @param cco            the cco
+	 * @param subject        the subject
+	 * @param comparisions   the comparisions
+	 * @param ranges         the ranges
+	 * @param results        the results
+	 * @throws Exception the exception
+	 */
+	private static void registryHistoric(final Long idObsExecution, final String[] idsExObs, final String cco, final String subject, final List<ComparisionForm> comparisions,
+			final List<TemplateRangeForm> ranges, final List<UraSendResultForm> results) throws Exception {
+		UraSendHistoric historic = new UraSendHistoric();
+		historic.setIdExObs(idObsExecution);
+		historic.setCco(cco);
+		historic.setSubject(subject);
+		// Save
+		historic.setIdsExObs(String.join(",", idsExObs));
+		List<UraSendHistoricComparision> comparisionsH = new ArrayList<>();
+		if (comparisions != null && !comparisions.isEmpty()) {
+			for (ComparisionForm comparision : comparisions) {
+				UraSendHistoricComparision comparisionH = new UraSendHistoricComparision();
+				BeanUtils.copyProperties(comparisionH, comparision);
+				comparisionsH.add(comparisionH);
+			}
+		}
+		historic.setComparisions(comparisionsH);
+		List<UraSendHistoricRange> rangesH = new ArrayList<>();
+		if (ranges != null && !ranges.isEmpty()) {
+			for (TemplateRangeForm range : ranges) {
+				UraSendHistoricRange rangeH = new UraSendHistoricRange();
+				BeanUtils.copyProperties(rangeH, range);
+				rangesH.add(rangeH);
+			}
+		}
+		historic.setRanges(rangesH);
+		List<UraSendHistoricResults> resultsH = new ArrayList<>();
+		if (results != null && !results.isEmpty()) {
+			for (UraSendResultForm result : results) {
+				UraSendHistoricResults resultH = new UraSendHistoricResults();
+				BeanUtils.copyProperties(resultH, result);
+				resultsH.add(resultH);
+			}
+		}
+		historic.setResults(resultsH);
+		Connection conn = DataBaseManager.getConnection();
+		UraSendResultDAO.saveHistoricSend(conn, historic);
+		DataBaseManager.closeConnection(conn);
+	}
+
+	/**
 	 * Generate zip.
 	 *
 	 * @param exportPath the export path
 	 * @param dependency the dependency
 	 * @param xlsx       the xlsx
 	 * @param pdfZip     the pdf zip
+	 * @param passString the pass string
+	 * @param randomUUID the random UUID
 	 * @return the file
 	 * @throws FileNotFoundException the file not found exception
 	 * @throws IOException           Signals that an I/O exception has occurred.
@@ -221,13 +289,18 @@ public final class SendResultsMailUtils {
 	 * @param attachName         the attach name
 	 * @param emailSubject       the email subject
 	 * @param cco                the cco
+	 * @param passString         the pass string
+	 * @param randomUUID         the random UUID
+	 * @param expirationDate     the expiration date
 	 * @throws Exception the exception
 	 */
-	private static void sendMailToUra(final Long idObservatory, final DependenciaForm ura, final UraSendResultForm uraCustom, final Map<Long, TemplateRangeForm> iterationRangesMap,
-			final String attachUrl, final String attachName, final String emailSubject, final String cco, final String passString, final String randomUUID) throws Exception {
+	private static String sendMailToUra(final Long idObservatory, final DependenciaForm ura, final UraSendResultForm uraCustom, final Map<Long, TemplateRangeForm> iterationRangesMap,
+			final String attachUrl, final String attachName, final String emailSubject, final String cco, final String passString, final String randomUUID, final Calendar expirationDate)
+			throws Exception {
 		// Compose boDy with template
 		TemplateRangeForm template = iterationRangesMap.get(uraCustom.getRange().getId());
-		String mailBody = composeMailBody(ura, uraCustom, template, attachName, passString);
+		String mailBody = composeMailBody(ura, uraCustom, template, attachName, passString, expirationDate);
+		uraCustom.setMail(mailBody);
 		// Email subject
 		final MailService mailService = new MailService();
 		// Get emails from URA
@@ -252,17 +325,22 @@ public final class SendResultsMailUtils {
 		Connection c = DataBaseManager.getConnection();
 		UraSendResultDAO.markSend(c, uraCustom);
 		DataBaseManager.closeConnection(c);
+		return mailBody;
 	}
 
 	/**
 	 * Compose mail body.
 	 *
-	 * @param ura       the ura
-	 * @param uraCustom the ura custom
-	 * @param template  the template
+	 * @param ura            the ura
+	 * @param uraCustom      the ura custom
+	 * @param template       the template
+	 * @param fileLink       the file link
+	 * @param filePassword   the file password
+	 * @param expirationDate the expiration date
 	 * @return the string builder
 	 */
-	public static String composeMailBody(final DependenciaForm ura, final UraSendResultForm uraCustom, final TemplateRangeForm template, final String fileLink, final String filePassword) {
+	public static String composeMailBody(final DependenciaForm ura, final UraSendResultForm uraCustom, final TemplateRangeForm template, final String fileLink, final String filePassword,
+			final Calendar expirationDate) {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		PropertiesManager pmgr = new PropertiesManager();
 		String templateMail = template.getTemplate();
@@ -289,15 +367,9 @@ public final class SendResultsMailUtils {
 		try {
 			Connection c = DataBaseManager.getConnection();
 			String mapping = ObservatorioDAO.getMappingFromConfig(c);
-			int days = ObservatorioDAO.getFileExpirationFromConfig(c);
-			DataBaseManager.closeConnection(c);
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(new Date());
-			calendar.add(Calendar.DAY_OF_YEAR, days);
-			calendar.getTime();
 			final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
 			templateMail = templateMail.replace("_ura_download_link_", "<a href='" + mapping + "/" + fileLink + "'>" + mapping + "/" + fileLink + "</a> "
-					+ messageResources.getMessage("send.mail.end.process.mail.expiration.date", new String[] { df.format(calendar.getTime()) }));
+					+ messageResources.getMessage("send.mail.end.process.mail.expiration.date", new String[] { df.format(expirationDate.getTime()) }));
 		} catch (Exception e) {
 			Logger.putLog("Error getting file config", SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR);
 		}
@@ -306,6 +378,23 @@ public final class SendResultsMailUtils {
 		String mailBodyString = mailBody.toString();
 		mailBodyString = mailBodyString.replace("<br />", "").replace("<br/>", "").replace("<br>", "").replace("\n", "");
 		return StringEscapeUtils.unescapeHtml(mailBodyString);
+	}
+
+	/**
+	 * Calculate expiration date.
+	 *
+	 * @param c the c
+	 * @return the calendar
+	 * @throws SQLException the SQL exception
+	 */
+	private static Calendar calculateExpirationDate(Connection c) throws SQLException {
+		int days = ObservatorioDAO.getFileExpirationFromConfig(c);
+		DataBaseManager.closeConnection(c);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		calendar.add(Calendar.DAY_OF_YEAR, days);
+		calendar.getTime();
+		return calendar;
 	}
 
 	/**

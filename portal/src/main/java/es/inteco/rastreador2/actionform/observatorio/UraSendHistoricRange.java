@@ -13,7 +13,7 @@ public class UraSendHistoricRange extends ValidatorForm implements Serializable 
 	/** The id. */
 	private Long id;
 	/** The id observatory execution. */
-	private Long idObservatoryExecution;
+	private Long idSendHistoric;
 	/** The name. */
 	private String name;
 	/** The min value. */
@@ -46,21 +46,21 @@ public class UraSendHistoricRange extends ValidatorForm implements Serializable 
 	}
 
 	/**
-	 * Gets the id observatory execution.
+	 * Gets the id send historic.
 	 *
-	 * @return the id observatory execution
+	 * @return the id send historic
 	 */
-	public Long getIdObservatoryExecution() {
-		return idObservatoryExecution;
+	public Long getIdSendHistoric() {
+		return idSendHistoric;
 	}
 
 	/**
-	 * Sets the id observatory execution.
+	 * Sets the id send historic.
 	 *
-	 * @param idObservatoryExecution the new id observatory execution
+	 * @param idSendHistoric the new id send historic
 	 */
-	public void setIdObservatoryExecution(Long idObservatoryExecution) {
-		this.idObservatoryExecution = idObservatoryExecution;
+	public void setIdSendHistoric(Long idSendHistoric) {
+		this.idSendHistoric = idSendHistoric;
 	}
 
 	/**

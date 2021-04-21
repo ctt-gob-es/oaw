@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,9 +16,15 @@ import org.apache.commons.codec.binary.Base64;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.RangeForm;
+import es.inteco.rastreador2.actionform.observatorio.UraSendHistoric;
+import es.inteco.rastreador2.actionform.observatorio.UraSendHistoricComparision;
+import es.inteco.rastreador2.actionform.observatorio.UraSendHistoricRange;
+import es.inteco.rastreador2.actionform.observatorio.UraSendHistoricResults;
 import es.inteco.rastreador2.actionform.observatorio.UraSendResultForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
+import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.utils.DAOUtils;
 
 /**
@@ -424,5 +431,300 @@ public class UraSendResultDAO {
 			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+	}
+
+	/**
+	 * Save historic send.
+	 *
+	 * @param c        the c
+	 * @param historic the historic
+	 * @throws SQLException the SQL exception
+	 */
+	public static void saveHistoricSend(Connection c, final UraSendHistoric historic) throws SQLException {
+		PreparedStatement ps = null;
+		try {
+			c.setAutoCommit(false);
+			ps = c.prepareStatement("INSERT INTO observatorio_send_historic(id_observatory_execution, cco, subject, ids_observatory_execution_evol) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			ps.setLong(1, historic.getIdExObs());
+			ps.setString(2, historic.getCco());
+			ps.setString(3, historic.getSubject());
+			ps.setString(4, historic.getIdsExObs());
+			ps.executeUpdate();
+			try (ResultSet rs = ps.getGeneratedKeys()) {
+				if (rs.next()) {
+					Long idSendHistoric = rs.getLong(1);
+					if (historic.getComparisions() != null && !historic.getComparisions().isEmpty()) {
+						for (UraSendHistoricComparision comparision : historic.getComparisions()) {
+							comparision.setIdSendHistoric(idSendHistoric);
+							PreparedStatement psComparision = c.prepareStatement("INSERT INTO observatorio_send_historic_comparision(id_send_historic, id_tag, date_previous) VALUES (?,?,?)");
+							psComparision.setLong(1, comparision.getIdSendHistoric());
+							psComparision.setInt(2, comparision.getIdTag());
+							psComparision.setString(3, comparision.getPrevious());
+							psComparision.executeUpdate();
+						}
+					}
+					if (historic.getRanges() != null && !historic.getRanges().isEmpty()) {
+						for (UraSendHistoricRange range : historic.getRanges()) {
+							range.setIdSendHistoric(idSendHistoric);
+							PreparedStatement psRange = c.prepareStatement(
+									"INSERT INTO observatorio_send_historic_ranges(id_send_historic, name,min_value,max_value,min_value_operator,max_value_operator,template) VALUES (?,?,?,?,?,?,?)");
+							psRange.setLong(1, range.getIdSendHistoric());
+							psRange.setString(2, range.getName());
+							psRange.setFloat(3, range.getMinValue());
+							psRange.setFloat(4, range.getMaxValue());
+							psRange.setString(5, range.getMinValueOperator());
+							psRange.setString(6, range.getMaxValueOperator());
+							// Encode BASE64 code
+							String template = new String(range.getTemplate());
+							try {
+								if (!StringUtils.isEmpty(template)) {
+									template = new String(Base64.encodeBase64(template.getBytes("UTF-8")));
+								}
+							} catch (UnsupportedEncodingException e) {
+								Logger.putLog("SQL_EXCEPTION: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+							}
+							psRange.setString(7, template);
+							psRange.executeUpdate();
+						}
+					}
+					if (historic.getResults() != null && !historic.getResults().isEmpty()) {
+						for (UraSendHistoricResults result : historic.getResults()) {
+							result.setIdSendHistoric(idSendHistoric);
+							PreparedStatement psResult = c.prepareStatement(
+									"INSERT INTO observatorio_send_historic_results(id_send_historic, id_ura, range_name, custom_text, range_value, mail,send_date,expiration_date,send_error,file_link,file_pass ) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+									Statement.RETURN_GENERATED_KEYS);
+							psResult.setLong(1, result.getIdSendHistoric());
+							psResult.setLong(2, result.getUra().getId());
+							psResult.setString(3, result.getRange().getName());
+							psResult.setString(4, "");
+							// Encode BASE64 code
+							try {
+								if (result.getMail() != null && !org.apache.commons.lang3.StringUtils.isEmpty(result.getMail())) {
+									String mail = new String(result.getMail());
+									if (!StringUtils.isEmpty(mail)) {
+										mail = new String(Base64.encodeBase64(mail.getBytes("UTF-8")));
+									}
+									psResult.setString(4, mail);
+								}
+							} catch (UnsupportedEncodingException e) {
+								Logger.putLog("SQL_EXCEPTION: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+							}
+							psResult.setFloat(5, 0f);
+							// TODO Mail
+							psResult.setString(6, "");
+							try {
+								if (result.getTemplate() != null && !org.apache.commons.lang3.StringUtils.isEmpty(result.getTemplate())) {
+									String template = new String(result.getTemplate());
+									if (!StringUtils.isEmpty(template)) {
+										template = new String(Base64.encodeBase64(template.getBytes("UTF-8")));
+									}
+									psResult.setString(6, template);
+								}
+							} catch (UnsupportedEncodingException e) {
+								Logger.putLog("SQL_EXCEPTION: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+							}
+							psResult.setNull(7, Types.TIMESTAMP);
+							if (result.getSendDate() != null) {
+								psResult.setTimestamp(7, new Timestamp(result.getSendDate().getTime()));
+							}
+							psResult.setNull(8, Types.TIMESTAMP);
+							if (result.getValidDate() != null) {
+								psResult.setTimestamp(8, new Timestamp(result.getValidDate().getTime()));
+							}
+							psResult.setString(9, result.getSendError());
+							psResult.setString(10, result.getFileLink());
+							psResult.setString(11, result.getFilePass());
+							psResult.executeUpdate();
+						}
+					}
+				}
+			}
+			c.commit();
+		} catch (Exception e) {
+			c.rollback();
+			Logger.putLog("SQL_EXCEPTION: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(ps, null);
+		}
+	}
+
+	/**
+	 * Gets the send historic.
+	 *
+	 * @param c             the c
+	 * @param idExObs       the id ex obs
+	 * @param idObservatory the id observatory
+	 * @return the send historic
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<UraSendHistoric> getSendHistoric(Connection c, final Long idExObs, final Long idObservatory) throws SQLException {
+		List<UraSendHistoric> historics = new ArrayList<>();
+		String query = "SELECT * FROM observatorio_send_historic h WHERE h.id_observatory_execution = ? ";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(1, idExObs);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					UraSendHistoric historic = new UraSendHistoric();
+					historic.setId(rs.getLong("id"));
+					historic.setIdExObs(rs.getLong("id_observatory_execution"));
+					historic.setCco(rs.getString("cco"));
+					historic.setSubject(rs.getString("subject"));
+					historic.setIdsExObs(rs.getString("ids_observatory_execution_evol"));
+					historic.setObservatories(ObservatorioDAO.getFulfilledObservatories(c, idObservatory, -1, null, historic.getIdsExObs().split(",")));
+					// Ranges
+					PreparedStatement psRanges = c.prepareStatement("SELECT * FROM observatorio_send_historic_ranges hr WHERE hr.id_send_historic = ? ");
+					psRanges.setLong(1, historic.getId());
+					ResultSet rsRanges = psRanges.executeQuery();
+					List<UraSendHistoricRange> rangeList = new ArrayList<>();
+					while (rsRanges.next()) {
+						UraSendHistoricRange range = new UraSendHistoricRange();
+						range.setId(rsRanges.getLong("id"));
+						range.setName(rsRanges.getString("name"));
+						range.setMinValue(rsRanges.getFloat("min_value"));
+						range.setMaxValue(rsRanges.getFloat("max_value"));
+						range.setMinValueOperator(rsRanges.getString("min_value_operator"));
+						range.setMaxValueOperator(rsRanges.getString("max_value_operator"));
+						range.setTemplate(new String(Base64.decodeBase64(rsRanges.getString("template").getBytes())));
+						rangeList.add(range);
+					}
+					historic.setRanges(rangeList);
+					// Comparisions
+					PreparedStatement psComparision = c.prepareStatement("SELECT * FROM observatorio_send_historic_comparision hr WHERE hr.id_send_historic = ? ");
+					psComparision.setLong(1, historic.getId());
+					ResultSet rsComparision = psComparision.executeQuery();
+					List<UraSendHistoricComparision> comparisionList = new ArrayList<>();
+					while (rsComparision.next()) {
+						UraSendHistoricComparision comparision = new UraSendHistoricComparision();
+						comparision.setIdTag(rsComparision.getInt("id_tag"));
+						comparision.setPrevious(rsComparision.getString("date_previous"));
+						EtiquetaForm tag = EtiquetaDAO.getById(c, comparision.getIdTag());
+						if (tag != null) {
+							comparision.setTagName(tag.getName());
+						}
+						comparisionList.add(comparision);
+					}
+					historic.setComparisions(comparisionList);
+					// Results
+					PreparedStatement psResults = c.prepareStatement(
+							"SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.custom_text, c.send, c.send_date, c.expiration_date, c.send_error, c.file_link, c.file_pass, c.mail, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_send_historic = ? ORDER BY c.id ASC ");
+					psResults.setLong(1, historic.getId());
+					ResultSet rsResults = psResults.executeQuery();
+					List<UraSendHistoricResults> resultsList = new ArrayList<>();
+					while (rsResults.next()) {
+						final UraSendHistoricResults result = new UraSendHistoricResults();
+						result.setId(rsResults.getLong("c.id"));
+						result.setUraId(rsResults.getLong("d.id_dependencia"));
+						result.setUraName(rsResults.getString("d.nombre"));
+						result.setRangeName(rsResults.getString("c.range_name"));
+						result.setTemplate(new String(Base64.decodeBase64(rsResults.getString("c.custom_text").getBytes())));
+						result.setMail(new String(Base64.decodeBase64(rsResults.getString("c.mail").getBytes())));
+						final DependenciaForm ura = new DependenciaForm();
+						ura.setId(rsResults.getLong("d.id_dependencia"));
+						ura.setName(rsResults.getString("d.nombre"));
+						ura.setSendAuto(rsResults.getBoolean("d.send_auto"));
+						ura.setEmails(rsResults.getString("d.emails"));
+						result.setUra(ura);
+						result.setSend(rsResults.getBoolean("c.send"));
+						Timestamp ts = rsResults.getTimestamp("c.send_date");
+						if (ts != null) {
+							result.setSendDate(new Date(ts.getTime()));
+						}
+						Timestamp tsv = rsResults.getTimestamp("c.expiration_date");
+						if (tsv != null) {
+							result.setValidDate(new Date(tsv.getTime()));
+						}
+						result.setSendError(rsResults.getString("c.send_error"));
+						result.setFileLink(rsResults.getString("c.file_link"));
+						result.setFilePass(rsResults.getString("c.file_pass"));
+						resultsList.add(result);
+					}
+					historic.setResults(resultsList);
+					// Get sendAuto Not
+					historic.setNotAuto(UraSendResultDAO.findAllSendAutoFalseHistoric(c, historic.getId()));
+					// Get sended
+					historic.setSended(UraSendResultDAO.findAllSendHistoric(c, historic.getId()));
+					historics.add(historic);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return historics;
+	}
+
+	/**
+	 * Find all send.
+	 *
+	 * @param c          the c
+	 * @param idHistoric the id historic
+	 * @return the list
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<UraSendHistoricResults> findAllSendHistoric(Connection c, final Long idHistoric) throws SQLException {
+		final List<UraSendHistoricResults> results = new ArrayList<>();
+		String query = "SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.custom_text, c.send, c.send_error, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.send=1 AND c.id_send_historic = ? ORDER BY c.id ASC";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(1, idHistoric);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					final UraSendHistoricResults form = new UraSendHistoricResults();
+					form.setId(rs.getLong("c.id"));
+					form.setUraId(rs.getLong("d.id_dependencia"));
+					form.setUraName(rs.getString("d.nombre"));
+					form.setRangeName(rs.getString("c.range_name"));
+					final DependenciaForm ura = new DependenciaForm();
+					ura.setId(rs.getLong("d.id_dependencia"));
+					ura.setName(rs.getString("d.nombre"));
+					ura.setSendAuto(rs.getBoolean("d.send_auto"));
+					form.setUra(ura);
+					form.setSend(rs.getBoolean("c.send"));
+					form.setSendError(rs.getString("c.send_error"));
+					results.add(form);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return results;
+	}
+
+	/**
+	 * Find all send auto false.
+	 *
+	 * @param c          the c
+	 * @param idHistoric the id historic
+	 * @return the list
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<UraSendHistoricResults> findAllSendAutoFalseHistoric(Connection c, final Long idHistoric) throws SQLException {
+		final List<UraSendHistoricResults> results = new ArrayList<>();
+		String query = "SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.custom_text, c.send, c.send_error, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND d.send_auto=0 AND c.id_send_historic = ? ORDER BY c.id ASC";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(1, idHistoric);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					final UraSendHistoricResults form = new UraSendHistoricResults();
+					form.setId(rs.getLong("c.id"));
+					form.setUraId(rs.getLong("d.id_dependencia"));
+					form.setUraName(rs.getString("d.nombre"));
+					form.setRangeName(rs.getString("c.range_name"));
+					final DependenciaForm ura = new DependenciaForm();
+					ura.setId(rs.getLong("d.id_dependencia"));
+					ura.setName(rs.getString("d.nombre"));
+					ura.setSendAuto(rs.getBoolean("d.send_auto"));
+					form.setUra(ura);
+					form.setSend(rs.getBoolean("c.send"));
+					form.setSendError(rs.getString("c.send_error"));
+					results.add(form);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return results;
 	}
 }

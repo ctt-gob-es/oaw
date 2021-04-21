@@ -3301,7 +3301,7 @@ public final class ObservatorioDAO {
 				ComparisionForm cmp = new ComparisionForm();
 				cmp.setIdTag(rs.getInt("id_tag"));
 				cmp.setFirst(rs.getString("date_first"));
-				cmp.setFirst(rs.getString("date_previous"));
+				cmp.setPrevious(rs.getString("date_previous"));
 				EtiquetaForm tag = EtiquetaDAO.getById(c, cmp.getIdTag());
 				if (tag != null) {
 					cmp.setTagName(tag.getName());
