@@ -526,7 +526,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				</h2>
 				<fieldset>
 					<legend>
-						<bean:message key="report.config.observatorios.templates.title" />
+						<bean:message key="report.config.observatorios.customize.title" />
 					</legend>
 				</fieldset>
 				<fieldset>
