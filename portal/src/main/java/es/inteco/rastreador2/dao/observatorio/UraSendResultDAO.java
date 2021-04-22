@@ -444,11 +444,13 @@ public class UraSendResultDAO {
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
-			ps = c.prepareStatement("INSERT INTO observatorio_send_historic(id_observatory_execution, cco, subject, ids_observatory_execution_evol) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			ps = c.prepareStatement("INSERT INTO observatorio_send_historic(id_observatory_execution, cco, subject, ids_observatory_execution_evol, send_date) VALUES (?,?,?,?,?)",
+					Statement.RETURN_GENERATED_KEYS);
 			ps.setLong(1, historic.getIdExObs());
 			ps.setString(2, historic.getCco());
 			ps.setString(3, historic.getSubject());
 			ps.setString(4, historic.getIdsExObs());
+			ps.setTimestamp(5, new Timestamp(new Date().getTime()));
 			ps.executeUpdate();
 			try (ResultSet rs = ps.getGeneratedKeys()) {
 				if (rs.next()) {
@@ -491,37 +493,38 @@ public class UraSendResultDAO {
 						for (UraSendHistoricResults result : historic.getResults()) {
 							result.setIdSendHistoric(idSendHistoric);
 							PreparedStatement psResult = c.prepareStatement(
-									"INSERT INTO observatorio_send_historic_results(id_send_historic, id_ura, range_name, custom_text, range_value, mail,send_date,expiration_date,send_error,file_link,file_pass ) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+									"INSERT INTO observatorio_send_historic_results(id_send_historic, id_ura, range_name, custom_text, range_value, mail,send_date,expiration_date,send_error,file_link,file_pass,send ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
 									Statement.RETURN_GENERATED_KEYS);
 							psResult.setLong(1, result.getIdSendHistoric());
 							psResult.setLong(2, result.getUra().getId());
 							psResult.setString(3, result.getRange().getName());
 							psResult.setString(4, "");
-							// Encode BASE64 code
-							try {
-								if (result.getMail() != null && !org.apache.commons.lang3.StringUtils.isEmpty(result.getMail())) {
-									String mail = new String(result.getMail());
-									if (!StringUtils.isEmpty(mail)) {
-										mail = new String(Base64.encodeBase64(mail.getBytes("UTF-8")));
-									}
-									psResult.setString(4, mail);
-								}
-							} catch (UnsupportedEncodingException e) {
-								Logger.putLog("SQL_EXCEPTION: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
-							}
-							psResult.setFloat(5, 0f);
-							// TODO Mail
-							psResult.setString(6, "");
 							try {
 								if (result.getTemplate() != null && !org.apache.commons.lang3.StringUtils.isEmpty(result.getTemplate())) {
 									String template = new String(result.getTemplate());
 									if (!StringUtils.isEmpty(template)) {
 										template = new String(Base64.encodeBase64(template.getBytes("UTF-8")));
 									}
-									psResult.setString(6, template);
+									psResult.setString(4, template);
 								}
 							} catch (UnsupportedEncodingException e) {
 								Logger.putLog("SQL_EXCEPTION: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+								psResult.setString(4, "");
+							}
+							psResult.setFloat(5, 0f);
+							// TODO Mail
+							psResult.setString(6, "");
+							try {
+								if (result.getMail() != null && !org.apache.commons.lang3.StringUtils.isEmpty(result.getMail())) {
+									String mail = new String(result.getMail());
+									if (!StringUtils.isEmpty(mail)) {
+										mail = new String(Base64.encodeBase64(mail.getBytes("UTF-8")));
+									}
+									psResult.setString(6, mail);
+								}
+							} catch (UnsupportedEncodingException e) {
+								Logger.putLog("SQL_EXCEPTION: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+								psResult.setString(6, "");
 							}
 							psResult.setNull(7, Types.TIMESTAMP);
 							if (result.getSendDate() != null) {
@@ -534,6 +537,7 @@ public class UraSendResultDAO {
 							psResult.setString(9, result.getSendError());
 							psResult.setString(10, result.getFileLink());
 							psResult.setString(11, result.getFilePass());
+							psResult.setBoolean(12, result.isSend());
 							psResult.executeUpdate();
 						}
 					}
@@ -571,6 +575,10 @@ public class UraSendResultDAO {
 					historic.setCco(rs.getString("cco"));
 					historic.setSubject(rs.getString("subject"));
 					historic.setIdsExObs(rs.getString("ids_observatory_execution_evol"));
+					Timestamp tsH = rs.getTimestamp("h.send_date");
+					if (tsH != null) {
+						historic.setSendDate(new Date(tsH.getTime()));
+					}
 					historic.setObservatories(ObservatorioDAO.getFulfilledObservatories(c, idObservatory, -1, null, historic.getIdsExObs().split(",")));
 					// Ranges
 					PreparedStatement psRanges = c.prepareStatement("SELECT * FROM observatorio_send_historic_ranges hr WHERE hr.id_send_historic = ? ");

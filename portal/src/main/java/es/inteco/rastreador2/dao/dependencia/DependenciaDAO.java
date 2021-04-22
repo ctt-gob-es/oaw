@@ -310,13 +310,15 @@ public final class DependenciaDAO {
 					query = query + ",";
 				}
 			}
-			query = query + ")";
+			query = query + ") AND d.official =  ?";
 		}
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			if (updatedAndNewDependencies != null && !updatedAndNewDependencies.isEmpty()) {
-				for (int i = 0; i < updatedAndNewDependencies.size(); i++) {
+				int i = 0;
+				for (i = 0; i < updatedAndNewDependencies.size(); i++) {
 					ps.setString(i + 1, updatedAndNewDependencies.get(i).getName());
 				}
+				ps.setBoolean(i + 1, updatedAndNewDependencies.get(0).getOfficial());
 			}
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
@@ -375,13 +377,15 @@ public final class DependenciaDAO {
 					query = query + ",";
 				}
 			}
-			query = query + ")";
+			query = query + ") AND d.official =  ?";
 		}
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			if (updatedAndNewDependencies != null && !updatedAndNewDependencies.isEmpty()) {
-				for (int i = 0; i < updatedAndNewDependencies.size(); i++) {
+				int i = 0;
+				for (i = 0; i < updatedAndNewDependencies.size(); i++) {
 					ps.setString(i + 1, updatedAndNewDependencies.get(i).getName());
 				}
+				ps.setBoolean(i + 1, updatedAndNewDependencies.get(0).getOfficial());
 			}
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {

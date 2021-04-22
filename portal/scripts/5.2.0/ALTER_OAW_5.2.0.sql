@@ -118,6 +118,8 @@ CREATE TABLE `observatorio_send_historic` (
     PRIMARY KEY(`id`)
 );
 
+ALTER TABLE `observatorio_send_historic` ADD `send_date` DATETIME NULL;
+
 CREATE TABLE `observatorio_send_historic_comparision` ( 
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`id_send_historic` INT NOT NULL,
