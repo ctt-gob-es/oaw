@@ -100,6 +100,26 @@ public class SourceFilesManager {
 	}
 
 	/**
+	 * Write source files accessibility.
+	 *
+	 * @param c          the c
+	 * @param sourceCode the source code
+	 */
+	@SuppressWarnings("deprecation")
+	public void writeSourceFilesAccessibility(final Connection c, final String sourceCode) {
+		final File pageSourcesDirectory = new File(parentDir, "paginas/accesibilidad");
+		if (!pageSourcesDirectory.mkdirs()) {
+			Logger.putLog("No se ha podido crear el directorio sources - " + pageSourcesDirectory.getAbsolutePath(), PdfGeneratorThread.class, Logger.LOG_LEVEL_ERROR);
+		}
+		try {
+			final File sourceCodeFile = new File(pageSourcesDirectory + "/pagina_accesibilidad.html");
+			org.apache.commons.io.FileUtils.writeStringToFile(sourceCodeFile, sourceCode);
+		} catch (IOException e) {
+			Logger.putLog("Exception al intentar guardar el cÃ³digo fuente", SourceFilesManager.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+	}
+
+	/**
 	 * Creates the CSS temp file.
 	 *
 	 * @param filename             the filename
