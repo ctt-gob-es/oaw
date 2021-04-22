@@ -318,7 +318,8 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		for (DependencyComparision comparision : comparisionList) {
 			if (comparision.isNew()) {
 				newDependencies.add(comparision.getNewDependency());
-			} else if (comparision.getDependency() != null && comparision.getDependency().getOfficial() && comparision.getNewDependency() != null && !comparision.getNewDependency().getOfficial()) {
+			} else if (comparision.getDependency() != null && comparision.getDependency().getOfficial() != null && comparision.getDependency().getOfficial() && comparision.getNewDependency() != null
+					&& comparision.getNewDependency().getOfficial() != null && !comparision.getNewDependency().getOfficial()) {
 				List<String> errorsDependency = new ArrayList<>();
 				MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 				errorsDependency.add(messageResources.getMessage("dependency.import.error.official.to.unofficial"));

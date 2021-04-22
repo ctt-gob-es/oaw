@@ -67,7 +67,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 																			.toggle(
 																					$(
 																							this)
-																							.text().trim().length > 0)
+																							.text()
+																							.trim().length > 0)
 																});
 											} else {
 												$(
@@ -82,7 +83,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											}
 										});
 					});
-	function previewEmail(mail) {
+	function showOnDialog(mail) {
 		var previewDialog = $('<div id="previewDialog"></div>');
 		previewDialog.append($('#' + mail).text());
 
@@ -140,165 +141,360 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			<h2>
 				<bean:message key="send.results.observatory.title.results" />
 			</h2>
+			<logic:empty name="results">
+				<p>
+					<bean:message key="send.results.observatory.title.results.none" />
+				</p>
+			</logic:empty>
 			<logic:notEmpty name="results">
-				<logic:iterate name="results" id="result">
-					<h3>
-						<bean:message key="send.results.observatory.title.results.config" />
-					</h3>
-					<div class="summaryEntry">
-						<ul>
-							<li>
-								<!-- comparision -->
-								<b>
-									<bean:message key="report.config.etiquetas.filter.title" />
-								</b>
-								:
-								<logic:notEmpty name="result" property="comparisions">
-									<logic:iterate name="result" property="comparisions" id="comp">
-										<span>
-											<bean:write name="comp" property="tagName" />
-											(
-											<bean:write name="comp" property="previous" />
-											)
-										</span>
-									</logic:iterate>
-								</logic:notEmpty>
-								<logic:notEmpty name="result" property="comparisions">
-									<bean:message key="no.results" />
-								</logic:notEmpty>
-							</li>
-							<li>
-								<!-- executions -->
-								<b>
-									<bean:message key="report.config.observatorios.filter.title" />
-								</b>
-								<logic:notEmpty name="result" property="observatories">
-									<logic:iterate name="result" property="observatories" id="obs">
-										<span>
-											<bean:write name="obs" property="fechaStr" />
-											,
-										</span>
-									</logic:iterate>
-								</logic:notEmpty>
-							</li>
-							<li>
-								<b>
-									<bean:message key="resultado.observatorio.rastreo.realizado.send.subject" />
-								</b>
-								:
-								<bean:write name="result" property="subject" />
-							</li>
-							<li>
-								<b>
-									<bean:message key="resultado.observatorio.rastreo.realizado.send.carbon.copy" />
-								</b>
-								:
-								<bean:write name="result" property="cco" />
-							</li>
-						</ul>
-					</div>
-					<!-- ranges -->
-					<div class="summaryEntry">
+				<bean:size id="numberResults" name="results" />
+				<p>
+					<bean:message key="send.results.observatory.title.results.number" arg0="<%=String.valueOf(numberResults)%>" />
+				</p>
+				<logic:iterate name="results" id="result" indexId="index">
+					<div class="sendResultIteration">
 						<h3>
-							<bean:message key="report.config.observatorios.templates.title" />
-							<span style="cursor: pointer" onclick="showDialog('rangeSummary')" class="glyphicon glyphicon-new-window"></span>
+							#
+							<c:out value="${index + 1}" />
+							(
+							<fmt:formatDate value="${result.sendDate}" pattern="dd-MM-yyyy" />
+							)
 						</h3>
-						<div id="rangeSummary" class="summaryModalTable" style="display: none">
-							<table class="table table-stripped table-bordered table-hover">
-								<tr>
-									<th>
-										<bean:message key="colname.name" />
-									</th>
-									<th>
-										<bean:message key="colname.min.value" />
-									</th>
-									<th>
-										<bean:message key="colname.min.value.operator" />
-									</th>
-									<th>
-										<bean:message key="colname.max.value" />
-									</th>
-									<th>x</th>
-									<th>
-										<bean:message key="colname.max.value.operator" />
-									</th>
-									<th>
-										<bean:message key="colname.template" />
-									</th>
-								</tr>
-								<logic:empty name="result" property="results">
+						<h3>
+							<bean:message key="send.results.observatory.title.results.config" />
+						</h3>
+						<div class="summaryEntry">
+							<ul>
+								<li>
+									<!-- comparision -->
+									<b>
+										<bean:message key="report.config.etiquetas.filter.title" />
+										:
+									</b>
+									<logic:notEmpty name="result" property="comparisions">
+										<logic:iterate name="result" property="comparisions" id="comp">
+											<span>
+												<bean:write name="comp" property="tagName" />
+												(
+												<bean:write name="comp" property="previous" />
+												)
+											</span>
+										</logic:iterate>
+									</logic:notEmpty>
+									<logic:empty name="result" property="comparisions">
+										<bean:message key="send.results.observatory.title.results.no.filter" />
+									</logic:empty>
+								</li>
+								<li>
+									<!-- executions -->
+									<b>
+										<bean:message key="report.config.observatorios.filter.title" />
+										:
+									</b>
+									<logic:notEmpty name="result" property="observatories">
+										<logic:iterate name="result" property="observatories" id="obs">
+											<span>
+												<bean:write name="obs" property="fechaStr" />
+												,
+											</span>
+										</logic:iterate>
+									</logic:notEmpty>
+								</li>
+								<li>
+									<b>
+										<bean:message key="resultado.observatorio.rastreo.realizado.send.subject" />
+										:
+									</b>
+									<bean:write name="result" property="subject" />
+								</li>
+								<li>
+									<b>
+										<bean:message key="resultado.observatorio.rastreo.realizado.send.carbon.copy" />
+										:
+									</b>
+									<bean:write name="result" property="cco" />
+								</li>
+							</ul>
+						</div>
+						<!-- ranges -->
+						<div class="summaryEntry">
+							<h3>
+								<bean:message key="report.config.observatorios.templates.title" />
+								<span style="cursor: pointer" onclick="showDialog('rangeSummary')" class="glyphicon glyphicon-new-window"></span>
+							</h3>
+							<div id="rangeSummary" class="summaryModalTable" style="display: none">
+								<table class="table table-stripped table-bordered table-hover">
 									<tr>
-										<td colspan="7">
-											<bean:message key="no.results" />
-										</td>
+										<th>
+											<bean:message key="colname.name" />
+										</th>
+										<th>
+											<bean:message key="colname.min.value" />
+										</th>
+										<th>
+											<bean:message key="colname.min.value.operator" />
+										</th>
+										<th>
+											<bean:message key="colname.max.value" />
+										</th>
+										<th>x</th>
+										<th>
+											<bean:message key="colname.max.value.operator" />
+										</th>
+										<th>
+											<bean:message key="colname.template" />
+										</th>
 									</tr>
-								</logic:empty>
-								<logic:notEmpty name="result" property="ranges">
-									<logic:iterate name="result" property="ranges" id="range">
+									<logic:empty name="result" property="results">
 										<tr>
-											<td>
-												<bean:write name="range" property="name" />
-											</td>
-											<td>
-												<bean:write name="range" property="minValue" />
-											</td>
-											<td>
-												<bean:write name="range" property="minValueOperator" />
-											</td>
-											<td>x</td>
-											<td>
-												<bean:write name="range" property="maxValue" />
-											</td>
-											<td>
-												<bean:write name="range" property="maxValueOperator" />
-											</td>
-											<td>
-												<bean:write name="range" property="template" />
+											<td colspan="7">
+												<bean:message key="no.results" />
 											</td>
 										</tr>
-									</logic:iterate>
-								</logic:notEmpty>
-							</table>
+									</logic:empty>
+									<logic:notEmpty name="result" property="ranges">
+										<logic:iterate name="result" property="ranges" id="range">
+											<tr>
+												<td>
+													<bean:write name="range" property="name" />
+												</td>
+												<td>
+													<bean:write name="range" property="minValue" />
+												</td>
+												<td>
+													<bean:write name="range" property="minValueOperator" />
+												</td>
+												<td>x</td>
+												<td>
+													<bean:write name="range" property="maxValue" />
+												</td>
+												<td>
+													<bean:write name="range" property="maxValueOperator" />
+												</td>
+												<td>
+													<logic:notEmpty name="range" property="template">
+														<span style="cursor: pointer" onclick="showOnDialog('previewTemplate_<c:out value="${range.id}" />')"
+															class="glyphicon glyphicon-eye-open"></span>
+														<span class='sr-only'>Preview email</span>
+														</span>
+														<span id="previewTemplate_<c:out value="${range.id}" />" style="display: none">
+															<bean:write name="range" property="template" />
+														</span>
+													</logic:notEmpty>
+												</td>
+											</tr>
+										</logic:iterate>
+									</logic:notEmpty>
+								</table>
+							</div>
 						</div>
-					</div>
-					<!-- custom texts -->
-					<div class="summaryEntry">
-						<h3>
-							<bean:message key="send.results.observatory.custom.title" />
-							<span style="cursor: pointer" onclick="showDialog('customTextsSummary')" class="glyphicon glyphicon-new-window"></span>
-						</h3>
-						<span class='sr-only'>Preview email</span>
-						<div id="customTextsSummary" class="summaryModalTable" style="display: none">
-							<table class="table table-stripped table-bordered table-hover">
+						<!-- custom texts -->
+						<div class="summaryEntry">
+							<h3>
+								<bean:message key="send.results.observatory.custom.title" />
+								<span style="cursor: pointer" onclick="showDialog('customTextsSummary')" class="glyphicon glyphicon-new-window"></span>
+							</h3>
+							<span class='sr-only'>Preview email</span>
+							<div id="customTextsSummary" class="summaryModalTable" style="display: none">
+								<table class="table table-stripped table-bordered table-hover">
+									<tr>
+										<th>
+											<bean:message key="colname.name" />
+										</th>
+										<th>
+											<bean:message key="colname.range" />
+										</th>
+										<th>
+											<bean:message key="colname.custom.message" />
+										</th>
+									</tr>
+									<logic:empty name="result" property="results">
+										<tr>
+											<td colspan="7">
+												<bean:message key="no.results" />
+											</td>
+										</tr>
+									</logic:empty>
+									<logic:notEmpty name="result" property="results">
+										<logic:iterate name="result" property="results" id="resultT">
+											<tr>
+												<td>
+													<bean:write name="resultT" property="uraName" />
+												</td>
+												<td>
+													<bean:write name="resultT" property="rangeName" />
+												</td>
+												<td>
+													<logic:notEmpty name="resultT" property="template">
+														<span style="cursor: pointer" onclick="showOnDialog('previewCustomText_<c:out value="${range.id}" />')"
+															class="glyphicon glyphicon-eye-open"></span>
+														<span class='sr-only'>Preview email</span>
+														</span>
+														<span id="previewCustomText_<c:out value="${resultT.id}" />" style="display: none">
+															<bean:write name="resultT" property="template" />
+														</span>
+													</logic:notEmpty>
+													
+												</td>
+											</tr>
+										</logic:iterate>
+									</logic:notEmpty>
+								</table>
+							</div>
+						</div>
+						<!-- summary -->
+						<div class="summaryEntry">
+							<h3>
+								<bean:message key="send.results.observatory.summary.title" />
+							</h3>
+							<bean:size id="resultsSize" name="result" property="results" />
+							<bean:size id="sendedSize" name="result" property="sended" />
+							<bean:define id="sendedSizeV">
+								<bean:write name="sendedSize" />
+							</bean:define>
+							<bean:define id="resultsSizeV">
+								<bean:write name='resultsSize' />
+							</bean:define>
+							<p>
+								<bean:message key="send.results.observatory.summary.text" arg0="<%=sendedSizeV%>" arg1="<%=resultsSizeV%>" />
+							</p>
+							<p>
+								<bean:message key="send.results.observatory.summary.send.manual" />
+							</p>
+							<logic:empty name="result" property="notAuto">
+								<bean:message key="no.results" />
+							</logic:empty>
+							<logic:notEmpty name="result" property="notAuto">
+								<ul>
+									<logic:iterate name="result" property="notAuto" id="notA">
+										<li>
+											<bean:write name="notA" property="uraName" />
+										</li>
+									</logic:iterate>
+								</ul>
+							</logic:notEmpty>
+						</div>
+						<!-- nas -->
+						<div class="summaryEntry">
+							<h3>
+								<bean:message key="send.results.observatory.summary.send.nas.title" />
+							</h3>
+							<bean:size id="resultsSize" name="result" property="results" />
+							<bean:size id="sendedSize" name="result" property="sended" />
+							<bean:define id="sendedSizeV">
+								<bean:write name="sendedSize" />
+							</bean:define>
+							<bean:define id="resultsSizeV">
+								<bean:write name='resultsSize' />
+							</bean:define>
+							<bean:define id="expirationDate">
+								<logic:iterate name="result" property="results" id="resultX">
+									<logic:notEmpty name="resultX" property="validDate">
+										<fmt:formatDate value="${resultX.validDate}" pattern="dd-MM-yyyy" />
+									</logic:notEmpty>
+								</logic:iterate>
+							</bean:define>
+							<p>
+								<bean:message key="send.results.observatory.summary.send.nas.text" arg0="<%=sendedSizeV%>"
+									arg1="<%=resultsSizeV%>" arg2="<%=expirationDate%>" />
+							</p>
+						</div>
+						<!-- detail -->
+						<div class="summaryEntry">
+							<h3>
+								<bean:message key="send.results.observatory.list" />
+							</h3>
+							<label for="uraNameFilter" class="control-label">
+								<strong class="labelVisu">
+									<bean:message key="colname.name" />
+								</strong>
+							</label>
+							<input id="uraNameFilter" type="text">
+							<label for="errorFilter" class="control-label">
+								<strong class="labelVisu">
+									<bean:message key="colname.error" />
+								</strong>
+							</label>
+							<input id="errorFilter" type="checkbox">
+							<table id="sendResultsDetailTable" class="table table-stripped table-bordered table-hover">
 								<tr>
 									<th>
 										<bean:message key="colname.name" />
 									</th>
 									<th>
-										<bean:message key="colname.range" />
+										<bean:message key="colname.email" />
 									</th>
 									<th>
-										<bean:message key="colname.custom.message" />
+										<bean:message key="colname.email.content" />
+									</th>
+									<th>
+										<bean:message key="colname.sended" />
+									</th>
+									<th>
+										<bean:message key="colname.date" />
+									</th>
+									<th>
+										<bean:message key="colname.error" />
+									</th>
+									<th>
+										<bean:message key="colname.file" />
+									</th>
+									<th>
+										<bean:message key="colname.password" />
 									</th>
 								</tr>
 								<logic:empty name="result" property="results">
 									<tr>
-										<td colspan="7">
+										<td colspan="6">
 											<bean:message key="no.results" />
 										</td>
 									</tr>
 								</logic:empty>
 								<logic:notEmpty name="result" property="results">
-									<logic:iterate name="result" property="results" id="resultT">
+									<logic:iterate name="result" property="results" id="uraSend">
 										<tr>
-											<td>
-												<bean:write name="resultT" property="uraName" />
+											<td class="uraNameColumn">
+												<bean:write name="uraSend" property="uraName" />
 											</td>
 											<td>
-												<bean:write name="resultT" property="rangeName" />
+												<bean:write name="uraSend" property="ura.emails" />
 											</td>
 											<td>
-												<bean:write name="resultT" property="template" />
+												<logic:notEmpty name="uraSend" property="mail">
+													<span style="cursor: pointer" onclick="showOnDialog('previewEmail_<c:out value="${uraSend.id}" />')"
+														class="glyphicon glyphicon-eye-open"></span>
+													<span class='sr-only'>Preview email</span>
+													</span>
+													<span id="previewEmail_<c:out value="${uraSend.id}" />" style="display: none">
+														<bean:write name="uraSend" property="mail" />
+													</span>
+												</logic:notEmpty>
+											</td>
+											<td>
+												<logic:equal name="uraSend" property="send" value="true">
+													<bean:message key="select.yes" />
+												</logic:equal>
+												<logic:notEqual name="uraSend" property="send" value="true">
+													<bean:message key="select.no" />
+												</logic:notEqual>
+											</td>
+											<td>
+												<fmt:formatDate value="${uraSend.sendDate}" pattern="dd-MM-yyyy HH:mm" />
+											</td>
+											<td class="errorColumn">
+												<logic:notEmpty name="uraSend" property="sendError">
+													<bean:write name="uraSend" property="sendError" />
+												</logic:notEmpty>
+											</td>
+											<td>
+												<logic:notEmpty name="uraSend" property="fileLink">
+													<a href='<bean:write name="uraSend" property="fileLink" />'>
+														<span class="glyphicon glyphicon-file"></span>
+													</a>
+												</logic:notEmpty>
+											</td>
+											<td>
+												<bean:write name="uraSend" property="filePass" />
 											</td>
 										</tr>
 									</logic:iterate>
@@ -306,170 +502,15 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							</table>
 						</div>
 					</div>
-					<!-- summary -->
-					<div class="summaryEntry">
-						<h3>
-							<bean:message key="send.results.observatory.summary.title" />
-						</h3>
-						<bean:size id="resultsSize" name="result" property="results" />
-						<bean:size id="sendedSize" name="result" property="sended" />
-						<bean:define id="sendedSizeV">
-							<bean:write name="sendedSize" />
-						</bean:define>
-						<bean:define id="resultsSizeV">
-							<bean:write name='resultsSize' />
-						</bean:define>
-						<p>
-							<bean:message key="send.results.observatory.summary.text" arg0="<%=sendedSizeV%>" arg1="<%=resultsSizeV%>" />
-						</p>
-						<p>
-							<bean:message key="send.results.observatory.summary.send.manual" />
-						</p>
-						<logic:empty name="result" property="notAuto">
-							<bean:message key="no.results" />
-						</logic:empty>
-						<logic:notEmpty name="result" property="notAuto">
-							<ul>
-								<logic:iterate name="result" property="notAuto" id="notA">
-									<li>
-										<bean:write name="notA" property="uraName" />
-									</li>
-								</logic:iterate>
-							</ul>
-						</logic:notEmpty>
-					</div>
-					<!-- nas -->
-					<div class="summaryEntry">
-						<h3>
-							<bean:message key="send.results.observatory.summary.send.nas.title" />
-						</h3>
-						<bean:size id="resultsSize" name="result" property="results" />
-						<bean:size id="sendedSize" name="result" property="sended" />
-						<bean:define id="sendedSizeV">
-							<bean:write name="sendedSize" />
-						</bean:define>
-						<bean:define id="resultsSizeV">
-							<bean:write name='resultsSize' />
-						</bean:define>
-						<bean:define id="expirationDate">
-							<logic:iterate name="result" property="results" id="resultX">
-								<logic:notEmpty name="resultX" property="validDate">
-									<fmt:formatDate value="${resultX.validDate}" pattern="dd-MM-yyyy" />
-<%-- 									<bean:write name="resultX" property="validDate" /> --%>
-								</logic:notEmpty>
-							</logic:iterate>
-						</bean:define>
-						<p>
-							<bean:message key="send.results.observatory.summary.send.nas.text" arg0="<%=sendedSizeV%>"
-								arg1="<%=resultsSizeV%>" arg2="<%=expirationDate%>" />
-						</p>
-					</div>
-					<!-- detail -->
-					<div class="summaryEntry">
-						<h3>
-							<bean:message key="send.results.observatory.list" />
-						</h3>
-						<label for="uraNameFilter" class="control-label">
-							<strong class="labelVisu">
-								<bean:message key="colname.name" />
-							</strong>
-						</label>
-						<input id="uraNameFilter" type="text">
-						<label for="errorFilter" class="control-label">
-							<strong class="labelVisu">
-								<bean:message key="colname.error" />
-							</strong>
-						</label>
-						<input id="errorFilter" type="checkbox">
-						<table id="sendResultsDetailTable" class="table table-stripped table-bordered table-hover">
-							<tr>
-								<th>
-									<bean:message key="colname.name" />
-								</th>
-								<th>
-									<bean:message key="colname.email" />
-								</th>
-								<th>
-									<bean:message key="colname.email.content" />
-								</th>
-								<th>
-									<bean:message key="colname.sended" />
-								</th>
-								<th>
-									<bean:message key="colname.date" />
-								</th>
-								<th>
-									<bean:message key="colname.error" />
-								</th>
-								<th>
-									<bean:message key="colname.file" />
-								</th>
-								<th>
-									<bean:message key="colname.password" />
-								</th>
-							</tr>
-							<logic:empty name="result" property="results">
-								<tr>
-									<td colspan="6">
-										<bean:message key="no.results" />
-									</td>
-								</tr>
-							</logic:empty>
-							<logic:notEmpty name="result" property="results">
-								<logic:iterate name="result" property="results" id="uraSend">
-									<tr>
-										<td class="uraNameColumn">
-											<bean:write name="uraSend" property="uraName" />
-										</td>
-										<td>
-											<bean:write name="uraSend" property="ura.emails" />
-										</td>
-										<td>
-											<span style="cursor: pointer" onclick="previewEmail('previewEmail_<c:out value="${uraSend.id}" />')"
-												class="glyphicon glyphicon-eye-open"></span>
-											<span class='sr-only'>Preview email</span>
-											</span>
-											<span id="previewEmail_<c:out value="${uraSend.id}" />" style="display: none">
-												<bean:write name="uraSend" property="mail" />
-											</span>
-										</td>
-										<td>
-											<logic:equal name="uraSend" property="send" value="true">
-												<bean:message key="select.yes" />
-											</logic:equal>
-											<logic:notEqual name="uraSend" property="send" value="true">
-												<bean:message key="select.no" />
-											</logic:notEqual>
-										</td>
-										<td>
-											<fmt:formatDate value="${uraSend.sendDate}" pattern="dd-MM-yyyy HH:mm" />
-										</td>
-										<td class="errorColumn">
-											<logic:notEmpty name="uraSend" property="sendError">
-												<bean:write name="uraSend" property="sendError" />
-											</logic:notEmpty>
-										</td>
-										<td>
-											<a href='<bean:write name="uraSend" property="fileLink" />'>
-												<span class="glyphicon glyphicon-file"></span>
-											</a>
-										</td>
-										<td>
-											<bean:write name="uraSend" property="filePass" />
-										</td>
-									</tr>
-								</logic:iterate>
-							</logic:notEmpty>
-						</table>
-					</div>
 				</logic:iterate>
-			</logic:notEmpty>
-			<p id="pCenter">
-				<html:link styleClass="btn btn-default btn-lg" forward="observatoryMenu">
-					<bean:message key="boton.volver" />
-				</html:link>
-			</p>
 		</div>
-		<!-- fin cajaformularios -->
+		</logic:notEmpty>
+		<p id="pCenter">
+			<html:link styleClass="btn btn-default btn-lg" forward="observatoryMenu">
+				<bean:message key="boton.volver" />
+			</html:link>
+		</p>
 	</div>
+	<!-- fin cajaformularios -->
+</div>
 </div>

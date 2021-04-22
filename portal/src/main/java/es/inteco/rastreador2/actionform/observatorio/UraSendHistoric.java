@@ -1,6 +1,7 @@
 package es.inteco.rastreador2.actionform.observatorio;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.struts.validator.ValidatorForm;
@@ -33,6 +34,8 @@ public class UraSendHistoric extends ValidatorForm implements Serializable {
 	private List<UraSendHistoricResults> sended;
 	/** The not auto. */
 	private List<UraSendHistoricResults> notAuto;
+	/** The send date. */
+	private Date sendDate;
 
 	/**
 	 * Gets the id.
@@ -230,5 +233,23 @@ public class UraSendHistoric extends ValidatorForm implements Serializable {
 	 */
 	public void setNotAuto(List<UraSendHistoricResults> notAuto) {
 		this.notAuto = notAuto;
+	}
+
+	/**
+	 * Gets the send date.
+	 *
+	 * @return the send date
+	 */
+	public Date getSendDate() {
+		return sendDate;
+	}
+
+	/**
+	 * Sets the send date.
+	 *
+	 * @param sendDate the new send date
+	 */
+	public void setSendDate(Date sendDate) {
+		this.sendDate = sendDate;
 	}
 }

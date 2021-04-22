@@ -103,6 +103,7 @@ public final class SendResultsMailUtils {
 			final List<TemplateRangeForm> iterationRanges = TemplateRangeDAO.findAll(c, idObsExecution);
 			final Map<Long, TemplateRangeForm> iterationRangesMap = iterationRanges.stream().collect(Collectors.toMap(TemplateRangeForm::getId, template -> template));
 			for (UraSendResultForm ura : uras) {
+				ura.setSendError("");
 				// Find Dependency
 				DependenciaForm dependency = DependenciaDAO.findById(c, ura.getUraId());
 				if (dependency.getSendAuto() && !StringUtils.isEmpty(dependency.getEmails())) {
@@ -160,6 +161,8 @@ public final class SendResultsMailUtils {
 			Connection conn = DataBaseManager.getConnection();
 			UraSendResultDAO.updateErrorAll(conn, idObsExecution, e.getLocalizedMessage());
 			DataBaseManager.closeConnection(conn);
+		} finally {
+			DataBaseManager.closeConnection(c);
 		}
 	}
 
@@ -318,6 +321,7 @@ public final class SendResultsMailUtils {
 			}
 			// Mark as send
 			uraCustom.setSend(true);
+			uraCustom.setSendError("");
 		} catch (MailException e) {
 			uraCustom.setSendError(e.getCause().getMessage());
 			uraCustom.setSend(false);
@@ -389,7 +393,6 @@ public final class SendResultsMailUtils {
 	 */
 	private static Calendar calculateExpirationDate(Connection c) throws SQLException {
 		int days = ObservatorioDAO.getFileExpirationFromConfig(c);
-		DataBaseManager.closeConnection(c);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(new Date());
 		calendar.add(Calendar.DAY_OF_YEAR, days);
