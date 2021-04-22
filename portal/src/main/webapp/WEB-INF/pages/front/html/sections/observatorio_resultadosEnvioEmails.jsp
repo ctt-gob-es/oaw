@@ -97,7 +97,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		previewDialog.dialog("open");
 	}
 
-	function showDialog(dialogId) {
+	function showDialog(dialogId, title) {
 		var previewDialog = $('#' + dialogId);
 
 		previewDialog.dialog({
@@ -105,7 +105,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			minHeight : $(window).height() * 0.5,
 			minWidth : $(window).width() * 0.5,
 			modal : true,
-			title : "",
+			title : title,
 		});
 		previewDialog.dialog("open");
 	}
@@ -176,6 +176,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											<span>
 												<bean:write name="comp" property="tagName" />
 												(
+												<bean:message key="confirmacion.exportar.resultados.observatorio.recurrencia.anterior" />
+												:
 												<bean:write name="comp" property="previous" />
 												)
 											</span>
@@ -220,7 +222,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<div class="summaryEntry">
 							<h3>
 								<bean:message key="report.config.observatorios.templates.title" />
-								<span style="cursor: pointer" onclick="showDialog('rangeSummary')" class="glyphicon glyphicon-new-window"></span>
+								<span style="cursor: pointer"
+									onclick="showDialog('rangeSummary','<bean:message key="report.config.observatorios.templates.title" />')"
+									class="glyphicon glyphicon-new-window"></span>
 							</h3>
 							<div id="rangeSummary" class="summaryModalTable" style="display: none">
 								<table class="table table-stripped table-bordered table-hover">
@@ -234,12 +238,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										<th>
 											<bean:message key="colname.min.value.operator" />
 										</th>
-										<th>
-											<bean:message key="colname.max.value" />
-										</th>
 										<th>x</th>
 										<th>
 											<bean:message key="colname.max.value.operator" />
+										</th>
+										<th>
+											<bean:message key="colname.max.value" />
 										</th>
 										<th>
 											<bean:message key="colname.template" />
@@ -266,10 +270,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												</td>
 												<td>x</td>
 												<td>
-													<bean:write name="range" property="maxValue" />
+													<bean:write name="range" property="maxValueOperator" />
 												</td>
 												<td>
-													<bean:write name="range" property="maxValueOperator" />
+													<bean:write name="range" property="maxValue" />
 												</td>
 												<td>
 													<logic:notEmpty name="range" property="template">
@@ -292,7 +296,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<div class="summaryEntry">
 							<h3>
 								<bean:message key="send.results.observatory.custom.title" />
-								<span style="cursor: pointer" onclick="showDialog('customTextsSummary')" class="glyphicon glyphicon-new-window"></span>
+								<span style="cursor: pointer"
+									onclick="showDialog('customTextsSummary','<bean:message key="send.results.observatory.custom.title" />')"
+									class="glyphicon glyphicon-new-window"></span>
 							</h3>
 							<span class='sr-only'>Preview email</span>
 							<div id="customTextsSummary" class="summaryModalTable" style="display: none">
@@ -326,7 +332,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												</td>
 												<td>
 													<logic:notEmpty name="resultT" property="template">
-														<span style="cursor: pointer" onclick="showOnDialog('previewCustomText_<c:out value="${range.id}" />')"
+														<span style="cursor: pointer" onclick="showOnDialog('previewCustomText_<c:out value="${resultT.id}" />')"
 															class="glyphicon glyphicon-eye-open"></span>
 														<span class='sr-only'>Preview email</span>
 														</span>
@@ -334,7 +340,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															<bean:write name="resultT" property="template" />
 														</span>
 													</logic:notEmpty>
-													
 												</td>
 											</tr>
 										</logic:iterate>
@@ -387,17 +392,21 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<bean:define id="resultsSizeV">
 								<bean:write name='resultsSize' />
 							</bean:define>
-							<bean:define id="expirationDate">
-								<logic:iterate name="result" property="results" id="resultX">
-									<logic:notEmpty name="resultX" property="validDate">
+							<bean:define id="expirationDateFound" value=""></bean:define>
+							<logic:iterate name="result" property="results" id="resultX">
+								<logic:notEmpty name="resultX" property="validDate">
+									<bean:define id="expirationDate">
 										<fmt:formatDate value="${resultX.validDate}" pattern="dd-MM-yyyy" />
-									</logic:notEmpty>
-								</logic:iterate>
-							</bean:define>
-							<p>
-								<bean:message key="send.results.observatory.summary.send.nas.text" arg0="<%=sendedSizeV%>"
-									arg1="<%=resultsSizeV%>" arg2="<%=expirationDate%>" />
-							</p>
+									</bean:define>
+									<c:if test="${expirationDateFound != 'X' }">
+										<bean:define id="expirationDateFound" value="X"></bean:define>
+										<p>
+											<bean:message key="send.results.observatory.summary.send.nas.text" arg0="<%=sendedSizeV%>"
+												arg1="<%=resultsSizeV%>" arg2="<%=expirationDate%>" />
+										</p>
+									</c:if>
+								</logic:notEmpty>
+							</logic:iterate>
 						</div>
 						<!-- detail -->
 						<div class="summaryEntry">

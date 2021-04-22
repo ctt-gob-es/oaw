@@ -160,7 +160,9 @@ CREATE TABLE `observatorio_send_historic_results` (
 
 
 
+---
 
+ALTER TABLE `observatorio_send_configuration` ADD `subject` VARCHAR(255) NULL, ADD `cco` VARCHAR(255) NULL;
 
 
 

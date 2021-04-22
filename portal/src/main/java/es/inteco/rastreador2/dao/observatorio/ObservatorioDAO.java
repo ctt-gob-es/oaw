@@ -3244,30 +3244,71 @@ public final class ObservatorioDAO {
 	public static void saveConfig(Connection c, final Long idObsExecution, final String[] exObsIds, final List<ComparisionForm> comparision) throws SQLException, UnsupportedEncodingException {
 		PreparedStatement ps = null;
 		try {
-			// Delete existing
-			ps = c.prepareStatement("DELETE FROM observatorio_send_configuration WHERE id_observatory_execution = " + idObsExecution);
-			ps.executeUpdate();
-			DAOUtils.closeQueries(ps, null);
+//			// Delete existing
 			ps = c.prepareStatement("DELETE FROM observatorio_send_configuration_comparision WHERE id_observatory_execution = " + idObsExecution);
 			ps.executeUpdate();
 			DAOUtils.closeQueries(ps, null);
-			// Insert new
-			ps = c.prepareStatement("INSERT INTO observatorio_send_configuration(id_observatory_execution, ids_observatory_execution_evolution) " + "VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
-			ps.setLong(1, idObsExecution);
-			ps.setString(2, String.join(",", exObsIds));
-			ps.executeUpdate();
-			try (ResultSet rs = ps.getGeneratedKeys()) {
-				if (rs.next()) {
-					if (comparision != null && !comparision.isEmpty()) {
-						for (ComparisionForm cmp : comparision) {
-							ps = c.prepareStatement("INSERT INTO observatorio_send_configuration_comparision(id_observatory_execution, id_tag, date_first, date_previous) " + "VALUES (?,?,?,?)",
-									Statement.RETURN_GENERATED_KEYS);
-							ps.setLong(1, idObsExecution);
-							ps.setLong(2, cmp.getIdTag());
-							ps.setString(3, cmp.getFirst());
-							ps.setString(4, cmp.getPrevious());
-							ps.executeUpdate();
-							DAOUtils.closeQueries(ps, null);
+//			ps = c.prepareStatement("DELETE FROM observatorio_send_configuration WHERE id_observatory_execution = " + idObsExecution);
+//			ps.executeUpdate();
+//			DAOUtils.closeQueries(ps, null);
+			ps = c.prepareStatement("SELECT id FROM observatorio_send_configuration WHERE id_observatory_execution = " + idObsExecution);
+			Integer id = null;
+			ResultSet rsE = null;
+			try {
+				rsE = ps.executeQuery();
+				if (rsE.next()) {
+					id = rsE.getInt("id");
+				}
+			} catch (SQLException e) {
+				Logger.putLog("SQL Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+				throw e;
+			}
+			DAOUtils.closeQueries(ps, null);
+			if (id != null) {
+				// update existing
+				ps = c.prepareStatement("UPDATE observatorio_send_configuration SET id_observatory_execution =?, ids_observatory_execution_evolution =? WHERE id = ?");
+				ps.setLong(1, idObsExecution);
+				ps.setString(2, String.join(",", exObsIds));
+				ps.setInt(3, id);
+				ps.executeUpdate();
+				if (comparision != null && !comparision.isEmpty()) {
+					for (ComparisionForm cmp : comparision) {
+						ps = c.prepareStatement("INSERT INTO observatorio_send_configuration_comparision(id_observatory_execution, id_tag, date_first, date_previous) " + "VALUES (?,?,?,?)",
+								Statement.RETURN_GENERATED_KEYS);
+						ps.setLong(1, idObsExecution);
+						ps.setLong(2, cmp.getIdTag());
+						ps.setString(3, cmp.getFirst());
+						ps.setString(4, cmp.getPrevious());
+						ps.executeUpdate();
+						DAOUtils.closeQueries(ps, null);
+					}
+				}
+			} else {
+				// Insert new
+				ps = c.prepareStatement("INSERT INTO observatorio_send_configuration(id_observatory_execution, ids_observatory_execution_evolution) " + "VALUES (?,?)",
+						Statement.RETURN_GENERATED_KEYS);
+				ps.setLong(1, idObsExecution);
+				ps.setString(2, String.join(",", exObsIds));
+				ps.executeUpdate();
+				// Insert new
+				ps = c.prepareStatement("INSERT INTO observatorio_send_configuration(id_observatory_execution, ids_observatory_execution_evolution) " + "VALUES (?,?)",
+						Statement.RETURN_GENERATED_KEYS);
+				ps.setLong(1, idObsExecution);
+				ps.setString(2, String.join(",", exObsIds));
+				ps.executeUpdate();
+				try (ResultSet rs = ps.getGeneratedKeys()) {
+					if (rs.next()) {
+						if (comparision != null && !comparision.isEmpty()) {
+							for (ComparisionForm cmp : comparision) {
+								ps = c.prepareStatement("INSERT INTO observatorio_send_configuration_comparision(id_observatory_execution, id_tag, date_first, date_previous) " + "VALUES (?,?,?,?)",
+										Statement.RETURN_GENERATED_KEYS);
+								ps.setLong(1, idObsExecution);
+								ps.setLong(2, cmp.getIdTag());
+								ps.setString(3, cmp.getFirst());
+								ps.setString(4, cmp.getPrevious());
+								ps.executeUpdate();
+								DAOUtils.closeQueries(ps, null);
+							}
 						}
 					}
 				}
@@ -3279,6 +3320,66 @@ public final class ObservatorioDAO {
 		} finally {
 			DAOUtils.closeQueries(ps, null);
 		}
+	}
+
+	/**
+	 * Save config step 2.
+	 *
+	 * @param c              the c
+	 * @param idObsExecution the id obs execution
+	 * @param subject        the subject
+	 * @param cco            the cco
+	 * @throws SQLException                 the SQL exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
+	public static void saveConfigStep2(Connection c, final Long idObsExecution, final String subject, final String cco) throws SQLException, UnsupportedEncodingException {
+		PreparedStatement ps = null;
+		try {
+			// Insert new
+			ps = c.prepareStatement("UPDATE observatorio_send_configuration SET subject = ?, cco = ? WHERE id_observatory_execution = ?");
+			ps.setString(1, subject);
+			ps.setString(2, cco);
+			ps.setLong(3, idObsExecution);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			Logger.putLog("SQL_EXCEPTION: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(ps, null);
+		}
+	}
+
+	/**
+	 * Gets the config step 2.
+	 *
+	 * @param c              the c
+	 * @param idObsExecution the id obs execution
+	 * @param subject        the subject
+	 * @param cco            the cco
+	 * @return the config step 2
+	 * @throws SQLException                 the SQL exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
+	public static Map<String, String> getConfigStep2(Connection c, final Long idObsExecution) throws SQLException, UnsupportedEncodingException {
+		Map<String, String> config = new HashMap<>();
+		PreparedStatement ps = null;
+		try {
+			// Insert new
+			ps = c.prepareStatement("SELECT subject, cco FROM observatorio_send_configuration WHERE id_observatory_execution = ?");
+			ps.setLong(1, idObsExecution);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				config.put("emailSubject", rs.getString("subject"));
+				config.put("cco", rs.getString("cco"));
+			}
+		} catch (SQLException e) {
+			c.rollback();
+			Logger.putLog("SQL_EXCEPTION: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(ps, null);
+		}
+		return config;
 	}
 
 	/**
