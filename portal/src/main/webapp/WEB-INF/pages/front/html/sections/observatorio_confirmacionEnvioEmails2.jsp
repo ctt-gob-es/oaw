@@ -538,7 +538,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							</strong>
 						</label>
 						<div class="col-xs-6">
-							<input class="form-control" name="emailSubject" id="emailSubject" type="text" required />
+							<input class="form-control" name="emailSubject" id="emailSubject" type="text" required
+								value="<c:out value="${emailSubject}"/>" />
 						</div>
 					</div>
 					<div class="row formItem">
@@ -548,7 +549,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							</strong>
 						</label>
 						<div class="col-xs-6">
-							<input class="form-control" name="cco" id="emailSubject" type="text" />
+							<input class="form-control" name="cco" id="emailSubject" type="text" value="<c:out value="${cco}"/>" />
 						</div>
 					</div>
 					<div class="row formItem">

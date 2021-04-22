@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -151,6 +152,12 @@ public class SendResultsByMailAction extends Action {
 						}
 						/****/
 						AnnexUtils.generateEvolutionData(CrawlerUtils.getResources(request), idObservatory, idExObservatory, tagsToFilter, exObsIds, comparision);
+						Connection connection = DataBaseManager.getConnection();
+						Map<String, String> config = ObservatorioDAO.getConfigStep2(connection, idExObservatory);
+						DataBaseManager.closeConnection(connection);
+						request.setAttribute("emailSubject", config.get("emailSubject"));
+						request.setAttribute("cco", config.get("cco"));
+						DataBaseManager.closeConnection(connection);
 						return mapping.findForward(Constants.CONFIRM);
 					} else if (request.getParameter(Constants.ACTION).equals(Constants.CONFIRM)) {
 						Connection connection = DataBaseManager.getConnection();
@@ -167,12 +174,24 @@ public class SendResultsByMailAction extends Action {
 						return mapping.findForward("sendResultsByMailAsync");
 					} else if (request.getParameter(Constants.ACTION).equals("save")) {
 						// TODO Save email subject and cco??
+						final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+						final String emailSubject = request.getParameter("emailSubject");
+						final String cco = request.getParameter("cco");
+						Connection connection = DataBaseManager.getConnection();
+						ObservatorioDAO.saveConfigStep2(connection, idObsExecution, emailSubject, cco);
+						DataBaseManager.closeConnection(connection);
+						request.setAttribute("emailSubject", emailSubject);
+						request.setAttribute("cco", cco);
 						return mapping.findForward(Constants.CONFIRM);
 					} else if (request.getParameter(Constants.ACTION).equals("results")) {
 						Connection connection = DataBaseManager.getConnection();
 						final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 						idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
 						final List<UraSendHistoric> sendHistoric = UraSendResultDAO.getSendHistoric(connection, idObsExecution, idObservatory);
+						Map<String, String> config = ObservatorioDAO.getConfigStep2(connection, idObsExecution);
+						DataBaseManager.closeConnection(connection);
+						request.setAttribute("emailSubject", config.get("emailSubject"));
+						request.setAttribute("cco", config.get("cco"));
 						request.setAttribute("results", sendHistoric);
 						DataBaseManager.closeConnection(connection);
 						return mapping.findForward("results");

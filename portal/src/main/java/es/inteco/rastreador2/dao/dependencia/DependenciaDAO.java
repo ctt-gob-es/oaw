@@ -540,8 +540,23 @@ public final class DependenciaDAO {
 	 */
 	public static void delete(Connection c, final List<DependenciaForm> dependencies) throws SQLException {
 		if (dependencies != null && !dependencies.isEmpty()) {
-			for (DependenciaForm dependecy : dependencies) {
-				delete(c, dependecy.getId());
+			String query = "DELETE FROM dependencia WHERE 1=1";
+			query = query + " AND id_dependencia IN (" + dependencies.get(0).getId();
+			for (int i = 1; i < dependencies.size(); i++) {
+				query = query + "," + dependencies.get(i).getId();
+			}
+			query = query + ")";
+			try (PreparedStatement ps = c.prepareStatement(query)) {
+				int affectedRowsD = ps.executeUpdate();
+				if (affectedRowsD == 0) {
+					throw new SQLException("Error deleting.");
+				} else {
+					Logger.putLog("Deleted " + affectedRowsD + " dependencies", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR);
+				}
+				c.commit();
+			} catch (SQLException e) {
+				Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+				throw e;
 			}
 		}
 	}
