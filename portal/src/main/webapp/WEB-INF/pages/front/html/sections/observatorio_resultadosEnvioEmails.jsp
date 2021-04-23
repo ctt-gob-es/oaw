@@ -223,10 +223,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<h3>
 								<bean:message key="report.config.observatorios.templates.title" />
 								<span style="cursor: pointer"
-									onclick="showDialog('rangeSummary','<bean:message key="report.config.observatorios.templates.title" />')"
+									onclick="showDialog('rangeSummary_<c:out value="${result.id}" />','<bean:message key="report.config.observatorios.templates.title" />')"
 									class="glyphicon glyphicon-new-window"></span>
 							</h3>
-							<div id="rangeSummary" class="summaryModalTable" style="display: none">
+							<div id="rangeSummary_<c:out value="${result.id}" />" class="summaryModalTable" style="display: none">
 								<table class="table table-stripped table-bordered table-hover">
 									<tr>
 										<th>
@@ -277,11 +277,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												</td>
 												<td>
 													<logic:notEmpty name="range" property="template">
-														<span style="cursor: pointer" onclick="showOnDialog('previewTemplate_<c:out value="${range.id}" />')"
+													
+													
+														<span style="cursor: pointer" onclick="showOnDialog('previewTemplate_<c:out value="${range.id}" />_<c:out value="${result.id}" />')"
 															class="glyphicon glyphicon-eye-open"></span>
 														<span class='sr-only'>Preview email</span>
 														</span>
-														<span id="previewTemplate_<c:out value="${range.id}" />" style="display: none">
+														<span id="previewTemplate_<c:out value="${range.id}" />_<c:out value="${result.id}" />" style="display: none">
 															<bean:write name="range" property="template" />
 														</span>
 													</logic:notEmpty>
@@ -297,11 +299,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<h3>
 								<bean:message key="send.results.observatory.custom.title" />
 								<span style="cursor: pointer"
-									onclick="showDialog('customTextsSummary','<bean:message key="send.results.observatory.custom.title" />')"
+									onclick="showDialog('customTextsSummary_<c:out value="${result.id}" />','<bean:message key="send.results.observatory.custom.title" />')"
 									class="glyphicon glyphicon-new-window"></span>
 							</h3>
 							<span class='sr-only'>Preview email</span>
-							<div id="customTextsSummary" class="summaryModalTable" style="display: none">
+							<div id="customTextsSummary_<c:out value="${result.id}" />" class="summaryModalTable" style="display: none">
 								<table class="table table-stripped table-bordered table-hover">
 									<tr>
 										<th>
@@ -332,11 +334,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												</td>
 												<td>
 													<logic:notEmpty name="resultT" property="template">
-														<span style="cursor: pointer" onclick="showOnDialog('previewCustomText_<c:out value="${resultT.id}" />')"
+														<span style="cursor: pointer" onclick="showOnDialog('previewCustomText_<c:out value="${resultT.id}" />_<c:out value="${result.id}" />')"
 															class="glyphicon glyphicon-eye-open"></span>
 														<span class='sr-only'>Preview email</span>
 														</span>
-														<span id="previewCustomText_<c:out value="${resultT.id}" />" style="display: none">
+														<span id="previewCustomText_<c:out value="${resultT.id}" />_<c:out value="${result.id}" />" style="display: none">
 															<bean:write name="resultT" property="template" />
 														</span>
 													</logic:notEmpty>

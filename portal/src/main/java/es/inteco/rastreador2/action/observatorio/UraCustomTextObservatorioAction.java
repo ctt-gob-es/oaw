@@ -58,7 +58,7 @@ public class UraCustomTextObservatorioAction extends DispatchAction {
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 			final int numResult = UraSendResultDAO.count(c, idExObs);
 			response.setContentType("text/json");
-			List<UraSendResultForm> list = UraSendResultDAO.findAll(c, idExObs);
+			List<UraSendResultForm> list = UraSendResultDAO.findAll(c, idExObs, true);
 			String jsonSeeds = new Gson().toJson(list);
 			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
 			String jsonPagination = new Gson().toJson(paginas);
@@ -92,7 +92,7 @@ public class UraCustomTextObservatorioAction extends DispatchAction {
 			}
 			final int numResult = UraSendResultDAO.count(c, idExObs, urasIds);
 			response.setContentType("text/json");
-			List<UraSendResultForm> list = UraSendResultDAO.findByIds(c, idExObs, urasIds);
+			List<UraSendResultForm> list = UraSendResultDAO.findByIds(c, idExObs, urasIds, true);
 			String jsonSeeds = new Gson().toJson(list);
 			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
 			String jsonPagination = new Gson().toJson(paginas);
