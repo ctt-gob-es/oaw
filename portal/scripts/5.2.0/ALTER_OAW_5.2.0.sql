@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS `observatorio_extra_configuration`;
+
 CREATE TABLE `observatorio_extra_configuration` ( 
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`name` VARCHAR(255) NOT NULL ,
@@ -13,8 +14,6 @@ INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES (
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.width','width', '10');
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.depth','depth', '10');
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.autorelaunch','autorelaunch', '0');
---INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.first.classification.threshold','firstclassthreshold', '0.5');
---INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.second.classification.threshold','secondclassthreshold', '2');
 
 ALTER TABLE `tanalisis_accesibilidad` ADD `COD_FUENTE` MEDIUMTEXT;
 
@@ -22,7 +21,6 @@ ALTER TABLE `observatorios_realizados` ADD `tags` TEXT NULL;
 
 UPDATE observatorios_realizados obr SET obr.tags = (SELECT ob.tags from observatorio ob where ob.id_observatorio = obr.id_observatorio);
 
--- uras
 
 ALTER TABLE `dependencia` ADD `emails` TEXT NULL;
 ALTER TABLE `dependencia` ADD `id_ambit` INT NULL;
@@ -34,10 +32,10 @@ ALTER TABLE `dependencia` ADD `id_tag` INT NULL;
 CREATE TABLE `observatorio_range` ( 
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`name` VARCHAR(255) NOT NULL ,
-	`min_value` float(4,2) NOT NULL , 
-	`max_value` float(4,2) ,
-	`min_value_operator` VARCHAR(255) NOT NULL ,
-	`max_value_operator` VARCHAR(255), 
+	`min_value` FLOAT(4,2) NULL , 
+	`max_value` FLOAT(4,2) NULL ,
+	`min_value_operator` VARCHAR(255) NULL ,
+	`max_value_operator` VARCHAR(255) NULL, 
     PRIMARY KEY(`id`)
 );
 
@@ -82,12 +80,6 @@ CREATE TABLE `observatorio_send_configuration_comparision` (
     PRIMARY KEY(`id`)
 );
 
--- only DES
-RENAME TABLE `observatorio_template_custom_text_ura` TO `observatorio_ura_send_results`;
-ALTER TABLE `observatorio_range` CHANGE `min_value` `min_value` FLOAT(4,2) NULL;
-ALTER TABLE `observatorio_range` CHANGE `min_value_operator` `min_value_operator` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
-
--- /only DES
 
 ALTER TABLE `observatorio_plantillas` ADD `type` VARCHAR(10) NULL;
 UPDATE `observatorio_plantillas` SET `type`= 'odt';
@@ -104,10 +96,6 @@ ALTER TABLE `observatorio_ura_send_results` ADD `file_link` VARCHAR(1024) NULL ,
 
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.files.expiration.days','files_expiration', '60');
 INSERT INTO `observatorio_extra_configuration` (`name`, `key`, `value`) VALUES ('observatory.extra.config.files.mapping','file_mapping', 'http://des-oaw.redsara.es/');
-
-
--- historico
-
 
 CREATE TABLE `observatorio_send_historic` ( 
 	`id` INT NOT NULL AUTO_INCREMENT,
@@ -158,16 +146,4 @@ CREATE TABLE `observatorio_send_historic_results` (
     PRIMARY KEY(`id`)
 );
 
-
-
----
-
 ALTER TABLE `observatorio_send_configuration` ADD `subject` VARCHAR(255) NULL, ADD `cco` VARCHAR(255) NULL;
-
-
-
-
-
-
-
-

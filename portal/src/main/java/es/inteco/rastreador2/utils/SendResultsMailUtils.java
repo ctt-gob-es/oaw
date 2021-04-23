@@ -99,32 +99,33 @@ public final class SendResultsMailUtils {
 			final List<FulFilledCrawling> fulfilledCrawlings = ObservatorioDAO.getFulfilledCrawlingByObservatoryExecution(c, idObsExecution);
 			final Map<String, String> pdfZipsPath = getPdfs(idObs, idObsExecution, fulfilledCrawlings);
 			// Get dependecies info
-			List<UraSendResultForm> uras = UraSendResultDAO.findAll(c, idObsExecution);
+			List<UraSendResultForm> uras = UraSendResultDAO.findAll(c, idObsExecution, false);
 			final List<TemplateRangeForm> iterationRanges = TemplateRangeDAO.findAll(c, idObsExecution);
 			final Map<Long, TemplateRangeForm> iterationRangesMap = iterationRanges.stream().collect(Collectors.toMap(TemplateRangeForm::getId, template -> template));
 			for (UraSendResultForm ura : uras) {
 				ura.setSendError("");
+				ura.setSend(false);
+				ura.setFileLink("");
+				ura.setFilePass("");
 				// Find Dependency
 				DependenciaForm dependency = DependenciaDAO.findById(c, ura.getUraId());
-				if (dependency.getSendAuto() && !StringUtils.isEmpty(dependency.getEmails())) {
-					String xlsxFilePath = annexPath + "/Dependencias/" + dependency.getName() + ".xlsx";
-					String pdfZipPath = pdfZipsPath.get(PDFUtils.formatSeedName(dependency.getName()));
-					if (!StringUtils.isEmpty(pdfZipPath) && !StringUtils.isEmpty(xlsxFilePath)) {
-						File xlsx = new File(xlsxFilePath);
-						File pdfZip = new File(pdfZipPath);
-						if (xlsx.exists() && pdfZip.exists()) {
-							// Make a zip with dependency xlsx and zipPdf
-							final String passString = generatePassayPassword();
-							final String randomUUID = UUID.randomUUID().toString();
-							File zipFileToSend = generateProtectedZip(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.send.path"), dependency, xlsx, pdfZip, passString, randomUUID);
-							ura.setFileLink(zipFileToSend.getPath());
-							ura.setFilePass(passString);
-							Calendar expirationDate = calculateExpirationDate(c);
-							ura.setValidDate(expirationDate.getTime());
-							String mailBody = sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName(), emailSubject, cco, passString, randomUUID,
-									expirationDate);
-							ura.setMail(mailBody);
-						}
+				String xlsxFilePath = annexPath + "/Dependencias/" + dependency.getName() + ".xlsx";
+				String pdfZipPath = pdfZipsPath.get(PDFUtils.formatSeedName(dependency.getName()));
+				if (!StringUtils.isEmpty(pdfZipPath) && !StringUtils.isEmpty(xlsxFilePath)) {
+					File xlsx = new File(xlsxFilePath);
+					File pdfZip = new File(pdfZipPath);
+					if (xlsx.exists() && pdfZip.exists()) {
+						// Make a zip with dependency xlsx and zipPdf
+						final String passString = generatePassayPassword();
+						final String randomUUID = UUID.randomUUID().toString();
+						File zipFileToSend = generateProtectedZip(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.send.path"), dependency, xlsx, pdfZip, passString, randomUUID);
+						ura.setFileLink(zipFileToSend.getPath());
+						ura.setFilePass(passString);
+						Calendar expirationDate = calculateExpirationDate(c);
+						ura.setValidDate(expirationDate.getTime());
+						String mailBody = sendMailToUra(idObs, dependency, ura, iterationRangesMap, zipFileToSend.getPath(), zipFileToSend.getName(), emailSubject, cco, passString, randomUUID,
+								expirationDate);
+						ura.setMail(mailBody);
 					}
 				}
 			}
@@ -295,6 +296,7 @@ public final class SendResultsMailUtils {
 	 * @param passString         the pass string
 	 * @param randomUUID         the random UUID
 	 * @param expirationDate     the expiration date
+	 * @return the string
 	 * @throws Exception the exception
 	 */
 	private static String sendMailToUra(final Long idObservatory, final DependenciaForm ura, final UraSendResultForm uraCustom, final Map<Long, TemplateRangeForm> iterationRangesMap,
@@ -314,14 +316,16 @@ public final class SendResultsMailUtils {
 			mailsToCco.add(cco);
 		}
 		try {
-			if (!StringUtils.isEmpty(ura.getAcronym())) {
-				mailService.sendMail(mailsTo, mailsToCco, "[" + ura.getAcronym() + "] " + emailSubject, mailBody, true);
-			} else {
-				mailService.sendMail(mailsTo, mailsToCco, emailSubject, mailBody, true);
+			if (ura.getSendAuto() && !StringUtils.isEmpty(ura.getEmails())) {
+				if (!StringUtils.isEmpty(ura.getAcronym())) {
+					mailService.sendMail(mailsTo, mailsToCco, "[" + ura.getAcronym() + "] " + emailSubject, mailBody, true);
+				} else {
+					mailService.sendMail(mailsTo, mailsToCco, emailSubject, mailBody, true);
+				}
+				// Mark as send
+				uraCustom.setSend(true);
+				uraCustom.setSendError("");
 			}
-			// Mark as send
-			uraCustom.setSend(true);
-			uraCustom.setSendError("");
 		} catch (MailException e) {
 			uraCustom.setSendError(e.getCause().getMessage());
 			uraCustom.setSend(false);
