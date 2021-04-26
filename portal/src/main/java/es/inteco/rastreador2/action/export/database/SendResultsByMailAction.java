@@ -163,22 +163,61 @@ public class SendResultsByMailAction extends Action {
 						Connection connection = DataBaseManager.getConnection();
 						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
 						final DatosForm userData = LoginDAO.getUserDataByName(connection, request.getSession().getAttribute(Constants.USER).toString());
-						DataBaseManager.closeConnection(connection);
 						final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 						final Long idObs = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 						final Long idCartucho = Long.valueOf(request.getParameter(Constants.ID_CARTUCHO));
 						final String emailSubject = request.getParameter("emailSubject");
 						final String cco = request.getParameter("cco");
+						Long hasCustomTexts = 0L;
+						if (!StringUtils.isEmpty(request.getParameter("customTextSelector"))) {
+							hasCustomTexts = Long.parseLong(request.getParameter("customTextSelector"));
+						}
+						ObservatorioDAO.saveConfigStep2(connection, idObsExecution, emailSubject, cco, hasCustomTexts);
+						// Some URAS has custom texts
+						if (hasCustomTexts == 0L) {
+							UraSendResultDAO.markHasCustomText(connection, true, null, idObsExecution);
+						} else if (hasCustomTexts == 1L) {
+							UraSendResultDAO.markHasCustomText(connection, false, null, idObsExecution);
+							String[] urasIds = null;
+							if (!StringUtils.isEmpty(request.getParameter("uras"))) {
+								urasIds = new String[] { request.getParameter("uras") };
+								if (urasIds != null) {
+									UraSendResultDAO.markHasCustomText(connection, true, urasIds, idObsExecution);
+								}
+							}
+						} else {
+							UraSendResultDAO.markHasCustomText(connection, false, null, idObsExecution);
+						}
 						final SendMailThread sendMailThread = new SendMailThread(idObs, idObsExecution, idCartucho, emailSubject, cco, userData.getEmail());
 						sendMailThread.start();
+						DataBaseManager.closeConnection(connection);
 						return mapping.findForward("sendResultsByMailAsync");
 					} else if (request.getParameter(Constants.ACTION).equals("save")) {
 						// TODO Save email subject and cco??
 						final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 						final String emailSubject = request.getParameter("emailSubject");
 						final String cco = request.getParameter("cco");
+						Long hasCustomTexts = 0L;
+						if (!StringUtils.isEmpty(request.getParameter("customTextSelector"))) {
+							hasCustomTexts = Long.parseLong(request.getParameter("customTextSelector"));
+						}
 						Connection connection = DataBaseManager.getConnection();
-						ObservatorioDAO.saveConfigStep2(connection, idObsExecution, emailSubject, cco);
+						ObservatorioDAO.saveConfigStep2(connection, idObsExecution, emailSubject, cco, hasCustomTexts);
+						// Some URAS has custom texts
+						if (hasCustomTexts == 0L) {
+							UraSendResultDAO.markHasCustomText(connection, true, null, idObsExecution);
+						} else if (hasCustomTexts == 1L) {
+							UraSendResultDAO.markHasCustomText(connection, false, null, idObsExecution);
+							String[] urasIds = null;
+							if (!StringUtils.isEmpty(request.getParameter("uras"))) {
+								urasIds = new String[] { request.getParameter("uras") };
+								if (urasIds != null) {
+									UraSendResultDAO.markHasCustomText(connection, true, urasIds, idObsExecution);
+								}
+							}
+						} else {
+							UraSendResultDAO.markHasCustomText(connection, false, null, idObsExecution);
+						}
 						DataBaseManager.closeConnection(connection);
 						request.setAttribute("emailSubject", emailSubject);
 						request.setAttribute("cco", cco);

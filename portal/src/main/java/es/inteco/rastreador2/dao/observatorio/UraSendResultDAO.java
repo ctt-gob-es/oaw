@@ -102,7 +102,7 @@ public class UraSendResultDAO {
 	 */
 	public static List<UraSendResultForm> findAll(Connection c, final Long idExObs, final boolean isSendAuto) throws SQLException {
 		final List<UraSendResultForm> results = new ArrayList<>();
-		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, c.send_date, c.send_error, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ";
+		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.has_custom_text, c.custom_text, c.send, c.send_date, c.send_error, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ";
 		if (isSendAuto) {
 			query = query + "AND d.send_auto = 1 ";
 		}
@@ -127,6 +127,7 @@ public class UraSendResultDAO {
 					ura.setEmails(rs.getString("d.emails"));
 					form.setUra(ura);
 					form.setSend(rs.getBoolean("c.send"));
+					form.setHasCustomText(rs.getBoolean("c.has_custom_text"));
 					Timestamp ts = rs.getTimestamp("c.send_date");
 					if (ts != null) {
 						form.setSendDate(new Date(ts.getTime()));
@@ -206,7 +207,6 @@ public class UraSendResultDAO {
 			if (isSendAuto) {
 				query = query + "AND d.send_auto = 1 ";
 			}
-			query = query + " ORDER BY c.id ASC";
 			query = query + " ORDER BY c.id ASC";
 			try (PreparedStatement ps = c.prepareStatement(query)) {
 				ps.setLong(1, idExObs);
@@ -401,6 +401,34 @@ public class UraSendResultDAO {
 			ps.setString(4, form.getFileLink());
 			ps.setString(5, form.getFilePass());
 			ps.setLong(6, form.getId());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Mark has custom text.
+	 *
+	 * @param c             the c
+	 * @param hasCustomText the has custom text
+	 * @param urasIds       the uras ids
+	 * @throws SQLException                 the SQL exception
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
+	public static void markHasCustomText(Connection c, final boolean hasCustomTexts, final String[] urasIds, final Long idObsExecution) throws SQLException, UnsupportedEncodingException {
+		String query = "UPDATE observatorio_ura_send_results SET has_custom_text = ?  WHERE id_observatory_execution = ? ";
+		if (urasIds != null && urasIds.length > 0) {
+			query = query + " AND id_ura IN (" + urasIds[0];
+			for (int i = 1; i < urasIds.length; i++) {
+				query = query + "," + urasIds[i];
+			}
+			query = query + ")";
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setBoolean(1, hasCustomTexts);
+			ps.setLong(2, idObsExecution);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
