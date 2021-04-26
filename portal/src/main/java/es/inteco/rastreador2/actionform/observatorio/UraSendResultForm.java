@@ -47,6 +47,8 @@ public class UraSendResultForm extends ValidatorForm implements Serializable {
 	private String mail;
 	/** The valid date. */
 	private Date validDate;
+	/** The has custom text. */
+	private boolean hasCustomText;
 
 	/**
 	 * Gets the file link.
@@ -361,5 +363,23 @@ public class UraSendResultForm extends ValidatorForm implements Serializable {
 	 */
 	public void setValidDate(Date validDate) {
 		this.validDate = validDate;
+	}
+
+	/**
+	 * Checks if is checks for custom text.
+	 *
+	 * @return true, if is checks for custom text
+	 */
+	public boolean isHasCustomText() {
+		return hasCustomText;
+	}
+
+	/**
+	 * Sets the checks for custom text.
+	 *
+	 * @param hasCustomText the new checks for custom text
+	 */
+	public void setHasCustomText(boolean hasCustomText) {
+		this.hasCustomText = hasCustomText;
 	}
 }

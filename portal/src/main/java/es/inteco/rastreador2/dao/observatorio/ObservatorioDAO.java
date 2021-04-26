@@ -3332,14 +3332,15 @@ public final class ObservatorioDAO {
 	 * @throws SQLException                 the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	public static void saveConfigStep2(Connection c, final Long idObsExecution, final String subject, final String cco) throws SQLException, UnsupportedEncodingException {
+	public static void saveConfigStep2(Connection c, final Long idObsExecution, final String subject, final String cco, final Long hasCustomTexts) throws SQLException, UnsupportedEncodingException {
 		PreparedStatement ps = null;
 		try {
 			// Insert new
-			ps = c.prepareStatement("UPDATE observatorio_send_configuration SET subject = ?, cco = ? WHERE id_observatory_execution = ?");
+			ps = c.prepareStatement("UPDATE observatorio_send_configuration SET subject = ?, cco = ?, has_custom_texts = ?  WHERE id_observatory_execution = ?");
 			ps.setString(1, subject);
 			ps.setString(2, cco);
-			ps.setLong(3, idObsExecution);
+			ps.setLong(3, hasCustomTexts);
+			ps.setLong(4, idObsExecution);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("SQL_EXCEPTION: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);

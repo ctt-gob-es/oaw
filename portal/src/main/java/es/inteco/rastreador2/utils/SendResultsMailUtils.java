@@ -371,7 +371,11 @@ public final class SendResultsMailUtils {
 			}
 		}
 		templateMail = templateMail.replace("_ura_name_", ura.getName());
-		templateMail = templateMail.replace("_ura_custom_text_", uraCustom.getTemplate());
+		if (uraCustom.isHasCustomText()) {
+			templateMail = templateMail.replace("_ura_custom_text_", uraCustom.getTemplate());
+		} else {
+			templateMail = templateMail.replace("_ura_custom_text_", "");
+		}
 		try {
 			Connection c = DataBaseManager.getConnection();
 			String mapping = ObservatorioDAO.getMappingFromConfig(c);
