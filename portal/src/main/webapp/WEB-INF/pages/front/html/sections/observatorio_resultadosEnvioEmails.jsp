@@ -22,19 +22,27 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
+	var yes = '<bean:message key="select.yes" />';
+	var no = '<bean:message key="select.no" />';
+
 	$(document)
 			.ready(
 					function() {
 						var $jn = jQuery.noConflict();
 
-						$("#uraNameFilter")
+						$(".uraNameFilter")
 								.on(
 										"keyup",
 										function() {
 											var value = $(this).val()
 													.toLowerCase();
-											$(
-													"#sendResultsDetailTable .uraNameColumn")
+											('.uraNameColumn')
+
+											$(this)
+													.closest('.summaryEntry')
+													.find(
+															'.sendResultsDetailTable')
+													.find('.uraNameColumn')
 													.filter(
 															function() {
 																$(this)
@@ -50,15 +58,19 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															});
 										});
 
-						$("#errorFilter")
+						$(".errorFilter")
 								.on(
 										"change",
 										function() {
 											var checked = $(this).prop(
 													'checked');
 											if (checked) {
-												$(
-														"#sendResultsDetailTable .errorColumn")
+												$(this)
+														.closest(
+																'.summaryEntry')
+														.find(
+																'.sendResultsDetailTable')
+														.find('.errorColumn')
 														.filter(
 																function() {
 																	$(this)
@@ -71,8 +83,54 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 																							.trim().length > 0)
 																});
 											} else {
-												$(
-														"#sendResultsDetailTable .errorColumn")
+												$(this)
+														.closest(
+																'.summaryEntry')
+														.find(
+																'.sendResultsDetailTable')
+														.find('.errorColumn')
+														.filter(
+																function() {
+																	$(this)
+																			.closest(
+																					'tr')
+																			.show()
+																});
+											}
+										});
+
+						$(".sendAutoFilter")
+								.on(
+										"change",
+										function() {
+											var checked = $(this).prop(
+													'checked');
+											if (checked) {
+
+												$(this)
+														.closest(
+																'.summaryEntry')
+														.find(
+																'.sendResultsDetailTable')
+														.find('.sendAutoColumn')
+														.filter(
+																function() {
+																	$(this)
+																			.closest(
+																					'tr')
+																			.toggle(
+																					$(
+																							this)
+																							.text()
+																							.trim() == yes)
+																});
+											} else {
+												$(this)
+														.closest(
+																'.summaryEntry')
+														.find(
+																'.sendResultsDetailTable')
+														.find('.sendAutoColumn')
 														.filter(
 																function() {
 																	$(this)
@@ -277,13 +335,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												</td>
 												<td>
 													<logic:notEmpty name="range" property="template">
-													
-													
-														<span style="cursor: pointer" onclick="showOnDialog('previewTemplate_<c:out value="${range.id}" />_<c:out value="${result.id}" />')"
+														<span style="cursor: pointer"
+															onclick="showOnDialog('previewTemplate_<c:out value="${range.id}" />_<c:out value="${result.id}" />')"
 															class="glyphicon glyphicon-eye-open"></span>
 														<span class='sr-only'>Preview email</span>
 														</span>
-														<span id="previewTemplate_<c:out value="${range.id}" />_<c:out value="${result.id}" />" style="display: none">
+														<span id="previewTemplate_<c:out value="${range.id}" />_<c:out value="${result.id}" />"
+															style="display: none">
 															<bean:write name="range" property="template" />
 														</span>
 													</logic:notEmpty>
@@ -334,11 +392,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												</td>
 												<td>
 													<logic:notEmpty name="resultT" property="template">
-														<span style="cursor: pointer" onclick="showOnDialog('previewCustomText_<c:out value="${resultT.id}" />_<c:out value="${result.id}" />')"
+														<span style="cursor: pointer"
+															onclick="showOnDialog('previewCustomText_<c:out value="${resultT.id}" />_<c:out value="${result.id}" />')"
 															class="glyphicon glyphicon-eye-open"></span>
 														<span class='sr-only'>Preview email</span>
 														</span>
-														<span id="previewCustomText_<c:out value="${resultT.id}" />_<c:out value="${result.id}" />" style="display: none">
+														<span id="previewCustomText_<c:out value="${resultT.id}" />_<c:out value="${result.id}" />"
+															style="display: none">
 															<bean:write name="resultT" property="template" />
 														</span>
 													</logic:notEmpty>
@@ -415,19 +475,26 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<h3>
 								<bean:message key="send.results.observatory.list" />
 							</h3>
-							<label for="uraNameFilter" class="control-label">
+							<label for="uraNameFilter_<c:out value="${result.id}" />" class="control-label">
 								<strong class="labelVisu">
 									<bean:message key="colname.name" />
 								</strong>
 							</label>
-							<input id="uraNameFilter" type="text">
-							<label for="errorFilter" class="control-label">
+							<input id="uraNameFilter_<c:out value="${result.id}" />" type="text" class="uraNameFilter">
+							<label for="errorFilter_<c:out value="${result.id}" />" class="control-label">
 								<strong class="labelVisu">
 									<bean:message key="colname.error" />
 								</strong>
 							</label>
-							<input id="errorFilter" type="checkbox">
-							<table id="sendResultsDetailTable" class="table table-stripped table-bordered table-hover">
+							<input id="errorFilter_<c:out value="${result.id}" />" type="checkbox" class="errorFilter">
+							<label for="sendAutoFilter_<c:out value="${result.id}" />" class="control-label">
+								<strong class="labelVisu">
+									<bean:message key="colname.send.auto" />
+								</strong>
+							</label>
+							<input id="sendAutoFilter_<c:out value="${result.id}" />" type="checkbox" class="sendAutoFilter">
+							<table id="sendResultsDetailTable_<c:out value="${result.id}" />"
+								class="table table-stripped table-bordered table-hover sendResultsDetailTable">
 								<tr>
 									<th>
 										<bean:message key="colname.name" />
@@ -437,6 +504,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									</th>
 									<th>
 										<bean:message key="colname.email.content" />
+									</th>
+									<th>
+										<bean:message key="colname.send.auto" />
 									</th>
 									<th>
 										<bean:message key="colname.sended" />
@@ -480,6 +550,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 														<bean:write name="uraSend" property="mail" />
 													</span>
 												</logic:notEmpty>
+											</td>
+											<td class="sendAutoColumn">
+												<logic:equal name="uraSend" property="ura.sendAuto" value="true">
+													<bean:message key="select.yes" />
+												</logic:equal>
+												<logic:notEqual name="uraSend" property="ura.sendAuto" value="true">
+													<bean:message key="select.no" />
+												</logic:notEqual>
 											</td>
 											<td>
 												<logic:equal name="uraSend" property="send" value="true">
