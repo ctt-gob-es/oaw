@@ -922,7 +922,7 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						</strong>
 					</label>
 					<div class="col-xs-4">
-						<select name="senAuto" class="textoSelect form-control">
+						<select name="sendAuto" class="textoSelect form-control">
 							<option value="true"><bean:message key="select.yes" /></option>
 							<option value="false"><bean:message key="select.no" /></option>
 						</select>

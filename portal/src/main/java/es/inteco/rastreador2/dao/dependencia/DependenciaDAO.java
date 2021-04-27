@@ -460,8 +460,16 @@ public final class DependenciaDAO {
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, dependencia.getName());
 			ps.setString(2, dependencia.getEmails());
-			ps.setBoolean(3, dependencia.getSendAuto());
-			ps.setBoolean(4, dependencia.getOfficial());
+			if (dependencia.getSendAuto() != null) {
+				ps.setBoolean(3, dependencia.getSendAuto());
+			} else {
+				ps.setNull(3, Types.BOOLEAN);
+			}
+			if (dependencia.getOfficial() != null) {
+				ps.setBoolean(4, dependencia.getOfficial());
+			} else {
+				ps.setNull(4, Types.BOOLEAN);
+			}
 			if (dependencia.getAmbito() != null && StringUtils.isNotEmpty(dependencia.getAmbito().getId())) {
 				ps.setString(5, dependencia.getAmbito().getId());
 			} else {

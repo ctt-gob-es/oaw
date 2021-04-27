@@ -93,8 +93,15 @@ public final class SendResultsMailUtils {
 		try {
 			final String[] exObsIds = ObservatorioDAO.getExObsIdsConfig(c, idObsExecution);
 			final List<ComparisionForm> comparision = ObservatorioDAO.getComparisionConfig(c, idObsExecution);
+			String[] tagsToFilter = null;
+			if (comparision != null && !comparision.isEmpty()) {
+				tagsToFilter = new String[comparision.size()];
+				for (int i = 0; i < comparision.size(); i++) {
+					tagsToFilter[i] = String.valueOf(comparision.get(i).getIdTag());
+				}
+			}
 			// Generate Annex
-			final String annexPath = getAnnexes(idObs, idCartucho, idObsExecution, null, exObsIds, comparision);
+			final String annexPath = getAnnexes(idObs, idCartucho, idObsExecution, tagsToFilter, exObsIds, comparision);
 			// Generate Zip pdf
 			final List<FulFilledCrawling> fulfilledCrawlings = ObservatorioDAO.getFulfilledCrawlingByObservatoryExecution(c, idObsExecution);
 			final Map<String, String> pdfZipsPath = getPdfs(idObs, idObsExecution, fulfilledCrawlings);
@@ -107,6 +114,7 @@ public final class SendResultsMailUtils {
 				ura.setSend(false);
 				ura.setFileLink("");
 				ura.setFilePass("");
+				ura.setSendDate(null);
 				// Find Dependency
 				DependenciaForm dependency = DependenciaDAO.findById(c, ura.getUraId());
 				String xlsxFilePath = annexPath + "/Dependencias/" + dependency.getName() + ".xlsx";
@@ -317,6 +325,7 @@ public final class SendResultsMailUtils {
 		}
 		try {
 			if (ura.getSendAuto() && !StringUtils.isEmpty(ura.getEmails())) {
+				Logger.putLog("Enviando correo a la URA: " + ura.getName(), SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR);
 				if (!StringUtils.isEmpty(ura.getAcronym())) {
 					mailService.sendMail(mailsTo, mailsToCco, "[" + ura.getAcronym() + "] " + emailSubject, mailBody, true);
 				} else {
@@ -325,9 +334,16 @@ public final class SendResultsMailUtils {
 				// Mark as send
 				uraCustom.setSend(true);
 				uraCustom.setSendError("");
+				uraCustom.setSendDate(new Date());
+			} else {
+				Logger.putLog("No se envía correo a la URA: " + ura.getName(), SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR);
+				uraCustom.setSend(false);
+				uraCustom.setSendError("");
+				uraCustom.setSendDate(new Date());
 			}
 		} catch (MailException e) {
 			uraCustom.setSendError(e.getCause().getMessage());
+			uraCustom.setSendDate(new Date());
 			uraCustom.setSend(false);
 		}
 		Connection c = DataBaseManager.getConnection();

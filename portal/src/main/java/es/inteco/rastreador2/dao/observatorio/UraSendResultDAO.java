@@ -396,7 +396,7 @@ public class UraSendResultDAO {
 		final String query = "UPDATE observatorio_ura_send_results SET send= ?, send_date =?, send_error = ?, file_link = ?, file_pass = ?  WHERE id = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setBoolean(1, form.isSend());
-			ps.setTimestamp(2, new Timestamp(new Date().getTime()));
+			ps.setTimestamp(2, new Timestamp(form.getSendDate().getTime()));
 			ps.setString(3, form.getSendError());
 			ps.setString(4, form.getFileLink());
 			ps.setString(5, form.getFilePass());
