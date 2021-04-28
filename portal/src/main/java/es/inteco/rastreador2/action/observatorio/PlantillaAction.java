@@ -258,7 +258,8 @@ public class PlantillaAction extends DispatchAction {
 		if (plantilla.getFile() == null || StringUtils.isEmpty(plantilla.getFile().getFileName())) {
 			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.documento.plantilla.obligatorio")));
 		}
-		if (!plantilla.getFile().getFileName().endsWith(".odt")) {
+		if (!plantilla.getFile().getFileName().toLowerCase().endsWith(".odt") || !plantilla.getFile().getFileName().toLowerCase().endsWith(".ods")
+				|| !plantilla.getFile().getFileName().toLowerCase().endsWith(".xlsx")) {
 			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.documento.plantilla.formato")));
 		}
 		if (errores.size() == 0) {

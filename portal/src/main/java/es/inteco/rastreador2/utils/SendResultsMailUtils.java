@@ -337,6 +337,8 @@ public final class SendResultsMailUtils {
 				uraCustom.setSendDate(new Date());
 			} else {
 				Logger.putLog("No se envía correo a la URA: " + ura.getName(), SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR);
+				uraCustom.setMail("");
+				uraCustom.setTemplate("");
 				uraCustom.setSend(false);
 				uraCustom.setSendError("");
 				uraCustom.setSendDate(new Date());
@@ -391,6 +393,7 @@ public final class SendResultsMailUtils {
 			templateMail = templateMail.replace("_ura_custom_text_", uraCustom.getTemplate());
 		} else {
 			templateMail = templateMail.replace("_ura_custom_text_", "");
+			uraCustom.setTemplate("");
 		}
 		try {
 			Connection c = DataBaseManager.getConnection();
