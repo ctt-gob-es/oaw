@@ -99,47 +99,91 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											}
 										});
 
+						
+						
 						$(".sendAutoFilter")
-								.on(
-										"change",
-										function() {
-											var checked = $(this).prop(
-													'checked');
-											if (checked) {
+						.on(
+								"change",
+								function() {
+									var selected = $(this).find(":selected").text();
+									if (selected != "") {
 
-												$(this)
-														.closest(
-																'.summaryEntry')
-														.find(
-																'.sendResultsDetailTable')
-														.find('.sendAutoColumn')
-														.filter(
-																function() {
-																	$(this)
-																			.closest(
-																					'tr')
-																			.toggle(
-																					$(
-																							this)
-																							.text()
-																							.trim() == yes)
-																});
-											} else {
-												$(this)
-														.closest(
-																'.summaryEntry')
-														.find(
-																'.sendResultsDetailTable')
-														.find('.sendAutoColumn')
-														.filter(
-																function() {
-																	$(this)
-																			.closest(
-																					'tr')
-																			.show()
-																});
-											}
-										});
+										$(this)
+												.closest(
+														'.summaryEntry')
+												.find(
+														'.sendResultsDetailTable')
+												.find('.sendAutoColumn')
+												.filter(
+														function() {
+															$(this)
+																	.closest(
+																			'tr')
+																	.toggle(
+																			$(
+																					this)
+																					.text()
+																					.trim() == selected)
+														});
+									} else {
+										$(this)
+												.closest(
+														'.summaryEntry')
+												.find(
+														'.sendResultsDetailTable')
+												.find('.sendAutoColumn')
+												.filter(
+														function() {
+															$(this)
+																	.closest(
+																			'tr')
+																	.show()
+														});
+									}
+								});
+						
+// 						$(".sendAutoFilter")
+// 								.on(
+// 										"change",
+// 										function() {
+// 											var checked = $(this).prop(
+// 													'checked');
+// 											if (checked) {
+
+// 												$(this)
+// 														.closest(
+// 																'.summaryEntry')
+// 														.find(
+// 																'.sendResultsDetailTable')
+// 														.find('.sendAutoColumn')
+// 														.filter(
+// 																function() {
+// 																	$(this)
+// 																			.closest(
+// 																					'tr')
+// 																			.toggle(
+// 																					$(
+// 																							this)
+// 																							.text()
+// 																							.trim() == yes)
+// 																});
+// 											} else {
+// 												$(this)
+// 														.closest(
+// 																'.summaryEntry')
+// 														.find(
+// 																'.sendResultsDetailTable')
+// 														.find('.sendAutoColumn')
+// 														.filter(
+// 																function() {
+// 																	$(this)
+// 																			.closest(
+// 																					'tr')
+// 																			.show()
+// 																});
+// 											}
+// 										});
+						
 					});
 	function showOnDialog(mail) {
 		var previewDialog = $('<div id="previewDialog"></div>');
@@ -423,7 +467,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								<bean:write name='resultsSize' />
 							</bean:define>
 							<p>
-								<bean:message key="send.results.observatory.summary.text" arg0="<%=sendedSizeV%>" arg1="<%=resultsSizeV%>" />
+								<bean:message key="send.results.observatory.summary.text" arg0="<%=sendedSizeV%>" arg1="<%=sendedSizeV%>" />
 							</p>
 							<p>
 								<bean:message key="send.results.observatory.summary.send.manual" />
@@ -463,7 +507,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<c:if test="${expirationDateFound != 'X' }">
 										<bean:define id="expirationDateFound" value="X"></bean:define>
 										<p>
-											<bean:message key="send.results.observatory.summary.send.nas.text" arg0="<%=sendedSizeV%>"
+											<bean:message key="send.results.observatory.summary.send.nas.text" arg0="<%=resultsSizeV%>"
 												arg1="<%=resultsSizeV%>" arg2="<%=expirationDate%>" />
 										</p>
 									</c:if>
@@ -481,18 +525,23 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								</strong>
 							</label>
 							<input id="uraNameFilter_<c:out value="${result.id}" />" type="text" class="uraNameFilter">
-							<label for="errorFilter_<c:out value="${result.id}" />" class="control-label">
+							<label for="errorFilter_<c:out value="${result.id}" />" class="control-label" style="margin-left: 15px;">
 								<strong class="labelVisu">
 									<bean:message key="colname.error" />
 								</strong>
 							</label>
 							<input id="errorFilter_<c:out value="${result.id}" />" type="checkbox" class="errorFilter">
-							<label for="sendAutoFilter_<c:out value="${result.id}" />" class="control-label">
+							<label for="sendAutoFilter_<c:out value="${result.id}" />" class="control-label" style="margin-left: 15px;">
 								<strong class="labelVisu">
 									<bean:message key="colname.send.auto" />
 								</strong>
 							</label>
-							<input id="sendAutoFilter_<c:out value="${result.id}" />" type="checkbox" class="sendAutoFilter">
+							<%-- 							<input id="sendAutoFilter_<c:out value="${result.id}" />" type="checkbox" class="sendAutoFilter"> --%>
+							<select id="sendAutoFilter_<c:out value="${result.id}" />" class="sendAutoFilter">
+								<option value=""></option>
+								<option value="true"><bean:message key="select.yes" /></option>
+								<option value="false"><bean:message key="select.no" /></option>
+							</select>
 							<table id="sendResultsDetailTable_<c:out value="${result.id}" />"
 								class="table table-stripped table-bordered table-hover sendResultsDetailTable">
 								<tr>
@@ -541,15 +590,17 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												<bean:write name="uraSend" property="ura.emails" />
 											</td>
 											<td>
-												<logic:notEmpty name="uraSend" property="mail">
-													<span style="cursor: pointer" onclick="showOnDialog('previewEmail_<c:out value="${uraSend.id}" />')"
-														class="glyphicon glyphicon-eye-open"></span>
-													<span class='sr-only'>Preview email</span>
-													</span>
-													<span id="previewEmail_<c:out value="${uraSend.id}" />" style="display: none">
-														<bean:write name="uraSend" property="mail" />
-													</span>
-												</logic:notEmpty>
+												<logic:equal name="uraSend" property="send" value="true">
+													<logic:notEmpty name="uraSend" property="mail">
+														<span style="cursor: pointer" onclick="showOnDialog('previewEmail_<c:out value="${uraSend.id}" />')"
+															class="glyphicon glyphicon-eye-open"></span>
+														<span class='sr-only'>Preview email</span>
+														</span>
+														<span id="previewEmail_<c:out value="${uraSend.id}" />" style="display: none">
+															<bean:write name="uraSend" property="mail" />
+														</span>
+													</logic:notEmpty>
+												</logic:equal>
 											</td>
 											<td class="sendAutoColumn">
 												<logic:equal name="uraSend" property="ura.sendAuto" value="true">

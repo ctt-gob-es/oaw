@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -269,7 +270,8 @@ public final class SeedExcelUtils {
 					if (cell == null) {
 						continue;
 					}
-					String value = cell.getRichStringCellValue().getString();
+					// String value = cell.getRichStringCellValue().getString();
+					String value = getCellValue(cell);
 					// big switch in case we need to do custom cell preprocessing for each column
 					switch (col) {
 					case ID:
@@ -335,6 +337,28 @@ public final class SeedExcelUtils {
 					Logger.putLog("Error al cerrar el InputStream", SeedUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
+		}
+	}
+
+	/**
+	 * Gets the cell value.
+	 *
+	 * @param c the c
+	 * @return the cell value
+	 */
+	private static String getCellValue(final Cell c) {
+		if (c == null || CellType.BLANK.equals(c.getCellType())) {
+			return "";
+		} else if (CellType.STRING.equals(c.getCellType())) {
+			return c.getStringCellValue();
+		} else if (CellType.NUMERIC.equals(c.getCellType())) {
+			return String.valueOf((int) c.getNumericCellValue());
+		} else if (CellType.BOOLEAN.equals(c.getCellType())) {
+			return String.valueOf(c.getBooleanCellValue());
+		} else if (CellType.FORMULA.equals(c.getCellType())) {
+			return "";
+		} else {
+			return "";
 		}
 	}
 }

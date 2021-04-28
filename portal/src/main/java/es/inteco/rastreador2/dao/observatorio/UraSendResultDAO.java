@@ -411,9 +411,10 @@ public class UraSendResultDAO {
 	/**
 	 * Mark has custom text.
 	 *
-	 * @param c             the c
-	 * @param hasCustomText the has custom text
-	 * @param urasIds       the uras ids
+	 * @param c              the c
+	 * @param hasCustomTexts the has custom texts
+	 * @param urasIds        the uras ids
+	 * @param idObsExecution the id obs execution
 	 * @throws SQLException                 the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
