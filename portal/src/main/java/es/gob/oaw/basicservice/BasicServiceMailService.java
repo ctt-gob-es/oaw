@@ -132,7 +132,7 @@ public class BasicServiceMailService {
 	private String getMailBody(final BasicServiceForm basicServiceForm) {
 		final String text;
 		String complexName = "";
-		if (basicServiceForm.isContentAnalysis()) {
+		if (basicServiceForm.isContentAnalysis() || basicServiceForm.isContentAnalysisMultiple()) {
 			final String irap = "true".equalsIgnoreCase(basicServiceForm.getDepthReport()) ? pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.yes")
 					: pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.no");
 			text = MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory.content"), basicServiceForm.getUser(),

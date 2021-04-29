@@ -18,6 +18,7 @@ package es.inteco.rastreador2.pdf.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,6 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.rastreador2.pdf.ExportAction;
 import es.inteco.rastreador2.utils.CrawlerUtils;
-import es.inteco.rastreador2.utils.IntecoFileFilter;
 import es.inteco.utils.FileUtils;
 
 /**
@@ -199,7 +199,12 @@ public final class ZipUtils {
 		// Recuperamos la lista de archivos del directorio
 		final File[] directoryFiles;
 		if (excludeZipFiles) {
-			directoryFiles = directory.listFiles(new IntecoFileFilter("[^(\\.zip)]$"));
+//			directoryFiles = directory.listFiles(new IntecoFileFilter("[^(\\.zip)]$"));
+			directoryFiles = directory.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					return !name.toLowerCase().endsWith(".zip");
+				}
+			});
 		} else {
 			directoryFiles = directory.listFiles();
 		}

@@ -46,6 +46,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	var saveButton = '<bean:message key="boton.aceptar"/>';
 	var cancelButton = '<bean:message key="boton.cancelar"/>';
 	var confirmRemoveMessage = '<bean:message key="range.observatory.modal.delete.confirm"/>';
+	
+	
+	var colNameRangeScore =  '<bean:message key="colname.range.score"/>';
 
 	var lastUrl;
 	var scroll;
@@ -156,6 +159,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												colNames : [ colNameId,
 														colNameName,
 														colNameRange,
+														colNameRangeScore,
 														colNameTemplate,
 														colNameSendAuto, "", "" ],
 												colModel : [
@@ -180,6 +184,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															sortable : true
 
 														},
+														{
+															name : "rangeValue",
+															width : 10,
+															editable : false,
+															align : "center",
+															sortable : true
+
+														},														
 														{
 															name : "template",
 															width : 50,

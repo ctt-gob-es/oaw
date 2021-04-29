@@ -23,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.IDN;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -173,7 +174,7 @@ public final class BasicServiceUtils {
 		basicServiceForm.setFileName(parameterFileName);
 		final String contentParameter = request.getParameter(Constants.PARAM_CONTENT);
 		if (StringUtils.isNotEmpty(contentParameter)) {
-			getContent(basicServiceForm, parameterFileName, contentParameter);
+			getContent(basicServiceForm, parameterFileName, contentParameter, false);
 		}
 		if (StringUtils.isNotEmpty(request.getParameter("urls"))) {
 			String url = "";
@@ -213,38 +214,43 @@ public final class BasicServiceUtils {
 	 * @param contentParameter  the content parameter
 	 * @return the content
 	 */
-	public static void getContent(final BasicServiceForm basicServiceForm, String parameterFileName, final String contentParameter) {
+	public static void getContent(final BasicServiceForm basicServiceForm, String parameterFileName, final String contentParameter, final boolean decode) {
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(parameterFileName) && parameterFileName.toLowerCase().endsWith(".zip")) {
 			try {
 				File tmp = File.createTempFile("oaw_basic_service_", ".zip");
-				org.apache.commons.io.FileUtils.writeByteArrayToFile(tmp, Base64.getUrlDecoder().decode(contentParameter.getBytes("UTF-8")));
+				org.apache.commons.io.FileUtils.writeByteArrayToFile(tmp, Base64.getUrlDecoder().decode(contentParameter.getBytes(StandardCharsets.ISO_8859_1.name())));
 				ZipFile zipFile;
 				try {
-					zipFile = new ZipFile(tmp);
+					zipFile = new ZipFile(tmp, Charset.forName("ISO-8859-1"));
 					Enumeration<? extends ZipEntry> entries = zipFile.entries();
 					List<BasicServiceFile> files = new ArrayList<>();
 					while (entries.hasMoreElements()) {
-						ZipEntry entry = entries.nextElement();
-						String name = entry.getName();
-						if (entry.getName().toLowerCase().endsWith(".html")) {
-							try {
-								String content = org.apache.commons.io.IOUtils.toString(zipFile.getInputStream(entry), StandardCharsets.ISO_8859_1.name());
-								BasicServiceFile file = new BasicServiceFile();
-								file.setName(name);
-								file.setContent(content);
-								files.add(file);
-							} catch (UnsupportedEncodingException e) {
-								Logger.putLog("No se puede codificar el contenido como ISO-8859-1", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+						try {
+							ZipEntry entry = entries.nextElement();
+							String name = entry.getName();
+//						if (entry.getName().toLowerCase().endsWith(".html")) {
+							if (!entry.isDirectory()) {
 								try {
-									String content = org.apache.commons.io.IOUtils.toString(zipFile.getInputStream(entry), StandardCharsets.UTF_8.name());
+									String content = org.apache.commons.io.IOUtils.toString(zipFile.getInputStream(entry), StandardCharsets.ISO_8859_1.name());
 									BasicServiceFile file = new BasicServiceFile();
 									file.setName(name);
 									file.setContent(content);
 									files.add(file);
-								} catch (UnsupportedEncodingException e1) {
-									Logger.putLog("No se puede codificar el contenido como UTF-8", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+								} catch (UnsupportedEncodingException e) {
+									Logger.putLog("No se puede codificar el contenido como ISO-8859-1", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+									try {
+										String content = org.apache.commons.io.IOUtils.toString(zipFile.getInputStream(entry), StandardCharsets.UTF_8.name());
+										BasicServiceFile file = new BasicServiceFile();
+										file.setName(name);
+										file.setContent(content);
+										files.add(file);
+									} catch (UnsupportedEncodingException e1) {
+										Logger.putLog("No se puede codificar el contenido como UTF-8", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+									}
 								}
 							}
+						} catch (IllegalArgumentException e) {
+							Logger.putLog("No se puede procesar la entrada del fichero zip", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
 						}
 					}
 					basicServiceForm.setContents(files);
@@ -257,17 +263,19 @@ public final class BasicServiceUtils {
 			basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE);
 		} else {
 			try {
-				basicServiceForm.setContent(new String(contentParameter.getBytes("ISO-8859-1")));
-			} catch (UnsupportedEncodingException e) {
-				Logger.putLog("No se puede codificar el contenido como ISO-8859-1", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
-				try {
-					basicServiceForm.setContent(new String(contentParameter.getBytes("UTF-8")));
-				} catch (UnsupportedEncodingException e1) {
-					Logger.putLog("No se puede codificar el contenido como UTF-8", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
-					basicServiceForm.setContent("");
+				String content = "";
+				if (decode) {
+					File tmp = File.createTempFile("oaw_basic_service_", ".txt");
+					org.apache.commons.io.FileUtils.writeByteArrayToFile(tmp, Base64.getUrlDecoder().decode(contentParameter.getBytes(StandardCharsets.ISO_8859_1.name())));
+					content = org.apache.commons.io.FileUtils.readFileToString(tmp, StandardCharsets.ISO_8859_1.name());
+				} else {
+					content = new String(contentParameter.getBytes(StandardCharsets.ISO_8859_1.name()));
 				}
+				basicServiceForm.setContent(content);
+				basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE);
+			} catch (Exception e) {
+				Logger.putLog("No se puede procesar la entrada del fichero", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
 			}
-			basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE);
 		}
 	}
 
