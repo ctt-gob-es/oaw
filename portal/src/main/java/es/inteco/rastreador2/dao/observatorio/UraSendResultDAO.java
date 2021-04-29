@@ -102,7 +102,7 @@ public class UraSendResultDAO {
 	 */
 	public static List<UraSendResultForm> findAll(Connection c, final Long idExObs, final boolean isSendAuto) throws SQLException {
 		final List<UraSendResultForm> results = new ArrayList<>();
-		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.has_custom_text, c.custom_text, c.send, c.send_date, c.send_error, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ";
+		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.range_value, c.has_custom_text, c.custom_text, c.send, c.send_date, c.send_error, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ";
 		if (isSendAuto) {
 			query = query + "AND d.send_auto = 1 ";
 		}
@@ -135,6 +135,7 @@ public class UraSendResultDAO {
 					form.setSendError(rs.getString("c.send_error"));
 					form.setFileLink(rs.getString("c.file_link"));
 					form.setFilePass(rs.getString("c.file_pass"));
+					form.setRangeValue(rs.getFloat("c.range_value"));
 					results.add(form);
 				}
 			}
@@ -198,7 +199,7 @@ public class UraSendResultDAO {
 	public static List<UraSendResultForm> findByIds(Connection c, final Long idExObs, final String[] ids, final boolean isSendAuto) throws SQLException {
 		final List<UraSendResultForm> results = new ArrayList<>();
 		if (ids != null && ids.length > 0) {
-			String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1  AND c.id_observatory_execution = ? ";
+			String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range,c.range_value, c.custom_text, c.send, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1  AND c.id_observatory_execution = ? ";
 			query = query + " AND c.id_ura IN (" + ids[0];
 			for (int i = 1; i < ids.length; i++) {
 				query = query + "," + ids[i];
@@ -226,6 +227,7 @@ public class UraSendResultDAO {
 						ura.setSendAuto(rs.getBoolean("d.send_auto"));
 						form.setFileLink(rs.getString("c.file_link"));
 						form.setFilePass(rs.getString("c.file_pass"));
+						form.setRangeValue(rs.getFloat("c.range_value"));
 						form.setUra(ura);
 						results.add(form);
 					}
@@ -549,7 +551,7 @@ public class UraSendResultDAO {
 								Logger.putLog("SQL_EXCEPTION: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
 								psResult.setString(4, "");
 							}
-							psResult.setFloat(5, 0f);
+							psResult.setFloat(5, result.getRangeValue());
 							// TODO Mail
 							psResult.setString(6, "");
 							try {
@@ -653,7 +655,7 @@ public class UraSendResultDAO {
 					historic.setComparisions(comparisionList);
 					// Results
 					PreparedStatement psResults = c.prepareStatement(
-							"SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.custom_text, c.send, c.send_date, c.expiration_date, c.send_error, c.file_link, c.file_pass, c.mail, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_send_historic = ? ORDER BY c.id ASC ");
+							"SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.range_value, c.custom_text, c.send, c.send_date, c.expiration_date, c.send_error, c.file_link, c.file_pass, c.mail, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_send_historic = ? ORDER BY c.id ASC ");
 					psResults.setLong(1, historic.getId());
 					ResultSet rsResults = psResults.executeQuery();
 					List<UraSendHistoricResults> resultsList = new ArrayList<>();
@@ -683,6 +685,7 @@ public class UraSendResultDAO {
 						result.setSendError(rsResults.getString("c.send_error"));
 						result.setFileLink(rsResults.getString("c.file_link"));
 						result.setFilePass(rsResults.getString("c.file_pass"));
+						result.setRangeValue(rsResults.getFloat("c.range_value"));
 						resultsList.add(result);
 					}
 					historic.setResults(resultsList);
@@ -710,7 +713,7 @@ public class UraSendResultDAO {
 	 */
 	public static List<UraSendHistoricResults> findAllSendHistoric(Connection c, final Long idHistoric) throws SQLException {
 		final List<UraSendHistoricResults> results = new ArrayList<>();
-		String query = "SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.custom_text, c.send, c.send_error, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.send=1 AND c.id_send_historic = ? ORDER BY c.id ASC";
+		String query = "SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.range_value, c.custom_text, c.send, c.send_error, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.send=1 AND c.id_send_historic = ? ORDER BY c.id ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idHistoric);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -727,6 +730,7 @@ public class UraSendResultDAO {
 					form.setUra(ura);
 					form.setSend(rs.getBoolean("c.send"));
 					form.setSendError(rs.getString("c.send_error"));
+					form.setRangeValue(rs.getFloat("c.range_value"));
 					results.add(form);
 				}
 			}
@@ -747,7 +751,7 @@ public class UraSendResultDAO {
 	 */
 	public static List<UraSendHistoricResults> findAllSendAutoFalseHistoric(Connection c, final Long idHistoric) throws SQLException {
 		final List<UraSendHistoricResults> results = new ArrayList<>();
-		String query = "SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.custom_text, c.send, c.send_error, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND d.send_auto=0 AND c.id_send_historic = ? ORDER BY c.id ASC";
+		String query = "SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.range_value, c.custom_text, c.send, c.send_error, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND d.send_auto=0 AND c.id_send_historic = ? ORDER BY c.id ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idHistoric);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -764,6 +768,7 @@ public class UraSendResultDAO {
 					form.setUra(ura);
 					form.setSend(rs.getBoolean("c.send"));
 					form.setSendError(rs.getString("c.send_error"));
+					form.setRangeValue(rs.getFloat("c.range_value"));
 					results.add(form);
 				}
 			}

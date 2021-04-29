@@ -61,8 +61,10 @@ public class BasicServiceAction extends Action {
 			final BasicServiceManager basicServiceManager = new BasicServiceManager();
 			if (Constants.EXECUTE.equalsIgnoreCase(action)) {
 				final BasicServiceForm basicServiceForm = DiagnosisDAO.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceFormRequest.getId());
-				if (basicServiceForm.isContentAnalysis() || basicServiceForm.isContentAnalysisMultiple()) {
-					BasicServiceUtils.getContent(basicServiceForm, basicServiceForm.getFileName(), basicServiceFormRequest.getContent());
+				if (basicServiceForm.isContentAnalysis()) {
+					BasicServiceUtils.getContent(basicServiceForm, basicServiceForm.getFileName(), request.getParameter(Constants.PARAM_CONTENT), true);
+				} else if (basicServiceForm.isContentAnalysisMultiple()) {
+					BasicServiceUtils.getContent(basicServiceForm, basicServiceForm.getFileName(), basicServiceFormRequest.getContent(), false);
 				}
 				basicServiceForm.setAnalysisToDelete(basicServiceFormRequest.getAnalysisToDelete());
 				basicServiceManager.executeCrawling(basicServiceForm, CrawlerUtils.getResources(request));

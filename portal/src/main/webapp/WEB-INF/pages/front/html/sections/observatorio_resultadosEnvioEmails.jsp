@@ -552,6 +552,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										<bean:message key="colname.email" />
 									</th>
 									<th>
+										<bean:message key="colname.range" />
+									</th>
+									<th>
+										<bean:message key="colname.range.score" />
+									</th>
+									<th>
 										<bean:message key="colname.email.content" />
 									</th>
 									<th>
@@ -575,7 +581,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								</tr>
 								<logic:empty name="result" property="results">
 									<tr>
-										<td colspan="6">
+										<td colspan="11">
 											<bean:message key="no.results" />
 										</td>
 									</tr>
@@ -588,6 +594,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</td>
 											<td>
 												<bean:write name="uraSend" property="ura.emails" />
+											</td>
+											<td>
+												<bean:write name="uraSend" property="rangeName" />
+											</td>
+											<td>
+												<bean:write name="uraSend" property="rangeValue" />
 											</td>
 											<td>
 												<logic:equal name="uraSend" property="send" value="true">

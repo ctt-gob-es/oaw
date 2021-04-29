@@ -48,7 +48,6 @@ import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
-import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 
 /**
  * The Class DiagnosisDAO.
@@ -103,7 +102,8 @@ public final class DiagnosisDAO {
 				ps.setString(3, basicServiceForm.getFileName());
 				ps.setString(11, BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE.getLabel());
 			} else if (StringUtils.isNotEmpty(basicServiceForm.getContent())) {
-				ps.setString(3, BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()));
+				// ps.setString(3, BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()));
+				ps.setString(3, basicServiceForm.getFileName());
 				ps.setString(11, BasicServiceAnalysisType.CODIGO_FUENTE.getLabel());
 			}
 			ps.setString(4, basicServiceForm.getEmail());
