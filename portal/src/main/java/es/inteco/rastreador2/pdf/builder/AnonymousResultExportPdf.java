@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.struts.util.MessageResources;
 
@@ -45,6 +46,10 @@ public abstract class AnonymousResultExportPdf {
 	private final BasicServiceForm basicServiceForm;
 	/** The basic service. */
 	private boolean basicService = false;
+	/** The result L 1. */
+	private Map<String, BigDecimal> resultL1;
+	/** The result L 2. */
+	private Map<String, BigDecimal> resultL2;
 
 	/**
 	 * Instantiates a new anonymous result export pdf.
@@ -375,12 +380,40 @@ public abstract class AnonymousResultExportPdf {
 			}
 		}
 		generateScoresVerificacion(messageResources, scoreForm, evaList);
+//		if (!evaList.isEmpty()) {
+//			scoreForm.setTotalScore(scoreForm.getTotalScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+//			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+//			scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+//			scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
+//			scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
+//			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+//		}
 		if (!evaList.isEmpty()) {
 			scoreForm.setTotalScore(scoreForm.getTotalScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
-			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
-			scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
-			scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
-			scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
+			// Calculate mid from score verificatrion
+			BigDecimal sumL1 = new BigDecimal(0);
+			int countNA = 0;
+			for (Entry<String, BigDecimal> entry : resultL1.entrySet()) {
+				if (entry.getValue().compareTo(new BigDecimal(0)) < 0) {
+					countNA++;
+				} else {
+					sumL1 = sumL1.add(entry.getValue());
+				}
+			}
+			scoreForm.setScoreLevelA(sumL1.divide(new BigDecimal(resultL1.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevel1(sumL1.divide(new BigDecimal(resultL1.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
+			// Calculate mid from score verificatrion
+			BigDecimal sumL2 = new BigDecimal(0);
+			countNA = 0;
+			for (Entry<String, BigDecimal> entry : resultL2.entrySet()) {
+				if (entry.getValue().compareTo(new BigDecimal(0)) < 0) {
+					countNA++;
+				} else {
+					sumL2 = sumL2.add(entry.getValue());
+				}
+			}
+			scoreForm.setScoreLevel2(sumL2.divide(new BigDecimal(resultL2.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevelAA(sumL2.divide(new BigDecimal(resultL2.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
 		}
 		// El nivel de validación del portal
