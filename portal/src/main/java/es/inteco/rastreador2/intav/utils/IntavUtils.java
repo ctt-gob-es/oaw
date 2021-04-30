@@ -453,8 +453,9 @@ public final class IntavUtils {
 			for (Entry<String, BigDecimal> entry : resultL1.entrySet()) {
 				if (entry.getValue().compareTo(new BigDecimal(0)) < 0) {
 					countNA++;
+				} else {
+					sumL1 = sumL1.add(entry.getValue());
 				}
-				sumL1 = sumL1.add(entry.getValue());
 			}
 			scoreForm.setScoreLevelA(sumL1.divide(new BigDecimal(resultL1.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setScoreLevel1(sumL1.divide(new BigDecimal(resultL1.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
@@ -464,8 +465,9 @@ public final class IntavUtils {
 			for (Entry<String, BigDecimal> entry : resultL2.entrySet()) {
 				if (entry.getValue().compareTo(new BigDecimal(0)) < 0) {
 					countNA++;
+				} else {
+					sumL2 = sumL2.add(entry.getValue());
 				}
-				sumL2 = sumL2.add(entry.getValue());
 			}
 			scoreForm.setScoreLevel2(sumL2.divide(new BigDecimal(resultL2.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setScoreLevelAA(sumL2.divide(new BigDecimal(resultL2.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
