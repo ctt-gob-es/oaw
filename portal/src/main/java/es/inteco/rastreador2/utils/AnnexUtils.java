@@ -2727,27 +2727,12 @@ public final class AnnexUtils {
 							executionDatesWithFormat.add(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)));
 						}
 						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-							// If there is an newer execution the same day, then ignore current one.
-							boolean newerFound = false;
-							Date currentExecutionDate = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19));
-							for (Date d : executionDatesWithFormat) {
-								if (d.getDay() == currentExecutionDate.getDay() && d.getMonth() == currentExecutionDate.getMonth() && d.getYear() == currentExecutionDate.getYear()) {
-									if (d.getHours() > currentExecutionDate.getHours() || (d.getHours() == currentExecutionDate.getHours() && d.getMinutes() > currentExecutionDate.getMinutes())
-											|| (d.getHours() == currentExecutionDate.getHours() && d.getMinutes() == currentExecutionDate.getMinutes()
-													&& d.getSeconds() > currentExecutionDate.getSeconds())) {
-										newerFound = true;
-										break;
-									}
-								}
-							}
-							if (newerFound) {
-								continue;
-							}
 							final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
-							if (!executionDates.contains(executionDateAux)) {
-								executionDates.add(executionDateAux);
-								executionDatesWithFormat_Valid.add(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)));
-							}
+							// Execution dates must be exists as column
+//							if (!executionDates.contains(executionDateAux)) {
+//								executionDates.add(executionDateAux);
+//								executionDatesWithFormat_Valid.add(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)));
+//							}
 							double score = Double.parseDouble(entry.getValue().getTotalScore().toString());
 							String adequacy = changeLevelName(entry.getValue().getLevel(), messageResources);
 							String compliance = entry.getValue().getCompliance();
