@@ -338,6 +338,7 @@ public final class AnnexUtils {
 	 * The Constant PORTAL_ELEMENT.
 	 */
 	private static final String PORTAL_ELEMENT = "portal";
+	public static final BigDecimal BIG_DECIMAL_HUNDRED = BigDecimal.valueOf(100);
 	/**
 	 * Excel lines created by generation Evolution and reused generating PerDependency annex.
 	 */
@@ -661,13 +662,15 @@ public final class AnnexUtils {
 			final XSSFSheet globalSheet = wb.createSheet("Global");
 			// First sheet global part
 			XlsxUtils xlsxUtils = new XlsxUtils(wb);
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(idObs, idObsExecution, tagsToFilter, exObsIds);
-			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMap, null,
-					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_IN_GLOBAL_TERMS, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_INTENDED_TO_BE_IMPLEMENTED_IN_GLOBAL_TERMS, null, null, false, 0, xlsxUtils);
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(idObs, idObsExecution, tagsToFilterFixed,
-					exObsIds);
-			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed, null,
-					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 40, xlsxUtils);
+//			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(idObs, idObsExecution, tagsToFilter, exObsIds);
+			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, null, EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_IN_GLOBAL_TERMS,
+					EVOLUTION_OF_THE_COMPLIANCE_SITUATION_INTENDED_TO_BE_IMPLEMENTED_IN_GLOBAL_TERMS, null, null, false, 0, xlsxUtils, "");
+//			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(idObs, idObsExecution, tagsToFilterFixed,
+//					exObsIds);
+//			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed, null,
+//					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 40, xlsxUtils);
+			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilterFixed, EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_IN_GLOBAL_TERMS,
+					EVOLUTION_OF_THE_COMPLIANCE_SITUATION_INTENDED_TO_BE_IMPLEMENTED_IN_GLOBAL_TERMS, null, null, false, 40, xlsxUtils, "");
 			// N sheets by segment
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idObsExecution);
 			for (CategoriaForm category : categories) {
@@ -678,11 +681,16 @@ public final class AnnexUtils {
 				if (pageObservatoryMapCat != null) {
 					String currentCategory = category.getName().substring(0, Math.min(category.getName().length(), 31));
 					final XSSFSheet categorySheet = wb.createSheet(currentCategory);
-					generateGlobalProgressEvolutionSheet(categorySheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapCat, pageObservatoryMapCatFixed,
+					generateGlobalProgressEvolutionSheet(categorySheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter,
 							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.global.title", new String[] { category.getName() }),
 							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.global.title", new String[] { category.getName() }),
 							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.fixed.title", new String[] { category.getName() }),
-							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.fixed.title", new String[] { category.getName() }), true, 0, xlsxUtils);
+							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.fixed.title", new String[] { category.getName() }), true, 0, xlsxUtils, category.getName());
+					generateGlobalProgressEvolutionSheet(categorySheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter,
+							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.global.title", new String[] { category.getName() }),
+							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.global.title", new String[] { category.getName() }),
+							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.fixed.title", new String[] { category.getName() }),
+							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.fixed.title", new String[] { category.getName() }), true, 40, xlsxUtils, category.getName());
 				}
 			}
 			// Final sheet comparision
@@ -996,20 +1004,74 @@ public final class AnnexUtils {
 	 * @param xlsxUtils                    the xlsx utils
 	 */
 	private static void generateGlobalProgressEvolutionSheet(final XSSFSheet sheet, final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation,
-			final String[] tagsToFilter, final String[] exObsIds, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed, final String titleAllocationGraphicGlobal, final String titleComplianceGraphicGlobal,
-			final String titleAllocationGraphicFixed, final String titleComplianceGrpahicFixed, final boolean generateFixedGraphics, final int initRow, final XlsxUtils xlsxUtils) {
+			final String[] tagsToFilter, final String titleAllocationGraphicGlobal, final String titleComplianceGraphicGlobal, final String titleAllocationGraphicFixed,
+			final String titleComplianceGrpahicFixed, final boolean generateFixedGraphics, final int initRow, final XlsxUtils xlsxUtils, final String categoryName) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, KEY_DATE_FORMAT_EVOLUTION));
-		final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByType(String.valueOf(idObs),
-				String.valueOf(idObsExecution), pageObservatoryMap, exObsIds);
 		int rowCount = initRow;
 		int firstRow = initRow + 1;
 		// Allocation
 		// date + suiability
-		final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_A, df);
-		final Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_AA, df);
-		final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV, df);
+		final Map<String, BigDecimal> resultDataA = new TreeMap<>();
+		final Map<String, BigDecimal> resultDataAA = new TreeMap<>();
+		final Map<String, BigDecimal> resultDataNV = new TreeMap<>();
+		final Map<String, BigDecimal> resultDataPC = new TreeMap<>();
+		final Map<String, BigDecimal> resultDataTC = new TreeMap<>();
+		final Map<String, BigDecimal> resultDataNC = new TreeMap<>();
+		for (Date date : executionDatesWithFormat_Valid) {
+			int countA = 0;
+			int countAA = 0;
+			int countNV = 0;
+			int countPC = 0;
+			int countTC = 0;
+			int countNC = 0;
+			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+				SemillaForm semillaForm = semillaEntry.getKey();
+				boolean hasCategory = true;
+				String namecat = semillaForm.getCategoria().getName();
+				if (!StringUtils.isEmpty(categoryName) && !namecat.equals(categoryName)) {
+					hasCategory = false;
+				}
+				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter) && hasCategory) {
+					ScoreForm dateScore = semillaEntry.getValue().get(date.toString());
+					if (dateScore != null) {
+						String adequacy = changeLevelName(dateScore.getLevel(), messageResources);
+						if (messageResources.getMessage("resultados.anonimos.num.portales.aa").equals(adequacy)) {
+							countAA++;
+						} else if (messageResources.getMessage("resultados.anonimos.num.portales.a").equals(adequacy)) {
+							countA++;
+						} else if (messageResources.getMessage("resultados.anonimos.num.portales.nv").equals(adequacy)) {
+							countNV++;
+						}
+						String compliance = dateScore.getCompliance();
+						if (messageResources.getMessage("resultados.anonimos.porc.portales.tc").equals(compliance)) {
+							countTC++;
+						} else if (messageResources.getMessage("resultados.anonimos.porc.portales.pc").equals(compliance)) {
+							countPC++;
+						} else if (messageResources.getMessage("resultados.anonimos.porc.portales.nc").equals(compliance)) {
+							countNC++;
+						}
+					}
+				}
+			}
+			// final String executionDateAux = date.toString().substring(0, date.toString().indexOf(" ")).replace("/", "-");
+			final String executionDateAux = df.format(date);
+//			resultDataA.put(executionDateAux, new BigDecimal(countA));
+//			resultDataAA.put(executionDateAux, new BigDecimal(countAA));
+//			resultDataNV.put(executionDateAux, new BigDecimal(countNV));
+//			resultDataPC.put(executionDateAux, new BigDecimal(countPC));
+//			resultDataTC.put(executionDateAux, new BigDecimal(countTC));
+//			resultDataNC.put(executionDateAux, new BigDecimal(countNC));
+			int sumAdecuacy = countA + countAA + countNV;
+			;
+			resultDataA.put(executionDateAux, new BigDecimal(countA).divide(new BigDecimal(sumAdecuacy), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+			resultDataAA.put(executionDateAux, new BigDecimal(countAA).divide(new BigDecimal(sumAdecuacy), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+			resultDataNV.put(executionDateAux, new BigDecimal(countNV).divide(new BigDecimal(sumAdecuacy), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+			int sumCompliance = countNC + countPC + countTC;
+			resultDataPC.put(executionDateAux, new BigDecimal(countPC).divide(new BigDecimal(sumCompliance), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+			resultDataTC.put(executionDateAux, new BigDecimal(countTC).divide(new BigDecimal(sumCompliance), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+			resultDataNC.put(executionDateAux, new BigDecimal(countNC).divide(new BigDecimal(sumCompliance), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+		}
 		// Styles
 		final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_BLACK_BOLD10_CENTER);
 		final CellStyle headerStyleLeft = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_WHITE_BOLD10_LEFT);
@@ -1049,13 +1111,153 @@ public final class AnnexUtils {
 		generateStackedBarGraphic(sheet, firstRow, rowCount, 1, 3, titleAllocationGraphicGlobal);
 		rowCount += 15;
 		// Compliance
+		// Headers
+		r = sheet.createRow(rowCount);
+		c = r.createCell(1);
+		c.setCellValue(COMPLIANCE_NOT_LITERAL);
+		c.setCellStyle(headerStyle);
+		c = r.createCell(2);
+		c.setCellValue(COMPLIANCE_PARTIAL_LITERAL);
+		c.setCellStyle(headerStyle);
+		c = r.createCell(3);
+		c.setCellValue(COMPLIANCE_TOTAL_LITERAL);
+		c.setCellStyle(headerStyle);
+		rowCount++;
+		firstRow = rowCount;
+		for (Entry<String, BigDecimal> entry : resultDataNC.entrySet()) {
+			r = sheet.createRow(rowCount);
+			c = r.createCell(0);
+			c.setCellValue(entry.getKey());
+			c.setCellStyle(headerStyleLeft);
+			c = r.createCell(1);
+			c.setCellValue(entry.getValue().doubleValue() / 100);
+			c.setCellStyle(percentStyle);
+			c = r.createCell(2);
+			c.setCellValue(resultDataPC.get(entry.getKey()).doubleValue() / 100);
+			c.setCellStyle(percentStyle);
+			c = r.createCell(3);
+			c.setCellValue(resultDataTC.get(entry.getKey()).doubleValue() / 100);
+			c.setCellStyle(percentStyle);
+			rowCount++;
+		}
+		generateStackedBarGraphic(sheet, firstRow, rowCount, 1, 3, titleComplianceGraphicGlobal);
+		sheet.autoSizeColumn(0);
+		sheet.autoSizeColumn(1);
+		sheet.autoSizeColumn(2);
+		sheet.autoSizeColumn(3);
+	}
+
+	/**
+	 * Generate global progress evolution sheet.
+	 *
+	 * @param sheet                        the sheet
+	 * @param messageResources             the message resources
+	 * @param idObs                        the id obs
+	 * @param idObsExecution               the id obs execution
+	 * @param idOperation                  the id operation
+	 * @param tagsToFilter                 the tags to filter
+	 * @param exObsIds                     the ex obs ids
+	 * @param pageObservatoryMap           the page observatory map
+	 * @param pageObservatoryMapFixed      the page observatory map fixed
+	 * @param titleAllocationGraphicGlobal the title allocation graphic
+	 * @param titleComplianceGraphicGlobal the title compliance graphic global
+	 * @param titleAllocationGraphicFixed  the title allocation graphic fixed (only if generateFixedGraphics is true is required)
+	 * @param titleComplianceGrpahicFixed  the title compliance grpahic fixed (only if generateFixedGraphics is true is required)
+	 * @param generateFixedGraphics        the is segment
+	 * @param initRow                      the init row
+	 * @param xlsxUtils                    the xlsx utils
+	 */
+	private static void generateGlobalProgressEvolutionSheet(final XSSFSheet sheet, final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation,
+			final String[] tagsToFilter, final String[] exObsIds, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed, final String titleAllocationGraphicGlobal, final String titleComplianceGraphicGlobal,
+			final String titleAllocationGraphicFixed, final String titleComplianceGrpahicFixed, final boolean generateFixedGraphics, final int initRow, final XlsxUtils xlsxUtils) {
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, KEY_DATE_FORMAT_EVOLUTION));
+		int rowCount = initRow;
+		int firstRow = initRow + 1;
+		// Allocation
 		// date + suiability
-		final Map<Date, Map<Long, Map<String, Integer>>> evolutionResultC = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByCompliance(String.valueOf(idObs),
-				String.valueOf(idObsExecution), pageObservatoryMap, exObsIds);
-		final Map<String, BigDecimal> resultDataPC = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResultC, Constants.OBS_COMPILANCE_PARTIAL, df);
-		final Map<String, BigDecimal> resultDataTC = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResultC, Constants.OBS_COMPILANCE_FULL, df);
-		final Map<String, BigDecimal> resultDataNC = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResultC, Constants.OBS_COMPILANCE_NONE, df);
-		// Table compliance and pie chart (Global)
+		final Map<String, BigDecimal> resultDataA = new TreeMap<>();
+		final Map<String, BigDecimal> resultDataAA = new TreeMap<>();
+		final Map<String, BigDecimal> resultDataNV = new TreeMap<>();
+		final Map<String, BigDecimal> resultDataPC = new TreeMap<>();
+		final Map<String, BigDecimal> resultDataTC = new TreeMap<>();
+		final Map<String, BigDecimal> resultDataNC = new TreeMap<>();
+		for (Date date : executionDatesWithFormat_Valid) {
+			int countA = 0;
+			int countAA = 0;
+			int countNV = 0;
+			int countPC = 0;
+			int countTC = 0;
+			int countNC = 0;
+			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+				ScoreForm dateScore = semillaEntry.getValue().get(date.toString());
+				if (dateScore != null) {
+					String adequacy = changeLevelName(dateScore.getLevel(), messageResources);
+					if (messageResources.getMessage("resultados.anonimos.num.portales.aa").equals(adequacy)) {
+						countAA++;
+					} else if (messageResources.getMessage("resultados.anonimos.num.portales.a").equals(adequacy)) {
+						countA++;
+					} else if (messageResources.getMessage("resultados.anonimos.num.portales.nv").equals(adequacy)) {
+						countNV++;
+					}
+					String compliance = dateScore.getCompliance();
+					if (messageResources.getMessage("resultados.anonimos.porc.portales.tc").equals(compliance)) {
+						countTC++;
+					} else if (messageResources.getMessage("resultados.anonimos.porc.portales.pc").equals(adequacy)) {
+						countPC++;
+					} else if (messageResources.getMessage("resultados.anonimos.porc.portales.nc").equals(adequacy)) {
+						countNC++;
+					}
+				}
+			}
+			final String executionDateAux = date.toString().substring(0, date.toString().indexOf(" ")).replace("/", "-");
+			resultDataA.put(executionDateAux, new BigDecimal(countA));
+			resultDataAA.put(executionDateAux, new BigDecimal(countAA));
+			resultDataNV.put(executionDateAux, new BigDecimal(countNV));
+			resultDataPC.put(executionDateAux, new BigDecimal(countPC));
+			resultDataTC.put(executionDateAux, new BigDecimal(countTC));
+			resultDataNC.put(executionDateAux, new BigDecimal(countNC));
+		}
+		// Styles
+		final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_BLACK_BOLD10_CENTER);
+		final CellStyle headerStyleLeft = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_WHITE_BOLD10_LEFT);
+		final CellStyle percentBoldStyle = xlsxUtils.getCellStyleByName(XlsxUtils.BOLD_PERCENT11_CENTER_STYLE);
+		final CellStyle percentStyle = xlsxUtils.getCellStyleByName(XlsxUtils.NORMAL_PERCENT11_CENTER_STYLE);
+		// Table allcation and pie chart
+		Row r;
+		Cell c;
+		// Headers
+		r = sheet.createRow(rowCount);
+		c = r.createCell(1);
+		c.setCellValue(ALLOCATION_NOT_VALID_LITERAL);
+		c.setCellStyle(headerStyle);
+		c = r.createCell(2);
+		c.setCellValue(ALLOCATION_A_LITERAL);
+		c.setCellStyle(headerStyle);
+		c = r.createCell(3);
+		c.setCellValue(ALLOCATION_AA_LITERAL);
+		c.setCellStyle(headerStyle);
+		rowCount++;
+		for (Entry<String, BigDecimal> entry : resultDataNV.entrySet()) {
+			r = sheet.createRow(rowCount);
+			c = r.createCell(0);
+			c.setCellValue(entry.getKey());
+			c.setCellStyle(headerStyleLeft);
+			c = r.createCell(1);
+			c.setCellValue(entry.getValue().doubleValue() / 100);
+			c.setCellStyle(percentStyle);
+			c = r.createCell(2);
+			c.setCellValue(resultDataA.get(entry.getKey()).doubleValue() / 100);
+			c.setCellStyle(percentStyle);
+			c = r.createCell(3);
+			c.setCellStyle(percentStyle);
+			c.setCellValue(resultDataAA.get(entry.getKey()).doubleValue() / 100);
+			rowCount++;
+		}
+		generateStackedBarGraphic(sheet, firstRow, rowCount, 1, 3, titleAllocationGraphicGlobal);
+		rowCount += 15;
+		// Compliance
 		// Headers
 		r = sheet.createRow(rowCount);
 		c = r.createCell(1);
@@ -1878,9 +2080,9 @@ public final class AnnexUtils {
 								}
 							}
 							hd.endElement(EMPTY_STRING, EMPTY_STRING, "paginas");
-							if (criterias) {
-								writeTag(hd, "nota", messageResources.getMessage("annex.xml.criteria.pages.note"));
-							}
+//							if (criterias) {
+//								writeTag(hd, "nota", messageResources.getMessage("annex.xml.criteria.pages.note"));
+//							}
 							hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 						}
 					}
@@ -2155,9 +2357,9 @@ public final class AnnexUtils {
 							}
 						}
 					}
-					if (criterias) {
-						writeTag(hd, "nota", messageResources.getMessage("annex.xml.criteria.note"));
-					}
+//					if (criterias) {
+//						writeTag(hd, "nota", messageResources.getMessage("annex.xml.criteria.note"));
+//					}
 					hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 				}
 			}
