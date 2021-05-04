@@ -3064,10 +3064,61 @@ public final class AnnexUtils {
 				final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
 				final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
 				row = sheet.createRow(rowIndex);
-				// Remove evol_ columns
-				for (int i = 0; i < ColumnNames.size() - 6; i++) {
+				// Add headers without values
+				ColumnNames = new ArrayList<>();
+				ColumnNames.add("id");
+				ColumnNames.add("nombre");
+				ColumnNames.add("namecat");
+				ColumnNames.add("ambito");
+				ColumnNames.add("complejidad");
+				ColumnNames.add("depende_de");
+				ColumnNames.add("semilla");
+				ColumnNames.add("tematica");
+				ColumnNames.add("distribucion");
+				ColumnNames.add("recurrencia");
+				ColumnNames.add("otros");
+				ColumnNames.add("paginas");
+				for (String executionDateAux : executionDates) {
+					// Add header if it is not already created
+					if (!ColumnNames.contains("puntuacion_" + executionDateAux)) {
+						ColumnNames.add("puntuacion_" + executionDateAux);
+					}
+					// ADECUACIÓN
+					// Add header if it is not already created
+					if (!ColumnNames.contains("adecuacion_" + executionDateAux)) {
+						ColumnNames.add("adecuacion_" + executionDateAux);
+					}
+					// CUMPLIMIENTO
+					// Add header if it is not already created
+					if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
+						ColumnNames.add("cumplimiento_" + executionDateAux);
+					}
+				}
+				for (String executionDateAux : executionDates) {
+					// Add header if it is not already created
+					if (!ColumnNames.contains(NV_PREFFIX + executionDateAux)) {
+						ColumnNames.add(NV_PREFFIX + executionDateAux);
+					}
+					if (!ColumnNames.contains(A_PREFFIX + executionDateAux)) {
+						ColumnNames.add(A_PREFFIX + executionDateAux);
+					}
+					if (!ColumnNames.contains(AA_PREFFIX + executionDateAux)) {
+						ColumnNames.add(AA_PREFFIX + executionDateAux);
+					}
+					if (!ColumnNames.contains(NC_PREFFIX + executionDateAux)) {
+						ColumnNames.add(NC_PREFFIX + executionDateAux);
+					}
+					if (!ColumnNames.contains(PC_PREFFIX + executionDateAux)) {
+						ColumnNames.add(PC_PREFFIX + executionDateAux);
+					}
+					if (!ColumnNames.contains(TC_PREFFIX + executionDateAux)) {
+						ColumnNames.add(TC_PREFFIX + executionDateAux);
+					}
+				}
+				row = sheet.createRow(rowIndex);
+				for (String name : ColumnNames) {
 					cell = row.createCell(columnIndex);
-					cell.setCellValue(ColumnNames.get(i));
+					cell.setCellValue(name);
 					cell.setCellStyle(headerStyle);
 					columnIndex++;
 				}
