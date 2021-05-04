@@ -470,7 +470,7 @@ public final class AnnexUtils {
 		Map<DependenciaForm, List<SemillaForm>> mapSeedByDependencia = new HashMap<>();
 		for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 			final SemillaForm semillaForm = semillaEntry.getKey();
-			if (semillaForm.getId() != 0) {
+			if (semillaForm.getId() != 0 && semillaEntry.getValue().get(executionDatesWithFormat_Valid.get(executionDatesWithFormat_Valid.size() - 1).toString()) != null) {
 				for (DependenciaForm dependencia : semillaForm.getDependencias()) {
 					List<SemillaForm> seedsByDependency = mapSeedByDependencia.get(dependencia);
 					if (seedsByDependency == null) {
@@ -497,11 +497,12 @@ public final class AnnexUtils {
 					for (ComparisionForm com : comparision) {
 						for (EtiquetaForm label : semillaForm.getEtiquetas()) {
 							if (com.getIdTag() == label.getId()) {
-								final ScoreForm scoreForm = scoreMap.get(com.getPrevious());
-								if (scoreForm != null) {
-									previousScore = scoreForm.getTotalScore();
+								for (Map.Entry<String, ScoreForm> scoreEntry : scoreMap.entrySet()) {
+									if (scoreEntry.getKey().startsWith(com.getPrevious())) {
+										previousScore = scoreEntry.getValue().getTotalScore();
+										break;
+									}
 								}
-								break;
 							}
 						}
 					}
@@ -2578,30 +2579,42 @@ public final class AnnexUtils {
 						excelLine.setRowIndex(rowIndex);
 						// "id"
 						String id = String.valueOf(semillaForm.getId());
-						cell = row.createCell(columnIndex++);
+						ColumnNames.add("id");
+						ColumnNames.add("nombre");
+						ColumnNames.add("namecat");
+						ColumnNames.add("ambito");
+						ColumnNames.add("complejidad");
+						ColumnNames.add("depende_de");
+						ColumnNames.add("semilla");
+						ColumnNames.add("tematica");
+						ColumnNames.add("distribucion");
+						ColumnNames.add("recurrencia");
+						ColumnNames.add("otros");
+						ColumnNames.add("paginas");
+						cell = row.createCell(ColumnNames.indexOf("id"));
 						cell.setCellValue(id);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setId(id);
 						// "nombre"
 						String name = semillaForm.getNombre();
-						cell = row.createCell(columnIndex++);
+						cell = row.createCell(ColumnNames.indexOf("nombre"));
 						cell.setCellValue(name);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setNombre(name);
 						// "namecat"
-						cell = row.createCell(columnIndex++);
+						cell = row.createCell(ColumnNames.indexOf("namecat"));
 						cell.setCellValue(namecat);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setNamecat(namecat);
 						// "ambito"
 						String ambito = semillaForm.getAmbito().getName();
-						cell = row.createCell(columnIndex++);
+						cell = row.createCell(ColumnNames.indexOf("ambito"));
 						cell.setCellValue(ambito);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setAmbito(ambito);
 						// "complejidad"
 						String compl = semillaForm.getComplejidad().getName();
-						cell = row.createCell(columnIndex++);
+						cell = row.createCell(ColumnNames.indexOf("complejidad"));
 						cell.setCellValue(compl);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setComplejidad(compl);
@@ -2619,13 +2632,13 @@ public final class AnnexUtils {
 								}
 							}
 						}
-						cell = row.createCell(columnIndex++);
+						cell = row.createCell(ColumnNames.indexOf("depende_de"));
 						cell.setCellValue(dependencias.toString());
 						cell.setCellStyle(shadowStyle);
 						excelLine.setDepende_de(dependencias.toString());
 						// "semilla"
 						String semilla = semillaForm.getListaUrls().get(0);
-						cell = row.createCell(columnIndex++);
+						cell = row.createCell(ColumnNames.indexOf("semilla"));
 						cell.setCellValue(semilla);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setSemilla(semilla);
@@ -2667,7 +2680,7 @@ public final class AnnexUtils {
 								}
 							}
 						}
-						cell = row.createCell(columnIndex++);
+						cell = row.createCell(ColumnNames.indexOf("tematica"));
 						cell.setCellValue(dataToInsert);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setTematica(dataToInsert);
@@ -2681,7 +2694,7 @@ public final class AnnexUtils {
 								}
 							}
 						}
-						cell = row.createCell(columnIndex++);
+						cell = row.createCell(ColumnNames.indexOf("distribucion"));
 						cell.setCellValue(dataToInsert);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setDistribucion(dataToInsert);
@@ -2695,7 +2708,7 @@ public final class AnnexUtils {
 								}
 							}
 						}
-						cell = row.createCell(columnIndex++);
+						cell = row.createCell(ColumnNames.indexOf("recurrencia"));
 						cell.setCellValue(dataToInsert);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setRecurrencia(dataToInsert);
@@ -2709,12 +2722,12 @@ public final class AnnexUtils {
 								}
 							}
 						}
-						cell = row.createCell(columnIndex++);
+						cell = row.createCell(ColumnNames.indexOf("otros"));
 						cell.setCellStyle(shadowStyle);
 						excelLine.setOtros(dataToInsert);
 						// Páginas
 						String pages = String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId()));
-						cell = row.createCell(columnIndex++);
+						cell = row.createCell(ColumnNames.indexOf("paginas"));
 						cell.setCellValue(pages);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setPaginas(pages);
@@ -2729,10 +2742,6 @@ public final class AnnexUtils {
 						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
 							final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
 							// Execution dates must be exists as column
-//							if (!executionDates.contains(executionDateAux)) {
-//								executionDates.add(executionDateAux);
-//								executionDatesWithFormat_Valid.add(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)));
-//							}
 							double score = Double.parseDouble(entry.getValue().getTotalScore().toString());
 							String adequacy = changeLevelName(entry.getValue().getLevel(), messageResources);
 							String compliance = entry.getValue().getCompliance();
@@ -3100,10 +3109,6 @@ public final class AnnexUtils {
 						cell = row.createCell(columnIndex++);
 						cell.setCellValue(currentLine.getValue().getTematica());
 						cell.setCellStyle(shadowStyle);
-						// "semilla"
-						cell = row.createCell(columnIndex++);
-						cell.setCellValue(currentLine.getValue().getSemilla());
-						cell.setCellStyle(shadowStyle);
 						// "distribucion"
 						cell = row.createCell(columnIndex++);
 						cell.setCellValue(currentLine.getValue().getDistribucion());
@@ -3115,6 +3120,10 @@ public final class AnnexUtils {
 						// "otros"
 						cell = row.createCell(columnIndex++);
 						cell.setCellValue(currentLine.getValue().getOtros());
+						cell.setCellStyle(shadowStyle);
+						// Páginas
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getPaginas());
 						cell.setCellStyle(shadowStyle);
 						for (String date : executionDates) {
 							// Puntuación
