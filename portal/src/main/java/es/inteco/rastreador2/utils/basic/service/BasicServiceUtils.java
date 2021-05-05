@@ -231,15 +231,15 @@ public final class BasicServiceUtils {
 //						if (entry.getName().toLowerCase().endsWith(".html")) {
 							if (!entry.isDirectory()) {
 								try {
-									String content = org.apache.commons.io.IOUtils.toString(zipFile.getInputStream(entry), StandardCharsets.ISO_8859_1.name());
+									String content = org.apache.commons.io.IOUtils.toString(zipFile.getInputStream(entry), StandardCharsets.UTF_8.name());
 									BasicServiceFile file = new BasicServiceFile();
 									file.setName(name);
 									file.setContent(content);
 									files.add(file);
 								} catch (UnsupportedEncodingException e) {
-									Logger.putLog("No se puede codificar el contenido como ISO-8859-1", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+									Logger.putLog("No se puede codificar el contenido como UTF-8", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
 									try {
-										String content = org.apache.commons.io.IOUtils.toString(zipFile.getInputStream(entry), StandardCharsets.UTF_8.name());
+										String content = org.apache.commons.io.IOUtils.toString(zipFile.getInputStream(entry), StandardCharsets.ISO_8859_1.name());
 										BasicServiceFile file = new BasicServiceFile();
 										file.setName(name);
 										file.setContent(content);

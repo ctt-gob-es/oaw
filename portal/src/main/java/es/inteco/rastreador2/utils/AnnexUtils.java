@@ -669,8 +669,8 @@ public final class AnnexUtils {
 //					exObsIds);
 //			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed, null,
 //					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 40, xlsxUtils);
-			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilterFixed, EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_IN_GLOBAL_TERMS,
-					EVOLUTION_OF_THE_COMPLIANCE_SITUATION_INTENDED_TO_BE_IMPLEMENTED_IN_GLOBAL_TERMS, null, null, false, 40, xlsxUtils, "");
+			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilterFixed, EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART,
+					EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 40, xlsxUtils, "");
 			// N sheets by segment
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idObsExecution);
 			for (CategoriaForm category : categories) {
@@ -686,7 +686,7 @@ public final class AnnexUtils {
 							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.global.title", new String[] { category.getName() }),
 							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.fixed.title", new String[] { category.getName() }),
 							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.fixed.title", new String[] { category.getName() }), true, 0, xlsxUtils, category.getName());
-					generateGlobalProgressEvolutionSheet(categorySheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter,
+					generateGlobalProgressEvolutionSheet(categorySheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilterFixed,
 							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.global.title", new String[] { category.getName() }),
 							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.global.title", new String[] { category.getName() }),
 							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.fixed.title", new String[] { category.getName() }),
@@ -3137,6 +3137,27 @@ public final class AnnexUtils {
 					}
 				}
 			}
+			// Add a legend with custom text
+			// sheet.createRow(nextStartPos + 5);
+			XSSFDrawing draw = sheet.createDrawingPatriarch();
+			XSSFTextBox tb1 = draw.createTextbox(new XSSFClientAnchor(0, 0, 0, 0, 0, nextStartPos + 5, 10, nextStartPos + 5 + 6));
+			tb1.setLineStyleColor(0, 0, 0);
+			tb1.setLineWidth(1);
+			Color col = Color.WHITE;
+			tb1.setFillColor(col.getRed(), col.getGreen(), col.getBlue());
+			StringBuilder sb = new StringBuilder("Los rangos en base a los cuales se ha calculado la evolución de la puntuación de los sitios web son los siguientes:");
+			sb.append("\n");
+			for (RangeForm range : websiteRanges) {
+				sb.append(range.getName() + ": " + (range.getMinValue() != null ? range.getMinValue() : "") + " " + range.getMinValueOperator() + " x " + range.getMaxValueOperator() + " "
+						+ (range.getMaxValue() != null ? range.getMaxValue() : "") + "\n");
+			}
+			// websiteRanges
+			XSSFRichTextString address = new XSSFRichTextString(sb.toString());
+			tb1.setText(address);
+			CTTextCharacterProperties rpr = tb1.getCTShape().getTxBody().getPArray(0).getRArray(0).getRPr();
+			rpr.setSz(1000); // 9 pt
+			col = Color.BLACK;
+			rpr.addNewSolidFill().addNewSrgbClr().setVal(new byte[] { (byte) col.getRed(), (byte) col.getGreen(), (byte) col.getBlue() });
 			wb.write(writer);
 			wb.close();
 		} catch (Exception e) {
