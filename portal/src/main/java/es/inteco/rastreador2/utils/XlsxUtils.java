@@ -16,10 +16,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * The Class XlsxUtils.
  */
 public class XlsxUtils {
-	
 	/** The Constant PALE_BLUE_BACKGROUND_WHITE10_FONT. */
 	public static final String PALE_BLUE_BACKGROUND_WHITE10_FONT = "paleBlueBackgroundWhite10Font";
-	
 	/** The Constant ROYAL_BLUE_BACKGROUND_WHITE10_FONT. */
 	public static final String ROYAL_BLUE_BACKGROUND_WHITE10_FONT = "royalBlueBackgroundWhite10Font";
 	/** The Constant NORMAL_PERCENT11_CENTER_STYLE. */
@@ -126,6 +124,12 @@ public class XlsxUtils {
 		blackBold16Font.setColor(COLOR_BLACK);
 		blackBold16Font.setBold(true);
 		blackBold16Font.setItalic(false);
+		XSSFFont blackBold12Font = wb.createFont();
+		blackBold12Font.setFontHeightInPoints((short) 12);
+		blackBold12Font.setFontName(ARIAL_FONT_NAME);
+		blackBold12Font.setColor(COLOR_BLACK);
+		blackBold12Font.setBold(true);
+		blackBold12Font.setItalic(false);
 		// STYLES
 		CellStyle boldData11LeftStyle = wb.createCellStyle();
 		boldData11LeftStyle.setWrapText(true);
@@ -288,7 +292,7 @@ public class XlsxUtils {
 		whiteBackgroundBlackBold10.setAlignment(HorizontalAlignment.CENTER);
 		whiteBackgroundBlackBold10.setVerticalAlignment(VerticalAlignment.CENTER);
 		whiteBackgroundBlackBold10.setFillPattern(FillPatternType.NO_FILL);
-		whiteBackgroundBlackBold10.setFont(blackBold16Font);
+		whiteBackgroundBlackBold10.setFont(blackBold12Font);
 		cellStyles.put(WHITE_BACKGROUND_BLACK_BOLD10, whiteBackgroundBlackBold10);
 		// create header cell style
 		CellStyle royalBlueBackgroundWhite10Font = wb.createCellStyle();
