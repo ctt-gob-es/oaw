@@ -510,6 +510,8 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		if (isBasicService() && getBasicServiceForm().isContentAnalysis()) {
 			// Añadir el código fuente analizado
 			createContentChapter(this.messageResources, document, getBasicServiceForm().getFileName(), pdfTocManager);
+		} else if (isBasicService() && getBasicServiceForm().isContentAnalysisMultiple()) {
+			createMultipleContentChapter(this.messageResources, document, getBasicServiceForm().getFileName(), pdfTocManager, evaList);
 		} else {
 			createMuestraPaginasChapter(this.messageResources, document, pdfTocManager, titleFont, evaList);
 		}
@@ -536,6 +538,27 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_cod_analizado");
 		PDFUtils.addParagraph(this.messageResources.getMessage("basic.service.content.p1", new String[] { contents }), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
 //		PDFUtils.addCode(HTMLEntities.unhtmlAngleBrackets(contents), chapter);
+		PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.sample.config.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
+		final com.itextpdf.text.List listaConfiguracionRastreo = new com.itextpdf.text.List();
+		listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
+		PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.config.type.source"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+		if (Constants.REPORT_OBSERVATORY_4.equals(getBasicServiceForm().getReport())) {
+			PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.p1.brokenlinks.yes"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+		} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
+			PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.p1.brokenlinks.no"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+		}
+		PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.methodology") + " " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false,
+				true);
+		chapter.add(listaConfiguracionRastreo);
+		d.add(chapter);
+	}
+
+	public void createMultipleContentChapter(final MessageResources messageResources, final Document d, final String contents, final PdfTocManager pdfTocManager,
+			final java.util.List<ObservatoryEvaluationForm> evaList) throws DocumentException {
+		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), pdfTocManager.getIndex(), pdfTocManager.addSection(),
+				pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_cod_analizado");
+		PDFUtils.addParagraph(this.messageResources.getMessage("basic.service.content.p1", new String[] { contents }), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
+		chapter.add(addURLTable(this.messageResources, evaList));
 		PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.sample.config.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
 		final com.itextpdf.text.List listaConfiguracionRastreo = new com.itextpdf.text.List();
 		listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
