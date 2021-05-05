@@ -257,15 +257,15 @@ public final class AnnexUtils {
 	/** The Constant EVOLUCIÓN_SOBRE_PRIMERA_ITERACIÓN_PARTE_FIJA. */
 	private static final String FIRST_ITERATION_FIXED_TITLE = "Evolución sobre primera iteración. Parte fija";
 	/** The Constant EVOLUCIÓN_SOBRE_ITERACIÓN_ANTERIOR_TERMINOS_GLOBALES. */
-	private static final String PREVIOUS_ITERATION_GLOBAL_TITLE = "Evolución sobre iteración anterior. Terminos globales";
+	private static final String PREVIOUS_ITERATION_GLOBAL_TITLE = "Evolución sobre iteración anterior. Términos globales";
 	/** The Constant EVOLUCIÓN_SOBRE_PRIMERA_ITERACIÓN_TERMINOS_GLOBALES. */
-	private static final String FIRST_ITERATION_GLOBAL_TITLE = "Evolución sobre primera iteración. Terminos globales";
+	private static final String FIRST_ITERATION_GLOBAL_TITLE = "Evolución sobre primera iteración. Términos globales";
 	/** The Constant NÚMERO_DE_SITIOS_WEB. */
 	private static final String NUMBER_OF_SITES = "Número de sitios web";
 	/** The Constant PORCENTAJE_DE_SITIOS. */
 	private static final String PERCENTAGE_OF_SITES = "Porcentaje de sitios";
 	/** The Constant EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART. */
-	private static final String EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART = "Evolución de la situación de cumplimiento estinada. Parte fija";
+	private static final String EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART = "Evolución de la situación de cumplimiento estimada. Parte fija";
 	/** The Constant EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART. */
 	private static final String EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART = "Evolución del nivel de adecuación estimado. Parte fija";
 	/** The Constant EVOLUTION_OF_THE_COMPLIANCE_SITUATION_INTENDED_TO_BE_IMPLEMENTED_IN_GLOBAL_TERMS. */
@@ -670,7 +670,25 @@ public final class AnnexUtils {
 //			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed, null,
 //					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 40, xlsxUtils);
 			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilterFixed, EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART,
-					EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 40, xlsxUtils, "");
+					EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 40 + (executionDates.size()), xlsxUtils, "");
+			// Add a legend with custom text
+			// sheet.createRow(nextStartPos + 5);
+			XSSFDrawing draw = globalSheet.createDrawingPatriarch();
+			XSSFTextBox tb1 = draw.createTextbox(new XSSFClientAnchor(0, 0, 0, 0, 0, 100, 10, 106));
+			tb1.setLineStyleColor(0, 0, 0);
+			tb1.setLineWidth(1);
+			Color col = Color.WHITE;
+			tb1.setFillColor(col.getRed(), col.getGreen(), col.getBlue());
+			StringBuilder sb = new StringBuilder(
+					"- Las gráficas de \"Términos globales\" tienen información de todos los sitios web analizados en cada una de las iteraciones (en algunas iteraciones serán sitios web con recurrencia Fija e Impar, y en otras iteraciones serán sitios web con recurrencia Fija y Par).");
+			sb.append("\n");
+			sb.append("- Las gráficas de \"Parte fija\" tienen información solamente de los sitios web con recurrencia Fija.");
+			XSSFRichTextString address = new XSSFRichTextString(sb.toString());
+			tb1.setText(address);
+			CTTextCharacterProperties rpr = tb1.getCTShape().getTxBody().getPArray(0).getRArray(0).getRPr();
+			rpr.setSz(1000); // 9 pt
+			col = Color.BLACK;
+			rpr.addNewSolidFill().addNewSrgbClr().setVal(new byte[] { (byte) col.getRed(), (byte) col.getGreen(), (byte) col.getBlue() });
 			// N sheets by segment
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idObsExecution);
 			for (CategoriaForm category : categories) {
@@ -681,16 +699,17 @@ public final class AnnexUtils {
 				if (pageObservatoryMapCat != null) {
 					String currentCategory = category.getName().substring(0, Math.min(category.getName().length(), 31));
 					final XSSFSheet categorySheet = wb.createSheet(currentCategory);
-					generateGlobalProgressEvolutionSheet(categorySheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter,
+					generateGlobalProgressEvolutionSheet(categorySheet, messageResources, idObs, idObsExecution, idOperation, null,
 							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.global.title", new String[] { category.getName() }),
 							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.global.title", new String[] { category.getName() }),
 							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.fixed.title", new String[] { category.getName() }),
 							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.fixed.title", new String[] { category.getName() }), true, 0, xlsxUtils, category.getName());
 					generateGlobalProgressEvolutionSheet(categorySheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilterFixed,
-							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.global.title", new String[] { category.getName() }),
-							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.global.title", new String[] { category.getName() }),
 							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.fixed.title", new String[] { category.getName() }),
-							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.fixed.title", new String[] { category.getName() }), true, 40, xlsxUtils, category.getName());
+							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.fixed.title", new String[] { category.getName() }),
+							messageResources.getMessage("annex.xlsx.global.progress.allocation.segment.fixed.title", new String[] { category.getName() }),
+							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.fixed.title", new String[] { category.getName() }), true, 40 + (executionDates.size()),
+							xlsxUtils, category.getName());
 				}
 			}
 			// Final sheet comparision

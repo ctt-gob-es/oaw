@@ -311,6 +311,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										number: true,
 									},
 									align: "center",
+									formatter: cellFormatter,
 									sortable: true
 
 								},
