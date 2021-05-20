@@ -7,7 +7,7 @@
 <%@page import= "java.util.ArrayList" %>
 <%@page import= "java.util.List" %>
 <%@page import= "java.util.Properties" %>
-<%@page import="java.util.Base64"%>
+<%@page import="org.apache.commons.codec.binary.Base64"%>
 <%--
     Necesita las librerias de apache commons-fileupload-1.2.1.jar y commons-io-1.3.2.jar
 --%>
@@ -94,8 +94,8 @@
 						// Si no es campo de formulario es el fichero
                         fileName = item.getName();
                         try{
-                            codigo = Base64.getUrlEncoder().encodeToString(item.get());
-                        
+                            //codigo = Base64.getUrlEncoder().encodeToString(item.get());
+                        	codigo = Base64.encodeBase64URLSafeString(item.get());
                         } catch(Exception e){}
                         
                     }
