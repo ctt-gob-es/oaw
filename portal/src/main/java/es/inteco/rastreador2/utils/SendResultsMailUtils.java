@@ -167,6 +167,7 @@ public final class SendResultsMailUtils {
 			DataBaseManager.closeConnection(conn);
 			DataBaseManager.closeConnection(c);
 		} catch (Exception e) {
+			Logger.putLog("Error en el proceso de envío de resultados", SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			Connection conn = DataBaseManager.getConnection();
 			UraSendResultDAO.updateErrorAll(conn, idObsExecution, e.getLocalizedMessage());
 			DataBaseManager.closeConnection(conn);

@@ -3799,7 +3799,7 @@ public final class AnnexUtils {
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(1);
 		cell.setCellStyle(headerStyle);
-		cell.setCellFormula("SUM(C" + (RowStartPosition + 2) + ":C" + (RowStartPosition + 7) + ")");
+		cell.setCellFormula("SUM(B" + (RowStartPosition + 2) + ":B" + (RowStartPosition + 7) + ")");
 		cell = row.createCell(2);
 		cell.setCellStyle(headerStyle);
 		cell.setCellFormula("SUM(C" + (RowStartPosition + 2) + ":C" + (RowStartPosition + 7) + ")");
@@ -3905,7 +3905,7 @@ public final class AnnexUtils {
 		cell.setCellStyle(headerStyle);
 		cell = row.createCell(1);
 		cell.setCellStyle(headerStyle);
-		cell.setCellFormula("SUM(C" + (RowStartPosition + 2) + ":C" + (RowStartPosition + 7) + ")");
+		cell.setCellFormula("SUM(B" + (RowStartPosition + 2) + ":B" + (RowStartPosition + 7) + ")");
 		cell = row.createCell(2);
 		cell.setCellStyle(headerStyle);
 		cell.setCellFormula("SUM(C" + (RowStartPosition + 2) + ":C" + (RowStartPosition + 7) + ")");

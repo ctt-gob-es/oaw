@@ -206,9 +206,9 @@ public final class WcagXlsxUtils {
 		// lock workbook
 		for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
 			XSSFSheet tmpSheet = (workbook.getSheetAt(i));
-			tmpSheet.protectSheet("oawxlsxpassword");
+			tmpSheet.protectSheet("OaW2020");
 		}
-		workbook.setWorkbookPassword("oawxlsxpassword", HashAlgorithm.sha512);
+		workbook.setWorkbookPassword("OaW2020", HashAlgorithm.sha512);
 		workbook.lockStructure();
 		return workbook;
 	}
