@@ -116,7 +116,7 @@
 			<groupId>com.helger</groupId>
 			<artifactId>ph-css</artifactId>
 			<!-- <version>4.1.5</version> -->
-			<version>6.1.2</version>
+			<version>6.2.3</version>
 		</dependency>
 
 		<dependency>
