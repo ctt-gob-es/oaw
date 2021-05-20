@@ -26,7 +26,6 @@ import java.util.List;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
@@ -522,7 +521,7 @@ public final class DependenciaDAO {
 			} else {
 				ps.setString(5, null);
 			}
-			ps.setString(7, dependencia.getAcronym());
+			ps.setString(6, dependencia.getAcronym());
 			ps.executeUpdate();
 			// TODO LIST OF AMBITS
 			ResultSet generatedKeys = ps.getGeneratedKeys();
@@ -563,28 +562,58 @@ public final class DependenciaDAO {
 	 */
 	public static void update(Connection c, DependenciaForm dependencia) throws SQLException {
 		// d.emails, d.send_auto, d.official
-		final String query = "UPDATE dependencia SET nombre = ?, emails = ?, send_auto = ? , official = ?, id_ambit = ?, id_tag = ?, acronym =?   WHERE id_dependencia = ?";
+		// TODO list of ambits
+		final String query = "UPDATE dependencia SET nombre = ?, emails = ?, send_auto = ? , official = ?, id_tag = ?, acronym =?   WHERE id_dependencia = ?";
+//		final String query = "UPDATE dependencia SET nombre = ?, emails = ?, send_auto = ? , official = ?, id_ambit = ?, id_tag = ?, acronym =?   WHERE id_dependencia = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, dependencia.getName());
 			ps.setString(2, dependencia.getEmails());
 			ps.setBoolean(3, dependencia.getSendAuto());
 			ps.setBoolean(4, dependencia.getOfficial());
-			if (dependencia.getAmbito() != null && StringUtils.isNotEmpty(dependencia.getAmbito().getId())) {
-				ps.setString(5, dependencia.getAmbito().getId());
+			// TODO LIST OF AMBITS
+//			if (dependencia.getAmbito() != null && StringUtils.isNotEmpty(dependencia.getAmbito().getId())) {
+//				ps.setString(5, dependencia.getAmbito().getId());
+//			} else {
+//				ps.setString(5, null);
+//			}
+			if (dependencia.getTag() != null && dependencia.getTag().getId() != null) {
+				ps.setLong(5, dependencia.getTag().getId());
 			} else {
 				ps.setString(5, null);
 			}
-			if (dependencia.getTag() != null && dependencia.getTag().getId() != null) {
-				ps.setLong(6, dependencia.getTag().getId());
-			} else {
-				ps.setString(6, null);
-			}
-			ps.setString(7, dependencia.getAcronym());
-			ps.setLong(8, dependencia.getId());
+			ps.setString(6, dependencia.getAcronym());
+			ps.setLong(7, dependencia.getId());
 			ps.executeUpdate();
+			updateDependencyAmbits(c, dependencia);
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
+		}
+	}
+
+	private static void updateDependencyAmbits(Connection c, DependenciaForm dependencia) throws SQLException {
+		// Update ambits
+		// Borrar las relaciones (no se pueden crear FK a lista por MyISAM no
+		// lo permite
+		try {
+			PreparedStatement deleteSemillaDependencia = c.prepareStatement("DELETE FROM ambito_dependencia WHERE id_dependencia = ?");
+			deleteSemillaDependencia.setLong(1, dependencia.getId());
+			deleteSemillaDependencia.executeUpdate();
+		} catch (SQLException e) {
+			Logger.putLog("Error al eliminar las dependencias previas", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		// Inserción de las nuevas
+		if (dependencia.getAmbitos() != null && !dependencia.getAmbitos().isEmpty()) {
+			StringBuilder slqInsertSemillaDependencia = new StringBuilder("INSERT INTO ambito_dependencia(id_ambito, id_dependencia) VALUES ");
+			for (int i = 0; i < dependencia.getAmbitos().size(); i++) {
+				AmbitoForm currentAmbit = dependencia.getAmbitos().get(i);
+				slqInsertSemillaDependencia.append("(").append(currentAmbit.getId()).append(",").append(dependencia.getId()).append(")");
+				if (i < dependencia.getAmbitos().size() - 1) {
+					slqInsertSemillaDependencia.append(",");
+				}
+			}
+			PreparedStatement psInsertarSemillaDependencia = c.prepareStatement(slqInsertSemillaDependencia.toString());
+			psInsertarSemillaDependencia.executeUpdate();
 		}
 	}
 
@@ -672,7 +701,7 @@ public final class DependenciaDAO {
 					dependency.setTag(newTag);
 				}
 				if (dependency.getId() != null) {
-					ps = c.prepareStatement("UPDATE dependencia SET  emails = ?, official = ?, id_tag = ?, acronym = ?, id_ambit=?  WHERE id_dependencia = ?");
+					ps = c.prepareStatement("UPDATE dependencia SET  emails = ?, official = ?, id_tag = ?, acronym = ? WHERE id_dependencia = ?");
 					ps.setString(1, dependency.getEmails());
 					ps.setNull(2, Types.BIGINT);
 					if (dependency.getOfficial() != null) {
@@ -683,14 +712,16 @@ public final class DependenciaDAO {
 						ps.setLong(3, dependency.getTag().getId());
 					}
 					ps.setString(4, dependency.getAcronym());
-					if (dependency.getAmbito() != null) {
-						ps.setString(5, dependency.getAmbito().getId());
-					}
-					ps.setLong(6, dependency.getId());
+					// TODO LIST OF AMBITS
+					updateDependencyAmbits(c, dependency);
+//					if (dependency.getAmbito() != null) {
+//						ps.setString(5, dependency.getAmbito().getId());
+//					}
+					ps.setLong(5, dependency.getId());
 					ps.executeUpdate();
 				} else {
 					ps = c.prepareStatement(
-							"INSERT INTO dependencia(nombre, emails, official,id_tag,acronym,id_ambit, send_auto) VALUES (?,?,?,?,?,?, 1) ON DUPLICATE KEY UPDATE emails=?, official=?, id_tag=?, acronym=?, id_ambit=?");
+							"INSERT INTO dependencia(nombre, emails, official,id_tag,acronym, send_auto) VALUES (?,?,?,?,?, 1) ON DUPLICATE KEY UPDATE emails=?, official=?, id_tag=?, acronym=?");
 					ps.setString(1, dependency.getName());
 					ps.setString(2, dependency.getEmails());
 					ps.setNull(3, Types.BIGINT);
@@ -702,22 +733,14 @@ public final class DependenciaDAO {
 						ps.setLong(4, dependency.getTag().getId());
 					}
 					ps.setString(5, dependency.getAcronym());
-					ps.setNull(6, Types.BIGINT);
-					if (dependency.getAmbito() != null) {
-						ps.setString(6, dependency.getAmbito().getId());
-					}
-					ps.setString(7, dependency.getEmails());
-					ps.setBoolean(8, dependency.getOfficial());
+					ps.setString(6, dependency.getEmails());
+					ps.setBoolean(7, dependency.getOfficial());
 					if (dependency.getTag() != null) {
-						ps.setLong(9, dependency.getTag().getId());
+						ps.setLong(8, dependency.getTag().getId());
 					} else {
-						ps.setNull(9, Types.BIGINT);
+						ps.setNull(8, Types.BIGINT);
 					}
-					ps.setString(10, dependency.getAcronym());
-					ps.setNull(11, Types.BIGINT);
-					if (dependency.getAmbito() != null) {
-						ps.setString(11, dependency.getAmbito().getId());
-					}
+					ps.setString(9, dependency.getAcronym());
 					ps.executeUpdate();
 				}
 			}

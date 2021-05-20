@@ -683,6 +683,34 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 
 						});
 						
+						$jq('#selectAmbitNewDependency').empty();
+						$jq.ajax({
+							url : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
+						}).done(
+								function(data) {
+
+									var response = $jq.parseJSON(data);
+
+									$jq('#selectAmbitNewDependency').append(
+											"<option value=''></option>");
+									if (response && response.length) {
+										for (var i = 0, l = response.length; i < l; i++) {
+											var ri = response[i];
+											$jq('#selectAmbitNewDependency').append(
+													'<option value="'+ri.id+'">' + ri.name
+															+ '</option>');
+										}
+									}
+
+									if (rowObject != null) {
+
+										$jq('#selectAmbitNewDependency').val(
+												rowObject.ambito.id);
+									}
+
+								});
+								
+						
 
 					});
 
@@ -865,7 +893,17 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						<input type="text" id="name" name="acronym" class="textoLargo form-control" />
 					</div>
 				</div>
-				<!-- Ambito/Ambitoaux -->
+				<!-- 				Ambito/Ambitoaux -->
+				<!-- 				<div class="row formItem"> -->
+				<!-- 					<label for="ambito" class="control-label"> -->
+				<!-- 						<strong class="labelVisu"> -->
+				<%-- 							<bean:message key="nueva.semilla.webs.ambito" /> --%>
+				<!-- 						</strong> -->
+				<!-- 					</label> -->
+				<!-- 					<div class="col-xs-4"> -->
+				<!-- 						<select name="ambitoaux" id="selectAmbitosNuevaSemilla" class="textoSelect form-control"></select> -->
+				<!-- 					</div> -->
+				<!-- 				</div> -->
 				<div class="row formItem">
 					<label for="ambito" class="control-label">
 						<strong class="labelVisu">
@@ -873,7 +911,7 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						</strong>
 					</label>
 					<div class="col-xs-4">
-						<select name="ambitoaux" id="selectAmbitosNuevaSemilla" class="textoSelect form-control"></select>
+						<select name="ambitoaux" id="selectAmbitNewDependency" class="textoSelect form-control" multiple></select>
 					</div>
 				</div>
 				<!-- Etiquetas -->
@@ -1033,6 +1071,7 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						<bean:message key="boton.limpiar" />
 					</span>
 				</div>
+			
 			
 			
 			</fieldset>
