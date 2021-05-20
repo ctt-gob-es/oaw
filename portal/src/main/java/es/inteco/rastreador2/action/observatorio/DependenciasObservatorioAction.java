@@ -54,7 +54,6 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
-import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
 import es.inteco.rastreador2.dao.dependencia.DependenciaDAO;
 import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.json.JsonMessage;
@@ -118,10 +117,21 @@ public class DependenciasObservatorioAction extends DispatchAction {
 			if (!StringUtils.isEmpty(dependency.getName())) {
 				dependency.setName(es.inteco.common.utils.StringUtils.corregirEncoding(dependency.getName()));
 			}
-			String idAmbit = request.getParameter("ambitoaux");
-			AmbitoForm ambit = new AmbitoForm();
-			ambit.setId(idAmbit);
-			dependency.setAmbito(ambit);
+			// TODO LIST OF AMBITS
+//			String idAmbit = request.getParameter("ambitoaux");
+//			AmbitoForm ambit = new AmbitoForm();
+//			ambit.setId(idAmbit);
+//			dependency.setAmbito(ambit);
+			List<AmbitoForm> listAmbits = new ArrayList<>();
+			String[] ambitArray = request.getParameterValues("ambitoaux");
+			if (ambitArray != null && ambitArray.length > 1) {
+				for (int i = 0; i < ambitArray.length; i++) {
+					AmbitoForm ambit = new AmbitoForm();
+					ambit.setId(ambitArray[i]);
+					listAmbits.add(ambit);
+				}
+				dependency.setAmbitos(listAmbits);
+			}
 			if (StringUtils.isEmpty(request.getParameter("official"))) {
 				dependency.setOfficial(null);
 			}
@@ -165,9 +175,10 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		DependenciaForm dependencia = (DependenciaForm) form;
 		ActionErrors errors = dependencia.validate(mapping, request);
-		AmbitoForm ambitoSemilla = new AmbitoForm();
-		ambitoSemilla.setId(request.getParameter("ambitoaux"));
-		dependencia.setAmbito(ambitoSemilla);
+		// TODO LIST OF AMBITS
+//		AmbitoForm ambitoSemilla = new AmbitoForm();
+//		ambitoSemilla.setId(request.getParameter("ambitoaux"));
+//		dependencia.setAmbito(ambitoSemilla);
 		EtiquetaForm tag = new EtiquetaForm();
 		if (!StringUtils.isEmpty(request.getParameter("tagaux"))) {
 			tag.setId(Long.parseLong(request.getParameter("tagaux")));
@@ -212,9 +223,20 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		DependenciaForm dependencia = (DependenciaForm) form;
 		if (StringUtils.isNotEmpty(dependencia.getName())) {
 //			dependencia.setName(nombre);
-			AmbitoForm ambitoSemilla = new AmbitoForm();
-			ambitoSemilla.setId(request.getParameter("ambitoaux"));
-			dependencia.setAmbito(ambitoSemilla);
+			// TODO LIST OF AMBITS
+//			AmbitoForm ambitoSemilla = new AmbitoForm();
+//			ambitoSemilla.setId(request.getParameter("ambitoaux"));
+//			dependencia.setAmbito(ambitoSemilla);
+			List<AmbitoForm> listAmbits = new ArrayList<>();
+			String[] ambitArray = request.getParameterValues("ambitoaux");
+			if (ambitArray != null && ambitArray.length > 1) {
+				for (int i = 0; i < ambitArray.length; i++) {
+					AmbitoForm ambit = new AmbitoForm();
+					ambit.setId(ambitArray[i]);
+					listAmbits.add(ambit);
+				}
+				dependencia.setAmbitos(listAmbits);
+			}
 			EtiquetaForm tag = new EtiquetaForm();
 			if (!StringUtils.isEmpty(request.getParameter("tagaux"))) {
 				tag.setId(Long.parseLong(request.getParameter("tagaux")));
@@ -441,13 +463,14 @@ public class DependenciasObservatorioAction extends DispatchAction {
 					}
 				}
 				// Ambit by sheet name
-				AmbitoForm ambitBySheetName = AmbitoDAO.getAmbitByName(c, sheet.getSheetName());
-				if (ambitBySheetName != null) {
-					newDependency.setAmbito(ambitBySheetName);
-				} else {
-					// By default set ambit others
-					newDependency.setAmbito(AmbitoDAO.getAmbitByID(c, "4"));
-				}
+				// TODO LIST OF AMBITS
+//				AmbitoForm ambitBySheetName = AmbitoDAO.getAmbitByName(c, sheet.getSheetName());
+//				if (ambitBySheetName != null) {
+//					newDependency.setAmbito(ambitBySheetName);
+//				} else {
+//					// By default set ambit others
+//					newDependency.setAmbito(AmbitoDAO.getAmbitByID(c, "4"));
+//				}
 				// Acronym
 				String acronym = headerData.indexOf(IMPORT_COLUMN_ACRONYM) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_ACRONYM))) : EMPTY_STRING;
 				newDependency.setAcronym(acronym);
@@ -593,8 +616,10 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		 */
 		public boolean isSameAmbit() {
 			// return (dependency!=null && newDependency!=null &&;
-			return ((dependency != null && newDependency != null && dependency.getAmbito() == null && newDependency.getAmbito() == null) || (dependency != null && newDependency != null
-					&& dependency.getAmbito() != null && newDependency.getAmbito() != null && dependency.getAmbito().equals(newDependency.getAmbito())));
+			// TODO LIST OF AMBITS
+//			return ((dependency != null && newDependency != null && dependency.getAmbito() == null && newDependency.getAmbito() == null) || (dependency != null && newDependency != null
+//					&& dependency.getAmbito() != null && newDependency.getAmbito() != null && dependency.getAmbito().equals(newDependency.getAmbito())));
+			return (true);
 		}
 
 		/**
