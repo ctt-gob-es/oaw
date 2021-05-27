@@ -3223,7 +3223,7 @@ public final class SemillaDAO {
 		final List<DependenciaForm> dependencias = new ArrayList<>();
 		String query = "SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE 1=1";
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(idAmbit)) {
-			query += " AND d.id_ambit = ? ";
+			query += " AND d.id_dependencia IN (SELECT da.id_dependencia FROM dependencia_ambito da WHERE  da.id_ambito = ?) ";
 		}
 		if (idsTags != null && idsTags.length > 0) {
 			query += " AND d.id_tag IN (";
