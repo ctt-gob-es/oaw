@@ -117,7 +117,7 @@ public class RelanzarObservatorioThread extends Thread {
 							lanzarRastreo(String.valueOf(idCrawling), String.valueOf(idObservatorio));
 							// Por si tarda mucho en acabar el rastreo, volvemos a
 							// inicializar una conexion
-							c = connection;
+							c = DataBaseManager.getConnection();
 							c.setAutoCommit(false);
 							Long idNewExecution = Long.valueOf(RastreoDAO.getExecutedCrawling(c, idCrawling, RastreoDAO.getIdSeedByIdRastreo(c, idCrawling)).getId());
 							RastreoDAO.setObservatoryExecutionToCrawlerExecution(c, Long.parseLong(idEjecucionObservatorio), idNewExecution);
@@ -139,9 +139,9 @@ public class RelanzarObservatorioThread extends Thread {
 				Logger.putLog("No se han encontrado rastreos que relanzar", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_INFO);
 			}
 			if (!isInterrupted()) {
-				ObservatorioDAO.updateObservatoryStatus(connection, Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.FINISHED_OBSERVATORY_STATUS);
+				ObservatorioDAO.updateObservatoryStatus(c, Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.FINISHED_OBSERVATORY_STATUS);
 			} else {
-				ObservatorioDAO.updateObservatoryStatus(connection, Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.STOPPED_OBSERVATORY_STATUS);
+				ObservatorioDAO.updateObservatoryStatus(c, Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.STOPPED_OBSERVATORY_STATUS);
 			}
 			Logger.putLog("Finalizado el observatorio con id " + idEjecucionObservatorio, RelanzarObservatorioThread.class, Logger.LOG_LEVEL_INFO);
 			c.commit();
