@@ -81,8 +81,6 @@ public final class DependenciaDAO {
 	 */
 	public static List<DependenciaForm> getDependencias(Connection c, final DependenciaForm dependency, final String[] tagArr, int page) throws SQLException {
 		final List<DependenciaForm> results = new ArrayList<>();
-//		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official, d.acronym, a.nombre, a.id_ambito, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN ambitos_lista a ON d.id_ambit = a.id_ambito LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE 1=1 ";
-		// TODO List of ambits
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official, d.acronym, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE 1=1 ";
 		query = appendWhereClauses(dependency, tagArr, query);
 		query += "ORDER BY UPPER(d.nombre) ASC ";
@@ -115,14 +113,7 @@ public final class DependenciaDAO {
 					} else {
 						dependenciaForm.setOfficial(true);
 					}
-					// TODO List of ambits
 					loadAmbits(c, dependenciaForm);
-//					if (rs.getInt("a.id_ambito") != 0) {
-//						AmbitoForm ambit = new AmbitoForm();
-//						ambit.setId(String.valueOf(rs.getInt("a.id_ambito")));
-//						ambit.setName(rs.getString("a.nombre"));
-//						dependenciaForm.setAmbito(ambit);
-//					}
 					if (rs.getInt("e.id_etiqueta") != 0) {
 						EtiquetaForm tag = new EtiquetaForm();
 						tag.setId(rs.getLong("e.id_etiqueta"));
@@ -141,6 +132,13 @@ public final class DependenciaDAO {
 		return results;
 	}
 
+	/**
+	 * Load ambits.
+	 *
+	 * @param c               the c
+	 * @param dependenciaForm the dependencia form
+	 * @throws SQLException the SQL exception
+	 */
 	private static void loadAmbits(Connection c, DependenciaForm dependenciaForm) throws SQLException {
 		PreparedStatement psDependencias = c.prepareStatement(
 				"SELECT a.nombre, a.id_ambito FROM ambitos_lista a WHERE a.id_ambito in (SELECT id_ambito FROM dependencia_ambito WHERE id_dependencia = ?) ORDER BY UPPER(a.nombre)");
@@ -178,10 +176,11 @@ public final class DependenciaDAO {
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(dependency.getName())) {
 			ps.setString(count++, "%" + dependency.getName() + "%");
 		}
-		// TODO LIST OF AMBITS
-//		if (dependency.getAmbito() != null && !org.apache.commons.lang3.StringUtils.isEmpty(dependency.getAmbito().getId())) {
-//			ps.setString(count++, dependency.getAmbito().getId());
-//		}
+		if (dependency.getAmbitos() != null && !dependency.getAmbitos().isEmpty()) {
+			for (int i = 0; i < dependency.getAmbitos().size(); i++) {
+				ps.setString(count++, dependency.getAmbitos().get(i).getId());
+			}
+		}
 		if (dependency.getOfficial() != null) {
 			ps.setBoolean(count++, dependency.getOfficial());
 		}
@@ -208,10 +207,16 @@ public final class DependenciaDAO {
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(dependency.getName())) {
 			query += " AND UPPER(d.nombre) like UPPER(?) ";
 		}
-		// TODO LIST OF AMBITS
-//		if (dependency.getAmbito() != null && !org.apache.commons.lang3.StringUtils.isEmpty(dependency.getAmbito().getId())) {
-//			query += " AND d.id_ambit = ?  ";
-//		}
+		if (dependency.getAmbitos() != null && !dependency.getAmbitos().isEmpty()) {
+			query += " AND d.id_dependencia IN (SELECT da.id_dependencia FROM dependencia_ambito da WHERE da.id_ambito IN (";
+			for (int i = 0; i < dependency.getAmbitos().size(); i++) {
+				query += "?";
+				if (i < dependency.getAmbitos().size() - 1) {
+					query += ",";
+				}
+			}
+			query += "))";
+		}
 		if (dependency.getOfficial() != null) {
 			query += " AND d.official = ?  ";
 		}
@@ -277,8 +282,6 @@ public final class DependenciaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static DependenciaForm findByName(Connection c, final String name) throws SQLException {
-		// TODO List of ambits
-//		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,id_ambit, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE d.nombre = ? ";
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE d.nombre = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, name);
@@ -306,11 +309,7 @@ public final class DependenciaDAO {
 						tag.setName(rs.getString("e.nombre"));
 						dependenciaForm.setTag(tag);
 					}
-					// TODO List of ambits
 					loadAmbits(c, dependenciaForm);
-//					if (!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("d.id_ambit"))) {
-//						dependenciaForm.setAmbito(AmbitoDAO.getAmbitByID(c, rs.getString("d.id_ambit")));
-//					}
 					return dependenciaForm;
 				}
 			}
@@ -331,9 +330,6 @@ public final class DependenciaDAO {
 	 */
 	public static List<DependenciaForm> findNotExistsAnNotAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws SQLException {
 		List<DependenciaForm> list = new ArrayList<>();
-		// TODO List of ambits
-//		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,id_ambit,e.id_etiqueta, e.nombre "
-//				+ "FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag  " + "WHERE d.id_dependencia NOT IN (SELECT sd.id_dependencia FROM semilla_dependencia sd) ";
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,e.id_etiqueta, e.nombre "
 				+ "FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag  " + "WHERE d.id_dependencia NOT IN (SELECT sd.id_dependencia FROM semilla_dependencia sd) ";
 		if (updatedAndNewDependencies != null && !updatedAndNewDependencies.isEmpty()) {
@@ -378,11 +374,7 @@ public final class DependenciaDAO {
 						tag.setName(rs.getString("e.nombre"));
 						dependenciaForm.setTag(tag);
 					}
-					// TODO List of ambits
 					loadAmbits(c, dependenciaForm);
-//					if (!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("d.id_ambit"))) {
-//						dependenciaForm.setAmbito(AmbitoDAO.getAmbitByID(c, rs.getString("d.id_ambit")));
-//					}
 					list.add(dependenciaForm);
 				}
 			}
@@ -403,11 +395,8 @@ public final class DependenciaDAO {
 	 */
 	public static List<DependenciaForm> findNotExistsAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws SQLException {
 		List<DependenciaForm> list = new ArrayList<>();
-		// TODO LIST OF AMBITS
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,e.id_etiqueta, e.nombre "
 				+ "FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag  " + "WHERE d.id_dependencia IN (SELECT sd.id_dependencia FROM semilla_dependencia sd) ";
-//		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,id_ambit,e.id_etiqueta, e.nombre "
-//				+ "FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag  " + "WHERE d.id_dependencia IN (SELECT sd.id_dependencia FROM semilla_dependencia sd) ";
 		if (updatedAndNewDependencies != null && !updatedAndNewDependencies.isEmpty()) {
 			query = query + "AND UPPER(d.nombre) NOT IN (";
 			for (int i = 0; i < updatedAndNewDependencies.size(); i++) {
@@ -450,11 +439,7 @@ public final class DependenciaDAO {
 						tag.setName(rs.getString("e.nombre"));
 						dependenciaForm.setTag(tag);
 					}
-					// TODO List of ambits
 					loadAmbits(c, dependenciaForm);
-//					if (!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("d.id_ambit"))) {
-//						dependenciaForm.setAmbito(AmbitoDAO.getAmbitByID(c, rs.getString("d.id_ambit")));
-//					}
 					list.add(dependenciaForm);
 				}
 			}
@@ -511,11 +496,6 @@ public final class DependenciaDAO {
 			} else {
 				ps.setNull(4, Types.BOOLEAN);
 			}
-//			if (dependencia.getAmbito() != null && StringUtils.isNotEmpty(dependencia.getAmbito().getId())) {
-//				ps.setString(5, dependencia.getAmbito().getId());
-//			} else {
-//				ps.setString(5, null);
-//			}
 			if (dependencia.getTag() != null && dependencia.getTag().getId() != null) {
 				ps.setLong(5, dependencia.getTag().getId());
 			} else {
@@ -523,7 +503,6 @@ public final class DependenciaDAO {
 			}
 			ps.setString(6, dependencia.getAcronym());
 			ps.executeUpdate();
-			// TODO LIST OF AMBITS
 			ResultSet generatedKeys = ps.getGeneratedKeys();
 			insertAmbits(c, dependencia, generatedKeys);
 		} catch (SQLException e) {
@@ -532,6 +511,14 @@ public final class DependenciaDAO {
 		}
 	}
 
+	/**
+	 * Insert ambits.
+	 *
+	 * @param c             the c
+	 * @param dependencia   the dependencia
+	 * @param generatedKeys the generated keys
+	 * @throws SQLException the SQL exception
+	 */
 	private static void insertAmbits(Connection c, DependenciaForm dependencia, ResultSet generatedKeys) throws SQLException {
 		if (generatedKeys.next()) {
 			dependencia.setId(generatedKeys.getLong(1));
@@ -561,21 +548,12 @@ public final class DependenciaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static void update(Connection c, DependenciaForm dependencia) throws SQLException {
-		// d.emails, d.send_auto, d.official
-		// TODO list of ambits
 		final String query = "UPDATE dependencia SET nombre = ?, emails = ?, send_auto = ? , official = ?, id_tag = ?, acronym =?   WHERE id_dependencia = ?";
-//		final String query = "UPDATE dependencia SET nombre = ?, emails = ?, send_auto = ? , official = ?, id_ambit = ?, id_tag = ?, acronym =?   WHERE id_dependencia = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, dependencia.getName());
 			ps.setString(2, dependencia.getEmails());
 			ps.setBoolean(3, dependencia.getSendAuto());
 			ps.setBoolean(4, dependencia.getOfficial());
-			// TODO LIST OF AMBITS
-//			if (dependencia.getAmbito() != null && StringUtils.isNotEmpty(dependencia.getAmbito().getId())) {
-//				ps.setString(5, dependencia.getAmbito().getId());
-//			} else {
-//				ps.setString(5, null);
-//			}
 			if (dependencia.getTag() != null && dependencia.getTag().getId() != null) {
 				ps.setLong(5, dependencia.getTag().getId());
 			} else {
@@ -591,6 +569,13 @@ public final class DependenciaDAO {
 		}
 	}
 
+	/**
+	 * Update dependency ambits.
+	 *
+	 * @param c           the c
+	 * @param dependencia the dependencia
+	 * @throws SQLException the SQL exception
+	 */
 	private static void updateDependencyAmbits(Connection c, DependenciaForm dependencia) throws SQLException {
 		// Update ambits
 		// Borrar las relaciones (no se pueden crear FK a lista por MyISAM no
@@ -712,11 +697,7 @@ public final class DependenciaDAO {
 						ps.setLong(3, dependency.getTag().getId());
 					}
 					ps.setString(4, dependency.getAcronym());
-					// TODO LIST OF AMBITS
 					updateDependencyAmbits(c, dependency);
-//					if (dependency.getAmbito() != null) {
-//						ps.setString(5, dependency.getAmbito().getId());
-//					}
 					ps.setLong(5, dependency.getId());
 					ps.executeUpdate();
 				} else {

@@ -117,20 +117,17 @@ public class DependenciasObservatorioAction extends DispatchAction {
 			if (!StringUtils.isEmpty(dependency.getName())) {
 				dependency.setName(es.inteco.common.utils.StringUtils.corregirEncoding(dependency.getName()));
 			}
-			// TODO LIST OF AMBITS
-//			String idAmbit = request.getParameter("ambitoaux");
-//			AmbitoForm ambit = new AmbitoForm();
-//			ambit.setId(idAmbit);
-//			dependency.setAmbito(ambit);
 			List<AmbitoForm> listAmbits = new ArrayList<>();
-			String[] ambitArray = request.getParameterValues("ambitoaux");
-			if (ambitArray != null && ambitArray.length > 1) {
-				for (int i = 0; i < ambitArray.length; i++) {
-					AmbitoForm ambit = new AmbitoForm();
-					ambit.setId(ambitArray[i]);
-					listAmbits.add(ambit);
+			if (!StringUtils.isEmpty(request.getParameter("ambitoaux"))) {
+				String[] ambitArray = request.getParameter("ambitoaux").split(",");
+				if (ambitArray != null && ambitArray.length >= 1) {
+					for (int i = 0; i < ambitArray.length; i++) {
+						AmbitoForm ambit = new AmbitoForm();
+						ambit.setId(ambitArray[i]);
+						listAmbits.add(ambit);
+					}
+					dependency.setAmbitos(listAmbits);
 				}
-				dependency.setAmbitos(listAmbits);
 			}
 			if (StringUtils.isEmpty(request.getParameter("official"))) {
 				dependency.setOfficial(null);
@@ -151,7 +148,6 @@ public class DependenciasObservatorioAction extends DispatchAction {
 			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
 			String jsonPagination = new Gson().toJson(paginas);
 			PrintWriter pw = response.getWriter();
-			// pw.write(json);
 			pw.write("{\"dependencias\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
 			pw.flush();
 			pw.close();
@@ -175,10 +171,6 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		DependenciaForm dependencia = (DependenciaForm) form;
 		ActionErrors errors = dependencia.validate(mapping, request);
-		// TODO LIST OF AMBITS
-//		AmbitoForm ambitoSemilla = new AmbitoForm();
-//		ambitoSemilla.setId(request.getParameter("ambitoaux"));
-//		dependencia.setAmbito(ambitoSemilla);
 		List<AmbitoForm> listAmbits = new ArrayList<>();
 		if (!StringUtils.isEmpty(request.getParameter("ambitoaux"))) {
 			String[] ambitArray = request.getParameter("ambitoaux").split(",");
@@ -231,23 +223,19 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		List<JsonMessage> errores = new ArrayList<>();
-//		String nombre = request.getParameter("nombre");
 		DependenciaForm dependencia = (DependenciaForm) form;
 		if (StringUtils.isNotEmpty(dependencia.getName())) {
-//			dependencia.setName(nombre);
-			// TODO LIST OF AMBITS
-//			AmbitoForm ambitoSemilla = new AmbitoForm();
-//			ambitoSemilla.setId(request.getParameter("ambitoaux"));
-//			dependencia.setAmbito(ambitoSemilla);
 			List<AmbitoForm> listAmbits = new ArrayList<>();
-			String[] ambitArray = request.getParameterValues("ambitoaux");
-			if (ambitArray != null && ambitArray.length > 1) {
-				for (int i = 0; i < ambitArray.length; i++) {
-					AmbitoForm ambit = new AmbitoForm();
-					ambit.setId(ambitArray[i]);
-					listAmbits.add(ambit);
+			if (!StringUtils.isEmpty(request.getParameter("ambitoaux"))) {
+				String[] ambitArray = request.getParameter("ambitoaux").split(",");
+				if (ambitArray != null && ambitArray.length >= 1) {
+					for (int i = 0; i < ambitArray.length; i++) {
+						AmbitoForm ambit = new AmbitoForm();
+						ambit.setId(ambitArray[i]);
+						listAmbits.add(ambit);
+					}
+					dependencia.setAmbitos(listAmbits);
 				}
-				dependencia.setAmbitos(listAmbits);
 			}
 			EtiquetaForm tag = new EtiquetaForm();
 			if (!StringUtils.isEmpty(request.getParameter("tagaux"))) {
