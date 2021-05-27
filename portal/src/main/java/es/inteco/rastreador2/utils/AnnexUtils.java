@@ -444,6 +444,8 @@ public final class AnnexUtils {
 	 */
 	private static void fillExecutionDates(final Long idObsExecution, final String[] exObsIds, Connection c) throws SQLException {
 		executionDates = new ArrayList<>();
+		executionDatesWithFormat_Valid = new ArrayList<Date>();
+		executionDatesWithFormat = new ArrayList<>();
 		final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
 		final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
 		final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(), false,
@@ -666,17 +668,11 @@ public final class AnnexUtils {
 			final XSSFSheet globalSheet = wb.createSheet("Global");
 			// First sheet global part
 			XlsxUtils xlsxUtils = new XlsxUtils(wb);
-//			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(idObs, idObsExecution, tagsToFilter, exObsIds);
 			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, null, EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_IN_GLOBAL_TERMS,
 					EVOLUTION_OF_THE_COMPLIANCE_SITUATION_INTENDED_TO_BE_IMPLEMENTED_IN_GLOBAL_TERMS, null, null, false, 0, xlsxUtils, "");
-//			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(idObs, idObsExecution, tagsToFilterFixed,
-//					exObsIds);
-//			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed, null,
-//					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 40, xlsxUtils);
 			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilterFixed, EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART,
 					EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 40 + (executionDates.size()), xlsxUtils, "");
 			// Add a legend with custom text
-			// sheet.createRow(nextStartPos + 5);
 			XSSFDrawing draw = globalSheet.createDrawingPatriarch();
 			XSSFTextBox tb1 = draw.createTextbox(new XSSFClientAnchor(0, 0, 0, 0, 0, 100, 10, 106));
 			tb1.setLineStyleColor(0, 0, 0);
@@ -698,8 +694,6 @@ public final class AnnexUtils {
 			for (CategoriaForm category : categories) {
 				final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution,
 						Long.valueOf(category.getId()), tagsToFilter, exObsIds);
-				final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCatFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution,
-						Long.valueOf(category.getId()), tagsToFilterFixed, exObsIds);
 				if (pageObservatoryMapCat != null) {
 					String currentCategory = category.getName().substring(0, Math.min(category.getName().length(), 31));
 					final XSSFSheet categorySheet = wb.createSheet(currentCategory);
@@ -1077,14 +1071,7 @@ public final class AnnexUtils {
 					}
 				}
 			}
-			// final String executionDateAux = date.toString().substring(0, date.toString().indexOf(" ")).replace("/", "-");
 			final String executionDateAux = df.format(date);
-//			resultDataA.put(executionDateAux, new BigDecimal(countA));
-//			resultDataAA.put(executionDateAux, new BigDecimal(countAA));
-//			resultDataNV.put(executionDateAux, new BigDecimal(countNV));
-//			resultDataPC.put(executionDateAux, new BigDecimal(countPC));
-//			resultDataTC.put(executionDateAux, new BigDecimal(countTC));
-//			resultDataNC.put(executionDateAux, new BigDecimal(countNC));
 			int sumAdecuacy = countA + countAA + countNV;
 			if (sumAdecuacy > 0) {
 				if (countA > 0) {

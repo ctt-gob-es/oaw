@@ -53,13 +53,17 @@ import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.dao.export.database.Category;
 import es.inteco.rastreador2.dao.export.database.Observatory;
+import es.inteco.rastreador2.dao.login.DatosForm;
+import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.export.database.form.ComparisionForm;
 import es.inteco.rastreador2.manager.BaseManager;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
 import es.inteco.rastreador2.manager.export.database.DatabaseExportManager;
+import es.inteco.rastreador2.pdf.ExportAction;
 import es.inteco.rastreador2.pdf.utils.ZipUtils;
 import es.inteco.rastreador2.utils.ActionUtils;
+import es.inteco.rastreador2.utils.AnnexGeneratorThread;
 import es.inteco.rastreador2.utils.AnnexUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.export.database.DatabaseExportUtils;
@@ -86,28 +90,12 @@ public class DatabaseExportAction extends Action {
 		if (CrawlerUtils.hasAccess(request, "export.observatory.results")) {
 			try {
 				if (request.getParameter(Constants.ACTION) != null) {
-					if (request.getParameter(Constants.ACTION).equals(Constants.EXPORT)) {
-						String[] tagsToFilter = request.getParameterValues("tags");
-						// Evol executions ids
-						String[] exObsIds = request.getParameterValues("evol");
-						if (exObsIds == null) {
-							exObsIds = new String[] { request.getParameter(Constants.ID_EX_OBS) };
-						}
-						// if has tags (ids) check if has request params like fisrt_{idtag}, previous_{idtag}
-						List<ComparisionForm> comparision = null;
-						if (tagsToFilter != null && tagsToFilter.length > 0) {
-							comparision = new ArrayList<>();
-							for (String tagId : tagsToFilter) {
-								ComparisionForm c = new ComparisionForm();
-								c.setIdTag(Integer.parseInt(tagId));
-								c.setFirst(request.getParameter("first_" + tagId));
-								c.setPrevious(request.getParameter("previous_" + tagId));
-								comparision.add(c);
-							}
-						}
-						// Export all??
-						export(mapping, request);
-						getAnnexes(mapping, request, response, tagsToFilter, exObsIds, comparision);
+					if ("downloadFile".equals(request.getParameter(Constants.ACTION))) {
+						return downloadFile(mapping, request, response);
+					} else if (request.getParameter(Constants.ACTION).equals("asyncExport")) {
+						return generateAllAnnex(mapping, request, response, true);
+					} else if (request.getParameter(Constants.ACTION).equals(Constants.EXPORT)) {
+						return generateAllAnnex(mapping, request, response, false);
 					} else if (request.getParameter(Constants.ACTION).equals(Constants.CONFIRM)) {
 						Connection connection = DataBaseManager.getConnection();
 						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
@@ -125,6 +113,40 @@ public class DatabaseExportAction extends Action {
 			return mapping.findForward(Constants.NO_PERMISSION);
 		}
 		return null;
+	}
+
+	/**
+	 * Generate all annex.
+	 *
+	 * @param mapping  the mapping
+	 * @param request  the request
+	 * @param response the response
+	 * @param async    the async
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	private ActionForward generateAllAnnex(ActionMapping mapping, HttpServletRequest request, HttpServletResponse response, boolean async) throws Exception {
+		String[] tagsToFilter = request.getParameterValues("tags");
+		// Evol executions ids
+		String[] exObsIds = request.getParameterValues("evol");
+		if (exObsIds == null) {
+			exObsIds = new String[] { request.getParameter(Constants.ID_EX_OBS) };
+		}
+		// if has tags (ids) check if has request params like fisrt_{idtag}, previous_{idtag}
+		List<ComparisionForm> comparision = null;
+		if (tagsToFilter != null && tagsToFilter.length > 0) {
+			comparision = new ArrayList<>();
+			for (String tagId : tagsToFilter) {
+				ComparisionForm c = new ComparisionForm();
+				c.setIdTag(Integer.parseInt(tagId));
+				c.setFirst(request.getParameter("first_" + tagId));
+				c.setPrevious(request.getParameter("previous_" + tagId));
+				comparision.add(c);
+			}
+		}
+		// Export all??
+		export(mapping, request);
+		return getAnnexes(mapping, request, response, tagsToFilter, exObsIds, comparision, async);
 	}
 
 	/**
@@ -181,7 +203,7 @@ public class DatabaseExportAction extends Action {
 	private void exportResultadosAccesibilidad(final MessageResources messageResources, Long idObservatory, Connection c, ObservatorioRealizadoForm fulfilledObservatory) throws Exception {
 		Observatory observatory = DatabaseExportManager.getObservatory(fulfilledObservatory.getId());
 		if (observatory == null) {
-			Logger.putLog("Generando exportación", DatabaseExportAction.class, Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Generando exportación: idObs: " + idObservatory + " - idExObs: " + fulfilledObservatory.getId(), DatabaseExportAction.class, Logger.LOG_LEVEL_ERROR);
 			// Información general de la ejecución del Observatorio
 			observatory = DatabaseExportUtils.getObservatoryInfo(messageResources, fulfilledObservatory.getId());
 			final List<CategoriaForm> categories = ObservatorioDAO.getObservatoryCategories(c, idObservatory);
@@ -230,11 +252,12 @@ public class DatabaseExportAction extends Action {
 	 * @param tagsToFilter the tags to filter
 	 * @param exObsIds     the ex obs ids
 	 * @param comparision  the comparision
+	 * @param isAsync      the is async
 	 * @return the annexes
 	 * @throws Exception the exception
 	 */
 	private ActionForward getAnnexes(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response, final String[] tagsToFilter, final String[] exObsIds,
-			final List<ComparisionForm> comparision) throws Exception {
+			final List<ComparisionForm> comparision, boolean isAsync) throws Exception {
 		try {
 			final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 			final Long idObs = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
@@ -253,14 +276,27 @@ public class DatabaseExportAction extends Action {
 			} else if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
 				resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 			}
-			AnnexUtils.generateAllAnnex(resources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision);
-			final PropertiesManager pmgr = new PropertiesManager();
-			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
-			final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";
-			ZipUtils.generateZipFile(exportPath + idOperation.toString(), zipPath, true);
-			CrawlerUtils.returnFile(response, zipPath, "application/zip", true);
-			FileUtils.deleteDir(new File(exportPath + idOperation));
-			return null;
+			if (isAsync) {
+				final Connection c = DataBaseManager.getConnection();
+				String url = request.getRequestURL().toString();
+				String baseURL = url.substring(0, url.length() - request.getRequestURI().length()) + request.getContextPath() + "/";
+				final DatosForm userData = LoginDAO.getUserDataByName(c, request.getSession().getAttribute(Constants.USER).toString());
+				DataBaseManager.closeConnection(c);
+				final AnnexGeneratorThread annexGeneratorThread = new AnnexGeneratorThread(resources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision,
+						userData.getEmail(), baseURL);
+				annexGeneratorThread.start();
+				request.setAttribute("EMAIL", userData.getEmail());
+				return mapping.findForward("async");
+			} else {
+				AnnexUtils.generateAllAnnex(resources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision);
+				final PropertiesManager pmgr = new PropertiesManager();
+				final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
+				final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";
+				ZipUtils.generateZipFile(exportPath + idOperation.toString(), zipPath, true);
+				CrawlerUtils.returnFile(response, zipPath, "application/zip", true);
+				FileUtils.deleteDir(new File(exportPath + idOperation));
+				return null;
+			}
 		} catch (Exception e) {
 			Logger.putLog("Exception generando los anexos.", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 			final ActionMessages errors = new ActionMessages();
@@ -292,6 +328,31 @@ public class DatabaseExportAction extends Action {
 			pw.close();
 		} catch (Exception e) {
 			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return null;
+	}
+
+	/**
+	 * Download file.
+	 *
+	 * @param mapping  the mapping
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
+	private ActionForward downloadFile(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response) {
+		// Url de invocacion:
+		// http://localhost:8080/oaw/secure/primaryExportPdfAction.do?id_observatorio=8&idExObs=33&action=exportAllPdfs
+		final long idExecutionOb = request.getParameter(Constants.ID_EX_OBS) != null ? Long.parseLong(request.getParameter(Constants.ID_EX_OBS)) : 0;
+		final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null ? Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)) : 0;
+		final String filename = request.getParameter("file");
+		try (Connection c = DataBaseManager.getConnection()) {
+			final PropertiesManager pmgr = new PropertiesManager();
+			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
+			CrawlerUtils.returnFile(response, exportPath + filename, "application/zip", false);
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+			return mapping.findForward(Constants.ERROR);
 		}
 		return null;
 	}
