@@ -159,14 +159,14 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 															edittype : "select",
 															align : "center",
 															editoptions : {
-
+																multiple: true,
 																dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
 																buildSelect : function(
 																		data) {
 
 																	var response = jQuery
 																			.parseJSON(data);
-																	var s = '<select><option value=""></option>';
+																	var s = '<select>';
 
 																	if (response
 																			&& response.length) {
@@ -434,12 +434,25 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 		return "";
 	}
 	
+// 	function ambitoFormatter(cellvalue, options, rowObject) {
+// 		if (rowObject.ambito && rowObject.ambito.name != null) {
+// 			return rowObject.ambito.name;
+// 		} else {
+// 			return "";
+// 		}
+// 	}
+	
 	function ambitoFormatter(cellvalue, options, rowObject) {
-		if (rowObject.ambito && rowObject.ambito.name != null) {
-			return rowObject.ambito.name;
-		} else {
-			return "";
-		}
+		var cellFormatted = "<ul style='list-style: none; padding-left: 0; margin-top: 10px;' >";
+
+		$.each(rowObject.ambitos, function(index, value) {
+			cellFormatted = cellFormatted + "<li class='listado-grid'>"
+					+ value.name + "</li>";
+		});
+
+		cellFormatted = cellFormatted + "</ul>";
+
+		return cellFormatted;
 	}
 	
 	function titleEtiquetasFormatter(cellvalue, options, rowObject) {

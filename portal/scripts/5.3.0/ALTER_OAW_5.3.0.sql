@@ -4,3 +4,5 @@ CREATE TABLE `OAW`.`dependencia_ambito` (
 	`id_ambito` INT NOT NULL , 
 	PRIMARY KEY (`id`)
 );
+
+ALTER TABLE `dependencia` DROP `id_ambit`;

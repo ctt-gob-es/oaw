@@ -596,7 +596,7 @@ public final class DependenciaDAO {
 		// Borrar las relaciones (no se pueden crear FK a lista por MyISAM no
 		// lo permite
 		try {
-			PreparedStatement deleteSemillaDependencia = c.prepareStatement("DELETE FROM ambito_dependencia WHERE id_dependencia = ?");
+			PreparedStatement deleteSemillaDependencia = c.prepareStatement("DELETE FROM dependencia_ambito WHERE id_dependencia = ?");
 			deleteSemillaDependencia.setLong(1, dependencia.getId());
 			deleteSemillaDependencia.executeUpdate();
 		} catch (SQLException e) {
@@ -604,7 +604,7 @@ public final class DependenciaDAO {
 		}
 		// Inserción de las nuevas
 		if (dependencia.getAmbitos() != null && !dependencia.getAmbitos().isEmpty()) {
-			StringBuilder slqInsertSemillaDependencia = new StringBuilder("INSERT INTO ambito_dependencia(id_ambito, id_dependencia) VALUES ");
+			StringBuilder slqInsertSemillaDependencia = new StringBuilder("INSERT INTO dependencia_ambito(id_ambito, id_dependencia) VALUES ");
 			for (int i = 0; i < dependencia.getAmbitos().size(); i++) {
 				AmbitoForm currentAmbit = dependencia.getAmbitos().get(i);
 				slqInsertSemillaDependencia.append("(").append(currentAmbit.getId()).append(",").append(dependencia.getId()).append(")");

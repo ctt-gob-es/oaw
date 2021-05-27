@@ -179,6 +179,18 @@ public class DependenciasObservatorioAction extends DispatchAction {
 //		AmbitoForm ambitoSemilla = new AmbitoForm();
 //		ambitoSemilla.setId(request.getParameter("ambitoaux"));
 //		dependencia.setAmbito(ambitoSemilla);
+		List<AmbitoForm> listAmbits = new ArrayList<>();
+		if (!StringUtils.isEmpty(request.getParameter("ambitoaux"))) {
+			String[] ambitArray = request.getParameter("ambitoaux").split(",");
+			if (ambitArray != null && ambitArray.length >= 1) {
+				for (int i = 0; i < ambitArray.length; i++) {
+					AmbitoForm ambit = new AmbitoForm();
+					ambit.setId(ambitArray[i]);
+					listAmbits.add(ambit);
+				}
+				dependencia.setAmbitos(listAmbits);
+			}
+		}
 		EtiquetaForm tag = new EtiquetaForm();
 		if (!StringUtils.isEmpty(request.getParameter("tagaux"))) {
 			tag.setId(Long.parseLong(request.getParameter("tagaux")));
