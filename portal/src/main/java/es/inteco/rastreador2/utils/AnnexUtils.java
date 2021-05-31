@@ -395,17 +395,21 @@ public final class AnnexUtils {
 		Logger.putLog("Obteniendo información para la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		generateInfo(idObsExecution, exObsIds);
 		Logger.putLog("Generando anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-		createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-		createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-		createAnnexPaginasCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-		createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-		createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-		createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-		createAnnexXLSX2(messageResources, idObsExecution, idOperation, tagsToFilter);
-		createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
-		createAnnexXLSX_PerDependency(idOperation);
-		createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
-		createAnnexProgressEvolutionXLSX(messageResources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision);
+		try {
+			createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPaginasCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexXLSX2(messageResources, idObsExecution, idOperation, tagsToFilter);
+			createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
+			createAnnexXLSX_PerDependency(idOperation);
+			createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
+			createAnnexProgressEvolutionXLSX(messageResources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision);
+		} catch (Exception e) {
+			Logger.putLog("Error en la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		}
 		Logger.putLog("Fin de la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 	}
 
@@ -440,6 +444,8 @@ public final class AnnexUtils {
 	 */
 	private static void fillExecutionDates(final Long idObsExecution, final String[] exObsIds, Connection c) throws SQLException {
 		executionDates = new ArrayList<>();
+		executionDatesWithFormat_Valid = new ArrayList<Date>();
+		executionDatesWithFormat = new ArrayList<>();
 		final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
 		final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
 		final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(), false,
@@ -662,17 +668,11 @@ public final class AnnexUtils {
 			final XSSFSheet globalSheet = wb.createSheet("Global");
 			// First sheet global part
 			XlsxUtils xlsxUtils = new XlsxUtils(wb);
-//			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(idObs, idObsExecution, tagsToFilter, exObsIds);
 			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, null, EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_IN_GLOBAL_TERMS,
 					EVOLUTION_OF_THE_COMPLIANCE_SITUATION_INTENDED_TO_BE_IMPLEMENTED_IN_GLOBAL_TERMS, null, null, false, 0, xlsxUtils, "");
-//			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(idObs, idObsExecution, tagsToFilterFixed,
-//					exObsIds);
-//			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed, null,
-//					EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART, EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 40, xlsxUtils);
 			generateGlobalProgressEvolutionSheet(globalSheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilterFixed, EVOLUTION_OF_THE_ESTIMATED_ADEQUACY_LEVEL_FIXED_PART,
 					EVOLUTION_OF_THE_COMPLIANCE_SITUATION_TARGETED_FIXED_PART, null, null, false, 40 + (executionDates.size()), xlsxUtils, "");
 			// Add a legend with custom text
-			// sheet.createRow(nextStartPos + 5);
 			XSSFDrawing draw = globalSheet.createDrawingPatriarch();
 			XSSFTextBox tb1 = draw.createTextbox(new XSSFClientAnchor(0, 0, 0, 0, 0, 100, 10, 106));
 			tb1.setLineStyleColor(0, 0, 0);
@@ -694,8 +694,6 @@ public final class AnnexUtils {
 			for (CategoriaForm category : categories) {
 				final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution,
 						Long.valueOf(category.getId()), tagsToFilter, exObsIds);
-				final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCatFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution,
-						Long.valueOf(category.getId()), tagsToFilterFixed, exObsIds);
 				if (pageObservatoryMapCat != null) {
 					String currentCategory = category.getName().substring(0, Math.min(category.getName().length(), 31));
 					final XSSFSheet categorySheet = wb.createSheet(currentCategory);
@@ -1073,23 +1071,51 @@ public final class AnnexUtils {
 					}
 				}
 			}
-			// final String executionDateAux = date.toString().substring(0, date.toString().indexOf(" ")).replace("/", "-");
 			final String executionDateAux = df.format(date);
-//			resultDataA.put(executionDateAux, new BigDecimal(countA));
-//			resultDataAA.put(executionDateAux, new BigDecimal(countAA));
-//			resultDataNV.put(executionDateAux, new BigDecimal(countNV));
-//			resultDataPC.put(executionDateAux, new BigDecimal(countPC));
-//			resultDataTC.put(executionDateAux, new BigDecimal(countTC));
-//			resultDataNC.put(executionDateAux, new BigDecimal(countNC));
 			int sumAdecuacy = countA + countAA + countNV;
-			;
-			resultDataA.put(executionDateAux, new BigDecimal(countA).divide(new BigDecimal(sumAdecuacy), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
-			resultDataAA.put(executionDateAux, new BigDecimal(countAA).divide(new BigDecimal(sumAdecuacy), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
-			resultDataNV.put(executionDateAux, new BigDecimal(countNV).divide(new BigDecimal(sumAdecuacy), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+			if (sumAdecuacy > 0) {
+				if (countA > 0) {
+					resultDataA.put(executionDateAux, new BigDecimal(countA).divide(new BigDecimal(sumAdecuacy), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+				} else {
+					resultDataA.put(executionDateAux, new BigDecimal(0));
+				}
+				if (countAA > 0) {
+					resultDataAA.put(executionDateAux, new BigDecimal(countAA).divide(new BigDecimal(sumAdecuacy), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+				} else {
+					resultDataAA.put(executionDateAux, new BigDecimal(0));
+				}
+				if (countNV > 0) {
+					resultDataNV.put(executionDateAux, new BigDecimal(countNV).divide(new BigDecimal(sumAdecuacy), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+				} else {
+					resultDataNV.put(executionDateAux, new BigDecimal(0));
+				}
+			} else {
+				resultDataA.put(executionDateAux, new BigDecimal(0));
+				resultDataAA.put(executionDateAux, new BigDecimal(0));
+				resultDataNV.put(executionDateAux, new BigDecimal(0));
+			}
 			int sumCompliance = countNC + countPC + countTC;
-			resultDataPC.put(executionDateAux, new BigDecimal(countPC).divide(new BigDecimal(sumCompliance), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
-			resultDataTC.put(executionDateAux, new BigDecimal(countTC).divide(new BigDecimal(sumCompliance), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
-			resultDataNC.put(executionDateAux, new BigDecimal(countNC).divide(new BigDecimal(sumCompliance), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+			if (sumCompliance > 0) {
+				if (countPC > 0) {
+					resultDataPC.put(executionDateAux, new BigDecimal(countPC).divide(new BigDecimal(sumCompliance), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+				} else {
+					resultDataPC.put(executionDateAux, new BigDecimal(0));
+				}
+				if (countTC > 0) {
+					resultDataTC.put(executionDateAux, new BigDecimal(countTC).divide(new BigDecimal(sumCompliance), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+				} else {
+					resultDataTC.put(executionDateAux, new BigDecimal(0));
+				}
+				if (countNC > 0) {
+					resultDataNC.put(executionDateAux, new BigDecimal(countNC).divide(new BigDecimal(sumCompliance), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+				} else {
+					resultDataNC.put(executionDateAux, new BigDecimal(0));
+				}
+			} else {
+				resultDataPC.put(executionDateAux, new BigDecimal(0));
+				resultDataTC.put(executionDateAux, new BigDecimal(0));
+				resultDataNC.put(executionDateAux, new BigDecimal(0));
+			}
 		}
 		// Styles
 		final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_BLACK_BOLD10_CENTER);
