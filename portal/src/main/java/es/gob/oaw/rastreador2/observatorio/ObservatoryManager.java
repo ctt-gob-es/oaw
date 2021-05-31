@@ -70,7 +70,7 @@ public class ObservatoryManager {
 					String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, id);
 					boolean pointWarning = Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion) ? true : false;
 					final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, true, pointWarning);
-					// TODO ADD SEED
+					// ADD SEED
 					final FulfilledCrawlingForm ffCrawling = RastreoDAO.getFullfilledCrawlingExecution(c, evaluationForm.getCrawlerExecutionId());
 					if (ffCrawling != null) {
 						final SeedForm seedForm = new SeedForm();
