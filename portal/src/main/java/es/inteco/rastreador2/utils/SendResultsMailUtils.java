@@ -319,7 +319,7 @@ public final class SendResultsMailUtils {
 		final MailService mailService = new MailService();
 		// Get emails from URA
 		List<String> mailsTo = new LinkedList<String>(Arrays.asList(ura.getEmails().split(";")));
-		// TODO Check if can send as cco
+		// Check if can send as cco
 		List<String> mailsToCco = new ArrayList<>();
 		if (!StringUtils.isEmpty(cco)) {
 			mailsToCco.add(cco);

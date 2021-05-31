@@ -111,8 +111,7 @@ public class AnnexGeneratorThread extends Thread {
 		} catch (MailException e) {
 			Logger.putLog("Fallo al enviar el correo", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.putLog("Error generando los anexos", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
 		}
 	}
 

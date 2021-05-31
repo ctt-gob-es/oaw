@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +55,7 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
+import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
 import es.inteco.rastreador2.dao.dependencia.DependenciaDAO;
 import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.json.JsonMessage;
@@ -411,7 +413,6 @@ public class DependenciasObservatorioAction extends DispatchAction {
 				if (sheet.getRow(0) != null && sheet.getRow(0).getCell(0) != null) {
 					String normalizedCellValue = Normalizer.normalize(sheet.getRow(0).getCell(0).getStringCellValue(), Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 					if (IMPORT_COLUMN_OFFICIAL.equalsIgnoreCase(normalizedCellValue)) {
-						// TODO Determine if is official or not by number of columns??
 						getDependenciesFromSheet(comparisionList, c, sheet);
 					}
 				}
@@ -463,14 +464,15 @@ public class DependenciasObservatorioAction extends DispatchAction {
 					}
 				}
 				// Ambit by sheet name
-				// TODO LIST OF AMBITS
-//				AmbitoForm ambitBySheetName = AmbitoDAO.getAmbitByName(c, sheet.getSheetName());
-//				if (ambitBySheetName != null) {
-//					newDependency.setAmbito(ambitBySheetName);
-//				} else {
-//					// By default set ambit others
-//					newDependency.setAmbito(AmbitoDAO.getAmbitByID(c, "4"));
-//				}
+				AmbitoForm ambitBySheetName = AmbitoDAO.getAmbitByName(c, sheet.getSheetName());
+				List<AmbitoForm> ambits = new ArrayList<>();
+				if (ambitBySheetName != null) {
+					ambits.add(ambitBySheetName);
+				} else {
+					// By default set ambit others
+					ambits.add(AmbitoDAO.getAmbitByID(c, "4"));
+				}
+				newDependency.setAmbitos(ambits);
 				// Acronym
 				String acronym = headerData.indexOf(IMPORT_COLUMN_ACRONYM) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_ACRONYM))) : EMPTY_STRING;
 				newDependency.setAcronym(acronym);
@@ -615,11 +617,8 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		 * @return true, if is same ambit
 		 */
 		public boolean isSameAmbit() {
-			// return (dependency!=null && newDependency!=null &&;
-			// TODO LIST OF AMBITS
-//			return ((dependency != null && newDependency != null && dependency.getAmbito() == null && newDependency.getAmbito() == null) || (dependency != null && newDependency != null
-//					&& dependency.getAmbito() != null && newDependency.getAmbito() != null && dependency.getAmbito().equals(newDependency.getAmbito())));
-			return (true);
+			return (dependency != null && newDependency != null && dependency.getAmbitos() == null && newDependency.getAmbitos() == null
+					&& new HashSet<>(dependency.getAmbitos()).equals(new HashSet<>(newDependency.getAmbitos())));
 		}
 
 		/**

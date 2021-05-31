@@ -193,7 +193,7 @@ public class SendResultsByMailAction extends Action {
 						DataBaseManager.closeConnection(connection);
 						return mapping.findForward("sendResultsByMailAsync");
 					} else if (request.getParameter(Constants.ACTION).equals("save")) {
-						// TODO Save email subject and cco??
+						// Save email subject and cco??
 						final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 						final String emailSubject = request.getParameter("emailSubject");
 						final String cco = request.getParameter("cco");

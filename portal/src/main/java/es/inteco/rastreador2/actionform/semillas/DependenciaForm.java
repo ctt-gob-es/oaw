@@ -42,7 +42,6 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	/** The emails. */
 	private String emails;
 	/** The ambito. */
-	// private AmbitoForm ambito;
 	private List<AmbitoForm> ambitos;
 	/** The tag. */
 	private EtiquetaForm tag;
@@ -155,23 +154,6 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	public void setEmails(String emails) {
 		this.emails = emails;
 	}
-//	/**
-//	 * Gets the ambito.
-//	 *
-//	 * @return the ambito
-//	 */
-//	public AmbitoForm getAmbito() {
-//		return ambito;
-//	}
-//
-//	/**
-//	 * Sets the ambito.
-//	 *
-//	 * @param ambito the ambito to set
-//	 */
-//	public void setAmbito(AmbitoForm ambito) {
-//		this.ambito = ambito;
-//	}
 
 	/**
 	 * Gets the ambitos.
