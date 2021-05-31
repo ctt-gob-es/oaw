@@ -257,6 +257,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				</fieldset>
 				<div class="formButton">
 					<input type="hidden" name="action" value="export" />
+<!-- 					<input type="hidden" name="action" value="asyncExport" /> -->
 					<input type="hidden" name="idCartucho" value="<c:out value="${param.idCartucho}"/>" />
 					<input type="hidden" name="id_observatorio" value="<c:out value="${param.id_observatorio}"/>" />
 					<input type="hidden" name="idExObs" value="<c:out value="${param.idExObs}"/>" />

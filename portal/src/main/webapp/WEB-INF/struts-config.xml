@@ -962,6 +962,7 @@
 		<action path="/secure/databaseExportAction"
 			type="es.inteco.rastreador2.action.export.database.DatabaseExportAction" scope="request">
 			<forward name="confirm" path=".exportarDatosObservatorio" />
+			<forward name="async" path=".exportarAsyncDatosObservatorio" />
 			<forward name="exito" path=".Exito" />
 		</action>
 

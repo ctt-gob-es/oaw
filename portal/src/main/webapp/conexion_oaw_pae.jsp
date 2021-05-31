@@ -7,7 +7,7 @@
 <%@page import= "java.util.ArrayList" %>
 <%@page import= "java.util.List" %>
 <%@page import= "java.util.Properties" %>
-<%@page import="java.util.Base64"%>
+<%@page import="org.apache.commons.codec.binary.Base64"%>
 <%--
     Necesita las librerias de apache commons-fileupload-1.2.1.jar y commons-io-1.3.2.jar
 --%>
@@ -91,13 +91,13 @@
                     if (item.isFormField()) {
                         readParam(item);
                     } else {
-						// Si no es campo de formulario es el fichero
+                        // Si no es campo de formulario es el fichero
+
                         fileName = item.getName();
                         try{
-                            codigo = Base64.getUrlEncoder().encodeToString(item.get());
-                        
+                            //codigo = Base64.getUrlEncoder().encodeToString(item.get());
+                        	codigo = Base64.encodeBase64URLSafeString(item.get());
                         } catch(Exception e){}
-                        
                     }
                 }
             } catch (FileUploadException fue) {
@@ -208,7 +208,7 @@
             final URLCodec codec = new URLCodec();
             try {
                 final String encodedCodigo = codec.encode(codigo);
-                final String postRequest = String.format("content=%s&url=%s&correo=%s&complexity=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s&type=%s&filename=%s",
+                final String postRequest = String.format("content=%s&url=%s&correo=%s&complexity=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s&type=%s&filename=%s&depthReport=%s",
                         encodedCodigo != null ? encodedCodigo : "",
                         url != null ? url : "",
                         correo,
@@ -476,7 +476,8 @@
             <input type="hidden" name="informe-nobroken"    value="<%=requestManager.nobroken!=null?requestManager.nobroken:"" %>">
             <input type="hidden" name="registerAnalysis"    value="<%=requestManager.registerAnalysis %>">
             <input type="hidden" name="type"                value="<%=requestManager.type %>">
-
+			<input type="hidden" name="depthReport"         value="<%=requestManager.depthReport %>">
+			
             <fieldset id="historico_resultados">
                 <legend>Histórico de resultados</legend>                
 
