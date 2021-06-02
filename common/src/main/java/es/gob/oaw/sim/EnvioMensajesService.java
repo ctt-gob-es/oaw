@@ -22,8 +22,13 @@ public class EnvioMensajesService
     extends Service
 {
 
+    /** The Constant ENVIOMENSAJESSERVICE_WSDL_LOCATION. */
     private static final URL ENVIOMENSAJESSERVICE_WSDL_LOCATION;
+    
+    /** The Constant ENVIOMENSAJESSERVICE_EXCEPTION. */
     private static final WebServiceException ENVIOMENSAJESSERVICE_EXCEPTION;
+    
+    /** The Constant ENVIOMENSAJESSERVICE_QNAME. */
     private static final QName ENVIOMENSAJESSERVICE_QNAME = new QName("http://misim.redsara.es/misim-bus-webapp/", "EnvioMensajesService");
 
     static {
@@ -38,52 +43,88 @@ public class EnvioMensajesService
         ENVIOMENSAJESSERVICE_EXCEPTION = e;
     }
 
+    /**
+	 * Instantiates a new envio mensajes service.
+	 */
     public EnvioMensajesService() {
         super(internalGetWsdlLocation(), ENVIOMENSAJESSERVICE_QNAME);
     }
 
+    /**
+	 * Instantiates a new envio mensajes service.
+	 *
+	 * @param features the features
+	 */
     public EnvioMensajesService(WebServiceFeature... features) {
         super(internalGetWsdlLocation(), ENVIOMENSAJESSERVICE_QNAME, features);
     }
 
+    /**
+	 * Instantiates a new envio mensajes service.
+	 *
+	 * @param wsdlLocation the wsdl location
+	 */
     public EnvioMensajesService(URL wsdlLocation) {
         super(wsdlLocation, ENVIOMENSAJESSERVICE_QNAME);
     }
 
+    /**
+	 * Instantiates a new envio mensajes service.
+	 *
+	 * @param wsdlLocation the wsdl location
+	 * @param features     the features
+	 */
     public EnvioMensajesService(URL wsdlLocation, WebServiceFeature... features) {
         super(wsdlLocation, ENVIOMENSAJESSERVICE_QNAME, features);
     }
 
+    /**
+	 * Instantiates a new envio mensajes service.
+	 *
+	 * @param wsdlLocation the wsdl location
+	 * @param serviceName  the service name
+	 */
     public EnvioMensajesService(URL wsdlLocation, QName serviceName) {
         super(wsdlLocation, serviceName);
     }
 
+    /**
+	 * Instantiates a new envio mensajes service.
+	 *
+	 * @param wsdlLocation the wsdl location
+	 * @param serviceName  the service name
+	 * @param features     the features
+	 */
     public EnvioMensajesService(URL wsdlLocation, QName serviceName, WebServiceFeature... features) {
         super(wsdlLocation, serviceName, features);
     }
 
     /**
-     * 
-     * @return
-     *     returns EnvioMensajesServiceWSBindingPortType
-     */
+	 * Gets the envio mensajes service port.
+	 *
+	 * @return returns EnvioMensajesServiceWSBindingPortType
+	 */
     @WebEndpoint(name = "EnvioMensajesServicePort")
     public EnvioMensajesServiceWSBindingPortType getEnvioMensajesServicePort() {
         return super.getPort(new QName("http://misim.redsara.es/misim-bus-webapp/", "EnvioMensajesServicePort"), EnvioMensajesServiceWSBindingPortType.class);
     }
 
     /**
-     * 
-     * @param features
-     *     A list of {@link javax.xml.ws.WebServiceFeature} to configure on the proxy.  Supported features not in the <code>features</code> parameter will have their default values.
-     * @return
-     *     returns EnvioMensajesServiceWSBindingPortType
-     */
+	 * Gets the envio mensajes service port.
+	 *
+	 * @param features A list of {@link javax.xml.ws.WebServiceFeature} to configure on the proxy. Supported features not in the <code>features</code> parameter will have their default values.
+	 * @return returns EnvioMensajesServiceWSBindingPortType
+	 */
     @WebEndpoint(name = "EnvioMensajesServicePort")
     public EnvioMensajesServiceWSBindingPortType getEnvioMensajesServicePort(WebServiceFeature... features) {
         return super.getPort(new QName("http://misim.redsara.es/misim-bus-webapp/", "EnvioMensajesServicePort"), EnvioMensajesServiceWSBindingPortType.class, features);
     }
 
+    /**
+	 * Internal get wsdl location.
+	 *
+	 * @return the url
+	 */
     private static URL internalGetWsdlLocation() {
         if (ENVIOMENSAJESSERVICE_EXCEPTION!= null) {
             throw ENVIOMENSAJESSERVICE_EXCEPTION;

@@ -1,7 +1,7 @@
 /**
  * jqGrid extension for form editing Grid Data
  * Copyright (c) 2008-2014, Tony Tomov, tony@trirand.com, http://trirand.com/blog/
- * Copyright (c) 2014-2017, Oleg Kiriljuk, oleg.kiriljuk@ok-soft-gmbh.com
+ * Copyright (c) 2014-2019, Oleg Kiriljuk, oleg.kiriljuk@ok-soft-gmbh.com
  * Dual licensed under the MIT and GPL licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
@@ -479,6 +479,7 @@
 							addedrow: "first",
 							topinfo: "",
 							bottominfo: "",
+							labelswidth: "",
 							savekey: [false, 13],
 							navkeys: [false, 38, 40],
 							checkOnSubmit: false,
@@ -542,32 +543,32 @@
 				}
 				function getFormData() {
 					$(frmtb + " > tbody > tr > td .FormElement").each(function () {
-						var $celm = $(".customelement", this), nm = this.name, cm, iCol, editoptions, formatoptions, newformat, type;
-						if ($celm.length) {
-							nm = $celm.attr("name");
-							iCol = iColByName[nm];
-							if (iCol !== undefined) {
-								cm = colModel[iCol];
-								editoptions = cm.editoptions || {};
-								if ($.isFunction(editoptions.custom_value)) {
-									try {
-										postdata[nm] = editoptions.custom_value.call($t, $("#" + jqID(nm), frmtb), "get");
-										if (postdata[nm] === undefined) { throw "e1"; }
-									} catch (e) {
-										if (e === "e1") {
-											jgrid.info_dialog.call($t, errcap, "function 'custom_value' " + o.msg.novalue, o.bClose);
-										} else {
-											jgrid.info_dialog.call($t, errcap, e.message, o.bClose);
-										}
-									}
-									return true;
+						var $celm = $(".customelement", this),
+							nm = $celm.length ? $celm.attr("name") : this.name,
+							iCol = iColByName[nm],
+							cm = iCol !== undefined ? colModel[iCol] || {} : {},
+							editoptions = cm.editoptions || {},
+							formatoptions, newformat, type;
+						if ($celm.length && $.isFunction(editoptions.custom_value)) {
+							try {
+								postdata[nm] = editoptions.custom_value.call($t, $("#" + jqID(nm), frmtb), "get");
+								if (postdata[nm] === undefined) { throw "e1"; }
+							} catch (e) {
+								if (e === "e1") {
+									jgrid.info_dialog.call($t, errcap, "function 'custom_value' " + o.msg.novalue, o.bClose);
+								} else {
+									jgrid.info_dialog.call($t, errcap, e.message, o.bClose);
 								}
 							}
+							return true;
 						} else {
 							type = $(this)[0].type;
 							switch (type) {
 								case "checkbox":
-									postdata[nm] = $(this).is(":checked") ? $(this).val() : $(this).data("offval");
+									var checkBoxValues = typeof editoptions.value === "string" ?
+											editoptions.value.split(":") :
+											["Yes", "No"];
+									postdata[nm] = $(this).is(":checked") ? checkBoxValues[0] : checkBoxValues[1];
 									break;
 								case "select-one":
 									postdata[nm] = $("option:selected", this).val();
@@ -585,13 +586,9 @@
 								case "date":
 									postdata[nm] = $(this).val();
 									if (String(postdata[nm]).split("-").length === 3) {
-										iCol = iColByName[nm];
-										if (iCol !== undefined) {
-											cm = colModel[iCol];
-											formatoptions = cm.formatoptions || {};
-											newformat = formatoptions.newformat || getGridRes.call($self, "formatter.date.newformat");
-											postdata[nm] = jgrid.parseDate.call($self[0], "Y-m-d", postdata[nm], newformat);
-										}
+										formatoptions = cm.formatoptions || {};
+										newformat = formatoptions.newformat || getGridRes.call($self, "formatter.date.newformat");
+										postdata[nm] = jgrid.parseDate.call($self[0], "Y-m-d", postdata[nm], newformat);
 									}
 									break;
 								default:
@@ -606,7 +603,10 @@
 				}
 				function createData(rowid1, tb, maxcols) {
 					var cnt = 0, retpos = [], ind = false, $tb = $(tb),
-						tdtmpl = "<td class='CaptionTD'>&#160;</td><td class='DataTD'>&#160;</td>", tmpl = "", i; //*2
+						labelsWidth = String(o.labelswidth) + (!o.labelswidth || isNaN(o.labelswidth) ? "" : "px"),
+						tdtmpl = "<td class='CaptionTD" +
+							(labelsWidth ? "' style='width:" + labelsWidth + ";" : "") +
+							"'>&#160;</td><td class='DataTD'>&#160;</td>", tmpl = "", i; //*2
 					for (i = 1; i <= maxcols; i++) {
 						tmpl += tdtmpl;
 					}
@@ -871,14 +871,14 @@
 				function setNullsOrUnformat() {
 					var url = o.url || p.editurl;
 					$.each(colModel, function (i, cm) {
-						var cmName = cm.name, value = postdata[cmName];
-						if (cm.formatter === "date" && (cm.formatoptions == null || cm.formatoptions.sendFormatted !== true)) {
-							// TODO: call all other predefined formatters!!! Not only formatter: "date" have the problem.
-							// Floating point separator for example
-							postdata[cmName] = $.unformat.date.call($t, value, cm);
-						}
-						if (url !== "clientArray" && cm.editoptions && cm.editoptions.NullIfEmpty === true) {
-							if (postdata.hasOwnProperty(cmName) && value === "") {
+						var cmName = cm.name;
+						if (postdata.hasOwnProperty(cmName)) {
+							if (cm.formatter === "date" && (cm.formatoptions == null || cm.formatoptions.sendFormatted !== true)) {
+								// TODO: call all other predefined formatters!!! Not only formatter: "date" have the problem.
+								// Floating point separator for example
+								postdata[cmName] = $.unformat.date.call($t, postdata[cmName], cm);
+							}
+							if (url !== "clientArray" && cm.editoptions && cm.editoptions.NullIfEmpty === true && postdata[cmName] === "") {
 								postdata[cmName] = "null";
 							}
 						}
@@ -1797,11 +1797,14 @@
 							//jqModal : true,
 							closeOnEscape: false,
 							delData: {},
+							idSeparator: ",",
 							onClose: null,
 							ajaxDelOptions: {},
 							processing: false,
 							serializeDelData: null,
-							useDataProxy: false
+							useDataProxy: false,
+							delui: "disable", // "enable", "enable" or "block"
+							deltext: base.getGridRes.call($self, "defaults.deltext") || "Deleting..."
 						},
 						base.getGridRes.call($self, "del"),
 						jgrid.del || {},
@@ -1825,7 +1828,7 @@
 				if (!$.isArray(rowids)) { rowids = [String(rowids)]; }
 				if ($(themodalSelector)[0] !== undefined) {
 					if (!deleteFeedback("beforeInitData", $(dtbl))) { return; }
-					$("#DelData>td", dtbl).text(rowids.join()).data("rowids", rowids);
+					$("#DelData>td", dtbl).text(rowids.join(o.idSeparator)).data("rowids", rowids);
 					$("#DelError", dtbl).hide();
 					if (o.processing === true) {
 						o.processing = false;
@@ -1848,7 +1851,7 @@
 					tbl += "<table class='DelTable'><tbody>";
 					// error data
 					tbl += "<tr id='DelError' style='display:none'><td class='" + errorClass + "'></td></tr>";
-					tbl += "<tr id='DelData' style='display:none'><td >" + rowids.join() + "</td></tr>";
+					tbl += "<tr id='DelData' style='display:none'><td >" + rowids.join(o.idSeparator) + "</td></tr>";
 					tbl += "<tr><td class='delmsg'>" + o.msg + "</td></tr>";
 					// buttons at footer
 					tbl += "</tbody></table></div></div>";
@@ -1874,8 +1877,8 @@
 							postdata = $delData.text(), //the pair is name=val1,val2,...
 							formRowIds = $delData.data("rowids"),
 							cs = {};
-						if ($.isFunction(o.onclickSubmit)) { cs = o.onclickSubmit.call($t, o, postdata) || {}; }
-						if ($.isFunction(o.beforeSubmit)) { ret = o.beforeSubmit.call($t, postdata) || ret; }
+						if ($.isFunction(o.onclickSubmit)) { cs = o.onclickSubmit.call($t, o, postdata, formRowIds) || {}; }
+						if ($.isFunction(o.beforeSubmit)) { ret = o.beforeSubmit.call($t, postdata, formRowIds) || ret; }
 						if (ret[0] && !o.processing) {
 							o.processing = true;
 							opers = p.prmNames;
@@ -1890,15 +1893,16 @@
 									postdata[pk] = jgrid.stripPref(p.idPrefix, postdata[pk]);
 								}
 							}
-							postd[idname] = postdata.join();
+							postd[idname] = postdata.join(o.idSeparator);
 							$(this).addClass(activeClass);
 							var url = o.url || p.editurl,
 								ajaxOptions = $.extend({
-									url: $.isFunction(url) ? url.call($t, postd[idname], postd, o) : url,
+									url: $.isFunction(url) ? url.call($t, postd[idname], postd, o, formRowIds) : url,
 									type: o.mtype,
-									data: $.isFunction(o.serializeDelData) ? o.serializeDelData.call($t, postd) : postd,
+									data: $.isFunction(o.serializeDelData) ? o.serializeDelData.call($t, postd, formRowIds) : postd,
 									complete: function (jqXHR, textStatus) {
 										var i;
+										$self.jqGrid("progressBar", { method: "hide", loadtype: o.delui });
 										$("#dData", dtbl + "_2").removeClass(activeClass);
 										if ((jqXHR.status >= 300 && jqXHR.status !== 304) || (jqXHR.status === 0 && jqXHR.readyState === 4)) {
 											ret[0] = false;
@@ -1911,7 +1915,7 @@
 											// data is posted successful
 											// execute aftersubmit with the returned data from server
 											if ($.isFunction(o.afterSubmit)) {
-												ret = o.afterSubmit.call($t, jqXHR, postd) || [true];
+												ret = o.afterSubmit.call($t, jqXHR, postd, formRowIds) || [true];
 											}
 										}
 										if (ret[0] === false) {
@@ -1932,7 +1936,7 @@
 												$self.trigger("reloadGrid", [$.extend({}, o.reloadGridOptions || {})]);
 											}
 											setTimeout(function () {
-												deleteFeedback("afterComplete", jqXHR, postdata, $(dtbl));
+												deleteFeedback("afterComplete", jqXHR, postdata, $(dtbl), formRowIds);
 											}, 50);
 										}
 										o.processing = false;
@@ -1957,6 +1961,7 @@
 								}
 							}
 							if (ret[0]) {
+								$self.jqGrid("progressBar", { method: "show", loadtype: o.delui, htmlcontent: o.deltext });
 								if (o.useDataProxy) {
 									var dpret = p.dataProxy.call($t, ajaxOptions, "del_" + gridId);
 									if (dpret === undefined) {
@@ -2090,8 +2095,10 @@
 										left = documentElement.clientWidth;
 										top = documentElement.clientHeight;
 									}
-									left = left / 2 - parseInt(o.alertwidth, 10) / 2 - offsetGbox.left;
-									top = top / 2 - 25 - offsetGbox.top;
+									left = left / 2 - parseInt(o.alertwidth, 10) / 2 - offsetGbox.left +
+											((w.pageXOffset !== undefined) ? w.pageXOffset : (documentElement || document.body.parentNode || document.body).scrollLeft);
+									top = top / 2 - 25 - offsetGbox.top +
+											((w.pageYOffset !== undefined) ? w.pageYOffset : (documentElement || document.body.parentNode || document.body).scrollTop);
 								}
 								jgrid.createModal.call($t, alertIDs,
 									"<div class='" + getGuiStyles.call($t, "dialog.body") + "'><div>" + o.alerttext + "</div></div>",
@@ -2250,7 +2257,7 @@
 								if (o.refreshstate !== "currentfilter") {
 									p.postData.filters = "";
 									try {
-										$("#fbox_" + gridIdEscaped).jqFilter("resetFilter");
+										$("#fbox_" + gridIdEscaped.substr(1)).jqFilter("resetFilter");
 									} catch (ignore) { }
 									if ($.isFunction($t.clearToolbar)) { $t.clearToolbar(false); }
 								}

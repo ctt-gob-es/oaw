@@ -136,6 +136,42 @@ public class EtiquetasObservatorioAction extends DispatchAction {
 	}
 
 	/**
+	 * Clasification.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	public ActionForward clasification(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		try (Connection c = DataBaseManager.getConnection()) {
+			String nombre = request.getParameter("nombre");
+			if (!StringUtils.isEmpty(nombre)) {
+				nombre = es.inteco.common.utils.StringUtils.corregirEncoding(nombre);
+			}
+			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
+			final int clasification = Pagination.getPage(request, "clasification");
+			final int numResult = EtiquetaDAO.countEtiquetas(c, nombre);
+			response.setContentType("text/json");
+			List<EtiquetaForm> listaEtiquetas = EtiquetaDAO.getAllEtiquetasClasification(c, clasification);
+			String jsonSeeds = new Gson().toJson(listaEtiquetas);
+			// Paginacion
+			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
+			String jsonPagination = new Gson().toJson(paginas);
+			PrintWriter pw = response.getWriter();
+			// pw.write(json);
+			pw.write("{\"etiquetas\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
+			pw.flush();
+			pw.close();
+		} catch (Exception e) {
+			Logger.putLog("Error: ", EtiquetasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return null;
+	}
+
+	/**
 	 * Update.
 	 *
 	 * @param mapping  the mapping

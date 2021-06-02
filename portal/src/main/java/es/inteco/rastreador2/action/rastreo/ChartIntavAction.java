@@ -43,10 +43,18 @@ import java.util.*;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class ChartIntavAction.
+ */
 public class ChartIntavAction extends Action {
 
+    /** The pmgr. */
     private static PropertiesManager pmgr = null;
+    
+    /** The x. */
     private static int x = 700;
+    
+    /** The y. */
     private static int y = 500;
 
     static {
@@ -55,6 +63,16 @@ public class ChartIntavAction extends Action {
         y = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.y"));
     }
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
 
@@ -75,6 +93,15 @@ public class ChartIntavAction extends Action {
         }
     }
 
+    /**
+	 * Creates the charts.
+	 *
+	 * @param request    the request
+	 * @param mapping    the mapping
+	 * @param chartsPath the charts path
+	 * @param regenerate the regenerate
+	 * @return the action forward
+	 */
     private ActionForward createCharts(HttpServletRequest request, ActionMapping mapping, String chartsPath, boolean regenerate) {
 
         String user = (String) request.getSession().getAttribute(Constants.USER);
@@ -108,6 +135,16 @@ public class ChartIntavAction extends Action {
         return mapping.findForward(Constants.INDICE_GRAFICAS);
     }
 
+    /**
+	 * Creates the chart.
+	 *
+	 * @param idExecution the id execution
+	 * @param chartsPath  the charts path
+	 * @param request     the request
+	 * @param regenerate  the regenerate
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int createChart(Long idExecution, String chartsPath, HttpServletRequest request, boolean regenerate) throws Exception {
 
         List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idExecution);
@@ -194,6 +231,12 @@ public class ChartIntavAction extends Action {
         return 0;
     }
 
+    /**
+	 * Gets the charts path.
+	 *
+	 * @param request the request
+	 * @return the charts path
+	 */
     private String getChartsPath(HttpServletRequest request) {
         long idTracking = 0;
         if (request.getParameter(Constants.ID_RASTREO) != null) {
@@ -214,6 +257,16 @@ public class ChartIntavAction extends Action {
                 + idTracking + File.separator + idExecution + File.separator + language.getLanguage() + File.separator;
     }
 
+    /**
+	 * Generate charts.
+	 *
+	 * @param request       the request
+	 * @param globalDataMap the global data map
+	 * @param totalDataMap  the total data map
+	 * @param chartsPath    the charts path
+	 * @param regenerate    the regenerate
+	 * @throws Exception the exception
+	 */
     private void generateCharts(HttpServletRequest request, Map<String, Map<String, BigDecimal>> globalDataMap,
                                 Map<String, BigDecimal> totalDataMap, String chartsPath, boolean regenerate) throws Exception {
 
@@ -249,6 +302,12 @@ public class ChartIntavAction extends Action {
         }
     }
 
+    /**
+	 * Label information.
+	 *
+	 * @param info the info
+	 * @return the list
+	 */
     private List<LabelValueBean> labelInformation(Map<String, BigDecimal> info) {
         List<LabelValueBean> labelValueList = new ArrayList<>();
         LabelValueBean labelValue;

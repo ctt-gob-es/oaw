@@ -18,6 +18,7 @@ package es.inteco.rastreador2.actionform.basic.service;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.struts.validator.ValidatorForm;
 
@@ -70,6 +71,26 @@ public class BasicServiceForm extends ValidatorForm {
 	private String fileName;
 	/** The informe profundidad. */
 	private String depthReport;
+	/** The contents. */
+	private List<BasicServiceFile> contents;
+
+	/**
+	 * Gets the contents.
+	 *
+	 * @return the contents
+	 */
+	public List<BasicServiceFile> getContents() {
+		return contents;
+	}
+
+	/**
+	 * Sets the contents.
+	 *
+	 * @param contents the new contents
+	 */
+	public void setContents(List<BasicServiceFile> contents) {
+		this.contents = contents;
+	}
 
 	/**
 	 * Gets the language.
@@ -142,7 +163,7 @@ public class BasicServiceForm extends ValidatorForm {
 			} catch (MalformedURLException e) {
 				return domain;
 			}
-		} else if (analysisType == BasicServiceAnalysisType.CODIGO_FUENTE) {
+		} else if (analysisType == BasicServiceAnalysisType.CODIGO_FUENTE || analysisType == BasicServiceAnalysisType.CODIGO_FUENTE) {
 			return BasicServiceUtils.getTitleFromContent(content);
 		} else if (analysisType == BasicServiceAnalysisType.LISTA_URLS) {
 			return "Lista de páginas";
@@ -314,6 +335,15 @@ public class BasicServiceForm extends ValidatorForm {
 	 */
 	public boolean isContentAnalysis() {
 		return analysisType == BasicServiceAnalysisType.CODIGO_FUENTE;
+	}
+
+	/**
+	 * Checks if is content analysis multiple.
+	 *
+	 * @return true, if is content analysis multiple
+	 */
+	public boolean isContentAnalysisMultiple() {
+		return analysisType == BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE;
 	}
 
 	/**

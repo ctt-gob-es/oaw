@@ -20,37 +20,77 @@ import es.inteco.intav.form.PriorityForm;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class IntavSimplePDFForm.
+ */
 public class IntavSimplePDFForm {
 
+    /** The priority. */
     public PriorityForm priority;
+    
+    /** The guidelines list. */
     public List<ISPDFGuidelineForm> guidelinesList;
 
+    /**
+	 * Instantiates a new intav simple PDF form.
+	 */
     public IntavSimplePDFForm() {
         priority = new PriorityForm();
         guidelinesList = new ArrayList<>();
     }
 
+    /**
+	 * Gets the priority.
+	 *
+	 * @return the priority
+	 */
     public PriorityForm getPriority() {
         return priority;
     }
 
+    /**
+	 * Sets the priority.
+	 *
+	 * @param priority the new priority
+	 */
     public void setPriority(PriorityForm priority) {
         this.priority = priority;
     }
 
+    /**
+	 * Gets the guidelines list.
+	 *
+	 * @return the guidelines list
+	 */
     public List<ISPDFGuidelineForm> getGuidelinesList() {
         return guidelinesList;
     }
 
+    /**
+	 * Sets the guidelines list.
+	 *
+	 * @param guidelinesList the new guidelines list
+	 */
     public void setGuidelinesList(List<ISPDFGuidelineForm> guidelinesList) {
         this.guidelinesList = guidelinesList;
     }
 
+    /**
+	 * Hash code.
+	 *
+	 * @return the int
+	 */
     @Override
     public int hashCode() {
         return priority != null ? priority.getPriorityName().hashCode() : 0;
     }
 
+    /**
+	 * Equals.
+	 *
+	 * @param obj the obj
+	 * @return true, if successful
+	 */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof IntavSimplePDFForm) {

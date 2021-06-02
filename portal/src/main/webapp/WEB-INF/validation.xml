@@ -556,7 +556,23 @@
 			</field>
 		</form>
 
+		<form name="RangeForm">
+			<field property="name" depends="required">
+				<arg0 key="error.etiqueta" />
+			</field>
+		</form>
 
+		<form name="TemplateRangeForm">
+			<field property="name" depends="required">
+				<arg0 key="error.etiqueta" />
+			</field>
+		</form>
+
+<!-- 		<form name="UraSendResultForm"> -->
+<!-- 			<field property="tam" depends="required"> -->
+<!-- 				<arg0 key="error.etiqueta" /> -->
+<!-- 			</field> -->
+<!-- 		</form> -->
 
 		<form name="ClasificacionForm">
 			<field property="name" depends="required">

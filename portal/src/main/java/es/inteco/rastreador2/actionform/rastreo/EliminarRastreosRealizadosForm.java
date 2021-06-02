@@ -17,15 +17,31 @@ package es.inteco.rastreador2.actionform.rastreo;
 
 import org.apache.struts.validator.ValidatorForm;
 
+/**
+ * The Class EliminarRastreosRealizadosForm.
+ */
 public class EliminarRastreosRealizadosForm extends ValidatorForm {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The select. */
     private String[] select;
 
+    /**
+	 * Gets the select.
+	 *
+	 * @return the select
+	 */
     public String[] getSelect() {
         return select;
     }
 
+    /**
+	 * Sets the select.
+	 *
+	 * @param select the new select
+	 */
     public void setSelect(String[] select) {
         this.select = select;
     }

@@ -229,6 +229,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			specialChunkMap = new HashMap<>();
 			switch (this.getBasicServiceForm().getAnalysisType()) {
 			case CODIGO_FUENTE:
+			case CODIGO_FUENTE_MULTIPLE:
 				SpecialChunk chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p4.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT);
 				chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p4.basic.service.anchor1.url"));
 				chunk.setExternalLink(false);
@@ -509,6 +510,8 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		if (isBasicService() && getBasicServiceForm().isContentAnalysis()) {
 			// Añadir el código fuente analizado
 			createContentChapter(this.messageResources, document, getBasicServiceForm().getFileName(), pdfTocManager);
+		} else if (isBasicService() && getBasicServiceForm().isContentAnalysisMultiple()) {
+			createMultipleContentChapter(this.messageResources, document, getBasicServiceForm().getFileName(), pdfTocManager, evaList);
 		} else {
 			createMuestraPaginasChapter(this.messageResources, document, pdfTocManager, titleFont, evaList);
 		}
@@ -535,6 +538,27 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_cod_analizado");
 		PDFUtils.addParagraph(this.messageResources.getMessage("basic.service.content.p1", new String[] { contents }), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
 //		PDFUtils.addCode(HTMLEntities.unhtmlAngleBrackets(contents), chapter);
+		PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.sample.config.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
+		final com.itextpdf.text.List listaConfiguracionRastreo = new com.itextpdf.text.List();
+		listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
+		PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.config.type.source"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+		if (Constants.REPORT_OBSERVATORY_4.equals(getBasicServiceForm().getReport())) {
+			PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.p1.brokenlinks.yes"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+		} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
+			PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.p1.brokenlinks.no"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+		}
+		PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.methodology") + " " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false,
+				true);
+		chapter.add(listaConfiguracionRastreo);
+		d.add(chapter);
+	}
+
+	public void createMultipleContentChapter(final MessageResources messageResources, final Document d, final String contents, final PdfTocManager pdfTocManager,
+			final java.util.List<ObservatoryEvaluationForm> evaList) throws DocumentException {
+		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), pdfTocManager.getIndex(), pdfTocManager.addSection(),
+				pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_cod_analizado");
+		PDFUtils.addParagraph(this.messageResources.getMessage("basic.service.content.p1", new String[] { contents }), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
+		chapter.add(addURLTable(this.messageResources, evaList));
 		PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.sample.config.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
 		final com.itextpdf.text.List listaConfiguracionRastreo = new com.itextpdf.text.List();
 		listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
@@ -2207,32 +2231,30 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		 */
 		if (!evaList.isEmpty()) {
 			scoreForm.setTotalScore(scoreForm.getTotalScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
-//			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
-//			scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
-			// TODO Calculate mid from score verificatrion
+			// Calculate mid from score verificatrion
 			BigDecimal sumL1 = new BigDecimal(0);
 			int countNA = 0;
 			for (Entry<String, BigDecimal> entry : resultL1.entrySet()) {
 				if (entry.getValue().compareTo(new BigDecimal(0)) < 0) {
 					countNA++;
+				} else {
+					sumL1 = sumL1.add(entry.getValue());
 				}
-				sumL1 = sumL1.add(entry.getValue());
 			}
 			scoreForm.setScoreLevelA(sumL1.divide(new BigDecimal(resultL1.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setScoreLevel1(sumL1.divide(new BigDecimal(resultL1.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
-			// scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
-			// TODO Calculate mid from score verificatrion
+			// Calculate mid from score verificatrion
 			BigDecimal sumL2 = new BigDecimal(0);
 			countNA = 0;
 			for (Entry<String, BigDecimal> entry : resultL2.entrySet()) {
 				if (entry.getValue().compareTo(new BigDecimal(0)) < 0) {
 					countNA++;
+				} else {
+					sumL2 = sumL2.add(entry.getValue());
 				}
-				sumL2 = sumL2.add(entry.getValue());
 			}
 			scoreForm.setScoreLevel2(sumL2.divide(new BigDecimal(resultL2.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setScoreLevelAA(sumL2.divide(new BigDecimal(resultL2.size() - countNA), 2, BigDecimal.ROUND_HALF_UP));
-			// scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
 			// REVIEW Calculated compliance
 			scoreForm.setCompliance(calculatedCompliance.get(evaList.get(0).getCrawlerExecutionId()));

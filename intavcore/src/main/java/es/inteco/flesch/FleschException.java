@@ -15,7 +15,16 @@
 ******************************************************************************/
 package es.inteco.flesch;
 
+/**
+ * The Class FleschException.
+ */
 public class FleschException extends Exception {
+    
+    /**
+	 * Instantiates a new flesch exception.
+	 *
+	 * @param exception the exception
+	 */
     public FleschException(String exception) {
         super(exception);
     }

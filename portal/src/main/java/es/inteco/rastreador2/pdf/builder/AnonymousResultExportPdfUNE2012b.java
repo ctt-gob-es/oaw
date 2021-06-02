@@ -82,6 +82,15 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 		super(basicServiceForm);
 	}
 
+	/**
+	 * Creates the introduction chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param titleFont        the title font
+	 * @throws Exception the exception
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -193,6 +202,17 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 		PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.11.p1"), ConstantsFont.PARAGRAPH, section);
 	}
 
+	/**
+	 * Creates the objetive chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param titleFont        the title font
+	 * @param evaList          the eva list
+	 * @param observatoryType  the observatory type
+	 * @throws DocumentException the document exception
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -210,6 +230,15 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 		}
 	}
 
+	/**
+	 * Creates the content chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param d                the d
+	 * @param contents         the contents
+	 * @param pdfTocManager    the pdf toc manager
+	 * @throws DocumentException the document exception
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -328,6 +357,18 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 		}
 	}
 
+	/**
+	 * Creates the methodology chapter.
+	 *
+	 * @param messageResources      the message resources
+	 * @param document              the document
+	 * @param pdfTocManager         the pdf toc manager
+	 * @param titleFont             the title font
+	 * @param primaryReportPageList the primary report page list
+	 * @param observatoryType       the observatory type
+	 * @param isBasicService        the is basic service
+	 * @throws Exception the exception
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -389,7 +430,10 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 	 * @see es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf# createSection341(org.apache.struts.util.MessageResources, com.itextpdf.text.Section)
 	 */
 	/**
-	 * Sobrescritrua del método para eliminar secciones que no están en esta nueva metodología
+	 * Sobrescritrua del método para eliminar secciones que no están en esta nueva metodología.
+	 *
+	 * @param messageResources the message resources
+	 * @param section          the section
 	 */
 	@Override
 	protected void createSection341(final MessageResources messageResources, final Section section) {
@@ -719,6 +763,18 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 		return table;
 	}
 
+	/**
+	 * Creates the methodology table row.
+	 *
+	 * @param messageResources the message resources
+	 * @param table            the table
+	 * @param id               the id
+	 * @param name             the name
+	 * @param question         the question
+	 * @param answer           the answer
+	 * @param value            the value
+	 * @param modality         the modality
+	 */
 	@Override
 	protected void createMethodologyTableRow(final MessageResources messageResources, final PdfPTable table, final String id, final String name, final String question,
 			final com.itextpdf.text.List answer, final com.itextpdf.text.List value, final com.itextpdf.text.List modality) {
@@ -730,11 +786,26 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 		table.addCell(PDFUtils.createListTableCell(modality, Color.WHITE, Element.ALIGN_CENTER, 0));
 	}
 
+	/**
+	 * Creates the text list.
+	 *
+	 * @param messageResources the message resources
+	 * @param text             the text
+	 * @return the com.itextpdf.text. list
+	 */
 	@Override
 	protected com.itextpdf.text.List createTextList(final MessageResources messageResources, final String text) {
 		return this.createTextList(messageResources, text, Element.ALIGN_LEFT);
 	}
 
+	/**
+	 * Creates the text list.
+	 *
+	 * @param messageResources the message resources
+	 * @param text             the text
+	 * @param align            the align
+	 * @return the com.itextpdf.text. list
+	 */
 	@Override
 	protected com.itextpdf.text.List createTextList(final MessageResources messageResources, final String text, final int align) {
 		final java.util.List<String> list = Arrays.asList(messageResources.getMessage(text).split(";"));
@@ -989,6 +1060,20 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 		section.add(list);
 	}
 
+	/**
+	 * Gets the mids comparation by verification level graphic.
+	 *
+	 * @param messageResources the message resources
+	 * @param level            the level
+	 * @param title            the title
+	 * @param filePath         the file path
+	 * @param noDataMess       the no data mess
+	 * @param evaList          the eva list
+	 * @param value            the value
+	 * @param regenerate       the regenerate
+	 * @return the mids comparation by verification level graphic
+	 * @throws Exception the exception
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1002,6 +1087,13 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 				value, regenerate);
 	}
 
+	/**
+	 * Generate scores verificacion.
+	 *
+	 * @param messageResources the message resources
+	 * @param scoreForm        the score form
+	 * @param evaList          the eva list
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1017,6 +1109,11 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 		scoreForm.setVerifications2(labelsL2);
 	}
 
+	/**
+	 * Gets the title.
+	 *
+	 * @return the title
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1027,6 +1124,16 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 		return "UNE 139803:2012";
 	}
 
+	/**
+	 * Creates the introduction chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param titleFont        the title font
+	 * @param isBasicService   the is basic service
+	 * @throws Exception the exception
+	 */
 	@Override
 	public void createIntroductionChapter(MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont, boolean isBasicService) throws Exception {
 		this.createIntroductionChapter(messageResources, document, pdfTocManager, titleFont);

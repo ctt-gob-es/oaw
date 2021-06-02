@@ -9,9 +9,18 @@ import es.inteco.common.logging.Logger;
  */
 public final class MailProviderFactory {
 
+    /**
+	 * Instantiates a new mail provider factory.
+	 */
     private MailProviderFactory() {
     }
 
+    /**
+	 * Gets the mail provider.
+	 *
+	 * @param provider the provider
+	 * @return the mail provider
+	 */
     public static MailProvider getMailProvider(final String provider) {
         Logger.putLog(String.format("Using %s MailProvider ", provider), MailProviderFactory.class, Logger.LOG_LEVEL_WARNING);
         if ("smtp".equalsIgnoreCase(provider)) {

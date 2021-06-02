@@ -15,22 +15,49 @@
 ******************************************************************************/
 package es.inteco.crawler.ignored.links;
 
+/**
+ * The Class IgnoredLink.
+ */
 public class IgnoredLink {
+    
+    /** The text. */
     private String text;
+    
+    /** The title. */
     private String title;
 
+    /**
+	 * Gets the text.
+	 *
+	 * @return the text
+	 */
     public String getText() {
         return text;
     }
 
+    /**
+	 * Sets the text.
+	 *
+	 * @param text the new text
+	 */
     public void setText(String text) {
         this.text = text;
     }
 
+    /**
+	 * Gets the title.
+	 *
+	 * @return the title
+	 */
     public String getTitle() {
         return title;
     }
 
+    /**
+	 * Sets the title.
+	 *
+	 * @param title the new title
+	 */
     public void setTitle(String title) {
         this.title = title;
     }

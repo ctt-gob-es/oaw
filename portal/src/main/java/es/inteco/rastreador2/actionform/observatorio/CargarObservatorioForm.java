@@ -20,24 +20,52 @@ import org.apache.struts.action.ActionForm;
 
 import java.util.List;
 
+/**
+ * The Class CargarObservatorioForm.
+ */
 public class CargarObservatorioForm extends ActionForm {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The listado observatorio. */
     private List<ListadoObservatorio> listadoObservatorio;
+    
+    /** The num observatorios. */
     private int numObservatorios;
 
+    /**
+	 * Gets the listado observatorio.
+	 *
+	 * @return the listado observatorio
+	 */
     public List<ListadoObservatorio> getListadoObservatorio() {
         return listadoObservatorio;
     }
 
+    /**
+	 * Sets the listado observatorio.
+	 *
+	 * @param listadoCuentasUsuario the new listado observatorio
+	 */
     public void setListadoObservatorio(List<ListadoObservatorio> listadoCuentasUsuario) {
         this.listadoObservatorio = listadoCuentasUsuario;
     }
 
+    /**
+	 * Gets the num observatorios.
+	 *
+	 * @return the num observatorios
+	 */
     public int getNumObservatorios() {
         return numObservatorios;
     }
 
+    /**
+	 * Sets the num observatorios.
+	 *
+	 * @param numObservatorios the new num observatorios
+	 */
     public void setNumObservatorios(int numObservatorios) {
         this.numObservatorios = numObservatorios;
     }

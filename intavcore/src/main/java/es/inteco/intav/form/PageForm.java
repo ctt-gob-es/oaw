@@ -15,16 +15,38 @@
 ******************************************************************************/
 package es.inteco.intav.form;
 
+/**
+ * The Class PageForm.
+ */
 public class PageForm {
+    
+    /** The title. */
     private String title;
+    
+    /** The path. */
     private String path;
+    
+    /** The style class. */
     private String styleClass;
+    
+    /** The active. */
     private boolean active;
 
+    /**
+	 * Instantiates a new page form.
+	 */
     public PageForm() {
         super();
     }
 
+    /**
+	 * Instantiates a new page form.
+	 *
+	 * @param title      the title
+	 * @param path       the path
+	 * @param styleClass the style class
+	 * @param active     the active
+	 */
     public PageForm(String title, String path, String styleClass, boolean active) {
         this.title = title;
         this.path = path;
@@ -32,34 +54,74 @@ public class PageForm {
         this.active = active;
     }
 
+    /**
+	 * Checks if is active.
+	 *
+	 * @return true, if is active
+	 */
     public boolean isActive() {
         return active;
     }
 
+    /**
+	 * Sets the active.
+	 *
+	 * @param active the new active
+	 */
     public void setActive(boolean active) {
         this.active = active;
     }
 
+    /**
+	 * Gets the style class.
+	 *
+	 * @return the style class
+	 */
     public String getStyleClass() {
         return styleClass;
     }
 
+    /**
+	 * Sets the style class.
+	 *
+	 * @param styleClass the new style class
+	 */
     public void setStyleClass(String styleClass) {
         this.styleClass = styleClass;
     }
 
+    /**
+	 * Gets the title.
+	 *
+	 * @return the title
+	 */
     public String getTitle() {
         return title;
     }
 
+    /**
+	 * Sets the title.
+	 *
+	 * @param title the new title
+	 */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+	 * Gets the path.
+	 *
+	 * @return the path
+	 */
     public String getPath() {
         return path;
     }
 
+    /**
+	 * Sets the path.
+	 *
+	 * @param path the new path
+	 */
     public void setPath(String path) {
         this.path = path;
     }

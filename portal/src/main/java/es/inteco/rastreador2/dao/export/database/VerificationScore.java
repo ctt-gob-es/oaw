@@ -18,77 +18,146 @@ package es.inteco.rastreador2.dao.export.database;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+/**
+ * The Class VerificationScore.
+ */
 @Entity
 @Table(name = "export_verification_score")
 public class VerificationScore {
 
+    /** The id. */
     @Id
     @GeneratedValue
     @Column(name = "id", nullable = false)
     private Long id;
 
+    /** The verification. */
     @Column(name = "verification", nullable = false)
     private String verification;
 
+    /** The score. */
     @Column(name = "score")
     private BigDecimal score;
 
+    /** The observatory. */
     @ManyToOne
     @JoinColumn(name = "idExecution", referencedColumnName = "idExecution")
     private Observatory observatory;
 
+    /** The category. */
     @ManyToOne
     @JoinColumn(name = "idCategory", referencedColumnName = "id")
     private Category category;
 
+    /** The site. */
     @ManyToOne
     @JoinColumn(name = "idSite", referencedColumnName = "id")
     private Site site;
 
+    /**
+	 * Gets the observatory.
+	 *
+	 * @return the observatory
+	 */
     public Observatory getObservatory() {
         return observatory;
     }
 
+    /**
+	 * Sets the observatory.
+	 *
+	 * @param observatory the new observatory
+	 */
     public void setObservatory(Observatory observatory) {
         this.observatory = observatory;
     }
 
+    /**
+	 * Gets the verification.
+	 *
+	 * @return the verification
+	 */
     public String getVerification() {
         return verification;
     }
 
+    /**
+	 * Sets the verification.
+	 *
+	 * @param verification the new verification
+	 */
     public void setVerification(String verification) {
         this.verification = verification;
     }
 
+    /**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
     public Long getId() {
         return id;
     }
 
+    /**
+	 * Sets the id.
+	 *
+	 * @param id the new id
+	 */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+	 * Gets the score.
+	 *
+	 * @return the score
+	 */
     public BigDecimal getScore() {
         return score;
     }
 
+    /**
+	 * Sets the score.
+	 *
+	 * @param score the new score
+	 */
     public void setScore(BigDecimal score) {
         this.score = score;
     }
 
+    /**
+	 * Gets the category.
+	 *
+	 * @return the category
+	 */
     public Category getCategory() {
         return category;
     }
 
+    /**
+	 * Sets the category.
+	 *
+	 * @param category the new category
+	 */
     public void setCategory(Category category) {
         this.category = category;
     }
 
+    /**
+	 * Gets the site.
+	 *
+	 * @return the site
+	 */
     public Site getSite() {
         return site;
     }
 
+    /**
+	 * Sets the site.
+	 *
+	 * @param site the new site
+	 */
     public void setSite(Site site) {
         this.site = site;
     }

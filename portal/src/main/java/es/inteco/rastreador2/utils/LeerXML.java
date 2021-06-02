@@ -24,20 +24,42 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * The Class LeerXML.
+ */
 public class LeerXML {
 
 
+    /** The archivo. */
     String archivo = "";
+    
+    /** The sb. */
     SAXBuilder sb = null;
+    
+    /** The doc. */
     Document doc = null;
 
+    /** The enc. */
     boolean enc = false;
 
+    /**
+	 * Instantiates a new leer XML.
+	 *
+	 * @param archivo the archivo
+	 */
     public LeerXML(String archivo) {
         this.archivo = archivo;
     }
 
 
+    /**
+	 * Recorrer elemento.
+	 *
+	 * @param raiz  the raiz
+	 * @param tag   the tag
+	 * @param valor the valor
+	 * @return the element
+	 */
     public Element recorrerElemento(Element raiz, String tag, String valor) {
 
         if (raiz.getName().equals(tag) && raiz.getText().equals(valor)) {
@@ -60,6 +82,12 @@ public class LeerXML {
         }
     }
 
+    /**
+	 * Rellena combo.
+	 *
+	 * @param tagBuscar the tag buscar
+	 * @return the string[]
+	 */
     public String[] rellenaCombo(String tagBuscar) {
         String[] valores = null;
         int indice = 0;
@@ -85,6 +113,14 @@ public class LeerXML {
 
     }
 
+    /**
+	 * Obten sub valores.
+	 *
+	 * @param tag     the tag
+	 * @param valor   the valor
+	 * @param tagHija the tag hija
+	 * @return the string[]
+	 */
     public String[] obtenSubValores(String tag, String valor, String tagHija) {
         String[] subValores = null;
         int contaValores = 0;
@@ -108,6 +144,13 @@ public class LeerXML {
 
     }
 
+    /**
+	 * Lee nodo.
+	 *
+	 * @param hijo   the hijo
+	 * @param nombre the nombre
+	 * @return the list
+	 */
     public List leeNodo(Element hijo, String nombre) {
         Element padre = (Element) hijo.getParent();
 
@@ -118,6 +161,9 @@ public class LeerXML {
         }
     }
 
+    /**
+	 * Inicializa.
+	 */
     private void inicializa() {
         sb = new SAXBuilder(false);
         try {
@@ -127,11 +173,20 @@ public class LeerXML {
         }
     }
 
+    /**
+	 * Limpia.
+	 */
     private void limpia() {
         sb = null;
         doc = null;
     }
 
+    /**
+	 * Obten status.
+	 *
+	 * @param reqCode the req code
+	 * @return the string[]
+	 */
     public String[] obtenStatus(String reqCode) {
         String[] status = new String[5];
         int contador = 0;

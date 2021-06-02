@@ -34,31 +34,30 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class DestinatariosPush {
 
+    /** The destinatario push. */
     @XmlElement(name = "DestinatarioPush", required = true)
     protected List<DestinatarioPush> destinatarioPush;
 
     /**
-     * Gets the value of the destinatarioPush property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the destinatarioPush property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getDestinatarioPush().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link DestinatarioPush }
-     * 
-     * 
-     */
+	 * Gets the value of the destinatarioPush property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be present inside the JAXB object. This is why there is
+	 * not a <CODE>set</CODE> method for the destinatarioPush property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getDestinatarioPush().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list {@link DestinatarioPush }
+	 *
+	 * @return the destinatario push
+	 */
     public List<DestinatarioPush> getDestinatarioPush() {
         if (destinatarioPush == null) {
             destinatarioPush = new ArrayList<DestinatarioPush>();

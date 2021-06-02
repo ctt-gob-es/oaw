@@ -18,14 +18,26 @@ package es.inteco.rastreador2.utils.basic.service;
 import es.inteco.common.Constants;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 
+/**
+ * The Class BasicServiceQueingThread.
+ */
 public class BasicServiceQueingThread extends Thread {
 
+    /** The basic service form. */
     private final BasicServiceForm basicServiceForm;
 
+    /**
+	 * Instantiates a new basic service queing thread.
+	 *
+	 * @param basicServiceForm the basic service form
+	 */
     public BasicServiceQueingThread(BasicServiceForm basicServiceForm) {
         this.basicServiceForm = basicServiceForm;
     }
 
+    /**
+	 * Run.
+	 */
     @Override
     public void run() {
         if (BasicServiceConcurrenceSystem.passQueue()) {

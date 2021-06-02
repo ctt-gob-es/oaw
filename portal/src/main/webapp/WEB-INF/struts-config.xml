@@ -40,6 +40,14 @@
 
 		<form-bean name="EtiquetaForm" type="es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm" />
 
+		<form-bean name="RangeForm" type="es.inteco.rastreador2.actionform.observatorio.RangeForm" />
+
+		<form-bean name="TemplateRangeForm" type="es.inteco.rastreador2.actionform.observatorio.TemplateRangeForm" />
+
+		<form-bean name="UraSendResultForm" type="es.inteco.rastreador2.actionform.observatorio.UraSendResultForm" />
+
+
+
 		<form-bean name="ReducirTablasForm" type="es.inteco.rastreador2.actionform.observatorio.ReducirTablasForm" />
 
 		<form-bean name="ClasificacionForm" type="es.inteco.rastreador2.actionform.etiquetas.ClasificacionForm" />
@@ -293,6 +301,9 @@
 
 		<forward name="generateReportAsync" path=".generateReportAsync" />
 
+		<forward name="sendResultsByMailAsync" path=".sendResultsByMailAsync" />
+
+
 
 
 
@@ -311,8 +322,8 @@
 		<forward name="deleteCategorySeed" path="/secure/SeedCategoriesAction.do?action=deleteCategorySeed" />
 		<forward name="newCategorySeed" path="/secure/CategorySeedAction.do?action=newCategorySeed" />
 		<forward name="editCategorySeed" path="/secure/CategorySeedAction.do?action=editCategorySeed" />
-		<forward name="getCategorySeedsFile" path="/secure/CategorySeedAction.do?action=getCategorySeedsFile" />
-
+		<forward name="getCategorySeedsFileXml" path="/secure/CategorySeedAction.do?action=getCategorySeedsFileXml" />
+		<forward name="getCategorySeedsFileXlsx" path="/secure/CategorySeedAction.do?action=getCategorySeedsFileXlsx" />
 
 		<forward name="primaryExportPdfAction" path="/secure/primaryExportPdfAction.do" />
 		<forward name="anonymousExportPdfAction" path="/secure/anonymousExportPdfAction.do" />
@@ -332,6 +343,8 @@
 
 		<!-- Nuevo mantenimiento de dependencias -->
 		<forward name="observatoryDependencias" path="/secure/ViewDependenciasObservatorio.do?action=load" />
+		<forward name="importAllDependencies" path="/secure/ViewDependenciasObservatorio.do?action=importAll" />
+
 
 		<forward name="relanzarObservatorio" path="/secure/RelanzarObservatorio.do" />
 
@@ -357,6 +370,18 @@
 
 		<forward name="observatoryReducirTablas" path="/secure/ViewReducirTablasObservatorio.do?action=load" />
 
+		<forward name="configSendObservatoryResultsByMail"
+			path="/secure/ConfigSendResultsByMailAction.do?action=config" />
+
+		<forward name="resultsSendObservatoryResultsByMail"
+			path="/secure/ConfigSendResultsByMailAction.do?action=results" />
+
+
+		<forward name="confirmSendObservatoryResultsByMail"
+			path="/secure/ConfigSendResultsByMailAction.do?action=confirm" />
+
+
+		<forward name="observatoryRanges" path="/secure/RangeObservatorio.do?action=load" />
 
 
 	</global-forwards>
@@ -435,6 +460,7 @@
 			<forward name="exito" path=".cargarRastreosRealizadosObservatorio" />
 			<forward name="throwSeedconfirmation" path=".confirmacionLanzarSemilla" />
 			<forward name="confirmacionDelete" path=".confirmacionBorrarEjecucionSemillaObs" />
+			<forward name="confirmarPararObservatorio" path=".confirmarPararObservatorio" />
 			<forward name="exito2" path=".Exito" />
 		</action>
 
@@ -503,6 +529,7 @@
 			type="es.inteco.rastreador2.action.observatorio.DependenciasObservatorioAction" parameter="action" scope="request"
 			validate="false">
 			<forward name="exito" path=".cargarDependenciasObservatorio" />
+			<forward name="confirmacionImportar" path=".confirmarImportacionDependencias" />
 		</action>
 
 		<action path="/secure/JsonResultadoObservatorio"
@@ -935,6 +962,7 @@
 		<action path="/secure/databaseExportAction"
 			type="es.inteco.rastreador2.action.export.database.DatabaseExportAction" scope="request">
 			<forward name="confirm" path=".exportarDatosObservatorio" />
+			<forward name="async" path=".exportarAsyncDatosObservatorio" />
 			<forward name="exito" path=".Exito" />
 		</action>
 
@@ -1007,6 +1035,14 @@
 			<forward name="confirmacionRelanzar" path=".confirmarRelanzarObservatorio" />
 		</action>
 
+		<!-- RELANZAR SELECCIONANDO -->
+		<action path="/secure/RelanzarObservatorioSeleccionandoAction"
+			type="es.inteco.rastreador2.action.observatorio.RelanzarObservatorioSeleccionandoAction">
+			<forward name="volver" path=".indexAdmin" />
+			<forward name="exito" path=".Exito" />
+			<forward name="confirmacionRelanzar" path=".confirmarRelanzarObservatorio" />
+		</action>
+
 		<!-- Importar -->
 		<action path="/secure/SeedMassImport" type="es.inteco.rastreador2.action.observatorio.SeedMassImportAction"
 			name="SemillaSearchForm">
@@ -1044,6 +1080,32 @@
 			type="es.inteco.rastreador2.openOffice.export.ConfigExportOpenOfficeAction">
 		</action>
 
+		<action path="/secure/ConfigSendResultsByMailAction"
+			type="es.inteco.rastreador2.action.export.database.SendResultsByMailAction" scope="request">
+			<forward name="config" path=".confirmSendObservatoryResultsByMail" />
+			<forward name="confirm" path=".confirmSendObservatoryResultsByMail2" />
+			<forward name="results" path=".resultsSendObservatoryResultsByMail" />
+			<forward name="exito" path=".Exito" />
+		</action>
+
+		<action path="/secure/RangeObservatorio"
+			type="es.inteco.rastreador2.action.observatorio.RangeObservatorioAction" name="RangeForm" parameter="action"
+			scope="request" validate="false">
+			<forward name="exito" path=".cargarRangosObservatorio" />
+
+		</action>
+
+
+		<action path="/secure/TemplateRangeObservatorio"
+			type="es.inteco.rastreador2.action.observatorio.TemplateRangeObservatorioAction" name="TemplateRangeForm"
+			parameter="action" scope="request" validate="false">
+		</action>
+
+
+		<action path="/secure/UraCustomTextObservatorio"
+			type="es.inteco.rastreador2.action.observatorio.UraCustomTextObservatorioAction" name="UraSendResultForm"
+			parameter="action" scope="request" validate="false">
+		</action>
 
 
 	</action-mappings>
@@ -1053,9 +1115,11 @@
 	<!-- Message Resources Definitions -->
 	<message-resources parameter="ApplicationResources" null="false" />
 
-	<message-resources parameter="ApplicationResources-2012-b" null="false" key="resources2012b" />
+	<!-- <message-resources parameter="ApplicationResources-2012-b" null="false" key="resources2012b" /> -->
+	<message-resources parameter="ApplicationResources_xx_XX_2012B" null="false" key="resources2012b" />
 
-	<message-resources parameter="ApplicationResources-UNEEN2019" null="false" key="resources2019" />
+	<!-- <message-resources parameter="ApplicationResources-UNEEN2019" null="false" key="resources2019" /> -->
+	<message-resources parameter="ApplicationResources_xx_XX_2019" null="false" key="resources2019" />
 
 	<!-- Tiles -->
 	<plug-in className="org.apache.struts.tiles.TilesPlugin">

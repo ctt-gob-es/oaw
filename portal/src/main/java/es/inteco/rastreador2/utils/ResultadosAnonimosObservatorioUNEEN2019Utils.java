@@ -136,6 +136,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param type                   Tipo de grafico. Si es MP cambia el color del gráfico
 	 * @param regenerate             Indica si hay que regenerar el gráfico o no.
 	 * @param tagsFilter             the tags filter
+	 * @param tagsFilterFixed        the tags filter fixed
 	 * @param exObsIds               the ex obs ids
 	 * @throws Exception Excepción lanzada
 	 */
@@ -148,8 +149,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				color = pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR);
 			}
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idExecutionObservatory);
-			// TODO Only complexitivities in obs
-			// final List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+			// Only complexitivities in obs
 			final List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidadesObs(DataBaseManager.getConnection(), tagsFilter, exObsIds);
 			// Gráficos globales
 			generateGlobalGraphics(messageResources, executionId, filePath, categories, color, regenerate, tagsFilter);
@@ -204,11 +204,11 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			title = messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.name") + ".jpg";
 			getGlobalMarkBySegmentGraphic(messageResources, executionId, pageExecutionList, globalGraphics, title, file, noDataMess, categories, tagsFilter);
-			// PENDING ADD TITLE -- Comparación adecuación segmento
+			// comparación adecuación segmento
 			title = messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.name") + ".jpg";
 			getGlobalAllocationBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, categories, regenerate, tagsFilter, title);
-			// PENDING ADD TITLE -- Comparación adecuación complejidad
+			// Comparación adecuación complejidad
 			title = messageResources.getMessage("observatory.graphic.global.puntuation.allocation.complexity.mark.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.complexity.mark.name") + ".jpg";
 			getGloballAllocationByComplexity(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate, tagsFilter, title);
@@ -478,6 +478,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param color            the color
 	 * @param regenerate       the regenerate
 	 * @param tagsFilter       the tags filter
+	 * @param tagsFilterFixed  the tags filter fixed
 	 * @param exObsIds         the ex obs ids
 	 * @return the map
 	 * @throws Exception the exception
@@ -1295,6 +1296,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		return dataSet;
 	}
 
+	/**
+	 * Creates the data set ambit.
+	 *
+	 * @param result           the result
+	 * @param messageResources the message resources
+	 * @return the default category dataset
+	 */
 	public static DefaultCategoryDataset createDataSetAmbit(final Map<AmbitoForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 		for (Map.Entry<AmbitoForm, Map<String, BigDecimal>> entry : result.entrySet()) {
@@ -1322,6 +1330,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		return dataSet;
 	}
 
+	/**
+	 * Creates the data set ambit compilance.
+	 *
+	 * @param result           the result
+	 * @param messageResources the message resources
+	 * @return the default category dataset
+	 */
 	public static DefaultCategoryDataset createDataSetAmbitCompilance(final Map<AmbitoForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 		for (Map.Entry<AmbitoForm, Map<String, BigDecimal>> entry : result.entrySet()) {
@@ -1511,20 +1526,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 					} else {
 						resultsC.put(keyNoCompilance, new BigDecimal(1));
 					}
-				}
-				// TODO SKIP NOT APPLY??
-				else {
+				} else {
 					// If exists +1
 					if (resultsC.containsKey(keyNoApply)) {
 						resultsC.put(keyNoApply, resultsC.get(keyNoApply).add(new BigDecimal(1)));
 					} else {
 						resultsC.put(keyNoApply, new BigDecimal(1));
 					}
-//					if (resultsC.containsKey(keyCompilance)) {
-//						resultsC.put(keyCompilance, resultsC.get(keyCompilance).add(new BigDecimal(1)));
-//					} else {
-//						resultsC.put(keyCompilance, new BigDecimal(1));
-//					}
 				}
 			}
 		}
@@ -2409,7 +2417,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				} else {
 					resultC.put(verification.concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX), BigDecimal.ZERO);
 				}
-				// TODO NA
+				// NA
 				value = generatePercentajesCompilanceVerification.get(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX));
 				if (value != null) {
 					resultC.put(verification.concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX), value);
@@ -3245,6 +3253,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePath          the file path
 	 * @param noDataMess        the no data mess
 	 * @param complexitivities  the complexitivities
+	 * @param regenerate        the regenerate
 	 * @param tagsFilter        the tags filter
 	 * @return the global mark by complexitivity graphic
 	 * @throws Exception the exception
@@ -3424,17 +3433,6 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				results.put(aspect, results.get(aspect).divide(new BigDecimal(verificationsMap.size()), 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN));
 			}
 		}
-		// TODO Reordenamos los aspectos
-//		labelValueList.add(createLabelValueScore(messageResources, messageResources.getMessage("resultados.anonimos.general"), result.get(messageResources.getMessage("observatory.aspect.general"))));
-//		labelValueList.add(
-//				createLabelValueScore(messageResources, messageResources.getMessage("resultados.anonimos.presentacion"), result.get(messageResources.getMessage("observatory.aspect.presentation"))));
-//		labelValueList
-//				.add(createLabelValueScore(messageResources, messageResources.getMessage("resultados.anonimos.estructura"), result.get(messageResources.getMessage("observatory.aspect.structure"))));
-//		labelValueList
-//				.add(createLabelValueScore(messageResources, messageResources.getMessage("resultados.anonimos.navegacion"), result.get(messageResources.getMessage("observatory.aspect.navigation"))));
-//		labelValueList.add(
-//				createLabelValueScore(messageResources, messageResources.getMessage("resultados.anonimos.alternativa"), result.get(messageResources.getMessage("observatory.aspect.alternatives"))));
-//		
 		final Map<String, BigDecimal> resultsSorted = new LinkedHashMap<String, BigDecimal>();
 		resultsSorted.put(messageResources.getMessage("resultados.anonimos.general"), results.get(messageResources.getMessage("resultados.anonimos.general")));
 		resultsSorted.put(messageResources.getMessage("resultados.anonimos.presentacion"), results.get(messageResources.getMessage("resultados.anonimos.presentacion")));
@@ -4000,7 +3998,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				}
 
 				private int major(String[] version) {
-					return Integer.parseInt(version[0]);
+					int r;
+					try {
+						r = Integer.parseInt(version[0]);
+					} catch (NumberFormatException ex) {
+						r = 0;
+					}
+					return r;
 				}
 
 				private Integer minor(String[] version) {

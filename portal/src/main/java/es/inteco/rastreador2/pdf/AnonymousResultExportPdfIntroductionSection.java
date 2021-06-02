@@ -17,11 +17,22 @@ package es.inteco.rastreador2.pdf;
 
 import es.inteco.rastreador2.imp.xml.result.SectionSetForm;
 
+/**
+ * The Class AnonymousResultExportPdfIntroductionSection.
+ */
 public final class AnonymousResultExportPdfIntroductionSection {
 
+    /**
+	 * Instantiates a new anonymous result export pdf introduction section.
+	 */
     private AnonymousResultExportPdfIntroductionSection() {
     }
 
+    /**
+	 * Creates the introduction.
+	 *
+	 * @param introduction the introduction
+	 */
     private static void createIntroduction(SectionSetForm introduction) {
 
     }

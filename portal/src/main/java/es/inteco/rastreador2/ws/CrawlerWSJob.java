@@ -24,8 +24,17 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.StatefulJob;
 
+/**
+ * The Class CrawlerWSJob.
+ */
 public class CrawlerWSJob implements StatefulJob {
 
+    /**
+	 * Execute.
+	 *
+	 * @param context the context
+	 * @throws JobExecutionException the job execution exception
+	 */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();

@@ -968,19 +968,22 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 	/**
 	 * Builds the document filtered.
 	 *
-	 * @param request              the request
-	 * @param graphicPath          the graphic path
-	 * @param date                 the date
-	 * @param evolution            the evolution
-	 * @param pageExecutionList    the page execution list
-	 * @param categories           the categories
-	 * @param tagsToFilter         the tags to filter
-	 * @param grpahicConditional   the grpahic conditional
-	 * @param exObsIds             the ex obs ids
-	 * @param idBaseTemplate       the id base template
-	 * @param idSegmentTemplate    the id segment template
-	 * @param idComplexityTemplate the id complexity template
-	 * @param reportTitle          the report title
+	 * @param request               the request
+	 * @param filePath              the file path
+	 * @param graphicPath           the graphic path
+	 * @param date                  the date
+	 * @param evolution             the evolution
+	 * @param pageExecutionList     the page execution list
+	 * @param categories            the categories
+	 * @param tagsToFilter          the tags to filter
+	 * @param tagsToFilterFixed     the tags to filter fixed
+	 * @param grpahicConditional    the grpahic conditional
+	 * @param exObsIds              the ex obs ids
+	 * @param idBaseTemplate        the id base template
+	 * @param idSegmentTemplate     the id segment template
+	 * @param idComplexityTemplate  the id complexity template
+	 * @param idSegmentEvolTemplate the id segment evol template
+	 * @param reportTitle           the report title
 	 * @return the odf text document
 	 * @throws Exception the exception
 	 */

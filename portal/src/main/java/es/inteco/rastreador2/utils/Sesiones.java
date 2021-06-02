@@ -20,11 +20,23 @@ import es.inteco.common.Constants;
 import javax.servlet.http.HttpSession;
 
 
+/**
+ * The Class Sesiones.
+ */
 public final class Sesiones {
 
+    /**
+	 * Instantiates a new sesiones.
+	 */
     private Sesiones() {
     }
 
+    /**
+	 * Comprobar session.
+	 *
+	 * @param session the session
+	 * @return true, if successful
+	 */
     public static boolean comprobarSession(HttpSession session) {
         return session != null && session.getAttribute(Constants.USER) != null;
     }

@@ -23,28 +23,62 @@ import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * The Class MenuTag.
+ */
 public class MenuTag extends TagSupport {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The roles. */
     private String roles = null;
+    
+    /** The no roles. */
     private String noRoles = null;
 
+    /**
+	 * Gets the roles.
+	 *
+	 * @return the roles
+	 */
     public String getRoles() {
         return roles;
     }
 
+    /**
+	 * Sets the roles.
+	 *
+	 * @param roles the new roles
+	 */
     public void setRoles(String roles) {
         this.roles = roles;
     }
 
+    /**
+	 * Gets the no roles.
+	 *
+	 * @return the no roles
+	 */
     public String getNoRoles() {
         return noRoles;
     }
 
+    /**
+	 * Sets the no roles.
+	 *
+	 * @param noRoles the new no roles
+	 */
     public void setNoRoles(String noRoles) {
         this.noRoles = noRoles;
     }
 
+    /**
+	 * Contains user rol.
+	 *
+	 * @param userRoles the user roles
+	 * @return true, if successful
+	 */
     private boolean containsUserRol(String userRoles) {
         ArrayList<String> role = (ArrayList<String>) pageContext.getSession().getAttribute(Constants.ROLE);
         String[] roles = userRoles.split(";");
@@ -57,6 +91,12 @@ public class MenuTag extends TagSupport {
         return hasRol;
     }
 
+    /**
+	 * Do start tag.
+	 *
+	 * @return the int
+	 * @throws JspException the jsp exception
+	 */
     public int doStartTag() throws JspException {
         if (this.noRoles != null) {
             if (this.roles != null && containsUserRol(this.roles) && !containsUserRol(this.noRoles)) {
@@ -70,6 +110,12 @@ public class MenuTag extends TagSupport {
         return SKIP_BODY;
     }
 
+    /**
+	 * Do end tag.
+	 *
+	 * @return the int
+	 * @throws JspException the jsp exception
+	 */
     public int doEndTag() throws JspException {
         // Imprime el elemento de cierre.
         JspWriter writer = pageContext.getOut();

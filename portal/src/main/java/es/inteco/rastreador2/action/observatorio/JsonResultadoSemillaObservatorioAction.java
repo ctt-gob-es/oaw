@@ -46,8 +46,9 @@ import es.inteco.rastreador2.utils.Pagination;
  * @author alvaro.pelaez
  */
 public class JsonResultadoSemillaObservatorioAction extends DispatchAction {
+	
 	/**
-	 * Return an JSON with the results
+	 * Return an JSON with the results.
 	 *
 	 * @param mapping  the mapping
 	 * @param form     the form
@@ -111,13 +112,14 @@ public class JsonResultadoSemillaObservatorioAction extends DispatchAction {
 	}
 
 	/**
+	 * Adds the seed observatory.
 	 *
-	 * @param mapping
-	 * @param form
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
 	 */
 	public ActionForward addSeedObservatory(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return null;

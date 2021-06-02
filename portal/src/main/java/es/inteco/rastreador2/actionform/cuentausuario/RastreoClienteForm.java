@@ -17,44 +17,94 @@ package es.inteco.rastreador2.actionform.cuentausuario;
 
 import org.apache.struts.validator.ValidatorForm;
 
+/**
+ * The Class RastreoClienteForm.
+ */
 public class RastreoClienteForm extends ValidatorForm {
-    /**
-     *
-     */
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The id cuenta. */
     private String idCuenta;
+    
+    /** The cartucho. */
     private String cartucho;
+    
+    /** The norma analisis. */
     private String normaAnalisis;
+    
+    /** The nombre. */
     private String nombre;
 
+    /**
+	 * Gets the nombre.
+	 *
+	 * @return the nombre
+	 */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+	 * Sets the nombre.
+	 *
+	 * @param nombre the new nombre
+	 */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    /**
+	 * Gets the cartucho.
+	 *
+	 * @return the cartucho
+	 */
     public String getCartucho() {
         return cartucho;
     }
 
+    /**
+	 * Sets the cartucho.
+	 *
+	 * @param cartucho the new cartucho
+	 */
     public void setCartucho(String cartucho) {
         this.cartucho = cartucho;
     }
 
+    /**
+	 * Gets the id cuenta.
+	 *
+	 * @return the id cuenta
+	 */
     public String getIdCuenta() {
         return idCuenta;
     }
 
+    /**
+	 * Sets the id cuenta.
+	 *
+	 * @param idCuenta the new id cuenta
+	 */
     public void setIdCuenta(String idCuenta) {
         this.idCuenta = idCuenta;
     }
 
+    /**
+	 * Gets the norma analisis.
+	 *
+	 * @return the norma analisis
+	 */
     public String getNormaAnalisis() {
         return normaAnalisis;
     }
 
+    /**
+	 * Sets the norma analisis.
+	 *
+	 * @param normaAnalisis the new norma analisis
+	 */
     public void setNormaAnalisis(String normaAnalisis) {
         this.normaAnalisis = normaAnalisis;
     }

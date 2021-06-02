@@ -17,14 +17,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.beanutils.BeanUtils;
+
 import es.inteco.common.Constants;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.job.CrawledLink;
 import es.inteco.crawler.job.CrawlerData;
+import es.inteco.crawler.job.CrawlerFile;
 import es.inteco.crawler.job.CrawlerJob;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
+import es.inteco.rastreador2.actionform.basic.service.BasicServiceFile;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
@@ -62,6 +66,8 @@ public class BasicServiceCrawlingManager {
 			crawledLinks = crawlerJob.testCrawler(crawlerData);
 		} else if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.CODIGO_FUENTE) {
 			crawledLinks = crawlerJob.runSimpleAnalysis(crawlerData);
+		} else if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE) {
+			crawledLinks = crawlerJob.runMultiplaFilesAnalysis(crawlerData);
 		} else {
 			crawledLinks = Collections.emptyList();
 		}
@@ -102,6 +108,17 @@ public class BasicServiceCrawlingManager {
 		crawlerData.setFicheroNorma(includeBrokenLinksCheck(CrawlerUtils.getFicheroNorma(idGuideline), basicServiceForm.getReport()));
 		crawlerData.setDomains(es.inteco.utils.CrawlerUtils.addDomainsToList(basicServiceForm.getDomain(), true, Constants.ID_LISTA_SEMILLA));
 		crawlerData.setInDirectory(basicServiceForm.isInDirectory());
+		if (BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE.equals(basicServiceForm.getAnalysisType())) {
+			if (basicServiceForm.getContents() != null && !basicServiceForm.getContents().isEmpty()) {
+				List<CrawlerFile> contents = new ArrayList<>();
+				for (BasicServiceFile file : basicServiceForm.getContents()) {
+					CrawlerFile cf = new CrawlerFile();
+					BeanUtils.copyProperties(cf, file);
+					contents.add(cf);
+				}
+				crawlerData.setContents(contents);
+			}
+		}
 		// Calculate complex
 		final String complexity = basicServiceForm.getComplexity();
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(complexity)) {

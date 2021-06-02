@@ -33,8 +33,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.util.List;
 
+/**
+ * The Class BrokenLinksAction.
+ */
 public class BrokenLinksAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (CrawlerUtils.hasAccess(request, "show.crawler.results")) {
             Connection c = null;

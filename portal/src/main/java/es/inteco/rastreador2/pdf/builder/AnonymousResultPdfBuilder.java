@@ -1047,6 +1047,8 @@ public abstract class AnonymousResultPdfBuilder {
 	 * @param observatoryId          the observatory id
 	 * @param filePath               the file path
 	 * @param tagsFilter             the tags filter
+	 * @param tagsFilterFixed        the tags filter fixed
+	 * @param exObsIds               the ex obs ids
 	 * @throws Exception the exception
 	 */
 	public abstract void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, String observatoryId, String filePath, String[] tagsFilter,

@@ -18,13 +18,20 @@ import org.w3c.css.sac.*;
 import org.w3c.css.sac.helpers.ParserFactory;
 
 /**
- * Clase con métodos de utilidad para transformar desde los tipos usados por un parseador CSS SAC
+ * Clase con métodos de utilidad para transformar desde los tipos usados por un parseador CSS SAC.
  */
 public final class CSSSACUtils {
 
+    /** The Constant SPACE_SEPARATOR. */
     private static final String SPACE_SEPARATOR = " ";
+    
+    /** The Constant COMMA_SEPARATOR. */
     private static final String COMMA_SEPARATOR = ", ";
+    
+    /** The Constant DECIMAL_FORMAT. */
     private static final java.text.DecimalFormat DECIMAL_FORMAT = new java.text.DecimalFormat("0.##");
+    
+    /** The Constant NO_ERROR_HANDLER. */
     // Inicializamos un ErrorHandler vacío porque por defecto imprime los errores por System.err
     private static final ErrorHandler NO_ERROR_HANDLER = new ErrorHandler() {
         @Override
@@ -47,9 +54,18 @@ public final class CSSSACUtils {
         System.setProperty("org.w3c.css.sac.parser", "com.steadystate.css.parser.SACParserCSS3");
     }
 
+    /**
+	 * Instantiates a new CSSSAC utils.
+	 */
     private CSSSACUtils() {
     }
 
+    /**
+	 * Gets the SAC parser.
+	 *
+	 * @return the SAC parser
+	 * @throws Exception the exception
+	 */
     public static Parser getSACParser() throws Exception {
         final ParserFactory parserFactory = new ParserFactory();
         final Parser cssParser = parserFactory.makeParser();
@@ -59,11 +75,11 @@ public final class CSSSACUtils {
     }
 
     /**
-     * Convierte un valor completo (recorre todos los valores) de una propiedad CSS de tipo LexicalUnit a una cadena
-     *
-     * @param lexicalUnit el valor a transformar
-     * @return una cadena correspondiente al valor
-     */
+	 * Convierte un valor completo (recorre todos los valores) de una propiedad CSS de tipo LexicalUnit a una cadena.
+	 *
+	 * @param lexicalUnit el valor a transformar
+	 * @return una cadena correspondiente al valor
+	 */
     public static String parseLexicalValue(LexicalUnit lexicalUnit) {
         final StringBuilder sb = new StringBuilder();
         while (lexicalUnit != null) {
@@ -81,11 +97,11 @@ public final class CSSSACUtils {
     }
 
     /**
-     * Convierte un <strong>único</strong> valor de una propiedad CSS de tipo LexicalUnit a una cadena
-     *
-     * @param lexicalUnit el valor a transformar
-     * @return una cadena correspondiente al valor
-     */
+	 * Convierte un <strong>único</strong> valor de una propiedad CSS de tipo LexicalUnit a una cadena.
+	 *
+	 * @param lexicalUnit el valor a transformar
+	 * @return una cadena correspondiente al valor
+	 */
     public static String parseSingleLexicalValue(final LexicalUnit lexicalUnit) {
         final StringBuilder sb = new StringBuilder();
         final int lexicalUnitType = lexicalUnit.getLexicalUnitType();
@@ -175,22 +191,21 @@ public final class CSSSACUtils {
     }
 
     /**
-     * Convierte un valor entero en su representación hexadecimal en formato cadena de al menos 2 dígitos
-     * (transforma los valores 1-F en 01-0F)
-     *
-     * @param valor entero a transformar
-     * @return string de al menos dos caracteres con la representación hexadecimal del valor
-     */
+	 * Convierte un valor entero en su representación hexadecimal en formato cadena de al menos 2 dígitos (transforma los valores 1-F en 01-0F).
+	 *
+	 * @param valor entero a transformar
+	 * @return string de al menos dos caracteres con la representación hexadecimal del valor
+	 */
     private static String converTo2DigitsHexString(final int valor) {
         return (valor < 16 ? "0" : "") + Integer.toHexString(valor);
     }
 
     /**
-     * Convierte una lista de selectores CSS a una cadena
-     *
-     * @param selectorList una lista de selectores
-     * @return una cadena con la transcripción de los selectores
-     */
+	 * Convierte una lista de selectores CSS a una cadena.
+	 *
+	 * @param selectorList una lista de selectores
+	 * @return una cadena con la transcripción de los selectores
+	 */
     public static String buildSelector(final SelectorList selectorList) {
         if (selectorList == null) {
             return "";
@@ -207,11 +222,11 @@ public final class CSSSACUtils {
     }
 
     /**
-     * Convierte un selector de CSS a una cadena
-     *
-     * @param sel el selector a convertir
-     * @return una cadena con la transcripción del selector
-     */
+	 * Convierte un selector de CSS a una cadena.
+	 *
+	 * @param sel el selector a convertir
+	 * @return una cadena con la transcripción del selector
+	 */
     public static String buildSelector(final Selector sel) {
         final StringBuilder selectorBuilder = new StringBuilder(60);
 
@@ -269,11 +284,11 @@ public final class CSSSACUtils {
     }
 
     /**
-     * Convierte una condición de un selector a una cadena
-     *
-     * @param condition la condicion Condition a convertir
-     * @return una cadena con la transformación textual del objeto condition
-     */
+	 * Convierte una condición de un selector a una cadena.
+	 *
+	 * @param condition la condicion Condition a convertir
+	 * @return una cadena con la transformación textual del objeto condition
+	 */
     public static String buildCondition(final Condition condition) {
         final StringBuilder conditionBuilder = new StringBuilder(20);
         switch (condition.getConditionType()) {
@@ -312,12 +327,25 @@ public final class CSSSACUtils {
         return conditionBuilder.toString();
     }
 
+    /**
+	 * Gets the XPATH from selector.
+	 *
+	 * @param sel the sel
+	 * @return the XPATH from selector
+	 */
     public static String getXPATHFromSelector(final Selector sel) {
         final StringBuilder selectorString = new StringBuilder("//");
         getXPATHFromSelector(sel, selectorString);
         return selectorString.toString().trim();
     }
 
+    /**
+	 * Gets the XPATH from selector.
+	 *
+	 * @param sel            the sel
+	 * @param selectorString the selector string
+	 * @return the XPATH from selector
+	 */
     protected static void getXPATHFromSelector(final Selector sel, final StringBuilder selectorString) {
         switch (sel.getSelectorType()) {
             case Selector.SAC_ELEMENT_NODE_SELECTOR:
@@ -377,6 +405,12 @@ public final class CSSSACUtils {
         }
     }
 
+    /**
+	 * Builds the XPATH condition.
+	 *
+	 * @param condition the condition
+	 * @return the string
+	 */
     protected static String buildXPATHCondition(final Condition condition) {
         final StringBuilder conditionBuilder = new StringBuilder(20);
         switch (condition.getConditionType()) {

@@ -18,10 +18,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.quartz.SchedulerException;
+
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.crawler.dao.EstadoObservatorioDAO;
+import es.inteco.crawler.job.CrawlerJob;
 import es.inteco.crawler.job.CrawlerJobManager;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.plugin.dao.DataBaseManager;
@@ -49,17 +52,21 @@ public class RelanzarObservatorioThread extends Thread {
 	private final String idObservatorio;
 	/** ID de la ejecución del observatorio. */
 	private final String idEjecucionObservatorio;
+	/** Lista de crawlers a relanzar. */
+	private final List<Long> crawlerIdsList;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param idObservatorio          ID del observatorio
 	 * @param idEjecucionObservatorio ID de la ejecución del observatorio
+	 * @param crawlerIdsList          [Optional] Lista de crawlers a relanzar (cuando es nula, se lanzan todos los pendientes).
 	 */
-	public RelanzarObservatorioThread(final String idObservatorio, final String idEjecucionObservatorio) {
+	public RelanzarObservatorioThread(final String idObservatorio, final String idEjecucionObservatorio, final List<Long> crawlerIdsList) {
 		super("RelanzarObservatorioThread");
 		this.idObservatorio = idObservatorio;
 		this.idEjecucionObservatorio = idEjecucionObservatorio;
+		this.crawlerIdsList = crawlerIdsList;
 	}
 
 	/**
@@ -74,12 +81,20 @@ public class RelanzarObservatorioThread extends Thread {
 	public void run() {
 		Connection c = null;
 		try {
-			c = DataBaseManager.getConnection();
+			final Connection connection = DataBaseManager.getConnection();
+			c = connection;
 			c.setAutoCommit(false);
 			// Borramos de la tabla de estado
 			EstadoObservatorioDAO.deleteEstado(c, Integer.parseInt(idObservatorio), Integer.parseInt(idEjecucionObservatorio));
-			// Recuperamos los rastreos pendentes de este observatorio
-			List<Long> pendindCrawlings = RastreoDAO.getPendingCrawlerFromSeedAndObservatory(c, Long.parseLong(idObservatorio), Long.parseLong(idEjecucionObservatorio));
+			List<Long> pendindCrawlings = null;
+			// Comprobamos si se ha pasado una lista de crawlers a ejecutar.
+			if (crawlerIdsList != null) {
+				pendindCrawlings = crawlerIdsList;
+			}
+			// Si no es así, recuperamos los todos rastreos pendentes de este observatorio
+			else {
+				pendindCrawlings = RastreoDAO.getPendingCrawlerFromSeedAndObservatory(c, Long.parseLong(idObservatorio), Long.parseLong(idEjecucionObservatorio));
+			}
 			// Cambiar el estado del observatorio a lanzado
 			ObservatorioDAO.updateObservatoryStatus(c, Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.RELAUNCHED_OBSERVATORY_STATUS);
 			if (pendindCrawlings != null && !pendindCrawlings.isEmpty()) {
@@ -99,7 +114,7 @@ public class RelanzarObservatorioThread extends Thread {
 							c.commit();
 							// Lanzamos el rastreo y recuperamos el id de
 							// ejecución
-							lanzarRastreo(String.valueOf(idCrawling));
+							lanzarRastreo(String.valueOf(idCrawling), String.valueOf(idObservatorio));
 							// Por si tarda mucho en acabar el rastreo, volvemos a
 							// inicializar una conexion
 							c = DataBaseManager.getConnection();
@@ -116,15 +131,17 @@ public class RelanzarObservatorioThread extends Thread {
 						} catch (Exception e) {
 							Logger.putLog("Error al relanzar el rastreo  " + idCrawling, ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 						}
+					} else {
+						Logger.putLog("Relanzamiento del rastreo " + idCrawling + " detenido por el usuario", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR);
 					}
 				}
 			} else {
 				Logger.putLog("No se han encontrado rastreos que relanzar", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_INFO);
 			}
 			if (!isInterrupted()) {
-				ObservatorioDAO.updateObservatoryStatus(DataBaseManager.getConnection(), Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.FINISHED_OBSERVATORY_STATUS);
+				ObservatorioDAO.updateObservatoryStatus(c, Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.FINISHED_OBSERVATORY_STATUS);
 			} else {
-				ObservatorioDAO.updateObservatoryStatus(DataBaseManager.getConnection(), Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.ERROR_OBSERVATORY_STATUS);
+				ObservatorioDAO.updateObservatoryStatus(c, Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.STOPPED_OBSERVATORY_STATUS);
 			}
 			Logger.putLog("Finalizado el observatorio con id " + idEjecucionObservatorio, RelanzarObservatorioThread.class, Logger.LOG_LEVEL_INFO);
 			c.commit();
@@ -137,16 +154,41 @@ public class RelanzarObservatorioThread extends Thread {
 					Logger.putLog("Error al realizar rollback", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
+		} finally {
+			if (c != null) {
+				try {
+					c.rollback();
+					DataBaseManager.closeConnection(c);
+				} catch (SQLException e1) {
+					Logger.putLog("Error al realizar rollback", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e1);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Interrupt.
+	 */
+	@Override
+	public void interrupt() {
+		super.interrupt();
+		try {
+			CrawlerJobManager.endJobsRelaunch(Long.parseLong(idObservatorio));
+		} catch (NumberFormatException e) {
+			Logger.putLog("Error al convertir el id en Long", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		} catch (SchedulerException e) {
+			Logger.putLog("Error al parar los jobs asciados", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 	}
 
 	/**
 	 * Lanza un rastreo.
 	 *
-	 * @param idCrawling the id crawling
+	 * @param idCrawling     the id crawling
+	 * @param idObservatorio the id observatorio
 	 * @throws Exception the exception
 	 */
-	private void lanzarRastreo(final String idCrawling) throws Exception {
+	private void lanzarRastreo(final String idCrawling, final String idObservatorio) throws Exception {
 		Logger.putLog("Realanzado el rastreo " + idCrawling, ResultadosObservatorioAction.class, Logger.LOG_LEVEL_INFO);
 		Connection c = DataBaseManager.getConnection();
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -154,6 +196,8 @@ public class RelanzarObservatorioThread extends Thread {
 		dcrForm.setCartuchos(CartuchoDAO.getNombreCartucho(dcrForm.getId_rastreo()));
 		// Cargamos los dominios introducidos en el archivo de semillas
 		final int typeDomains = dcrForm.getIdObservatory() == 0 ? Constants.ID_LISTA_SEMILLA : Constants.ID_LISTA_SEMILLA_OBSERVATORIO;
+		// todo ADD ID OBS TO CREATE AN IDENTIFICABLE GROUPNAME
+		dcrForm.setIdObservatory(Long.parseLong(idObservatorio));
 		dcrForm.setUrls(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), typeDomains, false));
 		dcrForm.setDomains(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), typeDomains, true));
 		dcrForm.setExceptions(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), Constants.ID_LISTA_NO_RASTREABLE, false));
@@ -166,7 +210,9 @@ public class RelanzarObservatorioThread extends Thread {
 		final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, Long.parseLong(idEjecucionObservatorio), Long.valueOf(userData.getId()));
 //		final CrawlerJob crawlerJob = new CrawlerJob();
 //		crawlerJob.makeCrawl(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
-		CrawlerJobManager.startJob(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
+		// CrawlerJobManager.startJob(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
+		CrawlerJob crawlerJob = new CrawlerJob();
+		crawlerJob.launchCrawler(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
 		DataBaseManager.closeConnection(c);
 	}
 }

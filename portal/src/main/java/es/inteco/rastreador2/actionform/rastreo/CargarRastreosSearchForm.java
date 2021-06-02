@@ -17,33 +17,73 @@ package es.inteco.rastreador2.actionform.rastreo;
 
 import org.apache.struts.action.ActionForm;
 
+/**
+ * The Class CargarRastreosSearchForm.
+ */
 public class CargarRastreosSearchForm extends ActionForm {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The name. */
     private String name;
+    
+    /** The active. */
     private String active;
+    
+    /** The cartridge. */
     private String cartridge;
 
+    /**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
     public String getName() {
         return name;
     }
 
+    /**
+	 * Sets the name.
+	 *
+	 * @param name the new name
+	 */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+	 * Gets the active.
+	 *
+	 * @return the active
+	 */
     public String getActive() {
         return active;
     }
 
+    /**
+	 * Sets the active.
+	 *
+	 * @param active the new active
+	 */
     public void setActive(String active) {
         this.active = active;
     }
 
+    /**
+	 * Gets the cartridge.
+	 *
+	 * @return the cartridge
+	 */
     public String getCartridge() {
         return cartridge;
     }
 
+    /**
+	 * Sets the cartridge.
+	 *
+	 * @param cartridge the new cartridge
+	 */
     public void setCartridge(String cartridge) {
         this.cartridge = cartridge;
     }

@@ -542,7 +542,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 			for (String currentNombre : nombres) {
 				EtiquetaForm etiqueta = new EtiquetaForm();
 				etiqueta.setName(currentNombre.trim());
-				// TODO Clasificacion
 				ClasificacionForm cls = new ClasificacionForm();
 				cls.setId("1");
 				etiqueta.setClasificacion(cls);
@@ -569,7 +568,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 			for (String currentNombre : nombres) {
 				EtiquetaForm etiqueta = new EtiquetaForm();
 				etiqueta.setName(currentNombre.trim());
-				// TODO Clasificacion
 				ClasificacionForm cls = new ClasificacionForm();
 				cls.setId("2");
 				etiqueta.setClasificacion(cls);
@@ -596,7 +594,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 			for (String currentNombre : nombres) {
 				EtiquetaForm etiqueta = new EtiquetaForm();
 				etiqueta.setName(currentNombre.trim());
-				// TODO Clasificacion
 				ClasificacionForm cls = new ClasificacionForm();
 				cls.setId("3");
 				etiqueta.setClasificacion(cls);
@@ -623,7 +620,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 			for (String currentNombre : nombres) {
 				EtiquetaForm etiqueta = new EtiquetaForm();
 				etiqueta.setName(currentNombre.trim());
-				// TODO Clasificacion
 				ClasificacionForm cls = new ClasificacionForm();
 				cls.setId("4");
 				etiqueta.setClasificacion(cls);
@@ -732,6 +728,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	}
 
 	/**
+	 * Gets the sort col.
+	 *
 	 * @return the sortCol
 	 */
 	public String getSortCol() {
@@ -739,6 +737,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	}
 
 	/**
+	 * Sets the sort col.
+	 *
 	 * @param sortCol the sortCol to set
 	 */
 	public void setSortCol(String sortCol) {
@@ -746,6 +746,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	}
 
 	/**
+	 * Gets the sort order.
+	 *
 	 * @return the sortOrder
 	 */
 	public String getSortOrder() {
@@ -753,6 +755,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	}
 
 	/**
+	 * Sets the sort order.
+	 *
 	 * @param sortOrder the sortOrder to set
 	 */
 	public void setSortOrder(String sortOrder) {

@@ -239,12 +239,11 @@ public final class SeedUtils {
 			}
 			hd.endElement("", "", Constants.XML_COMPLEJIDAD);
 			// etiquetas
-			// TODO Generate separated tags
+			// Generate separated tags
 			// distribucion
 			// tematica
 			// recurrencia
 			// otros
-//			hd.startElement("", "", Constants.XML_ETIQUETAS, null);
 			List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
 			List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
 			List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1

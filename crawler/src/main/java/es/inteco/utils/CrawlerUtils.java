@@ -510,8 +510,7 @@ public final class CrawlerUtils {
 			httpsConnection.setHostnameVerifier(new HostnameVerifier() {
 				@Override
 				public boolean verify(String s, SSLSession sslSession) {
-					// return true;
-					return s.equalsIgnoreCase(sslSession.getPeerHost()); // TODO
+					return s.equalsIgnoreCase(sslSession.getPeerHost());
 				}
 			});
 		}
@@ -675,6 +674,7 @@ public final class CrawlerUtils {
 				}
 			}
 		} catch (IllegalArgumentException ie) {
+			Logger.putLog("Error reading cookie", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, ie);
 		}
 		return headerText.toString();
 	}

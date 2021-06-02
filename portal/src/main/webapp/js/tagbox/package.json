@@ -15,7 +15,7 @@
   "readmeFilename": "README.md",
   "gitHead": "c32b5aad5a1859ccdb8911639cfd456b1a91d556",
   "dependencies": {
-    "clean-css": "~2.1.7",
+    "clean-css": "~4.2.3",
     "less": "~1.7.0",
     "autoprefixer": "~1.1.20140327"
   }

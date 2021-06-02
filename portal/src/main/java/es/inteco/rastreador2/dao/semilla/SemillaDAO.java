@@ -1766,6 +1766,25 @@ public final class SemillaDAO {
 	}
 
 	/**
+	 * Update seed ambito.
+	 *
+	 * @param c            the c
+	 * @param idSeed       the id seed
+	 * @param observations the observations
+	 * @throws SQLException the SQL exception
+	 */
+	public static void updateSeedObservations(Connection c, final Integer idSeed, final String observations) throws SQLException {
+		try (PreparedStatement ps = c.prepareStatement("UPDATE lista SET observaciones = ? WHERE id_lista = ?")) {
+			ps.setString(1, observations);
+			ps.setInt(2, idSeed);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
 	 * Save seeds ambit.
 	 *
 	 * @param c        the c
@@ -2406,86 +2425,78 @@ public final class SemillaDAO {
 					throw new SQLException("Creating user failed, no rows affected.");
 				}
 				ResultSet generatedKeys = ps.getGeneratedKeys();
-				// Multidependencia
 				if (generatedKeys.next()) {
 					semillaForm.setId(generatedKeys.getLong(1));
-					// Inserción de las nuevas
-					if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
-						StringBuilder slqInsertSemillaDependencia = new StringBuilder("INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
-						for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-							DependenciaForm currentDependencia = semillaForm.getDependencias().get(i);
-							// Si viene informado el nombre de la
-							// depenedencia
-							// es
-							// para que se cree nueva. Si el nombre ya existe,
-							// se devuelve el id de la dependencia existente
-							if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentDependencia.getName())) {
-								PreparedStatement psCreateDependencia = c.prepareStatement(
-										"INSERT INTO dependencia(nombre) VALUES (?) ON DUPLICATE KEY UPDATE id_dependencia=LAST_INSERT_ID(id_dependencia), nombre = ?",
-										Statement.RETURN_GENERATED_KEYS);
-								psCreateDependencia.setString(1, currentDependencia.getName());
-								psCreateDependencia.setString(2, currentDependencia.getName());
-								int affectedRowsD = psCreateDependencia.executeUpdate();
-								if (affectedRowsD == 0) {
-									throw new SQLException("Creating user failed, no rows affected.");
-								}
-								ResultSet generatedKeysD = psCreateDependencia.getGeneratedKeys();
-								if (generatedKeysD.next()) {
-									currentDependencia.setId(generatedKeysD.getLong(1));
-								} else {
-									throw new SQLException("Creating dependencias failed, no ID obtained.");
-								}
+				}
+				// Multidependencia
+				// Inserción de las nuevas
+				if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
+					StringBuilder slqInsertSemillaDependencia = new StringBuilder("INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
+					for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+						DependenciaForm currentDependencia = semillaForm.getDependencias().get(i);
+						// Si viene informado el nombre de la
+						// depenedencia
+						// es
+						// para que se cree nueva. Si el nombre ya existe,
+						// se devuelve el id de la dependencia existente
+						if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentDependencia.getName())) {
+							PreparedStatement psCreateDependencia = c.prepareStatement(
+									"INSERT INTO dependencia(nombre) VALUES (?) ON DUPLICATE KEY UPDATE id_dependencia=LAST_INSERT_ID(id_dependencia), nombre = ?", Statement.RETURN_GENERATED_KEYS);
+							psCreateDependencia.setString(1, currentDependencia.getName());
+							psCreateDependencia.setString(2, currentDependencia.getName());
+							int affectedRowsD = psCreateDependencia.executeUpdate();
+							if (affectedRowsD == 0) {
+								throw new SQLException("Creating user failed, no rows affected.");
 							}
-							slqInsertSemillaDependencia.append("(").append(semillaForm.getId()).append(",").append(currentDependencia.getId()).append(")");
-							if (i < semillaForm.getDependencias().size() - 1) {
-								slqInsertSemillaDependencia.append(",");
+							ResultSet generatedKeysD = psCreateDependencia.getGeneratedKeys();
+							if (generatedKeysD.next()) {
+								currentDependencia.setId(generatedKeysD.getLong(1));
+							} else {
+								throw new SQLException("Creating dependencias failed, no ID obtained.");
 							}
 						}
-						PreparedStatement psInsertarSemillaDependencia = c.prepareStatement(slqInsertSemillaDependencia.toString());
-						psInsertarSemillaDependencia.executeUpdate();
+						slqInsertSemillaDependencia.append("(").append(semillaForm.getId()).append(",").append(currentDependencia.getId()).append(")");
+						if (i < semillaForm.getDependencias().size() - 1) {
+							slqInsertSemillaDependencia.append(",");
+						}
 					}
-				} else {
-					throw new SQLException("Creating dependencias failed, no ID obtained.");
+					PreparedStatement psInsertarSemillaDependencia = c.prepareStatement(slqInsertSemillaDependencia.toString());
+					psInsertarSemillaDependencia.executeUpdate();
 				}
 				// Etiquetas
-				if (generatedKeys.next()) {
-					semillaForm.setId(generatedKeys.getLong(1));
-					// Inserción de las nuevas
-					if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty()) {
-						StringBuilder slqInsertSemillaEtiqueta = new StringBuilder("INSERT INTO semilla_etiqueta(id_lista, id_etiqueta) VALUES ");
-						for (int i = 0; i < semillaForm.getEtiquetas().size(); i++) {
-							EtiquetaForm currentEtiqueta = semillaForm.getEtiquetas().get(i);
-							// Si viene informado el nombre de la
-							// Etiqueta
-							// es
-							// para que se cree nueva. Si el nombre ya existe,
-							// se devuelve el id de la Etiqueta existente
-							if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentEtiqueta.getName())) {
-								PreparedStatement psCreateEtiqueta = c.prepareStatement(
-										"INSERT INTO etiqueta(nombre) VALUES (?) ON DUPLICATE KEY UPDATE id_etiqueta=LAST_INSERT_ID(id_etiqueta), nombre = ?", Statement.RETURN_GENERATED_KEYS);
-								psCreateEtiqueta.setString(1, currentEtiqueta.getName());
-								psCreateEtiqueta.setString(2, currentEtiqueta.getName());
-								int affectedRowsD = psCreateEtiqueta.executeUpdate();
-								if (affectedRowsD == 0) {
-									throw new SQLException("Creating user failed, no rows affected.");
-								}
-								ResultSet generatedKeysD = psCreateEtiqueta.getGeneratedKeys();
-								if (generatedKeysD.next()) {
-									currentEtiqueta.setId(generatedKeysD.getLong(1));
-								} else {
-									throw new SQLException("Creating etiquetas failed, no ID obtained.");
-								}
+				// Inserción de las nuevas
+				if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty()) {
+					StringBuilder slqInsertSemillaEtiqueta = new StringBuilder("INSERT INTO semilla_etiqueta(id_lista, id_etiqueta) VALUES ");
+					for (int i = 0; i < semillaForm.getEtiquetas().size(); i++) {
+						EtiquetaForm currentEtiqueta = semillaForm.getEtiquetas().get(i);
+						// Si viene informado el nombre de la
+						// Etiqueta
+						// es
+						// para que se cree nueva. Si el nombre ya existe,
+						// se devuelve el id de la Etiqueta existente
+						if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentEtiqueta.getName())) {
+							PreparedStatement psCreateEtiqueta = c.prepareStatement(
+									"INSERT INTO etiqueta(nombre) VALUES (?) ON DUPLICATE KEY UPDATE id_etiqueta=LAST_INSERT_ID(id_etiqueta), nombre = ?", Statement.RETURN_GENERATED_KEYS);
+							psCreateEtiqueta.setString(1, currentEtiqueta.getName());
+							psCreateEtiqueta.setString(2, currentEtiqueta.getName());
+							int affectedRowsD = psCreateEtiqueta.executeUpdate();
+							if (affectedRowsD == 0) {
+								throw new SQLException("Creating user failed, no rows affected.");
 							}
-							slqInsertSemillaEtiqueta.append("(").append(semillaForm.getId()).append(",").append(currentEtiqueta.getId()).append(")");
-							if (i < semillaForm.getEtiquetas().size() - 1) {
-								slqInsertSemillaEtiqueta.append(",");
+							ResultSet generatedKeysD = psCreateEtiqueta.getGeneratedKeys();
+							if (generatedKeysD.next()) {
+								currentEtiqueta.setId(generatedKeysD.getLong(1));
+							} else {
+								throw new SQLException("Creating etiquetas failed, no ID obtained.");
 							}
 						}
-						PreparedStatement psInsertarSemillaEtiqueta = c.prepareStatement(slqInsertSemillaEtiqueta.toString());
-						psInsertarSemillaEtiqueta.executeUpdate();
+						slqInsertSemillaEtiqueta.append("(").append(semillaForm.getId()).append(",").append(currentEtiqueta.getId()).append(")");
+						if (i < semillaForm.getEtiquetas().size() - 1) {
+							slqInsertSemillaEtiqueta.append(",");
+						}
 					}
-				} else {
-					throw new SQLException("Creating etiquetas failed, no ID obtained.");
+					PreparedStatement psInsertarSemillaEtiqueta = c.prepareStatement(slqInsertSemillaEtiqueta.toString());
+					psInsertarSemillaEtiqueta.executeUpdate();
 				}
 			}
 			// ps.executeBatch();
@@ -3183,6 +3194,63 @@ public final class SemillaDAO {
 				final int resultFrom = pagSize * page;
 				ps.setInt(1, pagSize);
 				ps.setInt(2, resultFrom);
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					DependenciaForm dependenciaForm = new DependenciaForm();
+					dependenciaForm.setId(rs.getLong("id_dependencia"));
+					dependenciaForm.setName(rs.getString(NOMBRE));
+					dependencias.add(dependenciaForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return dependencias;
+	}
+
+	/**
+	 * Gets the seed dependencias by ambit and tags.
+	 *
+	 * @param c       the c
+	 * @param idAmbit the id ambit
+	 * @param idsTags the ids tags
+	 * @return the seed dependencias by ambit and tags
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<DependenciaForm> getSeedDependenciasByAmbitAndTags(Connection c, final String idAmbit, final String[] idsTags) throws SQLException {
+		final List<DependenciaForm> dependencias = new ArrayList<>();
+		String query = "SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE 1=1";
+		if (!org.apache.commons.lang3.StringUtils.isEmpty(idAmbit)) {
+			query += " AND d.id_ambit = ? ";
+		}
+		if (idsTags != null && idsTags.length > 0) {
+			query += " AND d.id_tag IN (";
+			for (int i = 0; i < idsTags.length; i++) {
+				if (!org.apache.commons.lang3.StringUtils.isEmpty(idsTags[i])) {
+					query += "?";
+					if (i < idsTags.length - 1) {
+						query += ",";
+					}
+				}
+			}
+			query += ")";
+		}
+		query += " ORDER BY UPPER(d.nombre) ASC ";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			int paramIndex = 1;
+			if (!StringUtils.isEmpty(idAmbit)) {
+				ps.setString(paramIndex, idAmbit);
+				paramIndex++;
+			}
+			if (idsTags != null && idsTags.length > 0) {
+				for (int i = 0; i < idsTags.length; i++) {
+					if (!org.apache.commons.lang3.StringUtils.isEmpty(idsTags[i])) {
+						ps.setString(paramIndex, idsTags[i]);
+						paramIndex++;
+					}
+				}
 			}
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {

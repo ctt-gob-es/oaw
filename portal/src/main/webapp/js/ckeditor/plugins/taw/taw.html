@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta content="noindex, nofollow" name="robots">
+		<script type="text/javascript" src="/taw_ws/Taw4WebService.js"></script>
+		<script type="text/javascript">
+
+var Taw4WebService = new ws_taw4_fundacionctic_org__Taw4WebService();
+Taw4WebService.url = "/taw_ws/services/Taw4WebService";
+//Taw4WebService.tawws_username = "joe";
+//Taw4WebService.tawws_password = "joespassword"; 
+
+var textarea;
+var oEditor = window.parent.InnerDialogLoaded() ;
+
+function invokeTawWSResponse(response)
+{
+	//writeObj(response.getReturn());
+
+	var resultados = document.getElementById('resultados');
+	resultados.appendChild( document.createElement('p').appendChild( document.createTextNode('Fallos:' + response.getReturn().getIncidenciasFallo()) ) );
+	resultados.appendChild( document.createElement('p').appendChild( document.createTextNode('Revisiones:' + response.getReturn().getIncidenciasRevision()) ) );
+    
+	var lista = document.createElement('ul');	
+	var incidencias = response.getReturn().getIncidencias();
+	
+    for (inc in incidencias) {
+        var item = document.createElement('li');
+        item.appendChild(document.createTextNode( incidencias[inc].getLinea() + ',' + incidencias[inc].getColumna() + ', ' + incidencias[inc].getTipo() + ', ' + incidencias[inc].getInfoComprobacion() ) )
+        lista.appendChild(item);
+    }
+
+	resultados.appendChild(lista);
+	
+	var codigoMarcado = response.getReturn().getCodigoMarcado();
+	if ( codigoMarcado.length>0 ) {
+		oEditor.FCK.SetHTML(codigoMarcado); 
+	}
+}
+
+function invokeTawWSError(error_estatus, error_text)
+{
+      var resultados = document.getElementById('resultados');
+      if ( error_estatus==404 ) {      	
+		resultados.appendChild( document.createElement('p').appendChild( document.createTextNode('No se ha podido conectar con el servidor. Compruebe que dispone de conexión y que el servidor está activo') ) );      
+      } else {
+        resultados.appendChild( document.createElement('p').appendChild( document.createTextNode('Se ha producido un error') ) );
+        resultados.appendChild( document.createElement('p').appendChild( document.createTextNode('Codigo: '+error_estatus) ) );
+        resultados.appendChild( document.createElement('p').appendChild( document.createTextNode('Mensaje: '+error_text) ) );
+      }      
+}
+
+function invokeTawWS()
+{
+    Taw4WebService.analizarContenidoEnCodigo(invokeTawWSResponse, invokeTawWSError, 'wcag10', oEditor.FCK.GetXHTML(), 'text/html', false);
+}
+
+function load()
+{
+	// First of all, translate the dialog box texts.
+	oEditor.FCKLanguageManager.TranslatePage( document ) ;
+
+	window.parent.SetAutoSize( true ) ;
+	
+	var fragmento = document.getElementById('fragmento');
+	
+	invokeTawWS();
+	return false;
+}
+		</script>
+	</head>
+	<body scroll="yes" style="OVERFLOW: visible" onload="load();">
+		<div align="center">
+			Resultado del análisis del fragmento
+		</div>
+		<div id="resultados">
+			
+		</div>		
+	</body>
+</html>

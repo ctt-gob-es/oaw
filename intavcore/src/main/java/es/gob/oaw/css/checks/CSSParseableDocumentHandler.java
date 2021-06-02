@@ -30,10 +30,17 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Clase para comprobar si un código CSS es parseable o no (se ajusta a la gramática CSS)
+ * Clase para comprobar si un código CSS es parseable o no (se ajusta a la gramática CSS).
  */
 public class CSSParseableDocumentHandler extends OAWCSSVisitor {
 
+    /**
+	 * Evaluate.
+	 *
+	 * @param document    the document
+	 * @param cssResource the css resource
+	 * @return the list
+	 */
     @Override
     public List<CSSProblem> evaluate(final Document document, final CSSResource cssResource) {
         if (!cssResource.getContent().isEmpty()) {
@@ -54,11 +61,20 @@ public class CSSParseableDocumentHandler extends OAWCSSVisitor {
         return problems;
     }
 
+    /**
+	 * End.
+	 */
     @Override
     public void end() {
         cleanupResources();
     }
 
+    /**
+	 * Creates the CSS parser error.
+	 *
+	 * @param cssParseError the css parse error
+	 * @return the CSS problem
+	 */
     private CSSProblem createCSSParserError(final CSSParseError cssParseError) {
         final CSSProblem cssProblem = new CSSProblem();
         cssProblem.setDate(new Date());

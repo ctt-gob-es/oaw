@@ -48,16 +48,27 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class MensajeEmail {
 
+    /** The asunto. */
     @XmlElement(name = "Asunto", required = true)
     protected String asunto;
+    
+    /** The cuerpo. */
     @XmlElement(name = "Cuerpo", required = true)
     protected String cuerpo;
+    
+    /** The origen. */
     @XmlElement(name = "Origen")
     protected String origen;
+    
+    /** The modo. */
     @XmlElement(name = "Modo")
     protected String modo;
+    
+    /** The adjuntos. */
     @XmlElement(name = "Adjuntos")
     protected Adjuntos adjuntos;
+    
+    /** The destinatarios mail. */
     @XmlElement(name = "DestinatariosMail", required = true)
     protected DestinatariosMail destinatariosMail;
 

@@ -22,32 +22,62 @@ import java.util.Random;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class BasicServiceConcurrenceSystem.
+ */
 public class BasicServiceConcurrenceSystem extends Thread {
 
+    /** The concurrent users. */
     private static int concurrentUsers = 0;
 
+    /**
+	 * Gets the concurrent users.
+	 *
+	 * @return the concurrent users
+	 */
     public static int getConcurrentUsers() {
         return concurrentUsers;
     }
 
+    /**
+	 * Sets the concurrent users.
+	 *
+	 * @param concurrentUsers the new concurrent users
+	 */
     public static void setConcurrentUsers(int concurrentUsers) {
         BasicServiceConcurrenceSystem.concurrentUsers = concurrentUsers;
     }
 
+    /**
+	 * Increment concurrent users.
+	 */
     public synchronized static void incrementConcurrentUsers() {
         concurrentUsers++;
     }
 
+    /**
+	 * Decrement concurrent users.
+	 */
     public synchronized static void decrementConcurrentUsers() {
         concurrentUsers--;
     }
 
+    /**
+	 * Pass concurrence.
+	 *
+	 * @return true, if successful
+	 */
     public static boolean passConcurrence() {
         PropertiesManager pmgr = new PropertiesManager();
         int concurrentUsers = BasicServiceConcurrenceSystem.getConcurrentUsers();
         return concurrentUsers < Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.max.num.concurrent.users"));
     }
 
+    /**
+	 * Pass queue.
+	 *
+	 * @return true, if successful
+	 */
     public static boolean passQueue() {
         PropertiesManager pmgr = new PropertiesManager();
         int counter = 0;

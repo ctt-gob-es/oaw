@@ -46,10 +46,23 @@ import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.SpecialChunk;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 
+/**
+ * The Class AnonymousResultExportPdfSection3.
+ */
 public final class AnonymousResultExportPdfSection3 {
+	
+	/**
+	 * Instantiates a new anonymous result export pdf section 3.
+	 */
 	private AnonymousResultExportPdfSection3() {
 	}
 
+	/**
+	 * Creates the chapter 3.
+	 *
+	 * @param request the request
+	 * @param chapter the chapter
+	 */
 	protected static void createChapter3(HttpServletRequest request, Chapter chapter) {
 		ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.3.p1.bold"));
@@ -61,6 +74,12 @@ public final class AnonymousResultExportPdfSection3 {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.3.p5"), ConstantsFont.PARAGRAPH, chapter);
 	}
 
+	/**
+	 * Creates the section 31 AGE.
+	 *
+	 * @param request the request
+	 * @param section the section
+	 */
 	protected static void createSection31AGE(HttpServletRequest request, Section section) {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p1.AGE"), ConstantsFont.PARAGRAPH, section);
 		List list = new List();
@@ -93,6 +112,12 @@ public final class AnonymousResultExportPdfSection3 {
 		section.add(list);
 	}
 
+	/**
+	 * Creates the section 31 CCAA.
+	 *
+	 * @param request the request
+	 * @param section the section
+	 */
 	protected static void createSection31CCAA(HttpServletRequest request, Section section) {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p1.CCAA"), ConstantsFont.PARAGRAPH, section);
 		List list = new List();
@@ -140,6 +165,12 @@ public final class AnonymousResultExportPdfSection3 {
 		section.add(list);
 	}
 
+	/**
+	 * Creates the section 31 EELL.
+	 *
+	 * @param request the request
+	 * @param section the section
+	 */
 	protected static void createSection31EELL(HttpServletRequest request, Section section) {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p1.EELL"), ConstantsFont.PARAGRAPH, section);
 		List list = new List();
@@ -167,10 +198,25 @@ public final class AnonymousResultExportPdfSection3 {
 		section.add(list);
 	}
 
+	/**
+	 * Creates the section 31 PRENSA.
+	 *
+	 * @param request the request
+	 * @param section the section
+	 */
 	protected static void createSection31PRENSA(HttpServletRequest request, Section section) {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p1.PRENSA"), ConstantsFont.PARAGRAPH, section);
 	}
 
+	/**
+	 * Creates the section 32.
+	 *
+	 * @param request               the request
+	 * @param section               the section
+	 * @param primaryReportPageList the primary report page list
+	 * @param observatoryType       the observatory type
+	 * @param isBasicService        the is basic service
+	 */
 	protected static void createSection32(HttpServletRequest request, Section section, java.util.List<ObservatoryEvaluationForm> primaryReportPageList, long observatoryType, boolean isBasicService) {
 		ArrayList<String> boldWords = new ArrayList<>();
 		if (!isBasicService) {
@@ -224,6 +270,13 @@ public final class AnonymousResultExportPdfSection3 {
 		}
 	}
 
+	/**
+	 * Creates the section 32 PRENSA.
+	 *
+	 * @param request               the request
+	 * @param section               the section
+	 * @param primaryReportPageList the primary report page list
+	 */
 	protected static void createSection32PRENSA(HttpServletRequest request, Section section, java.util.List<ObservatoryEvaluationForm> primaryReportPageList) {
 		ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.32.p1.PRENSA.bold"));
@@ -235,6 +288,16 @@ public final class AnonymousResultExportPdfSection3 {
 		section.newPage();
 	}
 
+	/**
+	 * Creates the section 33.
+	 *
+	 * @param request         the request
+	 * @param section         the section
+	 * @param observatoryType the observatory type
+	 * @return the section
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static Section createSection33(HttpServletRequest request, Section section, long observatoryType) throws BadElementException, IOException {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.33.p1"), ConstantsFont.PARAGRAPH, section);
 		List list = new List();
@@ -360,6 +423,14 @@ public final class AnonymousResultExportPdfSection3 {
 		return section;
 	}
 
+	/**
+	 * Creates the section 331.
+	 *
+	 * @param request the request
+	 * @param section the section
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	protected static void createSection331(HttpServletRequest request, Section section) throws BadElementException, IOException {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.331.p1"), ConstantsFont.PARAGRAPH, section);
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.331.p2"), ConstantsFont.PARAGRAPH, section);
@@ -367,6 +438,12 @@ public final class AnonymousResultExportPdfSection3 {
 		section.add(create331Table(request));
 	}
 
+	/**
+	 * Creates the section 34.
+	 *
+	 * @param request the request
+	 * @param section the section
+	 */
 	protected static void createSection34(HttpServletRequest request, Section section) {
 		ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.34.p1.bold"));
@@ -376,6 +453,12 @@ public final class AnonymousResultExportPdfSection3 {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.34.p3"), ConstantsFont.PARAGRAPH, section);
 	}
 
+	/**
+	 * Creates the section 341.
+	 *
+	 * @param request the request
+	 * @param section the section
+	 */
 	protected static void createSection341(HttpServletRequest request, Section section) {
 		PropertiesManager pmgr = new PropertiesManager();
 		Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
@@ -481,6 +564,12 @@ public final class AnonymousResultExportPdfSection3 {
 				ConstantsFont.PARAGRAPH, true));
 	}
 
+	/**
+	 * Creates the section 342.
+	 *
+	 * @param request the request
+	 * @param section the section
+	 */
 	protected static void createSection342(HttpServletRequest request, Section section) {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.342.p1"), ConstantsFont.PARAGRAPH, section);
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.342.p2"), ConstantsFont.PARAGRAPH, section);
@@ -596,6 +685,12 @@ public final class AnonymousResultExportPdfSection3 {
 		section.add(list);
 	}
 
+	/**
+	 * Creates the section 343.
+	 *
+	 * @param request the request
+	 * @param section the section
+	 */
 	protected static void createSection343(HttpServletRequest request, Section section) {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p1"), ConstantsFont.PARAGRAPH, section);
 		List list = new List();
@@ -681,6 +776,12 @@ public final class AnonymousResultExportPdfSection3 {
 		section.add(list);
 	}
 
+	/**
+	 * Creates the verification table.
+	 *
+	 * @param messageResources the message resources
+	 * @return the pdf P table
+	 */
 	protected static PdfPTable createVerificationTable(final MessageResources messageResources) {
 		try {
 			float[] widths = { 0.15f, 0.65f, 0.20f };
@@ -782,6 +883,12 @@ public final class AnonymousResultExportPdfSection3 {
 		return null;
 	}
 
+	/**
+	 * Creates the 331 table.
+	 *
+	 * @param request the request
+	 * @return the pdf P table
+	 */
 	private static PdfPTable create331Table(HttpServletRequest request) {
 		float[] widths = { 40f, 30f, 30f };
 		PdfPTable table = new PdfPTable(widths);
@@ -831,6 +938,12 @@ public final class AnonymousResultExportPdfSection3 {
 		return table;
 	}
 
+	/**
+	 * Creates the 331 hader table.
+	 *
+	 * @param request the request
+	 * @param table   the table
+	 */
 	private static void create331HaderTable(HttpServletRequest request, PdfPTable table) {
 		table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.331.table.header1"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
 				Element.ALIGN_CENTER, 0));
@@ -840,12 +953,27 @@ public final class AnonymousResultExportPdfSection3 {
 				Element.ALIGN_CENTER, 0));
 	}
 
+	/**
+	 * Creates the 331 table row.
+	 *
+	 * @param request      the request
+	 * @param table        the table
+	 * @param verification the verification
+	 * @param req          the req
+	 * @param verP         the ver P
+	 */
 	private static void create331TableRow(HttpServletRequest request, PdfPTable table, String verification, List req, List verP) {
 		table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage(verification), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, 10, -1));
 		table.addCell(PDFUtils.createListTableCell(req, Color.WHITE, Element.ALIGN_CENTER, 0));
 		table.addCell(PDFUtils.createListTableCell(verP, Color.WHITE, Element.ALIGN_CENTER, 0));
 	}
 
+	/**
+	 * Creates the methodology table 1.
+	 *
+	 * @param request the request
+	 * @return the pdf P table
+	 */
 	private static PdfPTable createMethodologyTable1(HttpServletRequest request) {
 		float[] widths = { 10f, 30f, 45f, 25f, 15f, 15f };
 		PdfPTable table = new PdfPTable(widths);
@@ -890,6 +1018,12 @@ public final class AnonymousResultExportPdfSection3 {
 		return table;
 	}
 
+	/**
+	 * Creates the methodology table 2.
+	 *
+	 * @param request the request
+	 * @return the pdf P table
+	 */
 	private static PdfPTable createMethodologyTable2(HttpServletRequest request) {
 		float[] widths = { 10f, 30f, 45f, 25f, 15f, 15f };
 		PdfPTable table = new PdfPTable(widths);
@@ -934,6 +1068,13 @@ public final class AnonymousResultExportPdfSection3 {
 		return table;
 	}
 
+	/**
+	 * Creates the methodology hader table.
+	 *
+	 * @param request the request
+	 * @param table   the table
+	 * @param title   the title
+	 */
 	private static void createMethodologyHaderTable(HttpServletRequest request, PdfPTable table, String title) {
 		table.addCell(PDFUtils.createColSpanTableCell(title, Constants.VERDE_C_MP, ConstantsFont.labelCellFont, 6, Element.ALIGN_LEFT));
 		table.addCell(
@@ -950,6 +1091,18 @@ public final class AnonymousResultExportPdfSection3 {
 				PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.33.table.header6"), Color.GRAY, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 	}
 
+	/**
+	 * Creates the methodology table row.
+	 *
+	 * @param request  the request
+	 * @param table    the table
+	 * @param id       the id
+	 * @param name     the name
+	 * @param question the question
+	 * @param answer   the answer
+	 * @param value    the value
+	 * @param modality the modality
+	 */
 	private static void createMethodologyTableRow(HttpServletRequest request, PdfPTable table, String id, String name, String question, List answer, List value, List modality) {
 		table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage(id), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
 		table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage(name), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
@@ -959,10 +1112,25 @@ public final class AnonymousResultExportPdfSection3 {
 		table.addCell(PDFUtils.createListTableCell(modality, Color.WHITE, Element.ALIGN_CENTER, 0));
 	}
 
+	/**
+	 * Creates the text list.
+	 *
+	 * @param request the request
+	 * @param text    the text
+	 * @return the list
+	 */
 	private static List createTextList(HttpServletRequest request, String text) {
 		return createTextList(request, text, Element.ALIGN_CENTER);
 	}
 
+	/**
+	 * Creates the text list.
+	 *
+	 * @param request the request
+	 * @param text    the text
+	 * @param align   the align
+	 * @return the list
+	 */
 	private static List createTextList(HttpServletRequest request, String text, int align) {
 		java.util.List<String> list = Arrays.asList(CrawlerUtils.getResources(request).getMessage(text).split(";"));
 		List PDFlist = new List();
@@ -975,6 +1143,13 @@ public final class AnonymousResultExportPdfSection3 {
 		return PDFlist;
 	}
 
+	/**
+	 * Creates the image list.
+	 *
+	 * @param request the request
+	 * @param text    the text
+	 * @return the list
+	 */
 	private static List createImageList(HttpServletRequest request, String text) {
 		PropertiesManager pmgr = new PropertiesManager();
 		Image image;
@@ -995,6 +1170,13 @@ public final class AnonymousResultExportPdfSection3 {
 		return PDFlist;
 	}
 
+	/**
+	 * Adds the URL table.
+	 *
+	 * @param request               the request
+	 * @param primaryReportPageList the primary report page list
+	 * @return the pdf P table
+	 */
 	private static PdfPTable addURLTable(HttpServletRequest request, java.util.List<ObservatoryEvaluationForm> primaryReportPageList) {
 		float[] widths = { 30f, 70f };
 		PdfPTable table = new PdfPTable(widths);

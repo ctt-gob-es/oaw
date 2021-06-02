@@ -21,6 +21,8 @@ import es.inteco.rastreador2.dao.proxy.ProxyDAO;
  * The Class AmbitoDAO.
  */
 public class AmbitoDAO {
+	private static final String SQL_EXCEPTION = "SQL Exception: ";
+
 	/**
 	 * Gets the ambit by ID.
 	 *
@@ -29,7 +31,7 @@ public class AmbitoDAO {
 	 * @return the ambit by ID
 	 * @throws Exception the exception
 	 */
-	public static AmbitoForm getAmbitByID(Connection c, String ambitId) throws Exception {
+	public static AmbitoForm getAmbitByID(Connection c, String ambitId) throws SQLException {
 		AmbitoForm ambit = new AmbitoForm();
 		String query = "SELECT c.id_ambito, c.nombre FROM ambitos_lista c WHERE c.id_ambito = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -41,7 +43,7 @@ public class AmbitoDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return ambit;
@@ -55,7 +57,7 @@ public class AmbitoDAO {
 	 * @return the ambit by name
 	 * @throws Exception the exception
 	 */
-	public static AmbitoForm getAmbitByName(Connection c, String ambitName) throws Exception {
+	public static AmbitoForm getAmbitByName(Connection c, String ambitName) throws SQLException {
 		AmbitoForm ambit = null;
 		String query = "SELECT c.id_ambito, c.nombre FROM ambitos_lista c WHERE c.nombre = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -65,13 +67,14 @@ public class AmbitoDAO {
 					ambit = new AmbitoForm();
 					ambit.setId(rs.getString("c.id_ambito"));
 					ambit.setName(rs.getString("c.nombre"));
+					return ambit;
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-		return ambit;
+		return null;
 	}
 
 	/**
@@ -115,54 +118,7 @@ public class AmbitoDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", ComplejidadDAO.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
-		return results;
-	}
-
-	/**
-	 * Gets the ambitos primarios.
-	 *
-	 * @param c      the c
-	 * @param nombre the nombre
-	 * @param page   the page
-	 * @return the ambitos primarios
-	 * @throws SQLException the SQL exception
-	 */
-	public static List<AmbitoForm> getAmbitosPrimarios(Connection c, String nombre, int page) throws SQLException {
-		final List<AmbitoForm> results = new ArrayList<>();
-		String query = "SELECT a.id_ambito, a.nombre, a.descripcion FROM ambitos_lista a WHERE 1=1 ";
-		if (StringUtils.isNotEmpty(nombre)) {
-			query += " AND UPPER(a.nombre) like UPPER(?) ";
-		}
-		query += "ORDER BY UPPER(a.id_ambito) ASC ";
-		if (page != Constants.NO_PAGINACION) {
-			query += "LIMIT ? OFFSET ?";
-		}
-		try (PreparedStatement ps = c.prepareStatement(query)) {
-			int count = 1;
-			if (StringUtils.isNotEmpty(nombre)) {
-				ps.setString(count++, "%" + nombre + "%");
-			}
-			if (page != Constants.NO_PAGINACION) {
-				PropertiesManager pmgr = new PropertiesManager();
-				int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
-				int resultFrom = pagSize * page;
-				ps.setInt(count++, pagSize);
-				ps.setInt(count, resultFrom);
-			}
-			try (ResultSet rs = ps.executeQuery()) {
-				while (rs.next()) {
-					AmbitoForm ambitoForm = new AmbitoForm();
-					ambitoForm.setId(rs.getString("a.id_ambito"));
-					ambitoForm.setName(rs.getString("a.nombre"));
-					ambitoForm.setDescripcion(rs.getString("a.descripcion"));
-					results.add(ambitoForm);
-				}
-			}
-		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", ComplejidadDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, ComplejidadDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return results;

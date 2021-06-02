@@ -20,38 +20,77 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class ObservatoryLevelForm.
+ */
 public class ObservatoryLevelForm implements Serializable {
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 8555989953544243395L;
+	/** The name. */
+	private String name;
+	/** The score. */
+	private BigDecimal score;
+	/** The suitability groups. */
+	private List<ObservatorySuitabilityForm> suitabilityGroups;
 
-    private String name;
-    private BigDecimal score;
-    private List<ObservatorySuitabilityForm> suitabilityGroups;
+	/**
+	 * Instantiates a new observatory level form.
+	 */
+	public ObservatoryLevelForm() {
+		this.suitabilityGroups = new ArrayList<>();
+	}
 
-    public ObservatoryLevelForm() {
-        this.suitabilityGroups = new ArrayList<>();
-    }
+	/**
+	 * Gets the score.
+	 *
+	 * @return the score
+	 */
+	public BigDecimal getScore() {
+		return score;
+	}
 
-    public BigDecimal getScore() {
-        return score;
-    }
+	/**
+	 * Sets the score.
+	 *
+	 * @param score the new score
+	 */
+	public void setScore(BigDecimal score) {
+		this.score = score;
+	}
 
-    public void setScore(BigDecimal score) {
-        this.score = score;
-    }
+	/**
+	 * Gets the suitability groups.
+	 *
+	 * @return the suitability groups
+	 */
+	public List<ObservatorySuitabilityForm> getSuitabilityGroups() {
+		return suitabilityGroups;
+	}
 
-    public List<ObservatorySuitabilityForm> getSuitabilityGroups() {
-        return suitabilityGroups;
-    }
+	/**
+	 * Sets the suitability groups.
+	 *
+	 * @param suitabilityGroups the new suitability groups
+	 */
+	public void setSuitabilityGroups(List<ObservatorySuitabilityForm> suitabilityGroups) {
+		this.suitabilityGroups = suitabilityGroups;
+	}
 
-    public void setSuitabilityGroups(
-            List<ObservatorySuitabilityForm> suitabilityGroups) {
-        this.suitabilityGroups = suitabilityGroups;
-    }
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * Sets the name.
+	 *
+	 * @param name the new name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 }

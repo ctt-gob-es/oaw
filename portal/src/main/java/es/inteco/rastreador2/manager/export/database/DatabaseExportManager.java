@@ -20,8 +20,17 @@ import es.inteco.rastreador2.dao.export.database.Observatory;
 import es.inteco.rastreador2.manager.BaseManager;
 import org.hibernate.Session;
 
+/**
+ * The Class DatabaseExportManager.
+ */
 public class DatabaseExportManager extends BaseManager {
 
+    /**
+	 * Gets the observatory.
+	 *
+	 * @param idExecution the id execution
+	 * @return the observatory
+	 */
     public static Observatory getObservatory(Long idExecution) {
         Session session = getSession();
 

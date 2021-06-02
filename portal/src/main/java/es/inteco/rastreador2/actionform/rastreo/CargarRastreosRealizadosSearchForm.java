@@ -17,42 +17,94 @@ package es.inteco.rastreador2.actionform.rastreo;
 
 import org.apache.struts.action.ActionForm;
 
+/**
+ * The Class CargarRastreosRealizadosSearchForm.
+ */
 public class CargarRastreosRealizadosSearchForm extends ActionForm {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The initial date. */
     private String initial_date;
+    
+    /** The final date. */
     private String final_date;
+    
+    /** The cartridge. */
     private String cartridge;
+    
+    /** The seed. */
     private String seed;
 
+    /**
+	 * Gets the initial date.
+	 *
+	 * @return the initial date
+	 */
     public String getInitial_date() {
         return initial_date;
     }
 
+    /**
+	 * Sets the initial date.
+	 *
+	 * @param initial_date the new initial date
+	 */
     public void setInitial_date(String initial_date) {
         this.initial_date = initial_date;
     }
 
+    /**
+	 * Gets the final date.
+	 *
+	 * @return the final date
+	 */
     public String getFinal_date() {
         return final_date;
     }
 
+    /**
+	 * Sets the final date.
+	 *
+	 * @param final_date the new final date
+	 */
     public void setFinal_date(String final_date) {
         this.final_date = final_date;
     }
 
+    /**
+	 * Gets the cartridge.
+	 *
+	 * @return the cartridge
+	 */
     public String getCartridge() {
         return cartridge;
     }
 
+    /**
+	 * Sets the cartridge.
+	 *
+	 * @param cartridge the new cartridge
+	 */
     public void setCartridge(String cartridge) {
         this.cartridge = cartridge;
     }
 
+    /**
+	 * Gets the seed.
+	 *
+	 * @return the seed
+	 */
     public String getSeed() {
         return seed;
     }
 
+    /**
+	 * Sets the seed.
+	 *
+	 * @param seed the new seed
+	 */
     public void setSeed(String seed) {
         this.seed = seed;
     }

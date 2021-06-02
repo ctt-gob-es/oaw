@@ -15,22 +15,49 @@
 ******************************************************************************/
 package es.inteco.intav.form;
 
+/**
+ * The Class ObservatoryEvaluationLevelForm.
+ */
 public class ObservatoryEvaluationLevelForm {
+    
+    /** The level. */
     private String level;
+    
+    /** The observatory evaluation form. */
     private ObservatoryEvaluationForm observatoryEvaluationForm;
 
+    /**
+	 * Gets the level.
+	 *
+	 * @return the level
+	 */
     public String getLevel() {
         return level;
     }
 
+    /**
+	 * Sets the level.
+	 *
+	 * @param level the new level
+	 */
     public void setLevel(String level) {
         this.level = level;
     }
 
+    /**
+	 * Gets the observatory evaluation form.
+	 *
+	 * @return the observatory evaluation form
+	 */
     public ObservatoryEvaluationForm getObservatoryEvaluationForm() {
         return observatoryEvaluationForm;
     }
 
+    /**
+	 * Sets the observatory evaluation form.
+	 *
+	 * @param observatoryEvaluationForm the new observatory evaluation form
+	 */
     public void setObservatoryEvaluationForm(
             ObservatoryEvaluationForm observatoryEvaluationForm) {
         this.observatoryEvaluationForm = observatoryEvaluationForm;

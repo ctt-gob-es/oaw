@@ -324,7 +324,6 @@ public final class OpenOfficeGlobalReportBuilder {
 					final MailService mailService = new MailService();
 					List<String> mailsTo = new ArrayList<>();
 					mailsTo.add(userData.getEmail());
-					mailsTo.add("alvaro.pelaez@fundacionctic.org");
 					mailService.sendMail(mailsTo, "Generación de informe global completado", mailBody.toString(), true);
 				} catch (Exception e) {
 					Logger.putLog("Error", OpenOfficeGlobalReportBuilder.class, Logger.LOG_LEVEL_ERROR, e);
@@ -353,7 +352,7 @@ public final class OpenOfficeGlobalReportBuilder {
 			generateDatesSummaryTable(odt, odfFileContent, tagsToFiler, exObsIds, c);
 			// Todo total
 			generateClasificationStatiticsTableGlobal(odt, odfFileContent, tagsToFiler, exObsIds, c, "Discapacidad");
-			// TODO Generate Distribution
+			// Generate Distribution
 			generateClasificationStatiticsTableAmbit(odt, odfFileContent, tagsToFiler, exObsIds, c);
 			// By complex
 			generateClasificationStatiticsTableComplex(odt, odfFileContent, tagsToFiler, exObsIds, c);

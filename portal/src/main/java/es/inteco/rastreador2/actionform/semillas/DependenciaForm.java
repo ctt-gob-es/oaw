@@ -10,12 +10,14 @@
 * You should have received a copy of the EUPL1.2 license along with this program; if not, 
 * you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
 ******************************************************************************/
-
 package es.inteco.rastreador2.actionform.semillas;
 
 import java.io.Serializable;
 
+import org.apache.struts.upload.FormFile;
 import org.apache.struts.validator.ValidatorForm;
+
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 
 /**
  * DependenciaForm. Clase para el manejo de dependencias.
@@ -24,18 +26,28 @@ import org.apache.struts.validator.ValidatorForm;
  * 
  */
 public class DependenciaForm extends ValidatorForm implements Serializable {
-
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6360416159148020455L;
-
 	/** The id. */
 	private Long id;
-
 	/** The name. */
 	private String name;
-
 	/** The nombre antiguo. */
 	private String nombreAntiguo;
+	/** The send auto. */
+	private Boolean sendAuto;
+	/** The official. */
+	private Boolean official;
+	/** The emails. */
+	private String emails;
+	/** The ambito. */
+	private AmbitoForm ambito;
+	/** The tag. */
+	private EtiquetaForm tag;
+	/** The file seeds. */
+	private FormFile dependencyFile;
+	/** The acronym. */
+	private String acronym;
 
 	/**
 	 * Gets the id.
@@ -49,8 +61,7 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	/**
 	 * Sets the id.
 	 *
-	 * @param id
-	 *            the new id
+	 * @param id the new id
 	 */
 	public void setId(Long id) {
 		this.id = id;
@@ -68,8 +79,7 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	/**
 	 * Sets the name.
 	 *
-	 * @param name
-	 *            the new name
+	 * @param name the new name
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -87,8 +97,7 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	/**
 	 * Sets the nombre antiguo.
 	 *
-	 * @param nombreAntiguo
-	 *            the new nombre antiguo
+	 * @param nombreAntiguo the new nombre antiguo
 	 */
 	public void setNombreAntiguo(String nombreAntiguo) {
 		this.nombreAntiguo = nombreAntiguo;
@@ -107,6 +116,132 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	@Override
 	public String toString() {
 		return "DependenciaForm [id=" + id + ", name=" + name + "]";
+	}
+
+	/**
+	 * Checks if is send auto.
+	 *
+	 * @return the sendAuto
+	 */
+	public Boolean getSendAuto() {
+		return sendAuto;
+	}
+
+	/**
+	 * Sets the send auto.
+	 *
+	 * @param sendAuto the sendAuto to set
+	 */
+	public void setSendAuto(Boolean sendAuto) {
+		this.sendAuto = sendAuto;
+	}
+
+	/**
+	 * Gets the emails.
+	 *
+	 * @return the emails
+	 */
+	public String getEmails() {
+		return emails;
+	}
+
+	/**
+	 * Sets the emails.
+	 *
+	 * @param emails the emails to set
+	 */
+	public void setEmails(String emails) {
+		this.emails = emails;
+	}
+
+	/**
+	 * Gets the ambito.
+	 *
+	 * @return the ambito
+	 */
+	public AmbitoForm getAmbito() {
+		return ambito;
+	}
+
+	/**
+	 * Sets the ambito.
+	 *
+	 * @param ambito the ambito to set
+	 */
+	public void setAmbito(AmbitoForm ambito) {
+		this.ambito = ambito;
+	}
+
+	/**
+	 * Gets the tag.
+	 *
+	 * @return the tag
+	 */
+	public EtiquetaForm getTag() {
+		return tag;
+	}
+
+	/**
+	 * Sets the tag.
+	 *
+	 * @param tag the tag to set
+	 */
+	public void setTag(EtiquetaForm tag) {
+		this.tag = tag;
+	}
+
+	/**
+	 * Checks if is official.
+	 *
+	 * @return the official
+	 */
+	public Boolean getOfficial() {
+		return official;
+	}
+
+	/**
+	 * Sets the official.
+	 *
+	 * @param official the official to set
+	 */
+	public void setOfficial(Boolean official) {
+		this.official = official;
+	}
+
+	/**
+	 * Gets the dependency file.
+	 *
+	 * @return the dependency file
+	 */
+	public FormFile getDependencyFile() {
+		return dependencyFile;
+	}
+
+	/**
+	 * Sets the dependency file.
+	 *
+	 * @param dependencyFile the new dependency file
+	 */
+	public void setDependencyFile(FormFile dependencyFile) {
+		this.dependencyFile = dependencyFile;
+	}
+
+	/**
+	 * Gets the acronym.
+	 *
+	 * @return the acronym
+	 */
+	public String getAcronym() {
+		return acronym;
+	}
+
+	/**
+	 * Sets the acronym.
+	 *
+	 * @param acronym the new acronym
+	 */
+	public void setAcronym(String acronym) {
+		this.acronym = acronym;
 	}
 
 	/**
@@ -144,7 +279,4 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
-
 }

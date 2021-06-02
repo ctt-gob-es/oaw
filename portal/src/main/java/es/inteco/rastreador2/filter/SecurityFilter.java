@@ -29,12 +29,27 @@ import java.io.IOException;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class SecurityFilter.
+ */
 public class SecurityFilter implements Filter {
 
+    /**
+	 * Destroy.
+	 */
     @Override
     public void destroy() {
     }
 
+    /**
+	 * Do filter.
+	 *
+	 * @param request  the request
+	 * @param response the response
+	 * @param chain    the chain
+	 * @throws IOException      Signals that an I/O exception has occurred.
+	 * @throws ServletException the servlet exception
+	 */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
@@ -51,6 +66,12 @@ public class SecurityFilter implements Filter {
         }
     }
 
+    /**
+	 * Inits the.
+	 *
+	 * @param config the config
+	 * @throws ServletException the servlet exception
+	 */
     @Override
     public void init(FilterConfig config) throws ServletException {
     }

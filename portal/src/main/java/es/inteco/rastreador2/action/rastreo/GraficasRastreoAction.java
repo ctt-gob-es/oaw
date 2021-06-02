@@ -30,8 +30,20 @@ import java.util.Locale;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class GraficasRastreoAction.
+ */
 public class GraficasRastreoAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -46,6 +58,14 @@ public class GraficasRastreoAction extends Action {
         }
     }
 
+    /**
+	 * Gets the graphic.
+	 *
+	 * @param request  the request
+	 * @param response the response
+	 * @return the graphic
+	 * @throws Exception the exception
+	 */
     private ActionForward getGraphic(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String graphic = request.getParameter(Constants.GRAPHIC);
         String executionId = request.getParameter(Constants.ID);

@@ -25,17 +25,23 @@ import javax.servlet.http.HttpServletRequest;
 
 import static es.inteco.rastreador2.utils.CrawlerUtils.getResources;
 
+/**
+ * The Class ActionUtils.
+ */
 public final class ActionUtils {
 
+    /**
+	 * Instantiates a new action utils.
+	 */
     private ActionUtils() {
     }
 
     /**
-     * Hay que redireccionar a la pantalla de login porque el usuario no está logado debidamente
-     *
-     * @param request
-     * @return
-     */
+	 * Hay que redireccionar a la pantalla de login porque el usuario no está logado debidamente.
+	 *
+	 * @param request the request
+	 * @return true, if successful
+	 */
     public static boolean redirectToLogin(HttpServletRequest request) {
 
         if (!Sesiones.comprobarSession(request.getSession())) {
@@ -62,11 +68,11 @@ public final class ActionUtils {
     }
 
     /**
-     * Copia del método addErrors de la clase Action de Struts
-     *
-     * @param request
-     * @param errors
-     */
+	 * Copia del método addErrors de la clase Action de Struts.
+	 *
+	 * @param request the request
+	 * @param errors  the errors
+	 */
     private static void addErrors(HttpServletRequest request, ActionErrors errors) {
         if (errors == null) {
             return;

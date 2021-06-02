@@ -1,4 +1,5 @@
 <!--
+
 Copyright (C) 2019  Ministerio de Hacienda y Función Pública, 
 This program is licensed and may be used, modified and redistributed under the terms
 of the European Public License (EUPL), either version 1.2 or (at your option) any later 
@@ -13,6 +14,391 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <%@ include file="/common/taglibs.jsp"%>
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml />
+<link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
+<link rel="stylesheet" href="/oaw/css/jqgrid.semillas.css">
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="/oaw/js/jqgrid/jquery.jqgrid.src.js"></script>
+<script>
+	var script = document.createElement('script');
+	var lang = (navigator.language || navigator.browserLanguage)
+	script.src = '/oaw/js/jqgrid/i18n/grid.locale-'+lang.substring(0,2)+'.js';
+	document.head.appendChild(script);
+</script>
+<script>
+
+
+	var $ja = jQuery.noConflict();
+
+	var scroll;	
+	
+	var colNameId = '<input type="checkbox" id="threshold_checkbox_all" name="threshold_checkbox_all">';
+	var colNameName = '<bean:message key="colname.name"/>';
+	var colNameComplex ='<bean:message key="colname.complex" />';
+	var colNameUrls='<bean:message key="colname.total.url" />';
+	var colNamePercent='%&nbsp;<span class="glyphicon glyphicon-info-sign" style="color:#fff !important;" aria-hidden="true" data-toggle="tooltip" title="<bean:message key="observatory.status.percent.threshold" />"></span><span class="sr-only"><bean:message key="observatory.status.percent.threshold" /></span>';
+	var colNameRelaunch='<bean:message key="observatory.status.no.results.relaunch"/>';
+	var colNameObs='<bean:message key="nueva.semilla.observatorio.observaciones" />';
+	
+	function reloadGrid(path) {
+
+		lastUrl = path;
+
+		// Mantener el scroll
+		scroll = $(window).scrollTop();
+
+		$ja('#grid').jqGrid('clearGridData')
+
+		$ja
+				.ajax({
+					url : path,
+					dataType : "json",
+					cache : false
+				})
+				.done(
+
+						function(data) {
+
+							ajaxJson = JSON.stringify(data.seeds);
+
+							total = data.paginador.total;
+
+							$ja('#grid')
+									.jqGrid(
+											{
+												editUrl : '/oaw/secure/estadoObservatorio.do?action=getLessThreshold&idExObs='
+													+ $('[name=idExObs]').val(),
+												colNames : [ colNameId, colNameName, colNameComplex, "URLs",
+													colNameUrls, colNamePercent, colNameObs,
+													colNameRelaunch ],
+													
+												colModel : [
+														{
+															name : "id",
+															sortable : false,
+															formatter : checkboxFormattter,
+															width : 5,
+															editable : false,
+														},
+
+														{
+															name : "nombre",
+															width : 30,
+															sortable : false,
+															align : "left",
+															editable : false,
+														},
+														{
+															name : "complejidad.name",
+															width : 10,
+															align : "center",
+															sortable : false,
+															editable : false,
+															
+														},
+														{
+															name : "listaUrlsString",
+															align : "left",
+															width : 50,
+															edittype : 'custom',
+															sortable : false,
+															formatter : urlsFormatter,
+															editable : false
+														},
+														{
+															name : "numCrawls",
+															width : 5,
+															align : "center",
+															sortable : false,
+															editable : false,
+														},
+														{
+															name : "percentNumCrawls",
+															width : 10,
+															align : "center",
+															sortable : false,
+															editable : false,
+															formatter: percentFormatter
+															
+														},{														
+															name : "observaciones",
+															width : 20,
+															align : "left",
+															sortable : false
+														},
+														{
+															name : "relaunch",
+															width : 5,
+															sortable : false,
+															editable : false,
+															formatter : relaunchFormatter,
+														}
+
+												],
+												inlineEditing : {
+													keys : true,
+													defaultFocusField : "observaciones"
+												},
+												cmTemplate : {
+													autoResizable : true,
+													editable : true
+												},
+												onSelectRow : function(rowid,
+														status, e) {
+
+													var $self = $ja(this), savedRow = $self
+															.jqGrid(
+																	"getGridParam",
+																	"savedRow");
+													if (savedRow.length > 0
+															&& savedRow[0].id !== rowid) {
+														$self.jqGrid(
+																"restoreRow",
+																savedRow[0].id);
+													}
+
+													$self
+															.jqGrid(
+																	"editRow",
+																	rowid,
+																	{
+																		focusField : e.target,
+																		keys : true,
+																		url : '/oaw/secure/estadoObservatorio.do?action=update',
+																		restoreAfterError : false,
+																		successfunc : function(
+																				response) {
+																			reloadGrid(lastUrl);
+																		},
+																		afterrestorefunc : function(
+																				response) {
+																			reloadGrid(lastUrl);
+																		}
+
+																	});
+
+												},
+												beforeSelectRow : function(
+														rowid, e) {
+													var $self = $ja(this), i, $td = $(
+															e.target).closest(
+															"td"), iCol = $ja.jgrid
+															.getCellIndex($td[0]);
+
+													if (this.p.colModel[iCol].name === "relaunch") {
+														return false;
+													}
+
+													savedRows = $self.jqGrid(
+															"getGridParam",
+															"savedRow");
+													for (i = 0; i < savedRows.length; i++) {
+														if (savedRows[i].id !== rowid) {
+															$self
+																	.jqGrid(
+																			'saveRow',
+																			savedRows[i].id,
+																			{
+																				successfunc : function(
+																						response) {
+																					reloadGrid(lastUrl);
+																				},
+																				afterrestorefunc : function(
+																						response) {
+																					reloadGrid(lastUrl);
+																				},
+																				url : '/oaw/secure/estadoObservatorio.do?action=update',
+																				restoreAfterError : false,
+																			});
+
+														}
+													}
+													return savedRows.length === 0;
+												},
+												viewrecords : false,
+												autowidth : true,
+												pgbuttons : false,
+												pgtext : false,
+												pginput : false,
+												hidegrid : false,
+												altRows : true,
+												mtype : 'POST'
+											}).jqGrid("inlineNav");
+
+							$ja('#grid').jqGrid('setGridParam', {
+								data : JSON.parse(ajaxJson)
+							}).trigger('reloadGrid');
+
+							$ja('#grid').unbind("contextmenu");
+							
+							$ja('#finishLessThresholdSizeText').text(total);
+							
+							if (total == 0) {
+								$ja('#grid')
+										.append(
+												'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="14" style="padding: 15px !important;" role="gridcell">'+noResults+'</td></tr>');
+							}
+
+
+						}).error(function(data) {
+					console.log("Error")
+					console.log(data)
+				});
+
+	}
+
+	function urlsFormatter(cellvalue, options, rowObject) {
+		return rowObject.listaUrls.toString().replace(/\,/g, '\r\n');
+	}
+						
+	
+	function percentFormatter(cellvalue, options, rowObject) {
+		return (Math.round(cellvalue * 100) / 100).toFixed(2);
+	}
+
+	
+	function checkboxFormattter(cellvalue, options, rowObject) {
+		
+		return '<input type="checkbox" class="threshold_selectionCheckBox" name="line_check_'+options.pos +'"><input type="hidden" name="line_data_'+options.pos+'" value="'+ rowObject.id +'" />';
+	}
+	
+	function relaunchFormatter(cellvalue, options, rowObject){	
+		return '<a href="/oaw/secure/ResultadosObservatorio.do?action=lanzarEjecucion&id_observatorio='+$('[name=id_observatorio]').val()
+				+'&idExObs=' + $('[name=idExObs]').val()
+				+ '&idCartucho='+ $('[name=idCartucho]').val()
+				+ '&idSemilla='+rowObject.id+'">'
+				+ '<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip" title="Relanzar"></span><span class="sr-only">Relanzar</span></a>';
+	}
+
+	$(window)
+	.on(
+			'load',
+			function() {
+
+				var $jq = $.noConflict();
+
+				var lastUrl;
+
+				$jq(document)
+						.ready(
+								function() {
+									reloadGrid('/oaw/secure/estadoObservatorio.do?action=getLessThreshold&idExObs='
+											+ $('[name=idExObs]').val());
+
+								});
+				
+				
+
+				$jq(".selectionCheckBox").val(this.checked);
+				$jq(".threshold_selectionCheckBox").val(this.checked);
+
+				$jq("#checkbox_all").change(function() {
+                   if(this.checked) {
+                       if ($jq(".selectionCheckBox")[0]){
+                    	   $jq("#relaunchselected").prop( "disabled", false );
+                       }
+                       $jq(".selectionCheckBox").prop( "checked", true );
+                   }
+                   else {
+                	   $jq(".selectionCheckBox").prop( "checked", false );
+                	   $jq("#relaunchselected").prop( "disabled", true );
+                   }
+                });
+	
+
+				$jq(".selectionCheckBox").change(function() {
+                   if(this.checked) {
+                	   $jq("#relaunchselected").prop( "disabled", false );
+                   }
+                   else {
+                	   $jq("#relaunchselected").prop( "disabled", true );
+                       var inputElements = [].slice.call(document.querySelectorAll('.selectionCheckBox'));
+                       var checkedValue = inputElements.filter(chk => chk.checked).length;
+                       if (checkedValue > 0){
+                    	   $jq("#relaunchselected").prop( "disabled", false );
+                       }
+                   }
+                });
+
+				
+				$jq(document).on('change', '#threshold_checkbox_all', function(){
+                      if(this.checked) {
+                          if ($jq(".threshold_selectionCheckBox")[0]){
+                        	  $jq("#threshold_relaunchselected").prop( "disabled", false );
+                          }
+                          $jq(".threshold_selectionCheckBox").prop( "checked", true );
+                      }
+                      else {
+                    	  $jq(".threshold_selectionCheckBox").prop( "checked", false );
+                    	  $jq("#threshold_relaunchselected").prop( "disabled", true );
+                      }
+                   });
+				
+				$jq('#grid').on('change', '.threshold_selectionCheckBox', function(){
+                  if(this.checked) {
+                	  $jq("#threshold_relaunchselected").prop( "disabled", false );
+                  }
+                  else {
+                	  $jq("#threshold_relaunchselected").prop( "disabled", true );
+                       var inputElements = [].slice.call(document.querySelectorAll('.threshold_selectionCheckBox'));
+                       var checkedValue = inputElements.filter(chk => chk.checked).length;
+                       if (checkedValue > 0){
+                    	   $jq("#threshold_relaunchselected").prop( "disabled", false );
+                       }
+                  }
+               });
+				
+				$jq("#filterResultsThresholdButton").click(function(){
+					reloadGrid('/oaw/secure/estadoObservatorio.do?action=getLessThreshold'
+							+'&idExObs='+ $('[name=idExObs]').val()
+							+'&percent='+ $('#percentLess').val()
+							+'&seeds='+ $('#seedCrawledLess').val());
+				});
+
+				
+				$jq("#exportTreshold").on("click", function(){
+					downloadResultsCSV($ja('#grid').jqGrid('getRowData'));
+				})
+
+			});
+	
+	   function downloadResultsCSV(objArray)
+	    {
+	        var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+
+	        var str = '';
+
+	        for (var i = 0; i < array.length; i++) {
+	            var line = '';
+
+	            for (var index in array[i]) {
+	            	if("id"!=index && "relaunch"!=index){
+	            		
+	                line += array[i][index] + ',';
+	            	}
+	            }
+
+	            line.slice(0,line.Length-1); 
+
+	            str += line + '\r\n';
+	        }
+	        
+	        
+	        if (navigator.msSaveBlob) { // IE10+ : (has Blob, but not a[download] or URL)
+	              return navigator.msSaveBlob(encodeURI("data:text/csv;charset=utf-8," + str), 'umbral.csv');
+	        }
+	        
+	        var encodedUri = encodeURI("data:text/csv;charset=utf-8," + str);
+			var link = document.createElement("a");
+			link.setAttribute("href", encodedUri);
+			link.setAttribute("download", "umbral.csv");
+			document.body.appendChild(link); // Required for FF
+			link.click()
+	    }
+
+</script>
 <bean:define id="rolObservatory">
 	<inteco:properties key="role.observatory.id" file="crawler.properties" />
 </bean:define>
@@ -68,9 +454,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<c:set target="${paramsRelanzar}" property="id_observatorio" value="${idObservatory}" />
 						<c:set target="${paramsRelanzar}" property="idExObs" value="${idExecutedObservatorio}" />
 						<c:set target="${paramsRelanzar}" property="idCartucho" value="${idCartucho}" />
-						<logic:equal name="estado" property="idEstado" value="3">
+						<logic:equal name="estado" property="idEstado" value="4">
 							<td style="text-align: center">
-								<bean:message key="resultado.observatorio.rastreo.realizado.estado.relanzado" />
+								<bean:message key="resultado.observatorio.rastreo.realizado.estado.parado" />
 							</td>
 							<td>
 								<html:link forward="relanzarObservatorio" name="paramsRelanzar">
@@ -80,6 +466,34 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										<bean:message key="observatory.status.relaunh" />
 									</span>
 								</html:link>
+								<html:link forward="resultadosObservatorioSemillas" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
+										title="<bean:message key="observatory.status.results"/>"></span>
+									<span class="sr-only">
+										<bean:message key="observatory.status.results" />
+									</span>
+								</html:link>
+							</td>
+						</logic:equal>
+						<logic:equal name="estado" property="idEstado" value="3">
+							<td style="text-align: center">
+								<bean:message key="resultado.observatorio.rastreo.realizado.estado.relanzado" />
+							</td>
+							<td>
+								<html:link forward="stopObservatorio" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip"
+										title="<bean:message key='tooltip.status.stop' />"></span>
+									<span class="sr-only">
+										<bean:message key='tooltip.status.stop' />
+									</span>
+								</html:link>
+								<html:link forward="resultadosObservatorioSemillas" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
+										title="<bean:message key="observatory.status.results"/>"></span>
+									<span class="sr-only">
+										<bean:message key="observatory.status.results" />
+									</span>
+								</html:link>
 							</td>
 						</logic:equal>
 						<logic:equal name="estado" property="idEstado" value="1">
@@ -87,11 +501,18 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								<bean:message key="resultado.observatorio.rastreo.realizado.estado.lanzado" />
 							</td>
 							<td>
-								<html:link forward="relanzarObservatorio" name="paramsRelanzar">
-									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-										title="<bean:message key="observatory.status.relaunh"/>"></span>
+								<html:link forward="stopObservatorio" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip"
+										title="<bean:message key='tooltip.status.stop' />"></span>
 									<span class="sr-only">
-										<bean:message key="observatory.status.relaunh" />
+										<bean:message key='tooltip.status.stop' />
+									</span>
+								</html:link>
+								<html:link forward="resultadosObservatorioSemillas" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
+										title="<bean:message key="observatory.status.results"/>"></span>
+									<span class="sr-only">
+										<bean:message key="observatory.status.results" />
 									</span>
 								</html:link>
 							</td>
@@ -127,6 +548,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tr>
 				</tbody>
 			</table>
+			<br />
 			<h2>
 				<bean:message key="observatory.status.summary" />
 			</h2>
@@ -202,6 +624,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tr>
 				</tbody>
 			</table>
+			<br />
 			<logic:notEqual name="estado" property="idEstado" value="0">
 				<h2>
 					<bean:message key="observatory.status.last.title" />
@@ -292,9 +715,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<h2>
 					<bean:size id="notCrawledSeedsYetSize" name="notCrawledSeedsYet" />
 					<bean:message key="observatory.status.pending.title" />
+					<c:if test="${notCrawledSeedsYetSize > 0}}">
 					&nbsp;(
 					<bean:write name="notCrawledSeedsYetSize" />
 					)
+					</c:if>
 				</h2>
 				<table class="table table-stripped table-bordered table-hover table-console">
 					<caption>
@@ -336,78 +761,135 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tbody>
 				</table>
 			</logic:notEqual>
+			<br />
+			<!-- Less Threshold -->
 			<h2>
+				<bean:size id="finishLessThresholdSize" name="finishLessThreshold" />
+				<bean:message key="observatory.status.less.threshold.title" />
+				&nbsp; (
+				<%-- 				<bean:write name="finishLessThresholdSize" /> --%>
+				<span id="finishLessThresholdSizeText"></span>
+				)
+			</h2>
+			<div id="filterResultsThreshold">
+				<div class="form-inline">
+					<div class="form-group">
+						<label for="percentLess">
+							<bean:message key="observatory.status.percent.threshold.filter.percent" />
+						</label>
+						<input type="number" class="form-control" id="percentLess" value="<bean:write name="umbral"/>" />
+					</div>
+					<div class="form-group">
+						<label for="seedCrawledLess">
+							<bean:message key="observatory.status.percent.threshold.filter.number" />
+						</label>
+						<input type="number" class="form-control" id="seedCrawledLess" />
+					</div>
+					<button type="submit" class="btn btn-default" id="filterResultsThresholdButton">
+						<bean:message key="boton.buscar" />
+					</button>
+					<button id="exportTreshold" class="btn btn-default">CSV</button>
+				</div>
+			</div>
+			<form action="/oaw/secure/RelanzarObservatorioSeleccionandoAction.do">
+				<input type="submit" value='<bean:message key="observatory.status.no.results.relaunchselected"/>'
+					id="threshold_relaunchselected" disabled class="btn btn-default btn-lg" style="margin-bottom: 15px" />
+				<input type="hidden" name="<%=Constants.ID_EX_OBS%>" value="<bean:write name="idExecutedObservatorio"/>" />
+				<input type="hidden" name="<%=Constants.ID_OBSERVATORIO%>" value="<bean:write name="idObservatory"/>" />
+				<input type="hidden" name="<%=Constants.ID_CARTUCHO%>" value="<bean:write name="idCartucho"/>" />
+				<table id="grid" class="gridTable table table-stripped table-bordered table-hover table-console"></table>
+			</form>
+			<br />
+			<!-- Not finished -->
+			<h2 style="margin-top: 15px">
 				<bean:size id="finishWithoutResultsSize" name="finishWithoutResults" />
 				<bean:message key="observatory.status.no.results.title" />
 				&nbsp;(
 				<bean:write name="finishWithoutResultsSize" />
 				)
 			</h2>
-			<table class="table table-stripped table-bordered table-hover table-console">
-				<caption>
-					<bean:message key="observatory.status.no.results.caption" />
-				</caption>
-				<colgroup>
-					<col style="width: 5%">
-					<col style="width: 30%">
-					<col style="width: 55%">
-					<col style="width: 10%">
-				</colgroup>
-				<tbody>
-					<tr>
-						<th>#</th>
-						<th>
-							<bean:message key="observatory.status.no.results.name" />
-						</th>
-						<th>URL</th>
-						<th>
-							<bean:message key="observatory.status.no.results.relaunch" />
-						</th>
-					</tr>
-					<logic:empty name="finishWithoutResults">
+			<form action="/oaw/secure/RelanzarObservatorioSeleccionandoAction.do">
+				<input type="submit" value='<bean:message key="observatory.status.no.results.relaunchselected"/>'
+					id="relaunchselected" disabled class="btn btn-default btn-lg" />
+				<table class="table table-stripped table-bordered table-hover table-console">
+					<caption>
+						<bean:message key="observatory.status.no.results.caption" />
+					</caption>
+					<colgroup>
+						<col style="width: 7%">
+						<col style="width: 5%">
+						<col style="width: 30%">
+						<col style="width: 50%">
+						<col style="width: 8%">
+					</colgroup>
+					<tbody>
 						<tr>
-							<td colspan="4">
-								<bean:message key="no.results" />
-							</td>
+							<th>
+								<input type="checkbox" id='checkbox_all' name='checkbox_all'>
+							</th>
+							<th>#</th>
+							<th>
+								<bean:message key="observatory.status.no.results.name" />
+							</th>
+							<th>URL</th>
+							<th>
+								<bean:message key="observatory.status.no.results.relaunch" />
+							</th>
 						</tr>
-					</logic:empty>
-					<logic:iterate name="finishWithoutResults" id="crawlWithoutAnalisis" indexId="index">
-						<tr>
-							<td class="col-md-1">
-								<c:out value="${index + 1}" />
-							</td>
-							<td style="text-align: left" class="col-md-4">
-								<bean:write name="crawlWithoutAnalisis" property="nombre" />
-							</td>
-							<td style="text-align: left" class="col-md-5"
-								title="<logic:iterate
-									name="crawlWithoutAnalisis" property="listaUrls" id="url">
-									<bean:write name="url" />
-								</logic:iterate>">
-								<logic:iterate name="crawlWithoutAnalisis" property="listaUrls" id="url">
-									<bean:write name="url" />
-								</logic:iterate>
-							</td>
-							<td class="col-md-2"><jsp:useBean id="paramsRelanzarCrawl" class="java.util.HashMap" />
-								<%-- 							<c:set --%>
-								<%-- 									target="${paramsRelanzarCrawl}" property="action" value="confirmacionExSeed" /> <c:set
-									target="${paramsRelanzarCrawl}" property="id" value="${crawlWithoutAnalisis.idFulfilledCrawling}" />--%>
-								<c:set target="${paramsRelanzarCrawl}" property="id_observatorio" value="${idObservatory}" />
-								<c:set target="${paramsRelanzarCrawl}" property="idExObs" value="${idExecutedObservatorio}" />
-								<c:set target="${paramsRelanzarCrawl}" property="idCartucho" value="${idCartucho}" />
-								<c:set target="${paramsRelanzarCrawl}" property="idSemilla" value="${crawlWithoutAnalisis.id}" />
-								<html:link forward="resultadosObservatorioLanzarEjecucion" name="paramsRelanzarCrawl">
-									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
-										title="<bean:message key="observatory.status.no.results.relaunch"/>"></span>
-									<span class="sr-only">
-										<bean:message key="observatory.status.no.results.relaunch" />
-									</span>
-								</html:link>
-							</td>
-						</tr>
-					</logic:iterate>
-				</tbody>
-			</table>
+						<logic:empty name="finishWithoutResults">
+							<tr>
+								<td colspan="5">
+									<bean:message key="no.results" />
+								</td>
+							</tr>
+						</logic:empty>
+						<logic:iterate name="finishWithoutResults" id="crawlWithoutAnalisis" indexId="index">
+							<tr>
+								<td>
+									<input type="checkbox" class="selectionCheckBox" <c:out value='name=line_check_${index}' />>
+									<input type="hidden" name="<c:out value='line_data_${index}' />"
+										value="<c:out value='${crawlWithoutAnalisis.id}' />" />
+								</td>
+								<td class="col-md-1">
+									<c:out value="${index + 1}" />
+								</td>
+								<td style="text-align: left" class="col-md-4">
+									<bean:write name="crawlWithoutAnalisis" property="nombre" />
+								</td>
+								<td style="text-align: left" class="col-md-5"
+									title="<logic:iterate
+                                        name="crawlWithoutAnalisis" property="listaUrls" id="url">
+                                        <bean:write name="url" />
+                                    </logic:iterate>">
+									<logic:iterate name="crawlWithoutAnalisis" property="listaUrls" id="url">
+										<bean:write name="url" />
+									</logic:iterate>
+								</td>
+								<td class="col-md-2"><jsp:useBean id="paramsRelanzarCrawl" class="java.util.HashMap" />
+									<%-- 							<c:set --%>
+									<%-- 	target="${paramsRelanzarCrawl}" property="action" value="confirmacionExSeed" /> <c:set
+                                                            target="${paramsRelanzarCrawl}" property="id" value="${crawlWithoutAnalisis.idFulfilledCrawling}" />--%>
+									<c:set target="${paramsRelanzarCrawl}" property="id_observatorio" value="${idObservatory}" />
+									<c:set target="${paramsRelanzarCrawl}" property="idExObs" value="${idExecutedObservatorio}" />
+									<c:set target="${paramsRelanzarCrawl}" property="idCartucho" value="${idCartucho}" />
+									<c:set target="${paramsRelanzarCrawl}" property="idSemilla" value="${crawlWithoutAnalisis.id}" />
+									<html:link forward="resultadosObservatorioLanzarEjecucion" name="paramsRelanzarCrawl">
+										<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
+											title="<bean:message key="observatory.status.no.results.relaunch"/>"></span>
+										<span class="sr-only">
+											<bean:message key="observatory.status.no.results.relaunch" />
+										</span>
+									</html:link>
+								</td>
+							</tr>
+						</logic:iterate>
+					</tbody>
+				</table>
+				<input type="hidden" name='id_observatorio' <c:out value='value=${idObservatory}' />>
+				<input type="hidden" name='idExObs' <c:out value='value=${idExecutedObservatorio}' />>
+			</form>
+			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+			<br />
 			<h2>
 				<bean:message key="observatory.status.notes.title" />
 			</h2>
@@ -419,7 +901,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			<p>
 				<bean:message key="observatory.status.notes.info" />
 			</p>
-			
 			<p>
 				<bean:message key="observatory.status.notes.info2" />
 			</p>

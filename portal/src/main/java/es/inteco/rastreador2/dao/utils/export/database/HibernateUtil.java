@@ -24,10 +24,17 @@ import java.net.URL;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class HibernateUtil.
+ */
 public final class HibernateUtil {
 
+    /** The Constant sessionFactory. */
     private static final SessionFactory sessionFactory;
 
+    /**
+	 * Instantiates a new hibernate util.
+	 */
     private HibernateUtil() {
     }
 
@@ -42,6 +49,11 @@ public final class HibernateUtil {
         }
     }
 
+    /**
+	 * Gets the session factory.
+	 *
+	 * @return the session factory
+	 */
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }

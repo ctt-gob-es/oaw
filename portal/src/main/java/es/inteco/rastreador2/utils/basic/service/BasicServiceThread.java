@@ -30,14 +30,26 @@ import java.net.URLEncoder;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class BasicServiceThread.
+ */
 public class BasicServiceThread extends Thread {
 
+    /** The basic service form. */
     private final BasicServiceForm basicServiceForm;
 
+    /**
+	 * Instantiates a new basic service thread.
+	 *
+	 * @param basicServiceForm the basic service form
+	 */
     public BasicServiceThread(BasicServiceForm basicServiceForm) {
         this.basicServiceForm = basicServiceForm;
     }
 
+    /**
+	 * Run.
+	 */
     @Override
     public void run() {
         try {

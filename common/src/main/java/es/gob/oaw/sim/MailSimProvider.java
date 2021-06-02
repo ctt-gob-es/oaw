@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 
+import es.gob.oaw.MailException;
 import es.gob.oaw.MailProvider;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -23,6 +24,8 @@ public class MailSimProvider implements MailProvider {
 	private final ObjectFactory factory = new ObjectFactory();
 	/** The mail to. */
 	private List<String> mailTo;
+	/** The mail to cco. */
+	private List<String> mailToCco;
 	/** The subject. */
 	private String subject;
 	/** The body. */
@@ -36,9 +39,11 @@ public class MailSimProvider implements MailProvider {
 
 	/**
 	 * Send mail.
+	 *
+	 * @throws MailException the mail exception
 	 */
 	@Override
-	public void sendMail() {
+	public void sendMail() throws MailException {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final Peticion peticion = factory.createPeticion();
 		peticion.setUsuario(pmgr.getValue(MAIL_PROPERTIES, "sim.user.username"));
@@ -52,13 +57,6 @@ public class MailSimProvider implements MailProvider {
 			final EnvioMensajesService service = new EnvioMensajesService(wsdlURL);
 			final EnvioMensajesServiceWSBindingPortType envioMensajesServicePort = service.getEnvioMensajesServicePort();
 			Logger.putLog(String.format("Sending mail from MailSimProvider using %s", pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url")), MailSimProvider.class, Logger.LOG_LEVEL_WARNING);
-//			try {
-//				java.io.StringWriter writer = new java.io.StringWriter();
-//				javax.xml.bind.JAXBContext.newInstance(Peticion.class).createMarshaller().marshal(peticion,  new java.io.PrintWriter("/home/alvaro/oaw_sim.xml"));
-//				writer.toString();
-//			} catch (Exception e) {
-//
-//			}
 			final Respuesta respuesta = envioMensajesServicePort.enviarMensaje(peticion);
 			final ResponseStatusType respuestaStatus = respuesta.getStatus();
 			if (!"1000".equals(respuestaStatus.getStatusCode())) {
@@ -67,6 +65,7 @@ public class MailSimProvider implements MailProvider {
 			}
 		} catch (MalformedURLException e) {
 			Logger.putLog(String.format("Invalid SIM WSDL URL value of %s", pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url")), MailSimProvider.class, Logger.LOG_LEVEL_ERROR);
+			throw new MailException(e.getMessage(), e.getCause());
 		}
 	}
 
@@ -98,6 +97,16 @@ public class MailSimProvider implements MailProvider {
 	@Override
 	public void setMailTo(final List<String> mailTo) {
 		this.mailTo = mailTo;
+	}
+
+	/**
+	 * Sets the mail to cco.
+	 *
+	 * @param mailToCco the new mail to cco
+	 */
+	@Override
+	public void setMailToCco(final List<String> mailToCco) {
+		this.mailToCco = mailToCco;
 	}
 
 	/**
@@ -163,6 +172,12 @@ public class MailSimProvider implements MailProvider {
 		final Iterator<String> mailToiterator = mailTo.iterator();
 		if (mailToiterator.hasNext()) {
 			destinatarios.setTo(mailToiterator.next());
+		}
+		if (mailToCco != null) {
+			final Iterator<String> mailToCcoiterator = mailToCco.iterator();
+			if (mailToCcoiterator.hasNext()) {
+				destinatarios.setBcc(mailToCcoiterator.next());
+			}
 		}
 		destinatarioMail.setDestinatarios(destinatarios);
 		destinatariosMail.getDestinatarioMail().add(destinatarioMail);

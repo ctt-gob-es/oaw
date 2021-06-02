@@ -25,10 +25,21 @@ import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The Class GeneradorGoogle.
+ */
 public class GeneradorGoogle {
 
+    /** The hs. */
     Set<String> hs = new HashSet<>();
 
+    /**
+	 * Busca.
+	 *
+	 * @param query  the query
+	 * @param pagina the pagina
+	 * @return the sets the
+	 */
     public Set<String> busca(String query, int pagina) {
 
         Socket s = null;
@@ -75,6 +86,11 @@ public class GeneradorGoogle {
         return hs;
     }
 
+    /**
+	 * Extrae links.
+	 *
+	 * @param partido the partido
+	 */
     public void extraeLinks(String partido) {
 
         String[] aver = partido.split("<");

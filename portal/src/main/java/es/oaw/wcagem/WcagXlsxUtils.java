@@ -1,7 +1,5 @@
 package es.oaw.wcagem;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.time.OffsetDateTime;
@@ -9,6 +7,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.poifs.crypt.HashAlgorithm;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -19,7 +18,9 @@ import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import es.inteco.common.properties.PropertiesManager;
+import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.semillas.PlantillaForm;
+import es.inteco.rastreador2.dao.plantilla.PlantillaDAO;
 
 /**
  * The Class WcagOdsUtils.
@@ -40,6 +41,22 @@ public final class WcagXlsxUtils {
 	private static final String EARL_CANNOT_TELL = "earl:cantTell";
 
 	/**
+	 * Gets the ods template.
+	 *
+	 * @return the ods template
+	 * @throws Exception the exception
+	 */
+	private static File getOdsTemplate() throws Exception {
+		PlantillaForm plantilla = PlantillaDAO.findByType(DataBaseManager.getConnection(), "xlsx");
+		if (plantilla != null && plantilla.getDocumento() != null && plantilla.getDocumento().length > 0) {
+			File f = File.createTempFile("tmp_template", ".xlsx");
+			FileUtils.writeByteArrayToFile(f, plantilla.getDocumento());
+			return f;
+		}
+		return null;
+	}
+
+	/**
 	 * Generate ods.
 	 *
 	 * @param report the report
@@ -47,8 +64,8 @@ public final class WcagXlsxUtils {
 	 * @throws Exception the exception
 	 */
 	public static Workbook generateXlsx(final WcagEmReport report) throws Exception {
-		final PropertiesManager pmgr = new PropertiesManager();
-		File inputFile = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.xlsx.template"));
+		// Get file from database
+		File inputFile = getOdsTemplate();
 		FileInputStream inputStream = new FileInputStream(inputFile);
 		XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
 		// Load template
@@ -189,9 +206,9 @@ public final class WcagXlsxUtils {
 		// lock workbook
 		for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
 			XSSFSheet tmpSheet = (workbook.getSheetAt(i));
-			tmpSheet.protectSheet("oawxlsxpassword");
+			tmpSheet.protectSheet("OaW2020");
 		}
-		workbook.setWorkbookPassword("oawxlsxpassword", HashAlgorithm.sha512);
+		workbook.setWorkbookPassword("OaW2020", HashAlgorithm.sha512);
 		workbook.lockStructure();
 		return workbook;
 	}

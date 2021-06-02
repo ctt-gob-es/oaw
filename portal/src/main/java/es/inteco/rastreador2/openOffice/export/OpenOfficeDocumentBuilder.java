@@ -218,7 +218,6 @@ public abstract class OpenOfficeDocumentBuilder {
 				// Cabecera
 				String vCount = resultC.getKey().substring(resultC.getKey().lastIndexOf(".") + 1, resultC.getKey().indexOf("_"));
 				replaceText(odt, odfFileContent, "-" + rowId + vCount + ".a" + index + "-", entry.getKey());
-//				String vCount = resultC.getKey().substring(resultC.getKey().lastIndexOf(".") + 1, resultC.getKey().indexOf("_"));
 				final String oldTextC = "-" + rowId + vCount + ".b" + index + ".c-";
 				final String oldTextNC = "-" + rowId + vCount + ".b" + index + ".nc-";
 				final String oldTextNA = "-" + rowId + vCount + ".b" + index + ".na-";
@@ -228,7 +227,7 @@ public abstract class OpenOfficeDocumentBuilder {
 				} else if (resultC.getKey().endsWith(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX)) {
 					replaceText(odt, odfFileContent, oldTextNC, getCellValue(resultC.getValue(), isPercentValue));
 				}
-				// TODO NOT APLLY
+				// NOT APLLY
 				else if (resultC.getKey().endsWith(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX)) {
 					replaceText(odt, odfFileContent, oldTextNA, getCellValue(resultC.getValue(), isPercentValue));
 				}
@@ -315,19 +314,22 @@ public abstract class OpenOfficeDocumentBuilder {
 	/**
 	 * Builds the document filtered.
 	 *
-	 * @param request              the request
-	 * @param graphicPath          the graphic path
-	 * @param date                 the date
-	 * @param evolution            the evolution
-	 * @param pageExecutionList    the page execution list
-	 * @param categories           the categories
-	 * @param tagsToFilter         the tags to filter
-	 * @param grpahicConditional   the grpahic conditional
-	 * @param exObsIds             the ex obs ids
-	 * @param idBaseTemplate       the id base template
-	 * @param idSegmentTemplate    the id segment template
-	 * @param idComplexityTemplate the id complexity template
-	 * @param reportTitle          the report title
+	 * @param request               the request
+	 * @param filePath              the file path
+	 * @param graphicPath           the graphic path
+	 * @param date                  the date
+	 * @param evolution             the evolution
+	 * @param pageExecutionList     the page execution list
+	 * @param categories            the categories
+	 * @param tagsToFilter          the tags to filter
+	 * @param tagsToFilterFixed     the tags to filter fixed
+	 * @param grpahicConditional    the grpahic conditional
+	 * @param exObsIds              the ex obs ids
+	 * @param idBaseTemplate        the id base template
+	 * @param idSegmentTemplate     the id segment template
+	 * @param idComplexityTemplate  the id complexity template
+	 * @param idSegmentEvolTemplate the id segment evol template
+	 * @param reportTitle           the report title
 	 * @return the odf text document odf text document
 	 * @throws Exception the exception
 	 */

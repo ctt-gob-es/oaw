@@ -22,42 +22,94 @@ import org.apache.struts.action.ActionForm;
 import java.util.List;
 
 
+/**
+ * The Class CargarCuentasUsuarioForm.
+ */
 public class CargarCuentasUsuarioForm extends ActionForm {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The user. */
     private String user;
+    
+    /** The pass. */
     private String pass;
+    
+    /** The listado cuentas usuario. */
     private List<ListadoCuentasUsuario> listadoCuentasUsuario;
+    
+    /** The num cuentas usuario. */
     private int numCuentasUsuario;
 
+    /**
+	 * Gets the user.
+	 *
+	 * @return the user
+	 */
     public String getUser() {
         return user;
     }
 
+    /**
+	 * Sets the user.
+	 *
+	 * @param user the new user
+	 */
     public void setUser(String user) {
         this.user = user;
     }
 
+    /**
+	 * Gets the pass.
+	 *
+	 * @return the pass
+	 */
     public String getPass() {
         return pass;
     }
 
+    /**
+	 * Sets the pass.
+	 *
+	 * @param pass the new pass
+	 */
     public void setPass(String pass) {
         this.pass = pass;
     }
 
+    /**
+	 * Gets the listado cuentas usuario.
+	 *
+	 * @return the listado cuentas usuario
+	 */
     public List<ListadoCuentasUsuario> getListadoCuentasUsuario() {
         return listadoCuentasUsuario;
     }
 
+    /**
+	 * Sets the listado cuentas usuario.
+	 *
+	 * @param listadoCuentasUsuario the new listado cuentas usuario
+	 */
     public void setListadoCuentasUsuario(List<ListadoCuentasUsuario> listadoCuentasUsuario) {
         this.listadoCuentasUsuario = listadoCuentasUsuario;
     }
 
+    /**
+	 * Gets the num cuentas usuario.
+	 *
+	 * @return the num cuentas usuario
+	 */
     public int getNumCuentasUsuario() {
         return numCuentasUsuario;
     }
 
+    /**
+	 * Sets the num cuentas usuario.
+	 *
+	 * @param numCuentasUsuario the new num cuentas usuario
+	 */
     public void setNumCuentasUsuario(int numCuentasUsuario) {
         this.numCuentasUsuario = numCuentasUsuario;
     }

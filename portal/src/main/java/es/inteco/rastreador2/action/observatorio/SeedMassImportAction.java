@@ -42,6 +42,7 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.semillas.SeedCategoriesAction;
+import es.inteco.rastreador2.action.semillas.SeedExcelUtils;
 import es.inteco.rastreador2.action.semillas.SeedUtils;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
@@ -90,8 +91,8 @@ public class SeedMassImportAction extends Action {
 						return mapping.findForward(Constants.VOLVER);
 					}
 				} else if (Constants.ACCION_EXPORT_ALL.equals(request.getParameter(Constants.ACTION))) {
-					// return getAllSeedsFile(request, response);
-					return getSeedsFile(request, response, form);
+					String format = request.getParameter("format");
+					return getSeedsFile(request, response, form, format);
 				} else {
 					return mapping.findForward(Constants.VOLVER);
 				}
@@ -114,152 +115,158 @@ public class SeedMassImportAction extends Action {
 	 * @throws Exception the exception
 	 */
 	private ActionForward confirm(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
-		if (!isCancelled(request)) {
-			final PropertiesManager pmgr = new PropertiesManager();
-			SemillaSearchForm semillaSearchForm = (SemillaSearchForm) form;
-			request.setAttribute(Constants.ACTION, Constants.ADD_SEED_CATEGORY);
-			ActionErrors errors = semillaSearchForm.validate(mapping, request);
-			if (errors.isEmpty()) {
-				if (semillaSearchForm.getFileSeeds() == null || StringUtils.isEmpty(semillaSearchForm.getFileSeeds().getFileName()) || (semillaSearchForm.getFileSeeds().getFileName().endsWith(".xml")
-						&& semillaSearchForm.getFileSeeds().getFileSize() <= Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size")))) {
-					try (Connection c = DataBaseManager.getConnection()) {
-						String mensaje = "";
-						String volver = pmgr.getValue("returnPaths.properties", "volver.listado.categorias.semilla");
-						if (semillaSearchForm.getFileSeeds().getFileData().length > 0) {
-							try {
-								List<SemillaForm> inalterableSeeds = new ArrayList<>();
-								List<SeedComparision> updatedSeeds = new ArrayList<>();
-								List<SemillaForm> newSeed = new ArrayList<>();
-								List<SeedError> errorSeeds = new ArrayList<>();
-								List<SemillaForm> updateAndNewSeeds = new ArrayList<>();
-								List<SemillaForm> seeds = SeedUtils.getSeedsFromFile(semillaSearchForm.getFileSeeds().getInputStream(), true);
-								// List<>
-								if (seeds != null && !seeds.isEmpty()) {
-									for (SemillaForm seed : seeds) {
-										// Categories retrieve from database
-										if (seed.getCategoria() != null && !org.apache.commons.lang3.StringUtils.isEmpty(seed.getCategoria().getName())) {
-											CategoriaForm category = CategoriaDAO.getCategoryByName(c, seed.getCategoria().getName());
-											if (category != null) {
-												seed.setCategoria(category);
-											} else {
-												seed.getCategoria().setOrden(1);
-												Long idCategoria = SemillaDAO.createSeedCategory(c, seed.getCategoria());
-												seed.getCategoria().setId(idCategoria.toString());
-											}
-										}
-										// Ambits retrieve from database
-										if (seed.getAmbito() != null && !org.apache.commons.lang3.StringUtils.isEmpty(seed.getAmbito().getName())) {
-											AmbitoForm ambit = AmbitoDAO.getAmbitByName(c, seed.getAmbito().getName());
-											if (ambit != null) {
-												seed.setAmbito(ambit);
-											} else {
-												seed.getAmbito().setOrden(1);
-												Long idAmbito = SemillaDAO.createSeedAmbit(c, seed.getAmbito());
-												seed.getAmbito().setId(idAmbito.toString());
-											}
-										}
-										// Complexities retrieve from database
-										if (seed.getComplejidad() != null && !org.apache.commons.lang3.StringUtils.isEmpty(seed.getComplejidad().getName())) {
-											ComplejidadForm complexity = ComplejidadDAO.getComplexityByName(c, seed.getComplejidad().getName());
-											if (complexity != null) {
-												seed.setComplejidad(complexity);
-											} else {
-												seed.getComplejidad().setOrden(1);
-												Long idComplejidad = SemillaDAO.createSeedComplexity(c, seed.getComplejidad());
-												seed.getComplejidad().setId(idComplejidad.toString());
-											}
-										}
-										// TODO Check errors
-										List<String> errorsSeed = new ArrayList<>();
-										MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
-										// TODO Duplicate name error
-										Long id = SemillaDAO.existOtherSeed(c, seed.getNombre(), Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
-										if ((id != null && seed.getId() == null) || (id != null && id != null && seed.getId() != null && !id.equals(seed.getId()))) {
-											errorsSeed.add(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado"));
-										}
-										// TODO Max url error
-										List<String> xmlUrls = Arrays.asList(seed.getListaUrlsString().split(";"));
-										if (!StringUtils.isEmpty(seed.getListaUrlsString()) && seed.getComplejidad() != null) {
-											ComplejidadForm complexAux = ComplejidadDAO.getComplexityById(DataBaseManager.getConnection(), seed.getComplejidad().getId());
-											int maxUrls = complexAux.getAmplitud() * complexAux.getProfundidad() + 1;
-											if (xmlUrls != null && xmlUrls.size() > maxUrls) {
-												errorsSeed.add(messageResources.getMessage("semilla.nueva.url.max.superado", new String[] { String.valueOf(maxUrls) }));
-											}
-										}
-										// TODO Duplicate url
-										// Comprobar duplicados
-										Set<String> testDuplicates = this.findDuplicates(xmlUrls);
-										if (!testDuplicates.isEmpty()) {
-											String duplicadosStr = "";
-											for (String duplicado : testDuplicates) {
-												duplicadosStr += duplicado + "\n";
-											}
-											errorsSeed.add(messageResources.getMessage("semilla.nueva.url.duplicados") + duplicadosStr);
-										}
-										// TODO Has errores
-										if (errorsSeed.size() > 0) {
-											SeedError seedError = new SeedError();
-											BeanUtils.copyProperties(seedError, seed);
-											seedError.setErrors(errorsSeed);
-											errorSeeds.add(seedError);
-										} else if (seed.getId() != null) {
-											SemillaForm seedOld = SemillaDAO.getSeedById(c, seed.getId());
-											if (seedOld != null && seedOld.getId() != null) {
-												SeedComparision seedComparision = generateComparisionSeed(seedOld, seed);
-												if (!seedComparision.isSame()) {
-													updatedSeeds.add(seedComparision);
-													updateAndNewSeeds.add(seed);
-												} else {
-													inalterableSeeds.add(seed);
-												}
-											} else {
-												seed.setId(null);
-												newSeed.add(seed);
-												updateAndNewSeeds.add(seed);
-											}
-										} else {
-											newSeed.add(seed);
-											updateAndNewSeeds.add(seed);
-										}
-									}
-									request.setAttribute("errorSeeds", errorSeeds);
-									request.setAttribute("inalterableSeeds", inalterableSeeds);
-									request.setAttribute("updatedSeeds", updatedSeeds);
-									request.setAttribute("newSeedList", newSeed);
-									// Store list in session
-									HttpSession session = request.getSession();
-									// session.setAttribute(Constants.OBSERVATORY_SEED_LIST, seeds);
-									session.setAttribute(Constants.OBSERVATORY_SEED_LIST, updateAndNewSeeds);
-									session.setAttribute("errorSeeds", errorSeeds);
-								} else {
-									errors.add("xmlFile", new ActionMessage("xml.seed.not.valid"));
-									saveErrors(request, errors);
-									return mapping.findForward(Constants.VOLVER);
-								}
-							} catch (Exception e) {
-								Logger.putLog("Error en la creación de semillas asociadas al observatorio", SeedCategoriesAction.class, Logger.LOG_LEVEL_ERROR, e);
-								mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.creada.error.fichero.semillas", semillaSearchForm.getNombre());
-							}
-						}
-						return mapping.findForward(Constants.CONFIRMACION_IMPORTAR);
-					}
-				} else if (!semillaSearchForm.getFileSeeds().getFileName().endsWith(".xml")) {
-					errors.add("xmlFile", new ActionMessage("no.xml.file"));
-					saveErrors(request, errors);
-					return mapping.findForward(Constants.VOLVER);
-				} else if (semillaSearchForm.getFileSeeds().getFileSize() > Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size"))) {
-					errors.add("xmlFile", new ActionMessage("xml.size.error"));
-					saveErrors(request, errors);
-					return mapping.findForward(Constants.VOLVER);
-				}
-			} else {
-				saveErrors(request, errors);
-				return mapping.findForward(Constants.VOLVER);
-			}
-		} else {
+		if (isCancelled(request)) {
 			return mapping.findForward(Constants.VOLVER);
 		}
-		return null;
+		final PropertiesManager pmgr = new PropertiesManager();
+		SemillaSearchForm semillaSearchForm = (SemillaSearchForm) form;
+		request.setAttribute(Constants.ACTION, Constants.ADD_SEED_CATEGORY);
+		// Validate form
+		ActionErrors errors = semillaSearchForm.validate(mapping, request);
+		if (!errors.isEmpty() || semillaSearchForm.getFileSeeds() == null || StringUtils.isEmpty(semillaSearchForm.getFileSeeds().getFileName())) {
+			saveErrors(request, errors);
+			return mapping.findForward(Constants.VOLVER);
+		}
+		// Validate format
+		String filename = semillaSearchForm.getFileSeeds().getFileName();
+		String[] splits = filename.split("\\.");
+		String fileExtension = splits[splits.length - 1];
+		if (!fileExtension.equals("xml") && !fileExtension.equals("xlsx")) {
+			errors.add("xmlFile", new ActionMessage("no.xml.file"));
+			saveErrors(request, errors);
+			return mapping.findForward(Constants.VOLVER);
+		}
+		// validate file size
+		if (semillaSearchForm.getFileSeeds().getFileSize() > Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size"))) {
+			errors.add("xmlFile", new ActionMessage("xml.size.error"));
+			saveErrors(request, errors);
+			return mapping.findForward(Constants.VOLVER);
+		}
+		try (Connection c = DataBaseManager.getConnection()) {
+			if (semillaSearchForm.getFileSeeds().getFileData().length > 0) {
+				try {
+					List<SemillaForm> inalterableSeeds = new ArrayList<>();
+					List<SeedComparision> updatedSeeds = new ArrayList<>();
+					List<SemillaForm> newSeed = new ArrayList<>();
+					List<SeedError> errorSeeds = new ArrayList<>();
+					List<SemillaForm> updateAndNewSeeds = new ArrayList<>();
+					List<SemillaForm> seeds = new ArrayList<>();
+					switch (fileExtension) {
+					case "xml":
+						seeds = SeedUtils.getSeedsFromFile(semillaSearchForm.getFileSeeds().getInputStream(), true);
+						break;
+					case "xlsx":
+						seeds = SeedExcelUtils.getSeedsFromXlsxFile(semillaSearchForm.getFileSeeds().getInputStream());
+						break;
+					}
+					// Check for empty file
+					if (seeds == null || seeds.isEmpty()) {
+						errors.add("xmlFile", new ActionMessage("xml.seed.not.valid"));
+						saveErrors(request, errors);
+						return mapping.findForward(Constants.VOLVER);
+					}
+					for (SemillaForm seed : seeds) {
+						// Categories retrieve from database
+						if (seed.getCategoria() != null && !org.apache.commons.lang3.StringUtils.isEmpty(seed.getCategoria().getName())) {
+							CategoriaForm category = CategoriaDAO.getCategoryByName(c, seed.getCategoria().getName());
+							if (category != null) {
+								seed.setCategoria(category);
+							} else {
+								seed.getCategoria().setOrden(1);
+								Long idCategoria = SemillaDAO.createSeedCategory(c, seed.getCategoria());
+								seed.getCategoria().setId(idCategoria.toString());
+							}
+						}
+						// Ambits retrieve from database
+						if (seed.getAmbito() != null && !org.apache.commons.lang3.StringUtils.isEmpty(seed.getAmbito().getName())) {
+							AmbitoForm ambit = AmbitoDAO.getAmbitByName(c, seed.getAmbito().getName());
+							if (ambit != null) {
+								seed.setAmbito(ambit);
+							} else {
+								seed.getAmbito().setOrden(1);
+								Long idAmbito = SemillaDAO.createSeedAmbit(c, seed.getAmbito());
+								seed.getAmbito().setId(idAmbito.toString());
+							}
+						}
+						// Complexities retrieve from database
+						if (seed.getComplejidad() != null && !org.apache.commons.lang3.StringUtils.isEmpty(seed.getComplejidad().getName())) {
+							ComplejidadForm complexity = ComplejidadDAO.getComplexityByName(c, seed.getComplejidad().getName());
+							if (complexity != null) {
+								seed.setComplejidad(complexity);
+							} else {
+								seed.getComplejidad().setOrden(1);
+								Long idComplejidad = SemillaDAO.createSeedComplexity(c, seed.getComplejidad());
+								seed.getComplejidad().setId(idComplejidad.toString());
+							}
+						}
+						// Check errors
+						List<String> errorsSeed = new ArrayList<>();
+						MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+						// Duplicate name error
+						Long id = SemillaDAO.existOtherSeed(c, seed.getNombre(), Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+						if ((id != null && seed.getId() == null) || (id != null && seed.getId() != null && !id.equals(seed.getId()))) {
+							errorsSeed.add(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado"));
+						}
+						// Max url error
+						List<String> xmlUrls = Arrays.asList(seed.getListaUrlsString().split(";"));
+						if (!StringUtils.isEmpty(seed.getListaUrlsString()) && seed.getComplejidad() != null) {
+							ComplejidadForm complexAux = ComplejidadDAO.getComplexityById(c, seed.getComplejidad().getId());
+							if (complexAux != null) {
+								int maxUrls = complexAux.getAmplitud() * complexAux.getProfundidad() + 1;
+								if (xmlUrls.size() > maxUrls) {
+									errorsSeed.add(messageResources.getMessage("semilla.nueva.url.max.superado", new String[] { String.valueOf(maxUrls) }));
+								}
+							}
+						}
+						// Comprobar duplicados
+						Set<String> testDuplicates = this.findDuplicates(xmlUrls);
+						if (!testDuplicates.isEmpty()) {
+							String duplicadosStr = "";
+							for (String duplicado : testDuplicates) {
+								duplicadosStr += duplicado + "\n";
+							}
+							errorsSeed.add(messageResources.getMessage("semilla.nueva.url.duplicados") + duplicadosStr);
+						}
+						if (errorsSeed.size() > 0) {
+							SeedError seedError = new SeedError();
+							BeanUtils.copyProperties(seedError, seed);
+							seedError.setErrors(errorsSeed);
+							errorSeeds.add(seedError);
+						} else if (seed.getId() != null) {
+							SemillaForm seedOld = SemillaDAO.getSeedById(c, seed.getId());
+							if (seedOld != null && seedOld.getId() != null) {
+								SeedComparision seedComparision = generateComparisionSeed(seedOld, seed);
+								if (!seedComparision.isSame()) {
+									updatedSeeds.add(seedComparision);
+									updateAndNewSeeds.add(seed);
+								} else {
+									inalterableSeeds.add(seed);
+								}
+							} else {
+								seed.setId(null);
+								newSeed.add(seed);
+								updateAndNewSeeds.add(seed);
+							}
+						} else {
+							newSeed.add(seed);
+							updateAndNewSeeds.add(seed);
+						}
+					}
+					request.setAttribute("errorSeeds", errorSeeds);
+					request.setAttribute("inalterableSeeds", inalterableSeeds);
+					request.setAttribute("updatedSeeds", updatedSeeds);
+					request.setAttribute("newSeedList", newSeed);
+					// Store list in session
+					HttpSession session = request.getSession();
+					// session.setAttribute(Constants.OBSERVATORY_SEED_LIST, seeds);
+					session.setAttribute(Constants.OBSERVATORY_SEED_LIST, updateAndNewSeeds);
+					session.setAttribute("errorSeeds", errorSeeds);
+				} catch (Exception e) {
+					Logger.putLog("Error en la creación de semillas asociadas al observatorio", SeedCategoriesAction.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
+			return mapping.findForward(Constants.CONFIRMACION_IMPORTAR);
+		}
 	}
 
 	/**
@@ -268,10 +275,11 @@ public class SeedMassImportAction extends Action {
 	 * @param request  the request
 	 * @param response the response
 	 * @param form     the form
+	 * @param format   the format
 	 * @return the all seeds file
 	 * @throws Exception the exception
 	 */
-	private ActionForward getSeedsFile(HttpServletRequest request, HttpServletResponse response, ActionForm form) throws Exception {
+	private ActionForward getSeedsFile(HttpServletRequest request, HttpServletResponse response, ActionForm form, String format) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 			SemillaSearchForm searchForm = (SemillaSearchForm) form;
 			if (searchForm != null) {
@@ -303,7 +311,14 @@ public class SeedMassImportAction extends Action {
 			}
 			response.setContentType("text/json");
 			List<SemillaForm> seeds = SemillaDAO.getObservatorySeedsToExport(c, searchForm);
-			SeedUtils.writeFileToResponse(response, seeds, true);
+			switch (format) {
+			case "xml":
+				SeedUtils.writeFileToResponse(response, seeds, true);
+				break;
+			case "xlsx":
+				SeedExcelUtils.writeSeedsToXlsxResponse(response, seeds);
+				break;
+			}
 		} catch (Exception e) {
 			Logger.putLog("ERROR al intentar exportar semillas: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}

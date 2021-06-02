@@ -108,6 +108,8 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @param filePath               Ruta para guardar los temporales
 	 * @param type                   Tipo de grafico. Si es MP cambia el color del gráfico
 	 * @param regenerate             Indica si hay que regenerar el gráfico o no.
+	 * @param tagsFilter             the tags filter
+	 * @param tagsFilterFixed        the tags filter fixed
 	 * @throws Exception Excepción lanzada
 	 */
 	public static void generateGraphics(final MessageResources messageResources, String executionId, final Long idExecutionObservatory, final String observatoryId, final String filePath,
@@ -136,6 +138,8 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @param categories       Categorias para el gráfico global
 	 * @param color            Color del gráfico
 	 * @param regenerate       Indica si hay que regenerar el gráfico o no.
+	 * @param tagsFilter       the tags filter
+	 * @param tasgFilterFixed  the tasg filter fixed
 	 * @return Mapa de gráficos
 	 * @throws Exception the exception
 	 */
@@ -173,6 +177,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @param ambits            the ambits
 	 * @param regenerate        the regenerate
 	 * @param title             the title
+	 * @param tagsFilter        the tags filter
 	 * @return the global compilance by segment
 	 * @throws Exception the exception
 	 */
@@ -1137,6 +1142,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @param pageExecutionList the page execution list
 	 * @param idCrawler         the id crawler
 	 * @param typeFilter        the type filter 0: category, 1: complex, 2:ambit
+	 * @param tagsFilter        the tags filter
 	 * @return the global result data
 	 * @throws Exception the exception
 	 */
@@ -2275,6 +2281,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @param executionId       the execution id
 	 * @param pageExecutionList the page execution list
 	 * @param ambits            the ambits
+	 * @param tagsFilter        the tags filter
 	 * @return the map
 	 * @throws Exception the exception
 	 */

@@ -15,60 +15,81 @@
 ******************************************************************************/
 package es.inteco.flesch;
 
+/**
+ * The Interface FleschAnalyzer.
+ */
 public interface FleschAnalyzer {
 
+    /** The Constant SPANISH. */
     public static final int SPANISH = 1;
+    
+    /** The Constant ENGLISH. */
     public static final int ENGLISH = 2;
 
+    /** The Constant FLESCH_LEVEL_UNKNOWN. */
     public static final int FLESCH_LEVEL_UNKNOWN = 8;
+    
+    /** The Constant FLESCH_LEVEL_VERY_EASY. */
     public static final int FLESCH_LEVEL_VERY_EASY = 7;
+    
+    /** The Constant FLESCH_LEVEL_EASY. */
     public static final int FLESCH_LEVEL_EASY = 6;
+    
+    /** The Constant FLESCH_LEVEL_QUITE_EASY. */
     public static final int FLESCH_LEVEL_QUITE_EASY = 5;
+    
+    /** The Constant FLESCH_LEVEL_STANDARD. */
     public static final int FLESCH_LEVEL_STANDARD = 4;
+    
+    /** The Constant FLESCH_LEVEL_QUITE_HARD. */
     public static final int FLESCH_LEVEL_QUITE_HARD = 3;
+    
+    /** The Constant FLESCH_LEVEL_HARD. */
     public static final int FLESCH_LEVEL_HARD = 2;
+    
+    /** The Constant FLESCH_LEVEL_VERY_HARD. */
     public static final int FLESCH_LEVEL_VERY_HARD = 1;
 
     /**
-     * Contador de sílabas
-     *
-     * @param text
-     * @return
-     */
+	 * Contador de sílabas.
+	 *
+	 * @param text the text
+	 * @return the int
+	 */
     public int countSyllables(String text);
 
     /**
-     * Contador de frases
-     *
-     * @param text
-     * @return
-     */
+	 * Contador de frases.
+	 *
+	 * @param text the text
+	 * @return the int
+	 */
     public int countPhrases(String text);
 
     /**
-     * Contador de palabras
-     *
-     * @param text
-     * @return
-     */
+	 * Contador de palabras.
+	 *
+	 * @param text the text
+	 * @return the int
+	 */
     public int countWords(String text);
 
     /**
-     * Devuelve el valor de la formula Flesch
-     *
-     * @param numSyllables
-     * @param numWords
-     * @param numPhrases
-     * @return
-     */
+	 * Devuelve el valor de la formula Flesch.
+	 *
+	 * @param numSyllables the num syllables
+	 * @param numWords     the num words
+	 * @param numPhrases   the num phrases
+	 * @return the double
+	 */
     public double calculateFleschValue(int numSyllables, int numWords, int numPhrases);
 
     /**
-     * Devuelve el nivel de legibilidad de acuerdo con el valor Flesch
-     *
-     * @param fleschValue
-     * @return
-     */
+	 * Devuelve el nivel de legibilidad de acuerdo con el valor Flesch.
+	 *
+	 * @param fleschValue the flesch value
+	 * @return the readability level
+	 */
     public int getReadabilityLevel(double fleschValue);
 
 }

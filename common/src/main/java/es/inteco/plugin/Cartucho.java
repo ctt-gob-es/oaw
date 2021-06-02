@@ -18,15 +18,24 @@ package es.inteco.plugin;
 import java.util.Map;
 
 /**
- * @author a.mesas
- *         Esta clase define un cartucho generico, el cual únicamente va a tener
- *         un método que dado una url y el contenido de una página ejecutará
- *         El analisis correspondiente a dicho cartucho.
+ * The Class Cartucho.
+ *
+ * @author a.mesas Esta clase define un cartucho generico, el cual únicamente va a tener un método que dado una url y el contenido de una página ejecutará El analisis correspondiente a dicho cartucho.
  */
 public abstract class Cartucho {
 
+    /**
+	 * Analyzer.
+	 *
+	 * @param datos the datos
+	 */
     public abstract void analyzer(Map<String, Object> datos);
 
+    /**
+	 * Sets the config.
+	 *
+	 * @param idRastreo the new config
+	 */
     public abstract void setConfig(long idRastreo);
 
 }

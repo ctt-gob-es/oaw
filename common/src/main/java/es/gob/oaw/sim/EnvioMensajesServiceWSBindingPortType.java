@@ -24,11 +24,11 @@ public interface EnvioMensajesServiceWSBindingPortType {
 
 
     /**
-     * 
-     * @param peticion
-     * @return
-     *     returns Respuesta
-     */
+	 * Enviar mensaje.
+	 *
+	 * @param peticion the peticion
+	 * @return returns Respuesta
+	 */
     @WebMethod(action = "enviarMensaje")
     @WebResult(name = "Respuesta", targetNamespace = "http://misim.redsara.es/misim-bus-webapp/respuesta", partName = "respuesta")
     Respuesta enviarMensaje(

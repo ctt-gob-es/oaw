@@ -182,7 +182,7 @@ public class SemillaSearchForm extends ValidatorForm {
 	/**
 	 * Sets the dependencia.
 	 *
-	 * @param ambito the new dependencia
+	 * @param dependencia the new dependencia
 	 */
 	public void setDependencia(String[] dependencia) {
 		this.dependencia = dependencia;
@@ -200,7 +200,7 @@ public class SemillaSearchForm extends ValidatorForm {
 	/**
 	 * Sets the complejidad.
 	 *
-	 * @param ambito the new complejidad
+	 * @param complejidad the new complejidad
 	 */
 	public void setComplejidad(String[] complejidad) {
 		this.complejidad = complejidad;
@@ -218,7 +218,7 @@ public class SemillaSearchForm extends ValidatorForm {
 	/**
 	 * Sets the directorio.
 	 *
-	 * @param activo the new directorio
+	 * @param directorio the new in directorio
 	 */
 	public void setinDirectorio(String directorio) {
 		this.directorio = directorio;

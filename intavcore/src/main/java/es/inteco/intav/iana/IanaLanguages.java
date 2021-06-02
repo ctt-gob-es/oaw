@@ -17,31 +17,70 @@ package es.inteco.intav.iana;
 
 import java.util.List;
 
+/**
+ * The Class IanaLanguages.
+ */
 public class IanaLanguages {
+    
+    /** The languages. */
     private List<String> languages;
+    
+    /** The regions. */
     private List<String> regions;
+    
+    /** The variants. */
     private List<String> variants;
 
+    /**
+	 * Gets the languages.
+	 *
+	 * @return the languages
+	 */
     public List<String> getLanguages() {
         return languages;
     }
 
+    /**
+	 * Sets the languages.
+	 *
+	 * @param languages the new languages
+	 */
     public void setLanguages(List<String> languages) {
         this.languages = languages;
     }
 
+    /**
+	 * Gets the regions.
+	 *
+	 * @return the regions
+	 */
     public List<String> getRegions() {
         return regions;
     }
 
+    /**
+	 * Sets the regions.
+	 *
+	 * @param regions the new regions
+	 */
     public void setRegions(List<String> regions) {
         this.regions = regions;
     }
 
+    /**
+	 * Gets the variants.
+	 *
+	 * @return the variants
+	 */
     public List<String> getVariants() {
         return variants;
     }
 
+    /**
+	 * Sets the variants.
+	 *
+	 * @param variants the new variants
+	 */
     public void setVariants(List<String> variants) {
         this.variants = variants;
     }

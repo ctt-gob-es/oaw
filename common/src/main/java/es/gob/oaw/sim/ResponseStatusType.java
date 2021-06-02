@@ -36,10 +36,15 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class ResponseStatusType {
 
+    /** The status code. */
     @XmlElement(name = "StatusCode", required = true)
     protected String statusCode;
+    
+    /** The status text. */
     @XmlElement(name = "StatusText", required = true)
     protected String statusText;
+    
+    /** The details. */
     @XmlElement(name = "Details")
     protected String details;
 

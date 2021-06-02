@@ -22,19 +22,41 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 
+/**
+ * The Class TrunpTag.
+ */
 public class TrunpTag extends TagSupport {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 7851110311230238272L;
+    
+    /** The cad. */
     private String cad;
 
+    /**
+	 * Gets the cad.
+	 *
+	 * @return the cad
+	 */
     public String getCad() {
         return cad;
     }
 
+    /**
+	 * Sets the cad.
+	 *
+	 * @param cad the new cad
+	 */
     public void setCad(String cad) {
         this.cad = cad;
     }
 
+    /**
+	 * Do start tag.
+	 *
+	 * @return the int
+	 * @throws JspException the jsp exception
+	 */
     public int doStartTag() throws JspException {
         try {
             // Se toma el stream de salida
@@ -55,6 +77,12 @@ public class TrunpTag extends TagSupport {
         return SKIP_BODY;
     }
 
+    /**
+	 * Do end tag.
+	 *
+	 * @return the int
+	 * @throws JspException the jsp exception
+	 */
     public int doEndTag() throws JspException {
         // Imprime el elemento de cierre.
         JspWriter writer = pageContext.getOut();

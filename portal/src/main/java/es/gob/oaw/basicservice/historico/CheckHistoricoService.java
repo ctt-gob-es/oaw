@@ -21,25 +21,22 @@ import java.util.*;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 /**
- * Clase para manejar el histórico de resultados del servicio de diagnostico
+ * Clase para manejar el histórico de resultados del servicio de diagnostico.
  *
  * @author miguel.garcia <miguel.garcia@fundacionctic.org>
  */
 public class CheckHistoricoService {
 
 	/**
-	 * Comprueba si un identificador de analisis está asociado a una determinada
-	 * url
+	 * Comprueba si un identificador de analisis está asociado a una determinada url.
 	 *
-	 * @param idAnalysis
-	 *            el identificador del analisis
-	 * @param url
-	 *            la url
-	 * @param type
-	 *            el tipo de análisis que se está realizando (url con crawling o
-	 *            lista de urls cerrada)
-	 * @return true si para esa url hay un analisis con ese identificador o
-	 *         false en caso contrario
+	 * @param idAnalysis el identificador del analisis
+	 * @param url        la url
+	 * @param type       el tipo de análisis que se está realizando (url con crawling o lista de urls cerrada)
+	 * @param width      the width
+	 * @param depth      the depth
+	 * @param report     the report
+	 * @return true si para esa url hay un analisis con ese identificador o false en caso contrario
 	 */
 	public final boolean isAnalysisOfUrl(final String idAnalysis, final String url, BasicServiceAnalysisType type, String width, String depth, String report) {
 		final List<BasicServiceResultado> historicoResultados = getHistoricoResultados(url, type, depth, width, report);
@@ -53,13 +50,10 @@ public class CheckHistoricoService {
 	}
 
 	/**
-	 * Obtiene el histórico de resultados de una petición al servicio de
-	 * diagnóstico
+	 * Obtiene el histórico de resultados de una petición al servicio de diagnóstico.
 	 *
-	 * @param basicServiceForm
-	 *            la petición al servicio de diagnóstico
-	 * @return un Map ordenado por fecha de resultado y para cada entrada una
-	 *         lista con los resultados de cada página
+	 * @param basicServiceForm la petición al servicio de diagnóstico
+	 * @return un Map ordenado por fecha de resultado y para cada entrada una lista con los resultados de cada página
 	 */
 	public Map<Date, List<ObservatoryEvaluationForm>> getHistoricoResultadosOfBasicService(final BasicServiceForm basicServiceForm) {
 		final ObservatoryManager observatoryManager = new ObservatoryManager();
@@ -86,13 +80,10 @@ public class CheckHistoricoService {
 	}
 
 	/**
-	 * Borra un análisis
+	 * Borra un análisis.
 	 *
-	 * @param name
-	 *            nombre del análisis (nombre del observatorio o url si proviene
-	 *            del servicio de diagnóstico)
-	 * @param analysisToDelete
-	 *            identificador del rastreo
+	 * @param name             nombre del análisis (nombre del observatorio o url si proviene del servicio de diagnóstico)
+	 * @param analysisToDelete identificador del rastreo
 	 */
 	public final void deleteAnalysis(final String name, final String analysisToDelete) {
 		try (Connection conn = DataBaseManager.getConnection()) {
@@ -114,15 +105,14 @@ public class CheckHistoricoService {
 	}
 
 	/**
-	 * Obtiene el historico de resultados previos asociado a una url
+	 * Obtiene el historico de resultados previos asociado a una url.
 	 *
-	 * @param url
-	 *            la url de la que buscar el histórico de resultados asociados
-	 * @param type
-	 *            el tipo de análisis que se está realizando (url con crawling o
-	 *            lista de urls cerrada)
-	 * @return una lista con un máximo de 3 resultados del servicio de
-	 *         diagnostico asociado a la url
+	 * @param url    la url de la que buscar el histórico de resultados asociados
+	 * @param type   el tipo de análisis que se está realizando (url con crawling o lista de urls cerrada)
+	 * @param width  the width
+	 * @param depth  the depth
+	 * @param report the report
+	 * @return una lista con un máximo de 3 resultados del servicio de diagnostico asociado a la url
 	 */
 	public List<BasicServiceResultado> getHistoricoResultados(final String url, final BasicServiceAnalysisType type, String width, String depth, String report) {
 		if (url != null && url.trim().length() > 0) {

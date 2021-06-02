@@ -1421,14 +1421,15 @@ public final class RastreoDAO {
 	public static void updateRastreo(Connection c, boolean esMenu, InsertarRastreoForm insertarRastreoForm, Long idRastreo) throws SQLException {
 		PreparedStatement ps = null;
 		try {
-			ps = c.prepareStatement("UPDATE rastreo SET profundidad = ?, topn = ?, in_directory = ?, id_guideline= ? WHERE id_rastreo = ?");
+			ps = c.prepareStatement("UPDATE rastreo SET profundidad = ?, topn = ?, in_directory = ?, id_guideline= ?, id_language = ? WHERE id_rastreo = ?");
 			ps.setInt(1, insertarRastreoForm.getProfundidad());
 			ps.setLong(2, insertarRastreoForm.getTopN());
 			ps.setBoolean(3, insertarRastreoForm.isInDirectory());
 			ps.setString(4, insertarRastreoForm.getCartucho());
-			ps.setLong(5, idRastreo);
+			ps.setLong(5, insertarRastreoForm.getLenguaje());
+			ps.setLong(6, idRastreo);
 			ps.executeUpdate();
-			// TODO Update cartucho_rastreo
+			// Update cartucho_rastreo
 			DAOUtils.closeQueries(ps, null);
 			ps = c.prepareStatement("UPDATE cartucho_rastreo SET id_cartucho = ? WHERE id_rastreo = ?");
 			ps.setInt(1, Integer.parseInt(insertarRastreoForm.getCartucho()));
@@ -1479,7 +1480,6 @@ public final class RastreoDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static Long addFulfilledCrawling(Connection conn, DatosCartuchoRastreoForm dcrForm, Long idFulfilledObservatory, Long idUser) throws SQLException {
-		// TODO Remove previous??
 		try (PreparedStatement psCR = conn.prepareStatement("DELETE FROM rastreos_realizados WHERE id_obs_realizado=? AND id_lista = ?")) {
 			psCR.setLong(1, idFulfilledObservatory);
 			psCR.setLong(2, dcrForm.getIdSemilla());
@@ -1524,10 +1524,13 @@ public final class RastreoDAO {
 	 * @throws Exception the exception
 	 */
 	public static Long addFulfilledObservatory(Connection conn, Long idObservatory, Long idCartridge) throws Exception {
-		try (PreparedStatement pst = conn.prepareStatement("INSERT INTO observatorios_realizados (id_observatorio, fecha, id_cartucho) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement pst = conn.prepareStatement(
+				"INSERT INTO observatorios_realizados (id_observatorio, fecha, id_cartucho, tags) VALUES (?,?,?, (select tags from observatorio where id_observatorio = ?))",
+				Statement.RETURN_GENERATED_KEYS)) {
 			pst.setLong(1, idObservatory);
 			pst.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
 			pst.setLong(3, idCartridge);
+			pst.setLong(4, idObservatory);
 			pst.executeUpdate();
 			try (ResultSet rs = pst.getGeneratedKeys()) {
 				if (rs.next()) {

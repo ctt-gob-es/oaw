@@ -1,3 +1,27 @@
+5.2.0
+------------------------------------------------------------------------------------------------------------------------------------
+- Funcionalidad para detener una ejecución en curso
+- Configuración global para observatorios: umbral de relanzamiento, timeout y tamaño de rastreo
+- Relanzamiento en bloque de semillas sin resultados
+- Relanzamiento en bloque de semillas por debajo del umbral
+- Relanzamiento automático de semillas sin resultados o por debajo del umbral al finalizar un observatorio
+- Generación de excels de adeucación y cumplimiento con y sin evolutivo junto con los anexos
+- Generación de excels de adeucación y cumplimiento con y sin evolutivo junto con los anexos por dependencia
+- Modificados xml de anexos para incluir más información
+- Generación de xml anexo-portales-verificaciones.xml
+- Generación de xml anexo-paginas-verificaciones.xml
+- Generación de varios XLSX en los anexos de resumen y estadísticas del observatorio
+- Adjuntado el código fuente de la página de accesibilidad en el cartucho de accesibilidad
+- Exportación/importación de semillas en xlsx 
+- Envío de resultados de iteración de un observatorio por email
+- Modificaciones en la entidad dependencias para añadir campos adicionales necesarios en el punto anterior (email, configuración de envío automático, etc)
+- Resumen de los envíos de resultados de una iteración
+- Posibilidad de subir un fichero zip con varios ficheros html en la opción "Código fuente" del servicio de diagnóstico 
+- Modificada la llamada a la API del validador W3C para recuperar los errores correctamente y actualizar a la nueva versión ya que 
+  la anterior está deprecada y será retirada en algún momento
+- Actualización de varias librerías para solventar vulnerabilidades.
+
+
 5.1.0
 ------------------------------------------------------------------------------------------------------------------------------------
 - Generación de informe de accesibilidad en profundidad en ODS, XLSX y JSON en el servicio de diagnóstico
@@ -16,7 +40,7 @@
 - Plantilla de informe agregado del cartucho de la metodología de accesibilidad
 - Incluidos en la exportación de JSON los checks que no aplican
 - Incluídas las puntuaciones 'No puntúa' de verificaciones en el agregado que se computaban erróneamente como 'Conforme'
-- Añadidad la complejidad a los anexos en XML
+- Añadidas la complejidad a los anexos en XML
 
 5.0.5
 ------------------------------------------------------------------------------------------------------------------------------------

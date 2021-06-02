@@ -90,6 +90,8 @@ public class ModificarObservatorioForm extends ValidatorForm {
 	private long idNoRastreableAntiguo;
 	/** The ambito form. */
 	private AmbitoForm ambitoForm;
+	
+	/** The tags string. */
 	private String tagsString;
 
 	/**

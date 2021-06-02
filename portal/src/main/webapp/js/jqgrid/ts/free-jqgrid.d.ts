@@ -377,6 +377,7 @@ declare namespace FreeJqGrid {
 		common?: string; // "ui-icon",
 		pager?: {
 			common?: string;
+			ignoreParents?: boolean;
 			first?: string; // "ui-icon-seek-first",
 			prev?: string; // "ui-icon-seek-prev",
 			next?: string; // "ui-icon-seek-next",
@@ -384,16 +385,19 @@ declare namespace FreeJqGrid {
 		};
 		sort?: {
 			common?: string;
+			ignoreParents?: boolean;
 			asc?: string; // "ui-icon-triangle-1-n",
 			desc?: string; // "ui-icon-triangle-1-s"
 		};
 		gridMinimize?: {
 			common?: string;
+			ignoreParents?: boolean;
 			visible?: string; // "ui-icon-circle-triangle-n",
 			hidden?: string; // "ui-icon-circle-triangle-s"
 		};
 		nav?: {
 			common?: string;
+			ignoreParents?: boolean;
 			edit?: string; // "ui-icon-pencil",
 			add?: string; // "ui-icon-plus",
 			del?: string; // "ui-icon-trash",
@@ -406,6 +410,7 @@ declare namespace FreeJqGrid {
 		};
 		actions?: {
 			common?: string; // string;
+			ignoreParents?: boolean;
 			edit?: string; // "ui-icon-pencil",
 			del?: string; // "ui-icon-trash",
 			save?: string; // "ui-icon-disk",
@@ -413,6 +418,7 @@ declare namespace FreeJqGrid {
 		};
 		form?: {
 			common?: string;
+			ignoreParents?: boolean;
 			close?: string; // "ui-icon-closethick",
 			prev?: string; // "ui-icon-triangle-1-w",
 			next?: string; // "ui-icon-triangle-1-e",
@@ -424,12 +430,14 @@ declare namespace FreeJqGrid {
 		};
 		search?: {
 			common?: string;
+			ignoreParents?: boolean;
 			search?: string; // "ui-icon-search",
 			reset?: string; // "ui-icon-arrowreturnthick-1-w",
 			query?: string; // "ui-icon-comment"
 		};
 		subgrid?: {
 			common?: string;
+			ignoreParents?: boolean;
 			plus?: string; // "ui-icon-plus",
 			minus?: string; // "ui-icon-minus",
 			openLtr?: string; // "ui-icon-carat-1-sw",
@@ -437,15 +445,23 @@ declare namespace FreeJqGrid {
 		};
 		grouping?: {
 			common?: string; // string;
+			ignoreParents?: boolean;
 			plus?: string; // "ui-icon-circlesmall-plus",
 			minus?: string; // "ui-icon-circlesmall-minus"
 		};
 		treeGrid?: {
 			common?: string;
+			ignoreParents?: boolean;
 			minus?: string; // "ui-icon-triangle-1-s",
 			leaf?: string; // "ui-icon-radio-off",
 			plusLtr?: string; // "ui-icon-triangle-1-e",
 			plusRtl?: string; // "ui-icon-triangle-1-w"
+		};
+		checkbox ?: {
+			ignoreParents?: boolean;
+			checkedClasses?: string; // "fa-check-square-o",
+			checked?: string; // "fa-check-square-o fa-lg",
+			unchecked?: string; // "fa-square-o fa-lg"
 		};
 	}
 	interface GuiStyleInfo {
@@ -548,12 +564,13 @@ declare namespace FreeJqGrid {
 		actionsNav?: FormatterActionsOptions;
 		ajaxOptions?: JQueryAjaxSettings;
 		cell_width: boolean;
-		cellattr?: { [key: string]: (rowId: string, cellValue: any, rowObject: any, cm: ColumnModel, rdata: any) => string; };
+		cellattr?: { [key: string]: (this: BodyTable, rowId: string, cellValue: any, rowObject: any, cm: ColumnModel, rdata: any, formattedCellValue: string) => string; };
 		cmTemplate?: { [key: string]: ColumnModel; };
 		defaults: JqGridStaticOptions;
 		del?: FormDeletingOptions;
 		edit?: FormEditingOptions;
 		filter?: JqFilterOptions;
+		getXmlData(this: BodyTable, obj: any, dotSeparatedNamesOrFunc: string | ((obj: any) => any), returnObj?: boolean): string | undefined | JQuery; // JQuery returns only if returnObj is true
 		guid: number;
 		guiStyles: {
 			jQueryUI: GuiStyleInfo;
@@ -569,12 +586,14 @@ declare namespace FreeJqGrid {
 			[propName: string]: IconsInfo;
 		};
 		inlineEdit?: InlineEditingOptions;
+		inlineNavOptions?: InlineNavOptions;
 		jqModal?: JqModalOptions; // { toTop: true }
 		locales: { [key: string]: JqGridStaticLocaleOptions; };
 		msie: boolean;
 		nav?: NavOptions;
 		no_legacy_api?: boolean;
 		productName: "free jqGrid";
+		rowattr?: ( (this: BodyTable, item: any, rowObject: any, rowid: string) => { [attributeName: string]: string } | null | undefined );
 		search?: SearchLocaleOptions;
 		uidPref: string;
 		version: string; // like "4.13.7" for example
@@ -660,6 +679,11 @@ declare namespace FreeJqGrid {
 		onClick: (options: {rowid: string, event: JQueryEventObject, action: string, options: FormatterActionsCustomButton }) => void;
 		[propName: string]: any; // attribute for the editable element
 	}
+	interface FormatterActionButtonMask {
+		display?: boolean;    // whether to include the button in the actions div
+		hidden?: boolean;     // whether to add style="display:none;" to the button
+		noHovering?: boolean; // whether to add/remove hovering classes on mouseover/mouseout events
+	}
 	interface FormatterActionsOptions {
 		editbutton?: boolean;
 		delbutton?: boolean;
@@ -671,7 +695,7 @@ declare namespace FreeJqGrid {
 		cancelicon?: string; // "ui-icon-cancel",
 		savetitle?: string; // edit.bSubmit || "",
 		canceltitle?: string; // edit.bCancel || ""
-		isDisplayButtons?: (this: BodyTable, options: FormatterOptions, rwd, act) => boolean;
+		isDisplayButtons?: (this: BodyTable, options: FormatterOptions, rwd, act) => { [propName: string]: FormatterActionButtonMask };
 		custom?: FormatterActionsCustomButton[];
 		editOptions?: FormEditingOptions;
 		delOptions?: FormDeletingOptions;
@@ -691,12 +715,13 @@ declare namespace FreeJqGrid {
 		[propName: string]: any;
 	}
 	interface EditOptions {
-		buildSelect: (this: BodyTable, data: any, jqXhr: JQueryXHR, cm: ColumnModel, iCol: number) => string;
+		buildSelect?: (this: BodyTable, data: any, jqXhr: JQueryXHR, cm: ColumnModel, iCol: number) => string;
 		dataEvents?: { type: string, data?: any, fn: (e) => void }[];
 		dataInit?: (this: BodyTable, element: Element, options: EditOptions) => void;
 		dataUrl?: string | ((this: BodyTable, rowid: string, value: string, cmName: string, ajaxContext: { elem: Element, options: any, cm: ColumnModel, mode: "cell" | "addForm" | "editForm" | "add" | "edit", rowid: string, iCol: number, ovm: string[] }) => string);
 		generateValue?: boolean;
-		value?: string | { [propName: string]: string };
+		value?: string | { [propName: string]: string } | (() => string | { [propName: string]: string });
+		defaultValue?: string | (() => string) | boolean; // boolean for SearchOptions compatibility
 		[propName: string]: any; // attribute for the editable element
 	}
 	interface SearchOptions extends EditOptions {
@@ -725,8 +750,8 @@ declare namespace FreeJqGrid {
 	interface ColumnModelWithoutLabel {
 		align?: "left" | "center" | "right";
 		autoResizable?: boolean; // default value false
-		autoResizing?: { minColWidth: number, maxColWidth: number, compact: boolean };
-		cellattr?: "string" | ((rowId: string, cellValue: any, rowObject: any, cm: ColumnModel, rdata: any) => string);
+		autoResizing?: { minColWidth?: number, maxColWidth?: number, compact?: boolean };
+		cellattr?: "string" | ((this: BodyTable, rowId: string, cellValue: any, rowObject: any, cm: ColumnModel, rdata: any, formattedCellValue: string) => string);
 		cellBuilder?: (this: BodyTable, cellValue: any, options: FormatterOptions, rowObject: any, action?: "edit" | "add") => string;
 		classes?: string; // spaceSeparatedCssClasses
 		convertOnSave?: (this: BodyTable, options: { newValue: any, cm: ColumnModel, oldValue: any, id: string, item: any, iCol: number }) => any;
@@ -761,6 +786,7 @@ declare namespace FreeJqGrid {
 		lso?: "asc" | "desc" | "asc-desc" | "desc-asc" | "" | string;
 		name: string;
 		resizable?: boolean;
+		rotated?: boolean;
 		saveLocally?: (this: BodyTable, options: { newValue: any, newItem: Object, oldItem: Object, id: string, rowid: string, cm: ColumnModel, cmName: string, iCol: number }) => void;
 		search?: boolean;
 		searchoptions?: SearchOptions;
@@ -792,7 +818,7 @@ declare namespace FreeJqGrid {
 		page?: number;
 	}
 	type AddRowDataPosition = "first" | "last" | "before" | "after" | "afterSelected" | "beforeSelected";
-	type SaveUi = "disable" | "enable" | "block";
+	type LoadType = "disable" | "enable" | "block";
 	type FormIcon = [boolean, "left"|"right", string];
 	type NavKeys = [boolean, number, number]; // [shouldBeUsed, upKeyCode, downKeyCode]: [false,38,40]
 	interface FormEditingOptions extends EditFormLocaleOptions {
@@ -841,7 +867,7 @@ declare namespace FreeJqGrid {
 		saveicon?: FormIcon; // [true,"left","fa fa-floppy-o"]
 		savekey?: [boolean, number]; // [false,13]
 		savetext?: string; // default from $.jgrid.locales[currentLocale].defaults.savetext or $.jgrid.defaults.savetext
-		saveui?: SaveUi;
+		saveui?: LoadType; // "enable"
 		serializeEditData?: (this: BodyTable, postdata: Object) => Object | string;
 		skipPostTypes?: string[]; // ["image","file"]
 		top?: number;
@@ -853,13 +879,13 @@ declare namespace FreeJqGrid {
 		[propName: string]: any; // allow to have any number of other properties
 	}
 	interface FormDeletingOptions extends DeleteFormLocaleOptions {
-		afterComplete?: (this: BodyTable, jqXhr: JQueryXHR, postdata: Object | string, $form: JQuery) => void;
+		afterComplete?: (this: BodyTable, jqXhr: JQueryXHR, postdata: Object | string, $form: JQuery, rowids: string[]) => void;
 		afterShowForm?: (this: BodyTable, $form: JQuery) => void;
-		afterSubmit?: (this: BodyTable, $form: JQuery) => void;
+		afterSubmit?: (this: BodyTable, jqXhr: JQueryXHR, postdata: Object | string, rowids: string[]) => void;
 		ajaxDelOptions?: JQueryAjaxSettings;
 		beforeInitData?: (this: BodyTable, $form: JQuery) => BooleanFeedbackValues;
 		beforeShowForm?: (this: BodyTable, $form: JQuery) => void;
-		beforeSubmit?: (this: BodyTable, postdata: Object | string, $form: JQuery) => [true] | [true, any] | undefined | [false, string];
+		beforeSubmit?: (this: BodyTable, postdata: Object | string, rowids: string[]) => [true] | [true, any] | undefined | [false, string];
 		cancelicon?: FormIcon; // [true,"left","fa fa-ban"]
 		closeOnEscape?: boolean;
 		commonIconClass?: string; // "fa"
@@ -867,20 +893,28 @@ declare namespace FreeJqGrid {
 		datawidth?: number | "auto" | "100%" | string; // "auto"
 		delData?: any;
 		delicon?: FormIcon; // [true,"left","fa fa-trash-o"]
+		deltext?: string; // default from $.jgrid.locales[currentLocale].defaults.deltext or $.jgrid.defaults.deltext or "Deleting..."
+		delui?: LoadType; // "disable" 
 		drag?: boolean;
+		errorTextFormat?: (this: BodyTable, jqXhr: JQueryXHR) => string;
 		height?: number | "auto" | "100%" | string; // "auto"
+		jqModal?: boolean;
+		idSeparator?: string; // ","
 		left?: number;
+		modal?: boolean;
 		mtype?: string; // "POST"
-		onclickSubmit?: (this: BodyTable, options: FormDeletingOptions, postdata: Object | string) => Object | string;
+		onclickSubmit?: (this: BodyTable, options: FormDeletingOptions, postdata: Object | string, rowids: string[]) => Object | string;
 		onClose?: (this: BodyTable, selector: string | Element | JQuery) => boolean;
+		overlay?: number;
 		processing?: boolean; // internal used
 		reloadAfterSubmit?: boolean;
 		reloadGridOptions?: ReloadGridOptions;
 		removemodal?: boolean;
 		resize?: boolean;
-		serializeDelData?: (this: BodyTable, postdata: Object | string) => Object | string;
+		serializeDelData?: (this: BodyTable, postdata: Object | string, rowids: string[]) => Object | string;
 		top?: number;
-		url?: string | ((this: BodyTable, rowid: string, postdata: Object | string, options: FormDeletingOptions) => string);
+		toTop?: boolean;
+		url?: string | ((this: BodyTable, rowid: string, postdata: Object | string, options: FormDeletingOptions, rowids: string[]) => string);
 		useDataProxy?: boolean;
 		width?: number | "auto" | "100%" | string; // "auto"
 		[propName: string]: any; // allow to have any number of other properties
@@ -1053,12 +1087,20 @@ declare namespace FreeJqGrid {
 	interface InlineNavOptions {
 		edit?: boolean;
 		editicon?: string; // "ui-icon-pencil"
+		edittitle?: string;
+		edittext?: string;
 		add?: boolean;
 		addicon?: string; // "ui-icon-plus"
+		addtext?: string;
+		addtitle?: string;
 		save?: boolean;
 		saveicon?: string; //"ui-icon-disk",
+		savetitle?: string;
+		savetext?: string;
 		cancel?: boolean;
 		cancelicon?: string; //"ui-icon-cancel",
+		canceltitle?: string;
+		canceltext?: string;
 		commonIconClass?: string; //"ui-icon",
 		iconsOverText?: boolean;
 		addParams?: AddRowOptions;
@@ -1121,8 +1163,8 @@ declare namespace FreeJqGrid {
 	}
 	interface JqGridSubGridOptions {
 		ajaxSubgridOptions?: JQueryAjaxSettings;
-		beforeCollapse?: (this: BodyTable, subgridDivId: string, rowid: string) => void;
-		beforeExpand?: (this: BodyTable, subgridDivId: string, rowid: string) => void;
+		subGridBeforeCollapse?: (this: BodyTable, subgridDivId: string, rowid: string) => void;
+		subGridBeforeExpand?: (this: BodyTable, subgridDivId: string, rowid: string) => void;
 		loadSubgridError?: (this: BodyTable, jqXhr: JQueryXHR, textStatus: string, errorThrown: string) => void;
 		serializeSubGridData?: (this: BodyTable, postData: any) => Object | string;
 		subGrid?: boolean;
@@ -1134,13 +1176,17 @@ declare namespace FreeJqGrid {
 		subGridWidth?: number; // 16
 	}
 	interface JqGridSelectionOptions {
-		beforeSelectRow?: (this: BodyTable, rowid, eventObject: JQueryEventObject) => false | void;
+		beforeSelectRow?: (this: BodyTable, rowid: string, eventObject: JQueryEventObject) => false | void;
 		readonly cb?: string;   // "#cb_list"
 		readonly cbId?: string; // "cb_list"
+		checkboxHtml?: (this: BodyTable, options: { rowid: string, iRow: number, iCol: number, data: any, checked: boolean }) => string;
 		deselectAfterSort?: boolean;
+		resetPageAfterSort?: boolean; // true
+		hasMultiselectCheckBox?: (this: BodyTable, options: { rowid: string, iRow: number, iCol: number, data: any, checked: boolean }) => string | false | undefined;
 		multiboxonly?: boolean;
 		multikey?: boolean;
 		multiPageSelection?: boolean;
+		selectAllMode?: "filtered" | "all"; // "filtered"
 		multiselect?: boolean;
 		multiselectPosition?: "left" | "right" | "none";
 		multiselectWidth?: number; // 16
@@ -1164,6 +1210,7 @@ declare namespace FreeJqGrid {
 		sortname?: string; // ""
 		sortIconsBeforeText?: boolean; // false
 		sortIconName?: (this: BodyTable, options: { order: "asc" | "desc", iCol: number, cm: ColumnModel }) => string; // return CSS classes
+		sortingDuringEditing?: "prevent" | "cancel" | "save"; // "prevent"
 		sortOrderPosition?: "afterSortIcons" | "beforeSortIcons"; // "afterSortIcons"
 		showOneSortIcon?: boolean; // false
 		showSortOrder?: boolean; // true
@@ -1209,8 +1256,11 @@ declare namespace FreeJqGrid {
 		onPaging?: (this: BodyTable, source: "records" | "user" | "first" | "prev" | "next" | "last", options: { newPage: number, currentPage: number, lastPage: number, currentRowNum: number, newRowNum: number }) => BooleanFeedbackValues;
 		page?: number;
 		pager?: boolean | string; // default: "". Example, "#jqg1"
+		pagerCenterWidth?: number;
 		pagerLeftWidth?: number; // 125
+		pagerRightWidth?: number;
 		pagerpos?: "left" | "center" | "right";
+		pagingDuringEditing?: "prevent" | "cancel" | "save"; // "prevent"
 		pgbuttons?: boolean; // true
 		pginput?: boolean; // true
 		reccount?: number; // 0
@@ -1253,7 +1303,7 @@ declare namespace FreeJqGrid {
 		commonIconClass?: string;
 		counters?: CounterInformation[];
 		displayField?: string[];
-		formatDisplayField?: ((this: BodyTable, displayValue: string, value: any, cm: ColumnModel, idx: number, grp: GroupInformation) => string)[];
+		formatDisplayField?: ((this: BodyTable, displayValue: string, value: any, cm: ColumnModel, idx: number, grp: GroupInformation, index: number) => string)[];
 		groupCollapse?: (options: { group: number, rowid: string }) => boolean;
 		groupColumnShow?: boolean[];
 		groupField: string[];
@@ -1292,7 +1342,7 @@ declare namespace FreeJqGrid {
 
 		actionsNavOptions?: FormatterActionsOptions;
 		additionalProperties?: (string | ColumnModel)[];
-		afterAddRow?: (this: BodyTable, options: { rowid: string, inputData: Object | Object[], position: AddRowDataPosition, srcRowid?: string, iRow?: number, localData?: Object, iData?: number }) => void;
+		afterAddRow?: (this: BodyTable, options: { rowid: string, inputData: Object | Object[], position: AddRowDataPosition, srcRowid?: string, iRow: number, tr: HTMLTableRowElement, localData?: Object, iData?: number }) => void;
 		afterChangeRowid?: (this: BodyTable, options: { rowid: string, oldRowid: string, iRow: number, tr: HTMLTableRowElement }) => void;
 		afterDelRow?: (this: BodyTable, rowid: string) => void;
 		afterInsertRow?: (this: BodyTable, rowid: string, item: { [cmOrPropName: string]: any }, srcItem: any) => void;
@@ -1302,7 +1352,9 @@ declare namespace FreeJqGrid {
 		altRows?: boolean;
 		arrayReader?: any[]; // used internally
 		arrayReaderInfos?: { [name: string]: { name?: string, index: string, order?: number, type: InputNameType } }; // used internally
-		autoencode?: boolean;
+		autoencode?: boolean; // true starting with version 4.15.0
+		autoResizing?: { adjustGridWidth?: boolean, compact?: boolean, fixWidthOnShrink?: boolean, maxColWidth?: number, minColWidth?: number, resetWidthOrg?: boolean, widthOfVisiblePartOfSortIcon?: number, wrapperClassName?: string };
+		autowidth?: boolean;
 		beforeInitGrid?: (this: BodyTable) => void;
 		beforeProcessing?: (this: BodyTable, data: any, textStatus: string, jqXhr: JQueryXHR) => false | void;
 		beforeRequest?: (this: BodyTable) => BooleanFeedbackValues;
@@ -1327,7 +1379,10 @@ declare namespace FreeJqGrid {
 				}
 			}
 		};
+		datastr?: string | any[];
 		datatype?: string | ((this: BodyTable, postData: Object | string, loadId: string, rcnt: number, npage: number, adjust: number) => void);
+		dataTypeOrg?: string;
+		deepempty?: boolean;
 		direction?: "ltr" | "rtl";
 		disableClick?: boolean;
 		editurl?: string; // "clientArray"
@@ -1365,6 +1420,7 @@ declare namespace FreeJqGrid {
 		readonly idSel?: string; // "#list"
 		inlineEditing?: InlineEditingOptions;
 		iPropByName?: {[additionalPropertyName: string]: number };
+		jqgdnd?: boolean;
 		jqXhr?: JQueryXHR; // JQueryXHR of the last pending Ajax request. Be used by abortAjaxRequest method
 		iRow?: number; // -1
 		jsonReader?: JsonOrLocalReader;
@@ -1374,7 +1430,7 @@ declare namespace FreeJqGrid {
 		loadComplete?: (this: BodyTable, data: any) => void;
 		loadError?: (this: BodyTable, jqXhr: JQueryXHR, textStatus: string, errorThrown: string) => void;
 		loadonce?: boolean;
-		loadui?: "enable" | "disable" | "block";
+		loadui?: LoadType;
 		locale?: string; // default is "en-US". It will be overwrite if by the last included i18n\grid.locale-XX.min.js
 		localReader?: JsonOrLocalReader;
 		maxItemsToJoin?: number; // 32768
@@ -1402,6 +1458,7 @@ declare namespace FreeJqGrid {
 			order?: string | null; // "sord"
 			page?: string | null; // "page"
 			rows?: string | null; // "rows"
+			rowidName?: string; // "rowid" - will be not really used currently
 			search?: string | null; // "_search"
 			sort?: string | null; // "sidx"
 			subgridid?: string | null; // "id"
@@ -1409,9 +1466,11 @@ declare namespace FreeJqGrid {
 		};
 		quickEmpty?: boolean | "quickest";
 		reloadGridOptions?: ReloadGridOptions;
+		reloadingDuringEditing?: "prevent" | "cancel" | "save"; // "prevent"
 		remapColumns?: number[];
 		resetsearch?: boolean;
 		reservedColumnNames?: string[]; // ["rn","cb","subgrid"]
+		rowattr?: ( (this: BodyTable, item: any, rowObject: any, rowid: string) => { [attributeName: string]: string } | null | undefined );
 		rowIndexes?: {[rowid: string]: number};
 		rowNum?: number; // 10
 		rownumbers?: boolean;
@@ -1425,6 +1484,7 @@ declare namespace FreeJqGrid {
 		scrollTimeout?: number; // 40
 		search?: boolean;
 		searching?: SearchingOptions;
+		serializeGridData?: (this: BodyTable, postData: any) => Object | string;
 		sortable?: boolean | ((permutation: number[]) => void) | { exclude?: string, update?: (permutation: number[]) => void, options?: JQueryUI.SortableOptions };
 		shrinkToFit?: boolean;
 		tblwidth?: number; // 487
@@ -1458,7 +1518,7 @@ declare namespace FreeJqGrid {
 		aftersavefunc?: (this: BodyTable, rowid: string, jqXhr: JQueryXHR, postData: any, options: SaveRowOptions) => void;
 		errorfunc?: (this: BodyTable, rowid: string, jqXhr: JQueryXHR, textStatus: string, errorThrown: string) => void;
 		extraparam?: Object;
-		successfunc?: (this: BodyTable, jqXhr: JQueryXHR, rowid: string, options: FreeJqGrid.SaveRowOptions) => boolean | [boolean, any];
+		successfunc?: (this: BodyTable, jqXhr: JQueryXHR, rowid: string, options: FreeJqGrid.SaveRowOptions, editOrAdd: string, postData: any) => boolean | [boolean, any];
 		url?: string | ((this: BodyTable, rowid: string, editOrAdd: "add" | "edit", postData: any, options: SaveRowOptions) => string);
 	}
 	interface EditRowOptions extends BaseSaveRowOptions {
@@ -1474,18 +1534,19 @@ declare namespace FreeJqGrid {
 		beforeSaveRow?: (this: BodyTable, options: SaveRowOptions, rowid: string, editOrAdd: "add" | "edit") => BooleanFeedbackValues;
 		mtype?: string | ((this: BodyTable, editOrAdd: "add" | "edit", options: SaveRowOptions, rowid: string, postData: any) => string);
 		saveRowValidation?: (this: BodyTable, options: { options: SaveRowOptions, rowid: string, tr: HTMLTableRowElement, iRow: string, savedRow: any, newData: any, mode: "add" | "edit" }) => BooleanFeedbackValues;
-		savetext?: string; // default from $.jgrid.locales[currentLocale].defaults.savetext or $.jgrid.defaults.savetext
-		saveui?: SaveUi;
+		savetext?: string; // default from $.jgrid.locales[currentLocale].defaults.savetext or $.jgrid.defaults.savetext or "Saving..."
+		saveui?: LoadType; // "enable"
 		serializeSaveData?: (this: BodyTable, postData: any) => Object | string; 
 		restoreAfterError?: boolean;
 		[propName: string]: any; // allow to have any number of other properties
 	}
 	interface AddRowOptions {
 		addRowParams?: EditRowOptions;
-		beforeAddRow: (this: BodyTable, options: AddRowOptions) => BooleanFeedbackValues;
+		beforeAddRow?: (this: BodyTable, options: AddRowOptions) => BooleanFeedbackValues;
 		initdata?: any;
 		position?: AddRowDataPosition;
 		rowID?: null | string | ((options: AddRowOptions) => string);
+		srcRowid?: string;
 		useDefValues?: boolean;
 		useFormatter?: boolean;
 		[propName: string]: any; // allow to have any number of other properties
@@ -1717,7 +1778,7 @@ interface JQuery {
 	isCellEditing?(rowid: string, cmName: string, tr?: HTMLTableRowElement): boolean;
 	isCellEditing?(rowid: string, iCol: number, tr?: HTMLTableRowElement): boolean;
 	isInCommonIconClass?(testClassName: string): boolean;
-	progressBar?(options: { htmlContent: string, method: "hide" | "show", loadtype: FreeJqGrid.SaveUi }): FreeJqGrid.JQueryJqGrid;
+	progressBar?(options: { htmlContent: string, method: "hide" | "show", loadtype: FreeJqGrid.LoadType }): FreeJqGrid.JQueryJqGrid;
 	remapColumns?(permutationByName: number[], updateCells?: boolean, keepHeader?: boolean): FreeJqGrid.JQueryJqGrid;
 	remapColumnsByName?(permutationByName: string[], updateCells?: boolean, keepHeader?: boolean): FreeJqGrid.JQueryJqGrid;
 	resetColumnResizerHeight?: FreeJqGrid.JQueryJqGrid;
@@ -1973,7 +2034,7 @@ interface JQuery {
 	jqResize(handle: Element | string | JQuery, alsoResize: Element | string | JQuery): JQuery;
 
 	// jqGrid events
-	on(eventName: "jqGridAfterAddRow", handler: (eventObject: JQueryEventObject, options: { rowid: string, inputData: Object | Object[], position: FreeJqGrid.AddRowDataPosition, srcRowid?: string, iRow?: number, localData?: Object, iData?: number }) => void): FreeJqGrid.JQueryJqGrid;
+	on(eventName: "jqGridAfterAddRow", handler: (eventObject: JQueryEventObject, options: { rowid: string, inputData: Object | Object[], position: FreeJqGrid.AddRowDataPosition, srcRowid?: string, iRow: number, tr: HTMLTableRowElement, localData?: Object, iData?: number }) => void): FreeJqGrid.JQueryJqGrid;
 	on(eventName: "jqGridAfterChangeRowid", handler: (ventObject: JQueryEventObject, options: { rowid: string, oldRowid: string, iRow: number, tr: HTMLTableRowElement }) => void): FreeJqGrid.JQueryJqGrid;
 	on(eventName: "jqGridAfterDelRow", handler: (eventObject: JQueryEventObject, rowid: string) => void): FreeJqGrid.JQueryJqGrid;
 	on(eventName: "jqGridAfterInsertRow", handler: (eventObject: JQueryEventObject, rowid: string, item: { [cmOrPropName: string]: any }, srcItem: any) => void): FreeJqGrid.JQueryJqGrid;
@@ -1994,6 +2055,7 @@ interface JQuery {
 	on(eventName: "jqGridRightClickRow", handler: (eventObject: JQueryEventObject, rowid: string, iRow: number, iCol: number, orgEventObject: JQueryEventObject) => void): FreeJqGrid.JQueryJqGrid;
 	on(eventName: "jqGridSelectAll", handler: (eventObject: JQueryEventObject, rowids: string[], toCheck: boolean) => void): FreeJqGrid.JQueryJqGrid;
 	on(eventName: "jqGridSelectRow", handler: (eventObject: JQueryEventObject, rowid: string, state: boolean, orgEventObject: JQueryEventObject) => void): FreeJqGrid.JQueryJqGrid;
+	on(eventName: "jqGridSerializeGridData", handler: (eventObject: JQueryEventObject, postdata: Object) => Object | string): FreeJqGrid.JQueryJqGrid;
 	on(eventName: "jqGridShowHideCol", handler: (eventObject: JQueryEventObject, show: boolean | "none" | "", cmName: string, iCol: number, options: FreeJqGrid.ShowHideColOptions) => void): FreeJqGrid.JQueryJqGrid;	
 	on(eventName: "jqGridSortCol", handler: (eventObject: JQueryEventObject, cmOrIndexName: string, iCol: number, sortOrder: string, orgEventObject?: JQueryEventObject) => FreeJqGrid.BooleanFeedbackValues): FreeJqGrid.JQueryJqGrid;
 	on(eventName: "jqGridRemapColumns", handler: (eventObject: JQueryEventObject, permutation: number[], updateCells?: boolean, keepHeader?: boolean) => void): FreeJqGrid.JQueryJqGrid;
@@ -2025,7 +2087,7 @@ interface JQuery {
 
 	// form deleting events
 	on(eventName: "jqGridDeleteAfterShowForm", handler: (eventObject: JQueryEventObject, $form: JQuery) => void): FreeJqGrid.JQueryJqGrid;
-	on(eventName: "jqGridAddEditAfterComplete", handler: (eventObject: JQueryEventObject, jqXhr: JQueryXHR, postdata: Object | string, $form: JQuery) => void): FreeJqGrid.JQueryJqGrid;
+	on(eventName: "jqGridDeleteAfterComplete", handler: (eventObject: JQueryEventObject, jqXhr: JQueryXHR, postdata: Object | string, $form: JQuery, rowids: string[]) => void): FreeJqGrid.JQueryJqGrid;
 	on(eventName: "jqGridDeleteBeforeInitData", handler: (eventObject: JQueryEventObject, $form: JQuery) => FreeJqGrid.BooleanFeedbackValues): FreeJqGrid.JQueryJqGrid;
 	on(eventName: "jqGridDeleteBeforeShowForm", handler: (eventObject: JQueryEventObject, $form: JQuery) => void): FreeJqGrid.JQueryJqGrid;
 
