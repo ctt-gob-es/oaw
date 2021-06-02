@@ -2597,6 +2597,12 @@ public class Check {
 		if (nodeList != null && nodeList.getLength() > 0) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					// divs are allowed
+//					if (nodeList.item(i).getNodeName().equalsIgnoreCase("div")) {
+//						// TODO Recursively??
+//						// continue;
+//						return functionDefinitionListConstruction(checkCode, null, (Element) nodeList.item(i));
+//					} else
 					if (nodeList.item(i).getNodeName().equalsIgnoreCase("dd")) {
 						if (!isDt) {
 							if (!dtHasDd) {
