@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.CheckerParser;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
@@ -189,7 +189,7 @@ public class TestCrawl {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
-		// TODO Cookies
+		// Cookies
 		CookieManager cookieManager = new CookieManager();
 		CookieHandler.setDefault(cookieManager);
 		final int maxNumRetries = 3;

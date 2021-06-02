@@ -21,13 +21,30 @@ import org.w3c.dom.NodeList;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+/**
+ * The Class ImportSectionSetFromXml.
+ */
 public final class ImportSectionSetFromXml {
 
+    /** The section number. */
     static int sectionNumber = 1;
 
+    /**
+	 * Instantiates a new import section set from xml.
+	 */
     private ImportSectionSetFromXml() {
     }
 
+    /**
+	 * Creates the section set form.
+	 *
+	 * @param request     the request
+	 * @param path        the path
+	 * @param defaultPath the default path
+	 * @param isHtml      the is html
+	 * @return the section set form
+	 * @throws Exception the exception
+	 */
     public static SectionSetForm createSectionSetForm(HttpServletRequest request, String path, String defaultPath, boolean isHtml) throws Exception {
         SectionSetForm introduction = new SectionSetForm();
 

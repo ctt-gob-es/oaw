@@ -23,8 +23,17 @@ import javax.servlet.*;
 import java.io.IOException;
 import java.sql.Connection;
 
+/**
+ * The Class StopRunningCrawlingsServlet.
+ */
 public class StopRunningCrawlingsServlet extends GenericServlet {
 
+    /**
+	 * Inits the.
+	 *
+	 * @param config the config
+	 * @throws ServletException the servlet exception
+	 */
     /*
      * Puede que al detener el servidor hayan quedado rastreos activos. Los procesos se detendán al parar el servidor
      * pero en base de datos segirán constando como activos. Para evitarlo, cada vez que se reinicie el servidor
@@ -43,6 +52,14 @@ public class StopRunningCrawlingsServlet extends GenericServlet {
         }
     }
 
+    /**
+	 * Service.
+	 *
+	 * @param request  the request
+	 * @param response the response
+	 * @throws ServletException the servlet exception
+	 * @throws IOException      Signals that an I/O exception has occurred.
+	 */
     @Override
     public void service(ServletRequest request, ServletResponse response)
             throws ServletException, IOException {

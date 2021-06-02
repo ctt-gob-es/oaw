@@ -218,12 +218,15 @@ public class BasicServiceManager {
 				final SourceFilesManager sourceFilesManager = new SourceFilesManager(new File(pdfPath).getParentFile());
 				final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
 				// Source code analysis
-				if (basicServiceForm.isContentAnalysis()) {
+				if (basicServiceForm.isContentAnalysisMultiple()) {
+					sourceFilesManager.writeSourceFilesContentMultiple(DataBaseManager.getConnection(), analysisIdsByTracking);
+					sourceFilesManager.zipSourcesContent(true);
+				} else if (basicServiceForm.isContentAnalysis()) {
 					sourceFilesManager.writeSourceFilesContent(DataBaseManager.getConnection(), analysisIdsByTracking, basicServiceForm.getFileName());
 					sourceFilesManager.zipSourcesContent(true);
 				} else {
 					if (Constants.REPORT_OBSERVATORY_5.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_5_NOBROKEN.equals(basicServiceForm.getReport())) {
-						// TODO Add accesibility page if exists
+						// Add accesibility page if exists
 						String codFuente = TAnalisisAccesibilidadDAO.getSourceCode(DataBaseManager.getConnection(), idCrawling);
 						if (!org.apache.commons.lang3.StringUtils.isEmpty(codFuente)) {
 							sourceFilesManager.writeSourceFilesAccessibility(DataBaseManager.getConnection(), codFuente);

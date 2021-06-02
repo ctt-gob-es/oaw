@@ -26,13 +26,20 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
+/**
+ * The Class ScheduleBasicServiceServlet.
+ */
 public class ScheduleBasicServiceServlet extends GenericServlet {
 
-    /**
-     *
-     */
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /**
+	 * Inits the.
+	 *
+	 * @param config the config
+	 * @throws ServletException the servlet exception
+	 */
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -51,6 +58,14 @@ public class ScheduleBasicServiceServlet extends GenericServlet {
         }
     }
 
+    /**
+	 * Service.
+	 *
+	 * @param arg0 the arg 0
+	 * @param arg1 the arg 1
+	 * @throws ServletException the servlet exception
+	 * @throws IOException      Signals that an I/O exception has occurred.
+	 */
     @Override
     public void service(ServletRequest arg0, ServletResponse arg1)
             throws ServletException, IOException {

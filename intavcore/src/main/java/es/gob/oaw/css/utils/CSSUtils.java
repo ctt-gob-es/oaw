@@ -47,21 +47,22 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Clase con métodos de utilidad para evaluar las comprobaciones de CSS
+ * Clase con métodos de utilidad para evaluar las comprobaciones de CSS.
  */
 public final class CSSUtils {
 
+	/**
+	 * Instantiates a new CSS utils.
+	 */
 	private CSSUtils() {
 	}
 
 	/**
-	 * Método que evalua un check de CSS
+	 * Método que evalua un check de CSS.
 	 *
 	 * @param rootElement  elemento raíz del documento
-	 * @param checkCode    parámetros de la comprobación (función y parámetros de
-	 *                     configuración) @see Checkcode
-	 * @param cssResources lista con los recursos CSS que incluye la página @see
-	 *                     CSSResource
+	 * @param checkCode    parámetros de la comprobación (función y parámetros de configuración) @see Checkcode
+	 * @param cssResources lista con los recursos CSS que incluye la página @see CSSResource
 	 * @return una lista de los problemas encontrados @see CSSProblem
 	 */
 	public static List<CSSProblem> evaluate(final Element rootElement, final CheckCode checkCode,
@@ -75,6 +76,12 @@ public final class CSSUtils {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Convert to dom 4 j.
+	 *
+	 * @param element the element
+	 * @return the org.dom 4 j. document
+	 */
 	private static org.dom4j.Document convertToDom4j(final Element element) {
 		final org.dom4j.Document dom4jDocument;
 		if (element != null) {
@@ -94,6 +101,12 @@ public final class CSSUtils {
 		return dom4jDocument;
 	}
 
+	/**
+	 * Clean HTML.
+	 *
+	 * @param html the html
+	 * @return the string
+	 */
 	private static String cleanHTML(final String html) {
 		final Schema theSchema = new HTMLSchema();
 		final XMLReader xmlReader = new Parser();
@@ -123,6 +136,12 @@ public final class CSSUtils {
 		return writer.toString().trim().replace("xmlns=\"http://www.w3.org/1999/xhtml\"", "");
 	}
 
+	/**
+	 * Convert document to string.
+	 *
+	 * @param element the element
+	 * @return the string
+	 */
 	private static String convertDocumentToString(final Element element) {
 		try {
 			final TransformerFactory transFactory = TransformerFactory.newInstance();
@@ -139,13 +158,12 @@ public final class CSSUtils {
 	}
 
 	/**
-	 * Método para obtener la instancia encargada de realizar la comprobación
+	 * Método para obtener la instancia encargada de realizar la comprobación.
 	 *
-	 * @param node      nodo sobre el que se está aplicando la comprobación (debería
-	 *                  ser siempre el nodo raíz HTML)
+	 * @param node      nodo sobre el que se está aplicando la comprobación (debería ser siempre el nodo raíz HTML)
 	 * @param checkCode objeto CheckCode con la información de la comprobación
 	 * @return una instancia de CSSAnalyzer que evaluará una comprobación de CSS
-	 * @throws InstantiationException
+	 * @throws InstantiationException the instantiation exception
 	 */
 	private static CSSAnalyzer getCSSAnalyzer(final Node node, final CheckCode checkCode)
 			throws InstantiationException {
@@ -177,8 +195,7 @@ public final class CSSUtils {
 	}
 
 	/**
-	 * Método que transforma un problema de CSS (CSSProblem) a un problema de
-	 * accesibilidad (Problem)
+	 * Método que transforma un problema de CSS (CSSProblem) a un problema de accesibilidad (Problem).
 	 *
 	 * @param cssProblem un problema encontrado en una CSS
 	 * @param check      comprobacion Check asociada al problema

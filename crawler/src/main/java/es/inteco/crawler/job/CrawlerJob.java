@@ -58,6 +58,7 @@ import org.xml.sax.InputSource;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.CheckerParser;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import es.gob.oaw.MailException;
 import es.gob.oaw.MailService;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.common.logging.Logger;
@@ -88,9 +89,7 @@ public class CrawlerJob implements InterruptableJob {
 	private static final String EMPTY_STRING = "";
 	/** Listado de dominios rastreados. */
 	private final List<CrawledLink> crawlingDomains = new ArrayList<>();
-	/**
-	 * Listado de dominios auxiliares para completar los dominios rastreados.
-	 */
+	/** Listado de dominios auxiliares para completar los dominios rastreados. */
 	private final List<String> auxDomains = new ArrayList<>();
 	/** Contenido de las URL rastreadas en MD5. */
 	private final List<String> md5Content = new ArrayList<>();
@@ -100,6 +99,28 @@ public class CrawlerJob implements InterruptableJob {
 	private final MailService mailService = new MailService();
 	/** Solicitud de interrupción. */
 	private boolean interrupt = false;
+	/** The extended depth. */
+	private int extendedDepth = 0;
+	/** The extended width. */
+	private int extendedWidth = 0;
+
+	/**
+	 * Execute.
+	 *
+	 * @param jobContext the job context
+	 * @throws JobExecutionException the job execution exception
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+	 */
+	@Override
+	public void execute(final JobExecutionContext jobContext) throws JobExecutionException {
+		final JobDataMap jobDataMap = jobContext.getJobDetail().getJobDataMap();
+		final CrawlerData crawlerData = (CrawlerData) jobDataMap.get(Constants.CRAWLER_DATA);
+		launchCrawler(crawlerData);
+	}
 
 	/**
 	 * Comprueba si una URL pertenece al dominio.
@@ -192,24 +213,6 @@ public class CrawlerJob implements InterruptableJob {
 	}
 
 	/**
-	 * Execute.
-	 *
-	 * @param jobContext the job context
-	 * @throws JobExecutionException the job execution exception
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
-	 */
-	@Override
-	public void execute(final JobExecutionContext jobContext) throws JobExecutionException {
-		final JobDataMap jobDataMap = jobContext.getJobDetail().getJobDataMap();
-		final CrawlerData crawlerData = (CrawlerData) jobDataMap.get(Constants.CRAWLER_DATA);
-		launchCrawler(crawlerData);
-	}
-
-	/**
 	 * Lanza el crawler.
 	 *
 	 * @param crawlerData the crawler data
@@ -239,21 +242,6 @@ public class CrawlerJob implements InterruptableJob {
 	}
 
 	/**
-	 * Test crawler.
-	 *
-	 * @param crawlerData the crawler data
-	 * @return the list
-	 */
-	public List<CrawledLink> testCrawler(final CrawlerData crawlerData) {
-		try {
-			makeCrawl(crawlerData);
-		} catch (Exception e) {
-			Logger.putLog("Error al probar el rastreo.", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
-		}
-		return crawlingDomains;
-	}
-
-	/**
 	 * Lanza un análisis simple.
 	 *
 	 * @param crawlerData the crawler data
@@ -263,6 +251,28 @@ public class CrawlerJob implements InterruptableJob {
 		final List<CrawledLink> simpleAnalysisiDomains = new ArrayList<>();
 		final CrawledLink crawledLink = new CrawledLink(crawlerData.getNombreRastreo(), crawlerData.getContent(), 0, 0);
 		simpleAnalysisiDomains.add(crawledLink);
+		try {
+			analyze(simpleAnalysisiDomains, crawlerData, EMPTY_STRING);
+		} catch (Exception e) {
+			Logger.putLog("Error al ejecutar el análisis simple", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return simpleAnalysisiDomains;
+	}
+
+	/**
+	 * Run multipla files analysis.
+	 *
+	 * @param crawlerData the crawler data
+	 * @return the list
+	 */
+	public List<CrawledLink> runMultiplaFilesAnalysis(final CrawlerData crawlerData) {
+		final List<CrawledLink> simpleAnalysisiDomains = new ArrayList<>();
+		if (crawlerData.getContents() != null && !crawlerData.getContents().isEmpty()) {
+			for (CrawlerFile cf : crawlerData.getContents()) {
+				final CrawledLink crawledLink = new CrawledLink(cf.getName(), cf.getContent(), 0, 0);
+				simpleAnalysisiDomains.add(crawledLink);
+			}
+		}
 		try {
 			analyze(simpleAnalysisiDomains, crawlerData, EMPTY_STRING);
 		} catch (Exception e) {
@@ -302,6 +312,8 @@ public class CrawlerJob implements InterruptableJob {
 			} catch (Exception e) {
 				Logger.putLog("Error al concluir el rastreo", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
+			} finally {
+				DataBaseManager.closeConnection(c);
 			}
 		} else {
 			Logger.putLog("El rastreo " + crawlerData.getIdCrawling() + " ha sido detenido a petición del usuario", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
@@ -373,7 +385,7 @@ public class CrawlerJob implements InterruptableJob {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
-		// TODO Cookies
+		// Cookies
 		CookieManager cookieManager = new CookieManager();
 		CookieHandler.setDefault(cookieManager);
 		cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
@@ -385,6 +397,7 @@ public class CrawlerJob implements InterruptableJob {
 		String cookie = null;
 		int depth = crawlerData.getProfundidad();
 		int width = crawlerData.getTopN();
+		// Force to 1 page in this case
 		if (crawlerData.getIdCartridge() == 10) {
 			crawlerData.setTopN(1);
 			crawlerData.setProfundidad(1);
@@ -396,19 +409,25 @@ public class CrawlerJob implements InterruptableJob {
 				crawlerData.setUrls(singleUrl);
 			}
 		} else {
-			// Apply seed complex only if is not basic service an only if is not manual selection
-			if (crawlerData.getIdCrawling() > 0 && crawlerData.getUrls().size() == 1) {
-				try {
-					Seed s = RastreoDAO.getSeedFromCrawling(DataBaseManager.getConnection(), crawlerData.getIdCrawling());
-					if (s != null) {
-						depth = s.getDepth();
-						width = s.getWidth();
-						// Set to recursive calls
-						crawlerData.setTopN(width);
-						crawlerData.setProfundidad(depth);
+			// if is a realaunched crawl, extend top depth antd width
+			if (crawlerData.isRetry()) {
+				extendedDepth = crawlerData.getExtendedDepth();
+				extendedWidth = crawlerData.getExtendedWidth();
+			} else {
+				// Apply seed complex only if is not basic service an only if is not manual selection
+				if (crawlerData.getIdCrawling() > 0 && crawlerData.getUrls().size() == 1) {
+					try {
+						Seed s = RastreoDAO.getSeedFromCrawling(DataBaseManager.getConnection(), crawlerData.getIdCrawling());
+						if (s != null) {
+							depth = s.getDepth();
+							width = s.getWidth();
+							// Set to recursive calls
+							crawlerData.setTopN(width);
+							crawlerData.setProfundidad(depth);
+						}
+					} catch (Exception e) {
+						Logger.putLog("Error al obtener la complejidad de la semilla del rastreo id=" + crawlerData.getIdCrawling(), CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
 					}
-				} catch (Exception e) {
-					Logger.putLog("Error al obtener la complejidad de la semilla del rastreo id=" + crawlerData.getIdCrawling(), CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
 		}
@@ -421,9 +440,7 @@ public class CrawlerJob implements InterruptableJob {
 					&& !url.endsWith(".wsdl")) {
 				try {
 					HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
-					// Para la conexión inicial aumentamos los tiempos de espera
-					connection.setConnectTimeout(connection.getConnectTimeout() * 2);
-					connection.setReadTimeout(connection.getReadTimeout() * 2);
+					updateTimeouts(crawlerData, connection);
 					int numRetries = 0;
 					int numRedirections = 0;
 					int responseCode = Integer.MAX_VALUE;
@@ -437,8 +454,12 @@ public class CrawlerJob implements InterruptableJob {
 						if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE && !contains(crawlingDomains, url) && !CrawlerUtils.isOpenDNSResponse(connection)) {
 							// Si hay redirecciones, puede que el dominio cambie
 							domain = connection.getURL().getHost();
-							final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(url, domain));
-							final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
+							HttpURLConnection generateRendererConnection = CrawlerUtils.generateRendererConnection(url, domain);
+							updateTimeouts(crawlerData, generateRendererConnection);
+							final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(generateRendererConnection);
+							generateRendererConnection = CrawlerUtils.generateRendererConnection(url, domain);
+							updateTimeouts(crawlerData, generateRendererConnection);
+							final String textContent = CrawlerUtils.getTextContent(generateRendererConnection, markableInputStream);
 							markableInputStream.reset();
 							// Recuerar el charset
 							final String charset = CrawlerUtils.getCharset(connection, markableInputStream);
@@ -571,17 +592,23 @@ public class CrawlerJob implements InterruptableJob {
 	 * @param crawlerData la información CrawlerDate del proceso de crawling
 	 */
 	private void warnIncompleteCrawl(final CrawlerData crawlerData) {
-		final PropertiesManager pmgr = new PropertiesManager();
-		final List<String> mailTo = getAdministradoresMails();
-		final String subject = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.subject"), crawlerData.getNombreRastreo());
-		final String url = crawlerData.getUrls().get(0);
-		final int crawled = crawlingDomains.size();
-		final int objective = (crawlerData.getTopN() * crawlerData.getProfundidad()) + 1;
-		final String inDirectory = crawlerData.isInDirectory() ? "Sí" : "No";
-		final String connectionOkOAW = checkConnection(url, false) ? "Sí" : "No";
-		final String connectionOkJS = checkConnection(url, true) ? "Sí" : "No";
-		final String text = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.text"), url, crawled, objective, inDirectory, connectionOkOAW, connectionOkJS);
-		mailService.sendMail(mailTo, subject, text);
+		if (!interrupt) {
+			final PropertiesManager pmgr = new PropertiesManager();
+			final List<String> mailTo = getAdministradoresMails();
+			final String subject = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.subject"), crawlerData.getNombreRastreo());
+			final String url = crawlerData.getUrls().get(0);
+			final int crawled = crawlingDomains.size();
+			final int objective = (crawlerData.getTopN() * crawlerData.getProfundidad()) + 1;
+			final String inDirectory = crawlerData.isInDirectory() ? "Sí" : "No";
+			final String connectionOkOAW = checkConnection(url, false) ? "Sí" : "No";
+			final String connectionOkJS = checkConnection(url, true) ? "Sí" : "No";
+			final String text = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.text"), url, crawled, objective, inDirectory, connectionOkOAW, connectionOkJS);
+			try {
+				mailService.sendMail(mailTo, subject, text);
+			} catch (MailException e) {
+				Logger.putLog("Fallo al enviar el correo", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
+			}
+		}
 	}
 
 	/**
@@ -821,7 +848,8 @@ public class CrawlerJob implements InterruptableJob {
 	private void makeCrawl(final String domain, final String rootUrl, final String url, final String cookie, final CrawlerData crawlerData, final List<IgnoredLink> ignoredLinks) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final int unlimitedTopN = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "amplitud.ilimitada.value"));
-		if (crawlerData.getProfundidad() > 0 && !interrupt) {
+		if ((crawlerData.getProfundidad() > 0 || (crawlerData.isRetry() && extendedDepth > 0)) && !interrupt) {
+//		if (crawlerData.getProfundidad() > 0 && !interrupt) {
 			final List<CrawledLink> levelLinks = new ArrayList<>();
 			final HttpURLConnection connection = CrawlerUtils.getConnection(url, domain, true);
 			try {
@@ -829,7 +857,9 @@ public class CrawlerJob implements InterruptableJob {
 				connection.connect();
 				int responseCode = connection.getResponseCode();
 				if (responseCode == HttpURLConnection.HTTP_OK) {
-					final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(url, domain));
+					final HttpURLConnection generateRendererConnection = CrawlerUtils.generateRendererConnection(url, domain);
+					updateTimeouts(crawlerData, generateRendererConnection);
+					final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(generateRendererConnection);
 					// final String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
 					final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
 					markableInputStream.close();
@@ -848,7 +878,9 @@ public class CrawlerJob implements InterruptableJob {
 						try {
 							final String absoluteUrlLink = CrawlerUtils.getAbsoluteUrl(document, url, CrawlerUtils.encodeUrl(urlLink)).toString().replaceAll("\\.\\./", EMPTY_STRING);
 							if (isValidUrl(rootUrl, domain, absoluteUrlLink, crawlerData)) {
-								if ((crawlerData.getTopN() == unlimitedTopN) || ((cont < crawlerData.getTopN()) && maxIntentosBuscarTipos < crawlerData.getMaxIntentosBuscarTipos())) {
+								if ((crawlerData.getTopN() == unlimitedTopN)
+										|| ((cont < crawlerData.getTopN() || (crawlerData.isRetry() && cont < extendedWidth)) && maxIntentosBuscarTipos < crawlerData.getMaxIntentosBuscarTipos())) {
+//								if ((crawlerData.getTopN() == unlimitedTopN) || ((cont < crawlerData.getTopN()) && maxIntentosBuscarTipos < crawlerData.getMaxIntentosBuscarTipos())) {
 									if (isLinkToAdd(rootUrl, domain, absoluteUrlLink, cookie, levelLinks, crawlerData, true, ignoredLinks, crawlerData.isCheckFormPage(),
 											crawlerData.isCheckTablePage())) {
 										cont++;
@@ -874,6 +906,10 @@ public class CrawlerJob implements InterruptableJob {
 						}
 					}
 					crawlerData.setProfundidad(crawlerData.getProfundidad() - 1);
+					// Control retry depth
+					if (crawlerData.isRetry()) {
+						extendedDepth--;
+					}
 					for (CrawledLink levelLink : levelLinks) {
 						makeCrawl(domain, rootUrl, levelLink.getUrl(), cookie, crawlerData, ignoredLinks);
 					}
@@ -1108,7 +1144,9 @@ public class CrawlerJob implements InterruptableJob {
 				connection = CrawlerUtils.followRedirection(cookie, new URL(connectedURL), connection.getHeaderField("location"));
 			} else if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE) {
 				// final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-				final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(urlLink, domain));
+				final HttpURLConnection generateRendererConnection = CrawlerUtils.generateRendererConnection(urlLink, domain);
+				updateTimeouts(crawlerData, generateRendererConnection);
+				final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(generateRendererConnection);
 				// Generate renderer connection (applies proxy config)
 				final String remoteContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(urlLink, domain), markableInputStream);
 				markableInputStream.close();
@@ -1163,6 +1201,24 @@ public class CrawlerJob implements InterruptableJob {
 	}
 
 	/**
+	 * Update timeouts. Checks if crawler data alter default timeout
+	 *
+	 * @param crawlerData                the crawler data
+	 * @param generateRendererConnection the generate renderer connection
+	 */
+	private void updateTimeouts(final CrawlerData crawlerData, final HttpURLConnection generateRendererConnection) {
+		if (crawlerData.isExtendTimeout() && crawlerData.getExtendedTimeoutValue() != 0) {
+			generateRendererConnection.setConnectTimeout(crawlerData.getExtendedTimeoutValue() * 2);
+			generateRendererConnection.setReadTimeout(crawlerData.getExtendedTimeoutValue() * 2);
+			generateRendererConnection.addRequestProperty("extendedTimeout", String.valueOf(crawlerData.getExtendedTimeoutValue() * 2));
+		} else {
+			generateRendererConnection.setConnectTimeout(generateRendererConnection.getConnectTimeout() * 2);
+			generateRendererConnection.setReadTimeout(generateRendererConnection.getReadTimeout() * 2);
+			generateRendererConnection.addRequestProperty("extendedTimeout", String.valueOf(generateRendererConnection.getConnectTimeout() * 2));
+		}
+	}
+
+	/**
 	 * Interrupt.
 	 *
 	 * @throws UnableToInterruptJobException the unable to interrupt job exception
@@ -1176,5 +1232,20 @@ public class CrawlerJob implements InterruptableJob {
 	public void interrupt() throws UnableToInterruptJobException {
 		Logger.putLog("Se ha pedido una interrupción!!", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 		interrupt = true;
+	}
+
+	/**
+	 * Test crawler.
+	 *
+	 * @param crawlerData the crawler data
+	 * @return the list
+	 */
+	public List<CrawledLink> testCrawler(final CrawlerData crawlerData) {
+		try {
+			makeCrawl(crawlerData);
+		} catch (Exception e) {
+			Logger.putLog("Error al probar el rastreo.", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return crawlingDomains;
 	}
 }

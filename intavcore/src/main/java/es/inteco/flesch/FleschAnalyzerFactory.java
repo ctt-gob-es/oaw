@@ -15,18 +15,24 @@
 ******************************************************************************/
 package es.inteco.flesch;
 
+/**
+ * A factory for creating FleschAnalyzer objects.
+ */
 public final class FleschAnalyzerFactory {
 
+    /**
+	 * Instantiates a new flesch analyzer factory.
+	 */
     private FleschAnalyzerFactory() {
     }
 
     /**
-     * Devuelve un analizador para el lenguaje pedido
-     *
-     * @param language
-     * @return
-     * @throws FleschException
-     */
+	 * Devuelve un analizador para el lenguaje pedido.
+	 *
+	 * @param language the language
+	 * @return the flesch analyzer
+	 * @throws FleschException the flesch exception
+	 */
     public static FleschAnalyzer getFleschAnalyzer(int language) throws FleschException {
         if (language == FleschAnalyzer.SPANISH) {
             return new FleschSpanishAnalyzer();

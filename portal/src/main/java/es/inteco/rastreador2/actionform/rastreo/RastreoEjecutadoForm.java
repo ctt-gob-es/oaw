@@ -17,51 +17,115 @@ package es.inteco.rastreador2.actionform.rastreo;
 
 import org.apache.struts.action.ActionForm;
 
+/**
+ * The Class RastreoEjecutadoForm.
+ */
 public class RastreoEjecutadoForm extends ActionForm {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The id rastreo. */
     private long id_rastreo;
+    
+    /** The id ejecucion. */
     private long id_ejecucion;
+    
+    /** The nombre rastreo. */
     private String nombre_rastreo;
+    
+    /** The fecha. */
     private String fecha;
+    
+    /** The id cartucho. */
     private long id_cartucho;
 
+    /**
+	 * Gets the id cartucho.
+	 *
+	 * @return the id cartucho
+	 */
     public long getId_cartucho() {
         return id_cartucho;
     }
 
+    /**
+	 * Sets the id cartucho.
+	 *
+	 * @param id_cartucho the new id cartucho
+	 */
     public void setId_cartucho(long id_cartucho) {
         this.id_cartucho = id_cartucho;
     }
 
+    /**
+	 * Gets the id rastreo.
+	 *
+	 * @return the id rastreo
+	 */
     public long getId_rastreo() {
         return id_rastreo;
     }
 
+    /**
+	 * Sets the id rastreo.
+	 *
+	 * @param id_rastreo the new id rastreo
+	 */
     public void setId_rastreo(long id_rastreo) {
         this.id_rastreo = id_rastreo;
     }
 
+    /**
+	 * Gets the id ejecucion.
+	 *
+	 * @return the id ejecucion
+	 */
     public long getId_ejecucion() {
         return id_ejecucion;
     }
 
+    /**
+	 * Sets the id ejecucion.
+	 *
+	 * @param id_ejecucion the new id ejecucion
+	 */
     public void setId_ejecucion(long id_ejecucion) {
         this.id_ejecucion = id_ejecucion;
     }
 
+    /**
+	 * Gets the nombre rastreo.
+	 *
+	 * @return the nombre rastreo
+	 */
     public String getNombre_rastreo() {
         return nombre_rastreo;
     }
 
+    /**
+	 * Sets the nombre rastreo.
+	 *
+	 * @param nombre_rastreo the new nombre rastreo
+	 */
     public void setNombre_rastreo(String nombre_rastreo) {
         this.nombre_rastreo = nombre_rastreo;
     }
 
+    /**
+	 * Gets the fecha.
+	 *
+	 * @return the fecha
+	 */
     public String getFecha() {
         return fecha;
     }
 
+    /**
+	 * Sets the fecha.
+	 *
+	 * @param fecha the new fecha
+	 */
     public void setFecha(String fecha) {
         this.fecha = fecha;
     }

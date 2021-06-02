@@ -1256,21 +1256,19 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 	 */
 	public static List<ObservatoryEvaluationForm> getGlobalResultData(String executionId, long categoryId, List<ObservatoryEvaluationForm> pageExecutionList, Long idCrawler) throws Exception {
 		List<ObservatoryEvaluationForm> observatoryEvaluationList = null;
-		Connection c = null;
 		Connection conn = null;
 		try {
 			observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
 		} catch (NeedsRefreshException nre) {
 			Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioIntavUtils.class,
-					Logger.LOG_LEVEL_INFO);
+					Logger.LOG_LEVEL_ERROR);
 			try {
 				observatoryEvaluationList = new ArrayList<>();
 				List<Long> listAnalysis = new ArrayList<>();
-				c = DataBaseManager.getConnection();
 				conn = DataBaseManager.getConnection();
 				List<Long> listExecutionsIds = new ArrayList<>();
 				if (idCrawler == null) {
-					listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
+					listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(conn, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
 				} else {
 					listExecutionsIds.add(idCrawler);
 				}
@@ -1283,16 +1281,19 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 						EvaluatorUtility.initialize();
 					}
 					final Evaluator evaluator = new Evaluator();
+					int i = 1;
 					for (Long idAnalysis : listAnalysis) {
+						// Logger.putLog(" i= " + i + "/" + listAnalysis.size() + "(" + idAnalysis + ")", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR);
+						i++;
 						final Evaluation evaluation = evaluator.getObservatoryAnalisisDB(conn, idAnalysis, EvaluatorUtils.getDocList());
-						final String methodology = ObservatorioDAO.getMethodology(c, Long.parseLong(executionId));
-						RastreoDAO.getFullfilledCrawlingExecution(c, Long.parseLong(executionId));
-						String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, idAnalysis);
+						final String methodology = ObservatorioDAO.getMethodology(conn, Long.parseLong(executionId));
+						RastreoDAO.getFullfilledCrawlingExecution(conn, Long.parseLong(executionId));
+						String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(conn, idAnalysis);
 						// Only in NORMATIVA UNE EN2019, warnings points 0.5
 						final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false,
 								Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion) ? true : false);
 						evaluationForm.setObservatoryExecutionId(Long.parseLong(executionId));
-						final FulfilledCrawlingForm ffCrawling = RastreoDAO.getFullfilledCrawlingExecution(c, evaluationForm.getCrawlerExecutionId());
+						final FulfilledCrawlingForm ffCrawling = RastreoDAO.getFullfilledCrawlingExecution(conn, evaluationForm.getCrawlerExecutionId());
 						if (ffCrawling != null) {
 							final SeedForm seedForm = new SeedForm();
 							seedForm.setId(String.valueOf(ffCrawling.getSeed().getId()));
@@ -1316,7 +1317,6 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 				Logger.putLog("Error en getGlobalResultData", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
 			} finally {
-				DataBaseManager.closeConnection(c);
 				DataBaseManager.closeConnection(conn);
 			}
 			CacheUtils.putInCacheForever(observatoryEvaluationList, Constants.OBSERVATORY_KEY_CACHE + executionId);

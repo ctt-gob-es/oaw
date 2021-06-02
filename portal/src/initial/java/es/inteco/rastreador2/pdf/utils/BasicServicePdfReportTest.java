@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 import es.gob.oaw.basicservice.historico.CheckHistoricoService;
 import es.gob.oaw.rastreador2.observatorio.ObservatoryManager;
@@ -44,7 +44,6 @@ import junit.framework.Assert;
  * Created by mikunis on 1/10/17.
  */
 public class BasicServicePdfReportTest {
-
 	private ObservatoryManager observatoryManager;
 
 	@BeforeClass
@@ -53,18 +52,15 @@ public class BasicServicePdfReportTest {
 		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.naming.java.javaURLContextFactory");
 		System.setProperty(Context.URL_PKG_PREFIXES, "org.apache.naming");
 		final InitialContext ic = new InitialContext();
-
 		ic.createSubcontext("java:");
 		ic.createSubcontext("java:/comp");
 		ic.createSubcontext("java:/comp/env");
 		ic.createSubcontext("java:/comp/env/jdbc");
-
 		// Construct DataSource
 		final MysqlConnectionPoolDataSource mysqlDataSource = new MysqlConnectionPoolDataSource();
 		mysqlDataSource.setURL("jdbc:mysql://localhost:3306/OAW");
 		mysqlDataSource.setUser("root");
 		mysqlDataSource.setPassword("root");
-
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
 	}
 
@@ -86,16 +82,13 @@ public class BasicServicePdfReportTest {
 		Assert.assertFalse(exportFile.exists());
 		final long analisisId = -131;
 		final long basicServiceId = analisisId * -1;
-
 		final BasicServiceForm basicServiceForm = DiagnosisDAO.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceId);
 		// final BasicServicePdfReport basicServicePdfReport = new
 		// BasicServicePdfReport(new
 		// AnonymousResultExportPdfUNE2012(basicServiceForm));
 		final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(new AnonymousResultExportPdfUNE2012b(basicServiceForm));
 		final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), analisisId);
-
 		final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
-
 		basicServicePdfReport.exportToPdf(currentEvaluationPageList, Collections.<Date, List<ObservatoryEvaluationForm>>emptyMap(), exportFile.getAbsolutePath());
 		Assert.assertTrue(exportFile.exists());
 	}
@@ -109,15 +102,11 @@ public class BasicServicePdfReportTest {
 		Assert.assertFalse(exportFile.exists());
 		final long basicServiceId = 211;
 		final long analisisId = basicServiceId * -1;
-
 		final BasicServiceForm basicServiceForm = DiagnosisDAO.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceId);
 		final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), analisisId);
-
 		final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
-
 		final CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
 		final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
-
 		Assert.assertFalse(previousEvaluationsPageList.isEmpty());
 		Assert.assertEquals(2, previousEvaluationsPageList.size());
 		// final BasicServicePdfReport basicServicePdfReport = new
@@ -127,5 +116,4 @@ public class BasicServicePdfReportTest {
 		basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, exportFile.getAbsolutePath());
 		Assert.assertTrue(exportFile.exists());
 	}
-
 }

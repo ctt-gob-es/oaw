@@ -18,10 +18,12 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
+import es.inteco.intav.form.SeedForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
+import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
@@ -68,6 +70,17 @@ public class ObservatoryManager {
 					String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, id);
 					boolean pointWarning = Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion) ? true : false;
 					final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, true, pointWarning);
+					// TODO ADD SEED
+					final FulfilledCrawlingForm ffCrawling = RastreoDAO.getFullfilledCrawlingExecution(c, evaluationForm.getCrawlerExecutionId());
+					if (ffCrawling != null) {
+						final SeedForm seedForm = new SeedForm();
+						seedForm.setId(String.valueOf(ffCrawling.getSeed().getId()));
+						seedForm.setAcronym(ffCrawling.getSeed().getAcronimo());
+						seedForm.setName(ffCrawling.getSeed().getNombre());
+						// Multidependencia
+						seedForm.setCategory(ffCrawling.getSeed().getCategoria().getName());
+						evaluationForm.setSeed(seedForm);
+					}
 					evaluationList.add(evaluationForm);
 				} catch (ParserConfigurationException e) {
 					Logger.putLog("Exception: ", ObservatoryManager.class, Logger.LOG_LEVEL_ERROR, e);

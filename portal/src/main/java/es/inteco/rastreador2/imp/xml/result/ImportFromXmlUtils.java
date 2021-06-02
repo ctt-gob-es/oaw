@@ -38,11 +38,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The Class ImportFromXmlUtils.
+ */
 public final class ImportFromXmlUtils {
 
+    /**
+	 * Instantiates a new import from xml utils.
+	 */
     private ImportFromXmlUtils() {
     }
 
+    /**
+	 * Serialize node list.
+	 *
+	 * @param nodeList the node list
+	 * @return the string
+	 */
     public static String serializeNodeList(NodeList nodeList) {
         StringBuilder text = new StringBuilder();
         for (int i = 0; i < nodeList.getLength(); i++) {
@@ -59,6 +71,16 @@ public final class ImportFromXmlUtils {
         return text.toString();
     }
 
+    /**
+	 * Gets the document elements.
+	 *
+	 * @param path        the path
+	 * @param element     the element
+	 * @param defaultPath the default path
+	 * @return the document elements
+	 * @throws SAXException the SAX exception
+	 * @throws IOException  Signals that an I/O exception has occurred.
+	 */
     public static NodeList getDocumentElements(String path, String element, String defaultPath) throws SAXException, IOException {
         File configFile = new File(path);
         if (!configFile.exists() && defaultPath != null) {
@@ -73,6 +95,12 @@ public final class ImportFromXmlUtils {
         return document.getElementsByTagName(element);
     }
 
+    /**
+	 * Gets the title.
+	 *
+	 * @param element the element
+	 * @return the title
+	 */
     public static String getTitle(Element element) {
         if (element.getElementsByTagName("title") != null && element.getElementsByTagName("title").item(0).getTextContent() != null) {
             return element.getElementsByTagName("title").item(0).getTextContent();
@@ -80,6 +108,15 @@ public final class ImportFromXmlUtils {
         return "";
     }
 
+    /**
+	 * Gets the special chunks.
+	 *
+	 * @param request   the request
+	 * @param element   the element
+	 * @param paragraph the paragraph
+	 * @param text      the text
+	 * @return the special chunks
+	 */
     public static String getSpecialChunks(HttpServletRequest request, Element element, ParagraphForm paragraph, String text) {
         NodeList specialChunks = element.getChildNodes();
         List<Element> elementList = new ArrayList<>();
@@ -127,6 +164,15 @@ public final class ImportFromXmlUtils {
         return text;
     }
 
+    /**
+	 * Deal paragraph node.
+	 *
+	 * @param request the request
+	 * @param element the element
+	 * @param section the section
+	 * @param isHtml  the is html
+	 * @return the section form
+	 */
     private static SectionForm dealParagraphNode(HttpServletRequest request, Element element, SectionForm section, boolean isHtml) {
         ParagraphForm paragraph = new ParagraphForm();
         String text = "";
@@ -142,6 +188,15 @@ public final class ImportFromXmlUtils {
         return section;
     }
 
+    /**
+	 * Deal element.
+	 *
+	 * @param request the request
+	 * @param element the element
+	 * @param section the section
+	 * @param isHtml  the is html
+	 * @return the section form
+	 */
     public static SectionForm dealElement(HttpServletRequest request, Element element, SectionForm section, boolean isHtml) {
         if (element.getNodeName().equals("title")) {
             return dealTitleNode(element, section);
@@ -154,11 +209,27 @@ public final class ImportFromXmlUtils {
         }
     }
 
+    /**
+	 * Deal title node.
+	 *
+	 * @param element the element
+	 * @param section the section
+	 * @return the section form
+	 */
     private static SectionForm dealTitleNode(Element element, SectionForm section) {
         section.setTitle(element.getTextContent());
         return section;
     }
 
+    /**
+	 * Deal section node.
+	 *
+	 * @param request the request
+	 * @param element the element
+	 * @param section the section
+	 * @param isHtml  the is html
+	 * @return the section form
+	 */
     private static SectionForm dealSectionNode(HttpServletRequest request, Element element, SectionForm section, boolean isHtml) {
         SectionForm subSection = new SectionForm();
         subSection.setSectionNumber(ImportSectionSetFromXml.sectionNumber++);

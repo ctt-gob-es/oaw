@@ -28,10 +28,23 @@ import es.inteco.common.ConstantsFont;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 
+/**
+ * The Class AnonymousResultExportPdfSection1.
+ */
 public final class AnonymousResultExportPdfSection1 {
+	
+	/**
+	 * Instantiates a new anonymous result export pdf section 1.
+	 */
 	private AnonymousResultExportPdfSection1() {
 	}
 
+	/**
+	 * Creates the chapter 1.
+	 *
+	 * @param request the request
+	 * @param chapter the chapter
+	 */
 	protected static void createChapter1(HttpServletRequest request, Chapter chapter) {
 		ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.1.p1.bold"));
@@ -52,6 +65,12 @@ public final class AnonymousResultExportPdfSection1 {
 		PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.1.p5"), ConstantsFont.PARAGRAPH, chapter);
 	}
 
+	/**
+	 * Creates the section 11.
+	 *
+	 * @param request the request
+	 * @param section the section
+	 */
 	protected static void createSection11(HttpServletRequest request, Section section) {
 		ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.11.p4.bold"));

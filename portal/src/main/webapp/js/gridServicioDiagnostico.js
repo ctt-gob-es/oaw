@@ -81,7 +81,9 @@ function tipoAnalisisFormatter(cellvalue, options, rowObject) {
 	case "c\u00F3digo_fuente":
 		value = analysisTypeSource;
 		break;
-
+	case "multi_source_code":
+		value = analysisTypeSourceMultiple;
+		break;
 	default:
 		value = cellvalue;
 	}

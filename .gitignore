@@ -83,3 +83,6 @@ int-start-and-log.sh
 int-stop-and-clean.sh
 
 **/bower_components/**
+server.crt
+server.key
+

@@ -40,6 +40,7 @@ import es.inteco.crawler.job.CrawlerJob;
 import es.inteco.crawler.job.CrawlerJobManager;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaFullForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
@@ -102,8 +103,16 @@ public class ResultadosObservatorioAction extends Action {
 						request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
 						return regenerateResults(mapping, form, request);
 					} else if (action.equalsIgnoreCase(Constants.STOP_CRAWL)) {
-						request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
-						return stop(mapping, form, request);
+						if (request.getParameter(Constants.CONFIRMACION) != null && request.getParameter(Constants.CONFIRMACION).equals(Constants.CONF_SI)) {
+							request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
+							return stop(mapping, form, request);
+						} else {
+							ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(DataBaseManager.getConnection(), Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
+							request.setAttribute(Constants.OBSERVATORY_FORM, observatorioForm);
+							request.setAttribute(Constants.ID_OBSERVATORIO, request.getParameter(Constants.ID_OBSERVATORIO));
+							request.setAttribute(Constants.ID_EX_OBS, request.getParameter(Constants.ID_EX_OBS));
+							return mapping.findForward("confirmarPararObservatorio");
+						}
 					} else if (action.equalsIgnoreCase(Constants.ADD_SEDD_OBS)) {
 						request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
 						return addSeed(mapping, form, request);
@@ -361,7 +370,7 @@ public class ResultadosObservatorioAction extends Action {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final int numResult = ObservatorioDAO.countFulfilledObservatories(c, observatoryId);
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
-			request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(c, observatoryId, (pagina - 1), null));
+			request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(c, observatoryId, (pagina - 1), null, null));
 			request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, numResult, pagina));
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
@@ -389,8 +398,9 @@ public class ResultadosObservatorioAction extends Action {
 			if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
 				resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 			}
-			AnnexUtils.createAnnexPaginas(resources, idObsExecution, idOperation, idCartucho);
-			AnnexUtils.createAnnexPortales(resources, idObsExecution, idOperation, idCartucho);
+			AnnexUtils.createAnnexPaginas(resources, idObsExecution, idOperation, null, null);
+			AnnexUtils.createAnnexPortales(resources, idObsExecution, idOperation, null, null);
+			AnnexUtils.createAnnexXLSX2(resources, idObsExecution, idOperation, null);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
 			final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";
@@ -449,8 +459,16 @@ public class ResultadosObservatorioAction extends Action {
 	 * @throws Exception the exception
 	 */
 	private ActionForward stop(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
-		CrawlerJobManager.endJob(Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
-		return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
+		CrawlerJobManager.endJob(Long.parseLong(request.getParameter(Constants.ID_EX_OBS)), Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
+		try (Connection c = DataBaseManager.getConnection()) {
+			ObservatorioDAO.updateObservatoryStatus(c, Long.parseLong(request.getParameter(Constants.ID_EX_OBS)), es.inteco.crawler.common.Constants.STOPPED_OBSERVATORY_STATUS);
+			DataBaseManager.closeConnection(c);
+		}
+		final PropertiesManager pmgr = new PropertiesManager();
+		request.setAttribute("mensajeExito", getResources(request).getMessage("observatory.stop.success.message"));
+		final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
+		request.setAttribute("accionVolver", pmgr.getValue("returnPaths.properties", "volver.lista.observatorios.realizados.primarios").replace("{0}", idObservatory.toString()));
+		return mapping.findForward(Constants.EXITO2);
 	}
 
 	/**

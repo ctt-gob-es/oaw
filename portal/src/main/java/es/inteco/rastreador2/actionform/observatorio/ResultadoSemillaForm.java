@@ -43,6 +43,8 @@ public class ResultadoSemillaForm {
 	private String compliance;
 	/** The num crawls. */
 	private int numCrawls;
+	/** The percent 7 num crawls. */
+	private double percentNumCrawls;
 	/** The observaciones. */
 	private String observaciones;
 
@@ -278,5 +280,23 @@ public class ResultadoSemillaForm {
 	 */
 	public void setNumCrawls(int numCrawls) {
 		this.numCrawls = numCrawls;
+	}
+
+	/**
+	 * Gets the percent 7 num crawls.
+	 *
+	 * @return the percent7NumCrawls
+	 */
+	public double getPercentNumCrawls() {
+		return percentNumCrawls;
+	}
+
+	/**
+	 * Sets the percent 7 num crawls.
+	 *
+	 * @param percentNumCrawls the new percent num crawls
+	 */
+	public void setPercentNumCrawls(double percentNumCrawls) {
+		this.percentNumCrawls = percentNumCrawls;
 	}
 }

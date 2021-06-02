@@ -19,38 +19,79 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class CheckedLinks.
+ */
 public class CheckedLinks implements Serializable {
 
+    /** The checked links. */
     private List<String> checkedLinks;
+    
+    /** The broken links. */
     private List<String> brokenLinks;
+    
+    /** The availablelinks. */
     private List<String> availablelinks;
 
+    /**
+	 * Instantiates a new checked links.
+	 */
     public CheckedLinks() {
         brokenLinks = new ArrayList<>();
         availablelinks = new ArrayList<>();
         checkedLinks = new ArrayList<>();
     }
 
+    /**
+	 * Gets the broken links.
+	 *
+	 * @return the broken links
+	 */
     public List<String> getBrokenLinks() {
         return brokenLinks;
     }
 
+    /**
+	 * Sets the broken links.
+	 *
+	 * @param brokenLinks the new broken links
+	 */
     public void setBrokenLinks(List<String> brokenLinks) {
         this.brokenLinks = brokenLinks;
     }
 
+    /**
+	 * Gets the availablelinks.
+	 *
+	 * @return the availablelinks
+	 */
     public List<String> getAvailablelinks() {
         return availablelinks;
     }
 
+    /**
+	 * Sets the availablelinks.
+	 *
+	 * @param availablelinks the new availablelinks
+	 */
     public void setAvailablelinks(List<String> availablelinks) {
         this.availablelinks = availablelinks;
     }
 
+    /**
+	 * Gets the checked links.
+	 *
+	 * @return the checked links
+	 */
     public List<String> getCheckedLinks() {
         return checkedLinks;
     }
 
+    /**
+	 * Sets the checked links.
+	 *
+	 * @param checkedLinks the new checked links
+	 */
     public void setCheckedLinks(List<String> checkedLinks) {
         this.checkedLinks = checkedLinks;
     }

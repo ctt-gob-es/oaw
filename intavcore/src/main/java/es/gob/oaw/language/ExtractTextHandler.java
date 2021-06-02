@@ -26,34 +26,42 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class ExtractTextHandler extends DefaultHandler {
 
+	/** The Constant WHITE_SPACE. */
 	private static final String WHITE_SPACE = " ";
 
-	/**
-	 * Idioma de la página web
-	 */
+	/** Idioma de la página web. */
 	private final String webpageLanguage;
 
-	/**
-	 * Pila donde se irán guardando los idiomas de las etiquetas compuestas para
-	 * saber si un determinado texto se debe incluir o excluir
-	 */
+	/** Pila donde se irán guardando los idiomas de las etiquetas compuestas para saber si un determinado texto se debe incluir o excluir. */
 	private final Stack<String> languages;
 
-	/**
-	 * Variable donde se irá guardando el texto extraido
-	 */
+	/** Variable donde se irá guardando el texto extraido. */
 	private final StringBuilder extractedText;
 
+	/** The extract same language. */
 	private final boolean extractSameLanguage;
 
+	/** The skip characters. */
 	private boolean skipCharacters;
 
+	/** The skip tags. */
 	private String[] skipTags;
 
+	/**
+	 * Instantiates a new extract text handler.
+	 *
+	 * @param language the language
+	 */
 	public ExtractTextHandler(final String language) {
 		this(language, true);
 	}
 
+	/**
+	 * Instantiates a new extract text handler.
+	 *
+	 * @param language            the language
+	 * @param extractSameLanguage the extract same language
+	 */
 	public ExtractTextHandler(final String language, final boolean extractSameLanguage) {
 		this.webpageLanguage = language;
 		this.extractSameLanguage = extractSameLanguage;
@@ -63,6 +71,13 @@ public class ExtractTextHandler extends DefaultHandler {
 		this.skipCharacters = false;
 	}
 
+	/**
+	 * Instantiates a new extract text handler.
+	 *
+	 * @param language            the language
+	 * @param extractSameLanguage the extract same language
+	 * @param skipTags            the skip tags
+	 */
 	public ExtractTextHandler(final String language, final boolean extractSameLanguage, String[] skipTags) {
 		this.webpageLanguage = language;
 		this.extractSameLanguage = extractSameLanguage;
@@ -73,6 +88,15 @@ public class ExtractTextHandler extends DefaultHandler {
 		this.skipTags = skipTags;
 	}
 
+	/**
+	 * Start element.
+	 *
+	 * @param uri        the uri
+	 * @param localName  the local name
+	 * @param qName      the q name
+	 * @param attributes the attributes
+	 * @throws SAXException the SAX exception
+	 */
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		final String lang = normalizeLang(attributes.getValue("lang") != null ? attributes.getValue("lang") : attributes.getValue("xml:lang"));
@@ -92,6 +116,14 @@ public class ExtractTextHandler extends DefaultHandler {
 
 	}
 
+	/**
+	 * End element.
+	 *
+	 * @param uri       the uri
+	 * @param localName the local name
+	 * @param qName     the q name
+	 * @throws SAXException the SAX exception
+	 */
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		languages.pop();
@@ -101,6 +133,14 @@ public class ExtractTextHandler extends DefaultHandler {
 		extractedText.append(WHITE_SPACE);
 	}
 
+	/**
+	 * Characters.
+	 *
+	 * @param ch     the ch
+	 * @param start  the start
+	 * @param length the length
+	 * @throws SAXException the SAX exception
+	 */
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		if (!skipCharacters) {
@@ -108,10 +148,20 @@ public class ExtractTextHandler extends DefaultHandler {
 		}
 	}
 
+	/**
+	 * Gets the extracted text.
+	 *
+	 * @return the extracted text
+	 */
 	public String getExtractedText() {
 		return extractedText.toString();
 	}
 
+	/**
+	 * Process text.
+	 *
+	 * @param text the text
+	 */
 	private void processText(final String text) {
 		if (!text.isEmpty()) {
 			if (extractSameLanguage) {

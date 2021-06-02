@@ -22,12 +22,27 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+/**
+ * The Class GeneralFilter.
+ */
 public class GeneralFilter implements Filter {
 
+    /**
+	 * Destroy.
+	 */
     @Override
     public void destroy() {
     }
 
+    /**
+	 * Do filter.
+	 *
+	 * @param request  the request
+	 * @param response the response
+	 * @param chain    the chain
+	 * @throws IOException      Signals that an I/O exception has occurred.
+	 * @throws ServletException the servlet exception
+	 */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
@@ -38,6 +53,12 @@ public class GeneralFilter implements Filter {
         chain.doFilter(request, response);
     }
 
+    /**
+	 * Inits the.
+	 *
+	 * @param config the config
+	 * @throws ServletException the servlet exception
+	 */
     @Override
     public void init(FilterConfig config) throws ServletException {
     }

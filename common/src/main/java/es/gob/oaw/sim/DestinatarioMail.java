@@ -36,10 +36,15 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class DestinatarioMail {
 
+    /** The doc usuario. */
     @XmlElement(name = "DocUsuario")
     protected String docUsuario;
+    
+    /** The id externo. */
     @XmlElement(name = "IdExterno")
     protected String idExterno;
+    
+    /** The destinatarios. */
     @XmlElement(name = "Destinatarios", required = true)
     protected Destinatarios destinatarios;
 

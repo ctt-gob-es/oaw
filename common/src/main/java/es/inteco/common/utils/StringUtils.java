@@ -27,24 +27,51 @@ import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The Class StringUtils.
+ */
 public final class StringUtils {
 
+    /** The Constant NBSP_BYTE. */
     private static final byte[] NBSP_BYTE = {-62, -96};
+    
+    /** The Constant WHITE_CHARS_BYTE. */
     private static final byte[] WHITE_CHARS_BYTE = {-62, -96, 10, 9};
 
+    /**
+	 * Instantiates a new string utils.
+	 */
     private StringUtils() {
     }
 
+    /**
+	 * Checks if is not empty.
+	 *
+	 * @param string the string
+	 * @return true, if is not empty
+	 */
     // El string no está vacío?
     public static boolean isNotEmpty(String string) {
         return string != null && string.trim().length() > 0;
     }
 
+    /**
+	 * Checks if is empty.
+	 *
+	 * @param string the string
+	 * @return true, if is empty
+	 */
     // El string está vacío?
     public static boolean isEmpty(String string) {
         return string == null || string.trim().length() == 0;
     }
 
+    /**
+	 * Checks if is only white chars.
+	 *
+	 * @param string the string
+	 * @return true, if is only white chars
+	 */
     public static boolean isOnlyWhiteChars(String string) {
         byte[] bytes = string.getBytes();
         for (byte aByte : bytes) {
@@ -61,12 +88,24 @@ public final class StringUtils {
         return true;
     }
 
+    /**
+	 * Checks if is only blanks.
+	 *
+	 * @param string the string
+	 * @return true, if is only blanks
+	 */
     // Comprueba si una cadena está formada únicamente por espacios en blanco
     public static boolean isOnlyBlanks(String string) {
         return (string.length() > 0 && (string.trim().length() == 0 || hasOnlyNbspEntities(string)));
     }
 
     // Cuando en el html detecta un &nbsp;, en lugar de devolver el caracter vacío devuelve un caracter con
+    /**
+	 * Checks for only nbsp entities.
+	 *
+	 * @param string the string
+	 * @return true, if successful
+	 */
     // código -96
     public static boolean hasOnlyNbspEntities(String string) {
         if (string.length() == 1 && string.codePointAt(0) == 0xA0) {
@@ -104,24 +143,24 @@ public final class StringUtils {
     }
 
     /**
-     * Convierte un InputStream en un String usando la codificación de caracteres por defecto
-     *
-     * @param in - el stream de entrada que se convertirá en una cadena
-     * @return una cadena con el contenido del InputStream de entrada
-     * @throws IOException si se produce algún fallo durante la lectura del stream de entrada
-     */
+	 * Convierte un InputStream en un String usando la codificación de caracteres por defecto.
+	 *
+	 * @param in - el stream de entrada que se convertirá en una cadena
+	 * @return una cadena con el contenido del InputStream de entrada
+	 * @throws IOException si se produce algún fallo durante la lectura del stream de entrada
+	 */
     public static String getContentAsString(InputStream in) throws IOException {
         return getContentAsString(in, Charset.defaultCharset().name());
     }
 
     /**
-     * Convierte un InputStream en un String usando la codificación de caracteres indicada como parámetro o la codificación por defecto si es null
-     *
-     * @param in      - el stream de entrada que se convertirá en una cadena
-     * @param charset - cadena que representa el nombre de la codificación de caracteres que se quiere usar
-     * @return una cadena con el contenido del InputStream de entrada
-     * @throws IOException si se produce algún fallo durante la lectura del stream de entrada o si la codificación de caracteres indicada no está soportada
-     */
+	 * Convierte un InputStream en un String usando la codificación de caracteres indicada como parámetro o la codificación por defecto si es null.
+	 *
+	 * @param in      - el stream de entrada que se convertirá en una cadena
+	 * @param charset - cadena que representa el nombre de la codificación de caracteres que se quiere usar
+	 * @return una cadena con el contenido del InputStream de entrada
+	 * @throws IOException si se produce algún fallo durante la lectura del stream de entrada o si la codificación de caracteres indicada no está soportada
+	 */
     public static String getContentAsString(final InputStream in, final String charset) throws IOException {
         final StringBuilder out = new StringBuilder();
         final byte[] b = new byte[4096];
@@ -137,10 +176,22 @@ public final class StringUtils {
         return out.toString().trim();
     }
 
+    /**
+	 * Removes the html tags.
+	 *
+	 * @param htmlCode the html code
+	 * @return the string
+	 */
     public static String removeHtmlTags(String htmlCode) {
         return htmlCode != null ? htmlCode.replaceAll("<.*?>", "") : "";
     }
 
+    /**
+	 * Checks if is url.
+	 *
+	 * @param string the string
+	 * @return true, if is url
+	 */
     public static boolean isUrl(String string) {
         try {
             new URL(string);
@@ -151,13 +202,12 @@ public final class StringUtils {
     }
 
     /**
-     * El validador CSS de la W3C devuelve un error en el XML que lo hace imposible de parsear. Este
-     * método resolverá ese error. Consiste en sustituir el caracter "&" a secas por la entidad "&amp;"
-     *
-     * @param content
-     * @return
-     * @throws java.io.IOException
-     */
+	 * El validador CSS de la W3C devuelve un error en el XML que lo hace imposible de parsear. Este método resolverá ese error. Consiste en sustituir el caracter "&" a secas por la entidad "&amp;"
+	 *
+	 * @param content the content
+	 * @return the input stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
     public static InputStream fixBugInCssValidator(InputStream content) throws IOException {
         String text = StringUtils.getContentAsString(content);
 
@@ -165,6 +215,13 @@ public final class StringUtils {
         return new ByteArrayInputStream(text.getBytes());
     }
 
+    /**
+	 * Text matchs.
+	 *
+	 * @param text   the text
+	 * @param regexp the regexp
+	 * @return true, if successful
+	 */
     public static boolean textMatchs(String text, String regexp) {
         Pattern pattern = Pattern.compile(regexp, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
         Matcher matcher = pattern.matcher(text);
@@ -172,6 +229,13 @@ public final class StringUtils {
         return matcher.find();
     }
 
+    /**
+	 * Truncate text.
+	 *
+	 * @param text     the text
+	 * @param numChars the num chars
+	 * @return the string
+	 */
     public static String truncateText(String text, int numChars) {
         if (text != null && text.length() > numChars) {
             return text.substring(0, numChars - 1) + " ...";
@@ -180,6 +244,12 @@ public final class StringUtils {
         }
     }
 
+    /**
+	 * Normalize white spaces.
+	 *
+	 * @param text the text
+	 * @return the string
+	 */
     public static String normalizeWhiteSpaces(final String text) {
         final StringBuilder sb = new StringBuilder(text.replace("&nbsp;", " ").replace("&#160;", " "));
         for (int i = 0; i < sb.length(); i++) {
@@ -193,10 +263,9 @@ public final class StringUtils {
 	/**
 	 * Corregir encoding.
 	 *
-	 * @param searchForm
-	 *            the search form
-	 * @throws UnsupportedEncodingException
-	 *             the unsupported encoding exception
+	 * @param originalString the original string
+	 * @return the string
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	public static String corregirEncoding(String originalString) throws UnsupportedEncodingException {
 		Charset utf8charset = Charset.forName("UTF-8");
@@ -213,4 +282,15 @@ public final class StringUtils {
 
 		return fixedString;
 	}
+
+    /**
+	 * Removes the last char.
+	 *
+	 * @param str the str
+	 * @return the string
+	 */
+    public static String removeLastChar(String str) {
+	    if (str.length() == 0) return str;
+        return str.substring(0, str.length() - 1);
+    }
 }

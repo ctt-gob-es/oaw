@@ -216,7 +216,9 @@ public interface Constants {
 	/** The category seed form. */
 	String CATEGORY_SEED_FORM = "categorySeedForm";
 	/** The get category seeds file. */
-	String GET_CATEGORY_SEEDS_FILE = "getCategorySeedsFile";
+	String GET_CATEGORY_SEEDS_FILE_XML = "getCategorySeedsFileXml";
+	/** Action to export category seeds to an excel file. */
+	String GET_CATEGORY_SEEDS_FILE_XLSX = "getCategorySeedsFileXlsx";
 	/** The load form. */
 	String LOAD_FORM = "loadForm";
 	/** The rastreo test. */
@@ -1177,6 +1179,8 @@ public interface Constants {
 	String SUBMENU_OBS_REDUCIRTABLAS = "submenuReducirTablasObs";
 	/** The submenu obs etiquetas. */
 	String SUBMENU_OBS_ETIQUETAS = "submenuEtiquetasObs";
+	/** The submenu obs ranges. */
+	String SUBMENU_OBS_RANGES = "submenuRangesObs";
 	/** The submenu observatorio. */
 	String SUBMENU_OBSERVATORIO = "submenuObservatorio";
 	/** The submenu servicio diagnostico. */
@@ -1854,11 +1858,11 @@ public interface Constants {
 	/** The normativa accesibilidad. */
 	String NORMATIVA_ACCESIBILIDAD = "Accesibilidad";
 	/** The message resources 2012 b. */
-	String MESSAGE_RESOURCES_2012_B = "ApplicationResources-2012-b";
+	String MESSAGE_RESOURCES_2012_B = "ApplicationResources_xx_XX_2012B";
 	/** The message resources une en2019. */
-	String MESSAGE_RESOURCES_UNE_EN2019 = "ApplicationResources-UNEEN2019";
+	String MESSAGE_RESOURCES_UNE_EN2019 = "ApplicationResources_xx_XX_2019";
 	/** The message resources accesibilidad. */
-	String MESSAGE_RESOURCES_ACCESIBILIDAD = "ApplicationResources_es_AC";
+	String MESSAGE_RESOURCES_ACCESIBILIDAD = "ApplicationResources_xx_XX_ACC";
 	/** The check global modality grpahics. */
 	String CHECK_GLOBAL_MODALITY_GRPAHICS = "checkGlobalModalityGrpahics";
 	/** The check global aspects grpahics. */
@@ -1904,7 +1908,7 @@ public interface Constants {
 	/** The observatorio une 2004. */
 	String OBSERVATORIO_UNE_2004 = "Observatorio UNE 2004";
 	/** The bc rojo inteco. */
-	// PENDING NEW BASE COLOR
+	// NEW BASE COLOR
 	BaseColor BC_ROJO_INTECO = new BaseColor(225, 18, 13);
 	/** The bc rosa inteco. */
 	BaseColor BC_ROSA_INTECO = new BaseColor(255, 225, 225);
@@ -1918,4 +1922,6 @@ public interface Constants {
 	BaseColor BC_MARRRON_C_NC = new BaseColor(196, 89, 17);
 	/** The bc gris muy claro. */
 	BaseColor BC_GRIS_MUY_CLARO = new BaseColor(245, 245, 245);
+	/** The observatory extra configuration list. */
+	String OBSERVATORY_EXTRA_CONFIGURATION_LIST = "extraConfigurationList";
 }

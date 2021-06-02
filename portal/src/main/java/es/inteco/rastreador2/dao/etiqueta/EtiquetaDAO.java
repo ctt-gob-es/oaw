@@ -371,6 +371,60 @@ public final class EtiquetaDAO {
 	}
 
 	/**
+	 * Gets the by name.
+	 *
+	 * @param c       the c
+	 * @param tagName the tag name
+	 * @return the by name
+	 * @throws Exception the exception
+	 */
+	public static EtiquetaForm getByName(Connection c, String tagName) throws Exception {
+		EtiquetaForm tag = null;
+		String query = "SELECT c.id_etiqueta, c.nombre FROM etiqueta c WHERE c.nombre = ?";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setString(1, tagName);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					tag = new EtiquetaForm();
+					tag.setId(Long.parseLong(rs.getString("c.id_etiqueta")));
+					tag.setName(rs.getString("c.nombre"));
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return tag;
+	}
+
+	/**
+	 * Gets the by id.
+	 *
+	 * @param c     the c
+	 * @param idTag the id tag
+	 * @return the by id
+	 * @throws Exception the exception
+	 */
+	public static EtiquetaForm getById(Connection c, final int idTag) throws SQLException {
+		EtiquetaForm tag = null;
+		String query = "SELECT c.id_etiqueta, c.nombre FROM etiqueta c WHERE c.id_etiqueta = ?";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setInt(1, idTag);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					tag = new EtiquetaForm();
+					tag.setId(Long.parseLong(rs.getString("c.id_etiqueta")));
+					tag.setName(rs.getString("c.nombre"));
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return tag;
+	}
+
+	/**
 	 * Gets the ids fixed tags.
 	 *
 	 * @param c the c
@@ -391,5 +445,38 @@ public final class EtiquetaDAO {
 			throw e;
 		}
 		return ids;
+	}
+
+	/**
+	 * Gets the all etiquetas clasification.
+	 *
+	 * @param c             the c
+	 * @param clasification the clasification
+	 * @return the all etiquetas clasification
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<EtiquetaForm> getAllEtiquetasClasification(Connection c, final int clasification) throws SQLException {
+		final List<EtiquetaForm> results = new ArrayList<>();
+		String query = "SELECT e.id_etiqueta, e.nombre, e.id_clasificacion, c.id_clasificacion, c.nombre"
+				+ " FROM etiqueta e LEFT JOIN clasificacion_etiqueta c ON(e.id_clasificacion = c.id_clasificacion) WHERE c.id_clasificacion = ? ORDER BY UPPER(c.nombre) ASC, UPPER(e.nombre) ASC";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setInt(1, clasification);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					final EtiquetaForm etiquetaForm = new EtiquetaForm();
+					etiquetaForm.setId(rs.getLong("e.id_etiqueta"));
+					etiquetaForm.setName(rs.getString("e.nombre"));
+					final ClasificacionForm clasificacionForm = new ClasificacionForm();
+					clasificacionForm.setId(rs.getString("e.id_clasificacion"));
+					clasificacionForm.setNombre(rs.getString("c.nombre"));
+					etiquetaForm.setClasificacion(clasificacionForm);
+					results.add(etiquetaForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return results;
 	}
 }

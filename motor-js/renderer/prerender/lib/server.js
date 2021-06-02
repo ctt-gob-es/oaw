@@ -191,6 +191,16 @@ server.onRequest = function(req, res) {
 	req.prerender.start = new Date();
 	req.prerender.responseSent = false;
 
+	console.log("extendedTimeout: ", req.get('extendedTimeout'));
+	console.log("currentTimeout: ",this.options.pageLoadTimeout );
+
+	if(req.get('extendedTimeout')){
+		//5s flex
+		var fixedExtendTimeout = req.get('extendedTimeout') - 5000;
+		this.options.pageLoadTimeout = fixedExtendTimeout ;
+	}
+	console.log("updatedTimeout: ",this.options.pageLoadTimeout );
+
 	util.log('getting', req.prerender.url);
 
 	this.firePluginEvent('requestReceived', req, res)

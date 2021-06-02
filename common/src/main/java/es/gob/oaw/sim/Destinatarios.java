@@ -36,10 +36,15 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class Destinatarios {
 
+    /** The to. */
     @XmlElement(name = "To", required = true)
     protected String to;
+    
+    /** The cc. */
     @XmlElement(name = "CC")
     protected String cc;
+    
+    /** The bcc. */
     @XmlElement(name = "Bcc")
     protected String bcc;
 

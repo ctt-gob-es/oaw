@@ -395,6 +395,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param pageExecutionList     the page execution list
 	 * @param categories            the categories
 	 * @param tagsToFilter          the tags to filter
+	 * @param tagsToFilterFixed     the tags to filter fixed
 	 * @param grpahicConditional    the grpahic conditional
 	 * @param exObsIds              the ex obs ids
 	 * @param idBaseTemplate        the id base template
@@ -430,8 +431,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 					final OdfTextDocument odt = getOdfTemplate();
 					final OdfFileDom odfFileContent = odt.getContentDom();
 					final OdfFileDom odfStyles = odt.getStylesDom();
-					// TODO Only complexitivities in obs
-					// List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+					// Only complexitivities in obs
 					List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidadesObs(DataBaseManager.getConnection(), tagsToFilter, exObsIds);
 					replaceText(odt, odfFileContent, FECHA_BOOKMARK, date);
 					replaceText(odt, odfStyles, FECHA_BOOKMARK, date, TEXT_SPAN_NODE);
@@ -466,9 +466,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 					final MailService mailService = new MailService();
 					List<String> mailsTo = new ArrayList<>();
 					mailsTo.add(userData.getEmail());
-					mailsTo.add("alvaro.pelaez@ctic.es");
 					mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
 				} catch (Exception e) {
+					Logger.putLog("Error", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
 		});
@@ -538,6 +538,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param odt              the odt
 	 * @param odfFileContent   the odf file content
 	 * @param tagsFilter       the tags filter
+	 * @param tagsFilterFixed  the tags filter fixed
 	 * @param exObsIds         the ex obs ids
 	 * @param categories       the categories
 	 * @throws IOException Signals that an I/O exception has occurred.

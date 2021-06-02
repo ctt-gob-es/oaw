@@ -265,6 +265,12 @@
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionExportarDatos.jsp" />
 	</definition>
+	
+	<definition name=".exportarAsyncDatosObservatorio" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_generateAnnexAsync.jsp" />
+	</definition>
+	
 
 	<definition name=".generateAllReports" extends="mainLayout">
 		<put name="title" value="application.title" />
@@ -274,8 +280,11 @@
 	<definition name=".generateReportAsync" extends="mainLayout">
 		<put name="title" value="application.title" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_generateReportAsync.jsp" />
-	</definition>	
-	
+	</definition>
+	<definition name=".sendResultsByMailAsync" extends="mainLayout">
+		<put name="title" value="application.title" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_sendResultsByMailAsync.jsp" />
+	</definition>
 
 	<!-- Pï¿½gina cargar semillas observatorio -->
 	<definition name=".cargarSemillasObservatorio" extends="mainLayout">
@@ -314,12 +323,18 @@
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarEtiquetas.jsp" />
 	</definition>
 
+	<definition name=".cargarRangosObservatorio" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarRangos.jsp" />
+	</definition>
+
+
 	<!-- Página cargar vaciar tablas observatorio -->
 	<definition name=".cargarReducirTablasObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarReducirTablas.jsp" />
 	</definition>
-	
+
 	<!-- Pï¿½gina CARGAR RASTREOS REALIZADOS observatorio -->
 	<definition name=".cargarRastreosRealizadosObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
@@ -810,14 +825,39 @@
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionImportar.jsp" />
 	</definition>
 
+	<definition name=".confirmarImportacionDependencias" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionImportarDependencias.jsp" />
+	</definition>
 
 	<definition name=".configurarFiltrosAgregados" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_configurarFiltrosAgregados.jsp" />
 	</definition>
-	
+
 	<definition name=".configurarFiltrosGlobales" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_configurarFiltrosGlobales.jsp" />
 	</definition>
+
+	<definition name=".confirmarPararObservatorio" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionParar.jsp" />
+	</definition>
+
+	<definition name=".confirmSendObservatoryResultsByMail" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionEnvioEmails.jsp" />
+	</definition>
+
+	<definition name=".confirmSendObservatoryResultsByMail2" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionEnvioEmails2.jsp" />
+	</definition>
+
+	<definition name=".resultsSendObservatoryResultsByMail" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_resultadosEnvioEmails.jsp" />
+	</definition>
+
 </tiles-definitions>    

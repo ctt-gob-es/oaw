@@ -77,10 +77,31 @@ public class SourceFilesManager {
 	}
 
 	/**
+	 * Write source files accessibility.
+	 *
+	 * @param c          the c
+	 * @param sourceCode the source code
+	 */
+	@SuppressWarnings("deprecation")
+	public void writeSourceFilesAccessibility(final Connection c, final String sourceCode) {
+		final File pageSourcesDirectory = new File(parentDir, "paginas/accesibilidad");
+		if (!pageSourcesDirectory.mkdirs()) {
+			Logger.putLog("No se ha podido crear el directorio sources - " + pageSourcesDirectory.getAbsolutePath(), PdfGeneratorThread.class, Logger.LOG_LEVEL_ERROR);
+		}
+		try {
+			final File sourceCodeFile = new File(pageSourcesDirectory + "/pagina_accesibilidad.html");
+			org.apache.commons.io.FileUtils.writeStringToFile(sourceCodeFile, sourceCode);
+		} catch (IOException e) {
+			Logger.putLog("Exception al intentar guardar el código fuente", SourceFilesManager.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+	}
+
+	/**
 	 * Write source files content.
 	 *
-	 * @param c             the c
-	 * @param evaluationIds the evaluation ids
+	 * @param c                the c
+	 * @param evaluationIds    the evaluation ids
+	 * @param originalFilename the original filename
 	 */
 	@SuppressWarnings("deprecation")
 	public void writeSourceFilesContent(final Connection c, final List<Long> evaluationIds, final String originalFilename) {
@@ -100,22 +121,27 @@ public class SourceFilesManager {
 	}
 
 	/**
-	 * Write source files accessibility.
+	 * Write source files content multiple.
 	 *
-	 * @param c          the c
-	 * @param sourceCode the source code
+	 * @param c             the c
+	 * @param evaluationIds the evaluation ids
 	 */
 	@SuppressWarnings("deprecation")
-	public void writeSourceFilesAccessibility(final Connection c, final String sourceCode) {
-		final File pageSourcesDirectory = new File(parentDir, "paginas/accesibilidad");
-		if (!pageSourcesDirectory.mkdirs()) {
-			Logger.putLog("No se ha podido crear el directorio sources - " + pageSourcesDirectory.getAbsolutePath(), PdfGeneratorThread.class, Logger.LOG_LEVEL_ERROR);
-		}
-		try {
-			final File sourceCodeFile = new File(pageSourcesDirectory + "/pagina_accesibilidad.html");
-			org.apache.commons.io.FileUtils.writeStringToFile(sourceCodeFile, sourceCode);
-		} catch (IOException e) {
-			Logger.putLog("Exception al intentar guardar el cÃ³digo fuente", SourceFilesManager.class, Logger.LOG_LEVEL_ERROR, e);
+	public void writeSourceFilesContentMultiple(final Connection c, final List<Long> evaluationIds) {
+		int index = 1;
+		for (Long evaluationId : evaluationIds) {
+			final File pageSourcesDirectory = new File(parentDir, "codigo_fuente/" + index);
+			if (!pageSourcesDirectory.mkdirs()) {
+				Logger.putLog("No se ha podido crear el directorio sources - " + pageSourcesDirectory.getAbsolutePath(), PdfGeneratorThread.class, Logger.LOG_LEVEL_ERROR);
+			}
+			try {
+				final Analysis analysis = AnalisisDatos.getAnalisisFromId(c, evaluationId);
+				final File sourceCode = new File(pageSourcesDirectory + "/" + analysis.getUrl());
+				org.apache.commons.io.FileUtils.writeStringToFile(sourceCode, analysis.getSource());
+			} catch (IOException e) {
+				Logger.putLog("Exception al intentar guardar el código fuente", SourceFilesManager.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+			index++;
 		}
 	}
 
@@ -181,6 +207,11 @@ public class SourceFilesManager {
 		}
 	}
 
+	/**
+	 * Zip sources content.
+	 *
+	 * @param deleteFiles the delete files
+	 */
 	public void zipSourcesContent(final boolean deleteFiles) {
 		ZipUtils.generateZipFile(parentDir.toString() + "/codigo_fuente", parentDir.toString() + "/codigo_fuente.zip", true);
 		if (deleteFiles) {

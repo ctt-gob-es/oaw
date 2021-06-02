@@ -20,36 +20,77 @@ import es.inteco.rastreador2.pdf.utils.SpecialChunk;
 
 import java.util.Map;
 
+/**
+ * The Class ParagraphForm.
+ */
 public class ParagraphForm {
 
+    /** The paragraph. */
     private String paragraph;
+    
+    /** The special chunks. */
     private Map<Integer, SpecialChunk> specialChunks;
+    
+    /** The type. */
     private String type;
 
+    /**
+	 * Instantiates a new paragraph form.
+	 */
     public ParagraphForm() {
         type = Constants.OBJECT_TYPE_PARAGRAPH;
     }
 
+    /**
+	 * Gets the special chunks.
+	 *
+	 * @return the special chunks
+	 */
     public Map<Integer, SpecialChunk> getSpecialChunks() {
         return specialChunks;
     }
 
+    /**
+	 * Sets the special chunks.
+	 *
+	 * @param specialChunks the special chunks
+	 */
     public void setSpecialChunks(Map<Integer, SpecialChunk> specialChunks) {
         this.specialChunks = specialChunks;
     }
 
+    /**
+	 * Gets the paragraph.
+	 *
+	 * @return the paragraph
+	 */
     public String getParagraph() {
         return paragraph;
     }
 
+    /**
+	 * Sets the paragraph.
+	 *
+	 * @param paragraph the new paragraph
+	 */
     public void setParagraph(String paragraph) {
         this.paragraph = paragraph;
     }
 
+    /**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
     public String getType() {
         return type;
     }
 
+    /**
+	 * Sets the type.
+	 *
+	 * @param type the new type
+	 */
     public void setType(String type) {
         this.type = type;
     }

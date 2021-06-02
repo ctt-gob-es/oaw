@@ -13,53 +13,32 @@
 * Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
 * Email: observ.accesibilidad@correo.gob.es
 ******************************************************************************/
-
 package es.inteco.rastreador2.actionform.etiquetas;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.ValidatorForm;
-
-import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 
 /**
  * The Class EtiquetaForm.
  */
-
-
 public class EtiquetaForm extends ValidatorForm implements Serializable {
-
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1752910926145527308L;
-
 	/** The tag id. */
 	private Long id;
-
-
 	/** The tag name. */
 	private String name;
-	
 	/** The clasificacion. */
 	private ClasificacionForm clasificacion;
-
 	/** The nombre antiguo. */
 	private String nombreAntiguo;
-	
 
 	/**
 	 * Instantiates a new etiqueta form.
 	 */
 	public EtiquetaForm() {
- 
 	}
-
 
 	/**
 	 * Gets the id.
@@ -79,8 +58,6 @@ public class EtiquetaForm extends ValidatorForm implements Serializable {
 		this.id = id;
 	}
 
-	
-
 	/**
 	 * Gets the name.
 	 *
@@ -93,12 +70,11 @@ public class EtiquetaForm extends ValidatorForm implements Serializable {
 	/**
 	 * Sets the name.
 	 *
-	 * @param  the new name
+	 * @param name the new name
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 
 	/**
 	 * Gets the clasificacion.
@@ -112,14 +88,12 @@ public class EtiquetaForm extends ValidatorForm implements Serializable {
 	/**
 	 * Sets the clasificacion.
 	 *
-	 * @param complejidad the new clasificacion
+	 * @param clasificacion the new clasificacion
 	 */
 	public void setClasificacion(ClasificacionForm clasificacion) {
 		this.clasificacion = clasificacion;
 	}
-	
 
-	
 	/**
 	 * Gets the nombre antiguo.
 	 *
@@ -132,13 +106,12 @@ public class EtiquetaForm extends ValidatorForm implements Serializable {
 	/**
 	 * Sets the nombre antiguo.
 	 *
-	 * @param nombreAntiguo
-	 *            the new nombre antiguo
+	 * @param nombreAntiguo the new nombre antiguo
 	 */
 	public void setNombreAntiguo(String nombreAntiguo) {
 		this.nombreAntiguo = nombreAntiguo;
 	}
-	
+
 	/**
 	 * To string.
 	 *
@@ -148,7 +121,7 @@ public class EtiquetaForm extends ValidatorForm implements Serializable {
 	public String toString() {
 		return "EtiquetaForm [id=" + id + ", name=" + name + ",nombreAntiguo=" + nombreAntiguo + ",clasificacion=" + clasificacion + "]";
 	}
-	
+
 	/**
 	 * Hash code.
 	 *
@@ -184,6 +157,4 @@ public class EtiquetaForm extends ValidatorForm implements Serializable {
 			return false;
 		return true;
 	}
-    
-
 }

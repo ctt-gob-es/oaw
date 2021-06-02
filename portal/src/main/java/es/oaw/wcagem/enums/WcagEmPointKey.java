@@ -49,11 +49,11 @@ public enum WcagEmPointKey {
 	/** The wcag 3 2 3. */
 	WCAG_3_2_3("3.2.3", "WCAG2:consistent-navigation"),
 	/** The wcag 3 3 2. */
-	WCAG_3_3_2("3.3.1", "WCAG2:labels-or-instructions"),
-	/** The wcag 4 1 2. */
-	WCAG_4_1_2("4.1.2", "WCAG2:name-role-value"),
+	WCAG_3_3_2("3.3.2", "WCAG2:labels-or-instructions"),
 	/** The wcag 4 1 1. */
-	WCAG_4_1_1("4.1.1", "WCAG2:parsing");
+	WCAG_4_1_1("4.1.1", "WCAG2:parsing"),
+	/** The wcag 4 1 2. */
+	WCAG_4_1_2("4.1.2", "WCAG2:name-role-value");
 
 	/** The wcag point. */
 	private final String wcagPoint;
@@ -87,5 +87,20 @@ public enum WcagEmPointKey {
 	 */
 	public String getWcagEmId() {
 		return wcagEmId;
+	}
+
+	/**
+	 * Find by point.
+	 *
+	 * @param point the point
+	 * @return the wcag em point key
+	 */
+	public static WcagEmPointKey findByPoint(String point) {
+		for (WcagEmPointKey v : values()) {
+			if (v.wcagPoint.equals(point)) {
+				return v;
+			}
+		}
+		return null;
 	}
 }

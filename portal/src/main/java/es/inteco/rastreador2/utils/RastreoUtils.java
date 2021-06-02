@@ -28,11 +28,24 @@ import java.sql.SQLException;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class RastreoUtils.
+ */
 public final class RastreoUtils {
 
+    /**
+	 * Instantiates a new rastreo utils.
+	 */
     private RastreoUtils() {
     }
 
+    /**
+	 * Borrar archivos asociados.
+	 *
+	 * @param c         the c
+	 * @param idRastreo the id rastreo
+	 * @throws SQLException the SQL exception
+	 */
     public static void borrarArchivosAsociados(final Connection c, final String idRastreo) throws SQLException {
         final PropertiesManager pmgr = new PropertiesManager();
         final FulfilledCrawlingForm fulfilledCrawlingForm = RastreoDAO.getFullfilledCrawlingExecution(c, Long.parseLong(idRastreo));
@@ -61,6 +74,12 @@ public final class RastreoUtils {
         }
     }
 
+    /**
+	 * Existen graficas asociadas.
+	 *
+	 * @param rastreoDir the rastreo dir
+	 * @return true, if successful
+	 */
     private static boolean existenGraficasAsociadas(final File rastreoDir) {
         if (rastreoDir.isDirectory()) {
             final String[] ficheros = rastreoDir.list();

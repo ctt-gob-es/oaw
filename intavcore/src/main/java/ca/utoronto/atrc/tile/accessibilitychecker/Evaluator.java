@@ -356,7 +356,7 @@ public class Evaluator {
 		evaluation.setHtmlDoc(docHtml);
 		evaluation.setBase();
 		evaluation.setEntidad(checkAccesibility.getEntity());
-		// PENDING Set id Rastreo
+		// Set id Rastreo
 		evaluation.setRastreo(checkAccesibility.getIdRastreo());
 		evaluation.addGuideline(checkAccesibility.getGuidelineFile());
 		// perform the evaluation

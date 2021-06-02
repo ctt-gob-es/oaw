@@ -21,17 +21,23 @@ import es.inteco.common.logging.Logger;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.w3c.dom.Element;
 
+/**
+ * The Class SourceManager.
+ */
 public final class SourceManager {
 
+    /**
+	 * Instantiates a new source manager.
+	 */
     private SourceManager() {
     }
 
     /**
-     * Obtiene el texto a partir de una etiqueta incluyendo, en algunos casos, los textos de etiquetas anidadas de un problema de accesibilidad
-     *
-     * @param problem el problema de accesibilidad Problem detectado durante el análisis
-     * @return la cadena con el texto
-     */
+	 * Obtiene el texto a partir de una etiqueta incluyendo, en algunos casos, los textos de etiquetas anidadas de un problema de accesibilidad.
+	 *
+	 * @param problem el problema de accesibilidad Problem detectado durante el análisis
+	 * @return la cadena con el texto
+	 */
     public static String getSourceInfo(final Problem problem) {
         final Check check = problem.getCheck();
         final Element elementProblem = (Element) problem.getNode();
@@ -94,10 +100,12 @@ public final class SourceManager {
     }
 
     /**
-     * @param elementGiven     el elemento DOM donde se produce un problema de accesibilidad
-     * @param bIncludeChildren flag que indica si se deben incluir los textos de las etiquetas hijas
-     * @return a string of HTML code for the given element.
-     */
+	 * Gets the html text.
+	 *
+	 * @param elementGiven     el elemento DOM donde se produce un problema de accesibilidad
+	 * @param bIncludeChildren flag que indica si se deben incluir los textos de las etiquetas hijas
+	 * @return a string of HTML code for the given element.
+	 */
     private static String getHtmlText(Element elementGiven, boolean bIncludeChildren) {
         try {
             return EvaluatorUtils.serializeXmlElement(elementGiven, bIncludeChildren);

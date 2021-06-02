@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
@@ -33,7 +33,6 @@ import es.inteco.intav.utils.EvaluatorUtils;
  * The Class Check_2_3_Adaptative_View.
  */
 public final class Check_2_3_Adaptative_View extends EvaluateCheck {
-
 	/** The check accessibility. */
 	private CheckAccessibility checkAccessibility;
 
@@ -48,18 +47,15 @@ public final class Check_2_3_Adaptative_View extends EvaluateCheck {
 		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.naming.java.javaURLContextFactory");
 		System.setProperty(Context.URL_PKG_PREFIXES, "org.apache.naming");
 		final InitialContext ic = new InitialContext();
-
 		ic.createSubcontext("java:");
 		ic.createSubcontext("java:/comp");
 		ic.createSubcontext("java:/comp/env");
 		ic.createSubcontext("java:/comp/env/jdbc");
-
 		// Construct DataSource
 		final MysqlConnectionPoolDataSource mysqlDataSource = new MysqlConnectionPoolDataSource();
 		mysqlDataSource.setURL("jdbc:mysql://localhost:3306/oaw_js");
 		mysqlDataSource.setUser("root");
 		mysqlDataSource.setPassword("root");
-
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
 	}
 
@@ -81,22 +77,11 @@ public final class Check_2_3_Adaptative_View extends EvaluateCheck {
 	 */
 	@Test
 	public void evaluateMeta() throws Exception {
-
-		checkAccessibility.setContent("<html>"
-				+ "<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable = 1'/>"
-				+ "</html>");
-
+		checkAccessibility.setContent("<html>" + "<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable = 1'/>" + "</html>");
 		Assert.assertEquals(0, getNumProblems(checkAccessibility, 478));
-		checkAccessibility.setContent("<html>"
-				+ "<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'/>"
-				+ "</html>");
-
+		checkAccessibility.setContent("<html>" + "<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'/>" + "</html>");
 		Assert.assertEquals(1, getNumProblems(checkAccessibility, 478));
-
-		checkAccessibility.setContent("<html>"
-				+ "<meta name='viewport' content='width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable = 0'/>"
-				+ "</html>");
-
+		checkAccessibility.setContent("<html>" + "<meta name='viewport' content='width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable = 0'/>" + "</html>");
 		Assert.assertEquals(1, getNumProblems(checkAccessibility, 478));
 	}
 
@@ -107,23 +92,18 @@ public final class Check_2_3_Adaptative_View extends EvaluateCheck {
 	 */
 	@Test
 	public void evaluateResponsiveTags() throws Exception {
-		
-		Evaluation evaluation;		
-
+		Evaluation evaluation;
 		checkAccessibility.setContent(
 				"<html><head><style> body { line-height: 1em !important; letter-spacing:1em !important; word-spacing:1em !important; }</style><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
 		evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 		Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 479));
-		
 		checkAccessibility.setContent(
 				"<html><head><style> body { flex-grow: 2; line-height: 1em !important; letter-spacing:1em !important; word-spacing:1em !important; }</style><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
 		evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 		Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 479));
-		
 		checkAccessibility.setContent(
 				"<html><head><link href=\"http://tawmonitorurl.local/check22.css\" rel=\"stylesheet\" type=\"text/css\"/><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
 		evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 		Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 479));
 	}
-
 }

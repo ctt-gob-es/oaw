@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.apache.struts.util.PropertyMessageResources;
 
+import es.gob.oaw.MailException;
 import es.gob.oaw.MailService;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -92,7 +93,6 @@ public class PdfGeneratorThread2 extends Thread {
 		StringBuilder mailBody = new StringBuilder(
 				String.format("El proceso de generación de informes ha finalizado para el observatorio %s. Puede descargar los informes agrupados por dependencia en los siguientes enlaces: <br/>",
 						observatoryName));
-		// http://localhost:8080/oaw/secure/primaryExportPdfAction.do?action=downloadFile&idExObs=118&id_observatorio=38&file=
 		for (String zip : zips) {
 			final String filename = zip.substring(zip.lastIndexOf(File.separator) + 1);
 			StringBuilder url = new StringBuilder(this.baseurl);
@@ -105,9 +105,11 @@ public class PdfGeneratorThread2 extends Thread {
 		final MailService mailService = new MailService();
 		List<String> mailsTo = new ArrayList<>();
 		mailsTo.add(email);
-		mailsTo.add("alvaro.pelaez@ctic.es");
-//		mailService.sendMail(Collections.singletonList(email), "Generación de informes completado", mailBody.toString(), true);
-		mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
+		try {
+			mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
+		} catch (MailException e) {
+			Logger.putLog("Fallo al enviar el correo", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
+		}
 	}
 
 	/**

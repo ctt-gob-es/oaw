@@ -7,7 +7,7 @@
  *
  * $Version: 2007.08.19 +r2
  * Updated by Oleg Kiriljuk to support touch devices
- * Copyright (c) 2014-2017, Oleg Kiriljuk, oleg.kiriljuk@ok-soft-gmbh.com
+ * Copyright (c) 2014-2019, Oleg Kiriljuk, oleg.kiriljuk@ok-soft-gmbh.com
  */
 /*jslint browser: true, white: true */
 /*global jQuery, define, exports, module, require */

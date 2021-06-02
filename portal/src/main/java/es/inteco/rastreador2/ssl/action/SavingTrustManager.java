@@ -19,32 +19,72 @@ import javax.net.ssl.X509TrustManager;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+/**
+ * The Class SavingTrustManager.
+ */
 class SavingTrustManager implements X509TrustManager {
 
+    /** The tm. */
     private final X509TrustManager tm;
+    
+    /** The chain. */
     private X509Certificate[] chain;
 
+    /**
+	 * Gets the chain.
+	 *
+	 * @return the chain
+	 */
     public X509Certificate[] getChain() {
         return chain;
     }
 
+    /**
+	 * Sets the chain.
+	 *
+	 * @param chain the new chain
+	 */
     public void setChain(X509Certificate[] chain) {
         this.chain = chain;
     }
 
+    /**
+	 * Instantiates a new saving trust manager.
+	 *
+	 * @param tm the tm
+	 */
     SavingTrustManager(X509TrustManager tm) {
         this.tm = tm;
     }
 
+    /**
+	 * Gets the accepted issuers.
+	 *
+	 * @return the accepted issuers
+	 */
     public X509Certificate[] getAcceptedIssuers() {
         throw new UnsupportedOperationException();
     }
 
+    /**
+	 * Check client trusted.
+	 *
+	 * @param chain    the chain
+	 * @param authType the auth type
+	 * @throws CertificateException the certificate exception
+	 */
     public void checkClientTrusted(X509Certificate[] chain, String authType)
             throws CertificateException {
         throw new UnsupportedOperationException();
     }
 
+    /**
+	 * Check server trusted.
+	 *
+	 * @param chain    the chain
+	 * @param authType the auth type
+	 * @throws CertificateException the certificate exception
+	 */
     public void checkServerTrusted(X509Certificate[] chain, String authType)
             throws CertificateException {
         this.chain = chain;

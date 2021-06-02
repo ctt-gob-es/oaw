@@ -374,7 +374,7 @@ public final class WcagEmUtils {
 	 * @param currentEvaluationPageList the current evaluation page list
 	 * @return the map
 	 */
-	private static Map<String, Map<String, ValidationDetails>> generateEquivalenceMap(final List<ObservatoryEvaluationForm> currentEvaluationPageList) {
+	public static Map<String, Map<String, ValidationDetails>> generateEquivalenceMap(final List<ObservatoryEvaluationForm> currentEvaluationPageList) {
 		Map<String, Map<String, ValidationDetails>> wcagCompliance = new TreeMap<>();
 		for (ObservatoryEvaluationForm observatoryEvaluationForm : currentEvaluationPageList) {
 			String url = observatoryEvaluationForm.getUrl();

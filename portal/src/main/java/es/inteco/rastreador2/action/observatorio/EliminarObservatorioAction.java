@@ -31,8 +31,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 
+/**
+ * The Class EliminarObservatorioAction.
+ */
 public class EliminarObservatorioAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) {
 
@@ -57,6 +69,14 @@ public class EliminarObservatorioAction extends Action {
         }
     }
 
+    /**
+	 * Confirm.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward confirm(ActionMapping mapping, HttpServletRequest request) throws Exception {
         final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
         try (Connection c = DataBaseManager.getConnection()) {
@@ -67,6 +87,14 @@ public class EliminarObservatorioAction extends Action {
         return mapping.findForward(Constants.CONFIRMACION_DELETE);
     }
 
+    /**
+	 * Delete observatory.
+	 *
+	 * @param mapping        the mapping
+	 * @param request        the request
+	 * @param idObservatorio the id observatorio
+	 * @return the action forward
+	 */
     private ActionForward deleteObservatory(ActionMapping mapping, HttpServletRequest request, long idObservatorio) {
         try (Connection c = DataBaseManager.getConnection()) {
             try {

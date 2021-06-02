@@ -26,16 +26,40 @@ import java.util.List;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class Pagination.
+ */
 public final class Pagination {
 
+    /**
+	 * Instantiates a new pagination.
+	 */
     private Pagination() {
     }
 
+    /**
+	 * Creates the pagination.
+	 *
+	 * @param request     the request
+	 * @param numResult   the num result
+	 * @param currentPage the current page
+	 * @return the list
+	 */
     public static List<PageForm> createPagination(HttpServletRequest request, int numResult, int currentPage) {
         final PropertiesManager properties = new PropertiesManager();
         return createPagination(request, numResult, properties.getValue(CRAWLER_PROPERTIES, "pagination.size"), currentPage, Constants.PAG_PARAM);
     }
 
+    /**
+	 * Creates the pagination.
+	 *
+	 * @param request     the request
+	 * @param numResult   the num result
+	 * @param pageSize    the page size
+	 * @param currentPage the current page
+	 * @param parameter   the parameter
+	 * @return the list
+	 */
     public static List<PageForm> createPagination(HttpServletRequest request, int numResult, String pageSize, int currentPage, String parameter) {
         final PropertiesManager pmgr = new PropertiesManager();
 
@@ -60,6 +84,17 @@ public final class Pagination {
         return createPageList(request, currentPage, begin, end, parameter, numPages);
     }
 
+    /**
+	 * Creates the page list.
+	 *
+	 * @param request     the request
+	 * @param currentPage the current page
+	 * @param begin       the begin
+	 * @param end         the end
+	 * @param parameter   the parameter
+	 * @param numPages    the num pages
+	 * @return the list
+	 */
     private static List<PageForm> createPageList(HttpServletRequest request, int currentPage, int begin, int end, String parameter, int numPages) {
         List<PageForm> pageFormList = new ArrayList<>();
 
@@ -112,6 +147,13 @@ public final class Pagination {
         return pageFormList;
     }
 
+    /**
+	 * Calculate path.
+	 *
+	 * @param path  the path
+	 * @param param the param
+	 * @return the string
+	 */
     private static String calculatePath(final String path, final String param) {
         if (path.charAt(path.length() - 1) == '?') {
             return path.concat(param + "=");
@@ -120,10 +162,24 @@ public final class Pagination {
         }
     }
 
+    /**
+	 * Removes the parameter P.
+	 *
+	 * @param parameterP the parameter P
+	 * @param parameter  the parameter
+	 * @return the string
+	 */
     private static String removeParameterP(final String parameterP, final String parameter) {
         return parameterP.replaceAll("&*" + parameter + "=\\d+", "");
     }
 
+    /**
+	 * Gets the page.
+	 *
+	 * @param request the request
+	 * @param param   the param
+	 * @return the page
+	 */
     public static int getPage(final HttpServletRequest request, final String param) {
         if (request.getParameter(param) != null) {
             try {

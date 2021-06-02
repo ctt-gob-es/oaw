@@ -904,7 +904,7 @@ public final class EvaluatorUtils {
 								observatorySubgroupForm.getSuccessChecks().add(check);
 							}
 						} else {
-							// TODO Not executed check
+							// Not executed check
 							observatorySubgroupForm.getNotExecutedChecks().add(check);
 						}
 					}

@@ -87,14 +87,31 @@ import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicsUtils;
 import es.inteco.utils.FileUtils;
 
+/**
+ * The Class IntavExport.
+ */
 public final class IntavExport {
+	
+	/** The x ev. */
 	// CONSTANTES
 	static int xEv = 0;
+	
+	/** The y ev. */
 	static int yEv = 0;
+	
+	/** The x. */
 	static int x = 0;
+	
+	/** The y. */
 	static int y = 0;
+	
+	/** The color. */
 	static String color = "";
+	
+	/** The color ev. */
 	static String colorEv = "";
+	
+	/** The pmgr. */
 	static PropertiesManager pmgr;
 	static {
 		pmgr = new PropertiesManager();
@@ -106,9 +123,21 @@ public final class IntavExport {
 		colorEv = pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors");
 	}
 
+	/**
+	 * Instantiates a new intav export.
+	 */
 	private IntavExport() {
 	}
 
+	/**
+	 * Export intav to simple pdf.
+	 *
+	 * @param evaluationIds  the evaluation ids
+	 * @param request        the request
+	 * @param generalExpPath the general exp path
+	 * @param idTracking     the id tracking
+	 * @throws Exception the exception
+	 */
 	// Creación del PDF para el visualizador. PDF Simple
 	public static void exportIntavToSimplePdf(Map<Long, List<Long>> evaluationIds, HttpServletRequest request, String generalExpPath, long idTracking) throws Exception {
 		String pathExports = generalExpPath + File.separator + pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.simple.file.intav.name");
@@ -199,6 +228,15 @@ public final class IntavExport {
 		}
 	}
 
+	/**
+	 * Export intav to pdf.
+	 *
+	 * @param evaluationIds  the evaluation ids
+	 * @param request        the request
+	 * @param generalExpPath the general exp path
+	 * @param idTracking     the id tracking
+	 * @throws Exception the exception
+	 */
 	// Creación del PDF para el responsable. PDF Detallado
 	public static void exportIntavToPdf(Map<Long, List<Long>> evaluationIds, HttpServletRequest request, String generalExpPath, long idTracking) throws Exception {
 		final MessageResources messageResources = CrawlerUtils.getResources(request);
@@ -330,6 +368,12 @@ public final class IntavExport {
 		}
 	}
 
+	/**
+	 * Gets the results to show.
+	 *
+	 * @param evaList the eva list
+	 * @return the results to show
+	 */
 	private static List<IntavSimplePDFForm> getResultsToShow(List<EvaluationForm> evaList) {
 		List<IntavSimplePDFForm> results = new ArrayList<>();
 		for (EvaluationForm evaluation : evaList) {
@@ -399,6 +443,17 @@ public final class IntavExport {
 		return results;
 	}
 
+	/**
+	 * Global chapter.
+	 *
+	 * @param evaList      the eva list
+	 * @param request      the request
+	 * @param globalPath   the global path
+	 * @param index        the index
+	 * @param fechaInforme the fecha informe
+	 * @return the chapter
+	 * @throws Exception the exception
+	 */
 	private static Chapter globalChapter(List<EvaluationForm> evaList, HttpServletRequest request, String globalPath, IndexEvents index, String fechaInforme) throws Exception {
 		Chunk chunk = new Chunk(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.index.global.summary"));
 		Paragraph cTitle = new Paragraph("", ConstantsFont.CHAPTER_TITLE_FONT);
@@ -441,6 +496,14 @@ public final class IntavExport {
 		return chapter1;
 	}
 
+	/**
+	 * WCAG 1 generate graphic.
+	 *
+	 * @param request    the request
+	 * @param evaList    the eva list
+	 * @param globalPath the global path
+	 * @return the list
+	 */
 	private static List<PriorityForm> WCAG1GenerateGraphic(HttpServletRequest request, List<EvaluationForm> evaList, String globalPath) {
 		PriorityForm priorityFormA = new PriorityForm();
 		priorityFormA.setPriorityName("first.level.incidents");
@@ -467,6 +530,14 @@ public final class IntavExport {
 		return prioList;
 	}
 
+	/**
+	 * WCAG 2 generate graphic.
+	 *
+	 * @param request    the request
+	 * @param evaList    the eva list
+	 * @param globalPath the global path
+	 * @return the list
+	 */
 	private static List<PriorityForm> WCAG2GenerateGraphic(HttpServletRequest request, List<EvaluationForm> evaList, String globalPath) {
 		PriorityForm priorityForm1WCAG2 = new PriorityForm();
 		priorityForm1WCAG2.setPriorityName("wcag.2.principle.1.name");
@@ -509,6 +580,15 @@ public final class IntavExport {
 		return prioList;
 	}
 
+	/**
+	 * Adds the summary.
+	 *
+	 * @param prioList the prio list
+	 * @param request  the request
+	 * @return the com.itextpdf.text. list
+	 * @throws BadElementException the bad element exception
+	 * @throws IOException         Signals that an I/O exception has occurred.
+	 */
 	private static com.itextpdf.text.List addSummary(List<PriorityForm> prioList, HttpServletRequest request) throws BadElementException, IOException {
 		com.itextpdf.text.List summaryPriorities = new com.itextpdf.text.List();
 		for (PriorityForm priority : prioList) {
@@ -547,6 +627,15 @@ public final class IntavExport {
 		return summaryPriorities;
 	}
 
+	/**
+	 * Generate graphic.
+	 *
+	 * @param priorityFormList the priority form list
+	 * @param request          the request
+	 * @param tableName        the table name
+	 * @param tempPath         the temp path
+	 * @param isWCAG2          the is WCAG 2
+	 */
 	private static void generateGraphic(List<PriorityForm> priorityFormList, HttpServletRequest request, String tableName, String tempPath, boolean isWCAG2) {
 		DefaultCategoryDataset priorityDataSet;
 		if (!isWCAG2) {
@@ -563,6 +652,13 @@ public final class IntavExport {
 		}
 	}
 
+	/**
+	 * Creates the data set.
+	 *
+	 * @param request          the request
+	 * @param priorityFormList the priority form list
+	 * @return the default category dataset
+	 */
 	private static DefaultCategoryDataset createDataSet(HttpServletRequest request, List<PriorityForm> priorityFormList) {
 		DefaultCategoryDataset priorityDataSet = new DefaultCategoryDataset();
 		for (PriorityForm priority : priorityFormList) {
@@ -598,6 +694,13 @@ public final class IntavExport {
 		return priorityDataSet;
 	}
 
+	/**
+	 * Creates the data set WCAG 2.
+	 *
+	 * @param request          the request
+	 * @param priorityFormList the priority form list
+	 * @return the default category dataset
+	 */
 	private static DefaultCategoryDataset createDataSetWCAG2(HttpServletRequest request, List<PriorityForm> priorityFormList) {
 		DefaultCategoryDataset priorityDataSet = new DefaultCategoryDataset();
 		for (PriorityForm priority : priorityFormList) {
@@ -642,6 +745,13 @@ public final class IntavExport {
 		return priorityDataSet;
 	}
 
+	/**
+	 * Adds the specific problems.
+	 *
+	 * @param subSubSection    the sub sub section
+	 * @param specificProblems the specific problems
+	 * @param request          the request
+	 */
 	private static void addSpecificProblems(Section subSubSection, List<SpecificProblemForm> specificProblems, HttpServletRequest request) {
 		int maxNumErrors = Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.intav.specific.problems.number"));
 		for (SpecificProblemForm specificProblem : specificProblems) {
@@ -697,6 +807,13 @@ public final class IntavExport {
 		}
 	}
 
+	/**
+	 * Gets the match.
+	 *
+	 * @param text   the text
+	 * @param regexp the regexp
+	 * @return the match
+	 */
 	private static String getMatch(String text, String regexp) {
 		Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 		Matcher matcher = pattern.matcher(text);
@@ -707,6 +824,13 @@ public final class IntavExport {
 		}
 	}
 
+	/**
+	 * Gets the priority name.
+	 *
+	 * @param request  the request
+	 * @param priority the priority
+	 * @return the priority name
+	 */
 	private static String getPriorityName(HttpServletRequest request, PriorityForm priority) {
 		if (priority.getPriorityName().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "priority.1.name"))) {
 			return CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "first.level.incidents");
@@ -727,6 +851,18 @@ public final class IntavExport {
 		}
 	}
 
+	/**
+	 * Evolution chapter.
+	 *
+	 * @param request       the request
+	 * @param globalPath    the global path
+	 * @param index         the index
+	 * @param evaluationIds the evaluation ids
+	 * @param numChapter    the num chapter
+	 * @param onlyProblems  the only problems
+	 * @return the chapter
+	 * @throws Exception the exception
+	 */
 	private static Chapter evolutionChapter(HttpServletRequest request, String globalPath, IndexEvents index, Map<Long, List<Long>> evaluationIds, int numChapter, boolean onlyProblems)
 			throws Exception {
 		if (generateEvolutionGraphics(request, globalPath, evaluationIds, onlyProblems) == 1) {
@@ -782,6 +918,16 @@ public final class IntavExport {
 		}
 	}
 
+	/**
+	 * Generate evolution graphics.
+	 *
+	 * @param request       the request
+	 * @param tempPath      the temp path
+	 * @param evaluationIds the evaluation ids
+	 * @param onlyProblems  the only problems
+	 * @return the int
+	 * @throws Exception the exception
+	 */
 	private static int generateEvolutionGraphics(HttpServletRequest request, String tempPath, Map<Long, List<Long>> evaluationIds, boolean onlyProblems) throws Exception {
 		Map<String, List<EvaluationForm>> evolutionMap = generateEvaluationMap(request, evaluationIds, true);
 		if (evolutionMap.size() > 1) {
@@ -796,6 +942,15 @@ public final class IntavExport {
 		}
 	}
 
+	/**
+	 * Creates the problems chart.
+	 *
+	 * @param tempPath     the temp path
+	 * @param request      the request
+	 * @param evolutionMap the evolution map
+	 * @param x            the x
+	 * @param y            the y
+	 */
 	private static void createProblemsChart(String tempPath, HttpServletRequest request, Map<String, List<EvaluationForm>> evolutionMap, int x, int y) {
 		try {
 			DefaultCategoryDataset dataSetA = new DefaultCategoryDataset();
@@ -835,6 +990,15 @@ public final class IntavExport {
 		}
 	}
 
+	/**
+	 * Creates the warnings chart.
+	 *
+	 * @param tempPath     the temp path
+	 * @param request      the request
+	 * @param evolutionMap the evolution map
+	 * @param x            the x
+	 * @param y            the y
+	 */
 	private static void createWarningsChart(String tempPath, HttpServletRequest request, Map<String, List<EvaluationForm>> evolutionMap, int x, int y) {
 		try {
 			DefaultCategoryDataset dataSetA = new DefaultCategoryDataset();
@@ -874,6 +1038,15 @@ public final class IntavExport {
 		}
 	}
 
+	/**
+	 * Creates the cannottell chart.
+	 *
+	 * @param tempPath     the temp path
+	 * @param request      the request
+	 * @param evolutionMap the evolution map
+	 * @param x            the x
+	 * @param y            the y
+	 */
 	private static void createCannottellChart(String tempPath, HttpServletRequest request, Map<String, List<EvaluationForm>> evolutionMap, int x, int y) {
 		try {
 			DefaultCategoryDataset dataSetA = new DefaultCategoryDataset();
@@ -913,6 +1086,12 @@ public final class IntavExport {
 		}
 	}
 
+	/**
+	 * Adds the W 3 C copyright.
+	 *
+	 * @param subSubSection the sub sub section
+	 * @param check         the check
+	 */
 	private static void addW3CCopyright(Section subSubSection, String check) {
 		Paragraph p = new Paragraph();
 		p.setAlignment(Paragraph.ALIGN_RIGHT);
@@ -928,6 +1107,15 @@ public final class IntavExport {
 		subSubSection.add(p);
 	}
 
+	/**
+	 * Generate evaluation map.
+	 *
+	 * @param request       the request
+	 * @param evaluationIds the evaluation ids
+	 * @param getOnlyChecks the get only checks
+	 * @return the map
+	 * @throws Exception the exception
+	 */
 	private static Map<String, List<EvaluationForm>> generateEvaluationMap(HttpServletRequest request, Map<Long, List<Long>> evaluationIds, boolean getOnlyChecks) throws Exception {
 		TreeMap<String, List<EvaluationForm>> evolutionMap = new TreeMap<>(new Comparator<String>() {
 			@Override

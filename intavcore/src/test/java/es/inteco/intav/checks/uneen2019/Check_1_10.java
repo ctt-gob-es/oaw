@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.CheckAccessibility;
@@ -31,7 +31,6 @@ import es.inteco.intav.TestUtils;
  * The Class Check_1_9.
  */
 public final class Check_1_10 extends EvaluateCheck {
-
 	/** The check accessibility. */
 	private CheckAccessibility checkAccessibility;
 
@@ -46,18 +45,15 @@ public final class Check_1_10 extends EvaluateCheck {
 		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.naming.java.javaURLContextFactory");
 		System.setProperty(Context.URL_PKG_PREFIXES, "org.apache.naming");
 		final InitialContext ic = new InitialContext();
-
 		ic.createSubcontext("java:");
 		ic.createSubcontext("java:/comp");
 		ic.createSubcontext("java:/comp/env");
 		ic.createSubcontext("java:/comp/env/jdbc");
-
 		// Construct DataSource
 		final MysqlConnectionPoolDataSource mysqlDataSource = new MysqlConnectionPoolDataSource();
 		mysqlDataSource.setURL("jdbc:mysql://localhost:3306/oaw_js");
 		mysqlDataSource.setUser("root");
 		mysqlDataSource.setPassword("root");
-
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
 	}
 
@@ -72,16 +68,13 @@ public final class Check_1_10 extends EvaluateCheck {
 		checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-en2019");
 	}
 
-	
 	@Test
 	public void evaluateMoreHeadersThanFieldset() {
-		checkAccessibility.setContent("<html><form>" + "<fieldset><h2>Foo</h2>" + "<label for=\"id_1\">Lorem*</label>" + "<input id=\"id_1\"></fieldset>" + "<fieldset><h2>Bar</h2>" + "<label for=\"id_2\">Ipsum*</label>"
-				+ "<input id=\"id_2\"></fieldset>" + "</form>");
+		checkAccessibility.setContent("<html><form>" + "<fieldset><h2>Foo</h2>" + "<label for=\"id_1\">Lorem*</label>" + "<input id=\"id_1\"></fieldset>" + "<fieldset><h2>Bar</h2>"
+				+ "<label for=\"id_2\">Ipsum*</label>" + "<input id=\"id_2\"></fieldset>" + "</form>");
 		Assert.assertEquals(0, getNumProblems(checkAccessibility, 429));
-
-		checkAccessibility.setContent("<html><form>" + "<fieldset><h2>Foo</h2>" + "<label for=\"id_1\">Lorem*</label>" + "<input id=\"id_1\"></fieldset>" + "<h2>Bar</h2>" + "<label for=\"id_2\">Ipsum*</label>"
-				+ "<input id=\"id_2\">" + "</form>");
+		checkAccessibility.setContent("<html><form>" + "<fieldset><h2>Foo</h2>" + "<label for=\"id_1\">Lorem*</label>" + "<input id=\"id_1\"></fieldset>" + "<h2>Bar</h2>"
+				+ "<label for=\"id_2\">Ipsum*</label>" + "<input id=\"id_2\">" + "</form>");
 		Assert.assertEquals(1, getNumProblems(checkAccessibility, 429));
 	}
-
 }

@@ -28,275 +28,635 @@ import java.util.Date;
 import java.util.List;
 
 
+/**
+ * The Class ModificarCuentaUsuarioForm.
+ */
 public class ModificarCuentaUsuarioForm extends ValidatorForm {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The id cuenta. */
     private String id_cuenta;
+    
+    /** The nombre. */
     private String nombre;
+    
+    /** The nombre antiguo. */
     private String nombre_antiguo;
+    
+    /** The password. */
     private String password;
+    
+    /** The dominio. */
     private String dominio;
+    
+    /** The id semilla. */
     private Long idSemilla;
+    
+    /** The lista rastreable. */
     private String listaRastreable;
+    
+    /** The id lista rastreable. */
     private Long idListaRastreable;
+    
+    /** The lista no rastreable. */
     private String listaNoRastreable;
+    
+    /** The id lista no rastreable. */
     private Long idListaNoRastreable;
+    
+    /** The cartuchos selected. */
     private String[] cartuchosSelected;
+    
+    /** The cartuchos. */
     private List<CartuchoForm> cartuchos;
+    
+    /** The periodicidad. */
     private String periodicidad;
+    
+    /** The periodicidad vector. */
     private List<PeriodicidadForm> periodicidadVector;
+    
+    /** The lenguaje. */
     private long lenguaje;
+    
+    /** The lenguaje vector. */
     private List<LenguajeForm> lenguajeVector;
+    
+    /** The profundidad. */
     private String profundidad;
+    
+    /** The amplitud. */
     private String amplitud;
+    
+    /** The fecha inicio. */
     private String fechaInicio;
+    
+    /** The hora inicio. */
     private String horaInicio;
+    
+    /** The minuto inicio. */
     private String minutoInicio;
+    
+    /** The fecha. */
     private Date fecha;
+    
+    /** The norma V. */
     private List<NormaForm> normaV;
+    
+    /** The norma analisis. */
     private String normaAnalisis;
+    
+    /** The norma analisis enlaces. */
     private String normaAnalisisEnlaces;
+    
+    /** The pseudo aleatorio. */
     private boolean pseudoAleatorio;
+    
+    /** The activo. */
     private boolean activo;
+    
+    /** The in directory. */
     private boolean inDirectory;
 
+    /** The id rastreable antiguo. */
     private long idRastreableAntiguo;
+    
+    /** The id no rastreable antiguo. */
     private long idNoRastreableAntiguo;
 
+    /** The cartuchos list. */
     private List<CartuchoForm> cartuchosList;
 
+    /**
+	 * Gets the id cuenta.
+	 *
+	 * @return the id cuenta
+	 */
     public String getId_cuenta() {
         return id_cuenta;
     }
 
+    /**
+	 * Sets the id cuenta.
+	 *
+	 * @param id_cuenta the new id cuenta
+	 */
     public void setId_cuenta(String id_cuenta) {
         this.id_cuenta = id_cuenta;
     }
 
+    /**
+	 * Gets the nombre.
+	 *
+	 * @return the nombre
+	 */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+	 * Sets the nombre.
+	 *
+	 * @param nombre the new nombre
+	 */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    /**
+	 * Gets the dominio.
+	 *
+	 * @return the dominio
+	 */
     public String getDominio() {
         return dominio;
     }
 
+    /**
+	 * Sets the dominio.
+	 *
+	 * @param dominio the new dominio
+	 */
     public void setDominio(String dominio) {
         this.dominio = dominio;
     }
 
+    /**
+	 * Gets the cartuchos selected.
+	 *
+	 * @return the cartuchos selected
+	 */
     public String[] getCartuchosSelected() {
         return cartuchosSelected;
     }
 
+    /**
+	 * Sets the cartuchos selected.
+	 *
+	 * @param cartuchosSelected the new cartuchos selected
+	 */
     public void setCartuchosSelected(String[] cartuchosSelected) {
         this.cartuchosSelected = cartuchosSelected;
     }
 
+    /**
+	 * Gets the cartuchos.
+	 *
+	 * @return the cartuchos
+	 */
     public List<CartuchoForm> getCartuchos() {
         return cartuchos;
     }
 
+    /**
+	 * Sets the cartuchos.
+	 *
+	 * @param cartuchos the new cartuchos
+	 */
     public void setCartuchos(List<CartuchoForm> cartuchos) {
         this.cartuchos = cartuchos;
     }
 
+    /**
+	 * Gets the periodicidad.
+	 *
+	 * @return the periodicidad
+	 */
     public String getPeriodicidad() {
         return periodicidad;
     }
 
+    /**
+	 * Sets the periodicidad.
+	 *
+	 * @param periodicidad the new periodicidad
+	 */
     public void setPeriodicidad(String periodicidad) {
         this.periodicidad = periodicidad;
     }
 
+    /**
+	 * Gets the periodicidad vector.
+	 *
+	 * @return the periodicidad vector
+	 */
     public List<PeriodicidadForm> getPeriodicidadVector() {
         return periodicidadVector;
     }
 
+    /**
+	 * Sets the periodicidad vector.
+	 *
+	 * @param periodicidadVector the new periodicidad vector
+	 */
     public void setPeriodicidadVector(List<PeriodicidadForm> periodicidadVector) {
         this.periodicidadVector = periodicidadVector;
     }
 
+    /**
+	 * Gets the profundidad.
+	 *
+	 * @return the profundidad
+	 */
     public String getProfundidad() {
         return profundidad;
     }
 
+    /**
+	 * Sets the profundidad.
+	 *
+	 * @param profundidad the new profundidad
+	 */
     public void setProfundidad(String profundidad) {
         this.profundidad = profundidad;
     }
 
+    /**
+	 * Gets the amplitud.
+	 *
+	 * @return the amplitud
+	 */
     public String getAmplitud() {
         return amplitud;
     }
 
+    /**
+	 * Sets the amplitud.
+	 *
+	 * @param amplitud the new amplitud
+	 */
     public void setAmplitud(String amplitud) {
         this.amplitud = amplitud;
     }
 
+    /**
+	 * Gets the fecha inicio.
+	 *
+	 * @return the fecha inicio
+	 */
     public String getFechaInicio() {
         return fechaInicio;
     }
 
+    /**
+	 * Sets the fecha inicio.
+	 *
+	 * @param fechaInicio the new fecha inicio
+	 */
     public void setFechaInicio(String fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
+    /**
+	 * Gets the hora inicio.
+	 *
+	 * @return the hora inicio
+	 */
     public String getHoraInicio() {
         return horaInicio;
     }
 
+    /**
+	 * Sets the hora inicio.
+	 *
+	 * @param horaInicio the new hora inicio
+	 */
     public void setHoraInicio(String horaInicio) {
         this.horaInicio = horaInicio;
     }
 
+    /**
+	 * Gets the minuto inicio.
+	 *
+	 * @return the minuto inicio
+	 */
     public String getMinutoInicio() {
         return minutoInicio;
     }
 
+    /**
+	 * Sets the minuto inicio.
+	 *
+	 * @param minutoInicio the new minuto inicio
+	 */
     public void setMinutoInicio(String minutoInicio) {
         this.minutoInicio = minutoInicio;
     }
 
+    /**
+	 * Gets the fecha.
+	 *
+	 * @return the fecha
+	 */
     public Date getFecha() {
         return fecha;
     }
 
+    /**
+	 * Sets the fecha.
+	 *
+	 * @param fecha the new fecha
+	 */
     public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
+    /**
+	 * Gets the password.
+	 *
+	 * @return the password
+	 */
     public String getPassword() {
         return password;
     }
 
+    /**
+	 * Sets the password.
+	 *
+	 * @param password the new password
+	 */
     public void setPassword(String password) {
         this.password = password;
     }
 
+    /**
+	 * Gets the nombre antiguo.
+	 *
+	 * @return the nombre antiguo
+	 */
     public String getNombre_antiguo() {
         return nombre_antiguo;
     }
 
+    /**
+	 * Sets the nombre antiguo.
+	 *
+	 * @param nombre_antiguo the new nombre antiguo
+	 */
     public void setNombre_antiguo(String nombre_antiguo) {
         this.nombre_antiguo = nombre_antiguo;
     }
 
+    /**
+	 * Gets the cartuchos list.
+	 *
+	 * @return the cartuchos list
+	 */
     public List<CartuchoForm> getCartuchosList() {
         return cartuchosList;
     }
 
+    /**
+	 * Sets the cartuchos list.
+	 *
+	 * @param cartuchosList the new cartuchos list
+	 */
     public void setCartuchosList(List<CartuchoForm> cartuchosList) {
         this.cartuchosList = cartuchosList;
     }
 
+    /**
+	 * Gets the lista rastreable.
+	 *
+	 * @return the lista rastreable
+	 */
     public String getListaRastreable() {
         return listaRastreable;
     }
 
+    /**
+	 * Sets the lista rastreable.
+	 *
+	 * @param listaRastreable the new lista rastreable
+	 */
     public void setListaRastreable(String listaRastreable) {
         this.listaRastreable = listaRastreable;
     }
 
+    /**
+	 * Gets the lista no rastreable.
+	 *
+	 * @return the lista no rastreable
+	 */
     public String getListaNoRastreable() {
         return listaNoRastreable;
     }
 
+    /**
+	 * Sets the lista no rastreable.
+	 *
+	 * @param listaNoRastreable the new lista no rastreable
+	 */
     public void setListaNoRastreable(String listaNoRastreable) {
         this.listaNoRastreable = listaNoRastreable;
     }
 
+    /**
+	 * Gets the norma V.
+	 *
+	 * @return the norma V
+	 */
     public List<NormaForm> getNormaV() {
         return normaV;
     }
 
+    /**
+	 * Sets the norma V.
+	 *
+	 * @param normaV the new norma V
+	 */
     public void setNormaV(List<NormaForm> normaV) {
         this.normaV = normaV;
     }
 
+    /**
+	 * Gets the norma analisis.
+	 *
+	 * @return the norma analisis
+	 */
     public String getNormaAnalisis() {
         return normaAnalisis;
     }
 
+    /**
+	 * Sets the norma analisis.
+	 *
+	 * @param normaAnalisis the new norma analisis
+	 */
     public void setNormaAnalisis(String normaAnalisis) {
         this.normaAnalisis = normaAnalisis;
     }
 
+    /**
+	 * Gets the id semilla.
+	 *
+	 * @return the id semilla
+	 */
     public Long getIdSemilla() {
         return idSemilla;
     }
 
+    /**
+	 * Sets the id semilla.
+	 *
+	 * @param idSemilla the new id semilla
+	 */
     public void setIdSemilla(Long idSemilla) {
         this.idSemilla = idSemilla;
     }
 
+    /**
+	 * Gets the id lista rastreable.
+	 *
+	 * @return the id lista rastreable
+	 */
     public Long getIdListaRastreable() {
         return idListaRastreable;
     }
 
+    /**
+	 * Sets the id lista rastreable.
+	 *
+	 * @param idListaRastreable the new id lista rastreable
+	 */
     public void setIdListaRastreable(Long idListaRastreable) {
         this.idListaRastreable = idListaRastreable;
     }
 
+    /**
+	 * Gets the id lista no rastreable.
+	 *
+	 * @return the id lista no rastreable
+	 */
     public Long getIdListaNoRastreable() {
         return idListaNoRastreable;
     }
 
+    /**
+	 * Sets the id lista no rastreable.
+	 *
+	 * @param idListaNoRastreable the new id lista no rastreable
+	 */
     public void setIdListaNoRastreable(Long idListaNoRastreable) {
         this.idListaNoRastreable = idListaNoRastreable;
     }
 
+    /**
+	 * Gets the id rastreable antiguo.
+	 *
+	 * @return the id rastreable antiguo
+	 */
     public long getIdRastreableAntiguo() {
         return idRastreableAntiguo;
     }
 
+    /**
+	 * Sets the id rastreable antiguo.
+	 *
+	 * @param idRastreableAntiguo the new id rastreable antiguo
+	 */
     public void setIdRastreableAntiguo(long idRastreableAntiguo) {
         this.idRastreableAntiguo = idRastreableAntiguo;
     }
 
+    /**
+	 * Gets the id no rastreable antiguo.
+	 *
+	 * @return the id no rastreable antiguo
+	 */
     public long getIdNoRastreableAntiguo() {
         return idNoRastreableAntiguo;
     }
 
+    /**
+	 * Sets the id no rastreable antiguo.
+	 *
+	 * @param idNoRastreableAntiguo the new id no rastreable antiguo
+	 */
     public void setIdNoRastreableAntiguo(long idNoRastreableAntiguo) {
         this.idNoRastreableAntiguo = idNoRastreableAntiguo;
     }
 
+    /**
+	 * Checks if is pseudo aleatorio.
+	 *
+	 * @return true, if is pseudo aleatorio
+	 */
     public boolean isPseudoAleatorio() {
         return pseudoAleatorio;
     }
 
+    /**
+	 * Sets the pseudo aleatorio.
+	 *
+	 * @param pseudoAleatorio the new pseudo aleatorio
+	 */
     public void setPseudoAleatorio(boolean pseudoAleatorio) {
         this.pseudoAleatorio = pseudoAleatorio;
     }
 
+    /**
+	 * Gets the lenguaje.
+	 *
+	 * @return the lenguaje
+	 */
     public long getLenguaje() {
         return lenguaje;
     }
 
+    /**
+	 * Sets the lenguaje.
+	 *
+	 * @param lenguaje the new lenguaje
+	 */
     public void setLenguaje(long lenguaje) {
         this.lenguaje = lenguaje;
     }
 
+    /**
+	 * Gets the lenguaje vector.
+	 *
+	 * @return the lenguaje vector
+	 */
     public List<LenguajeForm> getLenguajeVector() {
         return lenguajeVector;
     }
 
+    /**
+	 * Sets the lenguaje vector.
+	 *
+	 * @param lenguajeVector the new lenguaje vector
+	 */
     public void setLenguajeVector(List<LenguajeForm> lenguajeVector) {
         this.lenguajeVector = lenguajeVector;
     }
 
+    /**
+	 * Checks if is activo.
+	 *
+	 * @return true, if is activo
+	 */
     public boolean isActivo() {
         return activo;
     }
 
+    /**
+	 * Sets the activo.
+	 *
+	 * @param activo the new activo
+	 */
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
 
+    /**
+	 * Reset.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 */
     @Override
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         if (this.cartuchos == null) {
@@ -313,18 +673,38 @@ public class ModificarCuentaUsuarioForm extends ValidatorForm {
         }
     }
 
+    /**
+	 * Gets the norma analisis enlaces.
+	 *
+	 * @return the norma analisis enlaces
+	 */
     public String getNormaAnalisisEnlaces() {
         return normaAnalisisEnlaces;
     }
 
+    /**
+	 * Sets the norma analisis enlaces.
+	 *
+	 * @param normaAnalisisEnlaces the new norma analisis enlaces
+	 */
     public void setNormaAnalisisEnlaces(String normaAnalisisEnlaces) {
         this.normaAnalisisEnlaces = normaAnalisisEnlaces;
     }
 
+    /**
+	 * Checks if is in directory.
+	 *
+	 * @return true, if is in directory
+	 */
     public boolean isInDirectory() {
         return inDirectory;
     }
 
+    /**
+	 * Sets the in directory.
+	 *
+	 * @param inDirectory the new in directory
+	 */
     public void setInDirectory(boolean inDirectory) {
         this.inDirectory = inDirectory;
     }

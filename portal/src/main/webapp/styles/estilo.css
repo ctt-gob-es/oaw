@@ -381,7 +381,7 @@ td {
 	border: solid #e5e5e5 1px;
 	padding: 1% 4%;
 	float: left;
-    width: 100%;
+	width: 100%;
 }
 
 #cajaformularios {
@@ -939,7 +939,7 @@ div.detail p {
 	border: 2px solid #CCC
 }
 
-#container_der table th, #fullwidthgrid table th {
+#container_der table th, #fullwidthgrid table th, #extraConfigDialog table th, .summaryModalTable th {
 	text-align: center;
 	background: #e1120d;
 	background: -moz-linear-gradient(top, #e1120d 0%, #ff8e8e 100%);
@@ -955,7 +955,7 @@ div.detail p {
 	background: silver
 }
 
-#container_der table td, #fullwidthgrid   table td {
+#container_der table td, #fullwidthgrid   table td, #extraConfigDialog table td {
 	text-align: center;
 	background: white;
 	border: 1px solid #CCC
@@ -963,6 +963,10 @@ div.detail p {
 
 #container_der table td.alignLeft, #fullwidthgrid table td.alignLeft {
 	text-align: left
+}
+
+#extraConfigDialog table {
+	font-size: 14px !important;
 }
 
 #NuevaSemillaIpForm fieldset li {
@@ -1329,18 +1333,50 @@ to {
 .seedImportErrorList {
 	width: 100% !important;
 	text-align: left !important;
-	list-style-type: square  !important;
-	 list-style-position: inside;
+	list-style-type: square !important;
+	list-style-position: inside;
 }
 
 .seedImportErrorList>li {
-	    width: 100% !important;
-    text-align: left !important;
-    list-style-type: square !important;
-    display: list-item !important;
-	 list-style-position: inside;
+	width: 100% !important;
+	text-align: left !important;
+	list-style-type: square !important;
+	display: list-item !important;
+	list-style-position: inside;
 }
 
-.seedImportErrorList > li+li::before{
-	    content: "" !important;
+.seedImportErrorList>li+li::before {
+	content: "" !important;
+}
+
+#filterResultsThreshold {
+	padding: 5px;
+	width: 100%;
+	float: left;
+	clear: both;
+	margin-bottom: 10px;
+}
+
+#filterResultsThreshold .form-group {
+	display: inline-block;
+	margin-bottom: 0;
+	vertical-align: middle;
+}
+
+#filterResultsThreshold input {
+	margin-right: 15px;
+}
+
+.summaryEntry {
+	margin-bottom: 10px;
+}
+
+.sendResultIteration {
+	border: 1px solid #ccc;
+	padding: 10px;
+	margin-bottom: 20px;
+}
+
+.sendResultIteration h3{
+	margin-bottom: 15px;
 }

@@ -1,5 +1,6 @@
 <%@page language="java"  contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%-- <%@page import="java.util.Base64"%> --%>
 <%@page import= "java.io.InputStreamReader" %>
 <%@page import= "java.io.BufferedReader" %>
 <%@page import= "java.io.OutputStreamWriter" %>
@@ -7,6 +8,8 @@
 <%@page import= "java.util.ArrayList" %>
 <%@page import= "java.util.List" %>
 <%@page import= "java.util.Properties" %>
+<%@page import="org.apache.commons.codec.binary.Base64"%>
+
 <%--
     Necesita las librerias commons-fileupload-1.2.1.jar y commons-io-1.3.2.jar
 --%>
@@ -77,9 +80,11 @@
                         readParam(item);
                     } else {
                         // Si no es campo de formulario es el fichero
-                        codigo = new String(item.get());
                         fileName = item.getName();
-                        
+                        try{
+                            //codigo = Base64.getUrlEncoder().encodeToString(item.get());
+                        	codigo = Base64.encodeBase64URLSafeString(item.get());
+                        } catch(Exception e){}
                     }
                 }
             } catch (FileUploadException fue) {
@@ -98,7 +103,6 @@
                 this.urls = item.getString();
             } else if (paramName.equalsIgnoreCase("content")) {
                 this.codigo = item.getString();
-                //Save filename
                 this.fileName = item.getName();
             } else if (paramName.equalsIgnoreCase("correo")) {
                 this.correo = item.getString();
@@ -274,10 +278,7 @@
             } else if (isListaUrlsRequest()) {
                 if (urls.isEmpty()) {
                   errores.add("Indique al menos una url para análisis de tipo 'Conjunto de URLs'");
-                } /* else if(urls.length()>8000){
-                	errores.add("El número máximo de caracteres para el 'Conjunto de URLs' es 8000. Acorte las URLs o introduzca menos URLs");
-                } */
-                else {
+                } else {
                     for (String domain: urls.split("\r\n")) {
                         if (!domain.startsWith("http") && !domain.startsWith("https")) {
                             errores.add("La URL " + domain + " debe comenzar por http:// o https://");
@@ -373,8 +374,6 @@
               }
             }
         </script>
-        <!-- Bootstrap -->
-        <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
         <link href="/oaw/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
 

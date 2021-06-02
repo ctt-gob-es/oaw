@@ -509,9 +509,7 @@
 					icon = "<span style='cursor:pointer;margin-" +
 						(p.direction === "rtl" ? "right:" : "left:") + (n.idx * 12) +
 						"px;' class='" + grp.commonIconClass + " " +
-						(groupCollapse ? grp.plusicon : grp.minusicon) + " tree-wrap" +
-						"' onclick=\"jQuery('#" + jgrid.jqID(p.id).replace("\\", "\\\\") +
-						"').jqGrid('groupingToggle','" + hid + "', this);return false;\"></span>";
+						(groupCollapse ? grp.plusicon : grp.minusicon) + " tree-wrap'></span>";
 				if (grp._locgr) {
 					if (!(n.startRow + n.cnt > (page - 1) * rn && n.startRow < page * rn)) {
 						return true;
@@ -526,10 +524,10 @@
 				toEnd++;
 				try {
 					if ($.isArray(grp.formatDisplayField) && $.isFunction(grp.formatDisplayField[n.idx])) {
-						n.displayValue = grp.formatDisplayField[n.idx].call($t, n.displayValue, n.value, colModel[cp[n.idx]], n.idx, grp);
+						n.displayValue = grp.formatDisplayField[n.idx].call($t, n.displayValue, n.value, colModel[cp[n.idx]], n.idx, n, i);
 						gv = n.displayValue;
 					} else {
-						gv = $t.formatter(hid, n.displayValue, cp[n.idx], n.value);
+						gv = $t.formatter(hid, n.displayValue, cp[n.idx], n.value, n);
 					}
 				} catch (egv) {
 					gv = n.displayValue;

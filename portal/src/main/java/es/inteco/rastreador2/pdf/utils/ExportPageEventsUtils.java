@@ -50,8 +50,6 @@ public final class ExportPageEventsUtils {
 	 */
 	public static Rectangle createRectangle(int x, int y, Color color) {
 		Rectangle rec = new Rectangle(x, y);
-		// PENDING
-		// rec.setBackgroundColor(color);
 		rec.setBackgroundColor(new BaseColor(color.getRed(), color.getGreen(), color.getBlue()));
 		return rec;
 	}
@@ -91,8 +89,6 @@ public final class ExportPageEventsUtils {
 		cb.beginMarkedContentSequence(PdfName.TEXT);
 		cb.beginText();
 		cb.setFontAndSize(font, size);
-		// cb.setColorFill(colorText);
-		// PENDING
 		cb.setColorFill(new BaseColor(colorText.getRed(), colorText.getGreen(), colorText.getBlue()));
 		cb.moveText(posX, posY);
 		cb.showText(text);
@@ -114,8 +110,6 @@ public final class ExportPageEventsUtils {
 		line.setBottom(Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.lineFooterBottom")));
 		line.setLeft(Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.lineFooterLeft")));
 		line.setRight(Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.lineFooterRight")));
-		// PENDING
-		// line.setBackgroundColor(color);
 		line.setBackgroundColor(new BaseColor(color.getRed(), color.getGreen(), color.getBlue()));
 		return line;
 	}

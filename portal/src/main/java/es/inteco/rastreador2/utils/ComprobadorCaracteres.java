@@ -18,14 +18,29 @@ package es.inteco.rastreador2.utils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The Class ComprobadorCaracteres.
+ */
 public class ComprobadorCaracteres {
+    
+    /** The entrada. */
     private String entrada;
 
+    /**
+	 * Instantiates a new comprobador caracteres.
+	 *
+	 * @param en the en
+	 */
     public ComprobadorCaracteres(String en) {
         this.entrada = en;
     }
 
 
+    /**
+	 * Checks if is nombre valido.
+	 *
+	 * @return true, if is nombre valido
+	 */
     public boolean isNombreValido() {
         Pattern p = Pattern.compile("[^a-z,A-Z,0-9,Á,É,Í,Ó,Ú,Ü,á,é,í,ó,ú,ü,ç,ñ,_,\\-,\\s\\.]", Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(entrada);
@@ -38,6 +53,11 @@ public class ComprobadorCaracteres {
     }
 
 
+    /**
+	 * Espacios.
+	 *
+	 * @return the string
+	 */
     public String espacios() {
         return entrada.trim();
     }

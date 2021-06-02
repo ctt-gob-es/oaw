@@ -23,11 +23,24 @@ import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 
 import java.sql.Connection;
 
+/**
+ * The Class CuentaClienteUtils.
+ */
 public final class CuentaClienteUtils {
 
+    /**
+	 * Instantiates a new cuenta cliente utils.
+	 */
     private CuentaClienteUtils() {
     }
 
+    /**
+	 * Gets the cuenta usuario form.
+	 *
+	 * @param idCuenta the id cuenta
+	 * @return the cuenta usuario form
+	 * @throws Exception the exception
+	 */
     public static VerCuentaUsuarioForm getCuentaUsuarioForm(long idCuenta) throws Exception {
         VerCuentaUsuarioForm verCuentaClienteForm = new VerCuentaUsuarioForm();
         try (Connection c = DataBaseManager.getConnection()) {

@@ -75,7 +75,7 @@ $.jgrid.regional["es"] = {
 		bExit : "Cancelar",
 	    msg: {
 	        required:"Campo obligatorio",
-	        number:"Introduzca un número",
+	        number:"Introduzca un número válido",
 	        minValue:"El valor debe ser mayor o igual a ",
 	        maxValue:"El valor debe ser menor o igual a ",
 	        email: "no es una dirección de correo válida",

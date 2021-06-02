@@ -41,10 +41,20 @@ import java.util.List;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 
+/**
+ * The Class DeleteTempDirJob.
+ */
 public class DeleteTempDirJob implements StatefulJob {
 
+    /** The Constant LOG. */
     public static final Log LOG = LogFactory.getLog(DeleteTempDirJob.class);
 
+    /**
+	 * Execute.
+	 *
+	 * @param context the context
+	 * @throws JobExecutionException the job execution exception
+	 */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
 
@@ -53,6 +63,9 @@ public class DeleteTempDirJob implements StatefulJob {
 
     }
 
+    /**
+	 * Delete files job.
+	 */
     public void deleteFilesJob() {
         Logger.putLog("Inicio del JOB que se encarga de borrar gráficas viejas", DeleteTempDirJob.class, Logger.LOG_LEVEL_INFO);
         PropertiesManager pmgr = new PropertiesManager();
@@ -99,6 +112,9 @@ public class DeleteTempDirJob implements StatefulJob {
         }
     }
 
+    /**
+	 * Delete observatory cache job.
+	 */
     public void deleteObservatoryCacheJob() {
         Logger.putLog("Inicio del JOB que se encarga de borrar la caché expirada del observatorio", DeleteTempDirJob.class, Logger.LOG_LEVEL_INFO);
 

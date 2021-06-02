@@ -40,10 +40,23 @@ import java.util.List;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class ModificarCuentaUsuarioAction.
+ */
 public class ModificarCuentaUsuarioAction extends Action {
 
+    /** The log. */
     private Log log = LogFactory.getLog(ModificarCuentaUsuarioAction.class);
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) {
         try {

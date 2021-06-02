@@ -20,37 +20,77 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class ObservatorySuitabilityForm.
+ */
 public class ObservatorySuitabilityForm implements Serializable {
-    private String name;
-    private BigDecimal score;
-    private List<ObservatorySubgroupForm> subgroups;
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = -1754577937874001252L;
+	/** The name. */
+	private String name;
+	/** The score. */
+	private BigDecimal score;
+	/** The subgroups. */
+	private List<ObservatorySubgroupForm> subgroups;
 
-    public ObservatorySuitabilityForm() {
-        this.subgroups = new ArrayList<>();
-    }
+	/**
+	 * Instantiates a new observatory suitability form.
+	 */
+	public ObservatorySuitabilityForm() {
+		this.subgroups = new ArrayList<>();
+	}
 
-    public BigDecimal getScore() {
-        return score;
-    }
+	/**
+	 * Gets the score.
+	 *
+	 * @return the score
+	 */
+	public BigDecimal getScore() {
+		return score;
+	}
 
-    public void setScore(BigDecimal score) {
-        this.score = score;
-    }
+	/**
+	 * Sets the score.
+	 *
+	 * @param score the new score
+	 */
+	public void setScore(BigDecimal score) {
+		this.score = score;
+	}
 
-    public List<ObservatorySubgroupForm> getSubgroups() {
-        return subgroups;
-    }
+	/**
+	 * Gets the subgroups.
+	 *
+	 * @return the subgroups
+	 */
+	public List<ObservatorySubgroupForm> getSubgroups() {
+		return subgroups;
+	}
 
-    public void setSubgroups(List<ObservatorySubgroupForm> subgroups) {
-        this.subgroups = subgroups;
-    }
+	/**
+	 * Sets the subgroups.
+	 *
+	 * @param subgroups the new subgroups
+	 */
+	public void setSubgroups(List<ObservatorySubgroupForm> subgroups) {
+		this.subgroups = subgroups;
+	}
 
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
+	/**
+	 * Sets the name.
+	 *
+	 * @param name the new name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 }

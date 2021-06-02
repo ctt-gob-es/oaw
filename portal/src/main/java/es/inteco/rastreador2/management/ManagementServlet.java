@@ -20,19 +20,36 @@ import es.inteco.common.logging.Logger;
 import javax.servlet.*;
 import java.io.IOException;
 
+/**
+ * The Class ManagementServlet.
+ */
 public class ManagementServlet extends GenericServlet {
-    /**
-     *
-     */
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /** The management thread. */
     private ManagementThread managementThread = null;
 
+    /**
+	 * Service.
+	 *
+	 * @param request  the request
+	 * @param response the response
+	 * @throws ServletException the servlet exception
+	 * @throws IOException      Signals that an I/O exception has occurred.
+	 */
     @Override
     public void service(ServletRequest request, ServletResponse response)
             throws ServletException, IOException {
     }
 
+    /**
+	 * Inits the.
+	 *
+	 * @param config the config
+	 * @throws ServletException the servlet exception
+	 */
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -46,6 +63,9 @@ public class ManagementServlet extends GenericServlet {
         }
     }
 
+    /**
+	 * Destroy.
+	 */
     @Override
     public void destroy() {
         if (managementThread != null) {

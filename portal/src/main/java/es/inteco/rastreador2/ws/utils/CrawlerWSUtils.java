@@ -24,11 +24,23 @@ import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 
 import java.util.Calendar;
 
+/**
+ * The Class CrawlerWSUtils.
+ */
 public final class CrawlerWSUtils {
 
+    /**
+	 * Instantiates a new crawler WS utils.
+	 */
     private CrawlerWSUtils() {
     }
 
+    /**
+	 * Web crawl.
+	 *
+	 * @param basicServiceForm the basic service form
+	 * @return the integer
+	 */
     public static Integer webCrawl(BasicServiceForm basicServiceForm) {
         if (!BasicServiceConcurrenceSystem.passConcurrence()) {
             if (basicServiceForm.getId() == 0) {
@@ -57,6 +69,18 @@ public final class CrawlerWSUtils {
         }
     }
 
+    /**
+	 * Gets the basic service form.
+	 *
+	 * @param url            the url
+	 * @param depth          the depth
+	 * @param size           the size
+	 * @param guideline      the guideline
+	 * @param email          the email
+	 * @param schedulingDate the scheduling date
+	 * @param idUser         the id user
+	 * @return the basic service form
+	 */
     public static BasicServiceForm getBasicServiceForm(String url, int depth, int size, String guideline, String email, Calendar schedulingDate, String idUser) {
         BasicServiceForm basicServiceForm = new BasicServiceForm();
 

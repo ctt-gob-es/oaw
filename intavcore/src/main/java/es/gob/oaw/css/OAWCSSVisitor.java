@@ -26,17 +26,36 @@ import java.util.*;
  */
 public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
 
+    /** The problems. */
     protected final List<CSSProblem> problems = new ArrayList<>();
+    
+    /** The current media. */
     private final Stack<Boolean> currentMedia = new Stack<>();
+    
+    /** The current style rule. */
     protected CSSStyleRule currentStyleRule;
+    
+    /** The resource. */
     protected CSSResource resource;
+    
+    /** The document. */
     private Document document;
 
+    /**
+	 * Instantiates a new OAWCSS visitor.
+	 */
     public OAWCSSVisitor() {
         super();
         currentMedia.push(true);
     }
 
+    /**
+	 * Evaluate.
+	 *
+	 * @param document     the document
+	 * @param cssResources the css resources
+	 * @return the list
+	 */
     public List<CSSProblem> evaluate(final Document document, final List<CSSResource> cssResources) {
         final List<CSSProblem> cssProblems = new ArrayList<>();
         for (CSSResource cssResource : cssResources) {
@@ -46,6 +65,13 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
         return cssProblems;
     }
 
+    /**
+	 * Evaluate.
+	 *
+	 * @param document    the document
+	 * @param cssResource the css resource
+	 * @return the list
+	 */
     public List<CSSProblem> evaluate(final Document document, final CSSResource cssResource) {
         this.document = document;
         if (!cssResource.getContent().isEmpty()) {
@@ -62,11 +88,21 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
         return problems;
     }
 
+    /**
+	 * On begin style rule.
+	 *
+	 * @param cssStyleRule the css style rule
+	 */
     @Override
     public void onBeginStyleRule(@Nonnull final CSSStyleRule cssStyleRule) {
         currentStyleRule = cssStyleRule;
     }
 
+    /**
+	 * On begin media rule.
+	 *
+	 * @param cssMediaRule the css media rule
+	 */
     @Override
     public void onBeginMediaRule(@Nonnull final CSSMediaRule cssMediaRule) {
         boolean media = false;
@@ -78,11 +114,19 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
         currentMedia.push(media);
     }
 
+    /**
+	 * On end media rule.
+	 *
+	 * @param cssMediaRule the css media rule
+	 */
     @Override
     public void onEndMediaRule(@Nonnull final CSSMediaRule cssMediaRule) {
         currentMedia.pop();
     }
 
+    /**
+	 * End.
+	 */
     @Override
     public void end() {
         filterCSSProblems();
@@ -90,6 +134,9 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
         super.end();
     }
 
+    /**
+	 * Cleanup resources.
+	 */
     protected void cleanupResources() {
         // Aseguramos que se liberan las referencias a objetos manejados por otras librerias
         currentStyleRule = null;
@@ -98,14 +145,31 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
     }
 
 
+    /**
+	 * Gets the problems.
+	 *
+	 * @return the problems
+	 */
     public List<CSSProblem> getProblems() {
         return problems;
     }
 
+    /**
+	 * Checks if is valid media.
+	 *
+	 * @return true, if is valid media
+	 */
     protected boolean isValidMedia() {
         return currentMedia.empty() || currentMedia.peek();
     }
 
+    /**
+	 * Creates the CSS problem.
+	 *
+	 * @param textContent    the text content
+	 * @param cssDeclaration the css declaration
+	 * @return the CSS problem
+	 */
     protected CSSProblem createCSSProblem(final String textContent, final CSSDeclaration cssDeclaration) {
         final CSSProblem cssProblem = new CSSProblem();
         cssProblem.setDate(new Date());
@@ -134,6 +198,12 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
         return cssProblem;
     }
 
+    /**
+	 * Gets the value.
+	 *
+	 * @param cssDeclaration the css declaration
+	 * @return the value
+	 */
     protected LexicalUnit getValue(final CSSDeclaration cssDeclaration) {
         try {
             final Parser parser = CSSSACUtils.getSACParser();
@@ -147,10 +217,10 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
     }
 
     /**
-     * Método para eliminar aquellas incidencias de CSS que no se aplican sobre la página (selectores que no se encuentran en la página)
-     *
-     * @return lista con únicamente los problemas de CSS que se aplican en esta página
-     */
+	 * Método para eliminar aquellas incidencias de CSS que no se aplican sobre la página (selectores que no se encuentran en la página).
+	 *
+	 * @return lista con únicamente los problemas de CSS que se aplican en esta página
+	 */
     private List<CSSProblem> filterCSSProblems() {
         if (document != null) {
             final ListIterator<CSSProblem> iterator = problems.listIterator();
@@ -170,6 +240,13 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
         return problems;
     }
 
+    /**
+	 * Checks if is selector used.
+	 *
+	 * @param cssParser the css parser
+	 * @param selectors the selectors
+	 * @return true, if is selector used
+	 */
     private boolean isSelectorUsed(final Parser cssParser, final String selectors) {
         if (!selectors.isEmpty()) {
             final InputSource is = new InputSource();

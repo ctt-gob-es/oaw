@@ -197,7 +197,9 @@ public final class ObservatoryUtils {
 		int maxFails = 0;
 		String aplicacion = "";
 		// Recuperamos el cartucho asociado al analsis
-		try (Connection c = DataBaseManager.getConnection()) {
+		Connection c = null;
+		try {
+			c = DataBaseManager.getConnection();
 			aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, observatoryEvaluationForm.getIdAnalysis());
 			if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
 				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
@@ -211,6 +213,8 @@ public final class ObservatoryUtils {
 			DataBaseManager.closeConnection(c);
 		} catch (Exception e) {
 			maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
+		} finally {
+			DataBaseManager.closeConnection(c);
 		}
 		if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
 			final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);

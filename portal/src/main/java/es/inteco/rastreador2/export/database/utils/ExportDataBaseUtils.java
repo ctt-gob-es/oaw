@@ -24,10 +24,14 @@ import es.inteco.rastreador2.dao.export.database.Category;
 import es.inteco.rastreador2.dao.export.database.Observatory;
 import es.inteco.rastreador2.dao.export.database.Page;
 import es.inteco.rastreador2.dao.export.database.Site;
+import es.inteco.rastreador2.dao.export.database.VerificationModality;
+import es.inteco.rastreador2.dao.export.database.VerificationScore;
 import es.inteco.rastreador2.export.database.form.CategoryForm;
 import es.inteco.rastreador2.export.database.form.ObservatoryForm;
 import es.inteco.rastreador2.export.database.form.PageForm;
 import es.inteco.rastreador2.export.database.form.SiteForm;
+import es.inteco.rastreador2.export.database.form.VerificationModalityForm;
+import es.inteco.rastreador2.export.database.form.VerificationScoreForm;
 
 /**
  * The Class ExportDataBaseUtils.
@@ -93,7 +97,43 @@ public final class ExportDataBaseUtils {
 			BeanUtils.copyProperties(pageForm, page);
 			pageFormList.add(pageForm);
 		}
+		List<VerificationModalityForm> verificationModalityFormList = new ArrayList<>();
+		for (VerificationModality verification : site.getVerificationModalityList()) {
+			verificationModalityFormList.add(getVerificationModalityForm(verification));
+		}
+		siteForm.setVerificationModalityList(verificationModalityFormList);
+		List<VerificationScoreForm> verificationScoreFormList = new ArrayList<>();
+		for (VerificationScore verification : site.getVerificationScoreList()) {
+			verificationScoreFormList.add(getVerificationScoreForm(verification));
+		}
+		siteForm.setVerificationScoreList(verificationScoreFormList);
 		siteForm.setPageList(pageFormList);
 		return siteForm;
+	}
+
+	/**
+	 * Gets the verification modality form.
+	 *
+	 * @param verification the verification
+	 * @return the verification modality form
+	 * @throws Exception the exception
+	 */
+	public static VerificationModalityForm getVerificationModalityForm(VerificationModality verification) throws Exception {
+		VerificationModalityForm verificationForm = new VerificationModalityForm();
+		BeanUtils.copyProperties(verificationForm, verification);
+		return verificationForm;
+	}
+
+	/**
+	 * Gets the verification modality form.
+	 *
+	 * @param verification the verification
+	 * @return the verification modality form
+	 * @throws Exception the exception
+	 */
+	public static VerificationScoreForm getVerificationScoreForm(VerificationScore verification) throws Exception {
+		VerificationScoreForm verificationForm = new VerificationScoreForm();
+		BeanUtils.copyProperties(verificationForm, verification);
+		return verificationForm;
 	}
 }

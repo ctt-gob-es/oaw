@@ -16,16 +16,20 @@ import java.io.InputStream;
 import java.util.*;
 
 /**
- *
+ * The Class Diccionario.
  */
 public final class Diccionario {
 
+    /** The Constant diccionario. */
     private static final Map<String, Set<String>> diccionario = new HashMap<>();
 
     static {
         Diccionario.init();
     }
 
+    /**
+	 * Inits the.
+	 */
     private static void init() {
         final InputStream is = Diccionario.class.getClassLoader().getResourceAsStream("languages/words_en.txt");
         final Scanner scanner = new Scanner(is);
@@ -37,9 +41,19 @@ public final class Diccionario {
         diccionario.put("en", words);
     }
 
+    /**
+	 * Instantiates a new diccionario.
+	 */
     private Diccionario() {
     }
 
+    /**
+	 * Contains word.
+	 *
+	 * @param language the language
+	 * @param word     the word
+	 * @return true, if successful
+	 */
     public static boolean containsWord(final String language, final String word) {
         final Set<String> words = diccionario.get(language);
         return words != null && words.contains(word);

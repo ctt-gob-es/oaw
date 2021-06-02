@@ -14,30 +14,83 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml />
 <html:javascript formName="DependenciaForm" />
-
 <!--  JQ GRID   -->
 <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
-
 <link rel="stylesheet" href="/oaw/css/jqgrid.semillas.css">
-
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<link rel="stylesheet"
-	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/oaw/js/jqgrid/jquery.jqgrid.src.js"></script>
-<script src="/oaw/js/jqgrid/i18n/grid.locale-es.js"
-	type="text/javascript"></script>
+<script src="/oaw/js/tagbox/tagbox.js" type="text/javascript"></script>
+<link rel="stylesheet" href="/oaw/js/tagbox/tagbox.css">
+<style>
 
+/* Make sure you reset e'erything beforehand. */
+* {
+	margin: 0;
+	padding: 0;
+}
 
+/* Although you can't see the box here, so add some padding. */
+.tagbox-item .name, .tagbox-item .email {
+	/* The name and email within the dropdown */
+	display: block;
+	float: left;
+	width: 35%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.tagbox-item .email {
+	float: right;
+	width: 65%;
+}
+
+.tagbox-wrapper {
+	width: 100% !important;
+}
+
+.tagbox-wrapper input {
+	display: block;
+	width: 100% !important;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	border: none !important;
+}
+}
+</style>
+<script>
+	var script = document.createElement('script');
+	var lang = (navigator.language || navigator.browserLanguage)
+	script.src = '/oaw/js/jqgrid/i18n/grid.locale-'+lang.substring(0,2)+'.js';
+	document.head.appendChild(script);
+</script>
 <!--  JQ GRID   -->
 <script>
 
 var colNameOldName = '<bean:message key="colname.oldname"/>';
 var colNameId = '<bean:message key="colname.id"/>';
-
+var colNameTags = '<bean:message key="colname.province"/>';
 var colNameName = '<bean:message key="colname.name"/>';
 var colNameRemove = '<bean:message key="colname.remove"/>';
+var colNameScope = '<bean:message key="colname.scope"/>';
+var colNameOfficial = '<bean:message key="colname.official"/>';
+var colNameSendAuto = '<bean:message key="colname.send.auto"/>';
+
+var colNameAcronym = '<bean:message key="colname.acronym"/>';
 
 
 	var scroll;
@@ -71,7 +124,7 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 											{
 												editUrl : '/oaw/secure/ViewDependenciasObservatorio.do?action=update',
 												colNames : [ colNameId, colNameName,
-													colNameOldName,
+													colNameOldName,colNameAcronym, colNameScope, colNameTags, "Emails", colNameSendAuto, colNameOfficial,
 													colNameRemove ],
 												colModel : [
 														{
@@ -82,7 +135,7 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 
 														{
 															name : "name",
-															width : 60,
+															width : 30,
 															editrules : {
 																required : true
 															},
@@ -95,10 +148,113 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 															hidden : true,
 															sortable : false
 														},
+														{
+															name : "acronym",
+															width : 20,
+															sortable : true
+														},
+														{														
+															name : "ambitoaux",
+															width : 15,
+															edittype : "select",
+															align : "center",
+															editoptions : {
+
+																dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
+																buildSelect : function(
+																		data) {
+
+																	var response = jQuery
+																			.parseJSON(data);
+																	var s = '<select><option value=""></option>';
+
+																	if (response
+																			&& response.length) {
+																		for (var i = 0, l = response.length; i < l; i++) {
+																			var ri = response[i];
+																			s += '<option class="dependenciaOption" value="'
+																					+ ri.id
+																					+ '">'
+																					+ ri.name
+																					+ '</option>';
+																		}
+																	}
+
+																	return s
+																			+ "</select>";
+																}
+
+															},
+															// editrules : {
+															// required : true
+															// },
+															formatter : ambitoFormatter,
+															sortable : false
+
+														},
+														{
+															name : "tagaux",
+															cellattr : function(
+																	rowId, val,
+																	rawObject, cm,
+																	rdata) {
+																return 'title="'
+																		+ titleEtiquetasFormatter(
+																				val,
+																				null,
+																				rawObject)
+																		+ '"';
+															},
+															align : "left",
+															width : 25,
+															edittype : 'custom',
+															sortable : false,
+															editoptions : {
+																custom_element : tagEdit,
+																custom_value : tagEditValue
+															},
+															editrules : {
+																required : false
+															},
+															formatter : etiquetasFormatter,
+															sortable : false
+														},
+														{
+															name : "emails",
+															width : 30,
+															editrules : {
+																required : false
+															},
+															sortable : false,
+															align : "left", 
+															formatter: emailsFormatter
+														},
+														{
+															name : "sendAuto",
+															align : "center",
+															width : 10,
+															template : "booleanCheckboxFa",
+															edittype : "checkbox",
+															editoptions : {
+																value : "true:false"
+															},
+															sortable : false
+														},
+														{
+															name : "official",
+															align : "center",
+															width : 10,
+															template : "booleanCheckboxFa",
+															edittype : "checkbox",
+															editoptions : {
+																value : "true:false"
+															},
+															sortable : false
+														},														
 
 														{
 															name : "eliminar",
-															width : 20,
+															width : 10,
 															sortable : false,
 															editable : false,
 															formatter : eliminarFormatter,
@@ -270,6 +426,106 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 				+ options.rowId
 				+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>"+ colNameRemove +"</span></span>";
 	}
+	
+	function emailsFormatter(cellvalue, options, rowObject) {
+		if(rowObject.emails){
+			return rowObject.emails.toString().replace(/\,/g, '\r\n');
+		} 
+		return "";
+	}
+	
+	function ambitoFormatter(cellvalue, options, rowObject) {
+		if (rowObject.ambito && rowObject.ambito.name != null) {
+			return rowObject.ambito.name;
+		} else {
+			return "";
+		}
+	}
+	
+	function titleEtiquetasFormatter(cellvalue, options, rowObject) {
+		var cellFormatted = "";
+
+		if(rowObject.tag){
+			cellFormatted = rowObject.tag.name;
+		}
+
+		return cellFormatted;
+	}
+	
+	function etiquetasFormatter(cellvalue, options, rowObject) {
+		if(rowObject.tag){
+			var cellFormatted = "<div class='tagbox-wrapper'>";
+			cellFormatted = "<div class='tagbox-token'><span>" + rowObject.tag.name + "</span></div>";
+			cellFormatted = cellFormatted + "</div>";
+			return cellFormatted;
+		}
+		return "";
+	}
+	
+	function tagEdit(value, options, rowObject) {
+
+		var element = document.createElement('input');
+
+		element.setAttribute("name", "tags");
+		element.setAttribute("id", "tagsFilter");
+		element.setAttribute("type", "text");
+		element.setAttribute("autocapitalize", "off");
+		element.setAttribute("placeholder", "Escriba para buscar...");
+
+		var seed = $('#grid').jqGrid('getRowData', options.rowId);
+
+		var data = $("#grid").jqGrid('getGridParam', 'data');
+
+
+		$.ajax({
+			url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=clasification&clasification=2',
+			method : 'POST',
+			cache : false
+		}).success(function(response) {
+			
+			
+			$.each(data, function(index, item) {
+				if (item.id == options.rowId) {
+
+					var data = "";
+					if(item.tag){
+						data = data + item.tag.id + ",";
+					}
+
+					if (data) {
+						data = data.slice(0, -1);
+					}
+
+					element.setAttribute('value', data);
+
+				}
+			});
+
+			$(element).tagbox({
+				items : response.etiquetas,
+				searchIn : [ 'name' ],
+				rowFormat : '<span class="name">{{name}}</span>',
+				tokenFormat : '{{name}}',
+				valueField : 'id',
+				itemClass : 'user',
+				maxItems: 1
+			});
+
+		});
+
+		return element;
+
+	}
+
+	function tagEditValue(elem, operation, value) {
+
+		if (operation === 'get') {
+			return $(elem).val();
+		} else if (operation === 'set') {
+			$('input', elem).val(value);
+		}
+	}
+
 
 	function eliminarDependencia(rowId) {
 		
@@ -337,6 +593,7 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 	
 	function limpiar(){
 		$('#buscadorDependencias')[0].reset();
+		$('#buscadorDependencias .tagbox-token a').click();
 		reloadGrid('/oaw/secure/ViewDependenciasObservatorio.do?action=search&'
 				+ $('#buscadorDependencias').serialize());
 	}
@@ -346,7 +603,7 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 					'load',
 					function() {
 
-						var $jq = $.noConflict();
+						var $jq = $.noConflict(false);
 
 						var lastUrl;
 
@@ -368,16 +625,76 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 													});
 
 										});
+						
+						$jq(document).ready(function() {
+							$.ajax({
+								url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=clasification&clasification=2',
+								method : 'POST',
+								cache : false
+							}).success(function(response) {
+
+								$('#tagsFilterForm').tagbox({
+									items : response.etiquetas,
+									searchIn : [ 'name' ],
+									rowFormat : '<span class="name">{{name}}</span>',
+									tokenFormat : '{{name}}',
+									valueField : 'id',
+									itemClass : 'user'
+								});
+
+							})
+
+						});
+						
+						
+						$.ajax({
+							url : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
+						}).done(
+								function(data) {
+
+									var response = $.parseJSON(data);
+
+									$('#selectAmbitsSearch').append(
+											"<option value=''></option>");
+									if (response && response.length) {
+										for (var i = 0, l = response.length; i < l; i++) {
+											var ri = response[i];
+											$('#selectAmbitsSearch').append(
+													'<option value="'+ri.id+'">' + ri.name
+															+ '</option>');
+										}
+									}
+								});
+						
+						$.ajax({
+							url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=clasification&clasification=2',
+							method : 'POST',
+							cache : false
+						}).done(function(response) {
+
+							$('#tagsFilterSearch').tagbox({
+								items : response.etiquetas,
+								searchIn : [ 'name' ],
+								rowFormat : '<span class="name">{{name}}</span>',
+								tokenFormat : '{{name}}',
+								valueField : 'id',
+								itemClass : 'user'
+							});
+
+						});
+						
 
 					});
 
-	var windowWidth = $(window).width() * 0.3;
-	var windowHeight = $(window).height() * 0.3;
+	var windowWidth = $(window).width() * 0.4;
+	var windowHeight = $(window).height() * 0.5;
 
 	var dialog;
 
 	function dialogoNuevaDependencia() {
 
+		
+		
 		window.scrollTo(0, 0);
 		
 		var windowTitle = '<bean:message key="nueva.dependencia.modal.title"/>';
@@ -412,6 +729,46 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 					class: 'jdialog-btn-cancel'
 				}
 			},
+			open : function() {
+				$('#selectAmbitosNuevaSemilla').empty();
+				$.ajax({
+					url : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
+				}).done(
+						function(data) {
+
+							var response = $.parseJSON(data);
+
+							$('#selectAmbitosNuevaSemilla').append(
+									"<option value=''></option>");
+							if (response && response.length) {
+								for (var i = 0, l = response.length; i < l; i++) {
+									var ri = response[i];
+									$('#selectAmbitosNuevaSemilla').append(
+											'<option value="'+ri.id+'">' + ri.name
+													+ '</option>');
+								}
+							}
+						});
+				
+				
+				$.ajax({
+						url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=clasification&clasification=2',
+						method : 'POST',
+						cache : false
+					}).done(function(response) {
+
+						$('#tagsFilter').tagbox({
+							items : response.etiquetas,
+							searchIn : [ 'name' ],
+							rowFormat : '<span class="name">{{name}}</span>',
+							tokenFormat : '{{name}}',
+							valueField : 'id',
+							itemClass : 'user',
+							maxItems: 1
+						});
+
+					});
+			},
 			close : function() {
 				$('#nuevaDependenciaForm')[0].reset();
 			}
@@ -429,7 +786,7 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 			data : $('#nuevaDependenciaForm').serialize(),
 			method : 'POST',
 			cache : false
-		}).success(
+		}).done(
 				function(response) {
 					$('#exitosNuevaSemillaMD').addClass('alert alert-success');
 					$('#exitosNuevaSemillaMD').append("<ul>");
@@ -444,7 +801,7 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 					dialog.dialog("close");
 					reloadGrid(lastUrl);
 
-				}).error(
+				}).fail(
 				function(response) {
 					$('#erroresNuevaSemillaMD').addClass('alert alert-danger');
 					$('#erroresNuevaSemillaMD').append("<ul>");
@@ -464,111 +821,259 @@ var colNameRemove = '<bean:message key="colname.remove"/>';
 
 		return guardado;
 	}
+	
+	
+	function selectXMLFile(){
+		
+		 document.getElementById('importFile').click();
+	}
+	
+
+	$(function() {
+	   $("#importFile").change(function (){
+	     var fileName = $(this).val();
+	     $(this).closest('form').submit();	     
+	   });
+	});
+
 </script>
-
-
 <!-- observatorio_cargarDependencias.jsp -->
 <div id="main">
-
-
 	<div id="dialogoNuevaDependencia" style="display: none">
 		<div id="main" style="overflow: hidden">
-
 			<div id="erroresNuevaSemillaMD" style="display: none"></div>
-
 			<form id="nuevaDependenciaForm">
 				<!-- Nombre -->
 				<div class="row formItem">
-					<label for="nombre" class="control-label"
-						style="margin-left: 25px;"><strong class="labelVisu"><acronym
-							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
-								key="nueva.dependencia.observatorio.nombre" /></strong></label>
+					<label for="name" class="control-label">
+						<strong class="labelVisu">
+							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
+							<bean:message key="nueva.dependencia.observatorio.nombre" />
+						</strong>
+					</label>
 					<div class="col-xs-8">
-						<input type="text" id="nombre" name="nombre"
-							class="textoLargo form-control" />
+						<input type="text" id="name" name="name" class="textoLargo form-control" />
+					</div>
+				</div>
+				<div class="row formItem">
+					<label for="acronym" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="colname.acronym" />
+						</strong>
+					</label>
+					<div class="col-xs-8">
+						<input type="text" id="name" name="acronym" class="textoLargo form-control" />
+					</div>
+				</div>
+				<!-- Ambito/Ambitoaux -->
+				<div class="row formItem">
+					<label for="ambito" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="nueva.semilla.webs.ambito" />
+						</strong>
+					</label>
+					<div class="col-xs-4">
+						<select name="ambitoaux" id="selectAmbitosNuevaSemilla" class="textoSelect form-control"></select>
+					</div>
+				</div>
+				<!-- Etiquetas -->
+				<div class="row formItem">
+					<label for="tagaux" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="nueva.semilla.observatorio.etiqueta" />
+						</strong>
+					</label>
+					<div class="col-xs-6">
+						<input name="tagaux" autocapitalize="off" placeholder="Escriba para buscar..." autofocus id="tagsFilter"
+							type="text" value="" />
+					</div>
+				</div>
+				<!-- Urls -->
+				<div class="row formItem">
+					<label for="emails" class="control-label">
+						<strong class="labelVisu">
+							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
+							Emails
+						</strong>
+					</label>
+					<div class="col-xs-8">
+						<textarea rows="2" cols="50" name="emails" class="form-control"></textarea>
+					</div>
+				</div>
+				<!-- Official -->
+				<div class="row formItem">
+					<label for="official" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="colname.official" />
+						</strong>
+					</label>
+					<div class="col-xs-4">
+						<select name="official" class="textoSelect form-control">
+							<option value="true"><bean:message key="select.yes" /></option>
+							<option value="false"><bean:message key="select.no" /></option>
+						</select>
+					</div>
+				</div>
+				<!-- Send Auto -->
+				<div class="row formItem">
+					<label for="sendAuto" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="colname.send.auto" />
+						</strong>
+					</label>
+					<div class="col-xs-4">
+						<select name="sendAuto" class="textoSelect form-control">
+							<option value="true"><bean:message key="select.yes" /></option>
+							<option value="false"><bean:message key="select.no" /></option>
+						</select>
 					</div>
 				</div>
 			</form>
 		</div>
 	</div>
-
-
-	<div id="container_menu_izq">
-		<jsp:include page="menu.jsp" />
-	</div>
-
-	<div id="container_der">
-
-		<div id="migas">
-			<p class="sr-only">
-				<bean:message key="ubicacion.usuario" />
-			</p>
-			<ol class="breadcrumb">
-				<li><html:link forward="observatoryMenu">
-						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-						<bean:message key="migas.observatorio" />
-					</html:link></li>
-				<li class="active"><bean:message
-						key="migas.dependencias.observatorio" /></li>
-			</ol>
-		</div>
-
-		<div id="cajaformularios">
-			<h2>
-				<bean:message key="gestion.dependencias.observatorio.titulo" />
-			</h2>
-
-			<div id="exitosNuevaSemillaMD" style="display: none"></div>
-
-			<form id="buscadorDependencias" class="formulario form-horizontal"
-				onsubmit="buscar()">
-				<fieldset>
-					<legend><bean:message key="buscador"/></legend>
-					<jsp:include page="/common/crawler_messages.jsp" />
-					<div class="formItem">
-						<label for="nombre" class="control-label"><strong
-							class="labelVisu"><bean:message
-									key="nueva.dependencia.observatorio.nombre" /></strong></label> <input
-							type="text" class="texto form-control" id="nombre" name="nombre" />
-					</div>
-					<div class="formButton">
-						<span onclick="buscar()" class="btn btn-default btn-lg"> <span
-							class="glyphicon glyphicon-search" aria-hidden="true"></span> <bean:message
-								key="boton.buscar" />
-						</span> <span onclick="limpiar()" class="btn btn-default btn-lg">
-							<span aria-hidden="true"></span> <bean:message
-								key="boton.limpiar" />
-						</span>
-					</div>
-				</fieldset>
-			</form>
-
-			<!-- Nueva semilla -->
-			<p class="pull-right">
-				<a href="#" class="btn btn-default btn-lg"
-					onclick="dialogoNuevaDependencia()"> <span
-					class="glyphicon glyphicon-plus" aria-hidden="true"
-					data-toggle="tooltip" title=""
-					data-original-title="Crear una semilla"></span> <bean:message
-						key="nueva.dependencia.observatorio" />
-				</a>
-			</p>
-			<!-- Grid -->
-			<table id="grid">
-			</table>
-
-
-
-			<p id="paginador"></p>
-
-		</div>
-		<p id="pCenter">
-			<html:link forward="observatoryMenu"
-				styleClass="btn btn-default btn-lg">
-				<bean:message key="boton.volver" />
-			</html:link>
+</div>
+<div id="container_menu_izq">
+	<jsp:include page="menu.jsp" />
+</div>
+<div id="container_der">
+	<div id="migas">
+		<p class="sr-only">
+			<bean:message key="ubicacion.usuario" />
 		</p>
+		<ol class="breadcrumb">
+			<li>
+				<html:link forward="observatoryMenu">
+					<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+					<bean:message key="migas.observatorio" />
+				</html:link>
+			</li>
+			<li class="active">
+				<bean:message key="migas.dependencias.observatorio" />
+			</li>
+		</ol>
 	</div>
-	<!-- fin cajaformularios -->
+	<div id="cajaformularios">
+		<h2>
+			<bean:message key="gestion.dependencias.observatorio.titulo" />
+		</h2>
+		<div id="exitosNuevaSemillaMD" style="display: none"></div>
+		<form id="buscadorDependencias" class="formulario form-horizontal" onsubmit="buscar()">
+			<fieldset>
+				<legend>
+					<bean:message key="buscador" />
+				</legend>
+				<jsp:include page="/common/crawler_messages.jsp" />
+				<div class="formItem">
+					<label for="name" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="nueva.dependencia.observatorio.nombre" />
+						</strong>
+					</label>
+					<input type="text" class="texto form-control" id="name" name="name" />
+				</div>
+				<!-- Ambito/Ambitoaux -->
+				<div class="row formItem">
+					<label for="ambitoaux" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="nueva.semilla.webs.ambito" />
+						</strong>
+					</label>
+					<div class="col-xs-4">
+						<select name="ambitoaux" id="selectAmbitsSearch" class="textoSelect form-control"></select>
+					</div>
+				</div>
+				<!-- Etiquetas -->
+				<div class="row formItem">
+					<label for="tagaux" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="colname.province" />
+						</strong>
+					</label>
+					<div class="col-xs-6">
+						<input name="tagaux" autocapitalize="off" placeholder="Escriba para buscar..." autofocus id="tagsFilterSearch"
+							type="text" value="" />
+					</div>
+				</div>
+				<!-- Official -->
+				<div class="row formItem">
+					<label for="official" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="colname.official" />
+						</strong>
+					</label>
+					<div class="col-xs-4">
+						<select name="official" class="textoSelect form-control">
+							<option value=""></option>
+							<option value="true"><bean:message key="select.yes" /></option>
+							<option value="false"><bean:message key="select.no" /></option>
+						</select>
+					</div>
+				</div>
+				<!-- Send Auto -->
+				<div class="row formItem">
+					<label for="sendAuto" class="control-label">
+						<strong class="labelVisu">
+							<bean:message key="colname.send.auto" />
+						</strong>
+					</label>
+					<div class="col-xs-4">
+						<select name="sendAuto" class="textoSelect form-control">
+							<option value=""></option>
+							<option value="true"><bean:message key="select.yes" /></option>
+							<option value="false"><bean:message key="select.no" /></option>
+						</select>
+					</div
+				<div class="formButton">
+					<span onclick="buscar()" class="btn btn-default btn-lg">
+						<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+						<bean:message key="boton.buscar" />
+					</span>
+					<span onclick="limpiar()" class="btn btn-default btn-lg">
+						<span aria-hidden="true"></span>
+						<bean:message key="boton.limpiar" />
+					</span>
+				</div>
+			
+			
+			</fieldset>
+		</form>
+		<!-- Nueva semilla -->
+		<p class="pull-right">
+			<!-- Importar todas las semillas -->
+			<a href="#" class="btn btn-default btn-lg " onclick="selectXMLFile()">
+				<span class="glyphicon glyphicon-cloud-upload" aria-hidden="true" data-toggle="tooltip" title=""
+					data-original-title="Importar un fichero XML/xlsx de semillas"></span>
+				<bean:message key="cargar.semilla.observatorio.importar.todo" />
+			</a>
+			<a href="#" class="btn btn-default btn-lg" onclick="dialogoNuevaDependencia()">
+				<span class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip" title=""
+					data-original-title="Crear una semilla"></span>
+				<bean:message key="nueva.dependencia.observatorio" />
+			</a>
+		<form method="post" style="display: none" action="/oaw/secure/ViewDependenciasObservatorio.do?action=upload"
+			enctype="multipart/form-data">
+			<div class="formItem">
+				<label for="importFile" class="control-label">
+					<strong class="labelVisu">
+						<bean:message key="categoria.semillas.fichero" />
+						:
+					</strong>
+				</label>
+				<input type="file" id="importFile" name="dependencyFile" style="display: none">
+			</div>
+		</form>
+		</p>
+		<!-- Grid -->
+		<table id="grid">
+		</table>
+		<p id="paginador"></p>
+	</div>
+	<p id="pCenter">
+		<html:link forward="observatoryMenu" styleClass="btn btn-default btn-lg">
+			<bean:message key="boton.volver" />
+		</html:link>
+	</p>
+</div>
+<!-- fin cajaformularios -->
 </div>
 </div>

@@ -33,7 +33,7 @@ public final class PlantillaDAO {
 	public static List<PlantillaForm> findAll(Connection c, int pagina) throws SQLException {
 		final PropertiesManager pmgr = new PropertiesManager();
 		List<PlantillaForm> plantillas = new ArrayList<PlantillaForm>();
-		StringBuilder sql = new StringBuilder("SELECT p.id_plantilla, p.nombre FROM observatorio_plantillas p ORDER BY p.nombre ASC ");
+		StringBuilder sql = new StringBuilder("SELECT p.id_plantilla, p.nombre, p.type FROM observatorio_plantillas p ORDER BY FIELD(type,'odt','ods','xlsx'), p.nombre ASC ");
 		if (pagina >= 0) {
 			sql.append("LIMIT ? OFFSET ?");
 		}
@@ -49,6 +49,7 @@ public final class PlantillaDAO {
 					PlantillaForm plantilla = new PlantillaForm();
 					plantilla.setId(rs.getLong("p.id_plantilla"));
 					plantilla.setNombre(rs.getString("p.nombre"));
+					plantilla.setType(rs.getString("p.type"));
 					plantillas.add(plantilla);
 				}
 			}
@@ -69,13 +70,14 @@ public final class PlantillaDAO {
 	public static PlantillaForm findById(Connection c, Long id) throws SQLException {
 		PlantillaForm plantilla = null;
 		// query += " LIMIT ? OFFSET ?";
-		try (PreparedStatement ps = c.prepareStatement("SELECT p.id_plantilla, p.nombre, p.documento FROM observatorio_plantillas p WHERE p.id_plantilla = ?")) {
+		try (PreparedStatement ps = c.prepareStatement("SELECT p.id_plantilla, p.nombre, p.documento, p.type FROM observatorio_plantillas p WHERE p.id_plantilla = ?")) {
 			ps.setLong(1, id);
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					plantilla = new PlantillaForm();
 					plantilla.setId(rs.getLong("p.id_plantilla"));
 					plantilla.setNombre(rs.getString("p.nombre"));
+					plantilla.setType(rs.getString("p.type"));
 					Blob blob = rs.getBlob("p.documento");
 					int blobLength = (int) blob.length();
 					byte[] blobAsBytes = blob.getBytes(1, blobLength);
@@ -102,13 +104,48 @@ public final class PlantillaDAO {
 	public static PlantillaForm findByName(Connection c, final String name) throws SQLException {
 		PlantillaForm plantilla = null;
 		// query += " LIMIT ? OFFSET ?";
-		try (PreparedStatement ps = c.prepareStatement("SELECT p.id_plantilla, p.nombre, p.documento FROM observatorio_plantillas p WHERE p.nombre = ?")) {
+		try (PreparedStatement ps = c.prepareStatement("SELECT p.id_plantilla, p.nombre, p.documento, p.type FROM observatorio_plantillas p WHERE p.nombre = ?")) {
 			ps.setString(1, name);
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					plantilla = new PlantillaForm();
 					plantilla.setId(rs.getLong("p.id_plantilla"));
 					plantilla.setNombre(rs.getString("p.nombre"));
+					plantilla.setType(rs.getString("p.type"));
+					Blob blob = rs.getBlob("p.documento");
+					int blobLength = (int) blob.length();
+					byte[] blobAsBytes = blob.getBytes(1, blobLength);
+					// release the blob and free up memory. (since JDBC 4.0)
+					blob.free();
+					plantilla.setDocumento(blobAsBytes);
+					return plantilla;
+				}
+			}
+		} catch (SQLException e) {
+			throw e;
+		}
+		return plantilla;
+	}
+
+	/**
+	 * Find by name.
+	 *
+	 * @param c    the c
+	 * @param type the type
+	 * @return the plantilla form
+	 * @throws SQLException the SQL exception
+	 */
+	public static PlantillaForm findByType(Connection c, final String type) throws SQLException {
+		PlantillaForm plantilla = null;
+		// query += " LIMIT ? OFFSET ?";
+		try (PreparedStatement ps = c.prepareStatement("SELECT p.id_plantilla, p.nombre, p.documento, p.type FROM observatorio_plantillas p WHERE p.type = ? ORDER BY p.id_plantilla LIMIT 1")) {
+			ps.setString(1, type);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					plantilla = new PlantillaForm();
+					plantilla.setId(rs.getLong("p.id_plantilla"));
+					plantilla.setNombre(rs.getString("p.nombre"));
+					plantilla.setType(rs.getString("p.type"));
 					Blob blob = rs.getBlob("p.documento");
 					int blobLength = (int) blob.length();
 					byte[] blobAsBytes = blob.getBytes(1, blobLength);
@@ -155,6 +192,36 @@ public final class PlantillaDAO {
 	}
 
 	/**
+	 * Exists plantilla type.
+	 *
+	 * @param c         the c
+	 * @param plantilla the plantilla
+	 * @return true, if successful
+	 * @throws SQLException the SQL exception
+	 */
+	public static boolean existsPlantillaType(Connection c, PlantillaForm plantilla) throws SQLException {
+		boolean exists = false;
+		String query = "SELECT * FROM observatorio_plantillas WHERE UPPER(type) = UPPER(?) ";
+		if (plantilla.getId() != null) {
+			query = query + " AND id_plantilla <> ?";
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setString(1, plantilla.getType());
+			if (plantilla.getId() != null) {
+				ps.setLong(2, plantilla.getId());
+			}
+			ResultSet result = ps.executeQuery();
+			if (result.next()) {
+				exists = true;
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return exists;
+	}
+
+	/**
 	 * Count.
 	 *
 	 * @param c the c
@@ -184,10 +251,11 @@ public final class PlantillaDAO {
 	 */
 	public static boolean save(Connection c, final PlantillaForm plantilla) throws SQLException {
 		boolean saved = false;
-		try (PreparedStatement ps = c.prepareStatement("INSERT INTO observatorio_plantillas(nombre, documento) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement ps = c.prepareStatement("INSERT INTO observatorio_plantillas(nombre, documento, type) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, plantilla.getNombre());
 			Blob blobValue = new SerialBlob(plantilla.getDocumento());
 			ps.setBlob(2, blobValue);
+			ps.setString(3, plantilla.getType());
 			// ps.setBytes(2, plantilla.getDocumento());
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 0) {

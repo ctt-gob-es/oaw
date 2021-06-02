@@ -21,109 +21,106 @@ import java.io.Serializable;
  * The Class SeedForm.
  */
 public class SeedForm implements Serializable {
-    
-    /** The id. */
-    private String id;
-    
-    /** The name. */
-    private String name;
-    
-    /** The acronym. */
-    private String acronym;
-    
-    /** The dependence. */
-    private String dependence;
-    
-    /** The category. */
-    private String category;
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = -5732752380088289013L;
+	/** The id. */
+	private String id;
+	/** The name. */
+	private String name;
+	/** The acronym. */
+	private String acronym;
+	/** The dependence. */
+	private String dependence;
+	/** The category. */
+	private String category;
 
-    /**
-     * Gets the name.
-     *
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Sets the name.
-     *
-     * @param name the new name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * Sets the name.
+	 *
+	 * @param name the new name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    /**
-     * Gets the acronym.
-     *
-     * @return the acronym
-     */
-    public String getAcronym() {
-        return acronym;
-    }
+	/**
+	 * Gets the acronym.
+	 *
+	 * @return the acronym
+	 */
+	public String getAcronym() {
+		return acronym;
+	}
 
-    /**
-     * Sets the acronym.
-     *
-     * @param acronym the new acronym
-     */
-    public void setAcronym(String acronym) {
-        this.acronym = acronym;
-    }
+	/**
+	 * Sets the acronym.
+	 *
+	 * @param acronym the new acronym
+	 */
+	public void setAcronym(String acronym) {
+		this.acronym = acronym;
+	}
 
-    /**
-     * Gets the dependence.
-     *
-     * @return the dependence
-     */
-    public String getDependence() {
-        return dependence;
-    }
+	/**
+	 * Gets the dependence.
+	 *
+	 * @return the dependence
+	 */
+	public String getDependence() {
+		return dependence;
+	}
 
-    /**
-     * Sets the dependence.
-     *
-     * @param dependence the new dependence
-     */
-    public void setDependence(String dependence) {
-        this.dependence = dependence;
-    }
+	/**
+	 * Sets the dependence.
+	 *
+	 * @param dependence the new dependence
+	 */
+	public void setDependence(String dependence) {
+		this.dependence = dependence;
+	}
 
-    /**
-     * Gets the category.
-     *
-     * @return the category
-     */
-    public String getCategory() {
-        return category;
-    }
+	/**
+	 * Gets the category.
+	 *
+	 * @return the category
+	 */
+	public String getCategory() {
+		return category;
+	}
 
-    /**
-     * Sets the category.
-     *
-     * @param category the new category
-     */
-    public void setCategory(String category) {
-        this.category = category;
-    }
+	/**
+	 * Sets the category.
+	 *
+	 * @param category the new category
+	 */
+	public void setCategory(String category) {
+		this.category = category;
+	}
 
-    /**
-     * Gets the id.
-     *
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * Sets the id.
-     *
-     * @param id the new id
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * Sets the id.
+	 *
+	 * @param id the new id
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 }

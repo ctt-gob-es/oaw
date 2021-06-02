@@ -34,8 +34,11 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class Lote {
 
+    /** The id lote. */
     @XmlElement(required = true)
     protected String idLote;
+    
+    /** The error lote. */
     @XmlElement(name = "ErrorLote")
     protected ResponseStatusType errorLote;
 

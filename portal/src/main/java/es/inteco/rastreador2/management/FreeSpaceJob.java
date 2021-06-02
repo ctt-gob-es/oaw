@@ -31,10 +31,20 @@ import java.util.List;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class FreeSpaceJob.
+ */
 public class FreeSpaceJob implements StatefulJob {
 
+    /** The Constant LOG. */
     public static final Log LOG = LogFactory.getLog(FreeSpaceJob.class);
 
+    /**
+	 * Execute.
+	 *
+	 * @param context the context
+	 * @throws JobExecutionException the job execution exception
+	 */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         Logger.putLog("Inicio del JOB que se encarga de comprobar el espacio libre en el disco duro", FreeSpaceJob.class, Logger.LOG_LEVEL_INFO);
@@ -65,6 +75,13 @@ public class FreeSpaceJob implements StatefulJob {
         }
     }
 
+    /**
+	 * Send mail.
+	 *
+	 * @param filePath     the file path
+	 * @param spacePercent the space percent
+	 * @throws Exception the exception
+	 */
     private void sendMail(String filePath, BigDecimal spacePercent) throws Exception {
         PropertiesManager pmgr = new PropertiesManager();
         List<String> adminMails = DAOUtils.getMailsByRol(Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "role.administrator.id")));

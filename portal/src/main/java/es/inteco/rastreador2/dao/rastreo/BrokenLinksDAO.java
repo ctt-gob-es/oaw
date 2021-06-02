@@ -28,11 +28,26 @@ import java.util.List;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class BrokenLinksDAO.
+ */
 public final class BrokenLinksDAO {
 
+    /**
+	 * Instantiates a new broken links DAO.
+	 */
     private BrokenLinksDAO() {
     }
 
+    /**
+	 * Gets the broken links.
+	 *
+	 * @param conn       the conn
+	 * @param idCrawling the id crawling
+	 * @param pagina     the pagina
+	 * @return the broken links
+	 * @throws SQLException the SQL exception
+	 */
     public static List<BrokenLinks> getBrokenLinks(Connection conn, long idCrawling, int pagina) throws SQLException {
         final PropertiesManager pmgr = new PropertiesManager();
         final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
@@ -59,6 +74,14 @@ public final class BrokenLinksDAO {
         return brokenLinksList;
     }
 
+    /**
+	 * Gets the num broken links.
+	 *
+	 * @param conn               the conn
+	 * @param idRastreoRealizado the id rastreo realizado
+	 * @return the num broken links
+	 * @throws SQLException the SQL exception
+	 */
     public static int getNumBrokenLinks(final Connection conn, final long idRastreoRealizado) throws SQLException {
         try (PreparedStatement pst = conn.prepareStatement("SELECT count(*) FROM enlaces_rotos WHERE id_rastreo_realizado = ?")) {
             pst.setLong(1, idRastreoRealizado);

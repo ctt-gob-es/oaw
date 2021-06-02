@@ -1,7 +1,7 @@
 /**
  * jqFilter  jQuery jqGrid filter addon.
  * Copyright (c) 2011-2014, Tony Tomov, tony@trirand.com
- * Copyright (c) 2014-2017, Oleg Kiriljuk, oleg.kiriljuk@ok-soft-gmbh.com
+ * Copyright (c) 2014-2019, Oleg Kiriljuk, oleg.kiriljuk@ok-soft-gmbh.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
@@ -486,9 +486,9 @@
 					}
 					// data
 					$(".data", trpar).empty().append(elm);
-					if (cm.createColumnIndex && searchoptions.generateDatalist) {
+					if (columns.createColumnIndex && searchoptions.generateDatalist) {
 						var dataListId = "dl_" + elm.id,
-							$datalist = $($t).jqGrid("generateDatalistFromColumnIndex", cm.name);
+							$datalist = $($t).jqGrid("generateDatalistFromColumnIndex", columns.name);
 						if ($datalist != null && $datalist.length > 0) {
 							$(elm).attr("list", dataListId);
 							$(".data", trpar).append($datalist.attr("id", dataListId));
@@ -545,7 +545,12 @@
 				var editoptions = $.extend({}, cm.editoptions || {});
 				delete editoptions.readonly;
 				delete editoptions.disabled;
-				var searchoptions = $.extend({}, editoptions, cm.searchoptions || {}, getCmInfo(cm.cmName), { id: jgrid.randId(), name: cm.name });
+				var searchoptions = $.extend(
+						{},
+						editoptions,
+						cm.searchoptions || {},
+						getCmInfo(cm.cmName),
+						{ id: jgrid.randId(), name: cm.name, mode: "search" });
 				searchoptions.column = cm;
 				var ruleDataInput = jgrid.createEl.call($t, cm.inputtype,
 						$.extend({}, searchoptions, searchoptions.attr || {}),

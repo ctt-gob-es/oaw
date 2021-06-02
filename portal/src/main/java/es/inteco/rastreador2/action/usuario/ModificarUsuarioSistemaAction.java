@@ -34,8 +34,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.util.Arrays;
 
+/**
+ * The Class ModificarUsuarioSistemaAction.
+ */
 public class ModificarUsuarioSistemaAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         if (CrawlerUtils.hasAccess(request, "edit.user")) {
             if (request.getAttribute(Constants.DE_PASS) == null && isCancelled(request)) {
@@ -61,6 +73,14 @@ public class ModificarUsuarioSistemaAction extends Action {
         }
     }
 
+    /**
+	 * Load user data.
+	 *
+	 * @param modificarUsuarioSistemaForm the modificar usuario sistema form
+	 * @param request                     the request
+	 * @return the modificar usuario sistema form
+	 * @throws Exception the exception
+	 */
     private ModificarUsuarioSistemaForm loadUserData(ModificarUsuarioSistemaForm modificarUsuarioSistemaForm, HttpServletRequest request) throws Exception {
         try (Connection c = DataBaseManager.getConnection()) {
             //Comprobamos si estamos en inicio o se a pulsado al submit del formulario
@@ -78,6 +98,14 @@ public class ModificarUsuarioSistemaAction extends Action {
         }
     }
 
+    /**
+	 * Load initial data.
+	 *
+	 * @param modificarUsuarioSistemaForm the modificar usuario sistema form
+	 * @param request                     the request
+	 * @return the modificar usuario sistema form
+	 * @throws Exception the exception
+	 */
     private ModificarUsuarioSistemaForm loadInitialData(ModificarUsuarioSistemaForm modificarUsuarioSistemaForm, HttpServletRequest request) throws Exception {
         try (Connection c = DataBaseManager.getConnection()) {
             modificarUsuarioSistemaForm.setCartuchosList(LoginDAO.getAllUserCartridge(c));
@@ -101,6 +129,15 @@ public class ModificarUsuarioSistemaAction extends Action {
         }
     }
 
+    /**
+	 * Edits the user.
+	 *
+	 * @param mapping                     the mapping
+	 * @param modificarUsuarioSistemaForm the modificar usuario sistema form
+	 * @param request                     the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward editUser(ActionMapping mapping, ModificarUsuarioSistemaForm modificarUsuarioSistemaForm, HttpServletRequest request) throws Exception {
         try {
             ActionErrors errors = modificarUsuarioSistemaForm.validate(mapping, request);

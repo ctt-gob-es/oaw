@@ -102,7 +102,7 @@ public class PlantillaAction extends DispatchAction {
 		if (plantilla.getFile() == null || StringUtils.isEmpty(plantilla.getFile().getFileName())) {
 			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.documento.plantilla.obligatorio")));
 		}
-		if (!plantilla.getFile().getFileName().endsWith(".odt")) {
+		if (!plantilla.getFile().getFileName().endsWith(".odt") && !plantilla.getFile().getFileName().endsWith(".ods") && !plantilla.getFile().getFileName().endsWith(".xlsx")) {
 			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.documento.plantilla.formato")));
 		}
 		if (errores.size() == 0) {
@@ -110,6 +110,10 @@ public class PlantillaAction extends DispatchAction {
 				if (PlantillaDAO.existsPlantilla(c, plantilla)) {
 					response.setStatus(400);
 					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.plantilla.duplicado")));
+					response.getWriter().write(new Gson().toJson(errores));
+				} else if (("ods".equalsIgnoreCase(plantilla.getType()) || "xlsx".equalsIgnoreCase(plantilla.getType())) && PlantillaDAO.existsPlantillaType(c, plantilla)) {
+					response.setStatus(400);
+					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.type.plantilla.duplicado")));
 					response.getWriter().write(new Gson().toJson(errores));
 				} else {
 					plantilla.setDocumento(plantilla.getFile().getFileData());
@@ -218,7 +222,7 @@ public class PlantillaAction extends DispatchAction {
 			try (Connection c = DataBaseManager.getConnection()) {
 				PlantillaForm plantilla = PlantillaDAO.findById(c, Long.parseLong(id));
 				response.setContentType("application/octet-stream");
-				response.setHeader("Content-Disposition", "filename=\"" + plantilla.getNombre() + ".odt\"");
+				response.setHeader("Content-Disposition", "filename=\"" + plantilla.getNombre() + "." + plantilla.getType() + "\"");
 				response.setContentLength(plantilla.getDocumento().length);
 				OutputStream os = response.getOutputStream();
 				os.write(plantilla.getDocumento(), 0, plantilla.getDocumento().length);
@@ -254,7 +258,8 @@ public class PlantillaAction extends DispatchAction {
 		if (plantilla.getFile() == null || StringUtils.isEmpty(plantilla.getFile().getFileName())) {
 			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.documento.plantilla.obligatorio")));
 		}
-		if (!plantilla.getFile().getFileName().endsWith(".odt")) {
+		if (!plantilla.getFile().getFileName().toLowerCase().endsWith(".odt") && !plantilla.getFile().getFileName().toLowerCase().endsWith(".ods")
+				&& !plantilla.getFile().getFileName().toLowerCase().endsWith(".xlsx")) {
 			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.documento.plantilla.formato")));
 		}
 		if (errores.size() == 0) {

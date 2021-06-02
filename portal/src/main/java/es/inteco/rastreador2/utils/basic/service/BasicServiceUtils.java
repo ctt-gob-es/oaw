@@ -17,14 +17,23 @@ package es.inteco.rastreador2.utils.basic.service;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.IDN;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,12 +41,12 @@ import org.apache.struts.Globals;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessage;
 import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerFactory;
-import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
+import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.triggers.SimpleTriggerImpl;
 
 import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 
@@ -48,6 +57,7 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
+import es.inteco.rastreador2.actionform.basic.service.BasicServiceFile;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
 import es.inteco.rastreador2.ws.CrawlerWS;
@@ -146,19 +156,25 @@ public final class BasicServiceUtils {
 		if (request.getParameter("informe-nobroken") != null && Boolean.parseBoolean(request.getParameter("informe-nobroken"))) {
 			basicServiceForm.setReport(basicServiceForm.getReport() + "-nobroken");
 		}
-		if (StringUtils.isNotEmpty(request.getParameter(Constants.PARAM_CONTENT))) {
+		// Prevent full paths
+		String parameterFileName = request.getParameter("filename");
+		if (!org.apache.commons.lang3.StringUtils.isEmpty(parameterFileName)) {
+			String tmp;
 			try {
-				basicServiceForm.setContent(new String(request.getParameter(Constants.PARAM_CONTENT).getBytes("ISO-8859-1")));
+				tmp = StringUtils.corregirEncoding(parameterFileName).replace("\\", "/");
 			} catch (UnsupportedEncodingException e) {
-				Logger.putLog("No se puede codificar el contenido como ISO-8859-1", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
-				try {
-					basicServiceForm.setContent(new String(request.getParameter(Constants.PARAM_CONTENT).getBytes("UTF-8")));
-				} catch (UnsupportedEncodingException e1) {
-					Logger.putLog("No se puede codificar el contenido como UTF-8", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
-					basicServiceForm.setContent("");
-				}
+				tmp = parameterFileName.replace("\\", "/");
 			}
-			basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE);
+			if (tmp.lastIndexOf("/") > 0) {
+				parameterFileName = tmp.substring(tmp.lastIndexOf("/") + 1, tmp.length());
+			} else {
+				parameterFileName = tmp.toString();
+			}
+		}
+		basicServiceForm.setFileName(parameterFileName);
+		final String contentParameter = request.getParameter(Constants.PARAM_CONTENT);
+		if (StringUtils.isNotEmpty(contentParameter)) {
+			getContent(basicServiceForm, parameterFileName, contentParameter, false);
 		}
 		if (StringUtils.isNotEmpty(request.getParameter("urls"))) {
 			String url = "";
@@ -185,25 +201,82 @@ public final class BasicServiceUtils {
 		basicServiceForm.setRegisterAnalysis(Boolean.parseBoolean(request.getParameter("registerAnalysis")));
 		basicServiceForm.setAnalysisToDelete(request.getParameter("analysisToDelete"));
 		basicServiceForm.setDomain(BasicServiceUtils.checkIDN(basicServiceForm.getDomain()));
-		// TODO Prevent full paths
-		String parameterFileName = request.getParameter("filename");
-		if (!org.apache.commons.lang3.StringUtils.isEmpty(parameterFileName)) {
-			String tmp;
-			try {
-				tmp = StringUtils.corregirEncoding(parameterFileName).replace("\\", "/");
-			} catch (UnsupportedEncodingException e) {
-				tmp = parameterFileName.replace("\\", "/");
-			}
-			if (tmp.lastIndexOf("/") > 0) {
-				parameterFileName = tmp.substring(tmp.lastIndexOf("/") + 1, tmp.length());
-			} else {
-				parameterFileName = tmp.toString();
-			}
-		}
-		basicServiceForm.setFileName(parameterFileName);
 		basicServiceForm.setComplexity(request.getParameter(Constants.PARAM_COMPLEXITY));
 		basicServiceForm.setDepthReport(request.getParameter(Constants.PARAM_DEPTH_REPORT));
 		return basicServiceForm;
+	}
+
+	/**
+	 * Gets the content.
+	 *
+	 * @param basicServiceForm  the basic service form
+	 * @param parameterFileName the parameter file name
+	 * @param contentParameter  the content parameter
+	 * @return the content
+	 */
+	public static void getContent(final BasicServiceForm basicServiceForm, String parameterFileName, final String contentParameter, final boolean decode) {
+		if (!org.apache.commons.lang3.StringUtils.isEmpty(parameterFileName) && parameterFileName.toLowerCase().endsWith(".zip")) {
+			try {
+				File tmp = File.createTempFile("oaw_basic_service_", ".zip");
+				org.apache.commons.io.FileUtils.writeByteArrayToFile(tmp, Base64.getUrlDecoder().decode(contentParameter.getBytes(StandardCharsets.ISO_8859_1.name())));
+				ZipFile zipFile;
+				try {
+					zipFile = new ZipFile(tmp, Charset.forName("ISO-8859-1"));
+					Enumeration<? extends ZipEntry> entries = zipFile.entries();
+					List<BasicServiceFile> files = new ArrayList<>();
+					while (entries.hasMoreElements()) {
+						try {
+							ZipEntry entry = entries.nextElement();
+							String name = entry.getName();
+//						if (entry.getName().toLowerCase().endsWith(".html")) {
+							if (!entry.isDirectory()) {
+								try {
+									String content = org.apache.commons.io.IOUtils.toString(zipFile.getInputStream(entry), StandardCharsets.UTF_8.name());
+									BasicServiceFile file = new BasicServiceFile();
+									file.setName(name);
+									file.setContent(content);
+									files.add(file);
+								} catch (UnsupportedEncodingException e) {
+									Logger.putLog("No se puede codificar el contenido como UTF-8", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+									try {
+										String content = org.apache.commons.io.IOUtils.toString(zipFile.getInputStream(entry), StandardCharsets.ISO_8859_1.name());
+										BasicServiceFile file = new BasicServiceFile();
+										file.setName(name);
+										file.setContent(content);
+										files.add(file);
+									} catch (UnsupportedEncodingException e1) {
+										Logger.putLog("No se puede codificar el contenido como UTF-8", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+									}
+								}
+							}
+						} catch (IllegalArgumentException e) {
+							Logger.putLog("No se puede procesar la entrada del fichero zip", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+						}
+					}
+					basicServiceForm.setContents(files);
+				} catch (IOException e) {
+					Logger.putLog("No se puede procesar el fichero zip", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+				}
+			} catch (IOException e) {
+				Logger.putLog("No se puede leer el fichero zip adjuntado", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+			}
+			basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE);
+		} else {
+			try {
+				String content = "";
+				if (decode) {
+					File tmp = File.createTempFile("oaw_basic_service_", ".txt");
+					org.apache.commons.io.FileUtils.writeByteArrayToFile(tmp, Base64.getUrlDecoder().decode(contentParameter.getBytes(StandardCharsets.ISO_8859_1.name())));
+					content = org.apache.commons.io.FileUtils.readFileToString(tmp, StandardCharsets.ISO_8859_1.name());
+				} else {
+					content = new String(contentParameter.getBytes(StandardCharsets.ISO_8859_1.name()));
+				}
+				basicServiceForm.setContent(content);
+				basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE);
+			} catch (Exception e) {
+				Logger.putLog("No se puede procesar la entrada del fichero", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+			}
+		}
 	}
 
 	/**
@@ -315,14 +388,14 @@ public final class BasicServiceUtils {
 		final SchedulerFactory schedulerFactory = new StdSchedulerFactory();
 		final Scheduler scheduler = schedulerFactory.getScheduler();
 		scheduler.start();
-		final JobDetail jobDetail = new JobDetail("CrawlerWSJob_" + System.currentTimeMillis(), "CrawlerWSJob", CrawlerWSJob.class);
+		final JobDetailImpl jobDetail = new JobDetailImpl("CrawlerWSJob_" + System.currentTimeMillis(), "CrawlerWSJob", CrawlerWSJob.class);
 		if (basicServiceForm.getId() == 0) {
 			basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, es.inteco.common.Constants.BASIC_SERVICE_STATUS_SCHEDULED));
 		}
 		final JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put(es.inteco.rastreador2.ws.commons.Constants.BASIC_SERVICE_FORM, basicServiceForm);
 		jobDetail.setJobDataMap(jobDataMap);
-		final Trigger trigger = new SimpleTrigger("CrawlerWSTrigger", "CrawlerWSGroup", basicServiceForm.getSchedulingDate());
+		final Trigger trigger = new SimpleTriggerImpl("CrawlerWSTrigger", "CrawlerWSGroup", basicServiceForm.getSchedulingDate());
 		scheduler.scheduleJob(jobDetail, trigger);
 	}
 

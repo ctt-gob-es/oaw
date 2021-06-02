@@ -1,6 +1,6 @@
 /*!
- * jqGrid 4.15.0-pre - free jqGrid: https://github.com/free-jqgrid/jqGrid 
- * Date: 2017-07-30
+ * jqGrid 4.15.5 - free jqGrid: https://github.com/free-jqgrid/jqGrid 
+ * Date: 2018-08-13
  */
 
 /* Grid */
@@ -10,7 +10,7 @@
 	-webkit-box-sizing: content-box;
 	box-sizing: content-box;
 	-ms-touch-action: none;
-	touch-action: none;
+	touch-action: manipulation;
 }
 .ui-jqgrid div {
 	line-height: normal;
@@ -141,7 +141,7 @@
 }
 .ui-jqgrid .ui-jqgrid-caption .ui-jqgrid-titlebar-close span.ui-icon,
 .ui-jqdialog-titlebar-ltr .ui-jqdialog-titlebar-close span.ui-icon {
-	right: 3px;
+	right: 3.5px;
 }
 
 .ui-jqgrid .ui-jqgrid-titlebar > .ui-jqgrid-titlebar-close > span.ui-icon {
@@ -149,14 +149,26 @@
 }
 
 .ui-jqgrid .ui-jqgrid-titlebar > .ui-jqgrid-titlebar-close > span.fa,
+.ui-jqgrid .ui-jqgrid-titlebar > .ui-jqgrid-titlebar-close > span.fa,
 .ui-jqgrid .ui-jqgrid-titlebar > .ui-jqgrid-titlebar-close > span.glyphicon {
 	/*  the values below are based on the difference between the
 		font-size of fa-icon and the font size of the parent element */
 	font-size: 14px;
 	margin-top: -2px;
 }
+.ui-jqgrid .ui-jqgrid-titlebar > .ui-jqgrid-titlebar-close > .svg-inline--fa {
+	font-size: 14px;
+	display: block;
+	margin-top: -.125em;
+	margin-left: -.125em;
+}
 .ui-jqgrid .ui-jqgrid-titlebar > .ui-jqgrid-titlebar-close > span.fa {
 	margin-left: -1px;
+}
+.ui-jqdialog-titlebar-close > .svg-inline--fa {
+	display: block;
+	margin-left: .0625em;
+    margin-top: -.0625em;
 }
 .ui-jqgrid .ui-jqgrid-titlebar > .ui-jqgrid-titlebar-close > span.glyphicon {
 	margin-left: -2px;
@@ -170,17 +182,30 @@
 }
 
 /* Resizer */
-.ui-jqdialog .ui-resizable-handle {
+/*.ui-jqdialog .ui-resizable-handle {
 	right: -3px;
 	bottom: -3px;
+}*/
+.ui-jqdialog .ui-resizable-handle > .ui-icon {
+	right: -1px;
+    bottom: -1px;
 }
-.ui-jqdialog .ui-resizable-handle.fa {
-	bottom: 1px;
-	right: -2px;
+.ui-jqdialog .ui-resizable-handle > .fa {
+    font-size: 12px;
+    right: -2px;
+    position: relative;
 }
-.ui-jqdialog .ui-resizable-handle.glyphicon {
-	right: -2px;
-	bottom: -3.8px;
+.ui-jqdialog .ui-resizable-handle > .svg-inline--fa {
+	font-size: 12px;
+    right: -1px;
+	/*right: -2px;
+    bottom: -1px;*/
+	position: relative;
+}
+.ui-jqdialog .ui-resizable-handle > .glyphicon {
+	font-size: 12px;
+	right: -1px;
+	bottom: -2.8px;
 }
 
 /* Header */
@@ -207,6 +232,8 @@
 	padding: 0 2px 0 2px;
 }
 .ui-jqgrid-htable > thead > .jqg-first-row-header > th {
+	padding-top: 0;
+	padding-bottom: 0;
 	border-bottom: 0 none;
 	border-top: 0 none;
 }
@@ -296,7 +323,7 @@
 	display: inline;
 	overflow: hidden;
 }
-.ui-jqgrid .ui-jqgrid-htable .ui-jqgrid-labels th div.rotate {
+.ui-jqgrid .ui-jqgrid-htable .ui-jqgrid-labels th div.ui-jqgrid-rotate {
 	-webkit-transform: translateX(-50%) translateY(0) rotate(-90deg);
 	-moz-transform: translateX(-50%) translateY(0) (-90deg);
 	-o-transform: translateX(-50%) translateY(0) rotate(-90deg);
@@ -630,7 +657,7 @@ span.ui-jqgrid-cell-wrapper {
 	border-style: none;
 }
 .ui-jqgrid .ui-pg-button:not(.ui-state-hover),
-.jqgrow .ui-jqgrid-actions .ui-pg-div:not(.ui-state-hover) {
+.ui-jqgrid-jquery-ui .jqgrow .ui-jqgrid-actions .ui-pg-div:not(.ui-state-hover) {
 	border: 1px solid transparent;
 }
 .ui-pager-control .ui-pg-table {
@@ -756,6 +783,16 @@ select.form-control.ui-pg-selbox:not([size]):not([multiple]) {
 }
 
 /* Subgrid */
+.subgrid-data > .tablediv > .ui-jqgrid {
+	-moz-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	box-sizing: content-box;
+}
+.subgrid-data > .tablediv > .ui-jqgrid > .ui-jqgrid-view {
+    -moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
 .ui-jqgrid .ui-jqgrid-btable .jqgrow > .ui-sgcollapsed {
 	text-align: center;
 	vertical-align: middle;
@@ -844,6 +881,9 @@ select.form-control.ui-pg-selbox:not([size]):not([multiple]) {
 .ui-jqgrid-bootstrap.modal {
 	right: auto;
 	left: auto;
+}
+.ui-jqgrid-bootstrap.modal > .modal-dialog {
+	max-width: none;
 }
 .ui-jqdialog-content,
 .ui-jqdialog .ui-jqdialog-content {
@@ -973,6 +1013,10 @@ select.form-control.ui-pg-selbox:not([size]):not([multiple]) {
 	text-align: center;
 	zoom: 1;
 }
+.ui-jqdialog.ui-jqgrid-bootstrap .navButton .fm-button {
+	padding: .375em .75em;
+	margin-left: .125em;
+}
 .ui-jqdialog .fm-button > span {
 	display: inline-block;
 	vertical-align: middle;
@@ -1083,12 +1127,12 @@ select.form-control.ui-pg-selbox:not([size]):not([multiple]) {
 	position: absolute;
 	padding: .2em;
 }
-.ui-search-menu.ui-menu .ui-menu-item {
+.ui-search-menu.ui-menu .ui-jqgrid-menu-item {
 	list-style-image: none;
 	padding-right: 0;
 	padding-left: 0;
 }
-.ui-search-menu.ui-menu .ui-menu-item a {
+.ui-search-menu.ui-menu .ui-jqgrid-menu-item a {
 	text-decoration: none;
 	display: block;
 }
@@ -1102,6 +1146,9 @@ select.form-control.ui-pg-selbox:not([size]):not([multiple]) {
 	border: 0 none;
 	height: 20px;
 	width: 100%;
+}
+.table-hover .ui-search-table tbody tr:hover {
+    background-color: inherit;
 }
 .ui-jqgrid .ui-jqgrid-htable .ui-search-toolbar th {
 	padding: 0 .1em;
@@ -1122,13 +1169,13 @@ a.clearsearchclass {
 	text-decoration: none;
 	cursor: pointer;
 }
-.ui-search-menu .ui-menu-item .g-menu-item {
+.ui-search-menu .ui-jqgrid-menu-item .g-menu-item {
 	padding: .2em;
 }
-.ui-menu-jqueryui .ui-menu-item .g-menu-item:not(.ui-state-hover) {
+.ui-menu-jqueryui .ui-jqgrid-menu-item .g-menu-item:not(.ui-state-hover) {
 	border: 1px solid transparent;
 }
-.ui-menu-jqueryui .ui-menu-item .g-menu-item:hover {
+.ui-menu-jqueryui .ui-jqgrid-menu-item .g-menu-item:hover {
 	font-weight: normal;
 }
  
@@ -1199,6 +1246,9 @@ a.clearsearchclass {
 .ui-jqgrid .s-ico > .ui-state-disabled.fa {
 	padding: 0;
 }
+.ui-jqgrid .s-ico > .svg-inline--fa.fa-sort-down {
+	margin-top: -1.05em;
+}
 .jqgrow .ui-pg-div > span.fa {
 	font-weight: normal;
 	font-size: 12px;
@@ -1245,19 +1295,19 @@ a.clearsearchclass {
 }
 
 /* Classes for jquery.contextmenu-ui.js plugin we included here */
-.jqContextMenu .ui-menu .ui-menu-item a.ui-state-hover {
+.jqContextMenu .ui-menu .ui-jqgrid-menu-item a.ui-state-hover {
 	font-weight: normal;
 	margin: -1px;
 }
-.jqContextMenu .ui-menu .ui-menu-item.ui-state-hover {
+.jqContextMenu .ui-menu .ui-jqgrid-menu-item.ui-state-hover {
 	font-weight: normal;
 	margin: -1px;
 }
-.jqContextMenu .ui-menu-icons > .ui-menu-item {
+.jqContextMenu .ui-menu-icons > .ui-jqgrid-menu-item {
 	font-size: 11px;
 }
 /* Classes for jQuery.jqGrid.showHideColumnMenu.js plugin */
-.ui-jqgrid-showHideColumnMenu .ui-menu-item:hover {
+.ui-jqgrid-showHideColumnMenu .ui-jqgrid-menu-item:hover {
 	font-weight: normal;
 }
 .ui-jqgrid-disablePointerEvents {
@@ -1293,6 +1343,10 @@ a.clearsearchclass {
 	font-size: 16px;
 }
 .ui-jqgrid.ui-jqgrid-bootstrap > .ui-jqgrid-view {
+	font-size: 12px;
+}
+.ui-jqgrid.ui-jqgrid-bootstrap > .ui-jqgrid-view .btn,
+.ui-jqgrid.ui-jqgrid-bootstrap > .ui-jqgrid-pager .btn {
 	font-size: 12px;
 }
 .ui-jqgrid.ui-jqgrid-bootstrap > .ui-jqgrid-view .fa,
@@ -1411,7 +1465,8 @@ a.clearsearchclass {
 	border-radius: .4em;
 }
 .ui-search-input .form-control:not([size]):not([multiple]) {
-	height: 18px;
+	height: auto;
+	min-height: 18px;
 }
 .ui-search-input input[type=text] {
 	padding: 0;
@@ -1433,6 +1488,12 @@ a.clearsearchclass {
 	padding: 0;
 	margin: 0;
 	box-shadow: none;
+}
+.ui-jqgrid.ui-jqgrid-bootstrap .ui-jqgrid-actions .ui-pg-div.btn:not(:first-child) {
+	margin-left: .125em;
+}
+.ui-jqgrid.ui-jqgrid-bootstrap .ui-jqgrid-actions .ui-pg-div.btn.ui-inline-save {
+	margin-left: 0;
 }
 .ui-jqgrid.ui-jqgrid-bootstrap tr.jqgrow .sgbutton-div .sgbutton.btn {
 	padding: 0;
@@ -1479,13 +1540,15 @@ a.clearsearchclass {
 	vertical-align: middle;
 }
 .ui-jqdialog.ui-jqgrid-bootstrap .FormData .DataTD input.form-control[type="checkbox"] {
-	width: 34px; /* change width:100% to the width the same like the height */
+	width: 2.193em;
+	height: 2.193em;
 }
 .DelTable .delmsg {
 	padding: .2em;
 }
 .queryresult {
-	margin-bottom: 1em;
+	margin-bottom: .5em;
+	padding: .25em;
 }
 .group.modal-content tr td {
 	padding: .2em .1em;
@@ -1494,7 +1557,11 @@ a.clearsearchclass {
 	padding: .1em;
 }
 .searchFilter .form-control:not([size]):not([multiple]) {
-	height: 22px;
+	height: 2em;
+}
+.searchFilter .btn {
+    margin-left: .125em;
+    padding: .2em .375em;
 }
 .ui-jqgrid .searchFilter table.group td {
 	padding: 1px;

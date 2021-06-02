@@ -38,7 +38,7 @@ public final class CartuchoDAO {
 	}
 
 	/**
-	 * Gets the application from cartdige id
+	 * Gets the application from cartdige id.
 	 *
 	 * @param c          the c
 	 * @param idCartucho the id cartucho
@@ -151,6 +151,14 @@ public final class CartuchoDAO {
 		}
 	}
 
+	/**
+	 * Gets the application from crawler exceution id.
+	 *
+	 * @param c                  the c
+	 * @param idRastreoRealizado the id rastreo realizado
+	 * @return the application from crawler exceution id
+	 * @throws SQLException the SQL exception
+	 */
 	public static String getApplicationFromCrawlerExceutionId(final Connection c, final Long idRastreoRealizado) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT aplicacion FROM cartucho c, rastreos_realizados rr where c.id_cartucho=rr.id_cartucho and rr.id=?")) {
 			ps.setLong(1, idRastreoRealizado);

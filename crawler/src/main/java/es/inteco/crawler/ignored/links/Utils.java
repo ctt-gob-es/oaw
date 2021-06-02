@@ -22,16 +22,35 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class Utils.
+ */
 public final class Utils {
 
+    /** The Constant XML_IGNORED_LINKS. */
     private static final String XML_IGNORED_LINKS = "ignored_links";
+    
+    /** The Constant XML_LINK. */
     private static final String XML_LINK = "link";
+    
+    /** The Constant XML_TEXT. */
     private static final String XML_TEXT = "text";
+    
+    /** The Constant XML_TITLE. */
     private static final String XML_TITLE = "title";
 
+    /**
+	 * Instantiates a new utils.
+	 */
     private Utils() {
     }
 
+    /**
+	 * Gets the ignored links.
+	 *
+	 * @return the ignored links
+	 * @throws Exception the exception
+	 */
     @SuppressWarnings("unchecked")
 	public static List<IgnoredLink> getIgnoredLinks() throws Exception {
         try (InputStream inputStream = Utils.class.getResourceAsStream("/ignored_links.xml")) {

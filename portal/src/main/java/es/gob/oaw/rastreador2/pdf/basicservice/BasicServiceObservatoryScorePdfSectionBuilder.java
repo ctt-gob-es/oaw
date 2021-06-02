@@ -280,6 +280,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 							ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, section, pdfTocManager.addSection(), 1);
 					addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section1, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_1);
 					section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, previousScore, Constants.OBS_PRIORITY_1));
+					section.add(Chunk.NEXTPAGE);
 					Section section2 = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title.level2"), pdfTocManager.getIndex(),
 							ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, section, pdfTocManager.addSection(), 1);
 					addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section2, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_2);
@@ -563,11 +564,12 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 	/**
 	 * Creates the image.
 	 *
-	 * @param section  the section
-	 * @param filePath the file path
+	 * @param section         the section
+	 * @param filePath        the file path
+	 * @param alternativeText the alternative text
 	 */
 	private void createImage(final Section section, final String filePath, final String alternativeText) {
-		// TODO add alt
+		// Add alt
 		final com.itextpdf.text.Image image = PDFUtils.createImage(filePath, alternativeText);
 		if (image != null) {
 			image.scalePercent(60);

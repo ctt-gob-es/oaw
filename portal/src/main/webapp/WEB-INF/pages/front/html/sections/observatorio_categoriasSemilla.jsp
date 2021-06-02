@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologï¿½as de la Comunicaciï¿½n, 
 This program is licensed and may be used, modified and redistributed under the terms
 of the European Public License (EUPL), either version 1.2 or (at your option) any later 
 version as soon as they are approved by the European Commission.
@@ -108,11 +108,21 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</span>
 									</td>
 									<td>
-										<html:link forward="getCategorySeedsFile" paramId="<%=Constants.ID_CATEGORIA%>" paramName="category"
+										<html:link forward="getCategorySeedsFileXml" paramId="<%=Constants.ID_CATEGORIA%>" paramName="category"
 											paramProperty="id">
 											<span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip"
-												title='<bean:message key="indice.categorias.download"/>' />
-											<span class="sr-only">Descargar</span>
+												title='<bean:message key="indice.categorias.download.xml"/>' />
+											<span class="sr-only">
+												<bean:message key='colname.download' />
+											</span>
+										</html:link>
+										<html:link forward="getCategorySeedsFileXlsx" paramId="<%=Constants.ID_CATEGORIA%>" paramName="category"
+											paramProperty="id">
+											<span class="glyphicon glyphicon-save-file" aria-hidden="true" data-toggle="tooltip"
+												title='<bean:message key="indice.categorias.download.xlsx"/>' />
+											<span class="sr-only">
+												<bean:message key='colname.download' />
+											</span>
 										</html:link>
 									</td>
 									<td>

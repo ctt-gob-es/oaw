@@ -48,7 +48,6 @@ import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
-import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 
 /**
  * The Class DiagnosisDAO.
@@ -99,12 +98,15 @@ public final class DiagnosisDAO {
 			if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
 				ps.setString(3, basicServiceForm.getDomain());
 				ps.setString(11, basicServiceForm.getAnalysisType().getLabel());
+			} else if (basicServiceForm.getContents() != null && !basicServiceForm.getContents().isEmpty()) {
+				ps.setString(3, basicServiceForm.getFileName());
+				ps.setString(11, BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE.getLabel());
 			} else if (StringUtils.isNotEmpty(basicServiceForm.getContent())) {
-				ps.setString(3, BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()));
+				// ps.setString(3, BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()));
+				ps.setString(3, basicServiceForm.getFileName());
 				ps.setString(11, BasicServiceAnalysisType.CODIGO_FUENTE.getLabel());
 			}
 			ps.setString(4, basicServiceForm.getEmail());
-			// if complex != null && !=0
 			if (!org.apache.commons.lang3.StringUtils.isEmpty(basicServiceForm.getComplexity()) && !"0".equalsIgnoreCase(basicServiceForm.getComplexity())) {
 				String complex = basicServiceForm.getComplexity();
 				ComplejidadForm cx = ComplejidadDAO.getById(conn, complex);
@@ -335,7 +337,6 @@ public final class DiagnosisDAO {
 	 */
 	private static String getHistoricoResultadosQueryByType(final BasicServiceAnalysisType type) {
 		if (BasicServiceAnalysisType.URL == type) {
-			// PENDING Revisar si esto no altera los informes anteriores
 			return "SELECT id, date FROM basic_service WHERE domain LIKE ? AND status='finished' AND depth=? AND width=? AND analysis_type='url' AND register_result=TRUE AND report LIKE ? ORDER BY date DESC LIMIT ?";
 		} else if (BasicServiceAnalysisType.LISTA_URLS == type) {
 			return "SELECT id, date FROM basic_service WHERE domain REGEXP ? AND status='finished' AND analysis_type='lista_urls' AND register_result=TRUE AND report LIKE ? ORDER BY date DESC LIMIT ?";
@@ -486,7 +487,7 @@ public final class DiagnosisDAO {
 	 */
 	private static ServicioDiagnosticoForm getFormFromResultSet(ResultSet rs) throws SQLException, ParseException {
 		// 2019-11-19 10:38:26.0
-		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
+		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		ServicioDiagnosticoForm result = new ServicioDiagnosticoForm();
 		result.setId(rs.getLong("id"));
 		result.setUser(rs.getString("usr"));

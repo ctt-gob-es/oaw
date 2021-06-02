@@ -21,11 +21,26 @@ import java.io.IOException;
 import java.net.*;
 import java.util.Set;
 
+/**
+ * The Class GeneraRango.
+ */
 public final class GeneraRango {
 
+    /**
+	 * Instantiates a new genera rango.
+	 */
     private GeneraRango() {
     }
 
+    /**
+	 * Gets the rango.
+	 *
+	 * @param puertos   the puertos
+	 * @param ip1       the ip 1
+	 * @param ip2       the ip 2
+	 * @param listaUrls the lista urls
+	 * @return the rango
+	 */
     public static String getRango(int[] puertos, String ip1, String ip2, String listaUrls) {
 
         Generador hg = new Generador(ip1, ip2);
@@ -41,6 +56,14 @@ public final class GeneraRango {
         return listaUrls;
     }
 
+    /**
+	 * Urls lis.
+	 *
+	 * @param ip        the ip
+	 * @param listaUrls the lista urls
+	 * @param puerto    the puerto
+	 * @return the string
+	 */
     public static String urlsLis(final String ip, String listaUrls, final int puerto) {;
         try {
             final InetAddress is = InetAddress.getByName(ip);

@@ -1,74 +1,70 @@
-<!--
-Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
-This program is licensed and may be used, modified and redistributed under the terms
-of the European Public License (EUPL), either version 1.2 or (at your option) any later 
-version as soon as they are approved by the European Commission.
-Unless required by applicable law or agreed to in writing, software distributed under the 
-License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
-ANY KIND, either express or implied. See the License for the specific language governing 
-permissions and more details.
-You should have received a copy of the EUPL1.2 license along with this program; if not, 
-you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
--->
+<!-- Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, This program is licensed and may be used, modified 
+	and redistributed under the terms of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+	version as soon as they are approved by the European Commission. Unless required by applicable law or agreed to in writing, 
+	software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+	either express or implied. See the License for the specific language governing permissions and more details. You should have 
+	received a copy of the EUPL1.2 license along with this program; if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>crawler</artifactId>
-    <packaging>jar</packaging>
+	<packaging>jar</packaging>
 
-    <name>crawler</name>
+	<name>crawler</name>
 
     <parent>
         <groupId>es.minhap.oaw</groupId>
         <artifactId>oaw</artifactId>
         <relativePath>../oaw/pom.xml</relativePath>
-        <version>5.1.0</version>
+        <version>5.2.0</version>
     </parent>
     
     <properties>
-		<oaw.version>5.1.0</oaw.version>
+		<oaw.version>5.2.0</oaw.version>
 	</properties>
-    
 
-    <build>
-        <resources>
-            <resource>
-                <directory>profiles/${profile.name}</directory>
-                <includes>
-                    <include>*.properties</include>
-                </includes>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-    </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>es.minhap.oaw</groupId>
-            <artifactId>intav-core</artifactId>
-            <version>${oaw.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-digester</groupId>
-            <artifactId>commons-digester</artifactId>
-            <version>1.8</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>1.7.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.juniversalchardet</groupId>
-            <artifactId>juniversalchardet</artifactId>
-            <version>1.0.3</version>
-        </dependency>
-    </dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>profiles/${profile.name}</directory>
+				<includes>
+					<include>*.properties</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
 
-    </project>
+	<dependencies>
+		<dependency>
+			<groupId>es.minhap.oaw</groupId>
+			<artifactId>intav-core</artifactId>
+			<version>${oaw.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<!-- <version>1.7.2</version> -->
+			<version>2.3.2</version>
+
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.juniversalchardet</groupId>
+			<artifactId>juniversalchardet</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+	</dependencies>
+
+</project>

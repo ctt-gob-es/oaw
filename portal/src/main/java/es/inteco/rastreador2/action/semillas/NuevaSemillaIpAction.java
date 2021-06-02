@@ -30,8 +30,20 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class NuevaSemillaIpAction.
+ */
 public class NuevaSemillaIpAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         // Marcamos el menú
         request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_IP);
@@ -143,6 +155,13 @@ public class NuevaSemillaIpAction extends Action {
         }
     }
 
+    /**
+	 * Comprobar ip.
+	 *
+	 * @param ipIni the ip ini
+	 * @param ipFin the ip fin
+	 * @return true, if successful
+	 */
     public static boolean comprobarIp(String ipIni, String ipFin) {
         return Integer.parseInt(ipIni) <= Integer.parseInt(ipFin);
     }

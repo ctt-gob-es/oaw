@@ -10,7 +10,7 @@
 
 	<groupId>es.minhap.oaw</groupId>
 	<artifactId>oaw</artifactId>
-	<version>5.1.0</version>
+	<version>5.2.0</version>
 	<packaging>pom</packaging>
 
 	<name>oaw</name>
@@ -31,7 +31,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.7</version>
+			<version>4.13.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -50,8 +50,8 @@
 					<version>2.3.2</version>
 					<configuration>
 						<encoding>UTF-8</encoding>
-						<source>1.7</source>
-						<target>1.7</target>
+						<source>1.8</source>
+						<target>1.8</target>
 						<compilerArgument>-Xlint:all</compilerArgument>
 						<showWarnings>true</showWarnings>
 						<showDeprecation>true</showDeprecation>
