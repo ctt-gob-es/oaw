@@ -86,11 +86,12 @@ public class TestCrawl {
 		ic.createSubcontext("java:/comp/env/jdbc");
 		// Construct DataSource
 		final MysqlConnectionPoolDataSource mysqlDataSource = new MysqlConnectionPoolDataSource();
-		mysqlDataSource.setURL("jdbc:mysql://localhost:3306/OAW");
+		mysqlDataSource.setURL("jdbc:mysql://localhost:3306/OAW_DES?serverTimezone=Europe/Rome");
 		mysqlDataSource.setUser("root");
 		mysqlDataSource.setPassword("root");
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ERROR);
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.OFF);
+		// System.setOut(new PrintStream(new File("/home/alvaro/Downloads/age-manual.txt")));
 	}
 
 	/**
@@ -135,18 +136,29 @@ public class TestCrawl {
 	 */
 	@Test
 	public void crawlPrincipales() throws Exception {
-//		String[] urls = new String[] { "https://www.agenciatributaria.es", "https://www.boe.es", "https://www.mapa.gob.es", "http://www.exteriores.gob.es/Portal/es/Paginas/inicio.aspx",
-//				"http://www.ciencia.gob.es", "http://www.culturaydeporte.gob.es", "http://www.defensa.gob.es", "http://www.mineco.gob.es/portal/site/mineco/",
-//				"http://www.educacionyfp.gob.es/portada.html", "https://www.fomento.gob.es/", "https://www.hacienda.gob.es/es-ES/Paginas/Home.aspx", "https://www.mincotur.gob.es",
-//				"https://www.mjusticia.gob.es", "https://www.mpr.gob.es/paginas/index.aspx", "https://www.mptfp.gob.es/portal/index.html", "https://www.mscbs.gob.es/home.htm",
-//				"http://www.mitramiss.gob.es/es/index.htm", "http://www.interior.gob.es/", "https://www.miteco.gob.es/es/", "https://administracion.gob.es", "http://www.seg-social.es",
-//				"https://www.lamoncloa.gob.es/serviciosdeprensa/Paginas/index.aspx", "http://www.guardiareal.org/" };
-//		String[] urls = new String[] { "http://www.melilla.es/melillaPortal/index.jsp", "http://www.comunidad.madrid", "https://www.gva.es", "https://web.gencat.cat/ca/inici/",
-//				",https://www.euskadi.eus/hasiera/", "https://www.aragon.es", "https://www.gobiernodecanarias.org/principal/", "https://www.cantabria.es/", "https://www.navarra.es/home_es/",
-//				"https://web.larioja.org", "http://www.caib.es/govern/index.do?lang=ca", "https://www.asturias.es/", "https://www.juntadeandalucia.es/institucional/index.html", "https://www.jcyl.es/",
-//				"http://www.juntaex.es/web/", "https://www.castillalamancha.es/", "http://www.carm.es", "https://www.xunta.gal/portada" };
-		String[] urlsD = new String[] { "https://www.administracionelectronica.gob.es/pae_Home/pae_Actualidad/pae_Noticias/Anio2020/" };
-		String[] urls = new String[] {};
+		// https://www.navarra.es/es/tramites
+		// https://www.larioja.org/oficina-electronica/es
+		// http://www.navarra.es/home_es/Temas/Empleo+y+Economia/Empleo/
+		// https://www.larioja.org/empleo-formacion/es
+		// http://www.navarra.es/home_es/Temas/Portal+de+la+Salud/Ciudadania/
+		// https://www.aragon.es/-/sucesiones-y-donaciones
+		// https://www.navarra.es/home_es/Gobierno+de+Navarra/Organigrama/Los+departamentos/Economia+y+Hacienda/Organigrama/Estructura+Organica/Hacienda/
+		/***/
+		String[] urlsD = new String[] {};
+//		"https://sedeelectronica.navarra.gob.es/", "http://www.boa.aragon.es/#/", "https://boc.cantabria.es/boces/", "https://www.borm.es/#",
+//		"https://web.larioja.org/bor-portada/", "https://sede.asturias.es/servicios-del-bopa", "http://www.melilla.es/melillaPortal/index.jsp", "https://www.comunidad.madrid/",
+//		"https://www.euskadi.eus/empleo-publico/", "https://www.aragon.es/-/sucesiones-y-donaciones", "https://www.euskadi.eus/sede-electronica", "https://web.gencat.cat",
+//		"https://www.gva.es", "https://www.aragon.es", "https://www.gobiernodecanarias.org", "https://www.cantabria.es", "https://web.larioja.org", "http://www.caib.es",
+//		"https://www.navarra.es/home_es/", "https://www.asturias.es/", "https://www.euskadi.eus",
+//		"http://www.navarra.es/home_es/Gobierno+de+Navarra/Organigrama/Los+departamentos/Economia+y+Hacienda/Organigrama/Estructura+Organica/Hacienda/",
+//		"https://www.juntadeandalucia.es/institucional/index.html", "https://www.jcyl.es/", "http://www.juntaex.es", "https://www.larioja.org/larioja-client/cm/oficina-electronica/",
+//		"https://www.ceuta.es", "https://www.castillalamancha.es/", "http://www.carm.es",
+//		String[] urls = new String[] { "http://www.navarra.es/home_es/Temas/Empleo+y+Economia/Empleo/", "http://www.navarra.es/home_es/Temas/Portal+de+la+Salud/Ciudadania/",
+//				"https://www.larioja.org/empleo-formacion/es", "http://www.euskadi.eus/analisis-general-de-las-competencias-propias-y-financiacion/web01-a2ogazer/es/",
+//				"https://sede.melilla.es/melillaPortal/transparencia/se_principal1.jsp?language=es&codResi=1", "https://web.larioja.org/portal-transparencia",
+//				"http://www.caib.es/sites/transparencia/ca/inici/?campa=yes", "https://transparencia.asturias.es ", "https://www.turismoasturias.es/", "https://www.andalucia.org/es/inicio",
+//				"https://www.xunta.gal" };
+		String[] urls = { "https://transparencia.asturias.es/web/gobierno-abierto/mapa-web" };
 		for (String url : urls) {
 			this.crawl(url, false);
 		}
@@ -163,6 +175,8 @@ public class TestCrawl {
 	 * @throws Exception the exception
 	 */
 	public void crawl(String url, boolean enDirectorio) throws Exception {
+		// System.setOut(new PrintStream(new File("/home/alvaro/Downloads/age-manual-" + RandomStringUtils.randomAlphabetic(10) + ".txt")));
+//		System.setOut(new PrintStream(new File("/home/alvaro/Downloads/AGE-MANUAL/age-manual-" + url.replace("/", "_") + ".txt")));
 		System.out.println(url);
 		System.out.println("-------------------------------------------------------------------------------------------\n\n");
 		final CrawlerData crawlerData = new CrawlerData();
@@ -432,6 +446,7 @@ public class TestCrawl {
 								crawlingDomains.add(crawledLink);
 								md5Content.add(remoteContentHash);
 								LOG.info("Introducida la URL número " + crawlingDomains.size() + ": " + urlLink);
+								// System.out.println("Introducida la URL número " + crawlingDomains.size() + ": " + urlLink);
 								// System.out.println(String.format("Introducida la URL número %d: %s", crawlingDomains.size(), urlLink));
 								return true;
 							} else {
