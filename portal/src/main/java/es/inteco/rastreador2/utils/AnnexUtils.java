@@ -161,6 +161,7 @@ import es.oaw.wcagem.util.ValidationDetails;
  */
 @SuppressWarnings("deprecation")
 public final class AnnexUtils {
+	/** The Constant BREAK_LINE. */
 	private static final String BREAK_LINE = "\n";
 	/** The Constant TOTALMENTE_CONFORME. */
 	private static final String TOTALMENTE_CONFORME = "totalmente_conforme";
@@ -378,53 +379,31 @@ public final class AnnexUtils {
 	private static final String EARL_INAPPLICABLE = "earl:inapplicable";
 	/** The Constant EARL_FAILED. */
 	private static final String EARL_FAILED = "earl:failed";
-	/** The message resources. */
-	private static MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
-	/**
-	 * The Constant EMPTY_STRING.
-	 */
+	/** The Constant EMPTY_STRING. */
 	private static final String EMPTY_STRING = "";
-	/**
-	 * The Constant RESULTADOS_ELEMENT.
-	 */
+	/** The Constant RESULTADOS_ELEMENT. */
 	private static final String RESULTADOS_ELEMENT = "resultados";
-	/**
-	 * The Constant NOMBRE_ELEMENT.
-	 */
+	/** The Constant NOMBRE_ELEMENT. */
 	private static final String NOMBRE_ELEMENT = NOMBRE;
-	/**
-	 * The Constant CATEGORIA_ELEMENT.
-	 */
+	/** The Constant CATEGORIA_ELEMENT. */
 	private static final String CATEGORIA_ELEMENT = "categoria";
-	/**
-	 * The Constant DEPENDE_DE_ELEMENT.
-	 */
+	/** The Constant DEPENDE_DE_ELEMENT. */
 	private static final String DEPENDE_DE_ELEMENT = DEPENDE_DE;
-	/**
-	 * The Constant PORTAL_ELEMENT.
-	 */
+	/** The Constant PORTAL_ELEMENT. */
 	private static final String PORTAL_ELEMENT = "portal";
 	/** The Constant BIG_DECIMAL_HUNDRED. */
 	public static final BigDecimal BIG_DECIMAL_HUNDRED = BigDecimal.valueOf(100);
-	/**
-	 * Excel lines created by generation Evolution and reused generating PerDependency annex.
-	 */
+	/** The excel lines. */
 	private static HashMap<Integer, ExcelLine> excelLines;
-	/**
-	 * Column names list created by generation Evolution and reused generating PerDependency annex.
-	 */
+	/** The Column names. */
 	private static List<String> ColumnNames;
-	/**
-	 * Execution dates list created by generation Evolution and reused generating PerDependency annex.
-	 */
+	/** The execution dates. */
 	private static List<String> executionDates = new ArrayList<>();
 	/** The execution dates with format. */
 	private static List<Date> executionDatesWithFormat = new ArrayList<>();
 	/** The execution dates with format valid. */
 	private static List<Date> executionDatesWithFormat_Valid = new ArrayList<>();
-	/**
-	 * Dependency names list created by generation Evolution and reused generating PerDependency annex.
-	 */
+	/** The dependencies. */
 	private static List<String> dependencies;
 	/** The annexmap. */
 	private static Map<SemillaForm, TreeMap<String, ScoreForm>> annexmap;
@@ -470,15 +449,37 @@ public final class AnnexUtils {
 //			createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 //			createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 //			createAnnexXLSX2(messageResources, idObsExecution, idOperation, tagsToFilter);
-			// createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
-			createAnnexXLSX1_Evolution_v2(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
+//			createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
 //			createAnnexXLSX_PerDependency(idOperation);
+			createAnnexXLSX1_Evolution_v2(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
+//			createAnnexXLSX_PerDependency_v2(idOperation);
 //			createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
 //			createAnnexProgressEvolutionXLSX(messageResources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision);
 		} catch (Exception e) {
 			Logger.putLog("Error en la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		}
 		Logger.putLog("Fin de la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+	}
+
+	/**
+	 * Generate email annex.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObs            the id obs
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param exObsIds         the ex obs ids
+	 * @param comparision      the comparision
+	 * @param tagsToFilter     the tags to filter
+	 * @throws Exception the exception
+	 */
+	public static void generateEmailAnnex(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation, final String[] exObsIds,
+			final List<ComparisionForm> comparision, final String[] tagsToFilter) throws Exception {
+		generateInfo(idObsExecution, exObsIds);
+		createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
+		createAnnexXLSX_PerDependency(idOperation);
+		createAnnexXLSX1_Evolution_v2(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
+		createAnnexXLSX_PerDependency_v2(idOperation);
 	}
 
 	/**
@@ -496,33 +497,23 @@ public final class AnnexUtils {
 		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds);
 		Connection c = DataBaseManager.getConnection();
 		// Fill all execution dates
-		fillExecutionDates(idObsExecution, exObsIds, c);
+		{
+			executionDates = new ArrayList<>();
+			executionDatesWithFormat_Valid = new ArrayList<Date>();
+			executionDatesWithFormat = new ArrayList<>();
+			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
+			final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
+			final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(),
+					false, exObsIds);
+			for (ObservatorioRealizadoForm obsR : observatoriesList) {
+				final String executionDateAux = obsR.getFecha().toString().substring(0, obsR.getFecha().toString().indexOf(" ")).replace("/", "_");
+				executionDates.add(executionDateAux);
+				executionDatesWithFormat_Valid.add(obsR.getFecha());
+			}
+		}
 		websiteRanges = RangeDAO.findAll(c);
 		iterationRanges = TemplateRangeDAO.findAll(c, idObsExecution);
 		DataBaseManager.closeConnection(c);
-	}
-
-	/**
-	 * Fill execution dates.
-	 *
-	 * @param idObsExecution the id obs execution
-	 * @param exObsIds       the ex obs ids
-	 * @param c              the c
-	 * @throws SQLException the SQL exception
-	 */
-	private static void fillExecutionDates(final Long idObsExecution, final String[] exObsIds, Connection c) throws SQLException {
-		executionDates = new ArrayList<>();
-		executionDatesWithFormat_Valid = new ArrayList<Date>();
-		executionDatesWithFormat = new ArrayList<>();
-		final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
-		final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
-		final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(), false,
-				exObsIds);
-		for (ObservatorioRealizadoForm obsR : observatoriesList) {
-			final String executionDateAux = obsR.getFecha().toString().substring(0, obsR.getFecha().toString().indexOf(" ")).replace("/", "_");
-			executionDates.add(executionDateAux);
-			executionDatesWithFormat_Valid.add(obsR.getFecha());
-		}
 	}
 
 	/**
@@ -645,23 +636,2252 @@ public final class AnnexUtils {
 		return expression;
 	}
 
+	/****
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
 	/**
-	 * Generate email annex.
+	 * Creates the annex paginas.
 	 *
 	 * @param messageResources the message resources
-	 * @param idObs            the id obs
 	 * @param idObsExecution   the id obs execution
 	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
 	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas.xml")) {
+			Logger.putLog("Generando anexo: anexo-paginas.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false, false);
+		} catch (Exception e) {
+			Logger.putLog("Error al generar el anexo: anexo-paginas.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Creates the annex paginas.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexPaginasVerifications(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas-verificaciones.xml")) {
+			Logger.putLog("Generando anexo: anexo-paginas-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, true, false);
+		} catch (Exception e) {
+			Logger.putLog("Error al generar el anexo: anexo-paginas-verificaciones", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Creates the annex paginas criteria.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexPaginasCriteria(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas-criterios.xml")) {
+			Logger.putLog("Generando anexo: anexo-paginas-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false, true);
+		} catch (Exception e) {
+			Logger.putLog("Error al generar el anexo: anexo-paginas-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Generate xml pages.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param tagsToFilter     the tags to filter
+	 * @param c                the c
+	 * @param writer           the writer
+	 * @param verifications    the verifications
+	 * @param criterias        the criterias
+	 * @throws IOException  Signals that an I/O exception has occurred.
+	 * @throws SAXException the SAX exception
+	 * @throws Exception    the exception
+	 * @throws SQLException the SQL exception
+	 */
+	private static void generateXmlPages(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications,
+			final boolean criterias) throws IOException, SAXException, Exception, SQLException {
+		final ContentHandler hd = getContentHandler(writer);
+		hd.startDocument();
+		hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
+		final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
+		for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
+			if (categoryForm != null) {
+				for (SiteForm siteForm : categoryForm.getSiteFormList()) {
+					if (siteForm != null) {
+						final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(siteForm.getIdCrawlerSeed()));
+						// Filter by tags
+						List<String> tagList = null;
+						if (tagsToFilter != null) {
+							tagList = Arrays.asList(tagsToFilter);
+						}
+						boolean hasTags = tagList != null ? false : true;
+						if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty() && tagList != null) {
+							for (EtiquetaForm tag : semillaForm.getEtiquetas()) {
+								if (tagList.contains(String.valueOf(tag.getId()))) {
+									hasTags = true;
+									break;
+								}
+							}
+						}
+						if (hasTags) {
+							hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
+							writeTag(hd, Constants.XML_ID, String.valueOf(semillaForm.getId()));
+							writeTag(hd, NOMBRE_ELEMENT, siteForm.getName());
+							writeTag(hd, CATEGORIA_ELEMENT, semillaForm.getCategoria().getName());
+							// Multidependencia
+							StringBuilder dependencias = new StringBuilder();
+							if (semillaForm.getDependencias() != null) {
+								for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+									dependencias.append(semillaForm.getDependencias().get(i).getName());
+									if (i < semillaForm.getDependencias().size() - 1) {
+										dependencias.append(BREAK_LINE);
+									}
+								}
+							}
+							writeTag(hd, Constants.XML_AMBITO, semillaForm.getAmbito().getName());
+							writeTag(hd, Constants.XML_COMPLEJIDAD, semillaForm.getComplejidad().getName());
+							writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
+							writeTag(hd, SEMILLA2, semillaForm.getListaUrls().get(0));
+							// Seed tags
+							List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+							List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+							List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+							List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+							List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+							if (etiquetas != null && !etiquetas.isEmpty()) {
+								for (EtiquetaForm tmp : etiquetas) {
+									if (tmp.getClasificacion() != null) {
+										switch (tmp.getClasificacion().getId()) {
+										case "1":
+											tagsTematica.add(tmp);
+											break;
+										case "2":
+											tagsDistribucion.add(tmp);
+											break;
+										case "3":
+											tagsRecurrencia.add(tmp);
+											break;
+										case "4":
+											tagsOtros.add(tmp);
+											break;
+										default:
+											break;
+										}
+									}
+								}
+							}
+							// 1
+							hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
+							if (!tagsTematica.isEmpty()) {
+								for (int i = 0; i < tagsTematica.size(); i++) {
+									hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
+									if (i < tagsTematica.size() - 1) {
+										hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
+									}
+								}
+							}
+							hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
+							// 2
+							hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
+							if (!tagsDistribucion.isEmpty()) {
+								for (int i = 0; i < tagsDistribucion.size(); i++) {
+									hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
+									if (i < tagsDistribucion.size() - 1) {
+										hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
+									}
+								}
+							}
+							hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
+							// 3
+							hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
+							if (!tagsRecurrencia.isEmpty()) {
+								for (int i = 0; i < tagsRecurrencia.size(); i++) {
+									hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
+									if (i < tagsRecurrencia.size() - 1) {
+										hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
+									}
+								}
+							}
+							hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
+							// 4
+							hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
+							if (!tagsOtros.isEmpty()) {
+								for (int i = 0; i < tagsOtros.size(); i++) {
+									hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
+									if (i < tagsOtros.size() - 1) {
+										hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
+									}
+								}
+							}
+							hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
+							// Num crawls
+							writeTag(hd, PAGINAS, String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
+							hd.startElement(EMPTY_STRING, EMPTY_STRING, PAGINAS, null);
+							Map<String, Map<String, ValidationDetails>> wcagCompliance = null;
+							// Only generate this info once
+							if (criterias) {
+								final List<Long> analysisIdsByTracking = AnalisisDatos.getEvaluationIdsFromExecutedObservatoryAndIdSeed(idObsExecution, Long.valueOf(siteForm.getIdCrawlerSeed()));
+								final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+								// This map store, the url and a map with everi wcag automatic validation an result
+								wcagCompliance = WcagEmUtils.generateEquivalenceMap(currentEvaluationPageList);
+							}
+							for (PageForm pageForm : siteForm.getPageList()) {
+								if (pageForm != null) {
+									hd.startElement(EMPTY_STRING, EMPTY_STRING, "pagina", null);
+									writeTag(hd, "url", pageForm.getUrl());
+									writeTag(hd, PUNTUACION, pageForm.getScore());
+									writeTag(hd, ADECUACION, ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
+									// OAW Verifications
+									if (verifications) {
+										ObservatoryEvaluationForm evaluationForm = currentEvaluationPageList.stream()
+												.filter(evaluation -> pageForm.getUrl().equals(evaluation.getUrl()) && evaluation.getSeed().getId().equals(String.valueOf(semillaForm.getId())))
+												.findFirst().orElse(null);
+										if (evaluationForm != null) {
+											for (ObservatorySuitabilityForm suitabilityForm : evaluationForm.getGroups().get(0).getSuitabilityGroups()) {
+												int i = 1;
+												for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
+													writeTag(hd, "V_1_" + i, getModality(subgroupForm.getValue(), messageResources));
+													i++;
+												}
+											}
+											for (ObservatorySuitabilityForm suitabilityForm : evaluationForm.getGroups().get(1).getSuitabilityGroups()) {
+												int i = 1;
+												for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
+													writeTag(hd, "V_2_" + i, getModality(subgroupForm.getValue(), messageResources));
+													i++;
+												}
+											}
+										}
+									}
+									// WCAG Criterias
+									if (criterias) {
+										Map<String, ValidationDetails> details = wcagCompliance.get(pageForm.getUrl());
+										for (String sWcagEmPoint : ALL_WCAG_EM_POINTS) {
+											String compliance = "";
+											WcagEmPointKey wcagEmPoint = WcagEmPointKey.findByPoint(sWcagEmPoint);
+											if (wcagEmPoint != null) {
+												// do what you want
+												compliance = messageResources.getMessage("modality.pass");
+												final ValidationDetails validationDetails = details.get(wcagEmPoint.getWcagEmId());
+												if (validationDetails != null) {
+													if (EARL_FAILED.equalsIgnoreCase(validationDetails.getResult())) {
+														compliance = messageResources.getMessage("modality.fail");
+													} else if (EARL_INAPPLICABLE.equalsIgnoreCase(validationDetails.getResult())) {
+														compliance = messageResources.getMessage("resultados.anonimos.porc.portales.na");
+													}
+												} else {
+													compliance = "N/T";
+												}
+											} else {
+												compliance = "N/T";
+											}
+											writeTag(hd, "C_" + sWcagEmPoint.replace(".", "_"), compliance);
+										}
+									}
+									hd.endElement(EMPTY_STRING, EMPTY_STRING, "pagina");
+								}
+							}
+							hd.endElement(EMPTY_STRING, EMPTY_STRING, PAGINAS);
+							hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
+						}
+					}
+				}
+			}
+		}
+		hd.endElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT);
+		hd.endDocument();
+	}
+
+	/**
+	 * Creates the annex portales.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales.xml")) {
+			Logger.putLog("Generando anexo: anexo-portales.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, false, false);
+		} catch (Exception e) {
+			Logger.putLog("Error al generar el anexo: anexo-portales.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Creates the annex portals verification.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexPortalsVerification(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales-verificaciones.xml")) {
+			Logger.putLog("Generando anexo: anexo-portales-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, true, true, false);
+		} catch (Exception e) {
+			Logger.putLog("Error al generar el anexo: anexo-portales-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Creates the annex criteria portal.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexPortalsCriteria(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
+			throws Exception {
+		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales-criterios.xml")) {
+			Logger.putLog("Generando anexo: anexo-portales-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, true, true);
+		} catch (Exception e) {
+			Logger.putLog("Error generar el anexo: anexo-portales-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Generate xml portal.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param tagsToFilter     the tags to filter
+	 * @param c                the c
+	 * @param writer           the writer
+	 * @param verifications    the verifications
+	 * @param onlyLast         the only last
+	 * @param criterias        the criterias
+	 * @throws SQLException the SQL exception
+	 * @throws SAXException the SAX exception
+	 * @throws IOException  Signals that an I/O exception has occurred.
+	 */
+	private static void generateXmlPortal(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications,
+			final boolean onlyLast, final boolean criterias) throws SQLException, SAXException, IOException {
+		final ContentHandler hd = getContentHandler(writer);
+		hd.startDocument();
+		hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
+		for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+			final SemillaForm semillaForm = semillaEntry.getKey();
+			if (semillaForm.getId() != 0) {
+				// Filter by tags
+				List<String> tagList = null;
+				if (tagsToFilter != null) {
+					tagList = Arrays.asList(tagsToFilter);
+				}
+				boolean hasTags = tagList != null ? false : true;
+				if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty() && tagList != null) {
+					for (EtiquetaForm tag : semillaForm.getEtiquetas()) {
+						if (tagList.contains(String.valueOf(tag.getId()))) {
+							hasTags = true;
+							break;
+						}
+					}
+				}
+				if (hasTags) {
+					hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
+					writeTag(hd, Constants.XML_ID, String.valueOf(semillaForm.getId()));
+					writeTag(hd, NOMBRE_ELEMENT, semillaForm.getNombre());
+					writeTag(hd, CATEGORIA_ELEMENT, semillaForm.getCategoria().getName());
+					// Multidependencia
+					StringBuilder dependencias = new StringBuilder();
+					if (semillaForm.getDependencias() != null) {
+						for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+							dependencias.append(semillaForm.getDependencias().get(i).getName());
+							if (i < semillaForm.getDependencias().size() - 1) {
+								dependencias.append(BREAK_LINE);
+							}
+						}
+					}
+					// ambit
+					writeTag(hd, Constants.XML_AMBITO, semillaForm.getAmbito().getName());
+					writeTag(hd, Constants.XML_COMPLEJIDAD, semillaForm.getComplejidad().getName());
+					writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
+					writeTag(hd, SEMILLA2, semillaForm.getListaUrls().get(0));
+					// Seed tags
+					List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+					List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+					List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+					List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+					List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+					if (etiquetas != null && !etiquetas.isEmpty()) {
+						for (EtiquetaForm tmp : etiquetas) {
+							if (tmp.getClasificacion() != null) {
+								switch (tmp.getClasificacion().getId()) {
+								case "1":
+									tagsTematica.add(tmp);
+									break;
+								case "2":
+									tagsDistribucion.add(tmp);
+									break;
+								case "3":
+									tagsRecurrencia.add(tmp);
+									break;
+								case "4":
+									tagsOtros.add(tmp);
+									break;
+								default:
+									break;
+								}
+							}
+						}
+					}
+					// 1
+					hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
+					if (!tagsTematica.isEmpty()) {
+						for (int i = 0; i < tagsTematica.size(); i++) {
+							hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
+							if (i < tagsTematica.size() - 1) {
+								hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
+							}
+						}
+					}
+					hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
+					// 2
+					hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
+					if (!tagsDistribucion.isEmpty()) {
+						for (int i = 0; i < tagsDistribucion.size(); i++) {
+							hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
+							if (i < tagsDistribucion.size() - 1) {
+								hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
+							}
+						}
+					}
+					hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
+					// 3
+					hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
+					if (!tagsRecurrencia.isEmpty()) {
+						for (int i = 0; i < tagsRecurrencia.size(); i++) {
+							hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
+							if (i < tagsRecurrencia.size() - 1) {
+								hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
+							}
+						}
+					}
+					hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
+					// 4
+					hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
+					if (!tagsOtros.isEmpty()) {
+						for (int i = 0; i < tagsOtros.size(); i++) {
+							hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
+							if (i < tagsOtros.size() - 1) {
+								hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
+							}
+						}
+					}
+					hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
+					// Num crawls
+					writeTag(hd, PAGINAS, String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
+					// Scores
+					if (onlyLast) {
+						Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
+						final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+						writeTag(hd, "puntuacion_" + executionDateAux, entry.getValue().getTotalScore().toString());
+						writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), messageResources));
+						writeTag(hd, "cumplimiento_" + executionDateAux, entry.getValue().getCompliance());
+					} else {
+						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+							final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+							writeTag(hd, "puntuacion_" + executionDateAux, entry.getValue().getTotalScore().toString());
+							writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), messageResources));
+							writeTag(hd, "cumplimiento_" + executionDateAux, entry.getValue().getCompliance());
+						}
+					}
+					if (verifications) {
+						Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
+						for (VerificationScoreForm verification : entry.getValue().getVerificationScoreList()) {
+							writeTag(hd, "V_" + verification.getVerification().replace(".", "_"), evaluateCompliance(verification.getScore()));
+						}
+					}
+					if (criterias) {
+						final List<Long> analysisIdsByTracking = AnalisisDatos.getEvaluationIdsFromExecutedObservatoryAndIdSeed(idObsExecution, semillaForm.getId());
+						final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+						Map<String, Map<String, ValidationDetails>> wcagCompliance = WcagEmUtils.generateEquivalenceMap(currentEvaluationPageList);
+						for (String sWcagEmPoint : ALL_WCAG_EM_POINTS) {
+							String compliance = "";
+							WcagEmPointKey wcagEmPointKey = WcagEmPointKey.findByPoint(sWcagEmPoint);
+							// Iterate WCAG Points
+							if (wcagCompliance != null && !wcagCompliance.isEmpty()) {
+								if (wcagEmPointKey != null) {
+									// Iterate evl list to preserve order
+									compliance = messageResources.getMessage("observatory.graphic.compilance.green");
+									int countFailed = 0;
+									int countNA = 0;
+									for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
+										Map<String, ValidationDetails> result = wcagCompliance.get(eval.getUrl());
+										// if cointain current wcag rule
+										if (result.containsKey(wcagEmPointKey.getWcagEmId())) {
+											final String validationResult = result.get(wcagEmPointKey.getWcagEmId()).getResult();
+											// if one of this has earl:failed, all result marked as failed
+											// do what you want
+											if (EARL_FAILED.equals(validationResult)) {
+												countFailed++;
+											} else if (EARL_INAPPLICABLE.equals(validationResult)) {
+												countNA++;
+											}
+										}
+									}
+									if (countFailed > currentEvaluationPageList.size() / 10) {
+										compliance = messageResources.getMessage("observatory.graphic.compilance.red");
+									}
+									if (countNA == currentEvaluationPageList.size()) {
+										compliance = messageResources.getMessage("observatory.graphic.compilance.gray");
+									}
+								} else {
+									compliance = "N/T";
+								}
+								writeTag(hd, "C_" + sWcagEmPoint.replace(".", "_"), compliance);
+							}
+						}
+					}
+					hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
+				}
+			}
+		}
+		hd.endElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT);
+		hd.endDocument();
+	}
+
+	/**
+	 * Creates the XLSX annex.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param tagsToFilter     the tags to filter
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexXLSX2(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter) throws Exception {
+		ColumnNames = new ArrayList<>();
+		Logger.putLog("Generando anexo: " + FILE_2_ITERATION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_2_ITERATION_XLSX_NAME)) {
+			final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
+			final String ObservatoryFormDate = observatoryForm.getDate().substring(0, 10);
+			final String[] ColumnNames = new String[] { ID, NOMBRE, "namecat", AMBITO2, COMPLEJIDAD, DEPENDE_DE, SEMILLA2, TEMATICA, DISTRIBUCION, RECURRENCIA, OTROS, PAGINAS,
+					"puntuacion_" + ObservatoryFormDate, "adecuacion_" + ObservatoryFormDate, "cumplimiento_" + ObservatoryFormDate, NV_PREFFIX + ObservatoryFormDate, A_PREFFIX + ObservatoryFormDate,
+					AA_PREFFIX + ObservatoryFormDate, NC_PREFFIX + ObservatoryFormDate, PC_PREFFIX + ObservatoryFormDate, TC_PREFFIX + ObservatoryFormDate };
+			XSSFWorkbook wb = new XSSFWorkbook();
+			XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
+			XSSFRow row;
+			XSSFCell cell;
+			int rowIndex = 0;
+			int columnIndex = 0;
+			XlsxUtils xlsxUtils = new XlsxUtils(wb);
+			final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
+			final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
+			// Add headers
+			row = sheet.createRow(rowIndex);
+			for (String name : ColumnNames) {
+				cell = row.createCell(columnIndex);
+				cell.setCellValue(name);
+				cell.setCellStyle(headerStyle);
+				columnIndex++;
+			}
+			// The sheet already has headers, so we start in the second row.
+			rowIndex++;
+			int categoryStarts;
+			for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
+				categoryStarts = rowIndex;
+				if (categoryForm != null) {
+					for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+						final SemillaForm semillaForm = semillaEntry.getKey();
+						if (categoryForm.getName().equals(semillaForm.getCategoria().getName()) && hasTags(semillaForm, tagsToFilter)) {
+							// Multidependence
+							StringBuilder dependencias = new StringBuilder();
+							if (semillaForm.getDependencias() != null) {
+								for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+									dependencias.append(semillaForm.getDependencias().get(i).getName());
+									if (i < semillaForm.getDependencias().size() - 1) {
+										dependencias.append(BREAK_LINE);
+									}
+								}
+							}
+							row = sheet.createRow(rowIndex);
+							int excelRowNumber = rowIndex + 1;
+							// "id"
+							cell = row.createCell(0);
+							cell.setCellValue(String.valueOf(semillaForm.getId()));
+							cell.setCellStyle(shadowStyle);
+							// "nombre"
+							cell = row.createCell(1);
+							cell.setCellValue(semillaForm.getNombre());
+							cell.setCellStyle(shadowStyle);
+							// "namecat"
+							cell = row.createCell(2);
+							cell.setCellValue(categoryForm.getName());
+							cell.setCellStyle(shadowStyle);
+							// "ambito"
+							cell = row.createCell(3);
+							cell.setCellValue(semillaForm.getAmbito().getName());
+							cell.setCellStyle(shadowStyle);
+							// "complejidad"
+							cell = row.createCell(4);
+							cell.setCellValue(semillaForm.getComplejidad().getName());
+							cell.setCellStyle(shadowStyle);
+							// "depende_de"
+							cell = row.createCell(5);
+							cell.setCellValue(dependencias.toString());
+							cell.setCellStyle(shadowStyle);
+							// "semilla"
+							cell = row.createCell(6);
+							cell.setCellValue(semillaForm.getListaUrls().get(0));
+							cell.setCellStyle(shadowStyle);
+							// Seed tags
+							List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+							List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+							List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+							List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+							List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+							if (etiquetas != null && !etiquetas.isEmpty()) {
+								for (EtiquetaForm tmp : etiquetas) {
+									if (tmp.getClasificacion() != null) {
+										switch (tmp.getClasificacion().getId()) {
+										case "1":
+											tagsTematica.add(tmp);
+											break;
+										case "2":
+											tagsDistribucion.add(tmp);
+											break;
+										case "3":
+											tagsRecurrencia.add(tmp);
+											break;
+										case "4":
+											tagsOtros.add(tmp);
+											break;
+										default:
+											break;
+										}
+									}
+								}
+							}
+							// "tematica"
+							String dataToInsert = "";
+							if (!tagsTematica.isEmpty()) {
+								for (int i = 0; i < tagsTematica.size(); i++) {
+									dataToInsert += tagsTematica.get(i).getName();
+									if (i < tagsDistribucion.size() - 1) {
+										dataToInsert += BREAK_LINE;
+									}
+								}
+							}
+							cell = row.createCell(7);
+							cell.setCellValue(dataToInsert);
+							cell.setCellStyle(shadowStyle);
+							// "distribucion"
+							dataToInsert = "";
+							if (!tagsDistribucion.isEmpty()) {
+								for (int i = 0; i < tagsDistribucion.size(); i++) {
+									dataToInsert += tagsDistribucion.get(i).getName();
+									if (i < tagsDistribucion.size() - 1) {
+										dataToInsert += BREAK_LINE;
+									}
+								}
+							}
+							cell = row.createCell(8);
+							cell.setCellValue(dataToInsert);
+							cell.setCellStyle(shadowStyle);
+							// "Recurrencia"
+							dataToInsert = "";
+							if (!tagsRecurrencia.isEmpty()) {
+								for (int i = 0; i < tagsRecurrencia.size(); i++) {
+									dataToInsert += tagsRecurrencia.get(i).getName();
+									if (i < tagsRecurrencia.size() - 1) {
+										dataToInsert += BREAK_LINE;
+									}
+								}
+							}
+							cell = row.createCell(9);
+							cell.setCellValue(dataToInsert);
+							cell.setCellStyle(shadowStyle);
+							// Otros
+							dataToInsert = "";
+							if (!tagsOtros.isEmpty()) {
+								for (int i = 0; i < tagsOtros.size(); i++) {
+									dataToInsert += tagsOtros.get(i).getName();
+									if (i < tagsOtros.size() - 1) {
+										dataToInsert += BREAK_LINE;
+									}
+								}
+							}
+							cell = row.createCell(10);
+							cell.setCellValue(dataToInsert);
+							cell.setCellStyle(shadowStyle);
+							// Páginas
+							cell = row.createCell(11);
+							cell.setCellValue(String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
+							cell.setCellStyle(shadowStyle);
+							Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
+							// "puntuacion_" + date
+							cell = row.createCell(12);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellValue(Double.parseDouble(entry.getValue().getTotalScore().toString()));
+							cell.setCellStyle(shadowStyle);
+							// "adecuacion_" + date
+							cell = row.createCell(13);
+							cell.setCellValue(changeLevelName(entry.getValue().getLevel(), messageResources));
+							cell.setCellStyle(shadowStyle);
+							// "cumplimiento_" + date
+							cell = row.createCell(14);
+							cell.setCellValue(entry.getValue().getCompliance());
+							cell.setCellStyle(shadowStyle);
+							// "NV_" + date
+							cell = row.createCell(15);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($N" + excelRowNumber + "=\"No Válido\",$M" + excelRowNumber + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// "A_" + date
+							cell = row.createCell(16);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($N" + excelRowNumber + "=\"A\",$M" + excelRowNumber + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// "AA_" + date
+							cell = row.createCell(17);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($N" + excelRowNumber + "=\"AA\",$M" + excelRowNumber + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// "NC_" + date
+							cell = row.createCell(18);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($O" + excelRowNumber + "=\"No conforme\",$M" + excelRowNumber + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// "PC_" + date
+							cell = row.createCell(19);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($O" + excelRowNumber + "=\"Parcialmente conforme\",$M" + excelRowNumber + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// "TC_" + date
+							cell = row.createCell(20);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($O" + excelRowNumber + "=\"Plenamente conforme\",$M" + excelRowNumber + ",0)");
+							cell.setCellStyle(shadowStyle);
+							rowIndex++;
+						}
+					}
+					// Increase width of columns to match content
+					for (int i = 0; i < ColumnNames.length; i++) {
+						sheet.autoSizeColumn(i);
+					}
+					// Create graph into the Category sheet
+					if (categoryForm.getSiteFormList().size() > 0) {
+						/*
+						 * Excel allows sheet names up to 31 chars in length but other applications (such as OpenOffice) allow more. Some versions of Excel crash with names longer than 31 chars,
+						 * others - truncate such names to 31 character.
+						 */
+						String currentCategory = categoryForm.getName().substring(0, Math.min(categoryForm.getName().length(), 31));
+						if (wb.getSheet(currentCategory) == null) {
+							wb.createSheet(currentCategory);
+							InsertGraphIntoSheetByCategory(wb, wb.getSheet(currentCategory), categoryStarts, rowIndex, true);
+							InsertGraphIntoSheetByCategory(wb, wb.getSheet(currentCategory), categoryStarts, rowIndex, false);
+						}
+					}
+				}
+			}
+			XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+			wb.write(writer);
+			wb.close();
+		} catch (Exception e) {
+			Logger.putLog("Error al generar el anexo: " + FILE_2_ITERATION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Creates the XLSX evolution annex.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
 	 * @param comparision      the comparision
 	 * @param tagsToFilter     the tags to filter
 	 * @throws Exception the exception
 	 */
-	public static void generateEmailAnnex(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation, final String[] exObsIds,
-			final List<ComparisionForm> comparision, final String[] tagsToFilter) throws Exception {
-		generateInfo(idObsExecution, exObsIds);
-		createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
-		createAnnexXLSX_PerDependency(idOperation);
+	public static void createAnnexXLSX1_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision,
+			final String[] tagsToFilter) throws Exception {
+		dependencies = new ArrayList<>();
+		Logger.putLog("Generando anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_1_EVOLUTION_XLSX_NAME)) {
+			XSSFWorkbook wb = new XSSFWorkbook();
+			XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
+			XSSFRow row;
+			XSSFCell cell;
+			final int numberOfFixedColumns = 12;
+			int rowIndex = 0;
+			int columnIndex = 0;
+			// executionDates = new ArrayList<>();
+			excelLines = new HashMap<>();
+			ExcelLine excelLine;
+			XlsxUtils xlsxUtils = new XlsxUtils(wb);
+			final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
+			final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
+			// Add headers without values
+			ColumnNames = new ArrayList<>();
+			ColumnNames.add(ID);
+			ColumnNames.add(NOMBRE);
+			ColumnNames.add(SEGMENTO);
+			ColumnNames.add(AMBITO2);
+			ColumnNames.add(COMPLEJIDAD);
+			ColumnNames.add(DEPENDE_DE);
+			ColumnNames.add(SEMILLA2);
+			ColumnNames.add(TEMATICA);
+			ColumnNames.add(DISTRIBUCION);
+			ColumnNames.add(RECURRENCIA);
+			ColumnNames.add(OTROS);
+			ColumnNames.add(PAGINAS);
+			for (String executionDateAux : executionDates) {
+				// Add header if it is not already created
+				if (!ColumnNames.contains("puntuacion_" + executionDateAux)) {
+					ColumnNames.add("puntuacion_" + executionDateAux);
+				}
+				// ADECUACIÓN
+				// Add header if it is not already created
+				if (!ColumnNames.contains("adecuacion_" + executionDateAux)) {
+					ColumnNames.add("adecuacion_" + executionDateAux);
+				}
+				// CUMPLIMIENTO
+				// Add header if it is not already created
+				if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
+					ColumnNames.add("cumplimiento_" + executionDateAux);
+				}
+			}
+			for (String executionDateAux : executionDates) {
+				// Add header if it is not already created
+				if (!ColumnNames.contains(NV_PREFFIX + executionDateAux)) {
+					ColumnNames.add(NV_PREFFIX + executionDateAux);
+				}
+				if (!ColumnNames.contains(A_PREFFIX + executionDateAux)) {
+					ColumnNames.add(A_PREFFIX + executionDateAux);
+				}
+				if (!ColumnNames.contains(AA_PREFFIX + executionDateAux)) {
+					ColumnNames.add(AA_PREFFIX + executionDateAux);
+				}
+				if (!ColumnNames.contains(NC_PREFFIX + executionDateAux)) {
+					ColumnNames.add(NC_PREFFIX + executionDateAux);
+				}
+				if (!ColumnNames.contains(PC_PREFFIX + executionDateAux)) {
+					ColumnNames.add(PC_PREFFIX + executionDateAux);
+				}
+				if (!ColumnNames.contains(TC_PREFFIX + executionDateAux)) {
+					ColumnNames.add(TC_PREFFIX + executionDateAux);
+				}
+			}
+			ColumnNames.add(EVOL_PUNTUACION_ANT);
+			ColumnNames.add(EVOL_ADECUACION_ANT);
+			ColumnNames.add(EVOL_CUMPLIMIENTO_ANT);
+			ColumnNames.add(EVOL_PUNTUACION_PRIMER);
+			ColumnNames.add(EVOL_ADECUACION_PRIMER);
+			ColumnNames.add(EVOL_CUMPLIMIENTO_PRIMER);
+			row = sheet.createRow(rowIndex);
+			for (String name : ColumnNames) {
+				cell = row.createCell(columnIndex);
+				cell.setCellValue(name);
+				cell.setCellStyle(headerStyle);
+				columnIndex++;
+			}
+			rowIndex++;
+			/*
+			 * Category names list created by generation Evolution and reused generating PerDependency annex.
+			 */
+			List<String> categories = new ArrayList<>();
+			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+				final SemillaForm semillaForm = semillaEntry.getKey();
+				String namecat = semillaForm.getCategoria().getName();
+				if (semillaForm.getId() != 0) {
+					if (!categories.contains(namecat))
+						categories.add(namecat);
+				}
+			}
+			// Sort all category names
+			Collections.sort(categories);
+			// Loop to insert fixed values
+			for (String currentCategory : categories) {
+				for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+					// Filter if not has tags
+					final SemillaForm semillaForm = semillaEntry.getKey();
+					String namecat = semillaForm.getCategoria().getName();
+					// On each category iteration we filter the other categories.
+					if (semillaForm.getId() != 0 && namecat.equals(currentCategory) && hasTags(semillaForm, tagsToFilter)) {
+						row = sheet.createRow(rowIndex);
+						columnIndex = 0;
+						excelLine = new ExcelLine();
+						excelLine.setRowIndex(rowIndex);
+						// "id"
+						String id = String.valueOf(semillaForm.getId());
+						ColumnNames.add(ID);
+						ColumnNames.add(NOMBRE);
+						ColumnNames.add(SEGMENTO);
+						ColumnNames.add(AMBITO2);
+						ColumnNames.add(COMPLEJIDAD);
+						ColumnNames.add(DEPENDE_DE);
+						ColumnNames.add(SEMILLA2);
+						ColumnNames.add(TEMATICA);
+						ColumnNames.add(DISTRIBUCION);
+						ColumnNames.add(RECURRENCIA);
+						ColumnNames.add(OTROS);
+						ColumnNames.add(PAGINAS);
+						cell = row.createCell(ColumnNames.indexOf(ID));
+						cell.setCellValue(id);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setId(id);
+						// "nombre"
+						String name = semillaForm.getNombre();
+						cell = row.createCell(ColumnNames.indexOf(NOMBRE));
+						cell.setCellValue(name);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setNombre(name);
+						// "namecat"
+						cell = row.createCell(ColumnNames.indexOf(SEGMENTO));
+						cell.setCellValue(namecat);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setNamecat(namecat);
+						// "ambito"
+						String ambito = semillaForm.getAmbito().getName();
+						cell = row.createCell(ColumnNames.indexOf(AMBITO2));
+						cell.setCellValue(ambito);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setAmbito(ambito);
+						// "complejidad"
+						String compl = semillaForm.getComplejidad().getName();
+						cell = row.createCell(ColumnNames.indexOf(COMPLEJIDAD));
+						cell.setCellValue(compl);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setComplejidad(compl);
+						// "depende_de"
+						// Multidependencia
+						StringBuilder dependencias = new StringBuilder();
+						if (semillaForm.getDependencias() != null) {
+							for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+								// Store all dependencies globally (we will use it in other files generation
+								if (!dependencies.contains(semillaForm.getDependencias().get(i).getName()))
+									dependencies.add(semillaForm.getDependencias().get(i).getName());
+								dependencias.append(semillaForm.getDependencias().get(i).getName());
+								if (i < semillaForm.getDependencias().size() - 1) {
+									dependencias.append(BREAK_LINE);
+								}
+							}
+						}
+						cell = row.createCell(ColumnNames.indexOf(DEPENDE_DE));
+						cell.setCellValue(dependencias.toString());
+						cell.setCellStyle(shadowStyle);
+						excelLine.setDepende_de(dependencias.toString());
+						// "semilla"
+						String semilla = semillaForm.getListaUrls().get(0);
+						cell = row.createCell(ColumnNames.indexOf(SEMILLA2));
+						cell.setCellValue(semilla);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setSemilla(semilla);
+						// Seed tags
+						List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+						List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+						List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+						List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+						List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+						if (etiquetas != null && !etiquetas.isEmpty()) {
+							for (EtiquetaForm tmp : etiquetas) {
+								if (tmp.getClasificacion() != null) {
+									switch (tmp.getClasificacion().getId()) {
+									case "1":
+										tagsTematica.add(tmp);
+										break;
+									case "2":
+										tagsDistribucion.add(tmp);
+										break;
+									case "3":
+										tagsRecurrencia.add(tmp);
+										break;
+									case "4":
+										tagsOtros.add(tmp);
+										break;
+									default:
+										break;
+									}
+								}
+							}
+						}
+						// "tematica"
+						String dataToInsert = "";
+						if (!tagsTematica.isEmpty()) {
+							for (int i = 0; i < tagsTematica.size(); i++) {
+								dataToInsert += tagsTematica.get(i).getName();
+								if (i < tagsDistribucion.size() - 1) {
+									dataToInsert += BREAK_LINE;
+								}
+							}
+						}
+						cell = row.createCell(ColumnNames.indexOf(TEMATICA));
+						cell.setCellValue(dataToInsert);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setTematica(dataToInsert);
+						// "distribucion"
+						dataToInsert = "";
+						if (!tagsDistribucion.isEmpty()) {
+							for (int i = 0; i < tagsDistribucion.size(); i++) {
+								dataToInsert += tagsDistribucion.get(i).getName();
+								if (i < tagsDistribucion.size() - 1) {
+									dataToInsert += BREAK_LINE;
+								}
+							}
+						}
+						cell = row.createCell(ColumnNames.indexOf(DISTRIBUCION));
+						cell.setCellValue(dataToInsert);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setDistribucion(dataToInsert);
+						// "Recurrencia"
+						dataToInsert = "";
+						if (!tagsRecurrencia.isEmpty()) {
+							for (int i = 0; i < tagsRecurrencia.size(); i++) {
+								dataToInsert += tagsRecurrencia.get(i).getName();
+								if (i < tagsRecurrencia.size() - 1) {
+									dataToInsert += BREAK_LINE;
+								}
+							}
+						}
+						cell = row.createCell(ColumnNames.indexOf(RECURRENCIA));
+						cell.setCellValue(dataToInsert);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setRecurrencia(dataToInsert);
+						// Otros
+						dataToInsert = "";
+						if (!tagsOtros.isEmpty()) {
+							for (int i = 0; i < tagsOtros.size(); i++) {
+								dataToInsert += tagsOtros.get(i).getName();
+								if (i < tagsOtros.size() - 1) {
+									dataToInsert += BREAK_LINE;
+								}
+							}
+						}
+						cell = row.createCell(ColumnNames.indexOf(OTROS));
+						cell.setCellStyle(shadowStyle);
+						excelLine.setOtros(dataToInsert);
+						// Páginas
+						String pages = String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId()));
+						cell = row.createCell(ColumnNames.indexOf(PAGINAS));
+						cell.setCellValue(pages);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setPaginas(pages);
+						// ***************************
+						// * EXECUTION VALUES *
+						// ***************************
+						executionDatesWithFormat = new ArrayList<>();
+						// Get all execution dates in DateTime format
+						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+							executionDatesWithFormat.add(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)));
+						}
+						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+							final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+							// Execution dates must be exists as column
+							double score = Double.parseDouble(entry.getValue().getTotalScore().toString());
+							String adequacy = changeLevelName(entry.getValue().getLevel(), messageResources);
+							String compliance = entry.getValue().getCompliance();
+							ExcelExecution execution = new ExcelExecution();
+							execution.setDate(executionDateAux);
+							execution.setScore(score);
+							execution.setAdequacy(adequacy);
+							execution.setCompliance(compliance);
+							excelLine.addExecution(execution);
+							// PUNTUACIÓN
+							// Set the first column based on header
+							columnIndex = ColumnNames.indexOf("puntuacion_" + executionDateAux);
+							cell = row.createCell(columnIndex++);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellValue(score);
+							cell.setCellStyle(shadowStyle);
+							// ADECUACIÓN
+							cell = row.createCell(columnIndex++);
+							cell.setCellValue(adequacy);
+							cell.setCellStyle(shadowStyle);
+							// CUMPLIMIENTO
+							cell = row.createCell(columnIndex++);
+							cell.setCellValue(compliance);
+							cell.setCellStyle(shadowStyle);
+						}
+						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+							final String date = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+							// Previously we ignore the minor date of the day when there is a day with more than one executions.
+							// Now we also ignore it to keep coherence.
+							if (executionDatesWithFormat_Valid.contains(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)))) {
+								row = sheet.getRow(rowIndex);
+								String columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.indexOf(date)));
+								String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 1) + (3 * executionDates.indexOf(date)));
+								// "NV_" + date
+								// Set the first column based on header
+								columnIndex = ColumnNames.indexOf(NV_PREFFIX + date);
+								cell = row.createCell(columnIndex++);
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+								cell.setCellStyle(shadowStyle);
+								// "A_" + date
+								cell = row.createCell(columnIndex++);
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"A\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+								cell.setCellStyle(shadowStyle);
+								// "AA_" + date
+								cell = row.createCell(columnIndex++);
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+								cell.setCellStyle(shadowStyle);
+								columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.indexOf(date)));
+								// "NC_" + date
+								cell = row.createCell(columnIndex++);
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+								cell.setCellStyle(shadowStyle);
+								// "PC_" + date
+								cell = row.createCell(columnIndex++);
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+								cell.setCellStyle(shadowStyle);
+								// "TC_" + date
+								cell = row.createCell(columnIndex++);
+								cell.setCellType(CellType.NUMERIC);
+								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
+								cell.setCellStyle(shadowStyle);
+							}
+						}
+						// Evol score previous iteration
+						{
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, PUNTUACION, false);
+							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.indexOf(EVOL_PUNTUACION_ANT));
+							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol allocation previous iteration
+						{
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, ADECUACION, false);
+							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.indexOf(EVOL_ADECUACION_ANT));
+							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
+									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
+									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol compliance previous iteration
+						{
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, CUMPLIMIENTO, false);
+							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.indexOf(EVOL_CUMPLIMIENTO_ANT));
+							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
+									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
+									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol score first iteration
+						{
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, PUNTUACION, true);
+							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER));
+							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol allocation first iteration
+						{
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, ADECUACION, true);
+							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.indexOf(EVOL_ADECUACION_PRIMER));
+							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
+									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
+									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol compliance first iteration
+						{
+							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, CUMPLIMIENTO, true);
+							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
+							cell = row.createCell(ColumnNames.size() - 1);
+							cell = row.createCell(ColumnNames.indexOf(EVOL_CUMPLIMIENTO_PRIMER));
+							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
+									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
+									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						excelLines.put(rowIndex, excelLine);
+						rowIndex++;
+					}
+				}
+			}
+			int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
+			// Compliance
+			nextStartPos = InsertSummaryTableCompliance(sheet, nextStartPos + 5, ColumnNames, headerStyle, shadowStyle);
+			String title = "Datos de evolución de PUNTUACIÓN con respecto a la ITERACION ANTERIOR (Nº de sitios web por segmentos)";
+			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.indexOf(EVOL_PUNTUACION_ANT) + 1, title);
+			title = "Datos de evolución de PUNTUACIÓN con respecto a la PRIMERA ITERACIÓN (Nº de sitios web por segmentos)";
+			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER) + 1, title);
+			// Insert graph sheets per category
+			for (String category : categories) {
+				/*
+				 * Excel allows sheet names up to 31 chars in length but other applications (such as OpenOffice) allow more. Some versions of Excel crash with names longer than 31 chars, others -
+				 * truncate such names to 31 character.
+				 */
+				String categorySheetName = category.substring(0, Math.min(category.length(), 31));
+				// Search category initial and final row.
+				int categoryFirstRow = 0;
+				int categoryLastRow = 0;
+				// Starts 1 because always first row was header
+				for (int i = 1; i < rowIndex; i++) {
+					row = sheet.getRow(i);
+					if (row != null) {
+						cell = row.getCell(ColumnNames.indexOf(SEGMENTO));
+						if (cell.getStringCellValue().equals(category)) {
+							if (categoryFirstRow == 0) {
+								categoryFirstRow = i;
+							}
+							categoryLastRow = i;
+						}
+					}
+				}
+				if (wb.getSheet(categorySheetName) == null && categoryFirstRow != 0 && categoryLastRow != 0) {
+					wb.createSheet(categorySheetName);
+					XSSFSheet currentSheet = wb.getSheet(categorySheetName);
+					InsertGraphIntoSheetByEvolution(wb, currentSheet, categoryFirstRow, categoryLastRow, true, numberOfFixedColumns);
+					InsertGraphIntoSheetByEvolution(wb, currentSheet, categoryFirstRow, categoryLastRow, false, numberOfFixedColumns);
+				}
+			}
+			// Increase width of columns to match content
+			for (int i = 0; i < ColumnNames.size(); i++) {
+				sheet.autoSizeColumn(i);
+			}
+			XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+			// Clear -1 cell values
+			for (int i = 0; i < sheet.getLastRowNum(); i++) {
+				Row r = sheet.getRow(i);
+				if (r != null) {
+					for (int j = 0; j < r.getLastCellNum(); j++) {
+						Cell cX = r.getCell(j);
+						if (cX != null && CellType.NUMERIC.equals(cX.getCellType()) && cX.getNumericCellValue() == -1) {
+							cX.setCellStyle(shadowStyle);
+							cX.setBlank();
+						}
+					}
+				}
+			}
+			// Add a legend with custom text
+			// sheet.createRow(nextStartPos + 5);
+			XSSFDrawing draw = sheet.createDrawingPatriarch();
+			XSSFTextBox tb1 = draw.createTextbox(new XSSFClientAnchor(0, 0, 0, 0, 0, nextStartPos + 5, 10, nextStartPos + 5 + 6));
+			tb1.setLineStyleColor(0, 0, 0);
+			tb1.setLineWidth(1);
+			Color col = Color.WHITE;
+			tb1.setFillColor(col.getRed(), col.getGreen(), col.getBlue());
+			StringBuilder sb = new StringBuilder("Los rangos en base a los cuales se ha calculado la evolución de la puntuación de los sitios web son los siguientes:");
+			sb.append(BREAK_LINE);
+			for (RangeForm range : websiteRanges) {
+				sb.append(range.getName() + ": " + (range.getMinValue() != null ? range.getMinValue() : "") + " " + range.getMinValueOperator() + " x " + range.getMaxValueOperator() + " "
+						+ (range.getMaxValue() != null ? range.getMaxValue() : "") + BREAK_LINE);
+			}
+			// websiteRanges
+			XSSFRichTextString address = new XSSFRichTextString(sb.toString());
+			tb1.setText(address);
+			CTTextCharacterProperties rpr = tb1.getCTShape().getTxBody().getPArray(0).getRArray(0).getRPr();
+			rpr.setSz(1000); // 9 pt
+			col = Color.BLACK;
+			rpr.addNewSolidFill().addNewSrgbClr().setVal(new byte[] { (byte) col.getRed(), (byte) col.getGreen(), (byte) col.getBlue() });
+			wb.write(writer);
+			wb.close();
+		} catch (Exception e) {
+			Logger.putLog("Error al generar el anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Creates the annex XLSX 1 evolution v 2.
+	 *
+	 * @param messageResources the message resources
+	 * @param idObsExecution   the id obs execution
+	 * @param idOperation      the id operation
+	 * @param comparision      the comparision
+	 * @param tagsToFilter     the tags to filter
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexXLSX1_Evolution_v2(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision,
+			final String[] tagsToFilter) throws Exception {
+		dependencies = new ArrayList<>();
+		Logger.putLog("Generando anexo: " + FILE_1_EVOLUTION_XLSX_NAME_V2, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_1_EVOLUTION_XLSX_NAME_V2)) {
+			XSSFWorkbook wb = new XSSFWorkbook();
+			XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
+			XSSFRow row;
+			XSSFCell cell;
+			int rowIndex = 0;
+			int columnIndex = 0;
+			excelLines = new HashMap<>();
+			ExcelLine excelLine;
+			XlsxUtils xlsxUtils = new XlsxUtils(wb);
+			final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
+			final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
+			// Add headers without values
+			ColumnNames = new ArrayList<>();
+			ColumnNames.add(ID);
+			ColumnNames.add(NOMBRE);
+			ColumnNames.add(N_ITERACION);
+			ColumnNames.add(FECHA_ITERACION);
+			ColumnNames.add(SEMILLA2);
+			ColumnNames.add(AMBITO2);
+			ColumnNames.add(DEPENDE_DE);
+			ColumnNames.add(SEGMENTO);
+			ColumnNames.add(COMPLEJIDAD);
+			ColumnNames.add(PAGINAS);
+			ColumnNames.add(TEMATICA);
+			ColumnNames.add(DISTRIBUCION);
+			ColumnNames.add(RECURRENCIA);
+			ColumnNames.add(OTROS);
+			ColumnNames.add(PUNTUACION);
+			ColumnNames.add(ADECUACION);
+			ColumnNames.add(NO_VALIDO);
+			ColumnNames.add(A);
+			ColumnNames.add(AA);
+			ColumnNames.add(CUMPLIMIENTO);
+			ColumnNames.add(NO_CONFORME);
+			ColumnNames.add(PARCIALMENTE_CONFORME);
+			ColumnNames.add(TOTALMENTE_CONFORME);
+			ColumnNames.add(EVOL_PUNTUACION_ANT);
+			ColumnNames.add(EVOL_ADECUACION_ANT);
+			ColumnNames.add(EVOL_CUMPLIMIENTO_ANT);
+			ColumnNames.add(EVOL_PUNTUACION_PRIMER);
+			ColumnNames.add(EVOL_ADECUACION_PRIMER);
+			ColumnNames.add(EVOL_CUMPLIMIENTO_PRIMER);
+			// Create header row
+			row = sheet.createRow(rowIndex);
+			for (String name : ColumnNames) {
+				cell = row.createCell(columnIndex);
+				cell.setCellValue(name);
+				cell.setCellStyle(headerStyle);
+				columnIndex++;
+			}
+			rowIndex++;
+			/*
+			 * Category names list created by generation Evolution and reused generating PerDependency annex.
+			 */
+			List<String> categories = new ArrayList<>();
+			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+				final SemillaForm semillaForm = semillaEntry.getKey();
+				String namecat = semillaForm.getCategoria().getName();
+				if (semillaForm.getId() != 0) {
+					if (!categories.contains(namecat))
+						categories.add(namecat);
+				}
+			}
+			// Sort all category names
+			Collections.sort(categories);
+			// Loop to insert fixed values
+			for (String currentCategory : categories) {
+				for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+					// Filter if not has tags
+					final SemillaForm semillaForm = semillaEntry.getKey();
+					String namecat = semillaForm.getCategoria().getName();
+					// On each category iteration we filter the other categories.
+					if (semillaForm.getId() != 0 && namecat.equals(currentCategory) && hasTags(semillaForm, tagsToFilter)) {
+						row = sheet.createRow(rowIndex);
+						columnIndex = 0;
+						excelLine = new ExcelLine();
+						excelLine.setRowIndex(rowIndex);
+						// "id"
+						String id = String.valueOf(semillaForm.getId());
+						cell = row.createCell(ColumnNames.indexOf(ID));
+						cell.setCellValue(id);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setId(id);
+						// "nombre"
+						String name = semillaForm.getNombre();
+						cell = row.createCell(ColumnNames.indexOf(NOMBRE));
+						cell.setCellValue(name);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setNombre(name);
+						// "namecat"
+						cell = row.createCell(ColumnNames.indexOf(SEGMENTO));
+						cell.setCellValue(namecat);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setNamecat(namecat);
+						// "ambito"
+						String ambito = semillaForm.getAmbito().getName();
+						cell = row.createCell(ColumnNames.indexOf(AMBITO2));
+						cell.setCellValue(ambito);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setAmbito(ambito);
+						// "complejidad"
+						String compl = semillaForm.getComplejidad().getName();
+						cell = row.createCell(ColumnNames.indexOf(COMPLEJIDAD));
+						cell.setCellValue(compl);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setComplejidad(compl);
+						// "depende_de"
+						// Multidependencia
+						StringBuilder dependencias = new StringBuilder();
+						if (semillaForm.getDependencias() != null) {
+							for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+								// Store all dependencies globally (we will use it in other files generation
+								if (!dependencies.contains(semillaForm.getDependencias().get(i).getName()))
+									dependencies.add(semillaForm.getDependencias().get(i).getName());
+								dependencias.append(semillaForm.getDependencias().get(i).getName());
+								if (i < semillaForm.getDependencias().size() - 1) {
+									dependencias.append(BREAK_LINE);
+								}
+							}
+						}
+						cell = row.createCell(ColumnNames.indexOf(DEPENDE_DE));
+						cell.setCellValue(dependencias.toString());
+						cell.setCellStyle(shadowStyle);
+						excelLine.setDepende_de(dependencias.toString());
+						// "semilla"
+						String semilla = semillaForm.getListaUrls().get(0);
+						cell = row.createCell(ColumnNames.indexOf(SEMILLA2));
+						cell.setCellValue(semilla);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setSemilla(semilla);
+						// Seed tags
+						List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+						List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
+						List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
+						List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
+						List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
+						if (etiquetas != null && !etiquetas.isEmpty()) {
+							for (EtiquetaForm tmp : etiquetas) {
+								if (tmp.getClasificacion() != null) {
+									switch (tmp.getClasificacion().getId()) {
+									case "1":
+										tagsTematica.add(tmp);
+										break;
+									case "2":
+										tagsDistribucion.add(tmp);
+										break;
+									case "3":
+										tagsRecurrencia.add(tmp);
+										break;
+									case "4":
+										tagsOtros.add(tmp);
+										break;
+									default:
+										break;
+									}
+								}
+							}
+						}
+						// "tematica"
+						String dataToInsert = "";
+						if (!tagsTematica.isEmpty()) {
+							for (int i = 0; i < tagsTematica.size(); i++) {
+								dataToInsert += tagsTematica.get(i).getName();
+								if (i < tagsDistribucion.size() - 1) {
+									dataToInsert += BREAK_LINE;
+								}
+							}
+						}
+						cell = row.createCell(ColumnNames.indexOf(TEMATICA));
+						cell.setCellValue(dataToInsert);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setTematica(dataToInsert);
+						// "distribucion"
+						dataToInsert = "";
+						if (!tagsDistribucion.isEmpty()) {
+							for (int i = 0; i < tagsDistribucion.size(); i++) {
+								dataToInsert += tagsDistribucion.get(i).getName();
+								if (i < tagsDistribucion.size() - 1) {
+									dataToInsert += BREAK_LINE;
+								}
+							}
+						}
+						cell = row.createCell(ColumnNames.indexOf(DISTRIBUCION));
+						cell.setCellValue(dataToInsert);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setDistribucion(dataToInsert);
+						// "Recurrencia"
+						dataToInsert = "";
+						if (!tagsRecurrencia.isEmpty()) {
+							for (int i = 0; i < tagsRecurrencia.size(); i++) {
+								dataToInsert += tagsRecurrencia.get(i).getName();
+								if (i < tagsRecurrencia.size() - 1) {
+									dataToInsert += BREAK_LINE;
+								}
+							}
+						}
+						cell = row.createCell(ColumnNames.indexOf(RECURRENCIA));
+						cell.setCellValue(dataToInsert);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setRecurrencia(dataToInsert);
+						// Otros
+						dataToInsert = "";
+						if (!tagsOtros.isEmpty()) {
+							for (int i = 0; i < tagsOtros.size(); i++) {
+								dataToInsert += tagsOtros.get(i).getName();
+								if (i < tagsOtros.size() - 1) {
+									dataToInsert += BREAK_LINE;
+								}
+							}
+						}
+						cell = row.createCell(ColumnNames.indexOf(OTROS));
+						cell.setCellStyle(shadowStyle);
+						excelLine.setOtros(dataToInsert);
+						// Páginas
+						String pages = String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId()));
+						cell = row.createCell(ColumnNames.indexOf(PAGINAS));
+						cell.setCellValue(pages);
+						cell.setCellStyle(shadowStyle);
+						excelLine.setPaginas(pages);
+						// ***************************
+						// * EXECUTION VALUES *
+						// ***************************
+						executionDatesWithFormat = new ArrayList<>();
+						// Get all execution dates in DateTime format
+						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+							executionDatesWithFormat.add(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)));
+						}
+						// Add a row aditional for every date before first date
+						int iteration = 0;
+						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+							final int iterationRowIndex = rowIndex + iteration;
+							XSSFRow rowIteration = null;
+							if (iteration == 0) {
+								rowIteration = sheet.getRow(iterationRowIndex);
+							} else {
+								rowIteration = sheet.createRow(iterationRowIndex);
+							}
+							final String iterationDate = entry.getKey().substring(0, entry.getKey().indexOf(" "));
+							final String executionDateAux = iterationDate.replace("/", "_");
+							// Execution dates must be exists as column
+							double score = Double.parseDouble(entry.getValue().getTotalScore().toString());
+							String adequacy = changeLevelName(entry.getValue().getLevel(), messageResources);
+							String compliance = entry.getValue().getCompliance();
+							ExcelExecution execution = new ExcelExecution();
+							execution.setDate(executionDateAux);
+							execution.setScore(score);
+							execution.setAdequacy(adequacy);
+							execution.setCompliance(compliance);
+							excelLine.addExecution(execution);
+							// Iteration number
+							columnIndex = ColumnNames.indexOf(N_ITERACION);
+							cell = rowIteration.createCell(columnIndex);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellValue(iteration + 1);
+							cell.setCellStyle(shadowStyle);
+							// Iteration Date
+							columnIndex = ColumnNames.indexOf(FECHA_ITERACION);
+							cell = rowIteration.createCell(columnIndex);
+							cell.setCellValue(iterationDate);
+							cell.setCellStyle(shadowStyle);
+							// Puntuaction
+							columnIndex = ColumnNames.indexOf(PUNTUACION);
+							cell = rowIteration.createCell(columnIndex);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellValue(score);
+							cell.setCellStyle(shadowStyle);
+							// Allocation
+							cell = rowIteration.createCell(ColumnNames.indexOf(ADECUACION));
+							cell.setCellValue(adequacy);
+							cell.setCellStyle(shadowStyle);
+							// Compliance
+							cell = rowIteration.createCell(ColumnNames.indexOf(CUMPLIMIENTO));
+							cell.setCellValue(compliance);
+							cell.setCellStyle(shadowStyle);
+							// Not valid
+							String columnFirstLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(ADECUACION) + 1);
+							String columnSecondLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(PUNTUACION) + 1);
+							//
+							cell = rowIteration.createCell(ColumnNames.indexOf(NO_VALIDO));
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// A
+							cell = rowIteration.createCell(ColumnNames.indexOf(A));
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"A\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// AA
+							cell = rowIteration.createCell(ColumnNames.indexOf(AA));
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							columnFirstLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(CUMPLIMIENTO) + 1);
+							// NC
+							cell = rowIteration.createCell(ColumnNames.indexOf(NO_CONFORME));
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// PC
+							cell = rowIteration.createCell(ColumnNames.indexOf(PARCIALMENTE_CONFORME));
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// TC
+							cell = rowIteration.createCell(ColumnNames.indexOf(TOTALMENTE_CONFORME));
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							iteration++;
+						}
+						{
+							cell = row.createCell(ColumnNames.indexOf(EVOL_PUNTUACION_ANT));
+							int firstRow = GetPreviousExecutionRow(sheet, comparision, semillaForm.getEtiquetas(), false, rowIndex, rowIndex + executionDates.size(),
+									ColumnNames.indexOf(FECHA_ITERACION));
+							String formula = generateComparisionPunctuactionFormula_v2(ColumnNames.indexOf(PUNTUACION) + 1, firstRow, rowIndex + executionDates.size());
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol allocation previous iteration
+						{
+							cell = row.createCell(ColumnNames.indexOf(EVOL_ADECUACION_ANT));
+							int firstRow = GetPreviousExecutionRow(sheet, comparision, semillaForm.getEtiquetas(), false, rowIndex, rowIndex + executionDates.size(),
+									ColumnNames.indexOf(FECHA_ITERACION));
+							String formula = generateComparisionAllocationFormula_v2(ColumnNames.indexOf(ADECUACION) + 1, firstRow, rowIndex + executionDates.size());
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol compliance previous iteration
+						{
+							cell = row.createCell(ColumnNames.indexOf(EVOL_CUMPLIMIENTO_ANT));
+							int firstRow = GetPreviousExecutionRow(sheet, comparision, semillaForm.getEtiquetas(), false, rowIndex, rowIndex + executionDates.size(),
+									ColumnNames.indexOf(FECHA_ITERACION));
+							String formula = generateComparisionComplianceFormula_v2(ColumnNames.indexOf(CUMPLIMIENTO) + 1, firstRow, rowIndex + executionDates.size());
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol score first iteration
+						{
+							cell = row.createCell(ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER));
+							int firstRow = GetPreviousExecutionRow(sheet, comparision, semillaForm.getEtiquetas(), true, rowIndex, rowIndex + executionDates.size(),
+									ColumnNames.indexOf(FECHA_ITERACION));
+							String formula = generateComparisionPunctuactionFormula_v2(ColumnNames.indexOf(PUNTUACION) + 1, firstRow, rowIndex + executionDates.size());
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol allocation first iteration
+						{
+							cell = row.createCell(ColumnNames.indexOf(EVOL_ADECUACION_PRIMER));
+							int firstRow = GetPreviousExecutionRow(sheet, comparision, semillaForm.getEtiquetas(), true, rowIndex, rowIndex + executionDates.size(),
+									ColumnNames.indexOf(FECHA_ITERACION));
+							String formula = generateComparisionAllocationFormula_v2(ColumnNames.indexOf(ADECUACION) + 1, firstRow, rowIndex + executionDates.size());
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						// Evol compliance first iteration
+						{
+							cell = row.createCell(ColumnNames.indexOf(EVOL_CUMPLIMIENTO_PRIMER));
+							int firstRow = GetPreviousExecutionRow(sheet, comparision, semillaForm.getEtiquetas(), true, rowIndex, rowIndex + executionDates.size(),
+									ColumnNames.indexOf(FECHA_ITERACION));
+							String formula = generateComparisionComplianceFormula_v2(ColumnNames.indexOf(CUMPLIMIENTO) + 1, firstRow, rowIndex + executionDates.size());
+							cell.setCellFormula(formula);
+							cell.setCellStyle(shadowStyle);
+						}
+						excelLines.put(rowIndex, excelLine);
+						// Merge some cells if execution dates > 1
+						if (executionDates.size() > 1) {
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(ID), ColumnNames.indexOf(ID)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(NOMBRE), ColumnNames.indexOf(NOMBRE)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(SEMILLA2), ColumnNames.indexOf(SEMILLA2)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(AMBITO2), ColumnNames.indexOf(AMBITO2)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(DEPENDE_DE), ColumnNames.indexOf(DEPENDE_DE)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(SEGMENTO), ColumnNames.indexOf(SEGMENTO)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(COMPLEJIDAD), ColumnNames.indexOf(COMPLEJIDAD)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(PAGINAS), ColumnNames.indexOf(PAGINAS)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(TEMATICA), ColumnNames.indexOf(TEMATICA)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(DISTRIBUCION), ColumnNames.indexOf(DISTRIBUCION)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(RECURRENCIA), ColumnNames.indexOf(RECURRENCIA)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(OTROS), ColumnNames.indexOf(OTROS)));
+							sheet.addMergedRegion(
+									new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_PUNTUACION_ANT), ColumnNames.indexOf(EVOL_PUNTUACION_ANT)));
+							sheet.addMergedRegion(
+									new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_ADECUACION_ANT), ColumnNames.indexOf(EVOL_ADECUACION_ANT)));
+							sheet.addMergedRegion(
+									new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_CUMPLIMIENTO_ANT), ColumnNames.indexOf(EVOL_CUMPLIMIENTO_ANT)));
+							sheet.addMergedRegion(
+									new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER), ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER)));
+							sheet.addMergedRegion(
+									new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_ADECUACION_PRIMER), ColumnNames.indexOf(EVOL_ADECUACION_PRIMER)));
+							sheet.addMergedRegion(
+									new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_CUMPLIMIENTO_PRIMER), ColumnNames.indexOf(EVOL_CUMPLIMIENTO_PRIMER)));
+						}
+						rowIndex = rowIndex + executionDates.size();
+					}
+				}
+			}
+			int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
+			// Compliance
+			nextStartPos = InsertSummaryTableCompliance(sheet, nextStartPos + 5, ColumnNames, headerStyle, shadowStyle);
+			String title = "Datos de evolución de PUNTUACIÓN con respecto a la ITERACION ANTERIOR (Nº de sitios web por segmentos)";
+			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.indexOf(EVOL_PUNTUACION_ANT) + 1, title);
+			title = "Datos de evolución de PUNTUACIÓN con respecto a la PRIMERA ITERACIÓN (Nº de sitios web por segmentos)";
+			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER) + 1, title);
+			// Insert graph sheets per category
+			for (String category : categories) {
+				/*
+				 * Excel allows sheet names up to 31 chars in length but other applications (such as OpenOffice) allow more. Some versions of Excel crash with names longer than 31 chars, others -
+				 * truncate such names to 31 character.
+				 */
+				String categorySheetName = category.substring(0, Math.min(category.length(), 31));
+				// Search category initial and final row.
+				int categoryFirstRow = 0;
+				int categoryLastRow = 0;
+				// Starts 1 because always first row was header
+				for (int i = 1; i < rowIndex; i++) {
+					row = sheet.getRow(i);
+					if (row != null) {
+						cell = row.getCell(ColumnNames.indexOf(SEGMENTO));
+						if (cell != null) { // merged cells return null
+							if (cell.getStringCellValue().equals(category)) {
+								if (categoryFirstRow == 0) {
+									categoryFirstRow = i;
+								}
+								categoryLastRow = i + executionDates.size(); // every seed has all iterations
+							}
+						}
+					}
+				}
+				if (wb.getSheet(categorySheetName) == null && categoryFirstRow != 0 && categoryLastRow != 0) {
+					wb.createSheet(categorySheetName);
+					XSSFSheet currentSheet = wb.getSheet(categorySheetName);
+					InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, categoryFirstRow, categoryLastRow - 1, true);
+					InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, categoryFirstRow, categoryLastRow - 1, false);
+				}
+			}
+			// Increase width of columns to match content
+			for (int i = 0; i < ColumnNames.size(); i++) {
+				sheet.autoSizeColumn(i);
+			}
+			XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+			// Clear -1 cell values
+			for (int i = 0; i < sheet.getLastRowNum(); i++) {
+				Row r = sheet.getRow(i);
+				if (r != null) {
+					for (int j = 0; j < r.getLastCellNum(); j++) {
+						Cell cX = r.getCell(j);
+						if (cX != null && CellType.NUMERIC.equals(cX.getCellType()) && cX.getNumericCellValue() == -1) {
+							cX.setCellStyle(shadowStyle);
+							cX.setBlank();
+						}
+					}
+				}
+			}
+			// Add a legend with custom text
+			XSSFDrawing draw = sheet.createDrawingPatriarch();
+			XSSFTextBox tb1 = draw.createTextbox(new XSSFClientAnchor(0, 0, 0, 0, 0, nextStartPos + 5, 10, nextStartPos + 5 + 6));
+			tb1.setLineStyleColor(0, 0, 0);
+			tb1.setLineWidth(1);
+			Color col = Color.WHITE;
+			tb1.setFillColor(col.getRed(), col.getGreen(), col.getBlue());
+			StringBuilder sb = new StringBuilder("Los rangos en base a los cuales se ha calculado la evolución de la puntuación de los sitios web son los siguientes:");
+			sb.append(BREAK_LINE);
+			for (RangeForm range : websiteRanges) {
+				sb.append(range.getName() + ": " + (range.getMinValue() != null ? range.getMinValue() : "") + " " + range.getMinValueOperator() + " x " + range.getMaxValueOperator() + " "
+						+ (range.getMaxValue() != null ? range.getMaxValue() : "") + BREAK_LINE);
+			}
+			// websiteRanges
+			XSSFRichTextString address = new XSSFRichTextString(sb.toString());
+			tb1.setText(address);
+			CTTextCharacterProperties rpr = tb1.getCTShape().getTxBody().getPArray(0).getRArray(0).getRPr();
+			rpr.setSz(1000); // 9 pt
+			col = Color.BLACK;
+			rpr.addNewSolidFill().addNewSrgbClr().setVal(new byte[] { (byte) col.getRed(), (byte) col.getGreen(), (byte) col.getBlue() });
+			wb.write(writer);
+			wb.close();
+		} catch (Exception e) {
+			Logger.putLog("Error al generar el anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Creates the XLSX evolution annex per dependency. NEEDS THE EXECUTION OF createAnnexXLSX_Evolution METHOD PREVIOULY TO CONSTRUCT THE DATA DICTIONARY FROM DATABASE INFO.
+	 *
+	 * @param idOperation the id operation
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexXLSX_PerDependency(final Long idOperation) throws Exception {
+		final int numberOfFixedColumns = 12;
+		// Iterate through dependencies to create each file
+		for (String currentDependency : dependencies) {
+			Logger.putLog("Generando anexo: " + currentDependency + ".xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			try (FileOutputStream writer = getFileOutputStream(idOperation, "/Dependencias/" + currentDependency + ".xlsx")) {
+				XSSFWorkbook wb = new XSSFWorkbook();
+				XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
+				XSSFRow row;
+				XSSFCell cell;
+				int rowIndex = 0;
+				int columnIndex = 0;
+				XlsxUtils xlsxUtils = new XlsxUtils(wb);
+				final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
+				final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
+				row = sheet.createRow(rowIndex);
+				// Add headers without values
+				ColumnNames = new ArrayList<>();
+				ColumnNames.add(ID);
+				ColumnNames.add(NOMBRE);
+				ColumnNames.add("namecat");
+				ColumnNames.add(AMBITO2);
+				ColumnNames.add(COMPLEJIDAD);
+				ColumnNames.add(DEPENDE_DE);
+				ColumnNames.add(SEMILLA2);
+				ColumnNames.add(TEMATICA);
+				ColumnNames.add(DISTRIBUCION);
+				ColumnNames.add(RECURRENCIA);
+				ColumnNames.add(OTROS);
+				ColumnNames.add(PAGINAS);
+				for (String executionDateAux : executionDates) {
+					// Add header if it is not already created
+					if (!ColumnNames.contains("puntuacion_" + executionDateAux)) {
+						ColumnNames.add("puntuacion_" + executionDateAux);
+					}
+					// ADECUACIÓN
+					// Add header if it is not already created
+					if (!ColumnNames.contains("adecuacion_" + executionDateAux)) {
+						ColumnNames.add("adecuacion_" + executionDateAux);
+					}
+					// CUMPLIMIENTO
+					// Add header if it is not already created
+					if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
+						ColumnNames.add("cumplimiento_" + executionDateAux);
+					}
+				}
+				for (String executionDateAux : executionDates) {
+					// Add header if it is not already created
+					if (!ColumnNames.contains(NV_PREFFIX + executionDateAux)) {
+						ColumnNames.add(NV_PREFFIX + executionDateAux);
+					}
+					if (!ColumnNames.contains(A_PREFFIX + executionDateAux)) {
+						ColumnNames.add(A_PREFFIX + executionDateAux);
+					}
+					if (!ColumnNames.contains(AA_PREFFIX + executionDateAux)) {
+						ColumnNames.add(AA_PREFFIX + executionDateAux);
+					}
+					if (!ColumnNames.contains(NC_PREFFIX + executionDateAux)) {
+						ColumnNames.add(NC_PREFFIX + executionDateAux);
+					}
+					if (!ColumnNames.contains(PC_PREFFIX + executionDateAux)) {
+						ColumnNames.add(PC_PREFFIX + executionDateAux);
+					}
+					if (!ColumnNames.contains(TC_PREFFIX + executionDateAux)) {
+						ColumnNames.add(TC_PREFFIX + executionDateAux);
+					}
+				}
+				row = sheet.createRow(rowIndex);
+				for (String name : ColumnNames) {
+					cell = row.createCell(columnIndex);
+					cell.setCellValue(name);
+					cell.setCellStyle(headerStyle);
+					columnIndex++;
+				}
+				rowIndex++;
+				for (Map.Entry<Integer, ExcelLine> currentLine : excelLines.entrySet()) {
+					// On each dependency iteration we filter other dependencies.
+					if (currentLine.getValue().getDepende_de().contains(currentDependency)) {
+						row = sheet.createRow(rowIndex);
+						columnIndex = 0;
+						// "id"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getId());
+						cell.setCellStyle(shadowStyle);
+						// "nombre"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getNombre());
+						cell.setCellStyle(shadowStyle);
+						// "namecat"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getNamecat());
+						cell.setCellStyle(shadowStyle);
+						// "ambito"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getAmbito());
+						cell.setCellStyle(shadowStyle);
+						// "complejidad"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getComplejidad());
+						cell.setCellStyle(shadowStyle);
+						// "depende_de"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getDepende_de());
+						cell.setCellStyle(shadowStyle);
+						// "semilla"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getSemilla());
+						cell.setCellStyle(shadowStyle);
+						// "tematica"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getTematica());
+						cell.setCellStyle(shadowStyle);
+						// "distribucion"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getDistribucion());
+						cell.setCellStyle(shadowStyle);
+						// "recurrencia"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getRecurrencia());
+						cell.setCellStyle(shadowStyle);
+						// "otros"
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getOtros());
+						cell.setCellStyle(shadowStyle);
+						// Páginas
+						cell = row.createCell(columnIndex++);
+						cell.setCellValue(currentLine.getValue().getPaginas());
+						cell.setCellStyle(shadowStyle);
+						for (String date : executionDates) {
+							// Puntuación
+							cell = row.createCell(columnIndex++);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellStyle(shadowStyle);
+							if (currentLine.getValue().HasDate(date)) {
+								cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getScore());
+							}
+							// Adecuación
+							cell = row.createCell(columnIndex++);
+							cell.setCellStyle(shadowStyle);
+							if (currentLine.getValue().HasDate(date)) {
+								cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getAdequacy());
+							}
+							// Cumplimiento
+							cell = row.createCell(columnIndex++);
+							cell.setCellStyle(shadowStyle);
+							if (currentLine.getValue().HasDate(date)) {
+								cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getCompliance());
+							}
+						}
+						rowIndex++;
+					}
+				}
+				// Insert NV, A and AA columns for each execution.
+				for (int i = 1; i < rowIndex; i++) {
+					row = sheet.getRow(i);
+					for (int numberOfDate = 0; numberOfDate < executionDates.size(); numberOfDate++) {
+						String columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * numberOfDate));
+						String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 1) + (3 * numberOfDate));
+						// "NV_" + date
+						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate));
+						cell.setCellType(CellType.NUMERIC);
+						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No Válido\",$" + columnSecondLetter + (i + 1) + ",0)");
+						cell.setCellStyle(shadowStyle);
+						// "A_" + date
+						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 1);
+						cell.setCellType(CellType.NUMERIC);
+						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"A\",$" + columnSecondLetter + (i + 1) + ",0)");
+						cell.setCellStyle(shadowStyle);
+						// "AA_" + date
+						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 2);
+						cell.setCellType(CellType.NUMERIC);
+						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"AA\",$" + columnSecondLetter + (i + 1) + ",0)");
+						cell.setCellStyle(shadowStyle);
+						columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * numberOfDate) + 1);
+						// "NC_" + date
+						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
+						cell.setCellType(CellType.NUMERIC);
+						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
+						cell.setCellStyle(shadowStyle);
+						// "PC_" + date
+						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 4);
+						cell.setCellType(CellType.NUMERIC);
+						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
+						cell.setCellStyle(shadowStyle);
+						// "PC_" + date
+						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 5);
+						cell.setCellType(CellType.NUMERIC);
+						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
+						cell.setCellStyle(shadowStyle);
+					}
+				}
+				// Increase width of columns to match content
+				for (int i = 0; i < ColumnNames.size(); i++) {
+					sheet.autoSizeColumn(i);
+				}
+				XSSFSheet currentSheet = wb.createSheet("Evolución SW");
+				XSSFSheet currentSheet2 = wb.createSheet("Iteración SW");
+				XSSFSheet currentSheet3 = wb.createSheet("Iteración Global");
+				if (rowIndex > 1) {
+					InsertGraphIntoSheetByDependency(currentSheet, rowIndex, true, numberOfFixedColumns, false);
+					InsertGraphIntoSheetByDependency(currentSheet, rowIndex, false, numberOfFixedColumns, false);
+					InsertGraphIntoSheetByDependency(currentSheet2, rowIndex, true, numberOfFixedColumns, true);
+					InsertGraphIntoSheetByDependency(currentSheet2, rowIndex, false, numberOfFixedColumns, true);
+					InsertAgregatePieChar(currentSheet3, rowIndex, ColumnNames, xlsxUtils);
+				}
+				XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+				// Hide Id Column
+				CTCol col = sheet.getCTWorksheet().getColsArray(0).addNewCol();
+				col.setMin(1);
+				col.setMax(1);
+				col.setHidden(true);
+				wb.write(writer);
+				wb.close();
+			} catch (Exception e) {
+				Logger.putLog("Error al generar el anexo: " + currentDependency + ".xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+				throw e;
+			}
+		}
+	}
+
+	/**
+	 * Creates the annex XLS X per dependency v 2.
+	 *
+	 * @param idOperation the id operation
+	 * @throws Exception the exception
+	 */
+	public static void createAnnexXLSX_PerDependency_v2(final Long idOperation) throws Exception {
+		// Iterate through dependencies to create each file
+		for (String currentDependency : dependencies) {
+			Logger.putLog("Generando anexo: " + currentDependency + "_v2.xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			try (FileOutputStream writer = getFileOutputStream(idOperation, "/Dependencias_v2/" + currentDependency + "_v2.xlsx")) {
+				XSSFWorkbook wb = new XSSFWorkbook();
+				XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
+				XSSFRow row;
+				XSSFCell cell;
+				int rowIndex = 0;
+				int columnIndex = 0;
+				XlsxUtils xlsxUtils = new XlsxUtils(wb);
+				final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
+				final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
+				row = sheet.createRow(rowIndex);
+				// Add headers without values
+				ColumnNames = new ArrayList<>();
+				ColumnNames.add(ID);
+				ColumnNames.add(NOMBRE);
+				ColumnNames.add(N_ITERACION);
+				ColumnNames.add(FECHA_ITERACION);
+				ColumnNames.add(SEMILLA2);
+				ColumnNames.add(AMBITO2);
+				ColumnNames.add(DEPENDE_DE);
+				ColumnNames.add(SEGMENTO);
+				ColumnNames.add(COMPLEJIDAD);
+				ColumnNames.add(PAGINAS);
+				ColumnNames.add(TEMATICA);
+				ColumnNames.add(DISTRIBUCION);
+				ColumnNames.add(RECURRENCIA);
+				ColumnNames.add(OTROS);
+				ColumnNames.add(PUNTUACION);
+				ColumnNames.add(ADECUACION);
+				ColumnNames.add(NO_VALIDO);
+				ColumnNames.add(A);
+				ColumnNames.add(AA);
+				ColumnNames.add(CUMPLIMIENTO);
+				ColumnNames.add(NO_CONFORME);
+				ColumnNames.add(PARCIALMENTE_CONFORME);
+				ColumnNames.add(TOTALMENTE_CONFORME);
+				// Create header row
+				row = sheet.createRow(rowIndex);
+				for (String name : ColumnNames) {
+					cell = row.createCell(columnIndex);
+					cell.setCellValue(name);
+					cell.setCellStyle(headerStyle);
+					columnIndex++;
+				}
+				rowIndex++;
+				for (Map.Entry<Integer, ExcelLine> currentLine : excelLines.entrySet()) {
+					// On each dependency iteration we filter other dependencies.
+					if (currentLine.getValue().getDepende_de().contains(currentDependency)) {
+						row = sheet.createRow(rowIndex);
+						columnIndex = 0;
+						// "id"
+						cell = row.createCell(ColumnNames.indexOf(ID));
+						cell.setCellValue(currentLine.getValue().getId());
+						cell.setCellStyle(shadowStyle);
+						// "nombre"
+						cell = row.createCell(ColumnNames.indexOf(NOMBRE));
+						cell.setCellValue(currentLine.getValue().getNombre());
+						cell.setCellStyle(shadowStyle);
+						// "namecat"
+						cell = row.createCell(ColumnNames.indexOf(SEGMENTO));
+						cell.setCellValue(currentLine.getValue().getNamecat());
+						cell.setCellStyle(shadowStyle);
+						// "ambito"
+						cell = row.createCell(ColumnNames.indexOf(AMBITO2));
+						cell.setCellValue(currentLine.getValue().getAmbito());
+						cell.setCellStyle(shadowStyle);
+						// "complejidad"
+						cell = row.createCell(ColumnNames.indexOf(COMPLEJIDAD));
+						cell.setCellValue(currentLine.getValue().getComplejidad());
+						cell.setCellStyle(shadowStyle);
+						// "depende_de"
+						cell = row.createCell(ColumnNames.indexOf(DEPENDE_DE));
+						cell.setCellValue(currentLine.getValue().getDepende_de());
+						cell.setCellStyle(shadowStyle);
+						// "semilla"
+						cell = row.createCell(ColumnNames.indexOf(SEMILLA2));
+						cell.setCellValue(currentLine.getValue().getSemilla());
+						cell.setCellStyle(shadowStyle);
+						// Seed tags
+						// "tematica"
+						cell = row.createCell(ColumnNames.indexOf(TEMATICA));
+						cell.setCellValue(currentLine.getValue().getTematica());
+						cell.setCellStyle(shadowStyle);
+						// "distribucion"
+						cell = row.createCell(ColumnNames.indexOf(DISTRIBUCION));
+						cell.setCellValue(currentLine.getValue().getDistribucion());
+						cell.setCellStyle(shadowStyle);
+						// "Recurrencia"
+						cell = row.createCell(ColumnNames.indexOf(RECURRENCIA));
+						cell.setCellValue(currentLine.getValue().getRecurrencia());
+						cell.setCellStyle(shadowStyle);
+						// Otros
+						cell = row.createCell(ColumnNames.indexOf(OTROS));
+						cell.setCellValue(currentLine.getValue().getOtros());
+						cell.setCellStyle(shadowStyle);
+						// Páginas
+						cell = row.createCell(ColumnNames.indexOf(PAGINAS));
+						cell.setCellValue(currentLine.getValue().getPaginas());
+						cell.setCellStyle(shadowStyle);
+						// ***************************
+						// * EXECUTION VALUES *
+						// ***************************
+						// Add a row aditional for every date before first
+						int iteration = 0;
+						for (ExcelExecution execution : currentLine.getValue().getExecutions()) {
+							final int iterationRowIndex = rowIndex + iteration;
+							XSSFRow rowIteration = null;
+							if (iteration == 0) {
+								rowIteration = sheet.getRow(iterationRowIndex);
+							} else {
+								rowIteration = sheet.createRow(iterationRowIndex);
+							}
+							// Iteration number
+							columnIndex = ColumnNames.indexOf(N_ITERACION);
+							cell = rowIteration.createCell(columnIndex);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellValue(iteration + 1);
+							cell.setCellStyle(shadowStyle);
+							// Iteration Date
+							columnIndex = ColumnNames.indexOf(FECHA_ITERACION);
+							cell = rowIteration.createCell(columnIndex);
+							cell.setCellValue(execution.getDate());
+							cell.setCellStyle(shadowStyle);
+							// Puntuaction
+							columnIndex = ColumnNames.indexOf(PUNTUACION);
+							cell = rowIteration.createCell(columnIndex);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellValue(execution.getScore());
+							cell.setCellStyle(shadowStyle);
+							// Allocation
+							cell = rowIteration.createCell(ColumnNames.indexOf(ADECUACION));
+							cell.setCellValue(execution.getAdequacy());
+							cell.setCellStyle(shadowStyle);
+							// Compliance
+							cell = rowIteration.createCell(ColumnNames.indexOf(CUMPLIMIENTO));
+							cell.setCellValue(execution.getCompliance());
+							cell.setCellStyle(shadowStyle);
+							// Not valid
+							String columnFirstLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(ADECUACION) + 1);
+							String columnSecondLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(PUNTUACION) + 1);
+							//
+							cell = rowIteration.createCell(ColumnNames.indexOf(NO_VALIDO));
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// A
+							cell = rowIteration.createCell(ColumnNames.indexOf(A));
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"A\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// AA
+							cell = rowIteration.createCell(ColumnNames.indexOf(AA));
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							columnFirstLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(CUMPLIMIENTO) + 1);
+							// NC
+							cell = rowIteration.createCell(ColumnNames.indexOf(NO_CONFORME));
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// PC
+							cell = rowIteration.createCell(ColumnNames.indexOf(PARCIALMENTE_CONFORME));
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							// TC
+							cell = rowIteration.createCell(ColumnNames.indexOf(TOTALMENTE_CONFORME));
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
+							cell.setCellStyle(shadowStyle);
+							iteration++;
+						}
+						// Merge some cells if execution dates > 1
+						if (executionDates.size() > 1) {
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(ID), ColumnNames.indexOf(ID)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(NOMBRE), ColumnNames.indexOf(NOMBRE)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(SEMILLA2), ColumnNames.indexOf(SEMILLA2)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(AMBITO2), ColumnNames.indexOf(AMBITO2)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(DEPENDE_DE), ColumnNames.indexOf(DEPENDE_DE)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(SEGMENTO), ColumnNames.indexOf(SEGMENTO)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(COMPLEJIDAD), ColumnNames.indexOf(COMPLEJIDAD)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(PAGINAS), ColumnNames.indexOf(PAGINAS)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(TEMATICA), ColumnNames.indexOf(TEMATICA)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(DISTRIBUCION), ColumnNames.indexOf(DISTRIBUCION)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(RECURRENCIA), ColumnNames.indexOf(RECURRENCIA)));
+							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(OTROS), ColumnNames.indexOf(OTROS)));
+						}
+						rowIndex = rowIndex + executionDates.size();
+					}
+				}
+				// Increase width of columns to match content
+				for (int i = 0; i < ColumnNames.size(); i++) {
+					sheet.autoSizeColumn(i);
+				}
+				XSSFSheet currentSheet = wb.createSheet("Evolución SW");
+				XSSFSheet currentSheet2 = wb.createSheet("Iteración SW");
+				XSSFSheet currentSheet3 = wb.createSheet("Iteración Global");
+				if (rowIndex > 1) {
+					// Evolution
+					InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, 1, rowIndex - 1, false);
+					InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, 1, rowIndex - 1, true);
+					// Last iteration
+					String iterationDate = executionDates.get(executionDates.size() - 1);
+					InsertGraphIntoSheetByDependency_v2(currentSheet2, rowIndex, false, iterationDate);
+					InsertGraphIntoSheetByDependency_v2(currentSheet2, rowIndex, true, iterationDate);
+					InsertAgregatePieChar_v2(currentSheet3, rowIndex, ColumnNames, xlsxUtils);
+				}
+				XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+				// Hide Id Column
+				CTCol col = sheet.getCTWorksheet().getColsArray(0).addNewCol();
+				col.setMin(1);
+				col.setMax(1);
+				col.setHidden(true);
+				wb.write(writer);
+				wb.close();
+			} catch (Exception e) {
+				Logger.putLog("Error al generar el anexo: " + currentDependency + ".xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+				throw e;
+			}
+		}
 	}
 
 	/**
@@ -1186,7 +3406,6 @@ public final class AnnexUtils {
 		// Styles
 		final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_BLACK_BOLD10_CENTER);
 		final CellStyle headerStyleLeft = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_WHITE_BOLD10_LEFT);
-		final CellStyle percentBoldStyle = xlsxUtils.getCellStyleByName(XlsxUtils.BOLD_PERCENT11_CENTER_STYLE);
 		final CellStyle percentStyle = xlsxUtils.getCellStyleByName(XlsxUtils.NORMAL_PERCENT11_CENTER_STYLE);
 		// Table allcation and pie chart
 		Row r;
@@ -1252,158 +3471,6 @@ public final class AnnexUtils {
 			rowCount++;
 		}
 		generateStackedBarGraphic(sheet, firstRow, rowCount, 1, 3, titleComplianceGraphicGlobal);
-		sheet.autoSizeColumn(0);
-		sheet.autoSizeColumn(1);
-		sheet.autoSizeColumn(2);
-		sheet.autoSizeColumn(3);
-	}
-
-	/**
-	 * Generate global progress evolution sheet.
-	 *
-	 * @param sheet                        the sheet
-	 * @param messageResources             the message resources
-	 * @param idObs                        the id obs
-	 * @param idObsExecution               the id obs execution
-	 * @param idOperation                  the id operation
-	 * @param tagsToFilter                 the tags to filter
-	 * @param exObsIds                     the ex obs ids
-	 * @param pageObservatoryMap           the page observatory map
-	 * @param pageObservatoryMapFixed      the page observatory map fixed
-	 * @param titleAllocationGraphicGlobal the title allocation graphic
-	 * @param titleComplianceGraphicGlobal the title compliance graphic global
-	 * @param titleAllocationGraphicFixed  the title allocation graphic fixed (only if generateFixedGraphics is true is required)
-	 * @param titleComplianceGrpahicFixed  the title compliance grpahic fixed (only if generateFixedGraphics is true is required)
-	 * @param generateFixedGraphics        the is segment
-	 * @param initRow                      the init row
-	 * @param xlsxUtils                    the xlsx utils
-	 */
-	private static void generateGlobalProgressEvolutionSheet(final XSSFSheet sheet, final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation,
-			final String[] tagsToFilter, final String[] exObsIds, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed, final String titleAllocationGraphicGlobal, final String titleComplianceGraphicGlobal,
-			final String titleAllocationGraphicFixed, final String titleComplianceGrpahicFixed, final boolean generateFixedGraphics, final int initRow, final XlsxUtils xlsxUtils) {
-		final PropertiesManager pmgr = new PropertiesManager();
-		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, KEY_DATE_FORMAT_EVOLUTION));
-		int rowCount = initRow;
-		int firstRow = initRow + 1;
-		// Allocation
-		// date + suiability
-		final Map<String, BigDecimal> resultDataA = new TreeMap<>();
-		final Map<String, BigDecimal> resultDataAA = new TreeMap<>();
-		final Map<String, BigDecimal> resultDataNV = new TreeMap<>();
-		final Map<String, BigDecimal> resultDataPC = new TreeMap<>();
-		final Map<String, BigDecimal> resultDataTC = new TreeMap<>();
-		final Map<String, BigDecimal> resultDataNC = new TreeMap<>();
-		for (Date date : executionDatesWithFormat_Valid) {
-			int countA = 0;
-			int countAA = 0;
-			int countNV = 0;
-			int countPC = 0;
-			int countTC = 0;
-			int countNC = 0;
-			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				ScoreForm dateScore = semillaEntry.getValue().get(date.toString());
-				if (dateScore != null) {
-					String adequacy = changeLevelName(dateScore.getLevel(), messageResources);
-					if (messageResources.getMessage("resultados.anonimos.num.portales.aa").equals(adequacy)) {
-						countAA++;
-					} else if (messageResources.getMessage("resultados.anonimos.num.portales.a").equals(adequacy)) {
-						countA++;
-					} else if (messageResources.getMessage("resultados.anonimos.num.portales.nv").equals(adequacy)) {
-						countNV++;
-					}
-					String compliance = dateScore.getCompliance();
-					if (messageResources.getMessage("resultados.anonimos.porc.portales.tc").equals(compliance)) {
-						countTC++;
-					} else if (messageResources.getMessage("resultados.anonimos.porc.portales.pc").equals(adequacy)) {
-						countPC++;
-					} else if (messageResources.getMessage("resultados.anonimos.porc.portales.nc").equals(adequacy)) {
-						countNC++;
-					}
-				}
-			}
-			final String executionDateAux = date.toString().substring(0, date.toString().indexOf(" ")).replace("/", "-");
-			resultDataA.put(executionDateAux, new BigDecimal(countA));
-			resultDataAA.put(executionDateAux, new BigDecimal(countAA));
-			resultDataNV.put(executionDateAux, new BigDecimal(countNV));
-			resultDataPC.put(executionDateAux, new BigDecimal(countPC));
-			resultDataTC.put(executionDateAux, new BigDecimal(countTC));
-			resultDataNC.put(executionDateAux, new BigDecimal(countNC));
-		}
-		// Styles
-		final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_BLACK_BOLD10_CENTER);
-		final CellStyle headerStyleLeft = xlsxUtils.getCellStyleByName(XlsxUtils.BLUE_BACKGROUND_WHITE_BOLD10_LEFT);
-		final CellStyle percentBoldStyle = xlsxUtils.getCellStyleByName(XlsxUtils.BOLD_PERCENT11_CENTER_STYLE);
-		final CellStyle percentStyle = xlsxUtils.getCellStyleByName(XlsxUtils.NORMAL_PERCENT11_CENTER_STYLE);
-		// Table allcation and pie chart
-		Row r;
-		Cell c;
-		// Headers
-		r = sheet.createRow(rowCount);
-		c = r.createCell(1);
-		c.setCellValue(ALLOCATION_NOT_VALID_LITERAL);
-		c.setCellStyle(headerStyle);
-		c = r.createCell(2);
-		c.setCellValue(ALLOCATION_A_LITERAL);
-		c.setCellStyle(headerStyle);
-		c = r.createCell(3);
-		c.setCellValue(ALLOCATION_AA_LITERAL);
-		c.setCellStyle(headerStyle);
-		rowCount++;
-		for (Entry<String, BigDecimal> entry : resultDataNV.entrySet()) {
-			r = sheet.createRow(rowCount);
-			c = r.createCell(0);
-			c.setCellValue(entry.getKey());
-			c.setCellStyle(headerStyleLeft);
-			c = r.createCell(1);
-			c.setCellValue(entry.getValue().doubleValue() / 100);
-			c.setCellStyle(percentStyle);
-			c = r.createCell(2);
-			c.setCellValue(resultDataA.get(entry.getKey()).doubleValue() / 100);
-			c.setCellStyle(percentStyle);
-			c = r.createCell(3);
-			c.setCellStyle(percentStyle);
-			c.setCellValue(resultDataAA.get(entry.getKey()).doubleValue() / 100);
-			rowCount++;
-		}
-		generateStackedBarGraphic(sheet, firstRow, rowCount, 1, 3, titleAllocationGraphicGlobal);
-		rowCount += 15;
-		// Compliance
-		// Headers
-		r = sheet.createRow(rowCount);
-		c = r.createCell(1);
-		c.setCellValue(COMPLIANCE_NOT_LITERAL);
-		c.setCellStyle(headerStyle);
-		c = r.createCell(2);
-		c.setCellValue(COMPLIANCE_PARTIAL_LITERAL);
-		c.setCellStyle(headerStyle);
-		c = r.createCell(3);
-		c.setCellValue(COMPLIANCE_TOTAL_LITERAL);
-		c.setCellStyle(headerStyle);
-		rowCount++;
-		firstRow = rowCount;
-		for (Entry<String, BigDecimal> entry : resultDataNC.entrySet()) {
-			r = sheet.createRow(rowCount);
-			c = r.createCell(0);
-			c.setCellValue(entry.getKey());
-			c.setCellStyle(headerStyleLeft);
-			c = r.createCell(1);
-			c.setCellValue(entry.getValue().doubleValue() / 100);
-			c.setCellStyle(percentStyle);
-			c = r.createCell(2);
-			c.setCellValue(resultDataPC.get(entry.getKey()).doubleValue() / 100);
-			c.setCellStyle(percentStyle);
-			c = r.createCell(3);
-			c.setCellValue(resultDataTC.get(entry.getKey()).doubleValue() / 100);
-			c.setCellStyle(percentStyle);
-			rowCount++;
-		}
-		generateStackedBarGraphic(sheet, firstRow, rowCount, 1, 3, titleComplianceGraphicGlobal);
-		// Generate 2 extra graphics for fixed part if required
-		if (generateFixedGraphics) {
-			generateGlobalProgressEvolutionSheet(sheet, messageResources, idObs, idObsExecution, idOperation, tagsToFilter, exObsIds, pageObservatoryMapFixed, null, titleAllocationGraphicFixed,
-					titleComplianceGrpahicFixed, null, null, false, rowCount + 15, xlsxUtils);
-		}
 		sheet.autoSizeColumn(0);
 		sheet.autoSizeColumn(1);
 		sheet.autoSizeColumn(2);
@@ -1421,7 +3488,7 @@ public final class AnnexUtils {
 	 * @param title       the title
 	 */
 	private static void generateStackedBarGraphic(final XSSFSheet sheet, final int firstRow, final int lastRow, final int firstColumn, final int lastColumn, final String title) {
-		XDDFDataSource date = XDDFDataSourcesFactory.fromStringCellRange(sheet, new CellRangeAddress(firstRow, lastRow - 1, 0, 0));
+		XDDFDataSource<String> date = XDDFDataSourcesFactory.fromStringCellRange(sheet, new CellRangeAddress(firstRow, lastRow - 1, 0, 0));
 		XDDFNumericalDataSource<Double> lowLevel = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(firstRow, lastRow - 1, 1, 1));
 		XDDFNumericalDataSource<Double> mediumLevel = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(firstRow, lastRow - 1, 2, 2));
 		XDDFNumericalDataSource<Double> highLevel = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(firstRow, lastRow - 1, 3, 3));
@@ -1908,303 +3975,6 @@ public final class AnnexUtils {
 	}
 
 	/**
-	 * Creates the annex criteria portal.
-	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param idOperation      the id operation
-	 * @param tagsToFilter     the tags to filter
-	 * @param exObsIds         the ex obs ids
-	 * @throws Exception the exception
-	 */
-	public static void createAnnexPortalsCriteria(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
-			throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales-criterios.xml")) {
-			Logger.putLog("Generando anexo: anexo-portales-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, true, true);
-		} catch (Exception e) {
-			Logger.putLog("Error generar el anexo: anexo-portales-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
-	}
-
-	/**
-	 * Creates the annex paginas.
-	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param idOperation      the id operation
-	 * @param tagsToFilter     the tags to filter
-	 * @param exObsIds         the ex obs ids
-	 * @throws Exception the exception
-	 */
-	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
-			throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas.xml")) {
-			Logger.putLog("Generando anexo: anexo-paginas.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false, false);
-		} catch (Exception e) {
-			Logger.putLog("Error al generar el anexo: anexo-paginas.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
-	}
-
-	/**
-	 * Creates the annex paginas.
-	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param idOperation      the id operation
-	 * @param tagsToFilter     the tags to filter
-	 * @param exObsIds         the ex obs ids
-	 * @throws Exception the exception
-	 */
-	public static void createAnnexPaginasVerifications(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
-			throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas-verificaciones.xml")) {
-			Logger.putLog("Generando anexo: anexo-paginas-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, true, false);
-		} catch (Exception e) {
-			Logger.putLog("Error al generar el anexo: anexo-paginas-verificaciones", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
-	}
-
-	/**
-	 * Creates the annex paginas criteria.
-	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param idOperation      the id operation
-	 * @param tagsToFilter     the tags to filter
-	 * @param exObsIds         the ex obs ids
-	 * @throws Exception the exception
-	 */
-	public static void createAnnexPaginasCriteria(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
-			throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas-criterios.xml")) {
-			Logger.putLog("Generando anexo: anexo-paginas-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false, true);
-		} catch (Exception e) {
-			Logger.putLog("Error al generar el anexo: anexo-paginas-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
-	}
-
-	/**
-	 * Generate xml pages.
-	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param tagsToFilter     the tags to filter
-	 * @param c                the c
-	 * @param writer           the writer
-	 * @param verifications    the verifications
-	 * @param criterias        the criterias
-	 * @throws IOException  Signals that an I/O exception has occurred.
-	 * @throws SAXException the SAX exception
-	 * @throws Exception    the exception
-	 * @throws SQLException the SQL exception
-	 */
-	private static void generateXmlPages(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications,
-			final boolean criterias) throws IOException, SAXException, Exception, SQLException {
-		final ContentHandler hd = getContentHandler(writer);
-		hd.startDocument();
-		hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
-		final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
-		for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
-			if (categoryForm != null) {
-				for (SiteForm siteForm : categoryForm.getSiteFormList()) {
-					if (siteForm != null) {
-						final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(siteForm.getIdCrawlerSeed()));
-						// Filter by tags
-						List<String> tagList = null;
-						if (tagsToFilter != null) {
-							tagList = Arrays.asList(tagsToFilter);
-						}
-						boolean hasTags = tagList != null ? false : true;
-						if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty() && tagList != null) {
-							for (EtiquetaForm tag : semillaForm.getEtiquetas()) {
-								if (tagList.contains(String.valueOf(tag.getId()))) {
-									hasTags = true;
-									break;
-								}
-							}
-						}
-						if (hasTags) {
-							hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
-							writeTag(hd, Constants.XML_ID, String.valueOf(semillaForm.getId()));
-							writeTag(hd, NOMBRE_ELEMENT, siteForm.getName());
-							writeTag(hd, CATEGORIA_ELEMENT, semillaForm.getCategoria().getName());
-							// Multidependencia
-							StringBuilder dependencias = new StringBuilder();
-							if (semillaForm.getDependencias() != null) {
-								for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-									dependencias.append(semillaForm.getDependencias().get(i).getName());
-									if (i < semillaForm.getDependencias().size() - 1) {
-										dependencias.append(BREAK_LINE);
-									}
-								}
-							}
-							writeTag(hd, Constants.XML_AMBITO, semillaForm.getAmbito().getName());
-							writeTag(hd, Constants.XML_COMPLEJIDAD, semillaForm.getComplejidad().getName());
-							writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
-							writeTag(hd, SEMILLA2, semillaForm.getListaUrls().get(0));
-							// Seed tags
-							List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
-							List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
-							List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
-							List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
-							List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
-							if (etiquetas != null && !etiquetas.isEmpty()) {
-								for (EtiquetaForm tmp : etiquetas) {
-									if (tmp.getClasificacion() != null) {
-										switch (tmp.getClasificacion().getId()) {
-										case "1":
-											tagsTematica.add(tmp);
-											break;
-										case "2":
-											tagsDistribucion.add(tmp);
-											break;
-										case "3":
-											tagsRecurrencia.add(tmp);
-											break;
-										case "4":
-											tagsOtros.add(tmp);
-											break;
-										default:
-											break;
-										}
-									}
-								}
-							}
-							// 1
-							hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
-							if (!tagsTematica.isEmpty()) {
-								for (int i = 0; i < tagsTematica.size(); i++) {
-									hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
-									if (i < tagsTematica.size() - 1) {
-										hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
-									}
-								}
-							}
-							hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
-							// 2
-							hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
-							if (!tagsDistribucion.isEmpty()) {
-								for (int i = 0; i < tagsDistribucion.size(); i++) {
-									hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
-									if (i < tagsDistribucion.size() - 1) {
-										hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
-									}
-								}
-							}
-							hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
-							// 3
-							hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
-							if (!tagsRecurrencia.isEmpty()) {
-								for (int i = 0; i < tagsRecurrencia.size(); i++) {
-									hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
-									if (i < tagsRecurrencia.size() - 1) {
-										hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
-									}
-								}
-							}
-							hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
-							// 4
-							hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
-							if (!tagsOtros.isEmpty()) {
-								for (int i = 0; i < tagsOtros.size(); i++) {
-									hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
-									if (i < tagsOtros.size() - 1) {
-										hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
-									}
-								}
-							}
-							hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
-							// Num crawls
-							writeTag(hd, PAGINAS, String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
-							hd.startElement(EMPTY_STRING, EMPTY_STRING, PAGINAS, null);
-							Map<String, Map<String, ValidationDetails>> wcagCompliance = null;
-							// Only generate this info once
-							if (criterias) {
-								final List<Long> analysisIdsByTracking = AnalisisDatos.getEvaluationIdsFromExecutedObservatoryAndIdSeed(idObsExecution, Long.valueOf(siteForm.getIdCrawlerSeed()));
-								final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
-								// This map store, the url and a map with everi wcag automatic validation an result
-								wcagCompliance = WcagEmUtils.generateEquivalenceMap(currentEvaluationPageList);
-							}
-							for (PageForm pageForm : siteForm.getPageList()) {
-								if (pageForm != null) {
-									hd.startElement(EMPTY_STRING, EMPTY_STRING, "pagina", null);
-									writeTag(hd, "url", pageForm.getUrl());
-									writeTag(hd, PUNTUACION, pageForm.getScore());
-									writeTag(hd, ADECUACION, ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
-									// OAW Verifications
-									if (verifications) {
-										ObservatoryEvaluationForm evaluationForm = currentEvaluationPageList.stream()
-												.filter(evaluation -> pageForm.getUrl().equals(evaluation.getUrl()) && evaluation.getSeed().getId().equals(String.valueOf(semillaForm.getId())))
-												.findFirst().orElse(null);
-										if (evaluationForm != null) {
-											for (ObservatorySuitabilityForm suitabilityForm : evaluationForm.getGroups().get(0).getSuitabilityGroups()) {
-												int i = 1;
-												for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
-													writeTag(hd, "V_1_" + i, getModality(subgroupForm.getValue(), messageResources));
-													i++;
-												}
-											}
-											for (ObservatorySuitabilityForm suitabilityForm : evaluationForm.getGroups().get(1).getSuitabilityGroups()) {
-												int i = 1;
-												for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
-													writeTag(hd, "V_2_" + i, getModality(subgroupForm.getValue(), messageResources));
-													i++;
-												}
-											}
-										}
-									}
-									// WCAG Criterias
-									if (criterias) {
-										Map<String, ValidationDetails> details = wcagCompliance.get(pageForm.getUrl());
-//										for (WcagEmPointKey wcagEmPoint : WcagEmPointKey.values()) {
-										for (String sWcagEmPoint : ALL_WCAG_EM_POINTS) {
-											String compliance = "";
-											WcagEmPointKey wcagEmPoint = WcagEmPointKey.findByPoint(sWcagEmPoint);
-											if (wcagEmPoint != null) {
-												// do what you want
-												compliance = messageResources.getMessage("modality.pass");
-												final ValidationDetails validationDetails = details.get(wcagEmPoint.getWcagEmId());
-												if (validationDetails != null) {
-													if (EARL_FAILED.equalsIgnoreCase(validationDetails.getResult())) {
-														compliance = messageResources.getMessage("modality.fail");
-													} else if (EARL_INAPPLICABLE.equalsIgnoreCase(validationDetails.getResult())) {
-														compliance = messageResources.getMessage("resultados.anonimos.porc.portales.na");
-													}
-												} else {
-													compliance = "N/T";
-												}
-											} else {
-												compliance = "N/T";
-											}
-											writeTag(hd, "C_" + sWcagEmPoint.replace(".", "_"), compliance);
-										}
-									}
-									hd.endElement(EMPTY_STRING, EMPTY_STRING, "pagina");
-								}
-							}
-							hd.endElement(EMPTY_STRING, EMPTY_STRING, PAGINAS);
-//							if (criterias) {
-//								writeTag(hd, "nota", messageResources.getMessage("annex.xml.criteria.pages.note"));
-//							}
-							hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
-						}
-					}
-				}
-			}
-		}
-		hd.endElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT);
-		hd.endDocument();
-	}
-
-	/**
 	 * Gets the modality.
 	 *
 	 * @param result           the result
@@ -2234,252 +4004,6 @@ public final class AnnexUtils {
 	}
 
 	/**
-	 * Creates the annex portales.
-	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param idOperation      the id operation
-	 * @param tagsToFilter     the tags to filter
-	 * @param exObsIds         the ex obs ids
-	 * @throws Exception the exception
-	 */
-	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
-			throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales.xml")) {
-			Logger.putLog("Generando anexo: anexo-portales.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, false, false);
-		} catch (Exception e) {
-			Logger.putLog("Error al generar el anexo: anexo-portales.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
-	}
-
-	/**
-	 * Creates the annex portals verification.
-	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param idOperation      the id operation
-	 * @param tagsToFilter     the tags to filter
-	 * @param exObsIds         the ex obs ids
-	 * @throws Exception the exception
-	 */
-	public static void createAnnexPortalsVerification(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
-			throws Exception {
-		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales-verificaciones.xml")) {
-			Logger.putLog("Generando anexo: anexo-portales-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, true, true, false);
-		} catch (Exception e) {
-			Logger.putLog("Error al generar el anexo: anexo-portales-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
-	}
-
-	/**
-	 * Generate xml portal.
-	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param tagsToFilter     the tags to filter
-	 * @param c                the c
-	 * @param writer           the writer
-	 * @param verifications    the verifications
-	 * @param onlyLast         the only last
-	 * @param criterias        the criterias
-	 * @throws SQLException the SQL exception
-	 * @throws SAXException the SAX exception
-	 * @throws IOException  Signals that an I/O exception has occurred.
-	 */
-	private static void generateXmlPortal(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications,
-			final boolean onlyLast, final boolean criterias) throws SQLException, SAXException, IOException {
-		final ContentHandler hd = getContentHandler(writer);
-		hd.startDocument();
-		hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
-		for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-			final SemillaForm semillaForm = semillaEntry.getKey();
-			if (semillaForm.getId() != 0) {
-				// Filter by tags
-				List<String> tagList = null;
-				if (tagsToFilter != null) {
-					tagList = Arrays.asList(tagsToFilter);
-				}
-				boolean hasTags = tagList != null ? false : true;
-				if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty() && tagList != null) {
-					for (EtiquetaForm tag : semillaForm.getEtiquetas()) {
-						if (tagList.contains(String.valueOf(tag.getId()))) {
-							hasTags = true;
-							break;
-						}
-					}
-				}
-				if (hasTags) {
-					hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
-					writeTag(hd, Constants.XML_ID, String.valueOf(semillaForm.getId()));
-					writeTag(hd, NOMBRE_ELEMENT, semillaForm.getNombre());
-					writeTag(hd, CATEGORIA_ELEMENT, semillaForm.getCategoria().getName());
-					// Multidependencia
-					StringBuilder dependencias = new StringBuilder();
-					if (semillaForm.getDependencias() != null) {
-						for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-							dependencias.append(semillaForm.getDependencias().get(i).getName());
-							if (i < semillaForm.getDependencias().size() - 1) {
-								dependencias.append(BREAK_LINE);
-							}
-						}
-					}
-					// ambit
-					writeTag(hd, Constants.XML_AMBITO, semillaForm.getAmbito().getName());
-					writeTag(hd, Constants.XML_COMPLEJIDAD, semillaForm.getComplejidad().getName());
-					writeTag(hd, DEPENDE_DE_ELEMENT, dependencias.toString());
-					writeTag(hd, SEMILLA2, semillaForm.getListaUrls().get(0));
-					// Seed tags
-					List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
-					List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
-					List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
-					List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
-					List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
-					if (etiquetas != null && !etiquetas.isEmpty()) {
-						for (EtiquetaForm tmp : etiquetas) {
-							if (tmp.getClasificacion() != null) {
-								switch (tmp.getClasificacion().getId()) {
-								case "1":
-									tagsTematica.add(tmp);
-									break;
-								case "2":
-									tagsDistribucion.add(tmp);
-									break;
-								case "3":
-									tagsRecurrencia.add(tmp);
-									break;
-								case "4":
-									tagsOtros.add(tmp);
-									break;
-								default:
-									break;
-								}
-							}
-						}
-					}
-					// 1
-					hd.startElement("", "", Constants.XML_ETIQUETAS_TEMATICA, null);
-					if (!tagsTematica.isEmpty()) {
-						for (int i = 0; i < tagsTematica.size(); i++) {
-							hd.characters(tagsTematica.get(i).getName().toCharArray(), 0, tagsTematica.get(i).getName().length());
-							if (i < tagsTematica.size() - 1) {
-								hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
-							}
-						}
-					}
-					hd.endElement("", "", Constants.XML_ETIQUETAS_TEMATICA);
-					// 2
-					hd.startElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION, null);
-					if (!tagsDistribucion.isEmpty()) {
-						for (int i = 0; i < tagsDistribucion.size(); i++) {
-							hd.characters(tagsDistribucion.get(i).getName().toCharArray(), 0, tagsDistribucion.get(i).getName().length());
-							if (i < tagsDistribucion.size() - 1) {
-								hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
-							}
-						}
-					}
-					hd.endElement("", "", Constants.XML_ETIQUETAS_DISTRIBUCCION);
-					// 3
-					hd.startElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA, null);
-					if (!tagsRecurrencia.isEmpty()) {
-						for (int i = 0; i < tagsRecurrencia.size(); i++) {
-							hd.characters(tagsRecurrencia.get(i).getName().toCharArray(), 0, tagsRecurrencia.get(i).getName().length());
-							if (i < tagsRecurrencia.size() - 1) {
-								hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
-							}
-						}
-					}
-					hd.endElement("", "", Constants.XML_ETIQUETAS_RECURRENCIA);
-					// 4
-					hd.startElement("", "", Constants.XML_ETIQUETAS_OTROS, null);
-					if (!tagsOtros.isEmpty()) {
-						for (int i = 0; i < tagsOtros.size(); i++) {
-							hd.characters(tagsOtros.get(i).getName().toCharArray(), 0, tagsOtros.get(i).getName().length());
-							if (i < tagsOtros.size() - 1) {
-								hd.characters(BREAK_LINE.toCharArray(), 0, BREAK_LINE.length());
-							}
-						}
-					}
-					hd.endElement("", "", Constants.XML_ETIQUETAS_OTROS);
-					// Num crawls
-					writeTag(hd, PAGINAS, String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
-					// Scores
-					if (onlyLast) {
-						Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
-						final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
-						writeTag(hd, "puntuacion_" + executionDateAux, entry.getValue().getTotalScore().toString());
-						writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), messageResources));
-						writeTag(hd, "cumplimiento_" + executionDateAux, entry.getValue().getCompliance());
-					} else {
-						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-							final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
-							writeTag(hd, "puntuacion_" + executionDateAux, entry.getValue().getTotalScore().toString());
-							writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), messageResources));
-							writeTag(hd, "cumplimiento_" + executionDateAux, entry.getValue().getCompliance());
-						}
-					}
-					if (verifications) {
-						Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
-						for (VerificationScoreForm verification : entry.getValue().getVerificationScoreList()) {
-							writeTag(hd, "V_" + verification.getVerification().replace(".", "_"), evaluateCompliance(verification.getScore()));
-						}
-					}
-					if (criterias) {
-						final List<Long> analysisIdsByTracking = AnalisisDatos.getEvaluationIdsFromExecutedObservatoryAndIdSeed(idObsExecution, semillaForm.getId());
-						final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
-						Map<String, Map<String, ValidationDetails>> wcagCompliance = WcagEmUtils.generateEquivalenceMap(currentEvaluationPageList);
-						for (String sWcagEmPoint : ALL_WCAG_EM_POINTS) {
-							String compliance = "";
-							WcagEmPointKey wcagEmPointKey = WcagEmPointKey.findByPoint(sWcagEmPoint);
-							// Iterate WCAG Points
-							if (wcagCompliance != null && !wcagCompliance.isEmpty()) {
-								if (wcagEmPointKey != null) {
-									// Iterate evl list to preserve order
-									compliance = messageResources.getMessage("observatory.graphic.compilance.green");
-									int countFailed = 0;
-									int countNA = 0;
-									for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
-										Map<String, ValidationDetails> result = wcagCompliance.get(eval.getUrl());
-										// if cointain current wcag rule
-										if (result.containsKey(wcagEmPointKey.getWcagEmId())) {
-											final String validationResult = result.get(wcagEmPointKey.getWcagEmId()).getResult();
-											// if one of this has earl:failed, all result marked as failed
-											// do what you want
-											if (EARL_FAILED.equals(validationResult)) {
-												countFailed++;
-											} else if (EARL_INAPPLICABLE.equals(validationResult)) {
-												countNA++;
-											}
-										}
-									}
-									if (countFailed > currentEvaluationPageList.size() / 10) {
-										compliance = messageResources.getMessage("observatory.graphic.compilance.red");
-									}
-									if (countNA == currentEvaluationPageList.size()) {
-										compliance = messageResources.getMessage("observatory.graphic.compilance.gray");
-									}
-								} else {
-									compliance = "N/T";
-								}
-								writeTag(hd, "C_" + sWcagEmPoint.replace(".", "_"), compliance);
-							}
-						}
-					}
-//					if (criterias) {
-//						writeTag(hd, "nota", messageResources.getMessage("annex.xml.criteria.note"));
-//					}
-					hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
-				}
-			}
-		}
-		hd.endElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT);
-		hd.endDocument();
-	}
-
-	/**
 	 * Evaluate compliance.
 	 *
 	 * @param value the value
@@ -2500,249 +4024,6 @@ public final class AnnexUtils {
 			}
 		}
 		return "NA";
-	}
-
-	/**
-	 * Creates the XLSX annex.
-	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param idOperation      the id operation
-	 * @param tagsToFilter     the tags to filter
-	 * @throws Exception the exception
-	 */
-	public static void createAnnexXLSX2(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter) throws Exception {
-		ColumnNames = new ArrayList<>();
-		Logger.putLog("Generando anexo: " + FILE_2_ITERATION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_2_ITERATION_XLSX_NAME)) {
-			final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
-			final String ObservatoryFormDate = observatoryForm.getDate().substring(0, 10);
-			final String[] ColumnNames = new String[] { ID, NOMBRE, "namecat", AMBITO2, COMPLEJIDAD, DEPENDE_DE, SEMILLA2, TEMATICA, DISTRIBUCION, RECURRENCIA, OTROS, PAGINAS,
-					"puntuacion_" + ObservatoryFormDate, "adecuacion_" + ObservatoryFormDate, "cumplimiento_" + ObservatoryFormDate, NV_PREFFIX + ObservatoryFormDate, A_PREFFIX + ObservatoryFormDate,
-					AA_PREFFIX + ObservatoryFormDate, NC_PREFFIX + ObservatoryFormDate, PC_PREFFIX + ObservatoryFormDate, TC_PREFFIX + ObservatoryFormDate };
-			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
-			XSSFRow row;
-			XSSFCell cell;
-			int rowIndex = 0;
-			int columnIndex = 0;
-			XlsxUtils xlsxUtils = new XlsxUtils(wb);
-			final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
-			final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
-			// Add headers
-			row = sheet.createRow(rowIndex);
-			for (String name : ColumnNames) {
-				cell = row.createCell(columnIndex);
-				cell.setCellValue(name);
-				cell.setCellStyle(headerStyle);
-				columnIndex++;
-			}
-			// The sheet already has headers, so we start in the second row.
-			rowIndex++;
-			int categoryStarts;
-			for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
-				categoryStarts = rowIndex;
-				if (categoryForm != null) {
-					for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-						final SemillaForm semillaForm = semillaEntry.getKey();
-						if (categoryForm.getName().equals(semillaForm.getCategoria().getName()) && hasTags(semillaForm, tagsToFilter)) {
-							// Multidependence
-							StringBuilder dependencias = new StringBuilder();
-							if (semillaForm.getDependencias() != null) {
-								for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-									dependencias.append(semillaForm.getDependencias().get(i).getName());
-									if (i < semillaForm.getDependencias().size() - 1) {
-										dependencias.append(BREAK_LINE);
-									}
-								}
-							}
-							row = sheet.createRow(rowIndex);
-							int excelRowNumber = rowIndex + 1;
-							// "id"
-							cell = row.createCell(0);
-							cell.setCellValue(String.valueOf(semillaForm.getId()));
-							cell.setCellStyle(shadowStyle);
-							// "nombre"
-							cell = row.createCell(1);
-							cell.setCellValue(semillaForm.getNombre());
-							cell.setCellStyle(shadowStyle);
-							// "namecat"
-							cell = row.createCell(2);
-							cell.setCellValue(categoryForm.getName());
-							cell.setCellStyle(shadowStyle);
-							// "ambito"
-							cell = row.createCell(3);
-							cell.setCellValue(semillaForm.getAmbito().getName());
-							cell.setCellStyle(shadowStyle);
-							// "complejidad"
-							cell = row.createCell(4);
-							cell.setCellValue(semillaForm.getComplejidad().getName());
-							cell.setCellStyle(shadowStyle);
-							// "depende_de"
-							cell = row.createCell(5);
-							cell.setCellValue(dependencias.toString());
-							cell.setCellStyle(shadowStyle);
-							// "semilla"
-							cell = row.createCell(6);
-							cell.setCellValue(semillaForm.getListaUrls().get(0));
-							cell.setCellStyle(shadowStyle);
-							// Seed tags
-							List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
-							List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
-							List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
-							List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
-							List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
-							if (etiquetas != null && !etiquetas.isEmpty()) {
-								for (EtiquetaForm tmp : etiquetas) {
-									if (tmp.getClasificacion() != null) {
-										switch (tmp.getClasificacion().getId()) {
-										case "1":
-											tagsTematica.add(tmp);
-											break;
-										case "2":
-											tagsDistribucion.add(tmp);
-											break;
-										case "3":
-											tagsRecurrencia.add(tmp);
-											break;
-										case "4":
-											tagsOtros.add(tmp);
-											break;
-										default:
-											break;
-										}
-									}
-								}
-							}
-							// "tematica"
-							String dataToInsert = "";
-							if (!tagsTematica.isEmpty()) {
-								for (int i = 0; i < tagsTematica.size(); i++) {
-									dataToInsert += tagsTematica.get(i).getName();
-									if (i < tagsDistribucion.size() - 1) {
-										dataToInsert += BREAK_LINE;
-									}
-								}
-							}
-							cell = row.createCell(7);
-							cell.setCellValue(dataToInsert);
-							cell.setCellStyle(shadowStyle);
-							// "distribucion"
-							dataToInsert = "";
-							if (!tagsDistribucion.isEmpty()) {
-								for (int i = 0; i < tagsDistribucion.size(); i++) {
-									dataToInsert += tagsDistribucion.get(i).getName();
-									if (i < tagsDistribucion.size() - 1) {
-										dataToInsert += BREAK_LINE;
-									}
-								}
-							}
-							cell = row.createCell(8);
-							cell.setCellValue(dataToInsert);
-							cell.setCellStyle(shadowStyle);
-							// "Recurrencia"
-							dataToInsert = "";
-							if (!tagsRecurrencia.isEmpty()) {
-								for (int i = 0; i < tagsRecurrencia.size(); i++) {
-									dataToInsert += tagsRecurrencia.get(i).getName();
-									if (i < tagsRecurrencia.size() - 1) {
-										dataToInsert += BREAK_LINE;
-									}
-								}
-							}
-							cell = row.createCell(9);
-							cell.setCellValue(dataToInsert);
-							cell.setCellStyle(shadowStyle);
-							// Otros
-							dataToInsert = "";
-							if (!tagsOtros.isEmpty()) {
-								for (int i = 0; i < tagsOtros.size(); i++) {
-									dataToInsert += tagsOtros.get(i).getName();
-									if (i < tagsOtros.size() - 1) {
-										dataToInsert += BREAK_LINE;
-									}
-								}
-							}
-							cell = row.createCell(10);
-							cell.setCellValue(dataToInsert);
-							cell.setCellStyle(shadowStyle);
-							// Páginas
-							cell = row.createCell(11);
-							cell.setCellValue(String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId())));
-							cell.setCellStyle(shadowStyle);
-							Map.Entry<String, ScoreForm> entry = semillaEntry.getValue().lastEntry();
-							// "puntuacion_" + date
-							cell = row.createCell(12);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellValue(Double.parseDouble(entry.getValue().getTotalScore().toString()));
-							cell.setCellStyle(shadowStyle);
-							// "adecuacion_" + date
-							cell = row.createCell(13);
-							cell.setCellValue(changeLevelName(entry.getValue().getLevel(), messageResources));
-							cell.setCellStyle(shadowStyle);
-							// "cumplimiento_" + date
-							cell = row.createCell(14);
-							cell.setCellValue(entry.getValue().getCompliance());
-							cell.setCellStyle(shadowStyle);
-							// "NV_" + date
-							cell = row.createCell(15);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($N" + excelRowNumber + "=\"No Válido\",$M" + excelRowNumber + ",0)");
-							cell.setCellStyle(shadowStyle);
-							// "A_" + date
-							cell = row.createCell(16);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($N" + excelRowNumber + "=\"A\",$M" + excelRowNumber + ",0)");
-							cell.setCellStyle(shadowStyle);
-							// "AA_" + date
-							cell = row.createCell(17);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($N" + excelRowNumber + "=\"AA\",$M" + excelRowNumber + ",0)");
-							cell.setCellStyle(shadowStyle);
-							// "NC_" + date
-							cell = row.createCell(18);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($O" + excelRowNumber + "=\"No conforme\",$M" + excelRowNumber + ",0)");
-							cell.setCellStyle(shadowStyle);
-							// "PC_" + date
-							cell = row.createCell(19);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($O" + excelRowNumber + "=\"Parcialmente conforme\",$M" + excelRowNumber + ",0)");
-							cell.setCellStyle(shadowStyle);
-							// "TC_" + date
-							cell = row.createCell(20);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($O" + excelRowNumber + "=\"Plenamente conforme\",$M" + excelRowNumber + ",0)");
-							cell.setCellStyle(shadowStyle);
-							rowIndex++;
-						}
-					}
-					// Increase width of columns to match content
-					for (int i = 0; i < ColumnNames.length; i++) {
-						sheet.autoSizeColumn(i);
-					}
-					// Create graph into the Category sheet
-					if (categoryForm.getSiteFormList().size() > 0) {
-						/*
-						 * Excel allows sheet names up to 31 chars in length but other applications (such as OpenOffice) allow more. Some versions of Excel crash with names longer than 31 chars,
-						 * others - truncate such names to 31 character.
-						 */
-						String currentCategory = categoryForm.getName().substring(0, Math.min(categoryForm.getName().length(), 31));
-						if (wb.getSheet(currentCategory) == null) {
-							wb.createSheet(currentCategory);
-							InsertGraphIntoSheetByCategory(wb, wb.getSheet(currentCategory), categoryStarts, rowIndex, true);
-							InsertGraphIntoSheetByCategory(wb, wb.getSheet(currentCategory), categoryStarts, rowIndex, false);
-						}
-					}
-				}
-			}
-			XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
-			wb.write(writer);
-			wb.close();
-		} catch (Exception e) {
-			Logger.putLog("Error al generar el anexo: " + FILE_2_ITERATION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
 	}
 
 	/**
@@ -2768,499 +4049,6 @@ public final class AnnexUtils {
 			}
 		}
 		return hasTags;
-	}
-
-	/**
-	 * Creates the annex XLSX 1 evolution v 2.
-	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param idOperation      the id operation
-	 * @param comparision      the comparision
-	 * @param tagsToFilter     the tags to filter
-	 * @throws Exception the exception
-	 */
-	public static void createAnnexXLSX1_Evolution_v2(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision,
-			final String[] tagsToFilter) throws Exception {
-		dependencies = new ArrayList<>();
-		Logger.putLog("Generando anexo: " + FILE_1_EVOLUTION_XLSX_NAME_V2, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_1_EVOLUTION_XLSX_NAME_V2)) {
-			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
-			XSSFRow row;
-			XSSFCell cell;
-			final int numberOfFixedColumns = 12;
-			int rowIndex = 0;
-			int columnIndex = 0;
-			excelLines = new HashMap<>();
-			ExcelLine excelLine;
-			XlsxUtils xlsxUtils = new XlsxUtils(wb);
-			final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
-			final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
-			// Add headers without values
-			ColumnNames = new ArrayList<>();
-			ColumnNames.add(ID);
-			ColumnNames.add(NOMBRE);
-			ColumnNames.add(N_ITERACION);
-			ColumnNames.add(FECHA_ITERACION);
-			ColumnNames.add(SEMILLA2);
-			ColumnNames.add(AMBITO2);
-			ColumnNames.add(DEPENDE_DE);
-			ColumnNames.add(SEGMENTO);
-			ColumnNames.add(COMPLEJIDAD);
-			ColumnNames.add(PAGINAS);
-			ColumnNames.add(TEMATICA);
-			ColumnNames.add(DISTRIBUCION);
-			ColumnNames.add(RECURRENCIA);
-			ColumnNames.add(OTROS);
-			ColumnNames.add(PUNTUACION);
-			ColumnNames.add(ADECUACION);
-			ColumnNames.add(NO_VALIDO);
-			ColumnNames.add(A);
-			ColumnNames.add(AA);
-			ColumnNames.add(CUMPLIMIENTO);
-			ColumnNames.add(NO_CONFORME);
-			ColumnNames.add(PARCIALMENTE_CONFORME);
-			ColumnNames.add(TOTALMENTE_CONFORME);
-			ColumnNames.add(EVOL_PUNTUACION_ANT);
-			ColumnNames.add(EVOL_ADECUACION_ANT);
-			ColumnNames.add(EVOL_CUMPLIMIENTO_ANT);
-			ColumnNames.add(EVOL_PUNTUACION_PRIMER);
-			ColumnNames.add(EVOL_ADECUACION_PRIMER);
-			ColumnNames.add(EVOL_CUMPLIMIENTO_PRIMER);
-			// Create header row
-			row = sheet.createRow(rowIndex);
-			for (String name : ColumnNames) {
-				cell = row.createCell(columnIndex);
-				cell.setCellValue(name);
-				cell.setCellStyle(headerStyle);
-				columnIndex++;
-			}
-			rowIndex++;
-			/*
-			 * Category names list created by generation Evolution and reused generating PerDependency annex.
-			 */
-			List<String> categories = new ArrayList<>();
-			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = semillaEntry.getKey();
-				String namecat = semillaForm.getCategoria().getName();
-				if (semillaForm.getId() != 0) {
-					if (!categories.contains(namecat))
-						categories.add(namecat);
-				}
-			}
-			// Sort all category names
-			Collections.sort(categories);
-			// Loop to insert fixed values
-			for (String currentCategory : categories) {
-				for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-					// Filter if not has tags
-					final SemillaForm semillaForm = semillaEntry.getKey();
-					String namecat = semillaForm.getCategoria().getName();
-					// On each category iteration we filter the other categories.
-					if (semillaForm.getId() != 0 && namecat.equals(currentCategory) && hasTags(semillaForm, tagsToFilter)) {
-						row = sheet.createRow(rowIndex);
-						columnIndex = 0;
-						excelLine = new ExcelLine();
-						excelLine.setRowIndex(rowIndex);
-						// "id"
-						String id = String.valueOf(semillaForm.getId());
-						cell = row.createCell(ColumnNames.indexOf(ID));
-						cell.setCellValue(id);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setId(id);
-						// "nombre"
-						String name = semillaForm.getNombre();
-						cell = row.createCell(ColumnNames.indexOf(NOMBRE));
-						cell.setCellValue(name);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setNombre(name);
-						// "namecat"
-						cell = row.createCell(ColumnNames.indexOf(SEGMENTO));
-						cell.setCellValue(namecat);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setNamecat(namecat);
-						// "ambito"
-						String ambito = semillaForm.getAmbito().getName();
-						cell = row.createCell(ColumnNames.indexOf(AMBITO2));
-						cell.setCellValue(ambito);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setAmbito(ambito);
-						// "complejidad"
-						String compl = semillaForm.getComplejidad().getName();
-						cell = row.createCell(ColumnNames.indexOf(COMPLEJIDAD));
-						cell.setCellValue(compl);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setComplejidad(compl);
-						// "depende_de"
-						// Multidependencia
-						StringBuilder dependencias = new StringBuilder();
-						if (semillaForm.getDependencias() != null) {
-							for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-								// Store all dependencies globally (we will use it in other files generation
-								if (!dependencies.contains(semillaForm.getDependencias().get(i).getName()))
-									dependencies.add(semillaForm.getDependencias().get(i).getName());
-								dependencias.append(semillaForm.getDependencias().get(i).getName());
-								if (i < semillaForm.getDependencias().size() - 1) {
-									dependencias.append(BREAK_LINE);
-								}
-							}
-						}
-						cell = row.createCell(ColumnNames.indexOf(DEPENDE_DE));
-						cell.setCellValue(dependencias.toString());
-						cell.setCellStyle(shadowStyle);
-						excelLine.setDepende_de(dependencias.toString());
-						// "semilla"
-						String semilla = semillaForm.getListaUrls().get(0);
-						cell = row.createCell(ColumnNames.indexOf(SEMILLA2));
-						cell.setCellValue(semilla);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setSemilla(semilla);
-						// Seed tags
-						List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
-						List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
-						List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
-						List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
-						List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
-						if (etiquetas != null && !etiquetas.isEmpty()) {
-							for (EtiquetaForm tmp : etiquetas) {
-								if (tmp.getClasificacion() != null) {
-									switch (tmp.getClasificacion().getId()) {
-									case "1":
-										tagsTematica.add(tmp);
-										break;
-									case "2":
-										tagsDistribucion.add(tmp);
-										break;
-									case "3":
-										tagsRecurrencia.add(tmp);
-										break;
-									case "4":
-										tagsOtros.add(tmp);
-										break;
-									default:
-										break;
-									}
-								}
-							}
-						}
-						// "tematica"
-						String dataToInsert = "";
-						if (!tagsTematica.isEmpty()) {
-							for (int i = 0; i < tagsTematica.size(); i++) {
-								dataToInsert += tagsTematica.get(i).getName();
-								if (i < tagsDistribucion.size() - 1) {
-									dataToInsert += BREAK_LINE;
-								}
-							}
-						}
-						cell = row.createCell(ColumnNames.indexOf(TEMATICA));
-						cell.setCellValue(dataToInsert);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setTematica(dataToInsert);
-						// "distribucion"
-						dataToInsert = "";
-						if (!tagsDistribucion.isEmpty()) {
-							for (int i = 0; i < tagsDistribucion.size(); i++) {
-								dataToInsert += tagsDistribucion.get(i).getName();
-								if (i < tagsDistribucion.size() - 1) {
-									dataToInsert += BREAK_LINE;
-								}
-							}
-						}
-						cell = row.createCell(ColumnNames.indexOf(DISTRIBUCION));
-						cell.setCellValue(dataToInsert);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setDistribucion(dataToInsert);
-						// "Recurrencia"
-						dataToInsert = "";
-						if (!tagsRecurrencia.isEmpty()) {
-							for (int i = 0; i < tagsRecurrencia.size(); i++) {
-								dataToInsert += tagsRecurrencia.get(i).getName();
-								if (i < tagsRecurrencia.size() - 1) {
-									dataToInsert += BREAK_LINE;
-								}
-							}
-						}
-						cell = row.createCell(ColumnNames.indexOf(RECURRENCIA));
-						cell.setCellValue(dataToInsert);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setRecurrencia(dataToInsert);
-						// Otros
-						dataToInsert = "";
-						if (!tagsOtros.isEmpty()) {
-							for (int i = 0; i < tagsOtros.size(); i++) {
-								dataToInsert += tagsOtros.get(i).getName();
-								if (i < tagsOtros.size() - 1) {
-									dataToInsert += BREAK_LINE;
-								}
-							}
-						}
-						cell = row.createCell(ColumnNames.indexOf(OTROS));
-						cell.setCellStyle(shadowStyle);
-						excelLine.setOtros(dataToInsert);
-						// Páginas
-						String pages = String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId()));
-						cell = row.createCell(ColumnNames.indexOf(PAGINAS));
-						cell.setCellValue(pages);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setPaginas(pages);
-						// ***************************
-						// * EXECUTION VALUES *
-						// ***************************
-						executionDatesWithFormat = new ArrayList<>();
-						// Get all execution dates in DateTime format
-						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-							executionDatesWithFormat.add(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)));
-						}
-						// TODO ADD A ROW ADITIONAL FOR EVERY DATE
-						int iteration = 0;
-						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-							final int iterationRowIndex = rowIndex + iteration;
-							XSSFRow rowIteration = null;
-							if (iteration == 0) {
-								rowIteration = sheet.getRow(iterationRowIndex);
-							} else {
-								rowIteration = sheet.createRow(iterationRowIndex);
-							}
-							final String iterationDate = entry.getKey().substring(0, entry.getKey().indexOf(" "));
-							final String executionDateAux = iterationDate.replace("/", "_");
-							// Execution dates must be exists as column
-							double score = Double.parseDouble(entry.getValue().getTotalScore().toString());
-							String adequacy = changeLevelName(entry.getValue().getLevel(), messageResources);
-							String compliance = entry.getValue().getCompliance();
-							ExcelExecution execution = new ExcelExecution();
-							execution.setDate(executionDateAux);
-							execution.setScore(score);
-							execution.setAdequacy(adequacy);
-							execution.setCompliance(compliance);
-							excelLine.addExecution(execution);
-							// Iteration number
-							columnIndex = ColumnNames.indexOf(N_ITERACION);
-							cell = rowIteration.createCell(columnIndex);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellValue(iteration + 1);
-							cell.setCellStyle(shadowStyle);
-							// Iteration Date
-							columnIndex = ColumnNames.indexOf(FECHA_ITERACION);
-							cell = rowIteration.createCell(columnIndex);
-							cell.setCellValue(iterationDate);
-							cell.setCellStyle(shadowStyle);
-							// Puntuaction
-							columnIndex = ColumnNames.indexOf(PUNTUACION);
-							cell = rowIteration.createCell(columnIndex);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellValue(score);
-							cell.setCellStyle(shadowStyle);
-							// Allocation
-							cell = rowIteration.createCell(ColumnNames.indexOf(ADECUACION));
-							cell.setCellValue(adequacy);
-							cell.setCellStyle(shadowStyle);
-							// Compliance
-							cell = rowIteration.createCell(ColumnNames.indexOf(CUMPLIMIENTO));
-							cell.setCellValue(compliance);
-							cell.setCellStyle(shadowStyle);
-							// Not valid
-							String columnFirstLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(ADECUACION) + 1);
-							String columnSecondLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(PUNTUACION) + 1);
-							//
-							cell = rowIteration.createCell(ColumnNames.indexOf(NO_VALIDO));
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
-							cell.setCellStyle(shadowStyle);
-							// A
-							cell = rowIteration.createCell(ColumnNames.indexOf(A));
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"A\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
-							cell.setCellStyle(shadowStyle);
-							// AA
-							cell = rowIteration.createCell(ColumnNames.indexOf(AA));
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
-							cell.setCellStyle(shadowStyle);
-							columnFirstLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(CUMPLIMIENTO) + 1);
-							// NC
-							cell = rowIteration.createCell(ColumnNames.indexOf(NO_CONFORME));
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
-							cell.setCellStyle(shadowStyle);
-							// PC
-							cell = rowIteration.createCell(ColumnNames.indexOf(PARCIALMENTE_CONFORME));
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
-							cell.setCellStyle(shadowStyle);
-							// TC
-							cell = rowIteration.createCell(ColumnNames.indexOf(TOTALMENTE_CONFORME));
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
-							cell.setCellStyle(shadowStyle);
-							iteration++;
-						}
-						{
-							cell = row.createCell(ColumnNames.indexOf(EVOL_PUNTUACION_ANT));
-							int firstRow = GetPreviousExecutionRow(sheet, comparision, semillaForm.getEtiquetas(), false, rowIndex, rowIndex + executionDates.size(),
-									ColumnNames.indexOf(FECHA_ITERACION));
-							String formula = generateComparisionPunctuactionFormula_v2(ColumnNames.indexOf(PUNTUACION) + 1, firstRow, rowIndex + executionDates.size());
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-						// Evol allocation previous iteration
-						{
-							cell = row.createCell(ColumnNames.indexOf(EVOL_ADECUACION_ANT));
-							int firstRow = GetPreviousExecutionRow(sheet, comparision, semillaForm.getEtiquetas(), false, rowIndex, rowIndex + executionDates.size(),
-									ColumnNames.indexOf(FECHA_ITERACION));
-							String formula = generateComparisionAllocationFormula_v2(ColumnNames.indexOf(ADECUACION) + 1, firstRow, rowIndex + executionDates.size());
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-						// Evol compliance previous iteration
-						{
-							cell = row.createCell(ColumnNames.indexOf(EVOL_CUMPLIMIENTO_ANT));
-							int firstRow = GetPreviousExecutionRow(sheet, comparision, semillaForm.getEtiquetas(), false, rowIndex, rowIndex + executionDates.size(),
-									ColumnNames.indexOf(FECHA_ITERACION));
-							String formula = generateComparisionComplianceFormula_v2(ColumnNames.indexOf(CUMPLIMIENTO) + 1, firstRow, rowIndex + executionDates.size());
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-						// Evol score first iteration
-						{
-							cell = row.createCell(ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER));
-							int firstRow = GetPreviousExecutionRow(sheet, comparision, semillaForm.getEtiquetas(), true, rowIndex, rowIndex + executionDates.size(),
-									ColumnNames.indexOf(FECHA_ITERACION));
-							String formula = generateComparisionPunctuactionFormula_v2(ColumnNames.indexOf(PUNTUACION) + 1, firstRow, rowIndex + executionDates.size());
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-						// Evol allocation first iteration
-						{
-							cell = row.createCell(ColumnNames.indexOf(EVOL_ADECUACION_PRIMER));
-							int firstRow = GetPreviousExecutionRow(sheet, comparision, semillaForm.getEtiquetas(), true, rowIndex, rowIndex + executionDates.size(),
-									ColumnNames.indexOf(FECHA_ITERACION));
-							String formula = generateComparisionAllocationFormula_v2(ColumnNames.indexOf(ADECUACION) + 1, firstRow, rowIndex + executionDates.size());
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-						// Evol compliance first iteration
-						{
-							cell = row.createCell(ColumnNames.indexOf(EVOL_CUMPLIMIENTO_PRIMER));
-							int firstRow = GetPreviousExecutionRow(sheet, comparision, semillaForm.getEtiquetas(), true, rowIndex, rowIndex + executionDates.size(),
-									ColumnNames.indexOf(FECHA_ITERACION));
-							String formula = generateComparisionComplianceFormula_v2(ColumnNames.indexOf(CUMPLIMIENTO) + 1, firstRow, rowIndex + executionDates.size());
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-						excelLines.put(rowIndex, excelLine);
-						// Merge some cells
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(ID), ColumnNames.indexOf(ID)));
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(NOMBRE), ColumnNames.indexOf(NOMBRE)));
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(SEMILLA2), ColumnNames.indexOf(SEMILLA2)));
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(AMBITO2), ColumnNames.indexOf(AMBITO2)));
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(DEPENDE_DE), ColumnNames.indexOf(DEPENDE_DE)));
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(SEGMENTO), ColumnNames.indexOf(SEGMENTO)));
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(COMPLEJIDAD), ColumnNames.indexOf(COMPLEJIDAD)));
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(PAGINAS), ColumnNames.indexOf(PAGINAS)));
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(TEMATICA), ColumnNames.indexOf(TEMATICA)));
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(DISTRIBUCION), ColumnNames.indexOf(DISTRIBUCION)));
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(RECURRENCIA), ColumnNames.indexOf(RECURRENCIA)));
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(OTROS), ColumnNames.indexOf(OTROS)));
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_PUNTUACION_ANT), ColumnNames.indexOf(EVOL_PUNTUACION_ANT)));
-						sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_ADECUACION_ANT), ColumnNames.indexOf(EVOL_ADECUACION_ANT)));
-						sheet.addMergedRegion(
-								new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_CUMPLIMIENTO_ANT), ColumnNames.indexOf(EVOL_CUMPLIMIENTO_ANT)));
-						sheet.addMergedRegion(
-								new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER), ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER)));
-						sheet.addMergedRegion(
-								new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_ADECUACION_PRIMER), ColumnNames.indexOf(EVOL_ADECUACION_PRIMER)));
-						sheet.addMergedRegion(
-								new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_CUMPLIMIENTO_PRIMER), ColumnNames.indexOf(EVOL_CUMPLIMIENTO_PRIMER)));
-						rowIndex = rowIndex + executionDates.size();
-					}
-				}
-			}
-			// TODO Merge rows
-			int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
-			// Compliance
-			nextStartPos = InsertSummaryTableCompliance(sheet, nextStartPos + 5, ColumnNames, headerStyle, shadowStyle);
-			String title = "Datos de evolución de PUNTUACIÓN con respecto a la ITERACION ANTERIOR (Nº de sitios web por segmentos)";
-			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.indexOf(EVOL_PUNTUACION_ANT) + 1, title);
-			title = "Datos de evolución de PUNTUACIÓN con respecto a la PRIMERA ITERACIÓN (Nº de sitios web por segmentos)";
-			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER) + 1, title);
-			// Insert graph sheets per category
-			for (String category : categories) {
-				/*
-				 * Excel allows sheet names up to 31 chars in length but other applications (such as OpenOffice) allow more. Some versions of Excel crash with names longer than 31 chars, others -
-				 * truncate such names to 31 character.
-				 */
-				String categorySheetName = category.substring(0, Math.min(category.length(), 31));
-				// Search category initial and final row.
-				int categoryFirstRow = 0;
-				int categoryLastRow = 0;
-				// Starts 1 because always first row was header
-				for (int i = 1; i < rowIndex; i++) {
-					row = sheet.getRow(i);
-					if (row != null) {
-						cell = row.getCell(ColumnNames.indexOf(SEGMENTO));
-						if (cell != null) { // merged cells return null
-							if (cell.getStringCellValue().equals(category)) {
-								if (categoryFirstRow == 0) {
-									categoryFirstRow = i;
-								}
-								categoryLastRow = i + executionDates.size(); // every seed has all iterations
-							}
-						}
-					}
-				}
-				if (wb.getSheet(categorySheetName) == null && categoryFirstRow != 0 && categoryLastRow != 0) {
-					wb.createSheet(categorySheetName);
-					XSSFSheet currentSheet = wb.getSheet(categorySheetName);
-					InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, categoryFirstRow, categoryLastRow - 1, true, numberOfFixedColumns);
-					InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, categoryFirstRow, categoryLastRow - 1, false, numberOfFixedColumns);
-				}
-			}
-			// Increase width of columns to match content
-			for (int i = 0; i < ColumnNames.size(); i++) {
-				sheet.autoSizeColumn(i);
-			}
-			XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
-			// Clear -1 cell values
-			for (int i = 0; i < sheet.getLastRowNum(); i++) {
-				Row r = sheet.getRow(i);
-				if (r != null) {
-					for (int j = 0; j < r.getLastCellNum(); j++) {
-						Cell cX = r.getCell(j);
-						if (cX != null && CellType.NUMERIC.equals(cX.getCellType()) && cX.getNumericCellValue() == -1) {
-							cX.setCellStyle(shadowStyle);
-							cX.setBlank();
-						}
-					}
-				}
-			}
-			// Add a legend with custom text
-			XSSFDrawing draw = sheet.createDrawingPatriarch();
-			XSSFTextBox tb1 = draw.createTextbox(new XSSFClientAnchor(0, 0, 0, 0, 0, nextStartPos + 5, 10, nextStartPos + 5 + 6));
-			tb1.setLineStyleColor(0, 0, 0);
-			tb1.setLineWidth(1);
-			Color col = Color.WHITE;
-			tb1.setFillColor(col.getRed(), col.getGreen(), col.getBlue());
-			StringBuilder sb = new StringBuilder("Los rangos en base a los cuales se ha calculado la evolución de la puntuación de los sitios web son los siguientes:");
-			sb.append(BREAK_LINE);
-			for (RangeForm range : websiteRanges) {
-				sb.append(range.getName() + ": " + (range.getMinValue() != null ? range.getMinValue() : "") + " " + range.getMinValueOperator() + " x " + range.getMaxValueOperator() + " "
-						+ (range.getMaxValue() != null ? range.getMaxValue() : "") + BREAK_LINE);
-			}
-			// websiteRanges
-			XSSFRichTextString address = new XSSFRichTextString(sb.toString());
-			tb1.setText(address);
-			CTTextCharacterProperties rpr = tb1.getCTShape().getTxBody().getPArray(0).getRArray(0).getRPr();
-			rpr.setSz(1000); // 9 pt
-			col = Color.BLACK;
-			rpr.addNewSolidFill().addNewSrgbClr().setVal(new byte[] { (byte) col.getRed(), (byte) col.getGreen(), (byte) col.getBlue() });
-			wb.write(writer);
-			wb.close();
-		} catch (Exception e) {
-			Logger.putLog("Error al generar el anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
 	}
 
 	/**
@@ -3294,513 +4082,6 @@ public final class AnnexUtils {
 		String secondCell = columName + lastRow;
 		String formula = "IF($" + secondCell + "=\"No Válido\",0,IF($" + secondCell + "=\"A\",1,3))-IF($" + firstCell + "=\"No Válido\",0,IF($" + firstCell + "=\"A\",1,3))";
 		return formula;
-	}
-
-	/**
-	 * Creates the XLSX evolution annex.
-	 *
-	 * @param messageResources the message resources
-	 * @param idObsExecution   the id obs execution
-	 * @param idOperation      the id operation
-	 * @param comparision      the comparision
-	 * @param tagsToFilter     the tags to filter
-	 * @throws Exception the exception
-	 */
-	public static void createAnnexXLSX1_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision,
-			final String[] tagsToFilter) throws Exception {
-		dependencies = new ArrayList<>();
-		Logger.putLog("Generando anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_1_EVOLUTION_XLSX_NAME)) {
-			XSSFWorkbook wb = new XSSFWorkbook();
-			XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
-			XSSFRow row;
-			XSSFCell cell;
-			final int numberOfFixedColumns = 12;
-			int rowIndex = 0;
-			int columnIndex = 0;
-			// executionDates = new ArrayList<>();
-			excelLines = new HashMap<>();
-			ExcelLine excelLine;
-			XlsxUtils xlsxUtils = new XlsxUtils(wb);
-			final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
-			final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
-			// Add headers without values
-			ColumnNames = new ArrayList<>();
-			ColumnNames.add(ID);
-			ColumnNames.add(NOMBRE);
-			ColumnNames.add("namecat");
-			ColumnNames.add(AMBITO2);
-			ColumnNames.add(COMPLEJIDAD);
-			ColumnNames.add(DEPENDE_DE);
-			ColumnNames.add(SEMILLA2);
-			ColumnNames.add(TEMATICA);
-			ColumnNames.add(DISTRIBUCION);
-			ColumnNames.add(RECURRENCIA);
-			ColumnNames.add(OTROS);
-			ColumnNames.add(PAGINAS);
-			for (String executionDateAux : executionDates) {
-				// Add header if it is not already created
-				if (!ColumnNames.contains("puntuacion_" + executionDateAux)) {
-					ColumnNames.add("puntuacion_" + executionDateAux);
-				}
-				// ADECUACIÓN
-				// Add header if it is not already created
-				if (!ColumnNames.contains("adecuacion_" + executionDateAux)) {
-					ColumnNames.add("adecuacion_" + executionDateAux);
-				}
-				// CUMPLIMIENTO
-				// Add header if it is not already created
-				if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
-					ColumnNames.add("cumplimiento_" + executionDateAux);
-				}
-			}
-			for (String executionDateAux : executionDates) {
-				// Add header if it is not already created
-				if (!ColumnNames.contains(NV_PREFFIX + executionDateAux)) {
-					ColumnNames.add(NV_PREFFIX + executionDateAux);
-				}
-				if (!ColumnNames.contains(A_PREFFIX + executionDateAux)) {
-					ColumnNames.add(A_PREFFIX + executionDateAux);
-				}
-				if (!ColumnNames.contains(AA_PREFFIX + executionDateAux)) {
-					ColumnNames.add(AA_PREFFIX + executionDateAux);
-				}
-				if (!ColumnNames.contains(NC_PREFFIX + executionDateAux)) {
-					ColumnNames.add(NC_PREFFIX + executionDateAux);
-				}
-				if (!ColumnNames.contains(PC_PREFFIX + executionDateAux)) {
-					ColumnNames.add(PC_PREFFIX + executionDateAux);
-				}
-				if (!ColumnNames.contains(TC_PREFFIX + executionDateAux)) {
-					ColumnNames.add(TC_PREFFIX + executionDateAux);
-				}
-			}
-			ColumnNames.add(EVOL_PUNTUACION_ANT);
-			ColumnNames.add(EVOL_ADECUACION_ANT);
-			ColumnNames.add(EVOL_CUMPLIMIENTO_ANT);
-			ColumnNames.add(EVOL_PUNTUACION_PRIMER);
-			ColumnNames.add(EVOL_ADECUACION_PRIMER);
-			ColumnNames.add(EVOL_CUMPLIMIENTO_PRIMER);
-//			
-			row = sheet.createRow(rowIndex);
-			for (String name : ColumnNames) {
-				cell = row.createCell(columnIndex);
-				cell.setCellValue(name);
-				cell.setCellStyle(headerStyle);
-				columnIndex++;
-			}
-			rowIndex++;
-			/*
-			 * Category names list created by generation Evolution and reused generating PerDependency annex.
-			 */
-			List<String> categories = new ArrayList<>();
-			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-				final SemillaForm semillaForm = semillaEntry.getKey();
-				String namecat = semillaForm.getCategoria().getName();
-				if (semillaForm.getId() != 0) {
-					if (!categories.contains(namecat))
-						categories.add(namecat);
-				}
-			}
-			// Sort all category names
-			Collections.sort(categories);
-			// Loop to insert fixed values
-			for (String currentCategory : categories) {
-				for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-					// Filter if not has tags
-					final SemillaForm semillaForm = semillaEntry.getKey();
-					String namecat = semillaForm.getCategoria().getName();
-					// On each category iteration we filter the other categories.
-					if (semillaForm.getId() != 0 && namecat.equals(currentCategory) && hasTags(semillaForm, tagsToFilter)) {
-						row = sheet.createRow(rowIndex);
-						columnIndex = 0;
-						excelLine = new ExcelLine();
-						excelLine.setRowIndex(rowIndex);
-						// "id"
-						String id = String.valueOf(semillaForm.getId());
-						ColumnNames.add(ID);
-						ColumnNames.add(NOMBRE);
-						ColumnNames.add("namecat");
-						ColumnNames.add(AMBITO2);
-						ColumnNames.add(COMPLEJIDAD);
-						ColumnNames.add(DEPENDE_DE);
-						ColumnNames.add(SEMILLA2);
-						ColumnNames.add(TEMATICA);
-						ColumnNames.add(DISTRIBUCION);
-						ColumnNames.add(RECURRENCIA);
-						ColumnNames.add(OTROS);
-						ColumnNames.add(PAGINAS);
-						cell = row.createCell(ColumnNames.indexOf(ID));
-						cell.setCellValue(id);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setId(id);
-						// "nombre"
-						String name = semillaForm.getNombre();
-						cell = row.createCell(ColumnNames.indexOf(NOMBRE));
-						cell.setCellValue(name);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setNombre(name);
-						// "namecat"
-						cell = row.createCell(ColumnNames.indexOf("namecat"));
-						cell.setCellValue(namecat);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setNamecat(namecat);
-						// "ambito"
-						String ambito = semillaForm.getAmbito().getName();
-						cell = row.createCell(ColumnNames.indexOf(AMBITO2));
-						cell.setCellValue(ambito);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setAmbito(ambito);
-						// "complejidad"
-						String compl = semillaForm.getComplejidad().getName();
-						cell = row.createCell(ColumnNames.indexOf(COMPLEJIDAD));
-						cell.setCellValue(compl);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setComplejidad(compl);
-						// "depende_de"
-						// Multidependencia
-						StringBuilder dependencias = new StringBuilder();
-						if (semillaForm.getDependencias() != null) {
-							for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-								// Store all dependencies globally (we will use it in other files generation
-								if (!dependencies.contains(semillaForm.getDependencias().get(i).getName()))
-									dependencies.add(semillaForm.getDependencias().get(i).getName());
-								dependencias.append(semillaForm.getDependencias().get(i).getName());
-								if (i < semillaForm.getDependencias().size() - 1) {
-									dependencias.append(BREAK_LINE);
-								}
-							}
-						}
-						cell = row.createCell(ColumnNames.indexOf(DEPENDE_DE));
-						cell.setCellValue(dependencias.toString());
-						cell.setCellStyle(shadowStyle);
-						excelLine.setDepende_de(dependencias.toString());
-						// "semilla"
-						String semilla = semillaForm.getListaUrls().get(0);
-						cell = row.createCell(ColumnNames.indexOf(SEMILLA2));
-						cell.setCellValue(semilla);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setSemilla(semilla);
-						// Seed tags
-						List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
-						List<EtiquetaForm> tagsDistribucion = new ArrayList<>(); // id=2
-						List<EtiquetaForm> tagsTematica = new ArrayList<>();// id=1
-						List<EtiquetaForm> tagsRecurrencia = new ArrayList<>();// id=3
-						List<EtiquetaForm> tagsOtros = new ArrayList<>();// id=4
-						if (etiquetas != null && !etiquetas.isEmpty()) {
-							for (EtiquetaForm tmp : etiquetas) {
-								if (tmp.getClasificacion() != null) {
-									switch (tmp.getClasificacion().getId()) {
-									case "1":
-										tagsTematica.add(tmp);
-										break;
-									case "2":
-										tagsDistribucion.add(tmp);
-										break;
-									case "3":
-										tagsRecurrencia.add(tmp);
-										break;
-									case "4":
-										tagsOtros.add(tmp);
-										break;
-									default:
-										break;
-									}
-								}
-							}
-						}
-						// "tematica"
-						String dataToInsert = "";
-						if (!tagsTematica.isEmpty()) {
-							for (int i = 0; i < tagsTematica.size(); i++) {
-								dataToInsert += tagsTematica.get(i).getName();
-								if (i < tagsDistribucion.size() - 1) {
-									dataToInsert += BREAK_LINE;
-								}
-							}
-						}
-						cell = row.createCell(ColumnNames.indexOf(TEMATICA));
-						cell.setCellValue(dataToInsert);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setTematica(dataToInsert);
-						// "distribucion"
-						dataToInsert = "";
-						if (!tagsDistribucion.isEmpty()) {
-							for (int i = 0; i < tagsDistribucion.size(); i++) {
-								dataToInsert += tagsDistribucion.get(i).getName();
-								if (i < tagsDistribucion.size() - 1) {
-									dataToInsert += BREAK_LINE;
-								}
-							}
-						}
-						cell = row.createCell(ColumnNames.indexOf(DISTRIBUCION));
-						cell.setCellValue(dataToInsert);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setDistribucion(dataToInsert);
-						// "Recurrencia"
-						dataToInsert = "";
-						if (!tagsRecurrencia.isEmpty()) {
-							for (int i = 0; i < tagsRecurrencia.size(); i++) {
-								dataToInsert += tagsRecurrencia.get(i).getName();
-								if (i < tagsRecurrencia.size() - 1) {
-									dataToInsert += BREAK_LINE;
-								}
-							}
-						}
-						cell = row.createCell(ColumnNames.indexOf(RECURRENCIA));
-						cell.setCellValue(dataToInsert);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setRecurrencia(dataToInsert);
-						// Otros
-						dataToInsert = "";
-						if (!tagsOtros.isEmpty()) {
-							for (int i = 0; i < tagsOtros.size(); i++) {
-								dataToInsert += tagsOtros.get(i).getName();
-								if (i < tagsOtros.size() - 1) {
-									dataToInsert += BREAK_LINE;
-								}
-							}
-						}
-						cell = row.createCell(ColumnNames.indexOf(OTROS));
-						cell.setCellStyle(shadowStyle);
-						excelLine.setOtros(dataToInsert);
-						// Páginas
-						String pages = String.valueOf(ObservatorioDAO.getNumCrawls(c, idObsExecution, semillaForm.getId()));
-						cell = row.createCell(ColumnNames.indexOf(PAGINAS));
-						cell.setCellValue(pages);
-						cell.setCellStyle(shadowStyle);
-						excelLine.setPaginas(pages);
-						// ***************************
-						// * EXECUTION VALUES *
-						// ***************************
-						executionDatesWithFormat = new ArrayList<>();
-						// Get all execution dates in DateTime format
-						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-							executionDatesWithFormat.add(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)));
-						}
-						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-							final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
-							// Execution dates must be exists as column
-							double score = Double.parseDouble(entry.getValue().getTotalScore().toString());
-							String adequacy = changeLevelName(entry.getValue().getLevel(), messageResources);
-							String compliance = entry.getValue().getCompliance();
-							ExcelExecution execution = new ExcelExecution();
-							execution.setDate(executionDateAux);
-							execution.setScore(score);
-							execution.setAdequacy(adequacy);
-							execution.setCompliance(compliance);
-							excelLine.addExecution(execution);
-							// PUNTUACIÓN
-							// Set the first column based on header
-							columnIndex = ColumnNames.indexOf("puntuacion_" + executionDateAux);
-							cell = row.createCell(columnIndex++);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellValue(score);
-							cell.setCellStyle(shadowStyle);
-							// ADECUACIÓN
-							cell = row.createCell(columnIndex++);
-							cell.setCellValue(adequacy);
-							cell.setCellStyle(shadowStyle);
-							// CUMPLIMIENTO
-							cell = row.createCell(columnIndex++);
-							cell.setCellValue(compliance);
-							cell.setCellStyle(shadowStyle);
-						}
-						int numberOfDate = 0;
-						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-							final String date = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
-							// Previously we ignore the minor date of the day when there is a day with more than one executions.
-							// Now we also ignore it to keep coherence.
-							if (executionDatesWithFormat_Valid.contains(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)))) {
-								row = sheet.getRow(rowIndex);
-								String columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.indexOf(date)));
-								String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 1) + (3 * executionDates.indexOf(date)));
-								// "NV_" + date
-								// Set the first column based on header
-								columnIndex = ColumnNames.indexOf(NV_PREFFIX + date);
-								cell = row.createCell(columnIndex++);
-								cell.setCellType(CellType.NUMERIC);
-								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-								cell.setCellStyle(shadowStyle);
-								// "A_" + date
-								cell = row.createCell(columnIndex++);
-								cell.setCellType(CellType.NUMERIC);
-								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"A\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-								cell.setCellStyle(shadowStyle);
-								// "AA_" + date
-								cell = row.createCell(columnIndex++);
-								cell.setCellType(CellType.NUMERIC);
-								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-								cell.setCellStyle(shadowStyle);
-								columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.indexOf(date)));
-								// "NC_" + date
-								cell = row.createCell(columnIndex++);
-								cell.setCellType(CellType.NUMERIC);
-								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-								cell.setCellStyle(shadowStyle);
-								// "PC_" + date
-								cell = row.createCell(columnIndex++);
-								cell.setCellType(CellType.NUMERIC);
-								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-								cell.setCellStyle(shadowStyle);
-								// "TC_" + date
-								cell = row.createCell(columnIndex++);
-								cell.setCellType(CellType.NUMERIC);
-								cell.setCellFormula("IF($" + columnFirstLetter + (rowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (rowIndex + 1) + ",0)");
-								cell.setCellStyle(shadowStyle);
-								numberOfDate++;
-							}
-						}
-						// Evol score previous iteration
-						{
-							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, PUNTUACION, false);
-							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
-							cell = row.createCell(ColumnNames.indexOf(EVOL_PUNTUACION_ANT));
-							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-						// Evol allocation previous iteration
-						{
-							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, ADECUACION, false);
-							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
-							cell = row.createCell(ColumnNames.indexOf(EVOL_ADECUACION_ANT));
-							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
-									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
-									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-						// Evol compliance previous iteration
-						{
-							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, CUMPLIMIENTO, false);
-							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
-							cell = row.createCell(ColumnNames.indexOf(EVOL_CUMPLIMIENTO_ANT));
-							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
-									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
-									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-						// Evol score first iteration
-						{
-							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, PUNTUACION, true);
-							String columnSecondLetter = GetExcelColumnNameForNumber(numberOfFixedColumns + 1 + (3 * executionDates.size() - 3));
-							cell = row.createCell(ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER));
-							String formula = generateComparisionFormula(columnFirstLetter, columnSecondLetter);
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-						// Evol allocation first iteration
-						{
-							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, ADECUACION, true);
-							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * executionDates.size() - 3));
-							cell = row.createCell(ColumnNames.indexOf(EVOL_ADECUACION_PRIMER));
-							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No Válido\",0,IF($" + columnSecondLetter + "$2:$"
-									+ columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$419=\"No Válido\",0,IF($"
-									+ columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"A\",1,3))";
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-						// Evol compliance first iteration
-						{
-							String columnFirstLetter = GetFirstLetterPreviousExecution(comparision, semillaForm.getEtiquetas(), ColumnNames, CUMPLIMIENTO, true);
-							String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 3) + (3 * executionDates.size() - 3));
-							cell = row.createCell(ColumnNames.size() - 1);
-							cell = row.createCell(ColumnNames.indexOf(EVOL_CUMPLIMIENTO_PRIMER));
-							String formula = "IF($" + columnSecondLetter + "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"No conforme\",0,IF($" + columnSecondLetter
-									+ "$2:$" + columnSecondLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))-IF($" + columnFirstLetter + "$2:$" + columnFirstLetter
-									+ "$419=\"No conforme\",0,IF($" + columnFirstLetter + "$2:$" + columnFirstLetter + "$" + (annexmap.entrySet().size() + 1) + "=\"Parcialmente conforme\",1,3))";
-							cell.setCellFormula(formula);
-							cell.setCellStyle(shadowStyle);
-						}
-						excelLines.put(rowIndex, excelLine);
-						rowIndex++;
-					}
-				}
-			}
-			int nextStartPos = InsertSummaryTable(sheet, rowIndex + 5, ColumnNames, headerStyle, shadowStyle);
-			// Compliance
-			nextStartPos = InsertSummaryTableCompliance(sheet, nextStartPos + 5, ColumnNames, headerStyle, shadowStyle);
-			String title = "Datos de evolución de PUNTUACIÓN con respecto a la ITERACION ANTERIOR (Nº de sitios web por segmentos)";
-			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.indexOf(EVOL_PUNTUACION_ANT) + 1, title);
-			title = "Datos de evolución de PUNTUACIÓN con respecto a la PRIMERA ITERACIÓN (Nº de sitios web por segmentos)";
-			nextStartPos = InsertCategoriesTable(sheet, nextStartPos + 5, categories, headerStyle, shadowStyle, rowIndex, ColumnNames.indexOf(EVOL_PUNTUACION_PRIMER) + 1, title);
-			// Insert graph sheets per category
-			for (String category : categories) {
-				/*
-				 * Excel allows sheet names up to 31 chars in length but other applications (such as OpenOffice) allow more. Some versions of Excel crash with names longer than 31 chars, others -
-				 * truncate such names to 31 character.
-				 */
-				String categorySheetName = category.substring(0, Math.min(category.length(), 31));
-				// Search category initial and final row.
-				int categoryFirstRow = 0;
-				int categoryLastRow = 0;
-				// Starts 1 because always first row was header
-				for (int i = 1; i < rowIndex; i++) {
-					row = sheet.getRow(i);
-					if (row != null) {
-						cell = row.getCell(2);
-						if (cell.getStringCellValue().equals(category)) {
-							if (categoryFirstRow == 0) {
-								categoryFirstRow = i;
-							}
-							categoryLastRow = i;
-						}
-					}
-				}
-				if (wb.getSheet(categorySheetName) == null && categoryFirstRow != 0 && categoryLastRow != 0) {
-					wb.createSheet(categorySheetName);
-					XSSFSheet currentSheet = wb.getSheet(categorySheetName);
-					InsertGraphIntoSheetByEvolution(wb, currentSheet, categoryFirstRow, categoryLastRow, true, numberOfFixedColumns);
-					InsertGraphIntoSheetByEvolution(wb, currentSheet, categoryFirstRow, categoryLastRow, false, numberOfFixedColumns);
-				}
-			}
-			// Increase width of columns to match content
-			for (int i = 0; i < ColumnNames.size(); i++) {
-				sheet.autoSizeColumn(i);
-			}
-			XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
-			// Clear -1 cell values
-			for (int i = 0; i < sheet.getLastRowNum(); i++) {
-				Row r = sheet.getRow(i);
-				if (r != null) {
-					for (int j = 0; j < r.getLastCellNum(); j++) {
-						Cell cX = r.getCell(j);
-						if (cX != null && CellType.NUMERIC.equals(cX.getCellType()) && cX.getNumericCellValue() == -1) {
-							cX.setCellStyle(shadowStyle);
-							cX.setBlank();
-						}
-					}
-				}
-			}
-			// Add a legend with custom text
-			// sheet.createRow(nextStartPos + 5);
-			XSSFDrawing draw = sheet.createDrawingPatriarch();
-			XSSFTextBox tb1 = draw.createTextbox(new XSSFClientAnchor(0, 0, 0, 0, 0, nextStartPos + 5, 10, nextStartPos + 5 + 6));
-			tb1.setLineStyleColor(0, 0, 0);
-			tb1.setLineWidth(1);
-			Color col = Color.WHITE;
-			tb1.setFillColor(col.getRed(), col.getGreen(), col.getBlue());
-			StringBuilder sb = new StringBuilder("Los rangos en base a los cuales se ha calculado la evolución de la puntuación de los sitios web son los siguientes:");
-			sb.append(BREAK_LINE);
-			for (RangeForm range : websiteRanges) {
-				sb.append(range.getName() + ": " + (range.getMinValue() != null ? range.getMinValue() : "") + " " + range.getMinValueOperator() + " x " + range.getMaxValueOperator() + " "
-						+ (range.getMaxValue() != null ? range.getMaxValue() : "") + BREAK_LINE);
-			}
-			// websiteRanges
-			XSSFRichTextString address = new XSSFRichTextString(sb.toString());
-			tb1.setText(address);
-			CTTextCharacterProperties rpr = tb1.getCTShape().getTxBody().getPArray(0).getRArray(0).getRPr();
-			rpr.setSz(1000); // 9 pt
-			col = Color.BLACK;
-			rpr.addNewSolidFill().addNewSrgbClr().setVal(new byte[] { (byte) col.getRed(), (byte) col.getGreen(), (byte) col.getBlue() });
-			wb.write(writer);
-			wb.close();
-		} catch (Exception e) {
-			Logger.putLog("Error al generar el anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
 	}
 
 	/**
@@ -3946,7 +4227,7 @@ public final class AnnexUtils {
 	}
 
 	/**
-	 * Gets the previous execution row.
+	 * Gets the previous execution row. Return row number as Excel value (starts 1)
 	 *
 	 * @param sheet            the sheet
 	 * @param comparision      the comparision
@@ -3975,243 +4256,19 @@ public final class AnnexUtils {
 						if (row != null) {
 							Cell cell = row.getCell(columnIndex);
 							if (cell != null && !StringUtils.isEmpty(cell.getStringCellValue()) && previousDate.equalsIgnoreCase(cell.getStringCellValue())) {
-								return i;
+								return i + 1;
 							}
 						}
-						i++;
 					}
 					break;
 				}
 			}
 		}
 		// When we can't find the previous by tag, return previous row or first
-		return compareWithFirst ? firstRow : (lastRow - 1 >= 0 ? lastRow - 1 : 0);
-	}
-
-	/**
-	 * Creates the XLSX evolution annex per dependency. NEEDS THE EXECUTION OF createAnnexXLSX_Evolution METHOD PREVIOULY TO CONSTRUCT THE DATA DICTIONARY FROM DATABASE INFO.
-	 *
-	 * @param idOperation the id operation
-	 * @throws Exception the exception
-	 */
-	public static void createAnnexXLSX_PerDependency(final Long idOperation) throws Exception {
-		final int numberOfFixedColumns = 12;
-		// Iterate through dependencies to create each file
-		for (String currentDependency : dependencies) {
-			Logger.putLog("Generando anexo: " + currentDependency + ".xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-			try (FileOutputStream writer = getFileOutputStream(idOperation, "/Dependencias/" + currentDependency + ".xlsx")) {
-				XSSFWorkbook wb = new XSSFWorkbook();
-				XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
-				XSSFRow row;
-				XSSFCell cell;
-				int rowIndex = 0;
-				int columnIndex = 0;
-				XlsxUtils xlsxUtils = new XlsxUtils(wb);
-				final CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
-				final CellStyle shadowStyle = xlsxUtils.getCellStyleByName(XlsxUtils.PALE_BLUE_BACKGROUND_WHITE10_FONT);
-				row = sheet.createRow(rowIndex);
-				// Add headers without values
-				ColumnNames = new ArrayList<>();
-				ColumnNames.add(ID);
-				ColumnNames.add(NOMBRE);
-				ColumnNames.add("namecat");
-				ColumnNames.add(AMBITO2);
-				ColumnNames.add(COMPLEJIDAD);
-				ColumnNames.add(DEPENDE_DE);
-				ColumnNames.add(SEMILLA2);
-				ColumnNames.add(TEMATICA);
-				ColumnNames.add(DISTRIBUCION);
-				ColumnNames.add(RECURRENCIA);
-				ColumnNames.add(OTROS);
-				ColumnNames.add(PAGINAS);
-				for (String executionDateAux : executionDates) {
-					// Add header if it is not already created
-					if (!ColumnNames.contains("puntuacion_" + executionDateAux)) {
-						ColumnNames.add("puntuacion_" + executionDateAux);
-					}
-					// ADECUACIÓN
-					// Add header if it is not already created
-					if (!ColumnNames.contains("adecuacion_" + executionDateAux)) {
-						ColumnNames.add("adecuacion_" + executionDateAux);
-					}
-					// CUMPLIMIENTO
-					// Add header if it is not already created
-					if (!ColumnNames.contains("cumplimiento_" + executionDateAux)) {
-						ColumnNames.add("cumplimiento_" + executionDateAux);
-					}
-				}
-				for (String executionDateAux : executionDates) {
-					// Add header if it is not already created
-					if (!ColumnNames.contains(NV_PREFFIX + executionDateAux)) {
-						ColumnNames.add(NV_PREFFIX + executionDateAux);
-					}
-					if (!ColumnNames.contains(A_PREFFIX + executionDateAux)) {
-						ColumnNames.add(A_PREFFIX + executionDateAux);
-					}
-					if (!ColumnNames.contains(AA_PREFFIX + executionDateAux)) {
-						ColumnNames.add(AA_PREFFIX + executionDateAux);
-					}
-					if (!ColumnNames.contains(NC_PREFFIX + executionDateAux)) {
-						ColumnNames.add(NC_PREFFIX + executionDateAux);
-					}
-					if (!ColumnNames.contains(PC_PREFFIX + executionDateAux)) {
-						ColumnNames.add(PC_PREFFIX + executionDateAux);
-					}
-					if (!ColumnNames.contains(TC_PREFFIX + executionDateAux)) {
-						ColumnNames.add(TC_PREFFIX + executionDateAux);
-					}
-				}
-				row = sheet.createRow(rowIndex);
-				for (String name : ColumnNames) {
-					cell = row.createCell(columnIndex);
-					cell.setCellValue(name);
-					cell.setCellStyle(headerStyle);
-					columnIndex++;
-				}
-				rowIndex++;
-				for (Map.Entry<Integer, ExcelLine> currentLine : excelLines.entrySet()) {
-					// On each dependency iteration we filter other dependencies.
-					if (currentLine.getValue().getDepende_de().contains(currentDependency)) {
-						row = sheet.createRow(rowIndex);
-						columnIndex = 0;
-						// "id"
-						cell = row.createCell(columnIndex++);
-						cell.setCellValue(currentLine.getValue().getId());
-						cell.setCellStyle(shadowStyle);
-						// "nombre"
-						cell = row.createCell(columnIndex++);
-						cell.setCellValue(currentLine.getValue().getNombre());
-						cell.setCellStyle(shadowStyle);
-						// "namecat"
-						cell = row.createCell(columnIndex++);
-						cell.setCellValue(currentLine.getValue().getNamecat());
-						cell.setCellStyle(shadowStyle);
-						// "ambito"
-						cell = row.createCell(columnIndex++);
-						cell.setCellValue(currentLine.getValue().getAmbito());
-						cell.setCellStyle(shadowStyle);
-						// "complejidad"
-						cell = row.createCell(columnIndex++);
-						cell.setCellValue(currentLine.getValue().getComplejidad());
-						cell.setCellStyle(shadowStyle);
-						// "depende_de"
-						cell = row.createCell(columnIndex++);
-						cell.setCellValue(currentLine.getValue().getDepende_de());
-						cell.setCellStyle(shadowStyle);
-						// "semilla"
-						cell = row.createCell(columnIndex++);
-						cell.setCellValue(currentLine.getValue().getSemilla());
-						cell.setCellStyle(shadowStyle);
-						// "tematica"
-						cell = row.createCell(columnIndex++);
-						cell.setCellValue(currentLine.getValue().getTematica());
-						cell.setCellStyle(shadowStyle);
-						// "distribucion"
-						cell = row.createCell(columnIndex++);
-						cell.setCellValue(currentLine.getValue().getDistribucion());
-						cell.setCellStyle(shadowStyle);
-						// "recurrencia"
-						cell = row.createCell(columnIndex++);
-						cell.setCellValue(currentLine.getValue().getRecurrencia());
-						cell.setCellStyle(shadowStyle);
-						// "otros"
-						cell = row.createCell(columnIndex++);
-						cell.setCellValue(currentLine.getValue().getOtros());
-						cell.setCellStyle(shadowStyle);
-						// Páginas
-						cell = row.createCell(columnIndex++);
-						cell.setCellValue(currentLine.getValue().getPaginas());
-						cell.setCellStyle(shadowStyle);
-						for (String date : executionDates) {
-							// Puntuación
-							cell = row.createCell(columnIndex++);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellStyle(shadowStyle);
-							if (currentLine.getValue().HasDate(date)) {
-								cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getScore());
-							}
-							// Adecuación
-							cell = row.createCell(columnIndex++);
-							cell.setCellStyle(shadowStyle);
-							if (currentLine.getValue().HasDate(date)) {
-								cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getAdequacy());
-							}
-							// Cumplimiento
-							cell = row.createCell(columnIndex++);
-							cell.setCellStyle(shadowStyle);
-							if (currentLine.getValue().HasDate(date)) {
-								cell.setCellValue(currentLine.getValue().GetExecutionByDate(date).getCompliance());
-							}
-						}
-						rowIndex++;
-					}
-				}
-				// Insert NV, A and AA columns for each execution.
-				for (int i = 1; i < rowIndex; i++) {
-					row = sheet.getRow(i);
-					for (int numberOfDate = 0; numberOfDate < executionDates.size(); numberOfDate++) {
-						String columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * numberOfDate));
-						String columnSecondLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 1) + (3 * numberOfDate));
-						// "NV_" + date
-						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate));
-						cell.setCellType(CellType.NUMERIC);
-						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No Válido\",$" + columnSecondLetter + (i + 1) + ",0)");
-						cell.setCellStyle(shadowStyle);
-						// "A_" + date
-						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 1);
-						cell.setCellType(CellType.NUMERIC);
-						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"A\",$" + columnSecondLetter + (i + 1) + ",0)");
-						cell.setCellStyle(shadowStyle);
-						// "AA_" + date
-						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 2);
-						cell.setCellType(CellType.NUMERIC);
-						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"AA\",$" + columnSecondLetter + (i + 1) + ",0)");
-						cell.setCellStyle(shadowStyle);
-						columnFirstLetter = GetExcelColumnNameForNumber((numberOfFixedColumns + 2) + (3 * numberOfDate) + 1);
-						// "NC_" + date
-						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 3);
-						cell.setCellType(CellType.NUMERIC);
-						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"No conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
-						cell.setCellStyle(shadowStyle);
-						// "PC_" + date
-						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 4);
-						cell.setCellType(CellType.NUMERIC);
-						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
-						cell.setCellStyle(shadowStyle);
-						// "PC_" + date
-						cell = row.createCell(numberOfFixedColumns + (3 * executionDates.size()) + (6 * numberOfDate) + 5);
-						cell.setCellType(CellType.NUMERIC);
-						cell.setCellFormula("IF($" + columnFirstLetter + (i + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (i + 1) + ",0)");
-						cell.setCellStyle(shadowStyle);
-					}
-				}
-				// Increase width of columns to match content
-				for (int i = 0; i < ColumnNames.size(); i++) {
-					sheet.autoSizeColumn(i);
-				}
-				XSSFSheet currentSheet = wb.createSheet("Evolución SW");
-				XSSFSheet currentSheet2 = wb.createSheet("Iteración SW");
-				XSSFSheet currentSheet3 = wb.createSheet("Iteración Global");
-				if (rowIndex > 1) {
-					InsertGraphIntoSheetByDependency(currentSheet, rowIndex, true, numberOfFixedColumns, false);
-					InsertGraphIntoSheetByDependency(currentSheet, rowIndex, false, numberOfFixedColumns, false);
-					InsertGraphIntoSheetByDependency(currentSheet2, rowIndex, true, numberOfFixedColumns, true);
-					InsertGraphIntoSheetByDependency(currentSheet2, rowIndex, false, numberOfFixedColumns, true);
-					InsertAgregatePieChar(currentSheet3, rowIndex, ColumnNames, xlsxUtils);
-				}
-				XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
-				// Hide Id Column
-				CTCol col = sheet.getCTWorksheet().getColsArray(0).addNewCol();
-				col.setMin(1);
-				col.setMax(1);
-				col.setHidden(true);
-				wb.write(writer);
-				wb.close();
-			} catch (Exception e) {
-				Logger.putLog("Error al generar el anexo: " + currentDependency + ".xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-				throw e;
-			}
+		if (lastRow - firstRow == 1) {// only one row
+			return lastRow;
 		}
+		return compareWithFirst ? firstRow + 1 : (lastRow - 1);
 	}
 
 	/**
@@ -4355,6 +4412,170 @@ public final class AnnexUtils {
 		// Percent of No conforme
 		cell = row.createCell(2);
 		cell.setCellFormula("B29/" + (rowIndex - 1));
+		cell.setCellStyle(percentCenterStyle);
+		currentSheet3.autoSizeColumn(0);
+		currentSheet3.autoSizeColumn(1);
+		currentSheet3.autoSizeColumn(2);
+		XSSFDrawing drawing2 = currentSheet3.createDrawingPatriarch();
+		XSSFClientAnchor anchor2 = drawing2.createAnchor(0, 0, 0, 0, 1, 32, 9, 44);
+		XSSFChart chart2 = drawing2.createChart(anchor2);
+		chart2.setTitleText("Situación de cumplimiento estimada global");
+		chart2.setTitleOverlay(false);
+		XDDFChartLegend legend2 = chart2.getOrAddLegend();
+		legend2.setPosition(LegendPosition.TOP_RIGHT);
+		XDDFDataSource<String> labels2 = XDDFDataSourcesFactory.fromStringCellRange(currentSheet3, new CellRangeAddress(26, 28, 0, 0));
+		XDDFNumericalDataSource<Double> values2 = XDDFDataSourcesFactory.fromNumericCellRange(currentSheet3, new CellRangeAddress(26, 28, 1, 1));
+		XDDFChartData data2 = chart2.createData(ChartTypes.PIE3D, null, null);
+		data2.setVaryColors(true);
+		data2.addSeries(labels2, values2);
+		chart2.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(0);
+		chart2.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(0).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(GREEN_OAW_HTML));
+		chart2.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(1);
+		chart2.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(1).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(YELLOW_OAW_HTML));
+		chart2.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(2);
+		chart2.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(2).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(RED_OAW_HTML));
+		// angle getPie3DChartArray
+		chart2.getCTChart().addNewView3D().addNewRotX().setVal((byte) 25);
+		chart2.plot(data2);
+		setRoundedCorners(chart2, false);
+	}
+
+	/**
+	 * Insert agregate pie char.
+	 *
+	 * @param currentSheet3 the current sheet 3
+	 * @param rowIndex      the row index
+	 * @param columnNames   the column names
+	 * @param xlsxUtils     the xlsx utils
+	 */
+	private static void InsertAgregatePieChar_v2(XSSFSheet currentSheet3, int rowIndex, List<String> columnNames, final XlsxUtils xlsxUtils) {
+		int adecuationColumn = ColumnNames.indexOf(ADECUACION) + 1;
+		int dateColumn = ColumnNames.indexOf(FECHA_ITERACION) + 1;
+		String iterationDate = executionDates.get(executionDates.size() - 1);
+		CellStyle headerStyle = xlsxUtils.getCellStyleByName(XlsxUtils.ROYAL_BLUE_BACKGROUND_WHITE10_FONT);
+		CellStyle percentCenterStyle = xlsxUtils.getCellStyleByName(XlsxUtils.NORMAL_PERCENT11_CENTER_STYLE);
+		// ADECUACY
+		// "Headers"
+		XSSFRow row = currentSheet3.createRow(0);
+		XSSFCell cell = row.createCell(1);
+		cell.setCellValue("Número de sitios web");
+		cell.setCellStyle(headerStyle);
+		cell = row.createCell(2);
+		cell.setCellValue("Porcentaje sobre el total");
+		cell.setCellStyle(headerStyle);
+		// "AA"
+		row = currentSheet3.createRow(1);
+		cell = row.createCell(0);
+		cell.setCellValue(ALLOCATION_AA_LITERAL);
+		cell.setCellStyle(headerStyle);
+		// Number of AA
+		cell = row.createCell(1);
+		cell.setCellFormula("COUNTIFS(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn) + "2:" + GetExcelColumnNameForNumber(adecuationColumn) + rowIndex + ",\"AA\"," + "Resultados!"
+				+ GetExcelColumnNameForNumber(dateColumn) + "2:" + GetExcelColumnNameForNumber(dateColumn) + rowIndex + ",\"" + iterationDate + "\")");
+		// Percent of AA
+		cell = row.createCell(2);
+		cell.setCellFormula("B2/SUM(B2:B4)");
+		cell.setCellStyle(percentCenterStyle);
+		// "A"
+		row = currentSheet3.createRow(2);
+		cell = row.createCell(0);
+		cell.setCellValue(ALLOCATION_A_LITERAL);
+		cell.setCellStyle(headerStyle);
+		// Number of A
+		cell = row.createCell(1);
+		cell.setCellFormula("COUNTIFS(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn) + "2:" + GetExcelColumnNameForNumber(adecuationColumn) + rowIndex + ",\"A\"," + "Resultados!"
+				+ GetExcelColumnNameForNumber(dateColumn) + "2:" + GetExcelColumnNameForNumber(dateColumn) + rowIndex + ",\"" + iterationDate + "\")");
+		// Percent of A
+		cell = row.createCell(2);
+		cell.setCellFormula("B3/SUM(B2:B4)");
+		cell.setCellStyle(percentCenterStyle);
+		// "No Válido"
+		row = currentSheet3.createRow(3);
+		cell = row.createCell(0);
+		cell.setCellValue(ALLOCATION_NOT_VALID_LITERAL);
+		cell.setCellStyle(headerStyle);
+		// Number of No Válido
+		cell = row.createCell(1);
+		cell.setCellFormula("COUNTIFS(Resultados!" + GetExcelColumnNameForNumber(adecuationColumn) + "2:" + GetExcelColumnNameForNumber(adecuationColumn) + rowIndex + ",\"No Válido\"," + "Resultados!"
+				+ GetExcelColumnNameForNumber(dateColumn) + "2:" + GetExcelColumnNameForNumber(dateColumn) + rowIndex + ",\"" + iterationDate + "\")");
+		// Percent of No Válido
+		cell = row.createCell(2);
+		cell.setCellFormula("B4/SUM(B2:B4)");
+		cell.setCellStyle(percentCenterStyle);
+		currentSheet3.autoSizeColumn(0);
+		currentSheet3.autoSizeColumn(1);
+		currentSheet3.autoSizeColumn(2);
+		XSSFDrawing drawing = currentSheet3.createDrawingPatriarch();
+		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 1, 8, 9, 20);
+		XSSFChart chart = drawing.createChart(anchor);
+		chart.setTitleText("Nivel de adecuación estimado global");
+		chart.setTitleOverlay(false);
+		XDDFChartLegend legend = chart.getOrAddLegend();
+		legend.setPosition(LegendPosition.TOP_RIGHT);
+		XDDFDataSource<String> labels = XDDFDataSourcesFactory.fromStringCellRange(currentSheet3, new CellRangeAddress(1, 3, 0, 0));
+		XDDFNumericalDataSource<Double> values = XDDFDataSourcesFactory.fromNumericCellRange(currentSheet3, new CellRangeAddress(1, 3, 1, 1));
+		XDDFChartData data = chart.createData(ChartTypes.PIE3D, null, null);
+		data.setVaryColors(true);
+		data.addSeries(labels, values);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(0);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(0).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(GREEN_OAW_HTML));
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(1);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(1).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(YELLOW_OAW_HTML));
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).addNewDPt().addNewIdx().setVal(2);
+		chart.getCTChart().getPlotArea().getPie3DChartArray(0).getSerArray(0).getDPtList().get(2).addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(hex2Rgb(RED_OAW_HTML));
+		// angle getPie3DChartArray
+		chart.getCTChart().addNewView3D().addNewRotX().setVal((byte) 25);
+		chart.plot(data);
+		setRoundedCorners(chart, false);
+		// COMPLIANCE
+		int complianceColumn = ColumnNames.indexOf(CUMPLIMIENTO) + 1;
+		// "Headers"
+		row = currentSheet3.createRow(25);
+		cell = row.createCell(1);
+		cell.setCellValue("Número de páginas.");
+		cell.setCellStyle(headerStyle);
+		cell = row.createCell(2);
+		cell.setCellValue("Porcentaje sobre el total.");
+		cell.setCellStyle(headerStyle);
+		// "Plenamente conforme"
+		row = currentSheet3.createRow(26);
+		cell = row.createCell(0);
+		cell.setCellValue(COMPLIANCE_TOTAL_LITERAL);
+		cell.setCellStyle(headerStyle);
+		// Number of Plenamente conforme
+		cell = row.createCell(1);
+		cell.setCellFormula("COUNTIFS(Resultados!" + GetExcelColumnNameForNumber(complianceColumn) + "2:" + GetExcelColumnNameForNumber(complianceColumn) + rowIndex + ",\"Plenamente conforme\","
+				+ "Resultados!" + GetExcelColumnNameForNumber(dateColumn) + "2:" + GetExcelColumnNameForNumber(dateColumn) + rowIndex + ",\"" + iterationDate + "\")");
+		// Percent of Plenamente conforme
+		cell = row.createCell(2);
+		cell.setCellFormula("B27/SUM(B27:B29)");
+		cell.setCellStyle(percentCenterStyle);
+		// "Parcialmente conforme"
+		row = currentSheet3.createRow(27);
+		cell = row.createCell(0);
+		cell.setCellValue(COMPLIANCE_PARTIAL_LITERAL);
+		cell.setCellStyle(headerStyle);
+		// Number of Parcialmente conforme
+		cell = row.createCell(1);
+//		cell.setCellFormula("COUNTIF(Resultados!" + GetExcelColumnNameForNumber(complianceColumn) + "2:" + GetExcelColumnNameForNumber(complianceColumn) + rowIndex + ",\"Parcialmente conforme\")");
+		cell.setCellFormula("COUNTIFS(Resultados!" + GetExcelColumnNameForNumber(complianceColumn) + "2:" + GetExcelColumnNameForNumber(complianceColumn) + rowIndex + ",\"Parcialmente conforme\","
+				+ "Resultados!" + GetExcelColumnNameForNumber(dateColumn) + "2:" + GetExcelColumnNameForNumber(dateColumn) + rowIndex + ",\"" + iterationDate + "\")");
+		// Percent of Parcialmente conforme
+		cell = row.createCell(2);
+		cell.setCellFormula("B28/SUM(B27:B29)");
+		cell.setCellStyle(percentCenterStyle);
+		// "No conforme"
+		row = currentSheet3.createRow(28);
+		cell = row.createCell(0);
+		cell.setCellValue(COMPLIANCE_NOT_LITERAL);
+		cell.setCellStyle(headerStyle);
+		// Number of No conforme
+		cell = row.createCell(1);
+		cell.setCellFormula("COUNTIFS(Resultados!" + GetExcelColumnNameForNumber(complianceColumn) + "2:" + GetExcelColumnNameForNumber(complianceColumn) + rowIndex + ",\"No conforme\","
+				+ "Resultados!" + GetExcelColumnNameForNumber(dateColumn) + "2:" + GetExcelColumnNameForNumber(dateColumn) + rowIndex + ",\"" + iterationDate + "\")");
+		// Percent of No conforme
+		cell = row.createCell(2);
+		cell.setCellFormula("B29/SUM(B27:B29)");
 		cell.setCellStyle(percentCenterStyle);
 		currentSheet3.autoSizeColumn(0);
 		currentSheet3.autoSizeColumn(1);
@@ -4860,14 +5081,13 @@ public final class AnnexUtils {
 	/**
 	 * Insert graph into sheet by evolution v 2.
 	 *
-	 * @param wb                   the wb
-	 * @param currentSheet         the current sheet
-	 * @param categoryFirstRow     the category first row
-	 * @param categoryLastRow      the category last row
-	 * @param isFirst              the is first
-	 * @param numberOfFixedColumns the number of fixed columns
+	 * @param wb               the wb
+	 * @param currentSheet     the current sheet
+	 * @param categoryFirstRow the category first row
+	 * @param categoryLastRow  the category last row
+	 * @param isFirst          the is first
 	 */
-	private static void InsertGraphIntoSheetByEvolution_v2(XSSFWorkbook wb, XSSFSheet currentSheet, int categoryFirstRow, int categoryLastRow, boolean isFirst, int numberOfFixedColumns) {
+	private static void InsertGraphIntoSheetByEvolution_v2(XSSFWorkbook wb, XSSFSheet currentSheet, int categoryFirstRow, int categoryLastRow, boolean isFirst) {
 		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
 		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(categoryLastRow - categoryFirstRow, 16), isFirst ? 40 : 85);
 		XSSFChart chart = drawing.createChart(anchor);
@@ -4907,7 +5127,7 @@ public final class AnnexUtils {
 		ctValAx.addNewDelete().setVal(false);
 		ctValAx.addNewAxPos().setVal(STAxPos.L);
 		ctValAx.addNewCrossAx().setVal(123456); // id of the cat axis
-//		ctValAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
+		ctValAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
 		ctValAx.addNewMajorGridlines();
 		ctScaling.addNewMax().setVal(10);
 		ctScaling.addNewMin().setVal(0);
@@ -4919,19 +5139,19 @@ public final class AnnexUtils {
 				new byte[] { 0, (byte) 255, 0 } // blue
 		};
 		int firstColumn = (isFirst ? ColumnNames.indexOf(NO_VALIDO) : ColumnNames.indexOf(NO_CONFORME));
+		final String[] legendsAllocation = { ALLOCATION_NOT_VALID_LITERAL, ALLOCATION_A_LITERAL, ALLOCATION_AA_LITERAL };
+		final String[] legendsCompliance = { COMPLIANCE_NOT_LITERAL, COMPLIANCE_PARTIAL_LITERAL, COMPLIANCE_TOTAL_LITERAL };
 		for (int i = 0; i < 3; i++) {
 			CTBarSer ctBarSer = ctBarChart.addNewSer();
 			CTSerTx ctSerTx = ctBarSer.addNewTx();
-			CTStrRef ctStrRef = ctSerTx.addNewStrRef();
-			ctStrRef.setF(new CellRangeAddress(0, 0, i + firstColumn, i + firstColumn).formatAsString(wb.getSheetAt(0).getSheetName(), true)); // levels
+			ctSerTx.setV(isFirst ? legendsAllocation[i] : legendsCompliance[i]);
 			ctBarSer.addNewIdx().setVal(i);
 			CTAxDataSource cttAxDataSource = ctBarSer.addNewCat();
 			// do using MultiLvlStrRef instead of StrRef
 			CTMultiLvlStrRef ctMultiLvlStrRef = cttAxDataSource.addNewMultiLvlStrRef();
+			// seeds and iterations
 			ctMultiLvlStrRef
-					.setF(new CellRangeAddress(categoryFirstRow, categoryLastRow, ColumnNames.indexOf(NOMBRE), ColumnNames.indexOf(N_ITERACION)).formatAsString(wb.getSheetAt(0).getSheetName(), true)); // seeds
-																																																			// and
-																																																			// iterations
+					.setF(new CellRangeAddress(categoryFirstRow, categoryLastRow, ColumnNames.indexOf(NOMBRE), ColumnNames.indexOf(N_ITERACION)).formatAsString(wb.getSheetAt(0).getSheetName(), true));
 			CTNumDataSource ctNumDataSource = ctBarSer.addNewVal();
 			CTNumRef ctNumRef = ctNumDataSource.addNewNumRef();
 			ctNumRef.setF(new CellRangeAddress(categoryFirstRow, categoryLastRow, i + firstColumn, i + firstColumn).formatAsString(wb.getSheetAt(0).getSheetName(), true));
@@ -5013,6 +5233,126 @@ public final class AnnexUtils {
 		int minus45Deg = (int) Math.round(-5400000 / 2d);
 		rotAngle = minus45Deg;
 		text.getBodyPr().setRot(rotAngle);
+		setRoundedCorners(chart, false);
+	}
+
+	/**
+	 * Insert graph into sheet by dependency v 2.
+	 *
+	 * @param currentSheet  the current sheet
+	 * @param lastRow       the last row
+	 * @param isFirst       the is first
+	 * @param iterationDate the iteration date
+	 */
+	private static void InsertGraphIntoSheetByDependency_v2(XSSFSheet currentSheet, int lastRow, boolean isFirst, final String iterationDate) {
+		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
+		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(lastRow, 16), isFirst ? 40 : 85);
+		XSSFChart chart = drawing.createChart(anchor);
+		chart.setTitleText(isFirst ? ALLOCATION_EVOLUTION_TITLE : COMPLIANCE_EVOLUTION_TITLE);
+		chart.setTitleOverlay(false);
+		XDDFChartLegend legend = chart.getOrAddLegend();
+		CTPlotArea ctPlotArea = chart.getCTChart().getPlotArea();
+		// Get agency names
+		final XSSFSheet dataSheet = currentSheet.getWorkbook().getSheetAt(0);
+		chart.setTitleOverlay(false);
+		// do not auto delete the title; is necessary for showing title in Calc
+		if (chart.getCTChart().getAutoTitleDeleted() == null)
+			chart.getCTChart().addNewAutoTitleDeleted();
+		chart.getCTChart().getAutoTitleDeleted().setVal(false);
+		legend.setPosition(LegendPosition.LEFT);
+		CTBarChart ctBarChart = ctPlotArea.addNewBarChart();
+		CTBoolean ctBoolean = ctBarChart.addNewVaryColors();
+		ctBoolean.setVal(true);
+		ctBarChart.addNewBarDir().setVal(STBarDir.COL);
+		// telling the BarChart that it has axes and giving them Ids
+		ctBarChart.addNewAxId().setVal(123456);
+		ctBarChart.addNewAxId().setVal(123457);
+		// cat axis
+		CTCatAx ctCatAx = ctPlotArea.addNewCatAx();
+		ctCatAx.addNewAxId().setVal(123456); // id of the cat axis
+		CTScaling ctScaling = ctCatAx.addNewScaling();
+		ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
+		ctCatAx.addNewDelete().setVal(false);
+		ctCatAx.addNewAxPos().setVal(STAxPos.B);
+		ctCatAx.addNewCrossAx().setVal(123457); // id of the val axis
+		ctCatAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
+		// telling the category axis that it not has no multi level labels ;-)
+		ctCatAx.addNewNoMultiLvlLbl().setVal(false);
+		// val axis
+		CTValAx ctValAx = ctPlotArea.addNewValAx();
+		ctValAx.addNewAxId().setVal(123457); // id of the val axis
+		ctScaling = ctValAx.addNewScaling();
+		ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
+		ctValAx.addNewDelete().setVal(false);
+		ctValAx.addNewAxPos().setVal(STAxPos.L);
+		ctValAx.addNewCrossAx().setVal(123456); // id of the cat axis
+		ctValAx.addNewMajorGridlines();
+		ctScaling.addNewMax().setVal(10);
+		ctScaling.addNewMin().setVal(0);
+		//
+		ctBarChart.addNewOverlap().setVal((byte) 100);
+		// series
+		byte[][] seriesColors = new byte[][] { new byte[] { (byte) 255, 0, 0 }, // red
+				hex2Rgb(YELLOW_OAW_HTML), // yellow
+				new byte[] { 0, (byte) 255, 0 } // blue
+		};
+		int firstColumn = (isFirst ? ColumnNames.indexOf(NO_VALIDO) : ColumnNames.indexOf(NO_CONFORME));
+		final String[] legendsAllocation = { ALLOCATION_NOT_VALID_LITERAL, ALLOCATION_A_LITERAL, ALLOCATION_AA_LITERAL };
+		final String[] legendsCompliance = { COMPLIANCE_NOT_LITERAL, COMPLIANCE_PARTIAL_LITERAL, COMPLIANCE_TOTAL_LITERAL };
+		for (int j = 0; j < 3; j++) {
+			CTBarSer ctBarSer = ctBarChart.addNewSer();
+			CTSerTx ctSerTx = ctBarSer.addNewTx();
+//			CTStrRef ctStrRef = ctSerTx.addNewStrRef();
+			ctSerTx.setV(isFirst ? legendsAllocation[j] : legendsCompliance[j]);
+			ctBarSer.addNewIdx().setVal(j);
+			// Seeds
+			CTAxDataSource cttAxDataSource = ctBarSer.addNewCat();
+			CTStrRef ctAXStrRef = cttAxDataSource.addNewStrRef();
+			List<String> rangesString = new ArrayList<>();
+			// Determinate what is row of last iteration
+			for (int i = 1; i < lastRow; i++) {
+				if (dataSheet.getRow(i) != null && dataSheet.getRow(i).getCell(ColumnNames.indexOf(NOMBRE)) != null
+						&& !StringUtils.isEmpty(dataSheet.getRow(i).getCell(ColumnNames.indexOf(NOMBRE)).getStringCellValue())) {
+					rangesString.add(new CellRangeAddress(i, i, ColumnNames.indexOf(NOMBRE), ColumnNames.indexOf(NOMBRE)).formatAsString(dataSheet.getSheetName(), true));
+				}
+			}
+			if (!rangesString.isEmpty()) {
+				StringBuilder rangeString = new StringBuilder();
+				rangeString.append("(");
+				for (int r = 0; r < rangesString.size(); r++) {
+					rangeString.append(rangesString.get(r));
+					if (r < rangesString.size() - 1) {
+						rangeString.append(",");
+					}
+				}
+				rangeString.append(")");
+				ctAXStrRef.setF(rangeString.toString());
+			}
+			// Values
+			CTNumDataSource ctNumDataSource = ctBarSer.addNewVal();
+			rangesString = new ArrayList<>();
+			// Determinate what is row of last iteration
+			for (int i = 1; i < lastRow; i++) {
+				if (dataSheet.getRow(i) != null && dataSheet.getRow(i).getCell(ColumnNames.indexOf(FECHA_ITERACION)) != null
+						&& iterationDate.equalsIgnoreCase(dataSheet.getRow(i).getCell(ColumnNames.indexOf(FECHA_ITERACION)).getStringCellValue())) {
+					rangesString.add(new CellRangeAddress(i, i, j + firstColumn, j + firstColumn).formatAsString(dataSheet.getSheetName(), true));
+				}
+			}
+			if (!rangesString.isEmpty()) {
+				StringBuilder rangeString = new StringBuilder();
+				rangeString.append("(");
+				for (int r = 0; r < rangesString.size(); r++) {
+					rangeString.append(rangesString.get(r));
+					if (r < rangesString.size() - 1) {
+						rangeString.append(",");
+					}
+				}
+				rangeString.append(")");
+				CTNumRef ctNumRef = ctNumDataSource.addNewNumRef();
+				ctNumRef.setF(rangeString.toString());
+			}
+			ctBarSer.addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(seriesColors[j]);
+		}
 		setRoundedCorners(chart, false);
 	}
 
