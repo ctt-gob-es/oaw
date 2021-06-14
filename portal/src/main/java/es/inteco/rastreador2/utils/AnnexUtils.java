@@ -101,6 +101,7 @@ import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarChart;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarSer;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTBoolean;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTCatAx;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTChart;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTMultiLvlStrRef;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumDataSource;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumRef;
@@ -442,19 +443,19 @@ public final class AnnexUtils {
 		generateInfo(idObsExecution, exObsIds);
 		Logger.putLog("Generando anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		try {
-//			createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			createAnnexPaginasCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			createAnnexXLSX2(messageResources, idObsExecution, idOperation, tagsToFilter);
-//			createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
-//			createAnnexXLSX_PerDependency(idOperation);
+			createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPaginasCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexXLSX2(messageResources, idObsExecution, idOperation, tagsToFilter);
+			createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
+			createAnnexXLSX_PerDependency(idOperation);
 			createAnnexXLSX1_Evolution_v2(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
-//			createAnnexXLSX_PerDependency_v2(idOperation);
-//			createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
-//			createAnnexProgressEvolutionXLSX(messageResources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision);
+			createAnnexXLSX_PerDependency_v2(idOperation);
+			createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
+			createAnnexProgressEvolutionXLSX(messageResources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision);
 		} catch (Exception e) {
 			Logger.putLog("Error en la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		}
@@ -5089,18 +5090,18 @@ public final class AnnexUtils {
 	 */
 	private static void InsertGraphIntoSheetByEvolution_v2(XSSFWorkbook wb, XSSFSheet currentSheet, int categoryFirstRow, int categoryLastRow, boolean isFirst) {
 		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
-		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(categoryLastRow - categoryFirstRow, 16), isFirst ? 40 : 85);
+		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max((categoryLastRow - categoryFirstRow) * 2, 16), isFirst ? 40 : 85);
 		XSSFChart chart = drawing.createChart(anchor);
 		chart.setTitleText(isFirst ? ALLOCATION_EVOLUTION_TITLE : COMPLIANCE_EVOLUTION_TITLE);
-		chart.setTitleOverlay(false);
-		XDDFChartLegend legend = chart.getOrAddLegend();
-		CTPlotArea ctPlotArea = chart.getCTChart().getPlotArea();
 		chart.setTitleOverlay(false);
 		// do not auto delete the title; is necessary for showing title in Calc
 		if (chart.getCTChart().getAutoTitleDeleted() == null)
 			chart.getCTChart().addNewAutoTitleDeleted();
 		chart.getCTChart().getAutoTitleDeleted().setVal(false);
-		legend.setPosition(LegendPosition.LEFT);
+		XDDFChartLegend legend = chart.getOrAddLegend();
+		legend.setPosition(LegendPosition.RIGHT);
+		CTChart ctChart = chart.getCTChart();
+		CTPlotArea ctPlotArea = ctChart.getPlotArea();
 		CTBarChart ctBarChart = ctPlotArea.addNewBarChart();
 		CTBoolean ctBoolean = ctBarChart.addNewVaryColors();
 		ctBoolean.setVal(true);
@@ -5124,15 +5125,12 @@ public final class AnnexUtils {
 		ctValAx.addNewAxId().setVal(123457); // id of the val axis
 		ctScaling = ctValAx.addNewScaling();
 		ctScaling.addNewOrientation().setVal(STOrientation.MIN_MAX);
+		ctScaling.addNewMax().setVal(10);
+		ctScaling.addNewMin().setVal(0);
 		ctValAx.addNewDelete().setVal(false);
 		ctValAx.addNewAxPos().setVal(STAxPos.L);
 		ctValAx.addNewCrossAx().setVal(123456); // id of the cat axis
 		ctValAx.addNewTickLblPos().setVal(STTickLblPos.NEXT_TO);
-		ctValAx.addNewMajorGridlines();
-		ctScaling.addNewMax().setVal(10);
-		ctScaling.addNewMin().setVal(0);
-		//
-		ctBarChart.addNewOverlap().setVal((byte) 100);
 		// series
 		byte[][] seriesColors = new byte[][] { new byte[] { (byte) 255, 0, 0 }, // red
 				hex2Rgb(YELLOW_OAW_HTML), // yellow
@@ -5157,6 +5155,7 @@ public final class AnnexUtils {
 			ctNumRef.setF(new CellRangeAddress(categoryFirstRow, categoryLastRow, i + firstColumn, i + firstColumn).formatAsString(wb.getSheetAt(0).getSheetName(), true));
 			ctBarSer.addNewSpPr().addNewSolidFill().addNewSrgbClr().setVal(seriesColors[i]);
 		}
+		ctBarChart.addNewOverlap().setVal((byte) 100);
 		setRoundedCorners(chart, false);
 	}
 
