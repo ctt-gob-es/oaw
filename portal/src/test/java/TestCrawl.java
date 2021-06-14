@@ -90,7 +90,7 @@ public class TestCrawl {
 		mysqlDataSource.setUser("root");
 		mysqlDataSource.setPassword("root");
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.OFF);
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.DEBUG);
 		// System.setOut(new PrintStream(new File("/home/alvaro/Downloads/age-manual.txt")));
 	}
 
@@ -144,7 +144,7 @@ public class TestCrawl {
 		// https://www.aragon.es/-/sucesiones-y-donaciones
 		// https://www.navarra.es/home_es/Gobierno+de+Navarra/Organigrama/Los+departamentos/Economia+y+Hacienda/Organigrama/Estructura+Organica/Hacienda/
 		/***/
-		String[] urlsD = new String[] {};
+		String[] urlsD = new String[] { "https://www.juntadeandalucia.es/transparencia/transparencia-andalucia/" };
 //		"https://sedeelectronica.navarra.gob.es/", "http://www.boa.aragon.es/#/", "https://boc.cantabria.es/boces/", "https://www.borm.es/#",
 //		"https://web.larioja.org/bor-portada/", "https://sede.asturias.es/servicios-del-bopa", "http://www.melilla.es/melillaPortal/index.jsp", "https://www.comunidad.madrid/",
 //		"https://www.euskadi.eus/empleo-publico/", "https://www.aragon.es/-/sucesiones-y-donaciones", "https://www.euskadi.eus/sede-electronica", "https://web.gencat.cat",
@@ -158,7 +158,9 @@ public class TestCrawl {
 //				"https://sede.melilla.es/melillaPortal/transparencia/se_principal1.jsp?language=es&codResi=1", "https://web.larioja.org/portal-transparencia",
 //				"http://www.caib.es/sites/transparencia/ca/inici/?campa=yes", "https://transparencia.asturias.es ", "https://www.turismoasturias.es/", "https://www.andalucia.org/es/inicio",
 //				"https://www.xunta.gal" };
-		String[] urls = { "https://transparencia.asturias.es/web/gobierno-abierto/mapa-web" };
+		String[] urls = {};
+		//
+		https: // www.borm.es/#/home/sumario/14-06-2021
 		for (String url : urls) {
 			this.crawl(url, false);
 		}
@@ -181,8 +183,8 @@ public class TestCrawl {
 		System.out.println("-------------------------------------------------------------------------------------------\n\n");
 		final CrawlerData crawlerData = new CrawlerData();
 		crawlerData.setUrls(Collections.singletonList(url));
-		crawlerData.setProfundidad(5);
-		crawlerData.setTopN(10);
+		crawlerData.setProfundidad(4);
+		crawlerData.setTopN(8);
 		crawlerData.setPseudoaleatorio(true);
 		crawlerData.setTest(true);
 		crawlerData.setIdCrawling(-1);
