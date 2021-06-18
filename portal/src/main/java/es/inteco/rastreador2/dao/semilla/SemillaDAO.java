@@ -3232,30 +3232,18 @@ public final class SemillaDAO {
 				query += " AND d.id_tag IN (";
 				for (int i = 0; i < tags.size(); i++) {
 					query += "?";
-					if (i < idsTags.length - 1) {
+					if (i < tags.size() - 1) {
 						query += ",";
 					}
 				}
 				query += ")";
 			}
 		}
-//		if (idsTags != null && idsTags.length > 0) {
-//			query += " AND d.id_tag IN (";
-//			for (int i = 0; i < idsTags.length; i++) {
-//				if (!org.apache.commons.lang3.StringUtils.isEmpty(idsTags[i])) {
-//					query += "?";
-//					if (i < idsTags.length - 1) {
-//						query += ",";
-//					}
-//				}
-//			}
-//			query += ")";
-//		}
 		query += " ORDER BY UPPER(d.nombre) ASC ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			int paramIndex = 1;
 			if (!StringUtils.isEmpty(idAmbit)) {
-				ps.setString(paramIndex, idAmbit);
+				ps.setLong(paramIndex, Long.parseLong(idAmbit));
 				paramIndex++;
 			}
 			if (idsTags != null && idsTags.length > 0) {
@@ -3266,14 +3254,6 @@ public final class SemillaDAO {
 					}
 				}
 			}
-//			if (idsTags != null && idsTags.length > 0) {
-//				for (int i = 0; i < idsTags.length; i++) {
-//					if (!org.apache.commons.lang3.StringUtils.isEmpty(idsTags[i])) {
-//						ps.setString(paramIndex, idsTags[i]);
-//						paramIndex++;
-//					}
-//				}
-//			}
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					DependenciaForm dependenciaForm = new DependenciaForm();
