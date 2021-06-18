@@ -909,6 +909,11 @@ public final class AnnexUtils {
 									hd.endElement(EMPTY_STRING, EMPTY_STRING, "pagina");
 								}
 							}
+							if (criterias) {
+								// TODO Try to clean memory
+								wcagCompliance = null;
+								System.gc();
+							}
 							hd.endElement(EMPTY_STRING, EMPTY_STRING, PAGINAS);
 							hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 						}
@@ -1175,6 +1180,9 @@ public final class AnnexUtils {
 								writeTag(hd, "C_" + sWcagEmPoint.replace(".", "_"), compliance);
 							}
 						}
+						// TODO Try to free memory
+						wcagCompliance = null;
+						System.gc();
 					}
 					hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
 				}
@@ -3316,12 +3324,12 @@ public final class AnnexUtils {
 		int firstRow = initRow + 1;
 		// Allocation
 		// date + suiability
-		final Map<String, BigDecimal> resultDataA = new TreeMap<>();
-		final Map<String, BigDecimal> resultDataAA = new TreeMap<>();
-		final Map<String, BigDecimal> resultDataNV = new TreeMap<>();
-		final Map<String, BigDecimal> resultDataPC = new TreeMap<>();
-		final Map<String, BigDecimal> resultDataTC = new TreeMap<>();
-		final Map<String, BigDecimal> resultDataNC = new TreeMap<>();
+		Map<String, BigDecimal> resultDataA = new TreeMap<>();
+		Map<String, BigDecimal> resultDataAA = new TreeMap<>();
+		Map<String, BigDecimal> resultDataNV = new TreeMap<>();
+		Map<String, BigDecimal> resultDataPC = new TreeMap<>();
+		Map<String, BigDecimal> resultDataTC = new TreeMap<>();
+		Map<String, BigDecimal> resultDataNC = new TreeMap<>();
 		for (Date date : executionDatesWithFormat_Valid) {
 			int countA = 0;
 			int countAA = 0;
@@ -3476,6 +3484,14 @@ public final class AnnexUtils {
 		sheet.autoSizeColumn(1);
 		sheet.autoSizeColumn(2);
 		sheet.autoSizeColumn(3);
+		// Try to free memory
+		resultDataA = null;
+		resultDataAA = null;
+		resultDataNV = null;
+		resultDataPC = null;
+		resultDataTC = null;
+		resultDataNC = null;
+		System.gc();
 	}
 
 	/**

@@ -3225,18 +3225,32 @@ public final class SemillaDAO {
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(idAmbit)) {
 			query += " AND d.id_dependencia IN (SELECT da.id_dependencia FROM dependencia_ambito da WHERE  da.id_ambito = ?) ";
 		}
+		List<EtiquetaForm> tags = null;
 		if (idsTags != null && idsTags.length > 0) {
-			query += " AND d.id_tag IN (";
-			for (int i = 0; i < idsTags.length; i++) {
-				if (!org.apache.commons.lang3.StringUtils.isEmpty(idsTags[i])) {
+			tags = EtiquetaDAO.getByIdsAndClasification(c, idsTags, 2);
+			if (tags != null && !tags.isEmpty()) {
+				query += " AND d.id_tag IN (";
+				for (int i = 0; i < tags.size(); i++) {
 					query += "?";
 					if (i < idsTags.length - 1) {
 						query += ",";
 					}
 				}
+				query += ")";
 			}
-			query += ")";
 		}
+//		if (idsTags != null && idsTags.length > 0) {
+//			query += " AND d.id_tag IN (";
+//			for (int i = 0; i < idsTags.length; i++) {
+//				if (!org.apache.commons.lang3.StringUtils.isEmpty(idsTags[i])) {
+//					query += "?";
+//					if (i < idsTags.length - 1) {
+//						query += ",";
+//					}
+//				}
+//			}
+//			query += ")";
+//		}
 		query += " ORDER BY UPPER(d.nombre) ASC ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			int paramIndex = 1;
@@ -3245,13 +3259,21 @@ public final class SemillaDAO {
 				paramIndex++;
 			}
 			if (idsTags != null && idsTags.length > 0) {
-				for (int i = 0; i < idsTags.length; i++) {
-					if (!org.apache.commons.lang3.StringUtils.isEmpty(idsTags[i])) {
-						ps.setString(paramIndex, idsTags[i]);
+				if (tags != null && !tags.isEmpty()) {
+					for (int i = 0; i < tags.size(); i++) {
+						ps.setLong(paramIndex, tags.get(i).getId());
 						paramIndex++;
 					}
 				}
 			}
+//			if (idsTags != null && idsTags.length > 0) {
+//				for (int i = 0; i < idsTags.length; i++) {
+//					if (!org.apache.commons.lang3.StringUtils.isEmpty(idsTags[i])) {
+//						ps.setString(paramIndex, idsTags[i]);
+//						paramIndex++;
+//					}
+//				}
+//			}
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					DependenciaForm dependenciaForm = new DependenciaForm();
