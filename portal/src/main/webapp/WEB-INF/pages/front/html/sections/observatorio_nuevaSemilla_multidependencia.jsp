@@ -165,6 +165,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	
 	$(window).on('load', function(){
 		$("#tagsFilter").change(function (){
+				$('#selectDependenciasNuevaSemilla').empty();
+				$('#selectDependenciasNuevaSemillaSeleccionadas').empty();
 			   reloadDependencies(rowObject);
 		 });
 	});
@@ -189,14 +191,27 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 							var response = $jn.parseJSON(data);
 
+							
 							if (response && response.length) {
+								$('#selectDependenciasNuevaSemilla').empty();
 								for (var i = 0, l = response.length; i < l; i++) {
 									var ri = response[i];
-									$jn('#selectDependenciasNuevaSemilla')
-											.append(
-													'<option value="'+ri.id+'">'
-															+ ri.name
-															+ '</option>');
+									
+									//check not exists and is no selected
+									var optionExists = ($('#selectDependenciasNuevaSemilla option[value=' + ri.id + ']').length > 0);
+									var isSelected = ($('#selectDependenciasNuevaSemillaSeleccionadas option[value=' + ri.id + ']').length > 0);
+
+									if(!optionExists && !isSelected)
+									{
+
+										$jn('#selectDependenciasNuevaSemilla')
+												.append(
+														'<option value="'+ri.id+'">'
+																+ ri.name
+																+ '</option>');
+									}
+									
+									
 								}
 
 								$(

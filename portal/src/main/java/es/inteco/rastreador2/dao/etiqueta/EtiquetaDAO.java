@@ -455,7 +455,7 @@ public final class EtiquetaDAO {
 			if (idsTags != null && idsTags.length > 0) {
 				for (int i = 0; i < idsTags.length; i++) {
 					if (!org.apache.commons.lang3.StringUtils.isEmpty(idsTags[i])) {
-						ps.setString(paramIndex, idsTags[i]);
+						ps.setInt(paramIndex, Integer.parseInt(idsTags[i]));
 						paramIndex++;
 					}
 				}

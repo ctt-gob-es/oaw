@@ -694,7 +694,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			final String idAmbit = request.getParameter("idAmbit");
 			String[] idsTags = null;
 			if (!StringUtils.isEmpty(request.getParameter("idTags"))) {
-				idsTags = request.getParameterValues("idTags");
+				idsTags = request.getParameter("idTags").split(",");
 			}
 			List<DependenciaForm> listDependencias = SemillaDAO.getSeedDependenciasByAmbitAndTags(c, idAmbit, idsTags);
 			String jsonDependencias = new Gson().toJson(listDependencias);
