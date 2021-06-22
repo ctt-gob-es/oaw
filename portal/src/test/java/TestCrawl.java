@@ -90,7 +90,7 @@ public class TestCrawl {
 		mysqlDataSource.setUser("root");
 		mysqlDataSource.setPassword("root");
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.DEBUG);
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.ERROR);
 		// System.setOut(new PrintStream(new File("/home/alvaro/Downloads/age-manual.txt")));
 	}
 
@@ -136,31 +136,8 @@ public class TestCrawl {
 	 */
 	@Test
 	public void crawlPrincipales() throws Exception {
-		// https://www.navarra.es/es/tramites
-		// https://www.larioja.org/oficina-electronica/es
-		// http://www.navarra.es/home_es/Temas/Empleo+y+Economia/Empleo/
-		// https://www.larioja.org/empleo-formacion/es
-		// http://www.navarra.es/home_es/Temas/Portal+de+la+Salud/Ciudadania/
-		// https://www.aragon.es/-/sucesiones-y-donaciones
-		// https://www.navarra.es/home_es/Gobierno+de+Navarra/Organigrama/Los+departamentos/Economia+y+Hacienda/Organigrama/Estructura+Organica/Hacienda/
-		/***/
-		String[] urlsD = new String[] { "https://www.juntadeandalucia.es/transparencia/transparencia-andalucia/" };
-//		"https://sedeelectronica.navarra.gob.es/", "http://www.boa.aragon.es/#/", "https://boc.cantabria.es/boces/", "https://www.borm.es/#",
-//		"https://web.larioja.org/bor-portada/", "https://sede.asturias.es/servicios-del-bopa", "http://www.melilla.es/melillaPortal/index.jsp", "https://www.comunidad.madrid/",
-//		"https://www.euskadi.eus/empleo-publico/", "https://www.aragon.es/-/sucesiones-y-donaciones", "https://www.euskadi.eus/sede-electronica", "https://web.gencat.cat",
-//		"https://www.gva.es", "https://www.aragon.es", "https://www.gobiernodecanarias.org", "https://www.cantabria.es", "https://web.larioja.org", "http://www.caib.es",
-//		"https://www.navarra.es/home_es/", "https://www.asturias.es/", "https://www.euskadi.eus",
-//		"http://www.navarra.es/home_es/Gobierno+de+Navarra/Organigrama/Los+departamentos/Economia+y+Hacienda/Organigrama/Estructura+Organica/Hacienda/",
-//		"https://www.juntadeandalucia.es/institucional/index.html", "https://www.jcyl.es/", "http://www.juntaex.es", "https://www.larioja.org/larioja-client/cm/oficina-electronica/",
-//		"https://www.ceuta.es", "https://www.castillalamancha.es/", "http://www.carm.es",
-//		String[] urls = new String[] { "http://www.navarra.es/home_es/Temas/Empleo+y+Economia/Empleo/", "http://www.navarra.es/home_es/Temas/Portal+de+la+Salud/Ciudadania/",
-//				"https://www.larioja.org/empleo-formacion/es", "http://www.euskadi.eus/analisis-general-de-las-competencias-propias-y-financiacion/web01-a2ogazer/es/",
-//				"https://sede.melilla.es/melillaPortal/transparencia/se_principal1.jsp?language=es&codResi=1", "https://web.larioja.org/portal-transparencia",
-//				"http://www.caib.es/sites/transparencia/ca/inici/?campa=yes", "https://transparencia.asturias.es ", "https://www.turismoasturias.es/", "https://www.andalucia.org/es/inicio",
-//				"https://www.xunta.gal" };
-		String[] urls = {};
-		//
-		https: // www.borm.es/#/home/sumario/14-06-2021
+		String[] urlsD = new String[] {};
+		String[] urls = { "https://www.puertoreal.es/riim/webmunicipal.nsf" };
 		for (String url : urls) {
 			this.crawl(url, false);
 		}
@@ -183,8 +160,8 @@ public class TestCrawl {
 		System.out.println("-------------------------------------------------------------------------------------------\n\n");
 		final CrawlerData crawlerData = new CrawlerData();
 		crawlerData.setUrls(Collections.singletonList(url));
-		crawlerData.setProfundidad(4);
-		crawlerData.setTopN(8);
+		crawlerData.setProfundidad(5);
+		crawlerData.setTopN(10);
 		crawlerData.setPseudoaleatorio(true);
 		crawlerData.setTest(true);
 		crawlerData.setIdCrawling(-1);
