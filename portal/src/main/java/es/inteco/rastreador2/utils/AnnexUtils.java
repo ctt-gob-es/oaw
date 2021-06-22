@@ -2669,8 +2669,8 @@ public final class AnnexUtils {
 	public static void createAnnexXLSX_PerDependency_v2(final Long idOperation) throws Exception {
 		// Iterate through dependencies to create each file
 		for (String currentDependency : dependencies) {
-			Logger.putLog("Generando anexo: " + currentDependency + "_v2.xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-			try (FileOutputStream writer = getFileOutputStream(idOperation, "/Dependencias_v2/" + currentDependency + "_v2.xlsx")) {
+			Logger.putLog("Generando anexo: " + currentDependency + ".xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			try (FileOutputStream writer = getFileOutputStream(idOperation, "/Dependencias_v2/" + currentDependency + ".xlsx")) {
 				XSSFWorkbook wb = new XSSFWorkbook();
 				XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
 				XSSFRow row;
@@ -5492,7 +5492,7 @@ public final class AnnexUtils {
 	 */
 	private static Map<SemillaForm, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] exObsIds) {
 		final Map<SemillaForm, TreeMap<String, ScoreForm>> seedMapFilled = new HashMap<>();
-		final Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
+		Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
 		Connection c = null;
 		try {
 			c = DataBaseManager.getConnection();
@@ -5560,12 +5560,16 @@ public final class AnnexUtils {
 		} catch (Exception e) {
 			Logger.putLog("Error al recuperar las semillas del Observatorio al crear el anexo", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		} finally {
+			seedMap = null;
+			System.gc();
 			try {
 				DataBaseManager.closeConnection(c);
 			} catch (Exception e) {
 				Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			}
 		}
+		seedMap = null;
+		System.gc();
 		return seedMapFilled;
 	}
 
