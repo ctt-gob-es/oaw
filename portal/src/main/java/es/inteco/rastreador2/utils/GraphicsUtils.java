@@ -443,8 +443,13 @@ public final class GraphicsUtils {
 				}
 			}
 		}
-		final ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, true, false, false, percentage, withLegend, labelRotated, false, x, y, color);
-		createStandardBarChart(observatoryGraphicsForm, filePath, noDataMessage, messageResources, true);
+		final ChartForm chartForm1 = new ChartForm(dataSet, true, true, false, percentage, false, false, false, x, y, color);
+		chartForm1.setFixedColorBars(true);
+		chartForm1.setShowColumsLabels(false);
+		chartForm1.setTitle(title);
+		GraphicsUtils.createStandardBarChart(chartForm1, filePath, "", messageResources, true);
+//		final ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, true, false, false, percentage, withLegend, labelRotated, false, x, y, color);
+//		createStandardBarChart(observatoryGraphicsForm, filePath, noDataMessage, messageResources, true);
 	}
 
 	/**
