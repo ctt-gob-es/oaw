@@ -669,7 +669,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 				try {
 					final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 					ResultadosAnonimosObservatorioAccesibilidadUtils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath,
-							Constants.MINISTERIO_P, true, tagsToFilter, tagsToFilterFixed);
+							Constants.MINISTERIO_P, true, null, null);
 					final List<AmbitoForm> ambits = AmbitoDAO.getAmbitos(DataBaseManager.getConnection(), null, -1);
 					final OdfTextDocument odt = getOdfTemplateById(idBaseTemplate);
 					final OdfFileDom odfFileContent = odt.getContentDom();
@@ -677,7 +677,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 					replaceText(odt, odfFileContent, "[fecha]", date);
 					replaceText(odt, odfStyles, "[fecha]", date, "text:span");
 					replaceSectionGlobalCompilanceDistribution(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
-					replaceSectionGlobalComplianceByAmbit(messageResources, odt, odfFileContent, graphicPath, ambits, pageExecutionList, executionId, tagsToFilter);
+					replaceSectionGlobalComplianceByAmbit(messageResources, odt, odfFileContent, graphicPath, ambits, pageExecutionList, executionId, null);
 					replaceSectionModalityByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 					replaceDocumentTitle(odt, odfFileContent, reportTitle); // Lists all files in folder
 					// TODO Evolution section
@@ -724,6 +724,18 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 					final MailService mailService = new MailService();
 					List<String> mailsTo = new ArrayList<>();
 					mailsTo.add(userData.getEmail());
+//					try {
+//						Connection c = DataBaseManager.getConnection();
+//						List<DatosForm> adminData = LoginDAO.getAdminUsers(c);
+//						DataBaseManager.closeConnection(c);
+//						if (adminData != null && !adminData.isEmpty()) {
+//							for (DatosForm data : adminData) {
+//								mailsTo.add(data.getEmail());
+//							}
+//						}
+//					} catch (Exception e) {
+//						Logger.putLog("Error al cargar los emails de los admin", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
+//					}
 					mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
 				} catch (Exception e) {
 					Logger.putLog("Error", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
