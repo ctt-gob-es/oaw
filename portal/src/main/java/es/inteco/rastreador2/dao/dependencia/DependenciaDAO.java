@@ -177,8 +177,11 @@ public final class DependenciaDAO {
 			ps.setString(count++, "%" + dependency.getName() + "%");
 		}
 		if (dependency.getAmbitos() != null && !dependency.getAmbitos().isEmpty()) {
-			for (int i = 0; i < dependency.getAmbitos().size(); i++) {
-				ps.setString(count++, dependency.getAmbitos().get(i).getId());
+			if (dependency.getAmbitos().size() == 1 && "0".equalsIgnoreCase(dependency.getAmbitos().get(0).getId())) {
+			} else {
+				for (int i = 0; i < dependency.getAmbitos().size(); i++) {
+					ps.setString(count++, dependency.getAmbitos().get(i).getId());
+				}
 			}
 		}
 		if (dependency.getOfficial() != null) {
@@ -208,14 +211,18 @@ public final class DependenciaDAO {
 			query += " AND UPPER(d.nombre) like UPPER(?) ";
 		}
 		if (dependency.getAmbitos() != null && !dependency.getAmbitos().isEmpty()) {
-			query += " AND d.id_dependencia IN (SELECT da.id_dependencia FROM dependencia_ambito da WHERE da.id_ambito IN (";
-			for (int i = 0; i < dependency.getAmbitos().size(); i++) {
-				query += "?";
-				if (i < dependency.getAmbitos().size() - 1) {
-					query += ",";
+			if (dependency.getAmbitos().size() == 1 && "0".equalsIgnoreCase(dependency.getAmbitos().get(0).getId())) {
+				query += " AND d.id_dependencia IS NULL";
+			} else {
+				query += " AND d.id_dependencia IN (SELECT da.id_dependencia FROM dependencia_ambito da WHERE da.id_ambito IN (";
+				for (int i = 0; i < dependency.getAmbitos().size(); i++) {
+					query += "?";
+					if (i < dependency.getAmbitos().size() - 1) {
+						query += ",";
+					}
 				}
+				query += "))";
 			}
-			query += "))";
 		}
 		if (dependency.getOfficial() != null) {
 			query += " AND d.official = ?  ";

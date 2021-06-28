@@ -137,7 +137,7 @@ public class TestCrawl {
 	@Test
 	public void crawlPrincipales() throws Exception {
 		String[] urlsD = new String[] {};
-		String[] urls = { "https://www.puertoreal.es/riim/webmunicipal.nsf" };
+		String[] urls = { "https://web.ua.es" };
 		for (String url : urls) {
 			this.crawl(url, false);
 		}

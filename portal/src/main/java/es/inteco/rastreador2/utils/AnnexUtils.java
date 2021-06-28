@@ -531,7 +531,9 @@ public final class AnnexUtils {
 	public static void generateEvolutionData(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final String[] tagsToFilter, final String[] exObsIds,
 			final List<ComparisionForm> comparision) throws Exception {
 		// Returns a map of dependencies and values of evolution
+		Logger.putLog("Obteniendo información para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		generateInfo(idObsExecution, exObsIds);
+		Logger.putLog("Generando información de las URAs para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		List<UraSendResultForm> uraCustomList = new ArrayList<>();
 		// Generate a list of UraSendResultForm with all URA information
 		Map<DependenciaForm, List<SemillaForm>> mapSeedByDependencia = new HashMap<>();
@@ -549,11 +551,18 @@ public final class AnnexUtils {
 			}
 		}
 		// Loop into map
+		Logger.putLog("Procesando las semillas para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		int j = 0;
 		for (Map.Entry<DependenciaForm, List<SemillaForm>> entry : mapSeedByDependencia.entrySet()) {
+			Logger.putLog("Procesando la dependencia " + entry.getKey().getName() + " (" + (++j) + " de " + mapSeedByDependencia.size() + ") para la generación de datos de evolución",
+					AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 			// calculate
 			BigDecimal sumLastScore = BigDecimal.ZERO;
 			BigDecimal sumPreviousScore = BigDecimal.ZERO;
+			int i = 0;
 			for (SemillaForm semillaForm : entry.getValue()) {
+				Logger.putLog("-- [" + entry.getKey().getName() + "] - Procesando la semilla " + semillaForm.getNombre() + " (" + (++i) + " de " + entry.getValue().size()
+						+ ") para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 				TreeMap<String, ScoreForm> scoreMap = annexmap.get(semillaForm);
 				// last score
 				BigDecimal lastScore = scoreMap.lastEntry().getValue().getTotalScore();
@@ -575,12 +584,14 @@ public final class AnnexUtils {
 					}
 				} else {
 					// Obtain submap to has esay access to penultimate value
-					final NavigableMap<String, ScoreForm> subMap = scoreMap.subMap(scoreMap.firstEntry().getKey(), true, scoreMap.lastEntry().getKey(), false);
+					NavigableMap<String, ScoreForm> subMap = scoreMap.subMap(scoreMap.firstEntry().getKey(), true, scoreMap.lastEntry().getKey(), false);
 					if (!subMap.isEmpty()) {
 						previousScore = subMap.lastEntry().getValue().getTotalScore();
 					} else {
 						previousScore = scoreMap.firstEntry().getValue().getTotalScore();
 					}
+					subMap = null;
+					System.gc();
 				}
 				if (lastScore != null) {
 					sumLastScore = sumLastScore.add(lastScore);

@@ -63,11 +63,12 @@ public class ObservatoryManager {
 		final List<ObservatoryEvaluationForm> evaluationList = new ArrayList<>(evaluationIds.size());
 		try (Connection c = DataBaseManager.getConnection()) {
 			final String methodology = ObservatorioDAO.getMethodology(c, idObservatoryExecution);
+			String aplicacion = CartuchoDAO.getApplicationFromIdExObs(c, idObservatoryExecution);
 			final Evaluator evaluator = new Evaluator();
 			for (Long id : evaluationIds) {
 				try {
 					final Evaluation evaluation = evaluator.getAnalisisDB(c, id, EvaluatorUtils.getDocList(), false);
-					String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, id);
+//					String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, id);
 					boolean pointWarning = Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion) ? true : false;
 					final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, true, pointWarning);
 					// ADD SEED

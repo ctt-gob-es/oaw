@@ -151,3 +151,17 @@ ALTER TABLE `observatorio_send_configuration` ADD `subject` VARCHAR(255) NULL, A
 -- 26-04-2021
 
 ALTER TABLE `observatorio_ura_send_results` ADD `has_custom_text` INT NOT NULL DEFAULT '0' AFTER `range_value`;
+
+
+
+
+
+
+
+UPDATE `dependencia` SET `official`= 0 WHERE `official` IS NULL;
+UPDATE `dependencia` SET `send_auto`= 1;
+
+
+
+
+

@@ -64,7 +64,6 @@ import es.inteco.rastreador2.export.database.form.ComparisionForm;
 import es.inteco.rastreador2.manager.BaseManager;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
 import es.inteco.rastreador2.manager.export.database.DatabaseExportManager;
-import es.inteco.rastreador2.utils.AnnexUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.SendResultsMailUtils;
 import es.inteco.rastreador2.utils.export.database.DatabaseExportUtils;
@@ -101,6 +100,17 @@ public class SendResultsByMailAction extends Action {
 						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
 						DataBaseManager.closeConnection(connection);
 						return config(mapping, request);
+					} else if (request.getParameter(Constants.ACTION).equals("finish")) {
+						// TODO go to step 2
+						final Long idExObservatory = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+						/****/
+						Connection connection = DataBaseManager.getConnection();
+						Map<String, String> config = ObservatorioDAO.getConfigStep2(connection, idExObservatory);
+						DataBaseManager.closeConnection(connection);
+						request.setAttribute("emailSubject", config.get("emailSubject"));
+						request.setAttribute("cco", config.get("cco"));
+						DataBaseManager.closeConnection(connection);
+						return mapping.findForward(Constants.CONFIRM);
 					} else if (request.getParameter(Constants.ACTION).equals(Constants.EXECUTE)) {
 						final Long idCartucho = Long.valueOf(request.getParameter(Constants.ID_CARTUCHO));
 						String[] tagsToFilter = null;
@@ -151,14 +161,24 @@ public class SendResultsByMailAction extends Action {
 							throw e;
 						}
 						/****/
-						AnnexUtils.generateEvolutionData(CrawlerUtils.getResources(request), idObservatory, idExObservatory, tagsToFilter, exObsIds, comparision);
+//						AnnexUtils.generateEvolutionData(CrawlerUtils.getResources(request), idObservatory, idExObservatory, tagsToFilter, exObsIds, comparision);
+//						Connection connection = DataBaseManager.getConnection();
+//						Map<String, String> config = ObservatorioDAO.getConfigStep2(connection, idExObservatory);
+//						DataBaseManager.closeConnection(connection);
+//						request.setAttribute("emailSubject", config.get("emailSubject"));
+//						request.setAttribute("cco", config.get("cco"));
+//						DataBaseManager.closeConnection(connection);
+//						return mapping.findForward(Constants.CONFIRM);
+						// TODO Async
 						Connection connection = DataBaseManager.getConnection();
-						Map<String, String> config = ObservatorioDAO.getConfigStep2(connection, idExObservatory);
+						final DatosForm userData = LoginDAO.getUserDataByName(connection, request.getSession().getAttribute(Constants.USER).toString());
+						final String url = request.getRequestURL().toString();
+						final String baseURL = url.substring(0, url.length() - request.getRequestURI().length()) + request.getContextPath() + "/";
+						final SendMailCalculateResultsThread sendMailThread = new SendMailCalculateResultsThread(CrawlerUtils.getResources(request), idObservatory, idExObservatory, tagsToFilter,
+								exObsIds, comparision, userData.getEmail(), baseURL);
+						sendMailThread.start();
 						DataBaseManager.closeConnection(connection);
-						request.setAttribute("emailSubject", config.get("emailSubject"));
-						request.setAttribute("cco", config.get("cco"));
-						DataBaseManager.closeConnection(connection);
-						return mapping.findForward(Constants.CONFIRM);
+						return mapping.findForward("calculateResultsByMailAsync");
 					} else if (request.getParameter(Constants.ACTION).equals(Constants.CONFIRM)) {
 						Connection connection = DataBaseManager.getConnection();
 						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
