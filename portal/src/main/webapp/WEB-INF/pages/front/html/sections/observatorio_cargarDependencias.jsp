@@ -81,6 +81,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <!--  JQ GRID   -->
 <script>
 
+var paginadorTotal = '<bean:message key="cargar.semilla.observatorio.buscar.total"/>'; 
+
 var colNameOldName = '<bean:message key="colname.oldname"/>';
 var colNameId = '<bean:message key="colname.id"/>';
 var colNameTags = '<bean:message key="colname.province"/>';
@@ -380,6 +382,8 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 							paginas = data.paginas;
 
 							$('#paginador').empty();
+							
+							$('#paginador').append("<span style='float: left;clear: both; display: block; width: 100%; text-align: left;padding: 10px 5px;'><strong>"+ paginadorTotal+ "</strong> " + data.paginador.total +"</span>");
 
 							//Si solo hay una página no pintamos el paginador
 							if (paginas.length > 1) {
@@ -669,6 +673,7 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 
 									$('#selectAmbitsSearch').append(
 											"<option value=''></option>");
+									$('#selectAmbitsSearch').append("<option value='0'>Ninguno</option>");
 									if (response && response.length) {
 										for (var i = 0, l = response.length; i < l; i++) {
 											var ri = response[i];
@@ -906,17 +911,6 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						<input type="text" id="name" name="acronym" class="textoLargo form-control" />
 					</div>
 				</div>
-				<!-- 				Ambito/Ambitoaux -->
-				<!-- 				<div class="row formItem"> -->
-				<!-- 					<label for="ambito" class="control-label"> -->
-				<!-- 						<strong class="labelVisu"> -->
-				<%-- 							<bean:message key="nueva.semilla.webs.ambito" /> --%>
-				<!-- 						</strong> -->
-				<!-- 					</label> -->
-				<!-- 					<div class="col-xs-4"> -->
-				<!-- 						<select name="ambitoaux" id="selectAmbitosNuevaSemilla" class="textoSelect form-control"></select> -->
-				<!-- 					</div> -->
-				<!-- 				</div> -->
 				<div class="row formItem">
 					<label for="ambito" class="control-label">
 						<strong class="labelVisu">

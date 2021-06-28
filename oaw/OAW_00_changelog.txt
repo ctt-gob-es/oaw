@@ -1,6 +1,8 @@
 5.3.0
 ------------------------------------------------------------------------------------------------------------------------------------
 - Posibilidad de envío de los anexos por email en lugar de esperar que se generen (ya que pueden tardar demasiado y terminar el tiempo de espera del servidor)
+- Los cálculos de mejora de las URA para el envío de resultados se hacen en segundo plano y se noticia por email cuando termina
+- Se puede acceder al paso 2 directamente en el envío de resultados sin calcular de nuevo los rangos
 - Generación del informe agregado del cartucho de la declaración de accesibilidad con la parte de evolutivo
 - Generación de los ficheros XLSX 1. Evolutivo y por dependencias en un nuevo formato
 - Corregida una distinción de mayúsculas/minúsculas en la detección de los media type de los CSS

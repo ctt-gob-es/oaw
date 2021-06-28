@@ -17,7 +17,7 @@
 					</html:link>
 				</li>
 				<li class="active">
-					<bean:message key="migas.send.results.send" />
+					<bean:message key="migas.send.results.calculate" />
 				</li>
 			</ol>
 		</div>
@@ -27,7 +27,7 @@
 			</h2>
 			<div class="detail">
 				<p>
-					<bean:message key="send.mail.async.info" />
+					<bean:message key="send.mail.calculate.async.info" />
 				</p>
 				<div class="formButton">
 					<html:link styleClass="btn btn-default btn-lg" forward="observatoryMenu">

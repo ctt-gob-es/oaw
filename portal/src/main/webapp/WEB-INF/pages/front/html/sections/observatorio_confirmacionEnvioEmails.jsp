@@ -165,6 +165,16 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	            }
 	        });
 	}
+	
+	function generate(){
+		window.location='/oaw/secure/ConfigSendResultsByMailAction.do?action=execute&'
+				+ $('#sendResultsByMailForm').serialize();
+	}
+	
+	function gotostep2(){
+		window.location='/oaw/secure/ConfigSendResultsByMailAction.do?action=finish&'
+				+ $('#sendResultsByMailForm').serialize();
+	}
 
 </script>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -787,7 +797,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			</ol>
 		</div>
 		<div id="cajaformularios">
-			<form action="/oaw/secure/ConfigSendResultsByMailAction.do">
+			<form action="/oaw/secure/ConfigSendResultsByMailAction.do" id="sendResultsByMailForm">
 				<h2>
 					<bean:message key="send.results.observatory.title" />
 				</h2>
@@ -922,11 +932,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</p>
 				</fieldset>
 				<div class="formButton">
-					<input type="hidden" name="action" value="execute" />
+<!-- 					<input type="hidden" name="action" value="execute" /> -->
 					<input type="hidden" name="idCartucho" value="<c:out value="${param.idCartucho}"/>" />
 					<input type="hidden" name="id_observatorio" value="<c:out value="${param.id_observatorio}"/>" />
 					<input type="hidden" name="idExObs" value="<c:out value="${param.idExObs}"/>" />
-					<input type="submit" class="btn btn-primary btn-lg" value=<bean:message key="boton.siguiente" />>
+					<input type="button" class="btn btn-primary btn-lg" onclick="generate()" value="<bean:message key='boton.calcular.rangos' />">
+					<input type="button" class="btn btn-info btn-lg" onclick="gotostep2()" value="<bean:message key='boton.ver.rangos' />">
+<!-- 					<input type="submit" class="btn btn-primary btn-lg" value=<bean:message key="boton.siguiente" />> -->
 					<html:link styleClass="btn btn-default btn-lg" forward="observatoryMenu">
 						<bean:message key="boton.cancelar" />
 					</html:link>
