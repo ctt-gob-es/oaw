@@ -49,6 +49,10 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	private FormFile dependencyFile;
 	/** The acronym. */
 	private String acronym;
+	/** The send auto search. */
+	private Integer sendAutoSearch;
+	/** The official search. */
+	private Integer officialSearch;
 
 	/**
 	 * Gets the id.
@@ -256,6 +260,42 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
+	}
+
+	/**
+	 * Gets the send auto search.
+	 *
+	 * @return the send auto search
+	 */
+	public Integer getSendAutoSearch() {
+		return sendAutoSearch;
+	}
+
+	/**
+	 * Sets the send auto search.
+	 *
+	 * @param sendAutoSearch the new send auto search
+	 */
+	public void setSendAutoSearch(Integer sendAutoSearch) {
+		this.sendAutoSearch = sendAutoSearch;
+	}
+
+	/**
+	 * Gets the official search.
+	 *
+	 * @return the official search
+	 */
+	public Integer getOfficialSearch() {
+		return officialSearch;
+	}
+
+	/**
+	 * Sets the official search.
+	 *
+	 * @param officialSearch the new official search
+	 */
+	public void setOfficialSearch(Integer officialSearch) {
+		this.officialSearch = officialSearch;
 	}
 
 	/**
