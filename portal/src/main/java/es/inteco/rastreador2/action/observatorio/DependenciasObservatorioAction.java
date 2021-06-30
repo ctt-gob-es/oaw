@@ -131,12 +131,6 @@ public class DependenciasObservatorioAction extends DispatchAction {
 					dependency.setAmbitos(listAmbits);
 				}
 			}
-			if (StringUtils.isEmpty(request.getParameter("official"))) {
-				dependency.setOfficial(null);
-			}
-			if (StringUtils.isEmpty(request.getParameter("sendAuto"))) {
-				dependency.setSendAuto(null);
-			}
 			String[] tagArr = null;
 			if (!StringUtils.isEmpty(request.getParameter("tagaux"))) {
 				tagArr = request.getParameter("tagaux").split(",");

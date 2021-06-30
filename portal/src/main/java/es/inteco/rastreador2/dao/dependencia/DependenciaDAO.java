@@ -184,11 +184,25 @@ public final class DependenciaDAO {
 				}
 			}
 		}
-		if (dependency.getOfficial() != null) {
-			ps.setBoolean(count++, dependency.getOfficial());
+		if (dependency.getOfficialSearch() != null) {
+			if (dependency.getOfficialSearch() != 3) {
+				if (dependency.getOfficialSearch() == 1) {
+					ps.setBoolean(count++, true);
+				}
+				if (dependency.getOfficialSearch() == 0) {
+					ps.setBoolean(count++, false);
+				}
+			}
 		}
-		if (dependency.getSendAuto() != null) {
-			ps.setBoolean(count++, dependency.getSendAuto());
+		if (dependency.getOfficialSearch() != null) {
+			if (dependency.getSendAutoSearch() != 3) {
+				if (dependency.getSendAutoSearch() == 1) {
+					ps.setBoolean(count++, true);
+				}
+				if (dependency.getSendAutoSearch() == 0) {
+					ps.setBoolean(count++, false);
+				}
+			}
 		}
 		if (tagArr != null && tagArr.length > 0) {
 			for (int i = 0; i < tagArr.length; i++) {
@@ -212,7 +226,7 @@ public final class DependenciaDAO {
 		}
 		if (dependency.getAmbitos() != null && !dependency.getAmbitos().isEmpty()) {
 			if (dependency.getAmbitos().size() == 1 && "0".equalsIgnoreCase(dependency.getAmbitos().get(0).getId())) {
-				query += " AND d.id_dependencia IS NULL";
+				query += " AND d.id_dependencia NOT IN (SELECT da.id_dependencia FROM dependencia_ambito da) ";
 			} else {
 				query += " AND d.id_dependencia IN (SELECT da.id_dependencia FROM dependencia_ambito da WHERE da.id_ambito IN (";
 				for (int i = 0; i < dependency.getAmbitos().size(); i++) {
@@ -224,11 +238,20 @@ public final class DependenciaDAO {
 				query += "))";
 			}
 		}
-		if (dependency.getOfficial() != null) {
-			query += " AND d.official = ?  ";
+		// TODO Multiple values
+		if (dependency.getOfficialSearch() != null) {
+			if (dependency.getOfficialSearch() == 3) {
+				query += " AND d.official IS NULL  ";
+			} else if (dependency.getOfficialSearch() != 2) {
+				query += " AND d.official = ?  ";
+			}
 		}
-		if (dependency.getSendAuto() != null) {
-			query += " AND d.send_auto = ?  ";
+		if (dependency.getSendAutoSearch() != null) {
+			if (dependency.getSendAutoSearch() == 3) {
+				query += " AND d.send_auto IS NULL  ";
+			} else if (dependency.getSendAutoSearch() != 2) {
+				query += " AND d.send_auto = ?  ";
+			}
 		}
 		if (tagArr != null && tagArr.length > 0) {
 			query = query + " AND ( 1=0 ";

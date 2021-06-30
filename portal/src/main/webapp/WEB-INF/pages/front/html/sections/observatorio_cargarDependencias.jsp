@@ -672,7 +672,7 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 									var response = $.parseJSON(data);
 
 									$('#selectAmbitsSearch').append(
-											"<option value=''></option>");
+											"<option value=''>Cualquiera</option>");
 									$('#selectAmbitsSearch').append("<option value='0'>Ninguno</option>");
 									if (response && response.length) {
 										for (var i = 0, l = response.length; i < l; i++) {
@@ -1047,10 +1047,11 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						</strong>
 					</label>
 					<div class="col-xs-4">
-						<select name="official" class="textoSelect form-control">
-							<option value=""></option>
-							<option value="true"><bean:message key="select.yes" /></option>
-							<option value="false"><bean:message key="select.no" /></option>
+						<select name="officialSearch" class="textoSelect form-control">
+							<option value="2"><bean:message key="select.any" /></option>
+							<option value="3"><bean:message key="select.none" /></option>
+							<option value="1"><bean:message key="select.yes" /></option>
+							<option value="0"><bean:message key="select.no" /></option>
 						</select>
 					</div>
 				</div>
@@ -1062,10 +1063,11 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						</strong>
 					</label>
 					<div class="col-xs-4">
-						<select name="sendAuto" class="textoSelect form-control">
-							<option value=""></option>
-							<option value="true"><bean:message key="select.yes" /></option>
-							<option value="false"><bean:message key="select.no" /></option>
+						<select name="sendAutoSearch" class="textoSelect form-control">
+							<option value="2"><bean:message key="select.any" /></option>
+							<option value="3"><bean:message key="select.none" /></option>
+							<option value="1"><bean:message key="select.yes" /></option>
+							<option value="0"><bean:message key="select.no" /></option>
 						</select>
 					</div
 				<div class="formButton">
@@ -1078,6 +1080,8 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						<bean:message key="boton.limpiar" />
 					</span>
 				</div>
+			
+			
 			
 			
 			
