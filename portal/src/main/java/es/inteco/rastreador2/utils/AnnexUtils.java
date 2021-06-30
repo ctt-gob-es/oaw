@@ -28,6 +28,7 @@ import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -921,7 +922,7 @@ public final class AnnexUtils {
 								}
 							}
 							if (criterias) {
-								// TODO Try to clean memory
+								// Try to clean memory
 								wcagCompliance = null;
 								System.gc();
 							}
@@ -1191,7 +1192,7 @@ public final class AnnexUtils {
 								writeTag(hd, "C_" + sWcagEmPoint.replace(".", "_"), compliance);
 							}
 						}
-						// TODO Try to free memory
+						// Try to free memory
 						wcagCompliance = null;
 						System.gc();
 					}
@@ -2192,9 +2193,9 @@ public final class AnnexUtils {
 						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
 							executionDatesWithFormat.add(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)));
 						}
-						// Add a row aditional for every date before first date
+						// Add a row for every date
 						int iteration = 0;
-						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+						for (String iterationDate : executionDates) {
 							final int iterationRowIndex = rowIndex + iteration;
 							XSSFRow rowIteration = null;
 							if (iteration == 0) {
@@ -2202,8 +2203,63 @@ public final class AnnexUtils {
 							} else {
 								rowIteration = sheet.createRow(iterationRowIndex);
 							}
+							// Iteration number
+							columnIndex = ColumnNames.indexOf(N_ITERACION);
+							cell = rowIteration.createCell(columnIndex);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellValue(iteration + 1);
+							cell.setCellStyle(shadowStyle);
+							// Iteration Date
+							columnIndex = ColumnNames.indexOf(FECHA_ITERACION);
+							cell = rowIteration.createCell(columnIndex);
+							try {
+								Date tmp = new SimpleDateFormat("yyyy-MM-dd").parse(iterationDate);
+								cell.setCellValue(new SimpleDateFormat("dd/MM/yyyy").format(tmp));
+							} catch (ParseException e) {
+								cell.setCellValue(iterationDate);
+							}
+							cell.setCellStyle(shadowStyle);
+							// Puntuaction
+							columnIndex = ColumnNames.indexOf(PUNTUACION);
+							cell = rowIteration.createCell(columnIndex);
+							cell.setCellType(CellType.NUMERIC);
+							cell.setCellStyle(shadowStyle);
+							// Allocation
+							cell = rowIteration.createCell(ColumnNames.indexOf(ADECUACION));
+							cell.setCellStyle(shadowStyle);
+							// Compliance
+							cell = rowIteration.createCell(ColumnNames.indexOf(CUMPLIMIENTO));
+							cell.setCellStyle(shadowStyle);
+							// Not valid
+							cell = rowIteration.createCell(ColumnNames.indexOf(NO_VALIDO));
+							cell.setCellStyle(shadowStyle);
+							// A
+							cell = rowIteration.createCell(ColumnNames.indexOf(A));
+							cell.setCellStyle(shadowStyle);
+							// AA
+							cell = rowIteration.createCell(ColumnNames.indexOf(AA));
+							cell.setCellStyle(shadowStyle);
+							// NC
+							cell = rowIteration.createCell(ColumnNames.indexOf(NO_CONFORME));
+							cell.setCellStyle(shadowStyle);
+							// PC
+							cell = rowIteration.createCell(ColumnNames.indexOf(PARCIALMENTE_CONFORME));
+							cell.setCellStyle(shadowStyle);
+							// TC
+							cell = rowIteration.createCell(ColumnNames.indexOf(TOTALMENTE_CONFORME));
+							cell.setCellStyle(shadowStyle);
+							iteration++;
+						}
+						// Add a row aditional for every date before first date
+						iteration = 0;
+						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+							// final int iterationRowIndex = rowIndex + iteration;
+							XSSFRow rowIteration = null;
+							// The row is displaced n positions depending of date index in list
 							final String iterationDate = entry.getKey().substring(0, entry.getKey().indexOf(" "));
 							final String executionDateAux = iterationDate.replace("/", "_");
+							final int iterationRowIndex = rowIndex + executionDates.indexOf(iterationDate);
+							rowIteration = sheet.getRow(iterationRowIndex);
 							// Execution dates must be exists as column
 							double score = Double.parseDouble(entry.getValue().getTotalScore().toString());
 							String adequacy = changeLevelName(entry.getValue().getLevel(), messageResources);
@@ -2214,62 +2270,52 @@ public final class AnnexUtils {
 							execution.setAdequacy(adequacy);
 							execution.setCompliance(compliance);
 							excelLine.addExecution(execution);
-							// Iteration number
-							columnIndex = ColumnNames.indexOf(N_ITERACION);
-							cell = rowIteration.createCell(columnIndex);
-							cell.setCellType(CellType.NUMERIC);
-							cell.setCellValue(iteration + 1);
-							cell.setCellStyle(shadowStyle);
-							// Iteration Date
-							columnIndex = ColumnNames.indexOf(FECHA_ITERACION);
-							cell = rowIteration.createCell(columnIndex);
-							cell.setCellValue(iterationDate);
-							cell.setCellStyle(shadowStyle);
+							// Fill data
 							// Puntuaction
 							columnIndex = ColumnNames.indexOf(PUNTUACION);
-							cell = rowIteration.createCell(columnIndex);
+							cell = rowIteration.getCell(columnIndex);
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellValue(score);
 							cell.setCellStyle(shadowStyle);
 							// Allocation
-							cell = rowIteration.createCell(ColumnNames.indexOf(ADECUACION));
+							cell = rowIteration.getCell(ColumnNames.indexOf(ADECUACION));
 							cell.setCellValue(adequacy);
 							cell.setCellStyle(shadowStyle);
 							// Compliance
-							cell = rowIteration.createCell(ColumnNames.indexOf(CUMPLIMIENTO));
+							cell = rowIteration.getCell(ColumnNames.indexOf(CUMPLIMIENTO));
 							cell.setCellValue(compliance);
 							cell.setCellStyle(shadowStyle);
 							// Not valid
 							String columnFirstLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(ADECUACION) + 1);
 							String columnSecondLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(PUNTUACION) + 1);
 							//
-							cell = rowIteration.createCell(ColumnNames.indexOf(NO_VALIDO));
+							cell = rowIteration.getCell(ColumnNames.indexOf(NO_VALIDO));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
 							// A
-							cell = rowIteration.createCell(ColumnNames.indexOf(A));
+							cell = rowIteration.getCell(ColumnNames.indexOf(A));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"A\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
 							// AA
-							cell = rowIteration.createCell(ColumnNames.indexOf(AA));
+							cell = rowIteration.getCell(ColumnNames.indexOf(AA));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
 							columnFirstLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(CUMPLIMIENTO) + 1);
 							// NC
-							cell = rowIteration.createCell(ColumnNames.indexOf(NO_CONFORME));
+							cell = rowIteration.getCell(ColumnNames.indexOf(NO_CONFORME));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
 							// PC
-							cell = rowIteration.createCell(ColumnNames.indexOf(PARCIALMENTE_CONFORME));
+							cell = rowIteration.getCell(ColumnNames.indexOf(PARCIALMENTE_CONFORME));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
 							// TC
-							cell = rowIteration.createCell(ColumnNames.indexOf(TOTALMENTE_CONFORME));
+							cell = rowIteration.getCell(ColumnNames.indexOf(TOTALMENTE_CONFORME));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
@@ -2783,9 +2829,9 @@ public final class AnnexUtils {
 						// ***************************
 						// * EXECUTION VALUES *
 						// ***************************
-						// Add a row aditional for every date before first
+						// Add a row for every date
 						int iteration = 0;
-						for (ExcelExecution execution : currentLine.getValue().getExecutions()) {
+						for (String iterationDate : executionDates) {
 							final int iterationRowIndex = rowIndex + iteration;
 							XSSFRow rowIteration = null;
 							if (iteration == 0) {
@@ -2802,53 +2848,94 @@ public final class AnnexUtils {
 							// Iteration Date
 							columnIndex = ColumnNames.indexOf(FECHA_ITERACION);
 							cell = rowIteration.createCell(columnIndex);
-							cell.setCellValue(execution.getDate());
+							try {
+								Date tmp = new SimpleDateFormat("yyyy-MM-dd").parse(iterationDate);
+								cell.setCellValue(new SimpleDateFormat("dd/MM/yyyy").format(tmp));
+							} catch (ParseException e) {
+								cell.setCellValue(iterationDate);
+							}
 							cell.setCellStyle(shadowStyle);
 							// Puntuaction
+							cell = rowIteration.createCell(ColumnNames.indexOf(PUNTUACION));
+							cell.setCellStyle(shadowStyle);
+							// Allocation
+							cell = rowIteration.createCell(ColumnNames.indexOf(ADECUACION));
+							cell.setCellStyle(shadowStyle);
+							// Compliance
+							cell = rowIteration.createCell(ColumnNames.indexOf(CUMPLIMIENTO));
+							cell.setCellStyle(shadowStyle);
+							// Not valid
+							cell = rowIteration.createCell(ColumnNames.indexOf(NO_VALIDO));
+							cell.setCellStyle(shadowStyle);
+							// A
+							cell = rowIteration.createCell(ColumnNames.indexOf(A));
+							cell.setCellStyle(shadowStyle);
+							// AA
+							cell = rowIteration.createCell(ColumnNames.indexOf(AA));
+							cell.setCellStyle(shadowStyle);
+							// NC
+							cell = rowIteration.createCell(ColumnNames.indexOf(NO_CONFORME));
+							cell.setCellStyle(shadowStyle);
+							// PC
+							cell = rowIteration.createCell(ColumnNames.indexOf(PARCIALMENTE_CONFORME));
+							cell.setCellStyle(shadowStyle);
+							// TC
+							cell = rowIteration.createCell(ColumnNames.indexOf(TOTALMENTE_CONFORME));
+							cell.setCellStyle(shadowStyle);
+							iteration++;
+						}
+						// Add a row aditional for every date before first
+						iteration = 0;
+						for (ExcelExecution execution : currentLine.getValue().getExecutions()) {
+							XSSFRow rowIteration = null;
+							// Row is displaced n positios depending of index of date in list
+							final int iterationRowIndex = rowIndex + executionDates.indexOf(execution.getDate());
+							rowIteration = sheet.getRow(iterationRowIndex);
+							// Puntuaction
 							columnIndex = ColumnNames.indexOf(PUNTUACION);
-							cell = rowIteration.createCell(columnIndex);
+							cell = rowIteration.getCell(columnIndex);
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellValue(execution.getScore());
 							cell.setCellStyle(shadowStyle);
 							// Allocation
-							cell = rowIteration.createCell(ColumnNames.indexOf(ADECUACION));
+							cell = rowIteration.getCell(ColumnNames.indexOf(ADECUACION));
 							cell.setCellValue(execution.getAdequacy());
 							cell.setCellStyle(shadowStyle);
 							// Compliance
-							cell = rowIteration.createCell(ColumnNames.indexOf(CUMPLIMIENTO));
+							cell = rowIteration.getCell(ColumnNames.indexOf(CUMPLIMIENTO));
 							cell.setCellValue(execution.getCompliance());
 							cell.setCellStyle(shadowStyle);
 							// Not valid
 							String columnFirstLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(ADECUACION) + 1);
 							String columnSecondLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(PUNTUACION) + 1);
 							//
-							cell = rowIteration.createCell(ColumnNames.indexOf(NO_VALIDO));
+							cell = rowIteration.getCell(ColumnNames.indexOf(NO_VALIDO));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"No Válido\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
 							// A
-							cell = rowIteration.createCell(ColumnNames.indexOf(A));
+							cell = rowIteration.getCell(ColumnNames.indexOf(A));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"A\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
 							// AA
-							cell = rowIteration.createCell(ColumnNames.indexOf(AA));
+							cell = rowIteration.getCell(ColumnNames.indexOf(AA));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"AA\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
 							columnFirstLetter = GetExcelColumnNameForNumber(ColumnNames.indexOf(CUMPLIMIENTO) + 1);
 							// NC
-							cell = rowIteration.createCell(ColumnNames.indexOf(NO_CONFORME));
+							cell = rowIteration.getCell(ColumnNames.indexOf(NO_CONFORME));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"No conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
 							// PC
-							cell = rowIteration.createCell(ColumnNames.indexOf(PARCIALMENTE_CONFORME));
+							cell = rowIteration.getCell(ColumnNames.indexOf(PARCIALMENTE_CONFORME));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"Parcialmente conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
 							// TC
-							cell = rowIteration.createCell(ColumnNames.indexOf(TOTALMENTE_CONFORME));
+							cell = rowIteration.getCell(ColumnNames.indexOf(TOTALMENTE_CONFORME));
 							cell.setCellType(CellType.NUMERIC);
 							cell.setCellFormula("IF($" + columnFirstLetter + (iterationRowIndex + 1) + "=\"Plenamente conforme\",$" + columnSecondLetter + (iterationRowIndex + 1) + ",0)");
 							cell.setCellStyle(shadowStyle);
@@ -2885,8 +2972,13 @@ public final class AnnexUtils {
 					InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, 1, rowIndex - 1, true);
 					// Last iteration
 					String iterationDate = executionDates.get(executionDates.size() - 1);
-					InsertGraphIntoSheetByDependency_v2(currentSheet2, rowIndex, false, iterationDate);
-					InsertGraphIntoSheetByDependency_v2(currentSheet2, rowIndex, true, iterationDate);
+					try {
+						Date tmp = new SimpleDateFormat("yyyy-MM-dd").parse(iterationDate);
+						InsertGraphIntoSheetByDependency_v2(currentSheet2, rowIndex, false, new SimpleDateFormat("dd/MM/yyyy").format(tmp));
+						InsertGraphIntoSheetByDependency_v2(currentSheet2, rowIndex, true, new SimpleDateFormat("dd/MM/yyyy").format(tmp));
+					} catch (ParseException e) {
+						Logger.putLog("Error al parsear las fechas", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+					}
 					InsertAgregatePieChar_v2(currentSheet3, rowIndex, ColumnNames, xlsxUtils);
 				}
 				XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
@@ -5116,8 +5208,38 @@ public final class AnnexUtils {
 	 * @param isFirst          the is first
 	 */
 	private static void InsertGraphIntoSheetByEvolution_v2(XSSFWorkbook wb, XSSFSheet currentSheet, int categoryFirstRow, int categoryLastRow, boolean isFirst) {
+		// Only in first graphic add legend
+		if (isFirst) {
+			// Add a legend with custom text
+			XSSFDrawing draw = currentSheet.createDrawingPatriarch();
+			XSSFTextBox tb1 = draw.createTextbox(new XSSFClientAnchor(0, 0, 0, 0, 0, 1, 4, executionDates.size() + 2));
+			tb1.setLineStyleColor(0, 0, 0);
+			tb1.setLineWidth(1);
+			Color col = Color.WHITE;
+			tb1.setFillColor(col.getRed(), col.getGreen(), col.getBlue());
+			StringBuilder sb = new StringBuilder("Nota:" + BREAK_LINE);
+			sb.append(BREAK_LINE);
+			int iteration = 1;
+			for (String date : executionDates) {
+				try {
+					Date tmp = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+					sb.append(iteration + "ª iteración" + new SimpleDateFormat("dd/MM/yyyy").format(tmp) + " " + BREAK_LINE);
+				} catch (ParseException e) {
+					sb.append(iteration + "ª " + date + " " + BREAK_LINE);
+				}
+				iteration++;
+			}
+			// websiteRanges
+			XSSFRichTextString address = new XSSFRichTextString(sb.toString());
+			tb1.setText(address);
+			CTTextCharacterProperties rpr = tb1.getCTShape().getTxBody().getPArray(0).getRArray(0).getRPr();
+			rpr.setSz(1000); // 9 pt
+			col = Color.BLACK;
+			rpr.addNewSolidFill().addNewSrgbClr().setVal(new byte[] { (byte) col.getRed(), (byte) col.getGreen(), (byte) col.getBlue() });
+		}
 		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
-		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max((categoryLastRow - categoryFirstRow) * 2, 16), isFirst ? 40 : 85);
+		final int graphicWidth = Math.max((categoryLastRow - categoryFirstRow) * 2, 16);
+		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 5, isFirst ? 1 : (executionDates.size()) + 40, graphicWidth, isFirst ? 40 : 85);
 		XSSFChart chart = drawing.createChart(anchor);
 		chart.setTitleText(isFirst ? ALLOCATION_EVOLUTION_TITLE : COMPLIANCE_EVOLUTION_TITLE);
 		chart.setTitleOverlay(false);
@@ -5126,7 +5248,7 @@ public final class AnnexUtils {
 			chart.getCTChart().addNewAutoTitleDeleted();
 		chart.getCTChart().getAutoTitleDeleted().setVal(false);
 		XDDFChartLegend legend = chart.getOrAddLegend();
-		legend.setPosition(LegendPosition.RIGHT);
+		legend.setPosition(LegendPosition.LEFT);
 		CTChart ctChart = chart.getCTChart();
 		CTPlotArea ctPlotArea = ctChart.getPlotArea();
 		CTBarChart ctBarChart = ctPlotArea.addNewBarChart();
@@ -5161,7 +5283,7 @@ public final class AnnexUtils {
 		// series
 		byte[][] seriesColors = new byte[][] { new byte[] { (byte) 255, 0, 0 }, // red
 				hex2Rgb(YELLOW_OAW_HTML), // yellow
-				new byte[] { 0, (byte) 255, 0 } // blue
+				new byte[] { 0, (byte) 128, 0 } // green
 		};
 		int firstColumn = (isFirst ? ColumnNames.indexOf(NO_VALIDO) : ColumnNames.indexOf(NO_CONFORME));
 		final String[] legendsAllocation = { ALLOCATION_NOT_VALID_LITERAL, ALLOCATION_A_LITERAL, ALLOCATION_AA_LITERAL };
@@ -5272,7 +5394,7 @@ public final class AnnexUtils {
 	 */
 	private static void InsertGraphIntoSheetByDependency_v2(XSSFSheet currentSheet, int lastRow, boolean isFirst, final String iterationDate) {
 		XSSFDrawing drawing = currentSheet.createDrawingPatriarch();
-		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, isFirst ? 4 : 45, Math.max(lastRow, 16), isFirst ? 40 : 85);
+		XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 1, isFirst ? 1 : 45, Math.max(lastRow, 16), isFirst ? 40 : 85);
 		XSSFChart chart = drawing.createChart(anchor);
 		chart.setTitleText(isFirst ? ALLOCATION_EVOLUTION_TITLE : COMPLIANCE_EVOLUTION_TITLE);
 		chart.setTitleOverlay(false);
@@ -5320,7 +5442,7 @@ public final class AnnexUtils {
 		// series
 		byte[][] seriesColors = new byte[][] { new byte[] { (byte) 255, 0, 0 }, // red
 				hex2Rgb(YELLOW_OAW_HTML), // yellow
-				new byte[] { 0, (byte) 255, 0 } // blue
+				new byte[] { 0, (byte) 128, 0 } // blue
 		};
 		int firstColumn = (isFirst ? ColumnNames.indexOf(NO_VALIDO) : ColumnNames.indexOf(NO_CONFORME));
 		final String[] legendsAllocation = { ALLOCATION_NOT_VALID_LITERAL, ALLOCATION_A_LITERAL, ALLOCATION_AA_LITERAL };
