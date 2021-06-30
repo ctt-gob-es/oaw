@@ -3221,22 +3221,24 @@ public final class SemillaDAO {
 	 */
 	public static List<DependenciaForm> getSeedDependenciasByAmbitAndTags(Connection c, final String idAmbit, final String[] idsTags) throws SQLException {
 		final List<DependenciaForm> dependencias = new ArrayList<>();
+		List<EtiquetaForm> tags = null;
 		String query = "SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE 1=1";
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(idAmbit)) {
 			query += " AND d.id_dependencia IN (SELECT da.id_dependencia FROM dependencia_ambito da WHERE  da.id_ambito = ?) ";
 		}
-		List<EtiquetaForm> tags = null;
-		if (idsTags != null && idsTags.length > 0) {
-			tags = EtiquetaDAO.getByIdsAndClasification(c, idsTags, 2);
-			if (tags != null && !tags.isEmpty()) {
-				query += " AND d.id_tag IN (";
-				for (int i = 0; i < tags.size(); i++) {
-					query += "?";
-					if (i < tags.size() - 1) {
-						query += ",";
+		if ("3".equalsIgnoreCase(idAmbit)) {
+			if (idsTags != null && idsTags.length > 0) {
+				tags = EtiquetaDAO.getByIdsAndClasification(c, idsTags, 2);
+				if (tags != null && !tags.isEmpty()) {
+					query += " AND d.id_tag IN (";
+					for (int i = 0; i < tags.size(); i++) {
+						query += "?";
+						if (i < tags.size() - 1) {
+							query += ",";
+						}
 					}
+					query += ")";
 				}
-				query += ")";
 			}
 		}
 		query += " ORDER BY UPPER(d.nombre) ASC ";
@@ -3246,11 +3248,13 @@ public final class SemillaDAO {
 				ps.setLong(paramIndex, Long.parseLong(idAmbit));
 				paramIndex++;
 			}
-			if (idsTags != null && idsTags.length > 0) {
-				if (tags != null && !tags.isEmpty()) {
-					for (int i = 0; i < tags.size(); i++) {
-						ps.setLong(paramIndex, tags.get(i).getId());
-						paramIndex++;
+			if ("3".equalsIgnoreCase(idAmbit)) {
+				if (idsTags != null && idsTags.length > 0) {
+					if (tags != null && !tags.isEmpty()) {
+						for (int i = 0; i < tags.size(); i++) {
+							ps.setLong(paramIndex, tags.get(i).getId());
+							paramIndex++;
+						}
 					}
 				}
 			}
