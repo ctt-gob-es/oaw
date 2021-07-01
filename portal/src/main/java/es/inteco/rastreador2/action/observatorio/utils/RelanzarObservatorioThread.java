@@ -91,12 +91,12 @@ public class RelanzarObservatorioThread extends Thread {
 			if (crawlerIdsList != null) {
 				pendindCrawlings = crawlerIdsList;
 			}
-			// Si no es así, recuperamos los todos rastreos pendentes de este observatorio
+			// Si no es así, recuperamos los todos rastreos pendentes de este observatorio y cambiamos el estado porque es un relanzamiento porque quedó a medias no una selección de varios
 			else {
 				pendindCrawlings = RastreoDAO.getPendingCrawlerFromSeedAndObservatory(c, Long.parseLong(idObservatorio), Long.parseLong(idEjecucionObservatorio));
+				// Cambiar el estado del observatorio a lanzado
+				ObservatorioDAO.updateObservatoryStatus(c, Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.RELAUNCHED_OBSERVATORY_STATUS);
 			}
-			// Cambiar el estado del observatorio a lanzado
-			ObservatorioDAO.updateObservatoryStatus(c, Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.RELAUNCHED_OBSERVATORY_STATUS);
 			if (pendindCrawlings != null && !pendindCrawlings.isEmpty()) {
 				Logger.putLog("Se van relanzar " + pendindCrawlings.size() + " rastreos", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_INFO);
 				for (Long idCrawling : pendindCrawlings) {
