@@ -223,7 +223,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		if (StringUtils.isNotEmpty(dependencia.getName())) {
 			List<AmbitoForm> listAmbits = new ArrayList<>();
 			if (!StringUtils.isEmpty(request.getParameter("ambitoaux"))) {
-				String[] ambitArray = request.getParameter("ambitoaux").split(",");
+				String[] ambitArray = request.getParameterValues("ambitoaux");
 				if (ambitArray != null && ambitArray.length >= 1) {
 					for (int i = 0; i < ambitArray.length; i++) {
 						AmbitoForm ambit = new AmbitoForm();

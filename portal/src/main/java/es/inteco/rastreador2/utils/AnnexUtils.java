@@ -145,6 +145,7 @@ import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.observatorio.RangeDAO;
 import es.inteco.rastreador2.dao.observatorio.TemplateRangeDAO;
 import es.inteco.rastreador2.dao.observatorio.UraSendResultDAO;
+import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.export.database.form.CategoryForm;
 import es.inteco.rastreador2.export.database.form.ComparisionForm;
@@ -444,18 +445,18 @@ public final class AnnexUtils {
 		generateInfo(idObsExecution, exObsIds);
 		Logger.putLog("Generando anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		try {
-			createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-			createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-			createAnnexPaginasCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-			createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-			createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-			createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-			createAnnexXLSX2(messageResources, idObsExecution, idOperation, tagsToFilter);
-			createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
-			createAnnexXLSX_PerDependency(idOperation);
-			createAnnexXLSX1_Evolution_v2(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
-			createAnnexXLSX_PerDependency_v2(idOperation);
-			createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
+//			createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+//			createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+//			createAnnexPaginasCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+//			createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+//			createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+//			createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+//			createAnnexXLSX2(messageResources, idObsExecution, idOperation, tagsToFilter);
+//			createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
+//			createAnnexXLSX_PerDependency(idOperation);
+//			createAnnexXLSX1_Evolution_v2(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
+//			createAnnexXLSX_PerDependency_v2(idOperation);
+//			createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
 			createAnnexProgressEvolutionXLSX(messageResources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision);
 		} catch (Exception e) {
 			Logger.putLog("Error en la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
@@ -3091,9 +3092,16 @@ public final class AnnexUtils {
 			rpr.addNewSolidFill().addNewSrgbClr().setVal(new byte[] { (byte) col.getRed(), (byte) col.getGreen(), (byte) col.getBlue() });
 			// N sheets by segment
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idObsExecution);
+			// TODO GET ALL
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution, 0L, tagsToFilter,
+					exObsIds);
 			for (CategoriaForm category : categories) {
-				final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution,
-						Long.valueOf(category.getId()), tagsToFilter, exObsIds);
+//				final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution,
+//						Long.valueOf(category.getId()), tagsToFilter, exObsIds);
+				// TODO FILTER BY CATEGORY
+				for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMapCat.entrySet()) {
+					entry.setValue(filterObservatoriesByCategory(entry.getValue(), idObsExecution, Long.valueOf(category.getId())));
+				}
 				if (pageObservatoryMapCat != null) {
 					String currentCategory = category.getName().substring(0, Math.min(category.getName().length(), 31));
 					final XSSFSheet categorySheet = wb.createSheet(currentCategory);
@@ -3120,6 +3128,36 @@ public final class AnnexUtils {
 		} catch (Exception e) {
 			Logger.putLog("Error al generar el anexo: " + FILE_4_EVOLUTION_AND_PROGRESS_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 			throw e;
+		}
+	}
+
+	/**
+	 * Filter observatories by complexity.
+	 *
+	 * @param observatoryEvaluationList the observatory evaluation list
+	 * @param executionId               the execution id
+	 * @param categoryId                the category id
+	 * @return the list
+	 * @throws Exception the exception
+	 */
+	private static List<ObservatoryEvaluationForm> filterObservatoriesByCategory(final List<ObservatoryEvaluationForm> observatoryEvaluationList, final Long executionId, final long categoryId)
+			throws Exception {
+		if (categoryId == Constants.COMPLEXITY_SEGMENT_NONE) {
+			return observatoryEvaluationList;
+		} else {
+			final List<ObservatoryEvaluationForm> results = new ArrayList<>();
+			try (Connection conn = DataBaseManager.getConnection()) {
+				final List<Long> listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(conn, executionId, categoryId);
+				for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
+					if (listExecutionsIds.contains(observatoryEvaluationForm.getCrawlerExecutionId())) {
+						results.add(observatoryEvaluationForm);
+					}
+				}
+			} catch (Exception e) {
+				Logger.putLog("Error al filtrar observatorios. ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+				throw e;
+			}
+			return results;
 		}
 	}
 
@@ -3447,7 +3485,7 @@ public final class AnnexUtils {
 				if (!StringUtils.isEmpty(categoryName) && !namecat.equals(categoryName)) {
 					hasCategory = false;
 				}
-				if (semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter) && hasCategory) {
+				if (hasCategory && semillaForm.getId() != 0 && hasTags(semillaForm, tagsToFilter)) {
 					ScoreForm dateScore = semillaEntry.getValue().get(date.toString());
 					if (dateScore != null) {
 						String adequacy = changeLevelName(dateScore.getLevel(), messageResources);

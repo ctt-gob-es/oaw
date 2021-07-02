@@ -685,7 +685,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 					final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioAccesibilidadUtils.resultEvolutionData(Long.valueOf(observatoryId),
 							Long.valueOf(executionId));
 					// Title
-					String title = messageResources.getMessage("report.evolution.allocation.graphic.title.global");
+					String title = "Evolución del nivel de cumplimiento estimado: en términos generales";
 					ResultadosAnonimosObservatorioAccesibilidadUtils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA + JPG_EXTENSION,
 							pageObservatoryMap, title);
 					replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, GLOBAL_RESULTS_PREFIX);
@@ -871,7 +871,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 			OdfTextDocument odtCategory = getOdfTemplateAmbit();
 			OdfFileDom odfFileContentCategory = odtCategory.getContentDom();
 //			String title = messageResources.getMessage("Evolución de la situación de cumplimiento estimada: " + ambit.getName());
-			String title = "Evolución de la situación de cumplimiento estimada: " + ambit.getName();
+			String title = "Evolución del nivel de cumplimiento estimado: " + ambit.getName();
 			ResultadosAnonimosObservatorioAccesibilidadUtils.generateEvolutionSuitabilityChart(observatoryId, executionId,
 					graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA_AMBITO + "_" + ambit.getName() + JPG_EXTENSION, pageObservatoryMapAmbit, title);
 			replaceSectionEvolutionSuitabilityLevel(messageResources, odtCategory, odfFileContentCategory, graphicPath, pageObservatoryMapAmbit, GLOBAL_RESULTS_PREFIX);
