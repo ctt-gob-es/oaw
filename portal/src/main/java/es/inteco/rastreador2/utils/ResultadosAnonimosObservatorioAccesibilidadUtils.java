@@ -160,11 +160,11 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			String title = messageResources.getMessage("report.evolution.compliance.global");
 			getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, regenerate);
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.compilance.ambit.mark.name") + ".jpg";
-			title = "Situación de cumplimiento estimada por ámbito";
+			title = "Nivel de cumplimiento estimado por ámbito";
 			getGlobalCompilanceBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, ambits, regenerate, title, tagsFilter);
 //			file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg";
 //			getMidsComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
-			title = messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.title");
+			title = messageResources.getMessage("observatory.graphic.modality.by.verification.level");
 			file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg";
 			getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
 		}
@@ -832,10 +832,10 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 		for (Map.Entry<String, BigDecimal> entry : results.entrySet()) {
 			if (entry.getKey().contains(Constants.OBS_VALUE_RED_SUFFIX)) {
 				dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.modality.red"), entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "")
-						.substring(entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "").indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length()));
+						.substring(entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "").indexOf("minhap.observatory.5_0.subgroup.3.") + "minhap.observatory.5_0.subgroup.3.".length()));
 			} else if (entry.getKey().contains(Constants.OBS_VALUE_GREEN_SUFFIX)) {
 				dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.modality.green"), entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "")
-						.substring(entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "").indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length()));
+						.substring(entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "").indexOf("minhap.observatory.5_0.subgroup.3.") + "minhap.observatory.5_0.subgroup.3.".length()));
 			}
 		}
 		return dataSet;
