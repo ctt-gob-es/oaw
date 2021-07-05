@@ -175,9 +175,11 @@ public class DatabaseExportAction extends Action {
 					}
 				} else {
 					for (ObservatorioRealizadoForm obsRealizado : observatoriesList) {
-						if (ObservatoryExportManager.getObservatory(obsRealizado.getId()) == null) {
-							exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, obsRealizado);
-						}
+//						if (ObservatoryExportManager.getObservatory(obsRealizado.getId()) == null) {
+//							exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, obsRealizado);
+//						}
+						// always export to prevent changes
+						exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, obsRealizado);
 					}
 				}
 			} else {
@@ -216,6 +218,7 @@ public class DatabaseExportAction extends Action {
 			observatory.setDate(new Timestamp(observatorioRealizadoForm.getFecha().getTime()));
 			BaseManager.save(observatory);
 		} else {
+			Logger.putLog("Borrando exportación previa: idObs: " + idObservatory + " - idExObs: " + fulfilledObservatory.getId(), DatabaseExportAction.class, Logger.LOG_LEVEL_ERROR);
 			BaseManager.delete(observatory);
 			exportResultadosAccesibilidad(messageResources, idObservatory, c, fulfilledObservatory);
 		}
