@@ -445,18 +445,18 @@ public final class AnnexUtils {
 		generateInfo(idObsExecution, exObsIds);
 		Logger.putLog("Generando anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		try {
-//			createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			createAnnexPaginasCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
-//			createAnnexXLSX2(messageResources, idObsExecution, idOperation, tagsToFilter);
-//			createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
-//			createAnnexXLSX_PerDependency(idOperation);
-//			createAnnexXLSX1_Evolution_v2(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
-//			createAnnexXLSX_PerDependency_v2(idOperation);
-//			createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
+			createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPaginasCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPortales(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
+			createAnnexXLSX2(messageResources, idObsExecution, idOperation, tagsToFilter);
+			createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
+			createAnnexXLSX_PerDependency(idOperation);
+			createAnnexXLSX1_Evolution_v2(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
+			createAnnexXLSX_PerDependency_v2(idOperation);
+			createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
 			createAnnexProgressEvolutionXLSX(messageResources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision);
 		} catch (Exception e) {
 			Logger.putLog("Error en la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
