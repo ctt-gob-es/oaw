@@ -49,6 +49,7 @@ import javax.script.ScriptException;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -680,6 +681,7 @@ public final class AnnexUtils {
 			Logger.putLog("Error al generar el anexo: anexo-paginas.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+		System.gc();
 	}
 
 	/**
@@ -701,6 +703,7 @@ public final class AnnexUtils {
 			Logger.putLog("Error al generar el anexo: anexo-paginas-verificaciones", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+		System.gc();
 	}
 
 	/**
@@ -722,6 +725,7 @@ public final class AnnexUtils {
 			Logger.putLog("Error al generar el anexo: anexo-paginas-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+		System.gc();
 	}
 
 	/**
@@ -957,6 +961,7 @@ public final class AnnexUtils {
 			Logger.putLog("Error al generar el anexo: anexo-portales.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+		System.gc();
 	}
 
 	/**
@@ -978,6 +983,7 @@ public final class AnnexUtils {
 			Logger.putLog("Error al generar el anexo: anexo-portales-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+		System.gc();
 	}
 
 	/**
@@ -999,6 +1005,7 @@ public final class AnnexUtils {
 			Logger.putLog("Error generar el anexo: anexo-portales-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+		System.gc();
 	}
 
 	/**
@@ -1446,6 +1453,7 @@ public final class AnnexUtils {
 			Logger.putLog("Error al generar el anexo: " + FILE_2_ITERATION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+		System.gc();
 	}
 
 	/**
@@ -1950,6 +1958,7 @@ public final class AnnexUtils {
 			Logger.putLog("Error al generar el anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+		System.gc();
 	}
 
 	/**
@@ -2444,6 +2453,7 @@ public final class AnnexUtils {
 					XSSFSheet currentSheet = wb.getSheet(categorySheetName);
 					InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, categoryFirstRow, categoryLastRow - 1, true);
 					InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, categoryFirstRow, categoryLastRow - 1, false);
+					currentSheet.setZoom(60);
 				}
 			}
 			// Increase width of columns to match content
@@ -2490,6 +2500,7 @@ public final class AnnexUtils {
 			Logger.putLog("Error al generar el anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
+		System.gc();
 	}
 
 	/**
@@ -2716,6 +2727,7 @@ public final class AnnexUtils {
 				throw e;
 			}
 		}
+		System.gc();
 	}
 
 	/**
@@ -2995,6 +3007,7 @@ public final class AnnexUtils {
 				throw e;
 			}
 		}
+		System.gc();
 	}
 
 	/**
@@ -3046,6 +3059,7 @@ public final class AnnexUtils {
 		XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
 		wb.write(fos);
 		fos.close();
+		System.gc();
 	}
 
 	/**
@@ -3093,14 +3107,15 @@ public final class AnnexUtils {
 			// N sheets by segment
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idObsExecution);
 			// TODO GET ALL
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution, 0L, tagsToFilter,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution, 0L, tagsToFilter,
 					exObsIds);
 			for (CategoriaForm category : categories) {
 //				final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution,
 //						Long.valueOf(category.getId()), tagsToFilter, exObsIds);
 				// TODO FILTER BY CATEGORY
+				Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = new TreeMap<>();
 				for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMapCat.entrySet()) {
-					entry.setValue(filterObservatoriesByCategory(entry.getValue(), idObsExecution, Long.valueOf(category.getId())));
+					pageObservatoryMap.put(entry.getKey(), filterObservatoriesByCategory(entry.getValue(), idObsExecution, Long.valueOf(category.getId())));
 				}
 				if (pageObservatoryMapCat != null) {
 					String currentCategory = category.getName().substring(0, Math.min(category.getName().length(), 31));
@@ -3117,6 +3132,8 @@ public final class AnnexUtils {
 							messageResources.getMessage("annex.xlsx.global.progress.compliance.segment.fixed.title", new String[] { category.getName() }), true, 40 + (executionDates.size()),
 							xlsxUtils, category.getName());
 				}
+				pageObservatoryMapCat = null;
+				System.gc();
 			}
 			// Final sheet comparision
 			final Connection conn = DataBaseManager.getConnection();
@@ -4404,7 +4421,14 @@ public final class AnnexUtils {
 			for (ComparisionForm com : comparision) {
 				for (EtiquetaForm label : labels) {
 					if (com.getIdTag() == label.getId()) {
-						previousDate = compareWithFirst ? com.getFirst() : com.getPrevious();
+						try {
+							String date = compareWithFirst ? com.getFirst() : com.getPrevious();
+							Date tmp = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+							previousDate = new SimpleDateFormat("dd/MM/yyyy").format(tmp);
+						} catch (ParseException e) {
+							previousDate = compareWithFirst ? com.getFirst() : com.getPrevious();
+						}
+						// previousDate = compareWithFirst ? com.getFirst() : com.getPrevious();
 						break;
 					}
 				}
@@ -4907,6 +4931,10 @@ public final class AnnexUtils {
 		shadowStyleCentered.setVerticalAlignment(VerticalAlignment.CENTER);
 		shadowStyleCentered.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
 		shadowStyleCentered.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		shadowStyleCentered.setBorderBottom(BorderStyle.THIN);
+		shadowStyleCentered.setBorderTop(BorderStyle.THIN);
+		shadowStyleCentered.setBorderRight(BorderStyle.THIN);
+		shadowStyleCentered.setBorderLeft(BorderStyle.THIN);
 		XSSFCell cell;
 		XSSFRow row;
 		// Insert Summary table.
@@ -5017,6 +5045,10 @@ public final class AnnexUtils {
 		shadowStyleCentered.setVerticalAlignment(VerticalAlignment.CENTER);
 		shadowStyleCentered.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
 		shadowStyleCentered.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		shadowStyleCentered.setBorderBottom(BorderStyle.THIN);
+		shadowStyleCentered.setBorderTop(BorderStyle.THIN);
+		shadowStyleCentered.setBorderRight(BorderStyle.THIN);
+		shadowStyleCentered.setBorderLeft(BorderStyle.THIN);
 		XSSFCell cell;
 		XSSFRow row;
 		// Insert Summary table.
