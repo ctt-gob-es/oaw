@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -145,7 +146,7 @@ public class DatabaseExportAction extends Action {
 			}
 		}
 		// Export all??
-		export(mapping, request);
+//		export(mapping, request);
 		return getAnnexes(mapping, request, response, tagsToFilter, exObsIds, comparision, async);
 	}
 
@@ -175,9 +176,6 @@ public class DatabaseExportAction extends Action {
 					}
 				} else {
 					for (ObservatorioRealizadoForm obsRealizado : observatoriesList) {
-//						if (ObservatoryExportManager.getObservatory(obsRealizado.getId()) == null) {
-//							exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, obsRealizado);
-//						}
 						// always export to prevent changes
 						exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, obsRealizado);
 					}
@@ -191,6 +189,40 @@ public class DatabaseExportAction extends Action {
 		}
 		ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.observatorio.resultados.exportados", "volver.carga.observatorio");
 		return mapping.findForward(Constants.EXITO);
+	}
+
+	/**
+	 * Export 2.
+	 *
+	 * @param idObservatory    the id observatory
+	 * @param idExObservatory  the id ex observatory
+	 * @param idCartucho       the id cartucho
+	 * @param messageResources the message resources
+	 * @throws Exception the exception
+	 */
+	private void exportAsync(final Long idObservatory, final Long idExObservatory, final Long idCartucho, final MessageResources messageResources) throws Exception {
+		try (Connection c = DataBaseManager.getConnection()) {
+			final ObservatorioRealizadoForm fulfilledObservatory = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExObservatory);
+			if (CartuchoDAO.isCartuchoAccesibilidad(c, fulfilledObservatory.getCartucho().getId())) {
+				final String application = CartuchoDAO.getApplication(c, idCartucho);
+				final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, idObservatory, Constants.NO_PAGINACION, fulfilledObservatory.getFecha(), false,
+						null);
+				if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
+					for (ObservatorioRealizadoForm obsRealizado : observatoriesList) {
+						if (ObservatoryExportManager.getObservatory(obsRealizado.getId()) == null) {
+							exportResultadosAccesibilidad(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), idObservatory, c, obsRealizado);
+						}
+					}
+				} else {
+					for (ObservatorioRealizadoForm obsRealizado : observatoriesList) {
+						exportResultadosAccesibilidad(messageResources, idObservatory, c, obsRealizado);
+					}
+				}
+			}
+		} catch (Exception e) {
+			Logger.putLog("Error al exportar los resultados del observatorio: ", DatabaseExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
 	}
 
 	/**
@@ -281,16 +313,44 @@ public class DatabaseExportAction extends Action {
 			}
 			if (isAsync) {
 				final Connection c = DataBaseManager.getConnection();
-				String url = request.getRequestURL().toString();
-				String baseURL = url.substring(0, url.length() - request.getRequestURI().length()) + request.getContextPath() + "/";
 				final DatosForm userData = LoginDAO.getUserDataByName(c, request.getSession().getAttribute(Constants.USER).toString());
 				DataBaseManager.closeConnection(c);
-				final AnnexGeneratorThread annexGeneratorThread = new AnnexGeneratorThread(resources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision,
-						userData.getEmail(), baseURL);
-				annexGeneratorThread.start();
+				final String url = request.getRequestURL().toString();
+				final String baseURL = url.substring(0, url.length() - request.getRequestURI().length()) + request.getContextPath() + "/";
+				Executors.newSingleThreadExecutor().execute(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+							final Long idObs = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
+							final Long idOperation = System.currentTimeMillis();
+							final Long idCartucho = Long.valueOf(request.getParameter(Constants.ID_CARTUCHO));
+							String[] tagsToFilterFixed = null;
+							if (request.getParameter("tagsFixed") != null && !StringUtils.isEmpty(request.getParameter("tagsFixed"))) {
+								tagsToFilterFixed = request.getParameter("tagsFixed").split(",");
+							}
+							MessageResources resources = CrawlerUtils.getResources(request);
+							final Connection connection = DataBaseManager.getConnection();
+							final String application = CartuchoDAO.getApplication(connection, idCartucho);
+							DataBaseManager.closeConnection(connection);
+							if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
+								resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
+							} else if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
+								resources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
+							}
+							exportAsync(idObs, idObsExecution, idCartucho, resources);
+							final AnnexGeneratorThread annexGeneratorThread = new AnnexGeneratorThread(resources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds,
+									comparision, userData.getEmail(), baseURL);
+							annexGeneratorThread.start();
+						} catch (Exception e) {
+							Logger.putLog("Error", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
+						}
+					}
+				});
 				request.setAttribute("EMAIL", userData.getEmail());
 				return mapping.findForward("async");
 			} else {
+				export(mapping, request);
 				AnnexUtils.generateAllAnnex(resources, idObs, idObsExecution, idOperation, tagsToFilter, tagsToFilterFixed, exObsIds, comparision);
 				final PropertiesManager pmgr = new PropertiesManager();
 				final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
