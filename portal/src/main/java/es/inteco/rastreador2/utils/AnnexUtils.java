@@ -66,6 +66,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xddf.usermodel.PresetColor;
 import org.apache.poi.xddf.usermodel.XDDFColor;
 import org.apache.poi.xddf.usermodel.XDDFShapeProperties;
@@ -2411,6 +2412,15 @@ public final class AnnexUtils {
 									new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_ADECUACION_PRIMER), ColumnNames.indexOf(EVOL_ADECUACION_PRIMER)));
 							sheet.addMergedRegion(
 									new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(EVOL_CUMPLIMIENTO_PRIMER), ColumnNames.indexOf(EVOL_CUMPLIMIENTO_PRIMER)));
+							// Fix border of merged cells
+							int numMerged = sheet.getNumMergedRegions();
+							for (int i = 0; i < numMerged; i++) {
+								CellRangeAddress mergedRegions = sheet.getMergedRegion(i);
+								RegionUtil.setBorderTop(BorderStyle.THIN, mergedRegions, sheet);
+								RegionUtil.setBorderLeft(BorderStyle.THIN, mergedRegions, sheet);
+								RegionUtil.setBorderRight(BorderStyle.THIN, mergedRegions, sheet);
+								RegionUtil.setBorderBottom(BorderStyle.THIN, mergedRegions, sheet);
+							}
 						}
 						rowIndex = rowIndex + executionDates.size();
 					}
@@ -4825,6 +4835,10 @@ public final class AnnexUtils {
 		shadowStyleCentered.setVerticalAlignment(VerticalAlignment.CENTER);
 		shadowStyleCentered.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
 		shadowStyleCentered.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		shadowStyleCentered.setBorderBottom(BorderStyle.THIN);
+		shadowStyleCentered.setBorderTop(BorderStyle.THIN);
+		shadowStyleCentered.setBorderRight(BorderStyle.THIN);
+		shadowStyleCentered.setBorderLeft(BorderStyle.THIN);
 		XSSFCell cell;
 		XSSFRow row;
 		// Insert Summary table.
