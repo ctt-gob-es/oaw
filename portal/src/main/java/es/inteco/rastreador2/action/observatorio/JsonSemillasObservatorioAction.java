@@ -691,7 +691,13 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	 */
 	public ActionForward listByAmbitAndTag(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
-			final String idAmbit = request.getParameter("idAmbit");
+			String idAmbit = request.getParameter("idAmbit");
+			// Try cast as number
+			try {
+				Long.parseLong(idAmbit);
+			} catch (Exception e) {
+				idAmbit = null;
+			}
 			String[] idsTags = null;
 			if (!StringUtils.isEmpty(request.getParameter("idTags"))) {
 				idsTags = request.getParameter("idTags").split(",");
