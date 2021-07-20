@@ -3116,13 +3116,13 @@ public final class AnnexUtils {
 			rpr.addNewSolidFill().addNewSrgbClr().setVal(new byte[] { (byte) col.getRed(), (byte) col.getGreen(), (byte) col.getBlue() });
 			// N sheets by segment
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idObsExecution);
-			// TODO GET ALL
+			// GET ALL
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution, 0L, tagsToFilter,
 					exObsIds);
 			for (CategoriaForm category : categories) {
 //				final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(idObs, idObsExecution,
 //						Long.valueOf(category.getId()), tagsToFilter, exObsIds);
-				// TODO FILTER BY CATEGORY
+				// FILTER BY CATEGORY
 				Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = new TreeMap<>();
 				for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMapCat.entrySet()) {
 					pageObservatoryMap.put(entry.getKey(), filterObservatoriesByCategory(entry.getValue(), idObsExecution, Long.valueOf(category.getId())));

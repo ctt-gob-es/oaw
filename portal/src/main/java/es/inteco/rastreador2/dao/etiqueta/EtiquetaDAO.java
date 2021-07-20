@@ -407,7 +407,7 @@ public final class EtiquetaDAO {
 	 */
 	public static EtiquetaForm getById(Connection c, final int idTag) throws SQLException {
 		EtiquetaForm tag = null;
-		String query = "SELECT c.id_etiqueta, c.nombre FROM etiqueta c WHERE 1=1 ";
+		String query = "SELECT c.id_etiqueta, c.nombre FROM etiqueta c WHERE 1=1 AND c.id_etiqueta = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setInt(1, idTag);
 			try (ResultSet rs = ps.executeQuery()) {
