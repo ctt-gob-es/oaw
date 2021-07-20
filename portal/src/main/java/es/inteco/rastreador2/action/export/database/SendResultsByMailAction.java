@@ -101,7 +101,7 @@ public class SendResultsByMailAction extends Action {
 						DataBaseManager.closeConnection(connection);
 						return config(mapping, request);
 					} else if (request.getParameter(Constants.ACTION).equals("finish")) {
-						// TODO go to step 2
+						// go to step 2
 						final Long idExObservatory = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 						/****/
 						Connection connection = DataBaseManager.getConnection();
@@ -169,7 +169,7 @@ public class SendResultsByMailAction extends Action {
 //						request.setAttribute("cco", config.get("cco"));
 //						DataBaseManager.closeConnection(connection);
 //						return mapping.findForward(Constants.CONFIRM);
-						// TODO Async
+						// Async
 						Connection connection = DataBaseManager.getConnection();
 						final DatosForm userData = LoginDAO.getUserDataByName(connection, request.getSession().getAttribute(Constants.USER).toString());
 						final String url = request.getRequestURL().toString();

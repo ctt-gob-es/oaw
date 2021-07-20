@@ -238,7 +238,7 @@ public final class DependenciaDAO {
 				query += "))";
 			}
 		}
-		// TODO Multiple values
+		// Multiple values
 		if (dependency.getOfficialSearch() != null) {
 			if (dependency.getOfficialSearch() == 3) {
 				query += " AND d.official IS NULL  ";

@@ -680,8 +680,8 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 					replaceSectionGlobalComplianceByAmbit(messageResources, odt, odfFileContent, graphicPath, ambits, pageExecutionList, executionId, null);
 					replaceSectionModalityByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 					replaceDocumentTitle(odt, odfFileContent, reportTitle); // Lists all files in folder
-					// TODO Evolution section
-					// TODO Global
+					// Evolution section
+					// Global
 					final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioAccesibilidadUtils.resultEvolutionData(Long.valueOf(observatoryId),
 							Long.valueOf(executionId));
 					// Title
@@ -690,9 +690,9 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 							pageObservatoryMap, title);
 					replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, GLOBAL_RESULTS_PREFIX);
 					replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA + JPG_EXTENSION, EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA, MIME_TYPE_JPG);
-					// TODO By ambit
+					// By ambit
 					replaceEvolComplianceAmbitSection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent);
-					// TODO By verification
+					// By verification
 					// Compliance by verification
 					ResultadosAnonimosObservatorioAccesibilidadUtils.generateEvolutionComplianceByVerificationChart(messageResources,
 							new String[] { graphicPath + "EvolucionCumplimientoVerificacion" + JPG_EXTENSION, }, new String[] { "Evolución de la modalidad de las verificaciones a nivel global." },
