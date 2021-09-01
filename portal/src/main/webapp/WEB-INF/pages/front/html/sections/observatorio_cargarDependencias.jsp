@@ -165,20 +165,29 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 																dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
 																buildSelect : function(
 																		data) {
-
+																	var rowid = $(this).jqGrid("getGridParam", "selrow");
+																	var ambitos = $(this).jqGrid ('getLocalRow', rowid).ambitos;
 																	var response = jQuery
 																			.parseJSON(data);
 																	var s = '<select>';
 
 																	if (response
-																			&& response.length) {
+																			&& response.length && ambitos) {
 																		for (var i = 0, l = response.length; i < l; i++) {
 																			var ri = response[i];
-																			s += '<option class="dependenciaOption" value="'
+																			if(ambitos.some(ambito => ambito.id === ri.id)){
+																				s += '<option selected class="dependenciaOption" value="'
 																					+ ri.id
 																					+ '">'
 																					+ ri.name
 																					+ '</option>';
+																			}else{
+																			s += '<option  class="dependenciaOption" value="'
+																					+ ri.id
+																					+ '">'
+																					+ ri.name
+																					+ '</option>';
+																			}
 																		}
 																	}
 
