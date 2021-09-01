@@ -117,7 +117,7 @@ public final class SendResultsMailUtils {
 				ura.setSendDate(null);
 				// Find Dependency
 				DependenciaForm dependency = DependenciaDAO.findById(c, ura.getUraId());
-				String xlsxFilePath = annexPath + "/Dependencias/" + dependency.getName() + ".xlsx";
+				String xlsxFilePath = annexPath + "/Dependencias_v2/" + dependency.getName() + ".xlsx";
 				String pdfZipPath = pdfZipsPath.get(PDFUtils.formatSeedName(dependency.getName()));
 				if (!StringUtils.isEmpty(pdfZipPath) && !StringUtils.isEmpty(xlsxFilePath)) {
 					File xlsx = new File(xlsxFilePath);
