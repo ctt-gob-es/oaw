@@ -2838,6 +2838,7 @@ public final class AnnexUtils {
 						cell = row.createCell(ColumnNames.indexOf(PAGINAS));
 						cell.setCellValue(currentLine.getValue().getPaginas());
 						cell.setCellStyle(shadowStyle);
+						
 						// ***************************
 						// * EXECUTION VALUES *
 						// ***************************
@@ -2867,6 +2868,48 @@ public final class AnnexUtils {
 								cell.setCellValue(iterationDate);
 							}
 							cell.setCellStyle(shadowStyle);
+							
+							// "semilla"
+							cell = rowIteration.createCell(ColumnNames.indexOf(SEMILLA2));
+							cell.setCellValue(currentLine.getValue().getSemilla());
+							cell.setCellStyle(shadowStyle);
+							// "ambito"
+							cell = rowIteration.createCell(ColumnNames.indexOf(AMBITO2));
+							cell.setCellValue(currentLine.getValue().getAmbito());
+							cell.setCellStyle(shadowStyle);
+							// "depende_de"
+							cell = rowIteration.createCell(ColumnNames.indexOf(DEPENDE_DE));
+							cell.setCellValue(currentLine.getValue().getDepende_de());
+							cell.setCellStyle(shadowStyle);
+							// "namecat"
+							cell = rowIteration.createCell(ColumnNames.indexOf(SEGMENTO));
+							cell.setCellValue(currentLine.getValue().getNamecat());
+							cell.setCellStyle(shadowStyle);							
+							// "complejidad"
+							cell = rowIteration.createCell(ColumnNames.indexOf(COMPLEJIDAD));
+							cell.setCellValue(currentLine.getValue().getComplejidad());
+							cell.setCellStyle(shadowStyle);
+							// Páginas
+							cell = rowIteration.createCell(ColumnNames.indexOf(PAGINAS));
+							cell.setCellValue(currentLine.getValue().getPaginas());
+							cell.setCellStyle(shadowStyle);							
+							// Seed tags
+							// "tematica"
+							cell = rowIteration.createCell(ColumnNames.indexOf(TEMATICA));
+							cell.setCellValue(currentLine.getValue().getTematica());
+							cell.setCellStyle(shadowStyle);
+							// "distribucion"
+							cell = rowIteration.createCell(ColumnNames.indexOf(DISTRIBUCION));
+							cell.setCellValue(currentLine.getValue().getDistribucion());
+							cell.setCellStyle(shadowStyle);
+							// "Recurrencia"
+							cell = rowIteration.createCell(ColumnNames.indexOf(RECURRENCIA));
+							cell.setCellValue(currentLine.getValue().getRecurrencia());
+							cell.setCellStyle(shadowStyle);
+							// Otros
+							cell = rowIteration.createCell(ColumnNames.indexOf(OTROS));
+							cell.setCellValue(currentLine.getValue().getOtros());
+							cell.setCellStyle(shadowStyle);							
 							// Puntuaction
 							cell = rowIteration.createCell(ColumnNames.indexOf(PUNTUACION));
 							cell.setCellStyle(shadowStyle);
