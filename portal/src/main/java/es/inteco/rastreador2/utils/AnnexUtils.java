@@ -404,8 +404,6 @@ public final class AnnexUtils {
 	private static List<String> ColumnNames;
 	/** The execution dates. */
 	private static List<String> executionDates = new ArrayList<>();
-	/** The execution dates with format. */
-	private static List<Date> executionDatesWithFormat = new ArrayList<>();
 	/** The execution dates with format valid. */
 	private static List<Date> executionDatesWithFormat_Valid = new ArrayList<>();
 	/** The dependencies. */
@@ -454,8 +452,8 @@ public final class AnnexUtils {
 			createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 			createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 			createAnnexXLSX2(messageResources, idObsExecution, idOperation, tagsToFilter);
-			createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
-			createAnnexXLSX_PerDependency(idOperation);
+			//createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
+			//createAnnexXLSX_PerDependency(idOperation);
 			createAnnexXLSX1_Evolution_v2(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
 			createAnnexXLSX_PerDependency_v2(idOperation);
 			createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
@@ -505,7 +503,6 @@ public final class AnnexUtils {
 		{
 			executionDates = new ArrayList<>();
 			executionDatesWithFormat_Valid = new ArrayList<Date>();
-			executionDatesWithFormat = new ArrayList<>();
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
 			final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
 			final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(),
@@ -4426,11 +4423,11 @@ public final class AnnexUtils {
 				for (EtiquetaForm label : labels) {
 					if (com.getIdTag() == label.getId()) {
 						try {
-							String date = compareWithFirst ? com.getFirst() : com.getPrevious();
+							String date = compareWithFirst && com.getFirst() != null ? com.getFirst() : com.getPrevious();
 							Date tmp = new SimpleDateFormat("yyyy-MM-dd").parse(date);
 							previousDate = new SimpleDateFormat("dd/MM/yyyy").format(tmp);
 						} catch (ParseException e) {
-							previousDate = compareWithFirst ? com.getFirst() : com.getPrevious();
+							previousDate = compareWithFirst && com.getFirst() != null ? com.getFirst() : com.getPrevious();
 						}
 						// previousDate = compareWithFirst ? com.getFirst() : com.getPrevious();
 						break;
