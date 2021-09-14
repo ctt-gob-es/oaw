@@ -1733,11 +1733,6 @@ public final class AnnexUtils {
 						// ***************************
 						// * EXECUTION VALUES *
 						// ***************************
-						executionDatesWithFormat = new ArrayList<>();
-						// Get all execution dates in DateTime format
-						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-							executionDatesWithFormat.add(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)));
-						}
 						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
 							final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
 							// Execution dates must be exists as column
@@ -2196,14 +2191,11 @@ public final class AnnexUtils {
 						cell.setCellValue(pages);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setPaginas(pages);
+						
 						// ***************************
 						// * EXECUTION VALUES *
 						// ***************************
-						executionDatesWithFormat = new ArrayList<>();
-						// Get all execution dates in DateTime format
-						for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-							executionDatesWithFormat.add(new SimpleDateFormat("yyyy-MM-dd kk:mm:ss").parse(entry.getKey().substring(0, 19)));
-						}
+						
 						// Add a row for every date
 						int iteration = 0;
 						for (String iterationDate : executionDates) {
@@ -2968,6 +2960,7 @@ public final class AnnexUtils {
 						if (executionDates.size() > 1) {
 							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(ID), ColumnNames.indexOf(ID)));
 							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(NOMBRE), ColumnNames.indexOf(NOMBRE)));
+							/*
 							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(SEMILLA2), ColumnNames.indexOf(SEMILLA2)));
 							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(AMBITO2), ColumnNames.indexOf(AMBITO2)));
 							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(DEPENDE_DE), ColumnNames.indexOf(DEPENDE_DE)));
@@ -2978,6 +2971,7 @@ public final class AnnexUtils {
 							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(DISTRIBUCION), ColumnNames.indexOf(DISTRIBUCION)));
 							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(RECURRENCIA), ColumnNames.indexOf(RECURRENCIA)));
 							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(OTROS), ColumnNames.indexOf(OTROS)));
+							*/
 						}
 						rowIndex = rowIndex + executionDates.size();
 					}
