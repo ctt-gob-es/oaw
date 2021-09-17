@@ -169,7 +169,8 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 																	var ambitos = $(this).jqGrid ('getLocalRow', rowid).ambitos;
 																	var response = jQuery
 																			.parseJSON(data);
-																	var s = '<select>';
+																	
+																	var s = '<select ><option disabled hidden></option>';
 
 																	if (response
 																			&& response.length && ambitos) {
