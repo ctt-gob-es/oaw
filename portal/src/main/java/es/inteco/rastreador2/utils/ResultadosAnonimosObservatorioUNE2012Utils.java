@@ -1385,7 +1385,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 			Logger.putLog(
 					"La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId
 							+ " no está disponible, se va a regenerar",
-					ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_INFO);
+					ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_WARNING);
 			try (Connection c = DataBaseManager.getConnection()) {
 				observatoryEvaluationList = new ArrayList<>();
 				final List<Long> listAnalysis = new ArrayList<>();

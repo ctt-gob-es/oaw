@@ -2078,7 +2078,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			boolean isComplexityFilter, String[] tagsFilter) throws Exception {
 		List<ObservatoryEvaluationForm> observatoryEvaluationList;
 		Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioUNEEN2019Utils.class,
-				Logger.LOG_LEVEL_INFO);
+				Logger.LOG_LEVEL_WARNING);
 		try (Connection c = DataBaseManager.getConnection()) {
 			observatoryEvaluationList = new ArrayList<>();
 			final List<Long> listAnalysis = new ArrayList<>();

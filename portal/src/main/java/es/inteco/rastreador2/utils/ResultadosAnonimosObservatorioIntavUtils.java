@@ -1261,7 +1261,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 			observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
 		} catch (NeedsRefreshException nre) {
 			Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioIntavUtils.class,
-					Logger.LOG_LEVEL_ERROR);
+					Logger.LOG_LEVEL_WARNING);
 			try {
 				observatoryEvaluationList = new ArrayList<>();
 				List<Long> listAnalysis = new ArrayList<>();
