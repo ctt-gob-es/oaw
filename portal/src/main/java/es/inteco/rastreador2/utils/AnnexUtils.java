@@ -440,10 +440,10 @@ public final class AnnexUtils {
 	 */
 	public static void generateAllAnnex(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter,
 			final String[] tagsToFilterFixed, final String[] exObsIds, final List<ComparisionForm> comparision) throws Exception {
-		Logger.putLog("Inicio de la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
-		Logger.putLog("Obteniendo información para la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		Logger.putLog("Inicio de la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
+		Logger.putLog("Obteniendo información para la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 		generateInfo(idObsExecution, exObsIds);
-		Logger.putLog("Generando anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		Logger.putLog("Generando anexos", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 		try {
 			createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 			createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
@@ -461,7 +461,7 @@ public final class AnnexUtils {
 		} catch (Exception e) {
 			Logger.putLog("Error en la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		}
-		Logger.putLog("Fin de la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		Logger.putLog("Fin de la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 	}
 
 	/**
@@ -532,9 +532,9 @@ public final class AnnexUtils {
 	public static void generateEvolutionData(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final String[] tagsToFilter, final String[] exObsIds,
 			final List<ComparisionForm> comparision) throws Exception {
 		// Returns a map of dependencies and values of evolution
-		Logger.putLog("Obteniendo información para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		Logger.putLog("Obteniendo información para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 		generateInfo(idObsExecution, exObsIds);
-		Logger.putLog("Generando información de las URAs para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		Logger.putLog("Generando información de las URAs para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 		List<UraSendResultForm> uraCustomList = new ArrayList<>();
 		// Generate a list of UraSendResultForm with all URA information
 		Map<DependenciaForm, List<SemillaForm>> mapSeedByDependencia = new HashMap<>();
@@ -552,18 +552,18 @@ public final class AnnexUtils {
 			}
 		}
 		// Loop into map
-		Logger.putLog("Procesando las semillas para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		Logger.putLog("Procesando las semillas para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 		int j = 0;
 		for (Map.Entry<DependenciaForm, List<SemillaForm>> entry : mapSeedByDependencia.entrySet()) {
 			Logger.putLog("Procesando la dependencia " + entry.getKey().getName() + " (" + (++j) + " de " + mapSeedByDependencia.size() + ") para la generación de datos de evolución",
-					AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+					AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 			// calculate
 			BigDecimal sumLastScore = BigDecimal.ZERO;
 			BigDecimal sumPreviousScore = BigDecimal.ZERO;
 			int i = 0;
 			for (SemillaForm semillaForm : entry.getValue()) {
 				Logger.putLog("-- [" + entry.getKey().getName() + "] - Procesando la semilla " + semillaForm.getNombre() + " (" + (++i) + " de " + entry.getValue().size()
-						+ ") para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+						+ ") para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 				TreeMap<String, ScoreForm> scoreMap = annexmap.get(semillaForm);
 				// last score
 				BigDecimal lastScore = scoreMap.lastEntry().getValue().getTotalScore();
@@ -673,7 +673,7 @@ public final class AnnexUtils {
 	public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas.xml")) {
-			Logger.putLog("Generando anexo: anexo-paginas.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Generando anexo: anexo-paginas.xml", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false, false);
 		} catch (Exception e) {
 			Logger.putLog("Error al generar el anexo: anexo-paginas.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -695,7 +695,7 @@ public final class AnnexUtils {
 	public static void createAnnexPaginasVerifications(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas-verificaciones.xml")) {
-			Logger.putLog("Generando anexo: anexo-paginas-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Generando anexo: anexo-paginas-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, true, false);
 		} catch (Exception e) {
 			Logger.putLog("Error al generar el anexo: anexo-paginas-verificaciones", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -717,7 +717,7 @@ public final class AnnexUtils {
 	public static void createAnnexPaginasCriteria(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-paginas-criterios.xml")) {
-			Logger.putLog("Generando anexo: anexo-paginas-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Generando anexo: anexo-paginas-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 			generateXmlPages(messageResources, idObsExecution, tagsToFilter, c, writer, false, true);
 		} catch (Exception e) {
 			Logger.putLog("Error al generar el anexo: anexo-paginas-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -953,7 +953,7 @@ public final class AnnexUtils {
 	public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales.xml")) {
-			Logger.putLog("Generando anexo: anexo-portales.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Generando anexo: anexo-portales.xml", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, false, false);
 		} catch (Exception e) {
 			Logger.putLog("Error al generar el anexo: anexo-portales.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -975,7 +975,7 @@ public final class AnnexUtils {
 	public static void createAnnexPortalsVerification(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales-verificaciones.xml")) {
-			Logger.putLog("Generando anexo: anexo-portales-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Generando anexo: anexo-portales-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, true, true, false);
 		} catch (Exception e) {
 			Logger.putLog("Error al generar el anexo: anexo-portales-verificaciones.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -997,7 +997,7 @@ public final class AnnexUtils {
 	public static void createAnnexPortalsCriteria(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter, final String[] exObsIds)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection(); FileWriter writer = getFileWriter(idOperation, "anexo-portales-criterios.xml")) {
-			Logger.putLog("Generando anexo: anexo-portales-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Generando anexo: anexo-portales-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 			generateXmlPortal(messageResources, idObsExecution, tagsToFilter, c, writer, false, true, true);
 		} catch (Exception e) {
 			Logger.putLog("Error generar el anexo: anexo-portales-criterios.xml", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -1221,7 +1221,7 @@ public final class AnnexUtils {
 	 */
 	public static void createAnnexXLSX2(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter) throws Exception {
 		ColumnNames = new ArrayList<>();
-		Logger.putLog("Generando anexo: " + FILE_2_ITERATION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		Logger.putLog("Generando anexo: " + FILE_2_ITERATION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_2_ITERATION_XLSX_NAME)) {
 			final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
 			final String ObservatoryFormDate = observatoryForm.getDate().substring(0, 10);
@@ -1467,7 +1467,7 @@ public final class AnnexUtils {
 	public static void createAnnexXLSX1_Evolution(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision,
 			final String[] tagsToFilter) throws Exception {
 		dependencies = new ArrayList<>();
-		Logger.putLog("Generando anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		Logger.putLog("Generando anexo: " + FILE_1_EVOLUTION_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_1_EVOLUTION_XLSX_NAME)) {
 			XSSFWorkbook wb = new XSSFWorkbook();
 			XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
@@ -1967,7 +1967,7 @@ public final class AnnexUtils {
 	public static void createAnnexXLSX1_Evolution_v2(final MessageResources messageResources, final Long idObsExecution, final Long idOperation, final List<ComparisionForm> comparision,
 			final String[] tagsToFilter) throws Exception {
 		dependencies = new ArrayList<>();
-		Logger.putLog("Generando anexo: " + FILE_1_EVOLUTION_XLSX_NAME_V2, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		Logger.putLog("Generando anexo: " + FILE_1_EVOLUTION_XLSX_NAME_V2, AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_1_EVOLUTION_XLSX_NAME_V2)) {
 			XSSFWorkbook wb = new XSSFWorkbook();
 			XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
@@ -2512,7 +2512,7 @@ public final class AnnexUtils {
 		final int numberOfFixedColumns = 12;
 		// Iterate through dependencies to create each file
 		for (String currentDependency : dependencies) {
-			Logger.putLog("Generando anexo: " + currentDependency + ".xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Generando anexo: " + currentDependency + ".xlsx", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 			try (FileOutputStream writer = getFileOutputStream(idOperation, "/Dependencias/" + currentDependency + ".xlsx")) {
 				XSSFWorkbook wb = new XSSFWorkbook();
 				XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
@@ -2738,7 +2738,7 @@ public final class AnnexUtils {
 	public static void createAnnexXLSX_PerDependency_v2(final Long idOperation) throws Exception {
 		// Iterate through dependencies to create each file
 		for (String currentDependency : dependencies) {
-			Logger.putLog("Generando anexo: " + currentDependency + ".xlsx", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Generando anexo: " + currentDependency + ".xlsx", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 			try (FileOutputStream writer = getFileOutputStream(idOperation, "/Dependencias_v2/" + currentDependency + ".xlsx")) {
 				XSSFWorkbook wb = new XSSFWorkbook();
 				XSSFSheet sheet = wb.createSheet(SHEET_RESULTS_NAME);
@@ -3063,7 +3063,7 @@ public final class AnnexUtils {
 	 * @throws Exception the exception
 	 */
 	public static void createAnnexXLSXRanking(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
-		Logger.putLog("Generando anexo: " + FILE_3_ITERATION_RANKING_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		Logger.putLog("Generando anexo: " + FILE_3_ITERATION_RANKING_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 		// Clone file 2
 		final PropertiesManager pmgr = new PropertiesManager();
 		final File originalWb = new File(pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_ANNEX_PATH) + idOperation + File.separator + FILE_2_ITERATION_XLSX_NAME);
@@ -3121,7 +3121,7 @@ public final class AnnexUtils {
 	 */
 	private static void createAnnexProgressEvolutionXLSX(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter,
 			final String[] tagsToFilterFixed, final String[] exObsIds, final List<ComparisionForm> comparision) throws Exception {
-		Logger.putLog("Generando anexo: " + FILE_4_EVOLUTION_AND_PROGRESS_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+		Logger.putLog("Generando anexo: " + FILE_4_EVOLUTION_AND_PROGRESS_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_INFO);
 		try (Connection c = DataBaseManager.getConnection(); FileOutputStream writer = getFileOutputStream(idOperation, FILE_4_EVOLUTION_AND_PROGRESS_XLSX_NAME)) {
 			final XSSFWorkbook wb = new XSSFWorkbook();
 			final XSSFSheet globalSheet = wb.createSheet("Global");
