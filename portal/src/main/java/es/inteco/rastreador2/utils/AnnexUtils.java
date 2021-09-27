@@ -32,12 +32,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
@@ -99,6 +102,7 @@ import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFTextBox;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.struts.util.MessageResources;
+import org.jopendocument.dom.template.statements.ForEach;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTAxDataSource;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarChart;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarSer;
@@ -5741,70 +5745,107 @@ public final class AnnexUtils {
 	 * @param exObsIds       the ex obs ids
 	 * @return the map
 	 */
-	private static Map<SemillaForm, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] exObsIds) {
+	private static Map<SemillaForm, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] exObsIds) 
+	{		
 		final Map<SemillaForm, TreeMap<String, ScoreForm>> seedMapFilled = new HashMap<>();
 		Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
+		
 		Connection c = null;
-		try {
+		
+		try 
+		{
 			c = DataBaseManager.getConnection();
+			
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
+			
 			final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
+			
+			List<String> selectedExecutionSeedIdsList = new ArrayList<String>();
+			
 			// Filter by idObsEx
 			final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(),
 					false, exObsIds);
 			final List<ObservatoryForm> observatoryFormList = new ArrayList<>();
-			for (ObservatorioRealizadoForm orForm : observatoriesList) {
+			
+			for (ObservatorioRealizadoForm orForm : observatoriesList) 
+			{
 				final ObservatoryForm observatory = ObservatoryExportManager.getObservatory(orForm.getId());
-				if (observatory != null) {
+				if (observatory != null) 
+				{
 					observatoryFormList.add(observatory);
+					
+					if (observatory.getIdExecution().equals(idObsExecution.toString()))
+					{
+						for (CategoryForm category : observatory.getCategoryFormList()) 
+						{
+							for (SiteForm siteForm : category.getSiteFormList()) 
+							{
+								selectedExecutionSeedIdsList.add(siteForm.getId());
+							}
+						}						
+					}
 				}
 			}
-			for (ObservatoryForm observatory : observatoryFormList) {
-				for (CategoryForm category : observatory.getCategoryFormList()) {
-					for (SiteForm siteForm : category.getSiteFormList()) {
-						final ScoreForm scoreForm = new ScoreForm();
-						scoreForm.setLevel(siteForm.getLevel());
-						scoreForm.setTotalScore(new BigDecimal(siteForm.getScore()));
-						TreeMap<String, ScoreForm> seedInfo = new TreeMap<>();
-						if (seedMap.get(Long.valueOf(siteForm.getIdCrawlerSeed())) != null) {
-							seedInfo = seedMap.get(Long.valueOf(siteForm.getIdCrawlerSeed()));
-						}
-						seedInfo.put(observatory.getDate(), scoreForm);
-						seedMap.put(Long.valueOf(siteForm.getIdCrawlerSeed()), seedInfo);
-						scoreForm.setCompliance(siteForm.getCompliance());
-						List<VerificationScoreForm> verificationScoreList = new LinkedList<>();
-						for (VerificationScoreForm verification : siteForm.getVerificationScoreList()) {
-							VerificationScoreForm vsf = new VerificationScoreForm();
-							BeanUtils.copyProperties(vsf, verification);
-							verificationScoreList.add(vsf);
-						}
-						Collections.sort(verificationScoreList, new Comparator<VerificationScoreForm>() {
-							@Override
-							public int compare(VerificationScoreForm version1, VerificationScoreForm version2) {
-								String[] v1 = version1.getVerification().split(REGEX_DOT);
-								String[] v2 = version2.getVerification().split(REGEX_DOT);
-								int major1 = major(v1);
-								int major2 = major(v2);
-								if (major1 == major2) {
-									return minor(v1).compareTo(minor(v2));
+			
+			for (ObservatoryForm observatory : observatoryFormList) 
+			{
+				for (CategoryForm category : observatory.getCategoryFormList()) 
+				{
+					for (SiteForm siteForm : category.getSiteFormList()) 
+					{
+						// Select only seeds from main execution
+						if (selectedExecutionSeedIdsList.contains(siteForm.getId()))
+						{
+							final ScoreForm scoreForm = new ScoreForm();
+						
+							scoreForm.setLevel(siteForm.getLevel());
+							scoreForm.setTotalScore(new BigDecimal(siteForm.getScore()));
+							TreeMap<String, ScoreForm> seedInfo = new TreeMap<>();
+							if (seedMap.get(Long.valueOf(siteForm.getIdCrawlerSeed())) != null) 
+							{
+								seedInfo = seedMap.get(Long.valueOf(siteForm.getIdCrawlerSeed()));
+							}
+							seedInfo.put(observatory.getDate(), scoreForm);
+							seedMap.put(Long.valueOf(siteForm.getIdCrawlerSeed()), seedInfo);
+							scoreForm.setCompliance(siteForm.getCompliance());
+							List<VerificationScoreForm> verificationScoreList = new LinkedList<>();
+							for (VerificationScoreForm verification : siteForm.getVerificationScoreList()) 
+							{
+								VerificationScoreForm vsf = new VerificationScoreForm();
+								BeanUtils.copyProperties(vsf, verification);
+								verificationScoreList.add(vsf);
+							}
+							
+							Collections.sort(verificationScoreList, new Comparator<VerificationScoreForm>() {
+								@Override
+								public int compare(VerificationScoreForm version1, VerificationScoreForm version2) {
+									String[] v1 = version1.getVerification().split(REGEX_DOT);
+									String[] v2 = version2.getVerification().split(REGEX_DOT);
+									int major1 = major(v1);
+									int major2 = major(v2);
+									if (major1 == major2) {
+										return minor(v1).compareTo(minor(v2));
+									}
+									return major1 > major2 ? 1 : -1;
 								}
-								return major1 > major2 ? 1 : -1;
-							}
-
-							private int major(String[] version) {
-								return Integer.parseInt(version[0]);
-							}
-
-							private Integer minor(String[] version) {
-								return version.length > 1 ? Integer.parseInt(version[1]) : 0;
-							}
-						});
-						scoreForm.setVerificationScoreList(verificationScoreList);
+	
+								private int major(String[] version) {
+									return Integer.parseInt(version[0]);
+								}
+	
+								private Integer minor(String[] version) {
+									return version.length > 1 ? Integer.parseInt(version[1]) : 0;
+								}
+							});
+							
+							scoreForm.setVerificationScoreList(verificationScoreList);
+						}
 					}
 				}
 			}
 			// Retrive seed form to prevent extra database querys in other methods
-			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : seedMap.entrySet()) {
+			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : seedMap.entrySet()) 
+			{
 				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
 				seedMapFilled.put(semillaForm, semillaEntry.getValue());
 			}
@@ -5813,14 +5854,17 @@ public final class AnnexUtils {
 		} finally {
 			seedMap = null;
 			System.gc();
-			try {
+			try 
+			{
 				DataBaseManager.closeConnection(c);
 			} catch (Exception e) {
 				Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			}
 		}
+		
 		seedMap = null;
 		System.gc();
+		
 		return seedMapFilled;
 	}
 
