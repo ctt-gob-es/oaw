@@ -5780,7 +5780,7 @@ public final class AnnexUtils {
 						{
 							for (SiteForm siteForm : category.getSiteFormList()) 
 							{
-								selectedExecutionSeedIdsList.add(siteForm.getId());
+								selectedExecutionSeedIdsList.add(siteForm.getIdCrawlerSeed());
 							}
 						}						
 					}
@@ -5794,7 +5794,7 @@ public final class AnnexUtils {
 					for (SiteForm siteForm : category.getSiteFormList()) 
 					{
 						// Select only seeds from main execution
-						if (selectedExecutionSeedIdsList.contains(siteForm.getId()))
+						if (selectedExecutionSeedIdsList.contains(siteForm.getIdCrawlerSeed()))
 						{
 							final ScoreForm scoreForm = new ScoreForm();
 						
