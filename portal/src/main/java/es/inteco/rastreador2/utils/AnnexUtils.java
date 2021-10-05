@@ -32,15 +32,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
@@ -102,7 +99,6 @@ import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFTextBox;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.struts.util.MessageResources;
-import org.jopendocument.dom.template.statements.ForEach;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTAxDataSource;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarChart;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTBarSer;
@@ -428,6 +424,8 @@ public final class AnnexUtils {
 	private static ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 	/** The script engine. */
 	private static ScriptEngine scriptEngine = scriptEngineManager.getEngineByName("JavaScript");
+	/** Origin annexes */
+	private static final boolean originAnnexes = true;
 
 	/**
 	 * Generate all annex.
@@ -444,12 +442,10 @@ public final class AnnexUtils {
 	 */
 	public static void generateAllAnnex(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation, final String[] tagsToFilter,
 			final String[] tagsToFilterFixed, final String[] exObsIds, final List<ComparisionForm> comparision) throws Exception {
-		
 		Logger.putLog("Inicio de la generación de anexos WARN ", AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
-		Logger.putLog("Obteniendo información para la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_WARNING);		
-		generateInfo(idObsExecution, exObsIds);
+		Logger.putLog("Obteniendo información para la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
+		generateInfo(idObsExecution, exObsIds, originAnnexes);
 		Logger.putLog("Generando anexos", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
-		
 		try {
 			createAnnexPaginas(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 			createAnnexPaginasVerifications(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
@@ -458,8 +454,8 @@ public final class AnnexUtils {
 			createAnnexPortalsVerification(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 			createAnnexPortalsCriteria(messageResources, idObsExecution, idOperation, tagsToFilter, exObsIds);
 			createAnnexXLSX2(messageResources, idObsExecution, idOperation, tagsToFilter);
-			//createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
-			//createAnnexXLSX_PerDependency(idOperation);
+			// createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
+			// createAnnexXLSX_PerDependency(idOperation);
 			createAnnexXLSX1_Evolution_v2(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
 			createAnnexXLSX_PerDependency_v2(idOperation);
 			createAnnexXLSXRanking(messageResources, idObsExecution, idOperation);
@@ -484,7 +480,7 @@ public final class AnnexUtils {
 	 */
 	public static void generateEmailAnnex(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idOperation, final String[] exObsIds,
 			final List<ComparisionForm> comparision, final String[] tagsToFilter) throws Exception {
-		generateInfo(idObsExecution, exObsIds);
+		generateInfo(idObsExecution, exObsIds, originAnnexes);
 		createAnnexXLSX1_Evolution(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
 		createAnnexXLSX_PerDependency(idOperation);
 		createAnnexXLSX1_Evolution_v2(messageResources, idObsExecution, idOperation, comparision, tagsToFilter);
@@ -499,11 +495,11 @@ public final class AnnexUtils {
 	 * @throws Exception    the exception
 	 * @throws SQLException the SQL exception
 	 */
-	private static void generateInfo(final Long idObsExecution, final String[] exObsIds) throws Exception, SQLException {
+	private static void generateInfo(final Long idObsExecution, final String[] exObsIds, final boolean originAnnexes) throws Exception, SQLException {
 		annexmap = createAnnexMap(idObsExecution, exObsIds);
 		evaluationIds = AnalisisDatos.getEvaluationIdsFromExecutedObservatory(idObsExecution);
 		observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
-		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds);
+		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds, originAnnexes);
 		Connection c = DataBaseManager.getConnection();
 		// Fill all execution dates
 		{
@@ -539,7 +535,7 @@ public final class AnnexUtils {
 			final List<ComparisionForm> comparision) throws Exception {
 		// Returns a map of dependencies and values of evolution
 		Logger.putLog("Obteniendo información para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
-		generateInfo(idObsExecution, exObsIds);
+		generateInfo(idObsExecution, exObsIds, originAnnexes);
 		Logger.putLog("Generando información de las URAs para la generación de datos de evolución", AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
 		List<UraSendResultForm> uraCustomList = new ArrayList<>();
 		// Generate a list of UraSendResultForm with all URA information
@@ -2194,11 +2190,9 @@ public final class AnnexUtils {
 						cell.setCellValue(pages);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setPaginas(pages);
-						
 						// ***************************
 						// * EXECUTION VALUES *
 						// ***************************
-						
 						// Add a row for every date
 						int iteration = 0;
 						for (String iterationDate : executionDates) {
@@ -2844,7 +2838,6 @@ public final class AnnexUtils {
 						cell = row.createCell(ColumnNames.indexOf(PAGINAS));
 						cell.setCellValue(currentLine.getValue().getPaginas());
 						cell.setCellStyle(shadowStyle);
-						
 						// ***************************
 						// * EXECUTION VALUES *
 						// ***************************
@@ -2874,7 +2867,6 @@ public final class AnnexUtils {
 								cell.setCellValue(iterationDate);
 							}
 							cell.setCellStyle(shadowStyle);
-							
 							// "semilla"
 							cell = rowIteration.createCell(ColumnNames.indexOf(SEMILLA2));
 							cell.setCellValue(currentLine.getValue().getSemilla());
@@ -2890,7 +2882,7 @@ public final class AnnexUtils {
 							// "namecat"
 							cell = rowIteration.createCell(ColumnNames.indexOf(SEGMENTO));
 							cell.setCellValue(currentLine.getValue().getNamecat());
-							cell.setCellStyle(shadowStyle);							
+							cell.setCellStyle(shadowStyle);
 							// "complejidad"
 							cell = rowIteration.createCell(ColumnNames.indexOf(COMPLEJIDAD));
 							cell.setCellValue(currentLine.getValue().getComplejidad());
@@ -2898,7 +2890,7 @@ public final class AnnexUtils {
 							// Páginas
 							cell = rowIteration.createCell(ColumnNames.indexOf(PAGINAS));
 							cell.setCellValue(currentLine.getValue().getPaginas());
-							cell.setCellStyle(shadowStyle);							
+							cell.setCellStyle(shadowStyle);
 							// Seed tags
 							// "tematica"
 							cell = rowIteration.createCell(ColumnNames.indexOf(TEMATICA));
@@ -2915,7 +2907,7 @@ public final class AnnexUtils {
 							// Otros
 							cell = rowIteration.createCell(ColumnNames.indexOf(OTROS));
 							cell.setCellValue(currentLine.getValue().getOtros());
-							cell.setCellStyle(shadowStyle);							
+							cell.setCellStyle(shadowStyle);
 							// Puntuaction
 							cell = rowIteration.createCell(ColumnNames.indexOf(PUNTUACION));
 							cell.setCellStyle(shadowStyle);
@@ -3007,17 +2999,17 @@ public final class AnnexUtils {
 							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(ID), ColumnNames.indexOf(ID)));
 							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(NOMBRE), ColumnNames.indexOf(NOMBRE)));
 							/*
-							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(SEMILLA2), ColumnNames.indexOf(SEMILLA2)));
-							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(AMBITO2), ColumnNames.indexOf(AMBITO2)));
-							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(DEPENDE_DE), ColumnNames.indexOf(DEPENDE_DE)));
-							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(SEGMENTO), ColumnNames.indexOf(SEGMENTO)));
-							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(COMPLEJIDAD), ColumnNames.indexOf(COMPLEJIDAD)));
-							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(PAGINAS), ColumnNames.indexOf(PAGINAS)));
-							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(TEMATICA), ColumnNames.indexOf(TEMATICA)));
-							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(DISTRIBUCION), ColumnNames.indexOf(DISTRIBUCION)));
-							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(RECURRENCIA), ColumnNames.indexOf(RECURRENCIA)));
-							sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(OTROS), ColumnNames.indexOf(OTROS)));
-							*/
+							 * sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(SEMILLA2), ColumnNames.indexOf(SEMILLA2)));
+							 * sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(AMBITO2), ColumnNames.indexOf(AMBITO2)));
+							 * sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(DEPENDE_DE), ColumnNames.indexOf(DEPENDE_DE)));
+							 * sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(SEGMENTO), ColumnNames.indexOf(SEGMENTO)));
+							 * sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(COMPLEJIDAD), ColumnNames.indexOf(COMPLEJIDAD)));
+							 * sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(PAGINAS), ColumnNames.indexOf(PAGINAS)));
+							 * sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(TEMATICA), ColumnNames.indexOf(TEMATICA)));
+							 * sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(DISTRIBUCION), ColumnNames.indexOf(DISTRIBUCION)));
+							 * sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(RECURRENCIA), ColumnNames.indexOf(RECURRENCIA)));
+							 * sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex + executionDates.size() - 1, ColumnNames.indexOf(OTROS), ColumnNames.indexOf(OTROS)));
+							 */
 						}
 						rowIndex = rowIndex + executionDates.size();
 					}
@@ -5747,77 +5739,53 @@ public final class AnnexUtils {
 	 * @param exObsIds       the ex obs ids
 	 * @return the map
 	 */
-	private static Map<SemillaForm, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] exObsIds) 
-	{		
+	private static Map<SemillaForm, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] exObsIds) {
 		final Map<SemillaForm, TreeMap<String, ScoreForm>> seedMapFilled = new HashMap<>();
 		Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
-		
 		Connection c = null;
-		
-		try 
-		{
+		try {
 			c = DataBaseManager.getConnection();
-			
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
-			
 			final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
-			
 			List<String> selectedExecutionSeedIdsList = new ArrayList<String>();
-			
 			// Filter by idObsEx
 			final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(),
 					false, exObsIds);
 			final List<ObservatoryForm> observatoryFormList = new ArrayList<>();
-			
-			for (ObservatorioRealizadoForm orForm : observatoriesList) 
-			{
+			for (ObservatorioRealizadoForm orForm : observatoriesList) {
 				final ObservatoryForm observatory = ObservatoryExportManager.getObservatory(orForm.getId());
-				if (observatory != null) 
-				{
+				if (observatory != null) {
 					observatoryFormList.add(observatory);
-					
-					if (observatory.getIdExecution().equals(idObsExecution.toString()))
-					{
-						for (CategoryForm category : observatory.getCategoryFormList()) 
-						{
-							for (SiteForm siteForm : category.getSiteFormList()) 
-							{
+					if (observatory.getIdExecution().equals(idObsExecution.toString())) {
+						for (CategoryForm category : observatory.getCategoryFormList()) {
+							for (SiteForm siteForm : category.getSiteFormList()) {
 								selectedExecutionSeedIdsList.add(siteForm.getIdCrawlerSeed());
 							}
-						}						
+						}
 					}
 				}
 			}
-			
-			for (ObservatoryForm observatory : observatoryFormList) 
-			{
-				for (CategoryForm category : observatory.getCategoryFormList()) 
-				{
-					for (SiteForm siteForm : category.getSiteFormList()) 
-					{
+			for (ObservatoryForm observatory : observatoryFormList) {
+				for (CategoryForm category : observatory.getCategoryFormList()) {
+					for (SiteForm siteForm : category.getSiteFormList()) {
 						// Select only seeds from main execution
-						if (selectedExecutionSeedIdsList.contains(siteForm.getIdCrawlerSeed()))
-						{
+						if (selectedExecutionSeedIdsList.contains(siteForm.getIdCrawlerSeed())) {
 							final ScoreForm scoreForm = new ScoreForm();
-						
 							scoreForm.setLevel(siteForm.getLevel());
 							scoreForm.setTotalScore(new BigDecimal(siteForm.getScore()));
 							TreeMap<String, ScoreForm> seedInfo = new TreeMap<>();
-							if (seedMap.get(Long.valueOf(siteForm.getIdCrawlerSeed())) != null) 
-							{
+							if (seedMap.get(Long.valueOf(siteForm.getIdCrawlerSeed())) != null) {
 								seedInfo = seedMap.get(Long.valueOf(siteForm.getIdCrawlerSeed()));
 							}
 							seedInfo.put(observatory.getDate(), scoreForm);
 							seedMap.put(Long.valueOf(siteForm.getIdCrawlerSeed()), seedInfo);
 							scoreForm.setCompliance(siteForm.getCompliance());
 							List<VerificationScoreForm> verificationScoreList = new LinkedList<>();
-							for (VerificationScoreForm verification : siteForm.getVerificationScoreList()) 
-							{
+							for (VerificationScoreForm verification : siteForm.getVerificationScoreList()) {
 								VerificationScoreForm vsf = new VerificationScoreForm();
 								BeanUtils.copyProperties(vsf, verification);
 								verificationScoreList.add(vsf);
 							}
-							
 							Collections.sort(verificationScoreList, new Comparator<VerificationScoreForm>() {
 								@Override
 								public int compare(VerificationScoreForm version1, VerificationScoreForm version2) {
@@ -5830,24 +5798,22 @@ public final class AnnexUtils {
 									}
 									return major1 > major2 ? 1 : -1;
 								}
-	
+
 								private int major(String[] version) {
 									return Integer.parseInt(version[0]);
 								}
-	
+
 								private Integer minor(String[] version) {
 									return version.length > 1 ? Integer.parseInt(version[1]) : 0;
 								}
 							});
-							
 							scoreForm.setVerificationScoreList(verificationScoreList);
 						}
 					}
 				}
 			}
 			// Retrive seed form to prevent extra database querys in other methods
-			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : seedMap.entrySet()) 
-			{
+			for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : seedMap.entrySet()) {
 				final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
 				seedMapFilled.put(semillaForm, semillaEntry.getValue());
 			}
@@ -5856,17 +5822,14 @@ public final class AnnexUtils {
 		} finally {
 			seedMap = null;
 			System.gc();
-			try 
-			{
+			try {
 				DataBaseManager.closeConnection(c);
 			} catch (Exception e) {
 				Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			}
 		}
-		
 		seedMap = null;
 		System.gc();
-		
 		return seedMapFilled;
 	}
 
