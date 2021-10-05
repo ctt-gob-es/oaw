@@ -464,6 +464,7 @@ public final class AnnexUtils {
 			Logger.putLog("Error en la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 		}
 		Logger.putLog("Fin de la generación de anexos", AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
+		currentEvaluationPageList = null;
 	}
 
 	/**
@@ -3061,46 +3062,52 @@ public final class AnnexUtils {
 	 * @throws Exception the exception
 	 */
 	public static void createAnnexXLSXRanking(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
-		Logger.putLog("Generando anexo: " + FILE_3_ITERATION_RANKING_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
-		// Clone file 2
-		final PropertiesManager pmgr = new PropertiesManager();
-		final File originalWb = new File(pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_ANNEX_PATH) + idOperation + File.separator + FILE_2_ITERATION_XLSX_NAME);
-		final FileOutputStream fos = new FileOutputStream(pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_ANNEX_PATH) + idOperation + File.separator + FILE_3_ITERATION_RANKING_XLSX_NAME);
-		XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(originalWb));
-		final XSSFSheet resultSheet = wb.getSheet(SHEET_RESULTS_NAME);
-		final String sheetnameAllocation = SHEET_RANKING_ALLOCATION_NAME;
-		final String sheetnameCompliance = SHEET_RANKING_COMPLIANCE_NAME;
-		final String[] columnNamesAllocation = new String[] { COLUMN_TITLE_ORGANISMO, COLUMN_TITLE_TOTAL_PORTALES_AA, COLUMN_TITLE_AA, COLUMN_TITLE_NOTA_MEDIA_AA, COLUMN_TITLE_TOTAL_PORTALES_A,
-				COLUMN_TITLE_PERCENT_A, COLUMN_TITLE_NOTA_MEDIA_A, COLUMN_TITLE_TOTAL_PORTALES_NV, COLUMN_TITLE_NV, COLUMN_TITLE_NOTA_MEDIA_NV, COLUMN_TITLE_NO_CUMPLEN, COLUMN_TITLE_TOTAL_PORTALES };
-		// In order left to right
-		final String[] columnResultsAllocation = new String[] { "R", "Q", "P" };
-		final String[] columnResultsCompliance = new String[] { "U", "T", "S" };
-		final String[] columnNamesCompliance = new String[] { COLUMN_TITLE_ORGANISMO, COLUMN_TITLE_TOTAL_PORTALES_TC, COLUMN_TITLE_PERCENT_TC, COLUMN_TITLE_NOTA_MEDIA_TC,
-				COLUMN_TITLE_TOTAL_PORTALES_PC, COLUMN_TITLE_PERCENT_PC, COLUMN_TITLE_NOTA_MEDIA_PC, COLUMN_TITLE_TOTAL_PORTALES_NC, COLUMN_TITLE_PERCENT_NC, COLUMN_TITLE_NOTA_MEDIA_NC,
-				COLUMN_TITLE_NO_CONFORMES, COLUMN_TITLE_TOTAL_PORTALES };
-		// Add table with filters
-		CellReference ref = new CellReference(A1);
-		CellReference topLeft = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
-		ref = new CellReference("U" + resultSheet.getLastRowNum());
-		CellReference bottomRight = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
-		// Datatable requires at least 2 rows
-		if (bottomRight.getRow() - topLeft.getRow() >= 2) {
-			AreaReference tableArea = wb.getCreationHelper().createAreaReference(topLeft, bottomRight);
-			XSSFTable dataTable = resultSheet.createTable(tableArea);
-			dataTable.setDisplayName("TableResults");
-			// this sets auto filters
-			dataTable.getCTTable().addNewAutoFilter().setRef(tableArea.formatAsString());
+		try {
+			Logger.putLog("Generando anexo: " + FILE_3_ITERATION_RANKING_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
+			// Clone file 2
+			final PropertiesManager pmgr = new PropertiesManager();
+			final File originalWb = new File(pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_ANNEX_PATH) + idOperation + File.separator + FILE_2_ITERATION_XLSX_NAME);
+			final FileOutputStream fos = new FileOutputStream(pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_ANNEX_PATH) + idOperation + File.separator + FILE_3_ITERATION_RANKING_XLSX_NAME);
+			XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(originalWb));
+			final XSSFSheet resultSheet = wb.getSheet(SHEET_RESULTS_NAME);
+			final String sheetnameAllocation = SHEET_RANKING_ALLOCATION_NAME;
+			final String sheetnameCompliance = SHEET_RANKING_COMPLIANCE_NAME;
+			final String[] columnNamesAllocation = new String[] { COLUMN_TITLE_ORGANISMO, COLUMN_TITLE_TOTAL_PORTALES_AA, COLUMN_TITLE_AA, COLUMN_TITLE_NOTA_MEDIA_AA, COLUMN_TITLE_TOTAL_PORTALES_A,
+					COLUMN_TITLE_PERCENT_A, COLUMN_TITLE_NOTA_MEDIA_A, COLUMN_TITLE_TOTAL_PORTALES_NV, COLUMN_TITLE_NV, COLUMN_TITLE_NOTA_MEDIA_NV, COLUMN_TITLE_NO_CUMPLEN,
+					COLUMN_TITLE_TOTAL_PORTALES };
+			// In order left to right
+			final String[] columnResultsAllocation = new String[] { "R", "Q", "P" };
+			final String[] columnResultsCompliance = new String[] { "U", "T", "S" };
+			final String[] columnNamesCompliance = new String[] { COLUMN_TITLE_ORGANISMO, COLUMN_TITLE_TOTAL_PORTALES_TC, COLUMN_TITLE_PERCENT_TC, COLUMN_TITLE_NOTA_MEDIA_TC,
+					COLUMN_TITLE_TOTAL_PORTALES_PC, COLUMN_TITLE_PERCENT_PC, COLUMN_TITLE_NOTA_MEDIA_PC, COLUMN_TITLE_TOTAL_PORTALES_NC, COLUMN_TITLE_PERCENT_NC, COLUMN_TITLE_NOTA_MEDIA_NC,
+					COLUMN_TITLE_NO_CONFORMES, COLUMN_TITLE_TOTAL_PORTALES };
+			// Add table with filters
+			CellReference ref = new CellReference(A1);
+			CellReference topLeft = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
+			ref = new CellReference("U" + resultSheet.getLastRowNum());
+			CellReference bottomRight = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
+			// Datatable requires at least 2 rows
+			if (bottomRight.getRow() - topLeft.getRow() >= 2) {
+				AreaReference tableArea = wb.getCreationHelper().createAreaReference(topLeft, bottomRight);
+				XSSFTable dataTable = resultSheet.createTable(tableArea);
+				dataTable.setDisplayName("TableResults");
+				// this sets auto filters
+				dataTable.getCTTable().addNewAutoFilter().setRef(tableArea.formatAsString());
+			}
+			XlsxUtils xlsxUtils = new XlsxUtils(wb);
+			addRankingSheet(wb, resultSheet, sheetnameAllocation, columnNamesAllocation, columnResultsAllocation, "TableRankingA", xlsxUtils);
+			addRankingSheet(wb, resultSheet, sheetnameCompliance, columnNamesCompliance, columnResultsCompliance, "TableRankingC", xlsxUtils);
+			// Conditional formatting
+			addConditionaFormatting(wb.getSheet(sheetnameAllocation));
+			addConditionaFormatting(wb.getSheet(sheetnameCompliance));
+			// Recalculate formulas
+			XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
+			wb.write(fos);
+			fos.close();
+		} catch (Exception e) {
+			Logger.putLog("Error al generar el anexo: " + FILE_3_ITERATION_RANKING_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
+			throw e;
 		}
-		XlsxUtils xlsxUtils = new XlsxUtils(wb);
-		addRankingSheet(wb, resultSheet, sheetnameAllocation, columnNamesAllocation, columnResultsAllocation, "TableRankingA", xlsxUtils);
-		addRankingSheet(wb, resultSheet, sheetnameCompliance, columnNamesCompliance, columnResultsCompliance, "TableRankingC", xlsxUtils);
-		// Conditional formatting
-		addConditionaFormatting(wb.getSheet(sheetnameAllocation));
-		addConditionaFormatting(wb.getSheet(sheetnameCompliance));
-		// Recalculate formulas
-		XSSFFormulaEvaluator.evaluateAllFormulaCells(wb);
-		wb.write(fos);
-		fos.close();
 		System.gc();
 	}
 
@@ -3188,6 +3195,7 @@ public final class AnnexUtils {
 			Logger.putLog("Error al generar el anexo: " + FILE_4_EVOLUTION_AND_PROGRESS_XLSX_NAME, AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 			throw e;
 		}
+		System.gc();
 	}
 
 	/**
