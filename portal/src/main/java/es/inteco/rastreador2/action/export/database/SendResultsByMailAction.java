@@ -109,6 +109,7 @@ public class SendResultsByMailAction extends Action {
 						DataBaseManager.closeConnection(connection);
 						request.setAttribute("emailSubject", config.get("emailSubject"));
 						request.setAttribute("cco", config.get("cco"));
+						/* request.setAttribute("tags", request.getParameter("tags")); */
 						DataBaseManager.closeConnection(connection);
 						return mapping.findForward(Constants.CONFIRM);
 					} else if (request.getParameter(Constants.ACTION).equals(Constants.EXECUTE)) {
@@ -135,6 +136,7 @@ public class SendResultsByMailAction extends Action {
 							}
 						}
 						final Long idExObservatory = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+						final boolean originAnnexes = true;
 						/****/
 						try (Connection c = DataBaseManager.getConnection()) {
 							final ObservatorioRealizadoForm fulfilledObservatory = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExObservatory);
@@ -145,13 +147,14 @@ public class SendResultsByMailAction extends Action {
 								if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
 									for (ObservatorioRealizadoForm obsRealizado : observatoriesList) {
 										if (ObservatoryExportManager.getObservatory(obsRealizado.getId()) == null) {
-											exportResultadosAccesibilidad(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), idObservatory, c, obsRealizado);
+											exportResultadosAccesibilidad(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), idObservatory, c, obsRealizado,
+													originAnnexes);
 										}
 									}
 								} else {
 									for (ObservatorioRealizadoForm obsRealizado : observatoriesList) {
 										if (ObservatoryExportManager.getObservatory(obsRealizado.getId()) == null) {
-											exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, obsRealizado);
+											exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, obsRealizado, originAnnexes);
 										}
 									}
 								}
@@ -189,6 +192,10 @@ public class SendResultsByMailAction extends Action {
 						final String emailSubject = request.getParameter("emailSubject");
 						final String cco = request.getParameter("cco");
 						Long hasCustomTexts = 0L;
+						/*
+						 * String[] tagsToFilter = null; if (request.getParameter("tags") != null && !StringUtils.isEmpty(request.getParameter("tags"))) { tagsToFilter =
+						 * request.getParameterValues("tags"); }
+						 */
 						if (!StringUtils.isEmpty(request.getParameter("customTextSelector"))) {
 							hasCustomTexts = Long.parseLong(request.getParameter("customTextSelector"));
 						}
@@ -279,15 +286,16 @@ public class SendResultsByMailAction extends Action {
 	 * @param fulfilledObservatory the fulfilled observatory
 	 * @throws Exception the exception
 	 */
-	private void exportResultadosAccesibilidad(final MessageResources messageResources, Long idObservatory, Connection c, ObservatorioRealizadoForm fulfilledObservatory) throws Exception {
+	private void exportResultadosAccesibilidad(final MessageResources messageResources, Long idObservatory, Connection c, ObservatorioRealizadoForm fulfilledObservatory, final boolean originAnnexes)
+			throws Exception {
 		Observatory observatory = DatabaseExportManager.getObservatory(fulfilledObservatory.getId());
 		if (observatory == null) {
 			Logger.putLog("Generando exportación", DatabaseExportAction.class, Logger.LOG_LEVEL_ERROR);
 			// Información general de la ejecución del Observatorio
-			observatory = DatabaseExportUtils.getObservatoryInfo(messageResources, fulfilledObservatory.getId());
+			observatory = DatabaseExportUtils.getObservatoryInfo(messageResources, fulfilledObservatory.getId(), originAnnexes);
 			final List<CategoriaForm> categories = ObservatorioDAO.getObservatoryCategories(c, idObservatory);
 			for (CategoriaForm categoriaForm : categories) {
-				final Category category = DatabaseExportUtils.getCategoryInfo(messageResources, categoriaForm, observatory);
+				final Category category = DatabaseExportUtils.getCategoryInfo(messageResources, categoriaForm, observatory, originAnnexes);
 				observatory.getCategoryList().add(category);
 			}
 			final ObservatorioRealizadoForm observatorioRealizadoForm = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, fulfilledObservatory.getId());
@@ -296,7 +304,7 @@ public class SendResultsByMailAction extends Action {
 			BaseManager.save(observatory);
 		} else {
 			BaseManager.delete(observatory);
-			exportResultadosAccesibilidad(messageResources, idObservatory, c, fulfilledObservatory);
+			exportResultadosAccesibilidad(messageResources, idObservatory, c, fulfilledObservatory, originAnnexes);
 		}
 	}
 
