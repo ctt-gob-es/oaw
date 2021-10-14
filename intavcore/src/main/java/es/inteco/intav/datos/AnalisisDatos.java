@@ -254,7 +254,9 @@ public final class AnalisisDatos {
 					analisis.setChecksExecutedStr(rs.getString("CHECKS_EJECUTADOS"));
 					String source = "";
 					if (!originAnnexes) {
-						source = new String(Base64.decodeBase64(rs.getString("COD_FUENTE").getBytes()));
+						if (rs.getString("COD_FUENTE") != null) {
+							source = new String(Base64.decodeBase64(rs.getString("COD_FUENTE").getBytes()));
+						}
 					}
 					analisis.setSource(source);
 				} else {

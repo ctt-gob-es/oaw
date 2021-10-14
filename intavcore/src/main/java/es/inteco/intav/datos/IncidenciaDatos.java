@@ -127,7 +127,9 @@ public final class IncidenciaDatos {
 					incidencia.setCodigoIncidencia(rs.getInt("COD_INCIDENCIA"));
 					String codigoFuente = "";
 					if (!originAnnexes) {
-						codigoFuente = rs.getString("DES_FUENTE");
+						if (rs.getString("DES_FUENTE") != null) {
+							codigoFuente = rs.getString("DES_FUENTE");
+						}
 					}
 					incidencia.setCodigoFuente(codigoFuente);
 					incidencias.add(incidencia);
