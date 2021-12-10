@@ -1,11 +1,10 @@
 # OAW
 Rastreador Observatorio de Accesibilidad Web
 
-This repository contains 3 applications:
+This repository contains 2 applications:
 
 * OAW: Java Web Application.
 * Motor JS: An implementation of https://github.com/prerender/prerender to render web pages and return code.
-* WCAG EM Tool: An fork of https://github.com/w3c/wcag-em-report-tool with capabiluty to exports as ODS format.
 
 ## OAW (Observatorio de Accesibilidad Web)
 
