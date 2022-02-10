@@ -91,7 +91,7 @@ public class RelanzarObservatorioThread extends Thread {
 			if (crawlerIdsList != null) {
 				pendindCrawlings = crawlerIdsList;
 			}
-			// Si no es así, recuperamos los todos rastreos pendentes de este observatorio
+			// Si no es así, recuperamos los todos rastreos pendentes de este observatorio y cambiamos el estado porque es un relanzamiento porque quedó a medias no una selección de varios
 			else {
 				pendindCrawlings = RastreoDAO.getPendingCrawlerFromSeedAndObservatory(c, Long.parseLong(idObservatorio), Long.parseLong(idEjecucionObservatorio));
 			}

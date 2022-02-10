@@ -26,7 +26,6 @@ import es.inteco.common.logging.Logger;
  * Clase para extraer los recursos CSS que son importados (@import) desde otro recurso CSS.
  */
 public class ImportedCSSExtractor {
-	
 	/** The Constant UTF8_BOM. */
 	private static final String UTF8_BOM = "\uFEFF";
 
@@ -164,6 +163,6 @@ public class ImportedCSSExtractor {
 	 * @return true, if successful
 	 */
 	private boolean validMedia(final String media) {
-		return media == null || media.trim().isEmpty() || media.contains("all") || media.contains("screen");
+		return media == null || media.trim().isEmpty() || media.toLowerCase().contains("all") || media.toLowerCase().contains("screen");
 	}
 }

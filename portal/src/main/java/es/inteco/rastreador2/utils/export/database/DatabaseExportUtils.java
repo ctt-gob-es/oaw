@@ -72,10 +72,11 @@ public final class DatabaseExportUtils {
 	 * @return the observatory info
 	 * @throws Exception the exception
 	 */
-	public static Observatory getObservatoryInfo(final MessageResources messageResources, final Long idExecution) throws Exception {
+	public static Observatory getObservatoryInfo(final MessageResources messageResources, final Long idExecution, final boolean originAnnexes) throws Exception {
 		final Observatory observatory = new Observatory();
 		observatory.setIdExecution(idExecution);
-		final List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idExecution), Constants.COMPLEXITY_SEGMENT_NONE, null);
+		final List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idExecution), Constants.COMPLEXITY_SEGMENT_NONE, null,
+				originAnnexes);
 		// Número de portales por modalidad
 		final Map<String, Integer> result = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
 		for (String key : result.keySet()) {
@@ -147,13 +148,13 @@ public final class DatabaseExportUtils {
 	 * @return the category info
 	 * @throws Exception the exception
 	 */
-	public static Category getCategoryInfo(final MessageResources messageResources, final CategoriaForm categoriaForm, final Observatory observatory) throws Exception {
+	public static Category getCategoryInfo(final MessageResources messageResources, final CategoriaForm categoriaForm, final Observatory observatory, final boolean originAnnexes) throws Exception {
 		final Category category = new Category();
 		category.setName(categoriaForm.getName());
 		category.setObservatory(observatory);
 		category.setIdCrawlerCategory(Long.valueOf(categoriaForm.getId()));
 		final List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(observatory.getIdExecution()),
-				Long.parseLong(categoriaForm.getId()), null);
+				Long.parseLong(categoriaForm.getId()), null, originAnnexes);
 		// Número de portales por modalidad
 		final Map<String, Integer> result = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
 		for (String key : result.keySet()) {

@@ -17,7 +17,7 @@
 					</html:link>
 				</li>
 				<li class="active">
-					<bean:message key="migas.eliminar.observatorio" />
+					<bean:message key="migas.send.results.send" />
 				</li>
 			</ol>
 		</div>

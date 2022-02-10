@@ -13,6 +13,7 @@
 package es.inteco.rastreador2.actionform.semillas;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.validator.ValidatorForm;
@@ -41,13 +42,17 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	/** The emails. */
 	private String emails;
 	/** The ambito. */
-	private AmbitoForm ambito;
+	private List<AmbitoForm> ambitos;
 	/** The tag. */
 	private EtiquetaForm tag;
 	/** The file seeds. */
 	private FormFile dependencyFile;
 	/** The acronym. */
 	private String acronym;
+	/** The send auto search. */
+	private Integer sendAutoSearch;
+	/** The official search. */
+	private Integer officialSearch;
 
 	/**
 	 * Gets the id.
@@ -155,21 +160,21 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	}
 
 	/**
-	 * Gets the ambito.
+	 * Gets the ambitos.
 	 *
-	 * @return the ambito
+	 * @return the ambitos
 	 */
-	public AmbitoForm getAmbito() {
-		return ambito;
+	public List<AmbitoForm> getAmbitos() {
+		return ambitos;
 	}
 
 	/**
-	 * Sets the ambito.
+	 * Sets the ambitos.
 	 *
-	 * @param ambito the ambito to set
+	 * @param ambitos the new ambitos
 	 */
-	public void setAmbito(AmbitoForm ambito) {
-		this.ambito = ambito;
+	public void setAmbitos(List<AmbitoForm> ambitos) {
+		this.ambitos = ambitos;
 	}
 
 	/**
@@ -255,6 +260,42 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
+	}
+
+	/**
+	 * Gets the send auto search.
+	 *
+	 * @return the send auto search
+	 */
+	public Integer getSendAutoSearch() {
+		return sendAutoSearch;
+	}
+
+	/**
+	 * Sets the send auto search.
+	 *
+	 * @param sendAutoSearch the new send auto search
+	 */
+	public void setSendAutoSearch(Integer sendAutoSearch) {
+		this.sendAutoSearch = sendAutoSearch;
+	}
+
+	/**
+	 * Gets the official search.
+	 *
+	 * @return the official search
+	 */
+	public Integer getOfficialSearch() {
+		return officialSearch;
+	}
+
+	/**
+	 * Sets the official search.
+	 *
+	 * @param officialSearch the new official search
+	 */
+	public void setOfficialSearch(Integer officialSearch) {
+		this.officialSearch = officialSearch;
 	}
 
 	/**

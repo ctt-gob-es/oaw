@@ -1075,7 +1075,7 @@ public final class ResultadosAnonimosObservatorioUNE2012BUtils {
 			observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
 		} catch (NeedsRefreshException nre) {
 			Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioUNE2012BUtils.class,
-					Logger.LOG_LEVEL_INFO);
+					Logger.LOG_LEVEL_WARNING);
 			try (Connection c = DataBaseManager.getConnection()) {
 				observatoryEvaluationList = new ArrayList<>();
 				final List<Long> listAnalysis = new ArrayList<>();

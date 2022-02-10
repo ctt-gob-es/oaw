@@ -1840,15 +1840,15 @@ public interface Constants {
 	/** The observatory graphic evolution 2 6 verification. */
 	String OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION = "2.6";
 	/** The observatory graphic evolution 3 1 verification. */
-	String OBSERVATORY_GRAPHIC_EVOLUTION_3_1_VERIFICATION = "3.1";
+	String OBSERVATORY_GRAPHIC_EVOLUTION_3_1_VERIFICATION = "1";
 	/** The observatory graphic evolution 3 2 verification. */
-	String OBSERVATORY_GRAPHIC_EVOLUTION_3_2_VERIFICATION = "3.2";
+	String OBSERVATORY_GRAPHIC_EVOLUTION_3_2_VERIFICATION = "2";
 	/** The observatory graphic evolution 3 3 verification. */
-	String OBSERVATORY_GRAPHIC_EVOLUTION_3_3_VERIFICATION = "3.3";
+	String OBSERVATORY_GRAPHIC_EVOLUTION_3_3_VERIFICATION = "3";
 	/** The observatory graphic evolution 3 4 verification. */
-	String OBSERVATORY_GRAPHIC_EVOLUTION_3_4_VERIFICATION = "3.4";
+	String OBSERVATORY_GRAPHIC_EVOLUTION_3_4_VERIFICATION = "4";
 	/** The observatory graphic evolution 3 5 verification. */
-	String OBSERVATORY_GRAPHIC_EVOLUTION_3_5_VERIFICATION = "3.5";
+	String OBSERVATORY_GRAPHIC_EVOLUTION_3_5_VERIFICATION = "5";
 	/** The normativa une 2012. */
 	String NORMATIVA_UNE_2012 = "UNE-2012";
 	/** The normativa une 2012 b. */

@@ -64,7 +64,6 @@ import es.inteco.rastreador2.export.database.form.ComparisionForm;
 import es.inteco.rastreador2.manager.BaseManager;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
 import es.inteco.rastreador2.manager.export.database.DatabaseExportManager;
-import es.inteco.rastreador2.utils.AnnexUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.SendResultsMailUtils;
 import es.inteco.rastreador2.utils.export.database.DatabaseExportUtils;
@@ -101,6 +100,18 @@ public class SendResultsByMailAction extends Action {
 						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
 						DataBaseManager.closeConnection(connection);
 						return config(mapping, request);
+					} else if (request.getParameter(Constants.ACTION).equals("finish")) {
+						// go to step 2
+						final Long idExObservatory = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+						/****/
+						Connection connection = DataBaseManager.getConnection();
+						Map<String, String> config = ObservatorioDAO.getConfigStep2(connection, idExObservatory);
+						DataBaseManager.closeConnection(connection);
+						request.setAttribute("emailSubject", config.get("emailSubject"));
+						request.setAttribute("cco", config.get("cco"));
+						/* request.setAttribute("tags", request.getParameter("tags")); */
+						DataBaseManager.closeConnection(connection);
+						return mapping.findForward(Constants.CONFIRM);
 					} else if (request.getParameter(Constants.ACTION).equals(Constants.EXECUTE)) {
 						final Long idCartucho = Long.valueOf(request.getParameter(Constants.ID_CARTUCHO));
 						String[] tagsToFilter = null;
@@ -125,6 +136,7 @@ public class SendResultsByMailAction extends Action {
 							}
 						}
 						final Long idExObservatory = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+						final boolean originAnnexes = true;
 						/****/
 						try (Connection c = DataBaseManager.getConnection()) {
 							final ObservatorioRealizadoForm fulfilledObservatory = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExObservatory);
@@ -135,13 +147,14 @@ public class SendResultsByMailAction extends Action {
 								if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
 									for (ObservatorioRealizadoForm obsRealizado : observatoriesList) {
 										if (ObservatoryExportManager.getObservatory(obsRealizado.getId()) == null) {
-											exportResultadosAccesibilidad(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), idObservatory, c, obsRealizado);
+											exportResultadosAccesibilidad(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), idObservatory, c, obsRealizado,
+													originAnnexes);
 										}
 									}
 								} else {
 									for (ObservatorioRealizadoForm obsRealizado : observatoriesList) {
 										if (ObservatoryExportManager.getObservatory(obsRealizado.getId()) == null) {
-											exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, obsRealizado);
+											exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, obsRealizado, originAnnexes);
 										}
 									}
 								}
@@ -151,14 +164,24 @@ public class SendResultsByMailAction extends Action {
 							throw e;
 						}
 						/****/
-						AnnexUtils.generateEvolutionData(CrawlerUtils.getResources(request), idObservatory, idExObservatory, tagsToFilter, exObsIds, comparision);
+//						AnnexUtils.generateEvolutionData(CrawlerUtils.getResources(request), idObservatory, idExObservatory, tagsToFilter, exObsIds, comparision);
+//						Connection connection = DataBaseManager.getConnection();
+//						Map<String, String> config = ObservatorioDAO.getConfigStep2(connection, idExObservatory);
+//						DataBaseManager.closeConnection(connection);
+//						request.setAttribute("emailSubject", config.get("emailSubject"));
+//						request.setAttribute("cco", config.get("cco"));
+//						DataBaseManager.closeConnection(connection);
+//						return mapping.findForward(Constants.CONFIRM);
+						// Async
 						Connection connection = DataBaseManager.getConnection();
-						Map<String, String> config = ObservatorioDAO.getConfigStep2(connection, idExObservatory);
+						final DatosForm userData = LoginDAO.getUserDataByName(connection, request.getSession().getAttribute(Constants.USER).toString());
+						final String url = request.getRequestURL().toString();
+						final String baseURL = url.substring(0, url.length() - request.getRequestURI().length()) + request.getContextPath() + "/";
+						final SendMailCalculateResultsThread sendMailThread = new SendMailCalculateResultsThread(CrawlerUtils.getResources(request), idObservatory, idExObservatory, tagsToFilter,
+								exObsIds, comparision, userData.getEmail(), baseURL);
+						sendMailThread.start();
 						DataBaseManager.closeConnection(connection);
-						request.setAttribute("emailSubject", config.get("emailSubject"));
-						request.setAttribute("cco", config.get("cco"));
-						DataBaseManager.closeConnection(connection);
-						return mapping.findForward(Constants.CONFIRM);
+						return mapping.findForward("calculateResultsByMailAsync");
 					} else if (request.getParameter(Constants.ACTION).equals(Constants.CONFIRM)) {
 						Connection connection = DataBaseManager.getConnection();
 						request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null, null));
@@ -169,6 +192,10 @@ public class SendResultsByMailAction extends Action {
 						final String emailSubject = request.getParameter("emailSubject");
 						final String cco = request.getParameter("cco");
 						Long hasCustomTexts = 0L;
+						/*
+						 * String[] tagsToFilter = null; if (request.getParameter("tags") != null && !StringUtils.isEmpty(request.getParameter("tags"))) { tagsToFilter =
+						 * request.getParameterValues("tags"); }
+						 */
 						if (!StringUtils.isEmpty(request.getParameter("customTextSelector"))) {
 							hasCustomTexts = Long.parseLong(request.getParameter("customTextSelector"));
 						}
@@ -193,7 +220,7 @@ public class SendResultsByMailAction extends Action {
 						DataBaseManager.closeConnection(connection);
 						return mapping.findForward("sendResultsByMailAsync");
 					} else if (request.getParameter(Constants.ACTION).equals("save")) {
-						// TODO Save email subject and cco??
+						// Save email subject and cco??
 						final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 						final String emailSubject = request.getParameter("emailSubject");
 						final String cco = request.getParameter("cco");
@@ -259,15 +286,16 @@ public class SendResultsByMailAction extends Action {
 	 * @param fulfilledObservatory the fulfilled observatory
 	 * @throws Exception the exception
 	 */
-	private void exportResultadosAccesibilidad(final MessageResources messageResources, Long idObservatory, Connection c, ObservatorioRealizadoForm fulfilledObservatory) throws Exception {
+	private void exportResultadosAccesibilidad(final MessageResources messageResources, Long idObservatory, Connection c, ObservatorioRealizadoForm fulfilledObservatory, final boolean originAnnexes)
+			throws Exception {
 		Observatory observatory = DatabaseExportManager.getObservatory(fulfilledObservatory.getId());
 		if (observatory == null) {
 			Logger.putLog("Generando exportación", DatabaseExportAction.class, Logger.LOG_LEVEL_ERROR);
 			// Información general de la ejecución del Observatorio
-			observatory = DatabaseExportUtils.getObservatoryInfo(messageResources, fulfilledObservatory.getId());
+			observatory = DatabaseExportUtils.getObservatoryInfo(messageResources, fulfilledObservatory.getId(), originAnnexes);
 			final List<CategoriaForm> categories = ObservatorioDAO.getObservatoryCategories(c, idObservatory);
 			for (CategoriaForm categoriaForm : categories) {
-				final Category category = DatabaseExportUtils.getCategoryInfo(messageResources, categoriaForm, observatory);
+				final Category category = DatabaseExportUtils.getCategoryInfo(messageResources, categoriaForm, observatory, originAnnexes);
 				observatory.getCategoryList().add(category);
 			}
 			final ObservatorioRealizadoForm observatorioRealizadoForm = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, fulfilledObservatory.getId());
@@ -276,7 +304,7 @@ public class SendResultsByMailAction extends Action {
 			BaseManager.save(observatory);
 		} else {
 			BaseManager.delete(observatory);
-			exportResultadosAccesibilidad(messageResources, idObservatory, c, fulfilledObservatory);
+			exportResultadosAccesibilidad(messageResources, idObservatory, c, fulfilledObservatory, originAnnexes);
 		}
 	}
 

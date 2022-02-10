@@ -466,6 +466,18 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 					final MailService mailService = new MailService();
 					List<String> mailsTo = new ArrayList<>();
 					mailsTo.add(userData.getEmail());
+//					try {
+//						Connection c = DataBaseManager.getConnection();
+//						List<DatosForm> adminData = LoginDAO.getAdminUsers(c);
+//						DataBaseManager.closeConnection(c);
+//						if (adminData != null && !adminData.isEmpty()) {
+//							for (DatosForm data : adminData) {
+//								mailsTo.add(data.getEmail());
+//							}
+//						}
+//					} catch (Exception e) {
+//						Logger.putLog("Error al cargar los emails de los admin", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
+//					}
 					mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
 				} catch (Exception e) {
 					Logger.putLog("Error", this.getClass(), Logger.LOG_LEVEL_ERROR, e);

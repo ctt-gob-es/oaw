@@ -368,6 +368,91 @@ public final class GraphicsUtils {
 	}
 
 	/**
+	 * Creates the bar chart grouped modality.
+	 *
+	 * @param result           the result
+	 * @param title            the title
+	 * @param rowTitle         the row title
+	 * @param columnTitle      the column title
+	 * @param color            the color
+	 * @param withLegend       the with legend
+	 * @param percentage       the percentage
+	 * @param labelRotated     the label rotated
+	 * @param filePath         the file path
+	 * @param noDataMessage    the no data message
+	 * @param messageResources the message resources
+	 * @param x                the x
+	 * @param y                the y
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static void createBarChartGroupedModality(Map<String, Map<String, BigDecimal>> result, String title, String rowTitle, String columnTitle, String color, boolean withLegend,
+			boolean percentage, boolean labelRotated, final String filePath, String noDataMessage, final MessageResources messageResources, int x, int y) throws IOException {
+		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+		// int v = 0;
+		for (Map.Entry<String, Map<String, BigDecimal>> entry : result.entrySet()) {
+			// Necesitamos reordenar los resputados para que el valor 1.10
+			// vaya después de 1.9 y no de 1.1
+			Map<String, BigDecimal> results = new TreeMap<>(new Comparator<String>() {
+				@Override
+				public int compare(String version1, String version2) {
+					String[] v1 = version1.split("\\.");
+					String[] v2 = version2.split("\\.");
+					int major1 = major(v1);
+					int major2 = major(v2);
+					if (major1 == major2) {
+						if (minor(v1) == minor(v2)) { // Devolvemos 1
+														// aunque sean iguales
+														// porque las claves lleva
+														// asociado un subfijo que
+														// aqui no tenemos en cuenta
+							return 1;
+						}
+						return minor(v1).compareTo(minor(v2));
+					}
+					return major1 > major2 ? 1 : -1;
+				}
+
+				private int major(String[] version) {
+					return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_GREEN_SUFFIX, "").replace(Constants.OBS_VALUE_RED_SUFFIX, ""));
+				}
+
+				private Integer minor(String[] version) {
+					return version.length > 1 ? Integer.parseInt(version[1].replace(Constants.OBS_VALUE_GREEN_SUFFIX, "").replace(Constants.OBS_VALUE_RED_SUFFIX, "")) : 0;
+				}
+			});
+			for (Map.Entry<String, BigDecimal> entryU : entry.getValue().entrySet()) {
+				results.put(entryU.getKey(), entryU.getValue());
+			}
+			for (Map.Entry<String, BigDecimal> entryC : results.entrySet()) {
+				final BigDecimal valueC = entryC.getValue();
+				final String date = entry.getKey();
+				final String verficationC = entryC.getKey();
+				String verificacionPoint = "";
+				String verificationText = "";
+				if (verficationC != null) {
+					if (verficationC.endsWith(Constants.OBS_VALUE_GREEN_SUFFIX)) {
+						verificacionPoint = verficationC.replace(Constants.OBS_VALUE_GREEN_SUFFIX, "");
+						verificationText = "Pasa";
+						dataSet.addValue(valueC, date, verificacionPoint);
+					}
+//						else {
+//						verificacionPoint = verficationC.replace(Constants.OBS_VALUE_RED_SUFFIX, "");
+//						verificationText = "Falla";
+//						dataSet.addValue(valueC, date, verificacionPoint);
+//					}
+				}
+			}
+		}
+		final ChartForm chartForm1 = new ChartForm(dataSet, true, true, false, percentage, false, false, false, x, y, color);
+		chartForm1.setFixedColorBars(true);
+		chartForm1.setShowColumsLabels(false);
+		chartForm1.setTitle(title);
+		GraphicsUtils.createStandardBarChart(chartForm1, filePath, "", messageResources, true);
+//		final ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, true, false, false, percentage, withLegend, labelRotated, false, x, y, color);
+//		createStandardBarChart(observatoryGraphicsForm, filePath, noDataMessage, messageResources, true);
+	}
+
+	/**
 	 * Creates the bar 1 px chart.
 	 *
 	 * @param result            the result
@@ -1367,9 +1452,7 @@ public final class GraphicsUtils {
 	 * The Class CustomRenderer3D.
 	 */
 	public static class CustomRenderer3D extends BarRenderer3D {
-		/**
-		 * 
-		 */
+		/** The Constant serialVersionUID. */
 		private static final long serialVersionUID = 5509573551140317879L;
 		/** The colors. */
 		private Paint[] colors;

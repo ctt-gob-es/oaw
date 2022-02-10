@@ -81,6 +81,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <!--  JQ GRID   -->
 <script>
 
+var paginadorTotal = '<bean:message key="cargar.semilla.observatorio.buscar.total"/>'; 
+
 var colNameOldName = '<bean:message key="colname.oldname"/>';
 var colNameId = '<bean:message key="colname.id"/>';
 var colNameTags = '<bean:message key="colname.province"/>';
@@ -159,24 +161,34 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 															edittype : "select",
 															align : "center",
 															editoptions : {
-
+																multiple: true,
 																dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
 																buildSelect : function(
 																		data) {
-
+																	var rowid = $(this).jqGrid("getGridParam", "selrow");
+																	var ambitos = $(this).jqGrid ('getLocalRow', rowid).ambitos;
 																	var response = jQuery
 																			.parseJSON(data);
-																	var s = '<select><option value=""></option>';
+																	
+																	var s = '<select ><option disabled hidden></option>';
 
 																	if (response
-																			&& response.length) {
+																			&& response.length && ambitos) {
 																		for (var i = 0, l = response.length; i < l; i++) {
 																			var ri = response[i];
-																			s += '<option class="dependenciaOption" value="'
+																			if(ambitos.some(ambito => ambito.id === ri.id)){
+																				s += '<option selected class="dependenciaOption" value="'
 																					+ ri.id
 																					+ '">'
 																					+ ri.name
 																					+ '</option>';
+																			}else{
+																			s += '<option  class="dependenciaOption" value="'
+																					+ ri.id
+																					+ '">'
+																					+ ri.name
+																					+ '</option>';
+																			}
 																		}
 																	}
 
@@ -380,6 +392,8 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 							paginas = data.paginas;
 
 							$('#paginador').empty();
+							
+							$('#paginador').append("<span style='float: left;clear: both; display: block; width: 100%; text-align: left;padding: 10px 5px;'><strong>"+ paginadorTotal+ "</strong> " + data.paginador.total +"</span>");
 
 							//Si solo hay una página no pintamos el paginador
 							if (paginas.length > 1) {
@@ -434,12 +448,25 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 		return "";
 	}
 	
+// 	function ambitoFormatter(cellvalue, options, rowObject) {
+// 		if (rowObject.ambito && rowObject.ambito.name != null) {
+// 			return rowObject.ambito.name;
+// 		} else {
+// 			return "";
+// 		}
+// 	}
+	
 	function ambitoFormatter(cellvalue, options, rowObject) {
-		if (rowObject.ambito && rowObject.ambito.name != null) {
-			return rowObject.ambito.name;
-		} else {
-			return "";
-		}
+		var cellFormatted = "<ul style='list-style: none; padding-left: 0; margin-top: 10px;' >";
+
+		$.each(rowObject.ambitos, function(index, value) {
+			cellFormatted = cellFormatted + "<li class='listado-grid'>"
+					+ value.name + "</li>";
+		});
+
+		cellFormatted = cellFormatted + "</ul>";
+
+		return cellFormatted;
 	}
 	
 	function titleEtiquetasFormatter(cellvalue, options, rowObject) {
@@ -655,7 +682,8 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 									var response = $.parseJSON(data);
 
 									$('#selectAmbitsSearch').append(
-											"<option value=''></option>");
+											"<option value=''>Cualquiera</option>");
+									$('#selectAmbitsSearch').append("<option value='0'>Ninguno</option>");
 									if (response && response.length) {
 										for (var i = 0, l = response.length; i < l; i++) {
 											var ri = response[i];
@@ -682,6 +710,34 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 							});
 
 						});
+						
+						$jq('#selectAmbitNewDependency').empty();
+						$jq.ajax({
+							url : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
+						}).done(
+								function(data) {
+
+									var response = $jq.parseJSON(data);
+
+									$jq('#selectAmbitNewDependency').append(
+											"<option value=''></option>");
+									if (response && response.length) {
+										for (var i = 0, l = response.length; i < l; i++) {
+											var ri = response[i];
+											$jq('#selectAmbitNewDependency').append(
+													'<option value="'+ri.id+'">' + ri.name
+															+ '</option>');
+										}
+									}
+
+									if (rowObject != null) {
+
+										$jq('#selectAmbitNewDependency').val(
+												rowObject.ambito.id);
+									}
+
+								});
+								
 						
 
 					});
@@ -865,7 +921,6 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						<input type="text" id="name" name="acronym" class="textoLargo form-control" />
 					</div>
 				</div>
-				<!-- Ambito/Ambitoaux -->
 				<div class="row formItem">
 					<label for="ambito" class="control-label">
 						<strong class="labelVisu">
@@ -873,7 +928,7 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						</strong>
 					</label>
 					<div class="col-xs-4">
-						<select name="ambitoaux" id="selectAmbitosNuevaSemilla" class="textoSelect form-control"></select>
+						<select name="ambitoaux" id="selectAmbitNewDependency" class="textoSelect form-control" multiple></select>
 					</div>
 				</div>
 				<!-- Etiquetas -->
@@ -1002,10 +1057,11 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						</strong>
 					</label>
 					<div class="col-xs-4">
-						<select name="official" class="textoSelect form-control">
-							<option value=""></option>
-							<option value="true"><bean:message key="select.yes" /></option>
-							<option value="false"><bean:message key="select.no" /></option>
+						<select name="officialSearch" class="textoSelect form-control">
+							<option value="2"><bean:message key="select.any" /></option>
+							<option value="3"><bean:message key="select.none" /></option>
+							<option value="1"><bean:message key="select.yes" /></option>
+							<option value="0"><bean:message key="select.no" /></option>
 						</select>
 					</div>
 				</div>
@@ -1017,10 +1073,11 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						</strong>
 					</label>
 					<div class="col-xs-4">
-						<select name="sendAuto" class="textoSelect form-control">
-							<option value=""></option>
-							<option value="true"><bean:message key="select.yes" /></option>
-							<option value="false"><bean:message key="select.no" /></option>
+						<select name="sendAutoSearch" class="textoSelect form-control">
+							<option value="2"><bean:message key="select.any" /></option>
+							<option value="3"><bean:message key="select.none" /></option>
+							<option value="1"><bean:message key="select.yes" /></option>
+							<option value="0"><bean:message key="select.no" /></option>
 						</select>
 					</div
 				<div class="formButton">
@@ -1033,6 +1090,9 @@ var colNameAcronym = '<bean:message key="colname.acronym"/>';
 						<bean:message key="boton.limpiar" />
 					</span>
 				</div>
+			
+			
+			
 			
 			
 			</fieldset>
