@@ -109,6 +109,16 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					}
 				});
 	}
+	
+	function generate(){
+		window.location='/oaw/secure/databaseExportAction.do?action=export&'
+				+ $('#generateAnnexForm').serialize();
+	}
+	
+	function generateAsync(){
+		window.location='/oaw/secure/databaseExportAction.do?action=asyncExport&'
+				+ $('#generateAnnexForm').serialize();
+	}
 </script>
 <div id="main">
 	<div id="container_menu_izq">
@@ -138,7 +148,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			</ol>
 		</div>
 		<div id="cajaformularios">
-			<form action="/oaw/secure/databaseExportAction.do">
+			<form action="/oaw/secure/databaseExportAction.do" id="generateAnnexForm">
 				<h2>
 					<bean:message key="exportar.resultados.observatorio.title" />
 				</h2>
@@ -256,12 +266,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</div>
 				</fieldset>
 				<div class="formButton">
-					<input type="hidden" name="action" value="export" />
+<!-- 					<input type="hidden" name="action" value="export" /> -->
 <!-- 					<input type="hidden" name="action" value="asyncExport" /> -->
 					<input type="hidden" name="idCartucho" value="<c:out value="${param.idCartucho}"/>" />
 					<input type="hidden" name="id_observatorio" value="<c:out value="${param.id_observatorio}"/>" />
 					<input type="hidden" name="idExObs" value="<c:out value="${param.idExObs}"/>" />
-					<input type="submit" class="btn btn-primary btn-lg" value=<bean:message key="boton.enviar" />>
+					<input type="button" class="btn btn-primary btn-lg" onclick="generate()" value=<bean:message key="boton.descargar" />>
+					<input type="button" class="btn btn-info btn-lg" onclick="generateAsync()" value=<bean:message key="boton.enviar" />>
 					<html:link styleClass="btn btn-default btn-lg" forward="observatoryMenu">
 						<bean:message key="boton.cancelar" />
 					</html:link>

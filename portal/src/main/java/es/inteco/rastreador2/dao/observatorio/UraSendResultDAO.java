@@ -552,7 +552,7 @@ public class UraSendResultDAO {
 								psResult.setString(4, "");
 							}
 							psResult.setFloat(5, result.getRangeValue());
-							// TODO Mail
+							// Mail
 							psResult.setString(6, "");
 							try {
 								if (result.getMail() != null && !org.apache.commons.lang3.StringUtils.isEmpty(result.getMail())) {
