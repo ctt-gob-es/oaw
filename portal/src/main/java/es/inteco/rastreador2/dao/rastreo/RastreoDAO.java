@@ -125,14 +125,14 @@ public final class RastreoDAO {
 		final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
 		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ? ";
 		query = query + " AND rr.id IN (SELECT cod_rastreo FROM tanalisis) ";
-		if (idCategory != 0) {
-			query = query + " AND l.id_categoria = ? ";
-		}
+		/*
+		 * if (idCategory != 0) { query = query + " AND l.id_categoria = ? "; }
+		 */
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idObservatoryExecution);
-			if (idCategory != 0) {
-				ps.setLong(2, idCategory);
-			}
+			/*
+			 * if (idCategory != 0) { ps.setLong(2, idCategory); }
+			 */
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					executionObservatoryCrawlersIds.add(rs.getLong(1));

@@ -207,8 +207,8 @@ public class BasicServicePdfReport {
 				final BasicServiceObservatoryResultsSummaryPdfSectionBuilder observatoryResultsSummarySectionBuilder = new BasicServiceObservatoryResultsSummaryPdfSectionBuilder(
 						currentEvaluationPageList);
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
-					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryWithCompliance(messageResources, document, pdfTocManager,
-							pdfBuilder.generateScores(messageResources, currentEvaluationPageList));
+					// observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryWithCompliance(messageResources, document, pdfTocManager,
+					// pdfBuilder.generateScores(messageResources, currentEvaluationPageList));
 				} else if (!(pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad)) {
 					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources, document, pdfTocManager);
 				}

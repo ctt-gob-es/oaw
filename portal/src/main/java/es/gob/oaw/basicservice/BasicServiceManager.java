@@ -203,6 +203,7 @@ public class BasicServiceManager {
 				if ("true".equalsIgnoreCase(basicServiceForm.getDepthReport())) {
 					// JSON
 					WcagEmReport report = WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), basicServiceForm.getName(), idCrawling);
+					report.setAdditionalProperty("test", "testValue");
 					ObjectMapper mapper = new ObjectMapper();
 					String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);
 					org.apache.commons.io.FileUtils.writeStringToFile(new File(new File(pdfPath).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
@@ -250,7 +251,7 @@ public class BasicServiceManager {
 				// Avisamos de que ha sido imposible acceder a la página a
 				// rastrear
 				final String message = MessageFormat.format(pmgr.getValue(BASIC_SERVICE_PROPERTIES, "basic.service.mail.not.crawled.text"), basicServiceForm.getUser(), basicServiceForm.getDomain());
-				mailService.sendBasicServiceErrorMessage(basicServiceForm, message);
+				// mailService.sendBasicServiceErrorMessage(basicServiceForm, message);
 				BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_NOT_CRAWLED);
 			}
 		} catch (EmailException e) {
