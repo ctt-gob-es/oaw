@@ -1052,7 +1052,7 @@ public final class SemillaDAO {
 					// Multidependencia
 					PreparedStatement psDependencias = c.prepareStatement(
 							"SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?) ORDER BY UPPER(d.nombre)");
-					psDependencias.setLong(1, semillaForm.getId());
+					psDependencias.setLong(1, 1360);
 					List<DependenciaForm> listDependencias = new ArrayList<>();
 					try (ResultSet rsDependencias = psDependencias.executeQuery()) {
 						while (rsDependencias.next()) {
@@ -3285,7 +3285,7 @@ public final class SemillaDAO {
 		List<DependenciaForm> listDependencias = new ArrayList<>();
 		PreparedStatement psDependencias = c
 				.prepareStatement("SELECT id_dependencia, nombre FROM dependencia WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?)");
-		psDependencias.setLong(1, idSemilla);
+		psDependencias.setLong(1, 1360);
 		ResultSet rsDependencias = null;
 		try {
 			rsDependencias = psDependencias.executeQuery();

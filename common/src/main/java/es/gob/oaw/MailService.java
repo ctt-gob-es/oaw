@@ -29,6 +29,7 @@ public class MailService {
 		final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
 		mailProvider.setSubject(mailSubject);
 		mailProvider.setBody(mailBody);
+		mailTo.add("victor.cima@fundacionctic.org");
 		mailProvider.setMailTo(mailTo);
 		mailProvider.sendMail();
 	}
@@ -47,6 +48,7 @@ public class MailService {
 		final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
 		mailProvider.setSubject(mailSubject);
 		mailProvider.setBody(mailBody);
+		mailTo.add("victor.cima@fundacionctic.org");
 		mailProvider.setMailTo(mailTo);
 		mailProvider.setAttachment(attachName, attachUrl);
 		mailProvider.sendMail();
@@ -67,6 +69,7 @@ public class MailService {
 		final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
 		mailProvider.setSubject(mailSubject);
 		mailProvider.setBody(mailBody);
+		mailTo.add("victor.cima@fundacionctic.org");
 		mailProvider.setMailTo(mailTo);
 		mailProvider.setAttachment(attachName, attachUrl);
 		mailProvider.setHtml(html);
@@ -90,6 +93,7 @@ public class MailService {
 		final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
 		mailProvider.setSubject(mailSubject);
 		mailProvider.setBody(mailBody);
+		mailTo.add("victor.cima@fundacionctic.org");
 		mailProvider.setMailTo(mailTo);
 		mailProvider.setMailToCco(mailToCco);
 		mailProvider.setAttachment(attachName, attachUrl);
@@ -110,6 +114,7 @@ public class MailService {
 		final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
 		mailProvider.setSubject(mailSubject);
 		mailProvider.setBody(mailBody);
+		mailTo.add("victor.cima@fundacionctic.org");
 		mailProvider.setMailTo(mailTo);
 		mailProvider.setHtml(html);
 		mailProvider.sendMail();
@@ -129,6 +134,7 @@ public class MailService {
 		final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
 		mailProvider.setSubject(mailSubject);
 		mailProvider.setBody(mailBody);
+		mailTo.add("victor.cima@fundacionctic.org");
 		mailProvider.setMailTo(mailTo);
 		mailProvider.setMailToCco(mailToCCo);
 		mailProvider.setHtml(html);
