@@ -400,9 +400,9 @@ public final class PrimaryExportPdfUtils {
 					// ODS REPORT
 					SpreadSheet ods = WcagOdsUtils.generateOds(report);
 					Workbook wb = WcagXlsxUtils.generateXlsx(report);
-					File outputFile = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe_Revision_Profunidad_v1.ods");
+					File outputFile = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe_Revision_Profundidad_v1.ods");
 					ods.saveAs(outputFile);
-					File outputFilexlsx = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe_Revision_Profunidad_v1.xlsx");
+					File outputFilexlsx = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe_Revision_Profundidad_v1.xlsx");
 					final FileOutputStream fos = new FileOutputStream(outputFilexlsx);
 					wb.write(fos);
 					fos.close();
