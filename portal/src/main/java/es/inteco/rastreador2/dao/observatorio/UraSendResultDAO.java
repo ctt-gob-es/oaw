@@ -16,6 +16,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
+import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.RangeForm;
 import es.inteco.rastreador2.actionform.observatorio.UraSendHistoric;
@@ -39,7 +40,10 @@ public class UraSendResultDAO {
 	 * @return the int
 	 * @throws SQLException the SQL exception
 	 */
-	public static int count(Connection c, final Long idExObs) throws SQLException {
+	public static int count(Connection c, final Long idExObs) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		String query = "SELECT COUNT(*) FROM observatorio_ura_send_results e WHERE 1=1 AND id_observatory_execution = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idExObs);
@@ -65,7 +69,10 @@ public class UraSendResultDAO {
 	 * @return the int
 	 * @throws SQLException the SQL exception
 	 */
-	public static int count(Connection c, final Long idExObs, final String[] ids) throws SQLException {
+	public static int count(Connection c, final Long idExObs, final String[] ids) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		int count = 0;
 		if (ids != null && ids.length > 0) {
 			String query = "SELECT COUNT(*) FROM observatorio_ura_send_results c WHERE 1=1 AND id_observatory_execution = ? ";
@@ -100,7 +107,10 @@ public class UraSendResultDAO {
 	 * @return the etiquetas
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<UraSendResultForm> findAll(Connection c, final Long idExObs, final boolean isSendAuto) throws SQLException {
+	public static List<UraSendResultForm> findAll(Connection c, final Long idExObs, final boolean isSendAuto) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		final List<UraSendResultForm> results = new ArrayList<>();
 		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.range_value, c.has_custom_text, c.custom_text, c.send, c.send_date, c.send_error, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ";
 		if (isSendAuto) {
@@ -154,7 +164,10 @@ public class UraSendResultDAO {
 	 * @return the list
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<UraSendResultForm> findAllNotSend(Connection c, final Long idExObs) throws SQLException {
+	public static List<UraSendResultForm> findAllNotSend(Connection c, final Long idExObs) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		final List<UraSendResultForm> results = new ArrayList<>();
 		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, c.send_error, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.send=0 AND c.id_observatory_execution = ? ORDER BY c.id ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -196,7 +209,10 @@ public class UraSendResultDAO {
 	 * @return the list
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<UraSendResultForm> findByIds(Connection c, final Long idExObs, final String[] ids, final boolean isSendAuto) throws SQLException {
+	public static List<UraSendResultForm> findByIds(Connection c, final Long idExObs, final String[] ids, final boolean isSendAuto) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);	
+		
 		final List<UraSendResultForm> results = new ArrayList<>();
 		if (ids != null && ids.length > 0) {
 			String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range,c.range_value, c.custom_text, c.send, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1  AND c.id_observatory_execution = ? ";
@@ -249,7 +265,10 @@ public class UraSendResultDAO {
 	 * @return the ura send result form
 	 * @throws SQLException the SQL exception
 	 */
-	public static UraSendResultForm findById(Connection c, final Long idExObs, final Long id) throws SQLException {
+	public static UraSendResultForm findById(Connection c, final Long idExObs, final Long id) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		UraSendResultForm result = null;
 		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? AND c.id = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -288,7 +307,10 @@ public class UraSendResultDAO {
 	 * @throws SQLException                 the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	public static void save(Connection c, final List<UraSendResultForm> list) throws SQLException, UnsupportedEncodingException {
+	public static void save(Connection c, final List<UraSendResultForm> list) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		if (list != null && !list.isEmpty()) {
 			for (UraSendResultForm u : list) {
 				save(c, u);
@@ -304,7 +326,10 @@ public class UraSendResultDAO {
 	 * @throws SQLException                 the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	public static void save(Connection c, final UraSendResultForm form) throws SQLException, UnsupportedEncodingException {
+	public static void save(Connection c, final UraSendResultForm form) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
@@ -348,7 +373,10 @@ public class UraSendResultDAO {
 	 * @throws SQLException                 the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	public static void update(Connection c, final UraSendResultForm form) throws SQLException, UnsupportedEncodingException {
+	public static void update(Connection c, final UraSendResultForm form) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		final String query = "UPDATE observatorio_ura_send_results SET custom_text= ? WHERE id = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			// Encode BASE64 code
@@ -394,7 +422,10 @@ public class UraSendResultDAO {
 	 * @throws SQLException                 the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	public static void markSend(Connection c, final UraSendResultForm form) throws SQLException, UnsupportedEncodingException {
+	public static void markSend(Connection c, final UraSendResultForm form) throws Exception, UnsupportedEncodingException {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		final String query = "UPDATE observatorio_ura_send_results SET send= ?, send_date =?, send_error = ?, file_link = ?, file_pass = ?  WHERE id = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setBoolean(1, form.isSend());
@@ -420,7 +451,10 @@ public class UraSendResultDAO {
 	 * @throws SQLException                 the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	public static void markHasCustomText(Connection c, final boolean hasCustomTexts, final String[] urasIds, final Long idObsExecution) throws SQLException, UnsupportedEncodingException {
+	public static void markHasCustomText(Connection c, final boolean hasCustomTexts, final String[] urasIds, final Long idObsExecution) throws Exception, UnsupportedEncodingException {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		String query = "UPDATE observatorio_ura_send_results SET has_custom_text = ?  WHERE id_observatory_execution = ? ";
 		if (urasIds != null && urasIds.length > 0) {
 			query = query + " AND id_ura IN (" + urasIds[0];
@@ -446,7 +480,10 @@ public class UraSendResultDAO {
 	 * @param id the id
 	 * @throws SQLException the SQL exception
 	 */
-	public static void delete(Connection c, final Long id) throws SQLException {
+	public static void delete(Connection c, final Long id) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_ura_send_results WHERE id = ?")) {
 			ps.setLong(1, id);
 			ps.executeUpdate();
@@ -463,7 +500,10 @@ public class UraSendResultDAO {
 	 * @param idExObs the id ex obs
 	 * @throws SQLException the SQL exception
 	 */
-	public static void deleteAll(Connection c, final Long idExObs) throws SQLException {
+	public static void deleteAll(Connection c, final Long idExObs) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_ura_send_results WHERE id_observatory_execution = ?")) {
 			ps.setLong(1, idExObs);
 			ps.executeUpdate();
@@ -480,7 +520,10 @@ public class UraSendResultDAO {
 	 * @param historic the historic
 	 * @throws SQLException the SQL exception
 	 */
-	public static void saveHistoricSend(Connection c, final UraSendHistoric historic) throws SQLException {
+	public static void saveHistoricSend(Connection c, final UraSendHistoric historic) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
@@ -602,7 +645,10 @@ public class UraSendResultDAO {
 	 * @return the send historic
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<UraSendHistoric> getSendHistoric(Connection c, final Long idExObs, final Long idObservatory) throws SQLException {
+	public static List<UraSendHistoric> getSendHistoric(Connection c, final Long idExObs, final Long idObservatory) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		List<UraSendHistoric> historics = new ArrayList<>();
 		String query = "SELECT * FROM observatorio_send_historic h WHERE h.id_observatory_execution = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -711,7 +757,10 @@ public class UraSendResultDAO {
 	 * @return the list
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<UraSendHistoricResults> findAllSendHistoric(Connection c, final Long idHistoric) throws SQLException {
+	public static List<UraSendHistoricResults> findAllSendHistoric(Connection c, final Long idHistoric) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		final List<UraSendHistoricResults> results = new ArrayList<>();
 		String query = "SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.range_value, c.custom_text, c.send, c.send_error, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.send=1 AND c.id_send_historic = ? ORDER BY c.id ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -749,7 +798,10 @@ public class UraSendResultDAO {
 	 * @return the list
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<UraSendHistoricResults> findAllSendAutoFalseHistoric(Connection c, final Long idHistoric) throws SQLException {
+	public static List<UraSendHistoricResults> findAllSendAutoFalseHistoric(Connection c, final Long idHistoric) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		final List<UraSendHistoricResults> results = new ArrayList<>();
 		String query = "SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.range_value, c.custom_text, c.send, c.send_error, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND d.send_auto=0 AND c.id_send_historic = ? ORDER BY c.id ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -777,5 +829,21 @@ public class UraSendResultDAO {
 			throw e;
 		}
 		return results;
+	}
+	
+	public static Connection reOpenConnectionIfIsNecessary(Connection c) 
+			throws Exception
+	{
+		try {
+			if (!c.isValid(0)) {
+				c = DataBaseManager.getConnection();
+			}
+			return c;
+		} catch (Exception e) {
+			Logger.putLog("SQL Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			e.printStackTrace();
+			c = DataBaseManager.getConnection();
+			return c;
+		}
 	}
 }
