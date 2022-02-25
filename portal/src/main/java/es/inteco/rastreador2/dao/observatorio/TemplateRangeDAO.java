@@ -13,6 +13,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
+import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.TemplateRangeForm;
 import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.utils.DAOUtils;
@@ -30,7 +31,10 @@ public class TemplateRangeDAO {
 	 * @return the int
 	 * @throws SQLException the SQL exception
 	 */
-	public static int count(Connection c, String nombre, final Long idExObs) throws SQLException {
+	public static int count(Connection c, String nombre, final Long idExObs) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		int count = 1;
 		String query = "SELECT COUNT(*) FROM observatorio_template_range e WHERE 1=1 AND id_observatory_execution = ? ";
 		if (StringUtils.isNotEmpty(nombre)) {
@@ -60,11 +64,15 @@ public class TemplateRangeDAO {
 	 * @param c       the c
 	 * @param idExObs the id ex obs
 	 * @return the etiquetas
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static List<TemplateRangeForm> findAll(Connection c, final Long idExObs) throws SQLException {
+	public static List<TemplateRangeForm> findAll(Connection c,final Long idExObs) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);	
+		
 		final List<TemplateRangeForm> results = new ArrayList<>();
 		String query = "SELECT id, name, min_value, max_value, min_value_operator, max_value_operator, template FROM observatorio_template_range WHERE 1=1 AND id_observatory_execution = ? ORDER BY UPPER(name) ASC, UPPER(name) ASC";
+		
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idExObs);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -96,7 +104,10 @@ public class TemplateRangeDAO {
 	 * @return the template range form
 	 * @throws SQLException the SQL exception
 	 */
-	public static TemplateRangeForm findById(Connection c, final Long idExObs, final Long id) throws SQLException {
+	public static TemplateRangeForm findById(Connection c, final Long idExObs, final Long id) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		final TemplateRangeForm result = null;
 		String query = "SELECT id, name, min_value, max_value, min_value_operator, max_value_operator, template FROM observatorio_template_range WHERE 1=1 AND id_observatory_execution = ? AND id =?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -130,7 +141,10 @@ public class TemplateRangeDAO {
 	 * @throws SQLException                 the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	public static void save(Connection c, final TemplateRangeForm form) throws SQLException, UnsupportedEncodingException {
+	public static void save(Connection c, final TemplateRangeForm form) throws Exception, UnsupportedEncodingException {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
@@ -171,7 +185,10 @@ public class TemplateRangeDAO {
 	 * @throws SQLException                 the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
-	public static void update(Connection c, final TemplateRangeForm form) throws SQLException, UnsupportedEncodingException {
+	public static void update(Connection c, final TemplateRangeForm form) throws Exception, UnsupportedEncodingException {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		final String query = "UPDATE observatorio_template_range SET name = ?, min_value = ?, max_value = ?, min_value_operator = ?, max_value_operator = ?, template = ? WHERE id = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, form.getName());
@@ -200,7 +217,10 @@ public class TemplateRangeDAO {
 	 * @param id the id
 	 * @throws SQLException the SQL exception
 	 */
-	public static void delete(Connection c, final Long id) throws SQLException {
+	public static void delete(Connection c, final Long id) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_template_range WHERE id = ?")) {
 			ps.setLong(1, id);
 			ps.executeUpdate();
@@ -218,7 +238,10 @@ public class TemplateRangeDAO {
 	 * @return true, if successful
 	 * @throws SQLException the SQL exception
 	 */
-	public static boolean exists(Connection c, final TemplateRangeForm form) throws SQLException {
+	public static boolean exists(Connection c, final TemplateRangeForm form) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		boolean exists = false;
 		String query = "SELECT * FROM observatorio_template_range WHERE UPPER(name) = UPPER(?) AND id_observatory_execution = ?";
 		if (form.getId() != null) {
@@ -239,5 +262,21 @@ public class TemplateRangeDAO {
 			throw e;
 		}
 		return exists;
+	}
+	
+	public static Connection reOpenConnectionIfIsNecessary(Connection c) 
+			throws Exception
+	{
+		try {
+			if (!c.isValid(0)) {
+				c = DataBaseManager.getConnection();
+			}
+			return c;
+		} catch (Exception e) {
+			Logger.putLog("SQL Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			e.printStackTrace();
+			c = DataBaseManager.getConnection();
+			return c;
+		}
 	}
 }

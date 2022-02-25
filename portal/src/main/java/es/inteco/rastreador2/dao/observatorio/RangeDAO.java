@@ -11,6 +11,7 @@ import java.util.List;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
+import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.RangeForm;
 import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.utils.DAOUtils;
@@ -27,7 +28,10 @@ public class RangeDAO {
 	 * @return the int
 	 * @throws SQLException the SQL exception
 	 */
-	public static int count(Connection c, String nombre) throws SQLException {
+	public static int count(Connection c, String nombre) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		int count = 1;
 		String query = "SELECT COUNT(*) FROM observatorio_range e WHERE 1=1 ";
 		if (StringUtils.isNotEmpty(nombre)) {
@@ -57,7 +61,10 @@ public class RangeDAO {
 	 * @return the etiquetas
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<RangeForm> findAll(Connection c) throws SQLException {
+	public static List<RangeForm> findAll(Connection c) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		final List<RangeForm> results = new ArrayList<>();
 		String query = "SELECT id, weight, name, min_value, max_value, min_value_operator, max_value_operator, color FROM observatorio_range WHERE 1=1  ORDER BY weight ASC, UPPER(name) ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -97,7 +104,10 @@ public class RangeDAO {
 	 * @param form the form
 	 * @throws SQLException the SQL exception
 	 */
-	public static void save(Connection c, final RangeForm form) throws SQLException {
+	public static void save(Connection c, final RangeForm form) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
@@ -131,7 +141,10 @@ public class RangeDAO {
 	 * @param form the form
 	 * @throws SQLException the SQL exception
 	 */
-	public static void update(Connection c, final RangeForm form) throws SQLException {
+	public static void update(Connection c, final RangeForm form) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		final String query = "UPDATE observatorio_range SET name = ?, min_value = ?, max_value = ?, min_value_operator = ?, max_value_operator = ?, weight = ?, color = ? WHERE id = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, form.getName());
@@ -164,7 +177,10 @@ public class RangeDAO {
 	 * @param id the id
 	 * @throws SQLException the SQL exception
 	 */
-	public static void delete(Connection c, final Long id) throws SQLException {
+	public static void delete(Connection c, final Long id) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_range WHERE id = ?")) {
 			ps.setLong(1, id);
 			ps.executeUpdate();
@@ -182,7 +198,10 @@ public class RangeDAO {
 	 * @return true, if successful
 	 * @throws SQLException the SQL exception
 	 */
-	public static boolean exists(Connection c, final RangeForm form) throws SQLException {
+	public static boolean exists(Connection c, final RangeForm form) throws Exception {
+
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		boolean exists = false;
 		String query = "SELECT * FROM observatorio_range WHERE UPPER(name) = UPPER(?)";
 		if (form.getId() != null) {
@@ -202,5 +221,21 @@ public class RangeDAO {
 			throw e;
 		}
 		return exists;
+	}
+	
+	public static Connection reOpenConnectionIfIsNecessary(Connection c) 
+			throws Exception
+	{
+		try {
+			if (!c.isValid(0)) {
+				c = DataBaseManager.getConnection();
+			}
+			return c;
+		} catch (Exception e) {
+			Logger.putLog("SQL Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			e.printStackTrace();
+			c = DataBaseManager.getConnection();
+			return c;
+		}
 	}
 }

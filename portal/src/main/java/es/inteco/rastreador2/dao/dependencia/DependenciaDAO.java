@@ -26,9 +26,11 @@ import java.util.List;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
+import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.utils.DAOUtils;
 
 /**
@@ -48,9 +50,12 @@ public final class DependenciaDAO {
 	 * @param dependency the dependency
 	 * @param tagArr     the tag arr
 	 * @return the int
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static int countDependencias(Connection c, final DependenciaForm dependency, final String[] tagArr) throws SQLException {
+	public static int countDependencias(Connection c, final DependenciaForm dependency, final String[] tagArr) throws Exception {
+				
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		int count = 1;
 		String query = "SELECT COUNT(*) FROM dependencia d WHERE 1=1 ";
 		query = appendWhereClauses(dependency, tagArr, query);
@@ -77,9 +82,12 @@ public final class DependenciaDAO {
 	 * @param tagArr     the tag arr
 	 * @param page       the page
 	 * @return the dependencias
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static List<DependenciaForm> getDependencias(Connection c, final DependenciaForm dependency, final String[] tagArr, int page) throws SQLException {
+	public static List<DependenciaForm> getDependencias(Connection c, final DependenciaForm dependency, final String[] tagArr, int page) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		final List<DependenciaForm> results = new ArrayList<>();
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official, d.acronym, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE 1=1 ";
 		query = appendWhereClauses(dependency, tagArr, query);
@@ -137,9 +145,12 @@ public final class DependenciaDAO {
 	 *
 	 * @param c               the c
 	 * @param dependenciaForm the dependencia form
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	private static void loadAmbits(Connection c, DependenciaForm dependenciaForm) throws SQLException {
+	private static void loadAmbits(Connection c, DependenciaForm dependenciaForm) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		PreparedStatement psDependencias = c.prepareStatement(
 				"SELECT a.nombre, a.id_ambito FROM ambitos_lista a WHERE a.id_ambito in (SELECT id_ambito FROM dependencia_ambito WHERE id_dependencia = ?) ORDER BY UPPER(a.nombre)");
 		psDependencias.setLong(1, dependenciaForm.getId());
@@ -170,9 +181,9 @@ public final class DependenciaDAO {
 	 * @param ps         the ps
 	 * @param count      the count
 	 * @return the int
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	private static int fillWhereClauses(final DependenciaForm dependency, final String[] tagArr, PreparedStatement ps, int count) throws SQLException {
+	private static int fillWhereClauses(final DependenciaForm dependency, final String[] tagArr, PreparedStatement ps, int count) throws Exception {
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(dependency.getName())) {
 			ps.setString(count++, "%" + dependency.getName() + "%");
 		}
@@ -269,9 +280,12 @@ public final class DependenciaDAO {
 	 * @param c  the c
 	 * @param id the id
 	 * @return the dependencia form
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static DependenciaForm findById(Connection c, final Long id) throws SQLException {
+	public static DependenciaForm findById(Connection c, final Long id) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official, d.acronym FROM dependencia d WHERE d.id_dependencia = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, id);
@@ -309,9 +323,12 @@ public final class DependenciaDAO {
 	 * @param c    the c
 	 * @param name the name
 	 * @return the dependencia form
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static DependenciaForm findByName(Connection c, final String name) throws SQLException {
+	public static DependenciaForm findByName(Connection c, final String name) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE d.nombre = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, name);
@@ -356,9 +373,12 @@ public final class DependenciaDAO {
 	 * @param c                         the c
 	 * @param updatedAndNewDependencies the updated and new dependencies
 	 * @return the list
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static List<DependenciaForm> findNotExistsAnNotAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws SQLException {
+	public static List<DependenciaForm> findNotExistsAnNotAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		List<DependenciaForm> list = new ArrayList<>();
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,e.id_etiqueta, e.nombre "
 				+ "FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag  " + "WHERE d.id_dependencia NOT IN (SELECT sd.id_dependencia FROM semilla_dependencia sd) ";
@@ -421,9 +441,12 @@ public final class DependenciaDAO {
 	 * @param c                         the c
 	 * @param updatedAndNewDependencies the updated and new dependencies
 	 * @return the list
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static List<DependenciaForm> findNotExistsAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws SQLException {
+	public static List<DependenciaForm> findNotExistsAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		List<DependenciaForm> list = new ArrayList<>();
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,e.id_etiqueta, e.nombre "
 				+ "FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag  " + "WHERE d.id_dependencia IN (SELECT sd.id_dependencia FROM semilla_dependencia sd) ";
@@ -486,9 +509,12 @@ public final class DependenciaDAO {
 	 * @param c           the c
 	 * @param dependencia the dependencia
 	 * @return true, if successful
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static boolean existsDependencia(Connection c, DependenciaForm dependencia) throws SQLException {
+	public static boolean existsDependencia(Connection c, DependenciaForm dependencia) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		boolean exists = false;
 		final String query = "SELECT * FROM dependencia WHERE UPPER(nombre) = UPPER(?)";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -509,9 +535,12 @@ public final class DependenciaDAO {
 	 *
 	 * @param c           the c
 	 * @param dependencia the dependencia
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static void save(Connection c, DependenciaForm dependencia) throws SQLException {
+	public static void save(Connection c, DependenciaForm dependencia) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		final String query = "INSERT INTO dependencia(nombre, emails, send_auto, official,id_tag, acronym) VALUES (?,?,?,?,?,?)";
 		try (PreparedStatement ps = c.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, dependencia.getName());
@@ -547,9 +576,12 @@ public final class DependenciaDAO {
 	 * @param c             the c
 	 * @param dependencia   the dependencia
 	 * @param generatedKeys the generated keys
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	private static void insertAmbits(Connection c, DependenciaForm dependencia, ResultSet generatedKeys) throws SQLException {
+	private static void insertAmbits(Connection c, DependenciaForm dependencia, ResultSet generatedKeys) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		if (generatedKeys.next()) {
 			dependencia.setId(generatedKeys.getLong(1));
 			// Inserción de las nuevas
@@ -575,9 +607,9 @@ public final class DependenciaDAO {
 	 *
 	 * @param c           the c
 	 * @param dependencia the dependencia
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static void update(Connection c, DependenciaForm dependencia) throws SQLException {
+	public static void update(Connection c, DependenciaForm dependencia) throws Exception {
 		final String query = "UPDATE dependencia SET nombre = ?, emails = ?, send_auto = ? , official = ?, id_tag = ?, acronym =?   WHERE id_dependencia = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, dependencia.getName());
@@ -604,9 +636,12 @@ public final class DependenciaDAO {
 	 *
 	 * @param c           the c
 	 * @param dependencia the dependencia
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	private static void updateDependencyAmbits(Connection c, DependenciaForm dependencia) throws SQLException {
+	private static void updateDependencyAmbits(Connection c, DependenciaForm dependencia) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		// Update ambits
 		// Borrar las relaciones (no se pueden crear FK a lista por MyISAM no
 		// lo permite
@@ -637,9 +672,12 @@ public final class DependenciaDAO {
 	 *
 	 * @param c             the c
 	 * @param idDependencia the id dependencia
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static void delete(Connection c, Long idDependencia) throws SQLException {
+	public static void delete(Connection c, Long idDependencia) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM dependencia WHERE id_dependencia = ?")) {
 			ps.setLong(1, idDependencia);
 			ps.executeUpdate();
@@ -654,9 +692,12 @@ public final class DependenciaDAO {
 	 *
 	 * @param c            the c
 	 * @param dependencies the dependencies
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static void delete(Connection c, final List<DependenciaForm> dependencies) throws SQLException {
+	public static void delete(Connection c, final List<DependenciaForm> dependencies) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		if (dependencies != null && !dependencies.isEmpty()) {
 			String query = "DELETE FROM dependencia WHERE 1=1";
 			query = query + " AND id_dependencia IN (" + dependencies.get(0).getId();
@@ -684,9 +725,12 @@ public final class DependenciaDAO {
 	 *
 	 * @param c            the c
 	 * @param dependencies the dependencies
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static void saveOrUpdate(Connection c, final List<DependenciaForm> dependencies) throws SQLException {
+	public static void saveOrUpdate(Connection c, final List<DependenciaForm> dependencies) throws Exception {
+		
+		c = reOpenConnectionIfIsNecessary(c);
+		
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
@@ -764,4 +808,21 @@ public final class DependenciaDAO {
 			DAOUtils.closeQueries(ps, null);
 		}
 	}
+	
+	public static Connection reOpenConnectionIfIsNecessary(Connection c) 
+			throws Exception
+	{
+		try {
+			if (!c.isValid(0)) {
+				c = DataBaseManager.getConnection();
+			}
+			return c;
+		} catch (Exception e) {
+			Logger.putLog("SQL Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			e.printStackTrace();
+			c = DataBaseManager.getConnection();
+			return c;
+		}
+	}
+	
 }
