@@ -26,17 +26,16 @@ import java.util.List;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
-import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
+import es.inteco.rastreador2.dao.observatorio.DataBaseDAO;
 import es.inteco.rastreador2.utils.DAOUtils;
 
 /**
  * The Class DependenciaDAO.
  */
-public final class DependenciaDAO {
+public final class DependenciaDAO extends DataBaseDAO {
 	/**
 	 * Instantiates a new dependencia DAO.
 	 */
@@ -807,22 +806,5 @@ public final class DependenciaDAO {
 		} finally {
 			DAOUtils.closeQueries(ps, null);
 		}
-	}
-	
-	public static Connection reOpenConnectionIfIsNecessary(Connection c) 
-			throws Exception
-	{
-		try {
-			if (!c.isValid(0)) {
-				c = DataBaseManager.getConnection();
-			}
-			return c;
-		} catch (Exception e) {
-			Logger.putLog("SQL Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
-			e.printStackTrace();
-			c = DataBaseManager.getConnection();
-			return c;
-		}
-	}
-	
+	}	
 }

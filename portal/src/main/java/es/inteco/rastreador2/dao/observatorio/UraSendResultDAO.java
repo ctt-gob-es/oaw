@@ -16,7 +16,6 @@ import org.apache.commons.codec.binary.Base64;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
-import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.RangeForm;
 import es.inteco.rastreador2.actionform.observatorio.UraSendHistoric;
@@ -31,7 +30,7 @@ import es.inteco.rastreador2.utils.DAOUtils;
 /**
  * The Class RangeDAO.
  */
-public class UraSendResultDAO {
+public class UraSendResultDAO extends DataBaseDAO {
 	/**
 	 * Count.
 	 *
@@ -829,21 +828,6 @@ public class UraSendResultDAO {
 			throw e;
 		}
 		return results;
-	}
+	} 
 	
-	public static Connection reOpenConnectionIfIsNecessary(Connection c) 
-			throws Exception
-	{
-		try {
-			if (!c.isValid(0)) {
-				c = DataBaseManager.getConnection();
-			}
-			return c;
-		} catch (Exception e) {
-			Logger.putLog("SQL Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
-			e.printStackTrace();
-			c = DataBaseManager.getConnection();
-			return c;
-		}
-	}
 }

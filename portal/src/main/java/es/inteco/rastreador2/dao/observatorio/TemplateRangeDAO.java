@@ -13,7 +13,6 @@ import org.apache.commons.codec.binary.Base64;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
-import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.TemplateRangeForm;
 import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.utils.DAOUtils;
@@ -21,7 +20,7 @@ import es.inteco.rastreador2.utils.DAOUtils;
 /**
  * The Class RangeDAO.
  */
-public class TemplateRangeDAO {
+public class TemplateRangeDAO extends DataBaseDAO {
 	/**
 	 * Count.
 	 *
@@ -264,19 +263,4 @@ public class TemplateRangeDAO {
 		return exists;
 	}
 	
-	public static Connection reOpenConnectionIfIsNecessary(Connection c) 
-			throws Exception
-	{
-		try {
-			if (!c.isValid(0)) {
-				c = DataBaseManager.getConnection();
-			}
-			return c;
-		} catch (Exception e) {
-			Logger.putLog("SQL Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
-			e.printStackTrace();
-			c = DataBaseManager.getConnection();
-			return c;
-		}
-	}
 }
