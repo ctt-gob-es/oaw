@@ -44,7 +44,6 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.dao.EstadoObservatorioDAO;
-import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.cuentausuario.PeriodicidadForm;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.CargarObservatorioForm;
@@ -81,7 +80,7 @@ import es.inteco.rastreador2.utils.DAOUtils;
 /**
  * The Class ObservatorioDAO.
  */
-public final class ObservatorioDAO {
+public final class ObservatorioDAO extends DataBaseDAO {
 	/**
 	 * Instantiates a new observatorio DAO.
 	 */
@@ -3764,21 +3763,5 @@ public final class ObservatorioDAO {
 			DAOUtils.closeQueries(ps, rs);
 		}
 		return dependencies;
-	}
-	
-	public static Connection reOpenConnectionIfIsNecessary(Connection c) 
-			throws Exception
-	{
-		try {
-			if (!c.isValid(0)) {
-				c = DataBaseManager.getConnection();
-			}
-			return c;
-		} catch (Exception e) {
-			Logger.putLog("SQL Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
-			e.printStackTrace();
-			c = DataBaseManager.getConnection();
-			return c;
-		}
-	}
+	}	
 }
