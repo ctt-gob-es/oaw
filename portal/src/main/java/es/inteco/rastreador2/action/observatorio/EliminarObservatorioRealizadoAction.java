@@ -114,7 +114,7 @@ public class EliminarObservatorioRealizadoAction extends Action {
 	 * @param executionId   the execution id
 	 * @throws SQLException the SQL exception
 	 */
-    private void borrarArchivosAsociados(Connection c, final Long observatoryId, final Long executionId) throws SQLException {
+    private void borrarArchivosAsociados(Connection c, final Long observatoryId, final Long executionId) throws Exception {
         final PropertiesManager pmgr = new PropertiesManager();
         if ((observatoryId != null) && (executionId != null)) {
             long cartucho = ObservatorioDAO.getCartridgeFromExecutedObservatoryId(c, executionId);
