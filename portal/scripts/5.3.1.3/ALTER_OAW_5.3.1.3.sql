@@ -1,1 +1,1 @@
-UPDATE observatorio_plantillas set documento = LOAD_FILE('[RUTA]/Informe_Revision_Profundidad_v1.xlsx') WHERE nombre = 'IRA (XLSX)';
+UPDATE observatorio_plantillas set documento = LOAD_FILE('[RUTA]/Informe Revision Accesibilidad - Sitios web - v2.0.0.xlsx') WHERE nombre = 'IRA (XLSX)';

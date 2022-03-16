@@ -208,10 +208,10 @@ public class BasicServiceManager {
 					org.apache.commons.io.FileUtils.writeStringToFile(new File(new File(pdfPath).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
 					// ODS REPORT
 					SpreadSheet ods = WcagOdsUtils.generateOds(report);
-					File outputFile = new File(new File(pdfPath).getParentFile().getPath() + "/Informe_Revision_Profundidad_v1.ods");
+					File outputFile = new File(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web - v2.0.0.ods");
 					ods.saveAs(outputFile);
 					Workbook wb = WcagXlsxUtils.generateXlsx(report);
-					File outputFilexlsx = new File(new File(pdfPath).getParentFile().getPath() + "/Informe_Revision_Profundidad_v1.xlsx");
+					File outputFilexlsx = new File(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web - v2.0.0.xlsx");
 					wb.write(new FileOutputStream(outputFilexlsx));
 				}
 				// Generar código analizado
