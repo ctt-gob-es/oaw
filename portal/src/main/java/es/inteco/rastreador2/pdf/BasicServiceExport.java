@@ -236,9 +236,9 @@ public final class BasicServiceExport {
 					// JSON
 					zipFile(new File(parentFile + "/wcagem-report.json"), "wcagem-report.json", zos);
 					// ODS
-					zipFile(new File(parentFile + "/Informe_Revision_Profundidad_v1.ods"), "Informe_Revision_Profundidad_v1.ods", zos);
+					zipFile(new File(parentFile + "/Informe Revision Accesibilidad - Sitios web - v2.0.0.ods"), "Informe Revision Accesibilidad - Sitios web - v2.0.0.ods", zos);
 					// XLSX
-					zipFile(new File(parentFile + "/Informe_Revision_Profundidad_v1.xlsx"), "Informe_Revision_Profundidad_v1.xlsx", zos);
+					zipFile(new File(parentFile + "/Informe Revision Accesibilidad - Sitios web - v2.0.0.xlsx"), "Informe Revision Accesibilidad - Sitios web - v2.0.0.xlsx", zos);
 				}
 				zipFile(new File(parentFile + "/pagina_accesibilidad.html"), "pagina_accesibilidad.html", zos);
 			} catch (Exception e) {
