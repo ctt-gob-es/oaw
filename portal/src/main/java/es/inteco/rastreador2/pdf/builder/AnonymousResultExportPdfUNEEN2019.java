@@ -178,10 +178,6 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		externalLink.setExternalLink(true);
 		externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.p4.anchor2.url"));
 		specialChunkMap.put(2, externalLink);
-		externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.p4.anchor3.text"), ConstantsFont.ANCHOR_FONT);
-		externalLink.setExternalLink(true);
-		externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.p4.anchor3.url"));
-		specialChunkMap.put(3, externalLink);
 		chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.p4"), specialChunkMap, ConstantsFont.PARAGRAPH));
 		// P5
 		ArrayList<String> boldWords = new ArrayList<>();

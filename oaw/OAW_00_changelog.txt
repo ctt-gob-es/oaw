@@ -1,3 +1,8 @@
+5.4.0
+------------------------------------------------------------------------------------------------------------------------------------
+- Actualización de formatos de los ficheros IRA
+- Modificación de leyendas de informes: UNE-EN301549:2019 -> UNE-EN301549:2022
+
 5.3.0
 ------------------------------------------------------------------------------------------------------------------------------------
 - Posibilidad de envío de los anexos por email en lugar de esperar que se generen (ya que pueden tardar demasiado y terminar el tiempo de espera del servidor)
