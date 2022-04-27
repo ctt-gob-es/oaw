@@ -1,0 +1,80 @@
+version: "3"
+
+services:
+  tomcat:
+    build:
+      dockerfile: ./docker/tomcat/Dockerfile
+      context: ../
+    ports:
+      - '8080:8080'
+    container_name: "oaw_tomcat"
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql/mysql-server:5.7.24-1.1.8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: OAW5
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - '3306:3306'
+    container_name: "oaw_mysql"
+    volumes:
+      - '../portal/scripts/4.0.0/000_INIT_DATABASE.sql:/docker-entrypoint-initdb.d/01.sql'
+      - '../portal/scripts/4.0.0/001_UPDATE_TABLES_OAW_4.0.0.sql:/docker-entrypoint-initdb.d/02.sql'
+      - '../portal/scripts/4.0.0/002_CREATE_TABLES_OAW_4.0.0.sql:/docker-entrypoint-initdb.d/03.sql'
+      - '../portal/scripts/4.0.0/101_ROLLBACK_OAW_4.0.0.sql:/docker-entrypoint-initdb.d/04.sql'
+      - '../portal/scripts/4.1.0/INSERT_TABLES_OAW_4.1.0.sql:/docker-entrypoint-initdb.d/05.sql'
+      - '../portal/scripts/4.2.0/CREATE_TABLES_OAW_4.2.0.sql:/docker-entrypoint-initdb.d/06.sql'
+      - '../portal/scripts/4.2.0/UPDATE_DATABASE_OAW_4.2.0.sql:/docker-entrypoint-initdb.d/07.sql'
+      - '../portal/scripts/4.2.1/ALTER_TABLE_OBSERVATORIO_ESTADO_OAW_4.2.1.sql:/docker-entrypoint-initdb.d/08.sql'
+      - '../portal/scripts/4.3.0/CREATE_TABLE_OBSERVATORIO_PROXY_OAW_4.3.0.sql:/docker-entrypoint-initdb.d/09.sql'
+      - '../portal/scripts/5.0.0/INSERT_TABLES_OAW_5.0.0.sql:/docker-entrypoint-initdb.d/10.sql'
+      - '../portal/scripts/5.0.2/CREATE_TABLES_OAW_5.0.2.sql:/docker-entrypoint-initdb.d/11.sql'
+      - '../portal/scripts/5.0.3/ALTER_OAW_5.0.3.sql:/docker-entrypoint-initdb.d/12.sql'
+      - '../portal/scripts/5.0.4/ALTER_OAW_5.0.4.sql:/docker-entrypoint-initdb.d/13.sql'
+      - '../portal/scripts/5.0.5/ALTER_OAW_5.0.5.sql:/docker-entrypoint-initdb.d/14.sql'
+      - '../portal/scripts/5.1.0/ALTER_OAW_5.1.0.sql:/docker-entrypoint-initdb.d/15.sql'
+      - '../portal/scripts/5.2.0/ALTER_OAW_5.2.0.sql:/docker-entrypoint-initdb.d/16.sql'
+      - '../portal/scripts/5.3.0/ALTER_OAW_5.3.0.sql:/docker-entrypoint-initdb.d/17.sql'
+      - './mysql/script.sql:/docker-entrypoint-initdb.d/18.sql'
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - '8025:8025'
+    container_name: "oaw_mailhog"
+
+  renderer:
+    privileged: true
+    build: ./renderer
+    image: oawjs_renderer
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: "2"
+    command: node /opt/prerender/server.js
+
+  proxy:
+    build: ./proxy
+    image: oawjs_proxy
+    command: node /opt/proxy/index.js
+    ports:
+      - "18088:18088"
+    container_name: oaw_proxy
+
+  nginx:
+    image: nginx:1.17.9-alpine
+    volumes:
+      - ./nginx/reverse.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/certs/server.crt:/etc/nginx/ssl/server.crt
+      - ./nginx/certs/server.key:/etc/nginx/ssl/server.key
+    links:
+      - renderer
+    shm_size: '1gb'
+    container_name: oaw_nginx
+    depends_on:
+      - renderer

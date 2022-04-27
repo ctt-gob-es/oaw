@@ -13,7 +13,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 -->
 <Context path="/oaw" reloadable="true">
 	<Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver"
-		type="javax.sql.DataSource" name="jdbc/oaw" url="jdbc:mysql://mysql:3306/OAW5"
+		type="javax.sql.DataSource" name="jdbc/oaw" url="jdbc:mysql://mysql:3306/OAW5?enabledTLSProtocols=TLSv1.2"
 		maxActive="100" maxIdle="10" maxWait="-1"
 		validationQuery="SELECT 1 as dbcp_connection_test" removeAbandoned="true"
 		testOnBorrow="true" timeBetweenEvictionRunsMillis="60000"
