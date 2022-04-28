@@ -147,7 +147,7 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
 			final double contrastRatio = obtainContrastRatio(foregroundLuminance, backgroundLuminance);
 
 			if (!needHighContrast()) {
-				if (contrastRatio < 3.5) {
+				if (contrastRatio < 3) {
 					getProblems().add(createCSSProblem(" (ratio:" + contrastRatio + ") ", null));
 				}
 			} else {

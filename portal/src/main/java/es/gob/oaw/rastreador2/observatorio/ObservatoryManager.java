@@ -237,13 +237,13 @@ public class ObservatoryManager {
 						rankingInfo.setGlobalSeedsNumber(rankingInfo.getGlobalSeedsNumber() + 1);
 					}
 					final BigDecimal seedFormScore = new BigDecimal(seedForm.getScore());
-					if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
+					if (rankingInfo.getScore() != null && seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
 						rankingInfo.incrementGlobalRank();
 					}
 					// Category rank
 					if (currentSeed.getCategoria() != null && currentSeed.getCategoria().getId().equals(String.valueOf(seedForm.getIdCategory()))) {
 						rankingInfo.setCategorySeedsNumber(rankingInfo.getCategorySeedsNumber() + 1);
-						if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
+						if (rankingInfo.getScore() != null && seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
 							rankingInfo.incrementCategoryRank();
 						}
 					}
@@ -251,7 +251,7 @@ public class ObservatoryManager {
 					if (currentSeed.getComplejidad() != null && currentSeed.getComplejidad().getId() != null
 							&& currentSeed.getComplejidad().getId().equals(String.valueOf(seedForm.getIdComplexity()))) {
 						rankingInfo.setComplexitySeedsNumber(rankingInfo.getComplexitySeedsNumber() + 1);
-						if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
+						if (rankingInfo.getScore() != null && seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
 							rankingInfo.incrementComplexityRank();
 						}
 					}
