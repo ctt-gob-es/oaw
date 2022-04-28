@@ -88,9 +88,6 @@ public final class WcagOdsUtils {
 			}
 		}
 		final Sheet sheetR9 = workbook.getSheet("R9.Web");
-		//final Sheet sheetP2 = workbook.getSheet("P2.Operable");
-		//final Sheet sheetP3 = workbook.getSheet("P3.Comprensible");
-		//final Sheet sheetP4 = workbook.getSheet("P4.Robusto");
 		resultsProcessed = 0;
 		for (AuditResult auditResult : report.getGraph().get(0).getAuditResult()) {
 			if (resultsProcessed < MAX_PAGES) {
