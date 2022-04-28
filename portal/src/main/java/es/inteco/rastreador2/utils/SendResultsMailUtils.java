@@ -284,8 +284,11 @@ public final class SendResultsMailUtils {
 	 * @return the pdfs
 	 */
 	private static Map<String, String> getPdfs(final Long idObservatory, final Long idObservatoryExecution, final List<FulFilledCrawling> fulfilledCrawlings) {
+		int i = 0;
 		for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
-			buildPdf(idObservatory, idObservatoryExecution, fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling());
+			i++;
+			Logger.putLog("Generando PDF: " + i + "/" + fulfilledCrawlings.size() + " - " + fulfilledCrawling.getSeed().getNombre(), SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR);
+			buildPdf(idObservatory, idObservatoryExecution, fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling());						
 		}
 		PropertiesManager pmgr = new PropertiesManager();
 		return ZipUtils.pdfsZipToMap(idObservatory, idObservatoryExecution, pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav"));
@@ -419,7 +422,7 @@ public final class SendResultsMailUtils {
 	 * @return the calendar
 	 * @throws SQLException the SQL exception
 	 */
-	private static Calendar calculateExpirationDate(Connection c) throws SQLException {
+	private static Calendar calculateExpirationDate(Connection c) throws Exception {
 		int days = ObservatorioDAO.getFileExpirationFromConfig(c);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(new Date());

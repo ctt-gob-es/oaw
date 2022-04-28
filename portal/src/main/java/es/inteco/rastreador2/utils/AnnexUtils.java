@@ -1020,12 +1020,10 @@ public final class AnnexUtils {
 	 * @param verifications    the verifications
 	 * @param onlyLast         the only last
 	 * @param criterias        the criterias
-	 * @throws SQLException the SQL exception
-	 * @throws SAXException the SAX exception
-	 * @throws IOException  Signals that an I/O exception has occurred.
+	 * @throws Exception 
 	 */
 	private static void generateXmlPortal(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications,
-			final boolean onlyLast, final boolean criterias) throws SQLException, SAXException, IOException {
+			final boolean onlyLast, final boolean criterias) throws Exception {
 		final ContentHandler hd = getContentHandler(writer);
 		hd.startDocument();
 		hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
@@ -1556,14 +1554,21 @@ public final class AnnexUtils {
 			List<String> categories = new ArrayList<>();
 			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
 				final SemillaForm semillaForm = semillaEntry.getKey();
-				String namecat = semillaForm.getCategoria().getName();
+				String namecat;
+				if (semillaForm.getCategoria() != null && semillaForm.getCategoria().getName() != null) {
+					namecat = semillaForm.getCategoria().getName();
+				} else {
+					namecat = "-";
+				}
 				if (semillaForm.getId() != 0) {
 					if (!categories.contains(namecat))
 						categories.add(namecat);
 				}
 			}
 			// Sort all category names
-			Collections.sort(categories);
+			if (categories != null) {
+				// Collections.sort(categories);
+			}
 			// Loop to insert fixed values
 			for (String currentCategory : categories) {
 				for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
@@ -1571,7 +1576,7 @@ public final class AnnexUtils {
 					final SemillaForm semillaForm = semillaEntry.getKey();
 					String namecat = semillaForm.getCategoria().getName();
 					// On each category iteration we filter the other categories.
-					if (semillaForm.getId() != 0 && namecat.equals(currentCategory) && hasTags(semillaForm, tagsToFilter)) {
+					if (semillaForm.getId() != 0 && namecat != null && !namecat.trim().equals("null") && namecat.equals(currentCategory) && hasTags(semillaForm, tagsToFilter)) {
 						row = sheet.createRow(rowIndex);
 						columnIndex = 0;
 						excelLine = new ExcelLine();
@@ -2036,7 +2041,7 @@ public final class AnnexUtils {
 				}
 			}
 			// Sort all category names
-			Collections.sort(categories);
+			// Collections.sort(categories);
 			// Loop to insert fixed values
 			for (String currentCategory : categories) {
 				for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
@@ -2044,7 +2049,7 @@ public final class AnnexUtils {
 					final SemillaForm semillaForm = semillaEntry.getKey();
 					String namecat = semillaForm.getCategoria().getName();
 					// On each category iteration we filter the other categories.
-					if (semillaForm.getId() != 0 && namecat.equals(currentCategory) && hasTags(semillaForm, tagsToFilter)) {
+					if (semillaForm.getId() != 0 && namecat != null && !namecat.trim().equals("null") && namecat.equals(currentCategory) && hasTags(semillaForm, tagsToFilter)) {
 						row = sheet.createRow(rowIndex);
 						columnIndex = 0;
 						excelLine = new ExcelLine();
@@ -2429,31 +2434,33 @@ public final class AnnexUtils {
 				 * Excel allows sheet names up to 31 chars in length but other applications (such as OpenOffice) allow more. Some versions of Excel crash with names longer than 31 chars, others -
 				 * truncate such names to 31 character.
 				 */
-				String categorySheetName = category.substring(0, Math.min(category.length(), 31));
-				// Search category initial and final row.
-				int categoryFirstRow = 0;
-				int categoryLastRow = 0;
-				// Starts 1 because always first row was header
-				for (int i = 1; i < rowIndex; i++) {
-					row = sheet.getRow(i);
-					if (row != null) {
-						cell = row.getCell(ColumnNames.indexOf(SEGMENTO));
-						if (cell != null) { // merged cells return null
-							if (cell.getStringCellValue().equals(category)) {
-								if (categoryFirstRow == 0) {
-									categoryFirstRow = i;
+				if (category != null) {
+					String categorySheetName = category.substring(0, Math.min(category.length(), 31));
+					// Search category initial and final row.
+					int categoryFirstRow = 0;
+					int categoryLastRow = 0;
+					// Starts 1 because always first row was header
+					for (int i = 1; i < rowIndex; i++) {
+						row = sheet.getRow(i);
+						if (row != null) {
+							cell = row.getCell(ColumnNames.indexOf(SEGMENTO));
+							if (cell != null) { // merged cells return null
+								if (cell.getStringCellValue().equals(category)) {
+									if (categoryFirstRow == 0) {
+										categoryFirstRow = i;
+									}
+									categoryLastRow = i + executionDates.size(); // every seed has all iterations
 								}
-								categoryLastRow = i + executionDates.size(); // every seed has all iterations
 							}
 						}
 					}
-				}
-				if (wb.getSheet(categorySheetName) == null && categoryFirstRow != 0 && categoryLastRow != 0) {
-					wb.createSheet(categorySheetName);
-					XSSFSheet currentSheet = wb.getSheet(categorySheetName);
-					InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, categoryFirstRow, categoryLastRow - 1, true);
-					InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, categoryFirstRow, categoryLastRow - 1, false);
-					currentSheet.setZoom(60);
+					if (wb.getSheet(categorySheetName) == null && categoryFirstRow != 0 && categoryLastRow != 0) {
+						wb.createSheet(categorySheetName);
+						XSSFSheet currentSheet = wb.getSheet(categorySheetName);
+						InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, categoryFirstRow, categoryLastRow - 1, true);
+						InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, categoryFirstRow, categoryLastRow - 1, false);
+						currentSheet.setZoom(60);
+					}
 				}
 			}
 			// Increase width of columns to match content
@@ -2778,14 +2785,18 @@ public final class AnnexUtils {
 				ColumnNames.add(TOTALMENTE_CONFORME);
 				// Create header row
 				row = sheet.createRow(rowIndex);
+				Logger.putLog("Generando anexo: " + currentDependency + ".xlsx: Column Names.", AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
 				for (String name : ColumnNames) {
 					cell = row.createCell(columnIndex);
 					cell.setCellValue(name);
 					cell.setCellStyle(headerStyle);
 					columnIndex++;
-				}
+				}				
 				rowIndex++;
+				
+				Logger.putLog("Generando anexo: " + currentDependency + ".xlsx: Excel lines.", AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
 				for (Map.Entry<Integer, ExcelLine> currentLine : excelLines.entrySet()) {
+					
 					// On each dependency iteration we filter other dependencies.
 					if (currentLine.getValue().getDepende_de().contains(currentDependency)) {
 						row = sheet.createRow(rowIndex);
@@ -3022,6 +3033,8 @@ public final class AnnexUtils {
 				XSSFSheet currentSheet = wb.createSheet("Evolución SW");
 				XSSFSheet currentSheet2 = wb.createSheet("Iteración SW");
 				XSSFSheet currentSheet3 = wb.createSheet("Iteración Global");
+				
+				Logger.putLog("Generando anexo: " + currentDependency + ".xlsx: Evolution", AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
 				if (rowIndex > 1) {
 					// Evolution
 					InsertGraphIntoSheetByEvolution_v2(wb, currentSheet, 1, rowIndex - 1, false);
@@ -5849,11 +5862,11 @@ public final class AnnexUtils {
 	 * @return the string
 	 */
 	private static String changeLevelName(final String name, final MessageResources messageResources) {
-		if (name.equalsIgnoreCase(messageResources.getMessage("resultados.anonimos.num.portales.aa.old"))) {
+		if (name != null && messageResources != null && name.equalsIgnoreCase(messageResources.getMessage("resultados.anonimos.num.portales.aa.old"))) {
 			return messageResources.getMessage("resultados.anonimos.num.portales.aa");
-		} else if (name.equalsIgnoreCase(messageResources.getMessage("resultados.anonimos.num.portales.nv.old"))) {
+		} else if (name != null && messageResources != null && name.equalsIgnoreCase(messageResources.getMessage("resultados.anonimos.num.portales.nv.old"))) {
 			return messageResources.getMessage("resultados.anonimos.num.portales.nv");
-		} else if (name.equalsIgnoreCase(messageResources.getMessage("resultados.anonimos.num.portales.a.old"))) {
+		} else if (name != null && messageResources != null && name.equalsIgnoreCase(messageResources.getMessage("resultados.anonimos.num.portales.a.old"))) {
 			return messageResources.getMessage("resultados.anonimos.num.portales.a");
 		} else {
 			return EMPTY_STRING;

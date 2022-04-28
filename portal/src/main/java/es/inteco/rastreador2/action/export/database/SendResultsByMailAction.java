@@ -392,7 +392,7 @@ public class SendResultsByMailAction extends Action {
 	 * @return the calendar
 	 * @throws SQLException the SQL exception
 	 */
-	private static Calendar calculateExpirationDate(Connection c) throws SQLException {
+	private static Calendar calculateExpirationDate(Connection c) throws Exception {
 		int days = ObservatorioDAO.getFileExpirationFromConfig(c);
 		DataBaseManager.closeConnection(c);
 		Calendar calendar = Calendar.getInstance();
