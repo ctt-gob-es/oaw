@@ -108,9 +108,6 @@ public final class WcagXlsxUtils {
 		}
 		// Fill results
 		final Sheet sheetR9 = workbook.getSheet("R9.Web");
-		//final Sheet sheetP2 = workbook.getSheet("R9.Web");
-		//final Sheet sheetP3 = workbook.getSheet("R9.Web");
-		//final Sheet sheetP4 = workbook.getSheet("R9.Web");
 		resultsProcessed = 0;
 		for (AuditResult auditResult : report.getGraph().get(0).getAuditResult()) {
 			if (resultsProcessed < MAX_PAGES) {
@@ -274,19 +271,6 @@ public final class WcagXlsxUtils {
 			}
 			tableRowIndex = tableRowIndex + 38;
 		}
-		/*
-		final Sheet sheetR10 = workbook.getSheet("R10.Documentos no web");
-		tableRowIndex = 19;
-		while (tableRowIndex <= 1725) {
-			for (int i = 0; i < totalPages; i++) {
-				final Cell cell = sheetR10.getRow(i + tableRowIndex - 1).getCell(3);
-				cell.setCellFormula(null);
-//				cell.setCellType(CellType.STRING);
-				cell.setCellValue("N/T");
-			}
-			tableRowIndex = tableRowIndex + 38;
-		}
-		*/
 		final Sheet sheetR11 = workbook.getSheet("R11.Software");
 		tableRowIndex = 19;
 		while (tableRowIndex <= 243) {
