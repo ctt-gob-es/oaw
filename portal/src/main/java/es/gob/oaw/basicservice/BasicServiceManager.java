@@ -30,8 +30,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.struts.util.MessageResources;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import es.gob.oaw.basicservice.historico.CheckHistoricoService;
 import es.gob.oaw.rastreador2.observatorio.ObservatoryManager;
 import es.gob.oaw.rastreador2.pdf.SourceFilesManager;
@@ -201,15 +199,12 @@ public class BasicServiceManager {
 				 */
 				// JSON WCAG-EM and ODS
 				if ("true".equalsIgnoreCase(basicServiceForm.getDepthReport())) {
-					// JSON
 					WcagEmReport report = WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), basicServiceForm.getName(), idCrawling);
-					ObjectMapper mapper = new ObjectMapper();
-					String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);
-					org.apache.commons.io.FileUtils.writeStringToFile(new File(new File(pdfPath).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
 					// ODS REPORT
 					SpreadSheet ods = WcagOdsUtils.generateOds(report);
 					File outputFile = new File(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web - v2.0.0.ods");
 					ods.saveAs(outputFile);
+					// XLSX REPORT
 					Workbook wb = WcagXlsxUtils.generateXlsx(report);
 					File outputFilexlsx = new File(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web - v2.0.0.xlsx");
 					wb.write(new FileOutputStream(outputFilexlsx));
