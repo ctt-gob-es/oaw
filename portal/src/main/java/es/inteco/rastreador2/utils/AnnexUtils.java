@@ -3095,10 +3095,14 @@ public final class AnnexUtils {
 			// Add table with filters
 			CellReference ref = new CellReference(A1);
 			CellReference topLeft = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
+			Cell cell = null;
 			ref = new CellReference("U" + resultSheet.getLastRowNum());
-			CellReference bottomRight = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
+			CellReference bottomRight = null;
+			if (resultSheet.getRow(ref.getRow()) != null && resultSheet.getRow(ref.getRow()).getCell(ref.getCol()) != null) {
+				bottomRight = new CellReference(resultSheet.getRow(ref.getRow()).getCell(ref.getCol()));
+			}
 			// Datatable requires at least 2 rows
-			if (bottomRight.getRow() - topLeft.getRow() >= 2) {
+			if (topLeft != null & bottomRight != null && (bottomRight.getRow() - topLeft.getRow() >= 2)) {
 				AreaReference tableArea = wb.getCreationHelper().createAreaReference(topLeft, bottomRight);
 				XSSFTable dataTable = resultSheet.createTable(tableArea);
 				dataTable.setDisplayName("TableResults");
