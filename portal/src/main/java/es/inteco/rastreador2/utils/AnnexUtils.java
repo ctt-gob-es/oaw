@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1020,7 +1021,7 @@ public final class AnnexUtils {
 	 * @param verifications    the verifications
 	 * @param onlyLast         the only last
 	 * @param criterias        the criterias
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private static void generateXmlPortal(final MessageResources messageResources, final Long idObsExecution, final String[] tagsToFilter, Connection c, FileWriter writer, final boolean verifications,
 			final boolean onlyLast, final boolean criterias) throws Exception {
@@ -2791,12 +2792,10 @@ public final class AnnexUtils {
 					cell.setCellValue(name);
 					cell.setCellStyle(headerStyle);
 					columnIndex++;
-				}				
+				}
 				rowIndex++;
-				
 				Logger.putLog("Generando anexo: " + currentDependency + ".xlsx: Excel lines.", AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
 				for (Map.Entry<Integer, ExcelLine> currentLine : excelLines.entrySet()) {
-					
 					// On each dependency iteration we filter other dependencies.
 					if (currentLine.getValue().getDepende_de().contains(currentDependency)) {
 						row = sheet.createRow(rowIndex);
@@ -3033,7 +3032,6 @@ public final class AnnexUtils {
 				XSSFSheet currentSheet = wb.createSheet("Evolución SW");
 				XSSFSheet currentSheet2 = wb.createSheet("Iteración SW");
 				XSSFSheet currentSheet3 = wb.createSheet("Iteración Global");
-				
 				Logger.putLog("Generando anexo: " + currentDependency + ".xlsx: Evolution", AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
 				if (rowIndex > 1) {
 					// Evolution
@@ -3547,10 +3545,10 @@ public final class AnnexUtils {
 		// date + suiability
 		Map<String, BigDecimal> resultDataA = new TreeMap<>();
 		Map<String, BigDecimal> resultDataAA = new TreeMap<>();
-		Map<String, BigDecimal> resultDataNV = new TreeMap<>();
+		LinkedHashMap<String, BigDecimal> resultDataNV = new LinkedHashMap<String, BigDecimal>();
 		Map<String, BigDecimal> resultDataPC = new TreeMap<>();
 		Map<String, BigDecimal> resultDataTC = new TreeMap<>();
-		Map<String, BigDecimal> resultDataNC = new TreeMap<>();
+		LinkedHashMap<String, BigDecimal> resultDataNC = new LinkedHashMap<String, BigDecimal>();
 		for (Date date : executionDatesWithFormat_Valid) {
 			int countA = 0;
 			int countAA = 0;
