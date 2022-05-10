@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -148,8 +149,11 @@ public class BasicServiceManager {
 					}
 				}
 				final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "file.date.format"));
-				pdfPath = pmgr.getValue(CRAWLER_PROPERTIES, "pdf.basic.service.path") + idCrawling + File.separator + PDFUtils.formatSeedName(basicServiceForm.getName()) + "_" + df.format(new Date())
-						+ ".pdf";
+				// String from ISO to UTF-8
+				String pathName = new String(basicServiceForm.getName().getBytes("ISO-8859-1"), "utf-8");
+				// Normalize string
+				pathName = Normalizer.normalize(pathName, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+				pdfPath = pmgr.getValue(CRAWLER_PROPERTIES, "pdf.basic.service.path") + idCrawling + File.separator + PDFUtils.formatSeedName(pathName) + "_" + df.format(new Date()) + ".pdf";
 				final ObservatoryManager observatoryManager = new ObservatoryManager();
 				if (basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_UNE) || basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_UNE_FILE)
 						|| basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_WCAG_1_FILE) || basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_WCAG_2_FILE)) {
