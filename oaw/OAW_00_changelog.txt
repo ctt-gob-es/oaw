@@ -1,7 +1,7 @@
 5.4.0
 ------------------------------------------------------------------------------------------------------------------------------------
 - Actualización de formatos de los ficheros IRA
-- Modificación de leyendas de informes: UNE-EN301549:2019 -> UNE-EN301549:2022
+- Modificación de leyendas de informes: UNE-EN301549:2019 -> UNE-EN 301549:2022
 - Resolución de falsos positivos en contraste con tamaños de letra grandes
 - Corrección de palabra mal escrita informe revisión de accesibilidad Multiples vías	
 - Fichero 4. Evolutivo y Progreso de Observatorio - Orden iteraciones #1470
