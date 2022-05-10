@@ -1898,7 +1898,7 @@ public interface Constants {
 	/** The Constant OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS. */
 	String OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS = "Comprobaciones Accesibilidad (beta)";
 	/** The Constant OBSERVATORIO_UNE_EN2019. */
-	String OBSERVATORIO_UNE_EN2019 = "Seguimiento Simplificado UNE-EN301549:2022";
+	String OBSERVATORIO_UNE_EN2019 = "Seguimiento Simplificado UNE-EN 301549:2022";
 	/** The Constant OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS. */
 	String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Seguimiento Simplificado UNE-EN301549:2019(sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_UNE_2012_VERSION_2. */
