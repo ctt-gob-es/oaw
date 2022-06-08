@@ -20,11 +20,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
 <meta name="description" content="<bean:message key="anonymous.html.description" arg0="<%=observatoryDate%>"/>" />
 <meta name="keywords" content="<bean:message key="anonymous.html.keywords" />" />
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/5.4.0
-<meta name="build" content="5.4.0" />
+<meta name="build" content="5.5.0" />
 <link rel="stylesheet" type="text/css" href="./styles/estilo_html.css" media="all" />
 <title><bean:message key="anonymous.html.head.title" arg0="<%= observatoryName %>"/></title>
 
