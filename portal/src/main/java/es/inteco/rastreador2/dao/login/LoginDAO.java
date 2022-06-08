@@ -41,7 +41,6 @@ import es.inteco.rastreador2.utils.ListadoUsuario;
  * The Class LoginDAO.
  */
 public final class LoginDAO {
-	
 	/**
 	 * Instantiates a new login DAO.
 	 */
@@ -896,6 +895,35 @@ public final class LoginDAO {
 			role.setId(rs.getLong("id_rol"));
 			role.setName(rs.getString("rol"));
 			roleList.add(role);
+		}
+	}
+
+	/**
+	 * Gets the user data by name.
+	 *
+	 * @param c the c
+	 * @return the user data by name
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<DatosForm> getAdminUsers(Connection c) throws SQLException {
+		List<DatosForm> adminData = new ArrayList<>();
+		try (PreparedStatement ps = c.prepareStatement("SELECT u.* FROM usuario u JOIN usuario_rol ur ON u.id_usuario=ur.usuario WHERE ur.id_rol = 1")) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					final DatosForm userData = new DatosForm();
+					userData.setNombre(rs.getString("nombre").trim());
+					userData.setUsuario(rs.getString("usuario").trim());
+					userData.setApellidos(rs.getString("apellidos").trim());
+					userData.setDepartamento(rs.getString("departamento").trim());
+					userData.setEmail(rs.getString("email").trim());
+					userData.setId(rs.getString("id_usuario"));
+					adminData.add(userData);
+				}
+			}
+			return adminData;
+		} catch (SQLException e) {
+			Logger.putLog("Error en getUserDataByName", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
 		}
 	}
 }

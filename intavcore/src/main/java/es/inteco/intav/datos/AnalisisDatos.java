@@ -214,21 +214,34 @@ public final class AnalisisDatos {
 	}
 
 	/**
-	 * Gets the analisis from id.
+	 * Gets the analisis from id if is not an annexes generation
 	 *
 	 * @param conn the conn
 	 * @param id   the id
 	 * @return the analisis from id
 	 */
 	public static Analysis getAnalisisFromId(Connection conn, long id) {
+		return getAnalisisFromId(conn, id, false);
+	}
+
+	/**
+	 * Gets the analisis from id
+	 *
+	 * @param conn the conn
+	 * @param id   the id
+	 * @return the analisis from id
+	 */
+	public static Analysis getAnalisisFromId(Connection conn, long id, boolean originAnnexes) {
 		final Analysis analisis = new Analysis();
 		// Decode base 64 cod_fuente
 //		try (PreparedStatement pstmt = conn.prepareStatement(
 //				"SELECT COD_ANALISIS,FEC_ANALISIS,COD_URL,NOM_ENTIDAD,COD_RASTREO,DES_GUIDELINE,CHECKS_EJECUTADOS, FROM_BASE64(COD_FUENTE) as COD_FUENTE FROM tanalisis A INNER JOIN tguidelines G ON A.cod_guideline = G.cod_guideline "
 //						+ "WHERE cod_analisis = ?;")) {
-		try (PreparedStatement pstmt = conn.prepareStatement(
-				"SELECT COD_ANALISIS,FEC_ANALISIS,COD_URL,NOM_ENTIDAD,COD_RASTREO,DES_GUIDELINE,CHECKS_EJECUTADOS, COD_FUENTE as COD_FUENTE FROM tanalisis A INNER JOIN tguidelines G ON A.cod_guideline = G.cod_guideline "
-						+ "WHERE cod_analisis = ?;")) {
+		String statement = "SELECT COD_ANALISIS, FEC_ANALISIS, COD_URL,NOM_ENTIDAD, COD_RASTREO, DES_GUIDELINE, CHECKS_EJECUTADOS, COD_FUENTE as COD_FUENTE FROM tanalisis A INNER JOIN tguidelines G ON A.cod_guideline = G.cod_guideline WHERE cod_analisis = ?;";
+		if (originAnnexes) {
+			statement = "SELECT COD_ANALISIS, FEC_ANALISIS, COD_URL, NOM_ENTIDAD, COD_RASTREO, DES_GUIDELINE, CHECKS_EJECUTADOS FROM tanalisis A INNER JOIN tguidelines G ON A.cod_guideline = G.cod_guideline WHERE cod_analisis = ?;";
+		}
+		try (PreparedStatement pstmt = conn.prepareStatement(statement)) {
 			pstmt.setLong(1, id);
 			try (ResultSet rs = pstmt.executeQuery()) {
 				if (rs.next()) {
@@ -239,9 +252,13 @@ public final class AnalisisDatos {
 					analisis.setTracker(rs.getLong("COD_RASTREO"));
 					analisis.setGuideline(rs.getString("DES_GUIDELINE"));
 					analisis.setChecksExecutedStr(rs.getString("CHECKS_EJECUTADOS"));
-					// DECODE JAVA
-					analisis.setSource(new String(Base64.decodeBase64(rs.getString("COD_FUENTE").getBytes())));
-					// analisis.setSource(rs.getString("COD_FUENTE"));
+					String source = "";
+					if (!originAnnexes) {
+						if (rs.getString("COD_FUENTE") != null) {
+							source = new String(Base64.decodeBase64(rs.getString("COD_FUENTE").getBytes()));
+						}
+					}
+					analisis.setSource(source);
 				} else {
 					return null;
 				}
@@ -261,7 +278,7 @@ public final class AnalisisDatos {
 	 * @param request    the request
 	 * @return the analysis by tracking
 	 */
-	public static List<Analysis> getAnalysisByTracking(long idTracking, int pagina, HttpServletRequest request) {
+	public static List<Analysis> getAnalysisByTracking(long idTracking, int pagina, HttpServletRequest request, boolean originAnnexes) {
 		final String query;
 		if (pagina == IntavConstants.NO_PAGINATION) {
 			query = "SELECT cod_analisis, fec_analisis, cod_url, nom_entidad, cod_rastreo, estado FROM tanalisis WHERE cod_rastreo = ?";
@@ -278,7 +295,7 @@ public final class AnalisisDatos {
 				pstmt.setInt(3, resultFrom);
 			}
 			try (ResultSet rs = pstmt.executeQuery()) {
-				return getAnalysisList(conn, rs, EvaluatorUtility.getLanguage(request));
+				return getAnalysisList(conn, rs, EvaluatorUtility.getLanguage(request), originAnnexes);
 			}
 		} catch (Exception ex) {
 			Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
@@ -337,7 +354,7 @@ public final class AnalisisDatos {
 	 * @return the analysis list
 	 * @throws SQLException the SQL exception
 	 */
-	private static List<Analysis> getAnalysisList(final Connection conn, final ResultSet rs, final String language) throws SQLException {
+	private static List<Analysis> getAnalysisList(final Connection conn, final ResultSet rs, final String language, final boolean originAnnexes) throws SQLException {
 		final List<Analysis> listAnalysis = new ArrayList<>();
 		while (rs.next()) {
 			final Analysis analysis = new Analysis();
@@ -350,7 +367,7 @@ public final class AnalisisDatos {
 			if (analysis.getStatus() == IntavConstants.STATUS_SUCCESS) {
 				final Evaluator evaluator = new Evaluator();
 				try {
-					final Evaluation evaluation = evaluator.getAnalisisDB(conn, analysis.getCode(), EvaluatorUtils.getDocList(), true);
+					final Evaluation evaluation = evaluator.getAnalisisDB(conn, analysis.getCode(), EvaluatorUtils.getDocList(), true, originAnnexes);
 					final EvaluationForm evaluationForm = EvaluatorUtils.generateEvaluationForm(evaluation, language);
 					for (int i = 0; i < evaluationForm.getPriorities().size(); i++) {
 						analysis.setProblems(analysis.getProblems() + evaluationForm.getPriorities().get(i).getNumProblems());

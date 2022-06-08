@@ -2,9 +2,6 @@ package es.gob.oaw;
 
 import junit.framework.Assert;
 import org.junit.Test;
-
-import es.gob.oaw.MailProvider;
-import es.gob.oaw.MailProviderFactory;
 import es.gob.oaw.sim.MailSimProvider;
 import es.gob.oaw.smtp.MailSmtpProvider;
 
