@@ -1,3 +1,23 @@
+5.4.0
+------------------------------------------------------------------------------------------------------------------------------------
+- Actualización de formatos de los ficheros IRA
+- Modificación de leyendas de informes: UNE-EN301549:2019 -> UNE-EN 301549:2022
+- Resolución de falsos positivos en contraste con tamaños de letra grandes
+- Corrección de palabra mal escrita informe revisión de accesibilidad Multiples vías	
+- Fichero 4. Evolutivo y Progreso de Observatorio - Orden iteraciones #1470
+
+5.3.0
+------------------------------------------------------------------------------------------------------------------------------------
+- Posibilidad de envío de los anexos por email en lugar de esperar que se generen (ya que pueden tardar demasiado y terminar el tiempo de espera del servidor)
+- Los cálculos de mejora de las URA para el envío de resultados se hacen en segundo plano y se noticia por email cuando termina
+- Se puede acceder al paso 2 directamente en el envío de resultados sin calcular de nuevo los rangos
+- Generación del informe agregado del cartucho de la declaración de accesibilidad con la parte de evolutivo
+- Generación de los ficheros XLSX 1. Evolutivo y por dependencias en un nuevo formato
+- Corregida una distinción de mayúsculas/minúsculas en la detección de los media type de los CSS
+- Corregido el filtro de dependencias por ámbito y etiquetas en la edición de semillas desde los resultados de un observatorio
+- Soporte para múltiples ámbitos en las dependencias
+- Añadido el campo observaciones a la tabla de semillas sin resultados de la pantalla de estado del observatorio
+
 5.2.0
 ------------------------------------------------------------------------------------------------------------------------------------
 - Funcionalidad para detener una ejecución en curso

@@ -10,7 +10,7 @@
 
 	<groupId>es.minhap.oaw</groupId>
 	<artifactId>oaw</artifactId>
-	<version>5.2.0</version>
+	<version>5.4.0</version>
 	<packaging>pom</packaging>
 
 	<name>oaw</name>

@@ -463,7 +463,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
                 </checks>
             </subgroup>
             <subgroup level="AA">
-                <name>wcag.2.guideline.subgroup.3.1.2</name>
+                <name>wcag.2.guideline.subgroup.3.2.1</name>
                 <checks>
                     <check id="93"/>
                     <check id="110"/>

@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -118,15 +119,17 @@ public class DependenciasObservatorioAction extends DispatchAction {
 			if (!StringUtils.isEmpty(dependency.getName())) {
 				dependency.setName(es.inteco.common.utils.StringUtils.corregirEncoding(dependency.getName()));
 			}
-			String idAmbit = request.getParameter("ambitoaux");
-			AmbitoForm ambit = new AmbitoForm();
-			ambit.setId(idAmbit);
-			dependency.setAmbito(ambit);
-			if (StringUtils.isEmpty(request.getParameter("official"))) {
-				dependency.setOfficial(null);
-			}
-			if (StringUtils.isEmpty(request.getParameter("sendAuto"))) {
-				dependency.setSendAuto(null);
+			List<AmbitoForm> listAmbits = new ArrayList<>();
+			if (!StringUtils.isEmpty(request.getParameter("ambitoaux"))) {
+				String[] ambitArray = request.getParameter("ambitoaux").split(",");
+				if (ambitArray != null && ambitArray.length >= 1) {
+					for (int i = 0; i < ambitArray.length; i++) {
+						AmbitoForm ambit = new AmbitoForm();
+						ambit.setId(ambitArray[i]);
+						listAmbits.add(ambit);
+					}
+					dependency.setAmbitos(listAmbits);
+				}
 			}
 			String[] tagArr = null;
 			if (!StringUtils.isEmpty(request.getParameter("tagaux"))) {
@@ -141,7 +144,6 @@ public class DependenciasObservatorioAction extends DispatchAction {
 			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
 			String jsonPagination = new Gson().toJson(paginas);
 			PrintWriter pw = response.getWriter();
-			// pw.write(json);
 			pw.write("{\"dependencias\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
 			pw.flush();
 			pw.close();
@@ -165,9 +167,18 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		DependenciaForm dependencia = (DependenciaForm) form;
 		ActionErrors errors = dependencia.validate(mapping, request);
-		AmbitoForm ambitoSemilla = new AmbitoForm();
-		ambitoSemilla.setId(request.getParameter("ambitoaux"));
-		dependencia.setAmbito(ambitoSemilla);
+		List<AmbitoForm> listAmbits = new ArrayList<>();
+		if (!StringUtils.isEmpty(request.getParameter("ambitoaux"))) {
+			String[] ambitArray = request.getParameter("ambitoaux").split(",");
+			if (ambitArray != null && ambitArray.length >= 1) {
+				for (int i = 0; i < ambitArray.length; i++) {
+					AmbitoForm ambit = new AmbitoForm();
+					ambit.setId(ambitArray[i]);
+					listAmbits.add(ambit);
+				}
+				dependencia.setAmbitos(listAmbits);
+			}
+		}
 		EtiquetaForm tag = new EtiquetaForm();
 		if (!StringUtils.isEmpty(request.getParameter("tagaux"))) {
 			tag.setId(Long.parseLong(request.getParameter("tagaux")));
@@ -208,13 +219,20 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		List<JsonMessage> errores = new ArrayList<>();
-//		String nombre = request.getParameter("nombre");
 		DependenciaForm dependencia = (DependenciaForm) form;
 		if (StringUtils.isNotEmpty(dependencia.getName())) {
-//			dependencia.setName(nombre);
-			AmbitoForm ambitoSemilla = new AmbitoForm();
-			ambitoSemilla.setId(request.getParameter("ambitoaux"));
-			dependencia.setAmbito(ambitoSemilla);
+			List<AmbitoForm> listAmbits = new ArrayList<>();
+			if (!StringUtils.isEmpty(request.getParameter("ambitoaux"))) {
+				String[] ambitArray = request.getParameterValues("ambitoaux");
+				if (ambitArray != null && ambitArray.length >= 1) {
+					for (int i = 0; i < ambitArray.length; i++) {
+						AmbitoForm ambit = new AmbitoForm();
+						ambit.setId(ambitArray[i]);
+						listAmbits.add(ambit);
+					}
+					dependencia.setAmbitos(listAmbits);
+				}
+			}
 			EtiquetaForm tag = new EtiquetaForm();
 			if (!StringUtils.isEmpty(request.getParameter("tagaux"))) {
 				tag.setId(Long.parseLong(request.getParameter("tagaux")));
@@ -389,7 +407,6 @@ public class DependenciasObservatorioAction extends DispatchAction {
 				if (sheet.getRow(0) != null && sheet.getRow(0).getCell(0) != null) {
 					String normalizedCellValue = Normalizer.normalize(sheet.getRow(0).getCell(0).getStringCellValue(), Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 					if (IMPORT_COLUMN_OFFICIAL.equalsIgnoreCase(normalizedCellValue)) {
-						// TODO Determine if is official or not by number of columns??
 						getDependenciesFromSheet(comparisionList, c, sheet);
 					}
 				}
@@ -442,12 +459,14 @@ public class DependenciasObservatorioAction extends DispatchAction {
 				}
 				// Ambit by sheet name
 				AmbitoForm ambitBySheetName = AmbitoDAO.getAmbitByName(c, sheet.getSheetName());
+				List<AmbitoForm> ambits = new ArrayList<>();
 				if (ambitBySheetName != null) {
-					newDependency.setAmbito(ambitBySheetName);
+					ambits.add(ambitBySheetName);
 				} else {
 					// By default set ambit others
-					newDependency.setAmbito(AmbitoDAO.getAmbitByID(c, "4"));
+					ambits.add(AmbitoDAO.getAmbitByID(c, "4"));
 				}
+				newDependency.setAmbitos(ambits);
 				// Acronym
 				String acronym = headerData.indexOf(IMPORT_COLUMN_ACRONYM) >= 0 ? getCellValue(r.getCell(headerData.indexOf(IMPORT_COLUMN_ACRONYM))) : EMPTY_STRING;
 				newDependency.setAcronym(acronym);
@@ -592,9 +611,8 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		 * @return true, if is same ambit
 		 */
 		public boolean isSameAmbit() {
-			// return (dependency!=null && newDependency!=null &&;
-			return ((dependency != null && newDependency != null && dependency.getAmbito() == null && newDependency.getAmbito() == null) || (dependency != null && newDependency != null
-					&& dependency.getAmbito() != null && newDependency.getAmbito() != null && dependency.getAmbito().equals(newDependency.getAmbito())));
+			return (dependency != null && newDependency != null && dependency.getAmbitos() == null && newDependency.getAmbitos() == null
+					&& new HashSet<>(dependency.getAmbitos()).equals(new HashSet<>(newDependency.getAmbitos())));
 		}
 
 		/**

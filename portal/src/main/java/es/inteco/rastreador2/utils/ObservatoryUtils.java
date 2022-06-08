@@ -32,6 +32,7 @@ import org.apache.struts.util.MessageResources;
 import org.apache.struts.util.PropertyMessageResources;
 
 import es.inteco.common.Constants;
+import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ObservatoryLevelForm;
@@ -212,6 +213,7 @@ public final class ObservatoryUtils {
 			}
 			DataBaseManager.closeConnection(c);
 		} catch (Exception e) {
+			Logger.putLog("Error with pageSuitabilityLevel calculation: observatory.zero.red.max.number key not found", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
 			maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
 		} finally {
 			DataBaseManager.closeConnection(c);

@@ -24,6 +24,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -91,6 +92,11 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 		x = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.x"));
 		y = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.y"));
 	}
+	/** The Constant LEVEL_I_VERIFICATIONS. */
+	private static final List<String> LEVEL_I_VERIFICATIONS = Arrays.asList(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_3_1_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_3_2_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_3_3_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_3_4_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_3_5_VERIFICATION);
+	/** The Constant CHART_EVOLUTION_MP_GREEN_COLOR. */
+	private static final String CHART_EVOLUTION_MP_GREEN_COLOR = "chart.evolution.mp.green.color";
 
 	/**
 	 * COnstructor.
@@ -154,11 +160,11 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			String title = messageResources.getMessage("report.evolution.compliance.global");
 			getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, regenerate);
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.compilance.ambit.mark.name") + ".jpg";
-			title = "Situación de cumplimiento estimada por ámbito";
+			title = "Nivel de cumplimiento estimado por ámbito";
 			getGlobalCompilanceBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, ambits, regenerate, title, tagsFilter);
 //			file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg";
 //			getMidsComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
-			title = messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.title");
+			title = messageResources.getMessage("observatory.graphic.modality.by.verification.level");
 			file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg";
 			getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, globalGraphics, title, file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
 		}
@@ -826,10 +832,10 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 		for (Map.Entry<String, BigDecimal> entry : results.entrySet()) {
 			if (entry.getKey().contains(Constants.OBS_VALUE_RED_SUFFIX)) {
 				dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.modality.red"), entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "")
-						.substring(entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "").indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length()));
+						.substring(entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "").indexOf("minhap.observatory.5_0.subgroup.3.") + "minhap.observatory.5_0.subgroup.3.".length()));
 			} else if (entry.getKey().contains(Constants.OBS_VALUE_GREEN_SUFFIX)) {
 				dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.modality.green"), entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "")
-						.substring(entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "").indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length()));
+						.substring(entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "").indexOf("minhap.observatory.5_0.subgroup.3.") + "minhap.observatory.5_0.subgroup.3.".length()));
 			}
 		}
 		return dataSet;
@@ -1154,7 +1160,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
 		} catch (NeedsRefreshException nre) {
 			Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioAccesibilidadUtils.class,
-					Logger.LOG_LEVEL_INFO);
+					Logger.LOG_LEVEL_WARNING);
 			try (Connection c = DataBaseManager.getConnection()) {
 				observatoryEvaluationList = new ArrayList<>();
 				final List<Long> listAnalysis = new ArrayList<>();
@@ -1607,6 +1613,29 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	}
 
 	/**
+	 * Result evolution ambit data.
+	 *
+	 * @param observatoryId the observatory id
+	 * @param executionId   the execution id
+	 * @param categoryId    the category id
+	 * @return the map
+	 */
+	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionAmbitData(final Long observatoryId, final Long executionId, final Long categoryId) {
+		final Map<Date, List<ObservatoryEvaluationForm>> resultData = new TreeMap<>();
+		try (Connection c = DataBaseManager.getConnection()) {
+			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, observatoryId);
+			final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, observatoryId, executionId, observatoryForm.getCartucho().getId());
+			for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
+				final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), categoryId, null, null, 2, null);
+				resultData.put(entry.getValue(), pageList);
+			}
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioAccesibilidadUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return resultData;
+	}
+
+	/**
 	 * Calculate percentage.
 	 *
 	 * @param values the values
@@ -1687,17 +1716,12 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @return the string
 	 */
 	public static String siteLevel(final Map<String, Integer> pageType) {
-		// final Map<String, Integer> pageType = portalInformation.get(idSite);
-		final Integer numPages = pageType.get(Constants.OBS_A) + pageType.get(Constants.OBS_AA) + pageType.get(Constants.OBS_NV);
-		final BigDecimal value = ((new BigDecimal(pageType.get(Constants.OBS_A)).multiply(new BigDecimal(5))).add(new BigDecimal(pageType.get(Constants.OBS_AA)).multiply(BigDecimal.TEN)))
-				.divide(new BigDecimal(numPages), 2, BigDecimal.ROUND_HALF_UP);
-		if (value.compareTo(new BigDecimal(8)) >= 0) {
-			return Constants.OBS_AA;
-		} else if (value.compareTo(new BigDecimal("3.5")) <= 0) {
-			return Constants.OBS_NV;
-		} else {
-			return Constants.OBS_A;
+		for (Map.Entry<String, Integer> entry : pageType.entrySet()) {
+			if (entry.getValue() != 0) {
+				return entry.getKey();
+			}
 		}
+		return null;
 	}
 
 	/**
@@ -2337,15 +2361,17 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @param executionId        the execution id
 	 * @param filePath           the file path
 	 * @param pageObservatoryMap the page observatory map
+	 * @param title              the title
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionSuitabilityChart(final String observatoryId, final String executionId, final String filePath,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws IOException {
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final String title) throws IOException {
 		final Map<String, Map<String, BigDecimal>> evolutionSuitabilityDatePercentMap = new LinkedHashMap<>();
 		final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(observatoryId, executionId, pageObservatoryMap);
-		evolutionSuitabilityDatePercentMap.put("Parcial", calculatePercentageApprovalSiteLevel(result, Constants.OBS_NV));
-		evolutionSuitabilityDatePercentMap.put("Prioridad 1", calculatePercentageApprovalSiteLevel(result, Constants.OBS_A));
-		evolutionSuitabilityDatePercentMap.put("Prioridad 1 y 2", calculatePercentageApprovalSiteLevel(result, Constants.OBS_AA));
+		evolutionSuitabilityDatePercentMap.put(Constants.OBS_ACCESIBILITY_NA, calculatePercentageApprovalSiteLevel(result, Constants.OBS_ACCESIBILITY_NA));
+		evolutionSuitabilityDatePercentMap.put(Constants.OBS_ACCESIBILITY_NONE, calculatePercentageApprovalSiteLevel(result, Constants.OBS_ACCESIBILITY_NONE));
+		evolutionSuitabilityDatePercentMap.put(Constants.OBS_ACCESIBILITY_PARTIAL, calculatePercentageApprovalSiteLevel(result, Constants.OBS_ACCESIBILITY_PARTIAL));
+		evolutionSuitabilityDatePercentMap.put(Constants.OBS_ACCESIBILITY_FULL, calculatePercentageApprovalSiteLevel(result, Constants.OBS_ACCESIBILITY_FULL));
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 		for (Map.Entry<String, Map<String, BigDecimal>> evolutionSuitabilityEntry : evolutionSuitabilityDatePercentMap.entrySet()) {
 			for (Map.Entry<String, BigDecimal> datePercentEntry : evolutionSuitabilityEntry.getValue().entrySet()) {
@@ -2354,7 +2380,9 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 		}
 		final String noDataMess = "noData";
 		final PropertiesManager pmgr = new PropertiesManager();
-		final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+		final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y,
+				pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.accesibility.colors"));
+		chartForm.setTitle(title);
 		GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
 	}
 
@@ -2645,5 +2673,272 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			}
 		}
 		return results;
+	}
+
+	/**
+	 * Generate evolution compliance by verification chart split.
+	 *
+	 * @param messageResources   the message resources
+	 * @param filePaths          the file paths
+	 * @param titles             the titles
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static void generateEvolutionComplianceByVerificationChart(final MessageResources messageResources, final String[] filePaths, final String[] titles,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws IOException {
+		final PropertiesManager pmgr = new PropertiesManager();
+		Map<String, Map<String, BigDecimal>> results = calculateVerificationEvolutionComplianceDataSetDetailed(LEVEL_I_VERIFICATIONS, pageObservatoryMap);
+		GraphicsUtils.createBarChartGroupedModality(results, titles[0], "", "", pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR), true, true, true, filePaths[0], "", messageResources,
+				1465, 654);
+	}
+
+	/**
+	 * Calculate verification evolution compliance data set.
+	 *
+	 * @param verifications the verifications
+	 * @param result        the result
+	 * @return the map
+	 */
+	public static Map<String, Map<String, BigDecimal>> calculateVerificationEvolutionComplianceDataSetDetailed(final List<String> verifications,
+			final Map<Date, List<ObservatoryEvaluationForm>> result) {
+		final TreeMap<String, Map<String, BigDecimal>> resultData = new TreeMap<>(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final PropertiesManager pmgr = new PropertiesManager();
+				final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+				try {
+					final Date fecha1 = new Date(df.parse(o1).getTime());
+					final Date fecha2 = new Date(df.parse(o2).getTime());
+					return fecha1.compareTo(fecha2);
+				} catch (Exception e) {
+					Logger.putLog("Error al ordenar fechas de evolución.", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+				return 0;
+			}
+		});
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+//		TreeMap<String, BigDecimal> resultC = new TreeMap<>();
+		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : result.entrySet()) {
+			TreeMap<String, BigDecimal> resultC = new TreeMap<>();
+			for (String verification : verifications) {
+				// Para un observatorio en concreto recuperamos la puntuación de una
+				// verificación
+				// getVerificationResultsByPointAndModality
+				final Map<Long, Map<String, BigDecimal>> results = getVerificationResultsByPointAndCrawl(entry.getValue(), Constants.OBS_PRIORITY_NONE);
+				// PASS
+				final Map<String, BigDecimal> generatePercentajesCompilanceVerification = generatePercentajesCompilanceVerification(results);
+				BigDecimal value = generatePercentajesCompilanceVerification.get(verification.concat(Constants.OBS_VALUE_GREEN_SUFFIX));
+				if (value != null) {
+					resultC.put(verification.concat(Constants.OBS_VALUE_GREEN_SUFFIX), value);
+				} else {
+					resultC.put(verification.concat(Constants.OBS_VALUE_GREEN_SUFFIX), BigDecimal.ZERO);
+				}
+				// FAIL
+				value = generatePercentajesCompilanceVerification.get(verification.concat(Constants.OBS_VALUE_RED_SUFFIX));
+				if (value != null) {
+					resultC.put(verification.concat(Constants.OBS_VALUE_RED_SUFFIX), value);
+				} else {
+					resultC.put(verification.concat(Constants.OBS_VALUE_RED_SUFFIX), BigDecimal.ZERO);
+				}
+				resultData.put(df.format(entry.getKey()), resultC);
+			}
+		}
+		return resultData;
+	}
+
+	/**
+	 * Gets the verification results by point and crawl.
+	 *
+	 * @param resultData the result data
+	 * @param level      the level
+	 * @return the verification results by point and crawl
+	 */
+	public static Map<Long, Map<String, BigDecimal>> getVerificationResultsByPointAndCrawl(final List<ObservatoryEvaluationForm> resultData, final String level) {
+		final Map<Long, Map<String, BigDecimal>> groupedResults = new TreeMap<>();
+		final Map<Long, Map<String, Integer>> groupedNumPoint = new LinkedHashMap<>();
+		if (resultData != null && !resultData.isEmpty()) {
+			for (ObservatoryEvaluationForm observatoryEvaluationForm : resultData) {
+				if (!groupedResults.containsKey(observatoryEvaluationForm.getCrawlerExecutionId())) {
+					groupedResults.put(observatoryEvaluationForm.getCrawlerExecutionId(), new TreeMap<String, BigDecimal>());
+				}
+				if (!groupedNumPoint.containsKey(observatoryEvaluationForm.getCrawlerExecutionId())) {
+					groupedNumPoint.put(observatoryEvaluationForm.getCrawlerExecutionId(), new TreeMap<String, Integer>());
+				}
+				for (ObservatoryLevelForm observatoryLevelForm : observatoryEvaluationForm.getGroups()) {
+					if (level.equals(Constants.OBS_PRIORITY_NONE) || observatoryLevelForm.getName().equals(level)) {
+						for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevelForm.getSuitabilityGroups()) {
+							for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
+								// Se comprueba si puntúa o no puntúa
+								Map<String, BigDecimal> currentResults = groupedResults.get(observatoryEvaluationForm.getCrawlerExecutionId());
+								Map<String, Integer> currentNumPoint = groupedNumPoint.get(observatoryEvaluationForm.getCrawlerExecutionId());
+								// Se comprueba si puntúa o no puntúa
+								if (observatorySubgroupForm.getValue() != Constants.OBS_VALUE_NOT_SCORE) {
+									if (currentResults.get(observatorySubgroupForm.getDescription()) == null) {
+										currentResults.put(observatorySubgroupForm.getDescription(), new BigDecimal(0));
+										currentNumPoint.put(observatorySubgroupForm.getDescription(), 0);
+									}
+									// Si puntúa, se isNombreValido si se le da un 0
+									// o un 1
+									// Si puntúa, se isNombreValido si se le da un 0
+									// o un 1
+									if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_GREEN_ZERO) {// 0.5
+										// Si le damos un 1, lo añadimos a la
+										// puntuación e incrementamos el número de
+										// puntos que han puntuado
+										currentResults.put(observatorySubgroupForm.getDescription(), currentResults.get(observatorySubgroupForm.getDescription()).add(new BigDecimal(0.5)));
+										if (currentNumPoint.get(observatorySubgroupForm.getDescription()) == -1) {
+											currentNumPoint.put(observatorySubgroupForm.getDescription(), currentNumPoint.get(observatorySubgroupForm.getDescription()) + 2);
+										} else {
+											currentNumPoint.put(observatorySubgroupForm.getDescription(), currentNumPoint.get(observatorySubgroupForm.getDescription()) + 1);
+										}
+									} else if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_GREEN_ONE) {
+										// Si le damos un 1, lo añadimos a la
+										// puntuación e incrementamos el número de
+										// puntos que han puntuado
+										currentResults.put(observatorySubgroupForm.getDescription(), currentResults.get(observatorySubgroupForm.getDescription()).add(new BigDecimal(1)));
+										if (currentNumPoint.get(observatorySubgroupForm.getDescription()) == -1) {
+											currentNumPoint.put(observatorySubgroupForm.getDescription(), currentNumPoint.get(observatorySubgroupForm.getDescription()) + 2);
+										} else {
+											currentNumPoint.put(observatorySubgroupForm.getDescription(), currentNumPoint.get(observatorySubgroupForm.getDescription()) + 1);
+										}
+									} else {
+										// Si le damos un 0 solamente incrementamos
+										// el número de puntos
+										currentNumPoint.put(observatorySubgroupForm.getDescription(), currentNumPoint.get(observatorySubgroupForm.getDescription()) + 1);
+									}
+								} else if (currentResults.get(observatorySubgroupForm.getDescription()) == null) {
+									currentResults.put(observatorySubgroupForm.getDescription(), new BigDecimal(0));
+									currentNumPoint.put(observatorySubgroupForm.getDescription(), -1);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		final Map<Long, Map<String, BigDecimal>> verificationResultsByPointPage = new TreeMap<>();
+		for (Map.Entry<Long, Map<String, BigDecimal>> resultEntry : groupedResults.entrySet()) {
+			// Cambiamos las claves por el nombre y calculamos la media
+			// Necesitamos implementar un orden específico para que p.e.
+			// 1.10 vaya después de 1.9 y no de 1.
+			final Map<String, BigDecimal> verificationResultsByPoint = new TreeMap<>(new Comparator<String>() {
+				@Override
+				public int compare(String version1, String version2) {
+					String[] v1 = version1.split("\\.");
+					String[] v2 = version2.split("\\.");
+					int major1 = major(v1);
+					int major2 = major(v2);
+					if (major1 == major2) {
+						return minor(v1).compareTo(minor(v2));
+					}
+					return major1 > major2 ? 1 : -1;
+				}
+
+				private int major(String[] version) {
+					int r;
+					try {
+						r = Integer.parseInt(version[0]);
+					} catch (NumberFormatException ex) {
+						r = 0;
+					}
+					return r;
+				}
+
+				private Integer minor(String[] version) {
+					return version.length > 1 ? Integer.parseInt(version[1]) : 0;
+				}
+			});
+			for (Map.Entry<String, BigDecimal> resultEntry2 : resultEntry.getValue().entrySet()) {
+				// Generar las claves con minhap.observatory.5_0.subgroup.
+				final String name = resultEntry2.getKey().substring(resultEntry2.getKey().indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length());
+				final BigDecimal value;
+				Map<String, Integer> numPoint = groupedNumPoint.get(resultEntry.getKey());
+				if (numPoint.get(resultEntry2.getKey()) != -1 && numPoint.get(resultEntry2.getKey()) != 0) {
+					value = resultEntry2.getValue().divide(BigDecimal.valueOf(numPoint.get(resultEntry2.getKey())), 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN);
+				} else if (numPoint.get(resultEntry2.getKey()) == -1) {
+					value = BigDecimal.valueOf(-1);
+				} else {
+					value = BigDecimal.ZERO;
+				}
+				verificationResultsByPoint.put(name, value);
+			}
+			verificationResultsByPointPage.put(resultEntry.getKey(), verificationResultsByPoint);
+		}
+		return verificationResultsByPointPage;
+	}
+
+	/**
+	 * Generate percentajes compilance verification.
+	 *
+	 * @param results the results
+	 * @return the map
+	 */
+	public static Map<String, BigDecimal> generatePercentajesCompilanceVerification(final Map<Long, Map<String, BigDecimal>> results) {
+		Map<String, BigDecimal> resultsC = new TreeMap<>();
+		Map<String, BigDecimal> resultsOrdered = new TreeMap<>(new Comparator<String>() {
+			@Override
+			public int compare(String version1, String version2) {
+				String[] v1 = version1.split("\\.");
+				String[] v2 = version2.split("\\.");
+				int major1 = major(v1);
+				int major2 = major(v2);
+				if (major1 == major2) {
+					if (minor(v1) == minor(v2)) { // Devolvemos 1
+													// aunque sean iguales
+													// porque las claves lleva
+													// asociado un subfijo que
+													// aqui no tenemos en cuenta
+						return 1;
+					}
+					return minor(v1).compareTo(minor(v2));
+				}
+				return major1 > major2 ? 1 : -1;
+			}
+
+			private int major(String[] version) {
+				return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_RED_SUFFIX, "").replace(Constants.OBS_VALUE_GREEN_SUFFIX, ""));
+			}
+
+			private Integer minor(String[] version) {
+				return version.length > 1 ? Integer.parseInt(version[1].replace(Constants.OBS_VALUE_RED_SUFFIX, "").replace(Constants.OBS_VALUE_GREEN_SUFFIX, "")) : 0;
+			}
+		});
+		// Process results
+		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
+			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
+				String keyFail = verificationResult.getKey().concat(Constants.OBS_VALUE_RED_SUFFIX);
+				String keyPass = verificationResult.getKey().concat(Constants.OBS_VALUE_GREEN_SUFFIX);
+				if (!resultsC.containsKey(keyFail)) {
+					resultsC.put(keyFail, new BigDecimal(0));
+				}
+				if (!resultsC.containsKey(keyPass)) {
+					resultsC.put(keyPass, new BigDecimal(0));
+				}
+				if (verificationResult.getValue().compareTo(new BigDecimal(0)) > 0) {
+					// If exists +1
+					if (resultsC.containsKey(keyPass)) {
+						resultsC.put(keyPass, resultsC.get(keyPass).add(new BigDecimal(1)));
+					} else {
+						resultsC.put(keyPass, new BigDecimal(1));
+					}
+				} else {
+					// If exists +1
+					if (resultsC.containsKey(keyFail)) {
+						resultsC.put(keyFail, resultsC.get(keyFail).add(new BigDecimal(1)));
+					} else {
+						resultsC.put(keyFail, new BigDecimal(1));
+					}
+				}
+			}
+		}
+		for (Map.Entry<String, BigDecimal> entry : resultsC.entrySet()) {
+			resultsOrdered.put(entry.getKey(), entry.getValue().divide(new BigDecimal(results.size()), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+		}
+		Map<String, BigDecimal> resultsP = new TreeMap<>();
+		for (Map.Entry<String, BigDecimal> entry : resultsOrdered.entrySet()) {
+			resultsP.put(entry.getKey(), entry.getValue());
+		}
+		return resultsP;
 	}
 }

@@ -1010,7 +1010,7 @@ public class Evaluator {
 
 	// Gets the global information about the analysis from DataBase and returns
 	/**
-	 * Gets the analisis DB.
+	 * Gets the analisis DB if is not an annexes generation
 	 *
 	 * @param conn          the conn
 	 * @param id            the id
@@ -1020,7 +1020,23 @@ public class Evaluator {
 	 */
 	// it
 	public Evaluation getAnalisisDB(final Connection conn, final long id, final Document doc, final boolean getOnlyChecks) {
-		final Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
+		return getAnalisisDB(conn, id, doc, getOnlyChecks, false);
+	}
+
+	// Gets the global information about the analysis from DataBase and returns
+	/**
+	 * Gets the analisis DB if is an annexes generation
+	 *
+	 * @param conn          the conn
+	 * @param id            the id
+	 * @param doc           the doc
+	 * @param getOnlyChecks the get only checks
+	 * @param originAnnexes flag to indicate if is an annexes generation
+	 * @return the analisis DB
+	 */
+	// it
+	public Evaluation getAnalisisDB(final Connection conn, final long id, final Document doc, final boolean getOnlyChecks, final boolean originAnnexes) {
+		final Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id, originAnnexes);
 		if (analysis == null) {
 			return null;
 		}
@@ -1032,14 +1048,14 @@ public class Evaluator {
 		eval.setRastreo(analysis.getTracker());
 		eval.addGuideline(analysis.getGuideline());
 		eval.setChecksExecuted(getChecksExecuted(analysis.getChecksExecutedStr()));
-		eval = getIncidenciasFromAnalisisDB(conn, eval, getOnlyChecks);
+		eval = getIncidenciasFromAnalisisDB(conn, eval, getOnlyChecks, originAnnexes);
 		eval.resolveProblems();
 		eval.setSource(analysis.getSource());
 		return eval;
 	}
 
 	/**
-	 * Gets the observatory analisis DB.
+	 * Gets the observatory analisis DB. if is not an annexes generation
 	 *
 	 * @param conn the conn
 	 * @param id   the id
@@ -1047,7 +1063,20 @@ public class Evaluator {
 	 * @return the observatory analisis DB
 	 */
 	public Evaluation getObservatoryAnalisisDB(final Connection conn, final long id, final Document doc) {
-		final Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
+		return getObservatoryAnalisisDB(conn, id, doc, false);
+	}
+
+	/**
+	 * Gets the observatory analisis DB.
+	 *
+	 * @param conn          the conn
+	 * @param id            the id
+	 * @param doc           the doc
+	 * @param originAnnexes flag to indicate if is an annexes generation
+	 * @return the observatory analisis DB
+	 */
+	public Evaluation getObservatoryAnalisisDB(final Connection conn, final long id, final Document doc, final boolean originAnnexes) {
+		final Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id, originAnnexes);
 		if (analysis == null) {
 			Logger.putLog("No ha sido posible recuperar los datos del análisis " + id, Evaluator.class, Logger.LOG_LEVEL_INFO);
 			return null;
@@ -1063,7 +1092,7 @@ public class Evaluator {
 		if (id < 0) {
 			eval = getObservatoryIncidenciasFromAnalisisDB(conn, eval);
 		} else {
-			eval = getIncidenciasFromAnalisisDB(conn, eval, false);
+			eval = getIncidenciasFromAnalisisDB(conn, eval, false, originAnnexes);
 		}
 		eval.resolveProblems();
 		return eval;
@@ -1089,14 +1118,15 @@ public class Evaluator {
 	/**
 	 * Gets the incidencias from analisis DB.
 	 *
-	 * @param conn         the conn
-	 * @param eval         the eval
-	 * @param getOnlyCheck the get only check
+	 * @param conn          the conn
+	 * @param eval          the eval
+	 * @param getOnlyCheck  the get only check
+	 * @param originAnnexes flag to indicate if is an annexes generation
 	 * @return the incidencias from analisis DB
 	 */
 	// Gets the list of problems related with an analysis from DataBase
-	private Evaluation getIncidenciasFromAnalisisDB(final Connection conn, final Evaluation eval, final boolean getOnlyCheck) {
-		final List<Incidencia> arrlist = IncidenciaDatos.getIncidenciasFromAnalisisId(conn, eval.getIdAnalisis(), getOnlyCheck);
+	private Evaluation getIncidenciasFromAnalisisDB(final Connection conn, final Evaluation eval, final boolean getOnlyCheck, final boolean originAnnexes) {
+		final List<Incidencia> arrlist = IncidenciaDatos.getIncidenciasFromAnalisisId(conn, eval.getIdAnalisis(), getOnlyCheck, originAnnexes);
 		final AllChecks allChecks = EvaluatorUtility.getAllChecks();
 		for (Incidencia inc : arrlist) {
 			final Problem problem = new Problem();

@@ -1380,3 +1380,12 @@ to {
 .sendResultIteration h3{
 	margin-bottom: 15px;
 }
+
+#gbox_gridWithoutresults{
+    margin-top: 15px;
+}
+
+
+#gview_gridWithoutresults > div.ui-jqgrid-bdiv.ui-corner-bottom  {
+	overflow:hidden !important;
+}
