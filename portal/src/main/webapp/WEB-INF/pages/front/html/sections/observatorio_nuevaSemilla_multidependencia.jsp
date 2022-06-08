@@ -41,7 +41,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <script type="text/javascript">
 	var $jn = jQuery.noConflict();
 
+	var rowObject;
+
 	function cargarSelect(rowObject) {
+
+		rowObject = rowObject;
 
 		//Cargar las categorias
 
@@ -104,6 +108,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								rowObject.ambito.id);
 					}
 
+					reloadDependencies(rowObject);
+
+					$("#selectAmbitosNuevaSemilla").change(function() {
+						reloadDependencies(rowObject);
+					});
+
 				});
 
 		//Cargar las complejidades
@@ -118,7 +128,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						function(data) {
 
 							var response = $jn.parseJSON(data);
-							
+
 							if (response && response.length) {
 								for (var i = 0, l = response.length; i < l; i++) {
 									var ri = response[i];
@@ -147,12 +157,27 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						});
 
 		//Cargar las dependencias
-		$jn('#selectDependenciasNuevaSemilla').empty();
+		reloadDependencies(rowObject);
+
+	}
+
+	$(window).on('load', function() {
+		$("#tagsFilter").change(function() {
+			$('#selectDependenciasNuevaSemilla').empty();
+			$('#selectDependenciasNuevaSemillaSeleccionadas').empty();
+			reloadDependencies(rowObject);
+		});
+	});
+
+	function reloadDependencies(rowObject) {
+		$('#selectDependenciasNuevaSemilla').empty();
 		$('#selectDependenciasNuevaSemillaSeleccionadas').empty();
 		$jn
 				.ajax(
 						{
-							url : '/oaw/secure/JsonSemillasObservatorio.do?action=listDependencias',
+							url : '/oaw/secure/JsonSemillasObservatorio.do?action=listByAmbitAndTag&idAmbit='
+									+ $("#selectAmbitosNuevaSemilla").val()
+									+ '&idTags=' + $("#tagsFilter").val(),
 						})
 				.done(
 						function(data) {
@@ -160,14 +185,28 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							var response = $jn.parseJSON(data);
 
 							if (response && response.length) {
-								for (var i = 0, l = response.length; i < l; i++) {
-									var ri = response[i];
-									$jn('#selectDependenciasNuevaSemilla')
-											.append(
-													'<option value="'+ri.id+'">'
-															+ ri.name
-															+ '</option>');
-								}
+								$('#selectDependenciasNuevaSemilla').empty();
+
+								var options = $
+										.map(
+												response,
+												function(item) {
+
+													var optionExists = ($('#selectDependenciasNuevaSemilla option[value='
+															+ item.id + ']').length > 0);
+													var isSelected = ($('#selectDependenciasNuevaSemillaSeleccionadas option[value='
+															+ item.id + ']').length > 0);
+
+													if (!optionExists
+															&& !isSelected) {
+														return $('<option>', {
+															value : item.id,
+															text : item.name
+														})[0];
+													}
+												});
+								$("#selectDependenciasNuevaSemilla").empty()
+										.append(options);
 
 								$(
 										'#selectDependenciasNuevaSemillaSeleccionadas')
@@ -179,112 +218,28 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 														+ 'px');
 
 								//Marcar seleccionadas si exiten
+								$
+										.each(
+												rowObject.dependencias,
+												function(index, value) {
 
-								if (rowObject != null) {
-
-									$
-											.each(
-													rowObject.dependencias,
-													function(index, value) {
-
-														$(
-																'#selectDependenciasNuevaSemilla option[value='
-																		+ value.id
-																		+ ']')
-																.attr(
-																		'selected',
-																		'selected');
-														$(
-																'#selectDependenciasNuevaSemilla')
-																.find(
-																		'option:selected')
-																.remove()
-																.appendTo(
-																		'#selectDependenciasNuevaSemillaSeleccionadas');
-													});
-								}
-							}
-						});
-
-	}
-	
-	$(window)
-	.on(
-			'load',
-			function() {
-				
-				$("#selectAmbitosNuevaSemilla").change(function (){
-					   reloadDependencies();
-				 });
-				
-				$("#tagsFilter").change(function (){
-					   reloadDependencies();
-				 });
-				
-			});
-	
-	
-	function reloadDependencies(){
-		$jn('#selectDependenciasNuevaSemilla').empty();
-		$('#selectDependenciasNuevaSemillaSeleccionadas').empty();
-		$jn
-				.ajax(
-						{
-							url : '/oaw/secure/JsonSemillasObservatorio.do?action=listByAmbitAndTag&idAmbit='+$("#selectAmbitosNuevaSemilla").val()+'&idTags='+$("#tagsFilter").val(),
-						})
-				.done(
-						function(data) {
-
-							var response = $jn.parseJSON(data);
-
-							if (response && response.length) {
-								for (var i = 0, l = response.length; i < l; i++) {
-									var ri = response[i];
-									$jn('#selectDependenciasNuevaSemilla')
-											.append(
-													'<option value="'+ri.id+'">'
-															+ ri.name
-															+ '</option>');
-								}
-
-								$(
-										'#selectDependenciasNuevaSemillaSeleccionadas')
-										.css(
-												'width',
-												$(
-														'#selectDependenciasNuevaSemilla')
-														.width()
-														+ 'px');
-
-								//Marcar seleccionadas si exiten
-
-								if (rowObject != null) {
-
-									$
-											.each(
-													rowObject.dependencias,
-													function(index, value) {
-
-														$(
-																'#selectDependenciasNuevaSemilla option[value='
-																		+ value.id
-																		+ ']')
-																.attr(
-																		'selected',
-																		'selected');
-														$(
-																'#selectDependenciasNuevaSemilla')
-																.find(
-																		'option:selected')
-																.remove()
-																.appendTo(
-																		'#selectDependenciasNuevaSemillaSeleccionadas');
-													});
-								}
+													$(
+															'#selectDependenciasNuevaSemilla option[value='
+																	+ value.id
+																	+ ']')
+															.attr('selected',
+																	'selected');
+													$(
+															'#selectDependenciasNuevaSemilla')
+															.find(
+																	'option:selected')
+															.remove()
+															.appendTo(
+																	'#selectDependenciasNuevaSemillaSeleccionadas');
+												});
 							}
 						});
 	}
-	
 </script>
 <div id="main" style="overflow: hidden">
 	<!-- <h2>Nueva Semilla</h2> -->

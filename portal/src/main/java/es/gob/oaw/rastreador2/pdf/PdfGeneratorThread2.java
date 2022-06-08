@@ -105,6 +105,18 @@ public class PdfGeneratorThread2 extends Thread {
 		final MailService mailService = new MailService();
 		List<String> mailsTo = new ArrayList<>();
 		mailsTo.add(email);
+//		try {
+//			Connection c = DataBaseManager.getConnection();
+//			List<DatosForm> adminData = LoginDAO.getAdminUsers(c);
+//			DataBaseManager.closeConnection(c);
+//			if (adminData != null && !adminData.isEmpty()) {
+//				for (DatosForm data : adminData) {
+//					mailsTo.add(data.getEmail());
+//				}
+//			}
+//		} catch (Exception e) {
+//			Logger.putLog("Error al cargar los emails de los admin", this.getClass(), Logger.LOG_LEVEL_ERROR, e);
+//		}
 		try {
 			mailService.sendMail(mailsTo, "Generación de informes completado", mailBody.toString(), true);
 		} catch (MailException e) {

@@ -15,33 +15,39 @@
 ******************************************************************************/
 package es.inteco.rastreador2.filter;
 
-import es.inteco.common.Constants;
-import es.inteco.common.properties.PropertiesManager;
-import es.inteco.utils.CrawlerUtils;
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessage;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import es.inteco.common.Constants;
+import es.inteco.common.properties.PropertiesManager;
+import es.inteco.utils.CrawlerUtils;
 
 /**
  * The Class SecurityFilter.
  */
 public class SecurityFilter implements Filter {
-
-    /**
+	/**
 	 * Destroy.
 	 */
-    @Override
-    public void destroy() {
-    }
+	@Override
+	public void destroy() {
+	}
 
-    /**
+	/**
 	 * Do filter.
 	 *
 	 * @param request  the request
@@ -50,30 +56,27 @@ public class SecurityFilter implements Filter {
 	 * @throws IOException      Signals that an I/O exception has occurred.
 	 * @throws ServletException the servlet exception
 	 */
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-                         FilterChain chain) throws IOException, ServletException {
-        if (CrawlerUtils.hasToBeFilteredUri((HttpServletRequest) request) &&
-                ((HttpServletRequest) request).getSession().getAttribute(Constants.ROLE) == null) {
-            ActionErrors errors = new ActionErrors();
-            errors.add(ActionErrors.GLOBAL_MESSAGE, new ActionMessage("mensaje.error.no.login"));
-            ((HttpServletRequest) request).getSession().setAttribute(Globals.ERROR_KEY, errors);
-            PropertiesManager pmgr = new PropertiesManager();
-            ((HttpServletRequest) request).getSession().setAttribute(Constants.URL, ((HttpServletRequest) request).getRequestURI() + "?" + ((HttpServletRequest) request).getQueryString());
-            ((HttpServletResponse) response).sendRedirect(pmgr.getValue(CRAWLER_PROPERTIES, "application.root"));
-        } else {
-            chain.doFilter(request, response);
-        }
-    }
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+		if (CrawlerUtils.hasToBeFilteredUri((HttpServletRequest) request) && ((HttpServletRequest) request).getSession().getAttribute(Constants.ROLE) == null) {
+			ActionErrors errors = new ActionErrors();
+			errors.add(ActionErrors.GLOBAL_MESSAGE, new ActionMessage("mensaje.error.no.login"));
+			((HttpServletRequest) request).getSession().setAttribute(Globals.ERROR_KEY, errors);
+			PropertiesManager pmgr = new PropertiesManager();
+			((HttpServletRequest) request).getSession().setAttribute(Constants.URL, ((HttpServletRequest) request).getRequestURI() + "?" + ((HttpServletRequest) request).getQueryString());
+			((HttpServletResponse) response).sendRedirect(pmgr.getValue(CRAWLER_PROPERTIES, "application.root"));
+		} else {
+			chain.doFilter(request, response);
+		}
+	}
 
-    /**
+	/**
 	 * Inits the.
 	 *
 	 * @param config the config
 	 * @throws ServletException the servlet exception
 	 */
-    @Override
-    public void init(FilterConfig config) throws ServletException {
-    }
-
+	@Override
+	public void init(FilterConfig config) throws ServletException {
+	}
 }

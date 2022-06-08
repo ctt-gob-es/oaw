@@ -54,7 +54,7 @@ public class CleanSendResultsJob implements StatefulJob {
 		PropertiesManager pmgr = new PropertiesManager();
 		try {
 			Connection c = DataBaseManager.getConnection();
-			int days = ObservatorioDAO.getFileExpirationFromConfig(c);
+			long days = ObservatorioDAO.getFileExpirationFromConfig(c);
 			DataBaseManager.closeConnection(c);
 			final String exportDir = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.send.path");
 			final File directory = new File(exportDir);
@@ -66,6 +66,7 @@ public class CleanSendResultsJob implements StatefulJob {
 					if (file != null && file.getName().endsWith(".zip")) {
 						long diff = new Date().getTime() - file.lastModified();
 						if (diff > days * 24 * 60 * 60 * 1000) {
+							Logger.putLog("[CleanSendResultsJob] Deleting file: " + file.getName(), CleanSendResultsJob.class, Logger.LOG_LEVEL_INFO);
 							file.delete();
 						}
 					}

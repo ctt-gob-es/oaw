@@ -77,6 +77,7 @@ public class ResultsAction extends Action {
 	@SuppressWarnings("deprecation")
 	private ActionForward results(ActionMapping mapping, HttpServletRequest request) {
 		Connection c = null;
+		boolean originAnnexes = true;
 		try {
 			// Inicializamos el evaluador
 			if (!EvaluatorUtility.isInitialized()) {
@@ -101,7 +102,7 @@ public class ResultsAction extends Action {
 			if (RastreoDAO.crawlerToUser(c, idRastreo, user) || RastreoDAO.crawlerToClientAccount(c, idRastreo, user)) {
 				int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 				int numResult = AnalisisDatos.countAnalysisByTracking(idExecution);
-				List<AnalysisForm> analysisList = EvaluatorUtils.getFormList(AnalisisDatos.getAnalysisByTracking(idExecution, (pagina - 1), request));
+				List<AnalysisForm> analysisList = EvaluatorUtils.getFormList(AnalisisDatos.getAnalysisByTracking(idExecution, (pagina - 1), request, originAnnexes));
 				for (AnalysisForm analyse : analysisList) {
 					if ((analyse.getUrl() != null) && (analyse.getUrl().length() > Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "break.characters.table.string")))) {
 						analyse.setUrlTitle(analyse.getUrl());

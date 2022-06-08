@@ -302,6 +302,7 @@
 		<forward name="generateReportAsync" path=".generateReportAsync" />
 
 		<forward name="sendResultsByMailAsync" path=".sendResultsByMailAsync" />
+		<forward name="calculateResultsByMailAsync" path=".calculateResultsByMailAsync" />
 
 
 
