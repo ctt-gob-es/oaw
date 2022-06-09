@@ -1329,7 +1329,7 @@ public final class AnnexUtils {
 							if (!tagsTematica.isEmpty()) {
 								for (int i = 0; i < tagsTematica.size(); i++) {
 									dataToInsert += tagsTematica.get(i).getName();
-									if (i < tagsDistribucion.size() - 1) {
+									if (i < tagsTematica.size() - 1) {
 										dataToInsert += BREAK_LINE;
 									}
 								}
@@ -1680,7 +1680,7 @@ public final class AnnexUtils {
 						if (!tagsTematica.isEmpty()) {
 							for (int i = 0; i < tagsTematica.size(); i++) {
 								dataToInsert += tagsTematica.get(i).getName();
-								if (i < tagsDistribucion.size() - 1) {
+								if (i < tagsTematica.size() - 1) {
 									dataToInsert += BREAK_LINE;
 								}
 							}
@@ -2140,8 +2140,8 @@ public final class AnnexUtils {
 						String dataToInsert = "";
 						if (!tagsTematica.isEmpty()) {
 							for (int i = 0; i < tagsTematica.size(); i++) {
-								dataToInsert += tagsTematica.get(i).getName();
-								if (i < tagsDistribucion.size() - 1) {
+								dataToInsert += tagsTematica.get(i).getName() ;
+								if (i < tagsTematica.size() - 1) {
 									dataToInsert += BREAK_LINE;
 								}
 							}
