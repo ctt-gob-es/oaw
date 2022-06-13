@@ -6,7 +6,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
@@ -169,14 +168,12 @@ public class MailSimProvider implements MailProvider {
 		final DestinatariosMail destinatariosMail = factory.createDestinatariosMail();
 		final DestinatarioMail destinatarioMail = factory.createDestinatarioMail();
 		final Destinatarios destinatarios = factory.createDestinatarios();
-		final Iterator<String> mailToiterator = mailTo.iterator();
-		if (mailToiterator.hasNext()) {
-			destinatarios.setTo(mailToiterator.next());
+		for (String mail : mailTo) {
+			destinatarios.setTo(mail);
 		}
 		if (mailToCco != null) {
-			final Iterator<String> mailToCcoiterator = mailToCco.iterator();
-			if (mailToCcoiterator.hasNext()) {
-				destinatarios.setBcc(mailToCcoiterator.next());
+			for (String mail : mailToCco) {
+				destinatarios.setTo(mail);
 			}
 		}
 		destinatarioMail.setDestinatarios(destinatarios);
