@@ -1208,10 +1208,8 @@ public final class AnnexUtils {
 									if (countNA == currentEvaluationPageList.size()) {
 										compliance = messageResources.getMessage("observatory.graphic.compilance.gray");
 									}
-								} 
-								else 
-								{
-									// We set "No aplica" to no-web documents (as PDFs) 
+								} else {
+									// We set "No aplica" to no-web documents (as PDFs)
 									if (sWcagEmPoint.length() > 2 && sWcagEmPoint.substring(0, 2).equals("10"))
 										compliance = "No aplica";
 									else
@@ -1748,6 +1746,7 @@ public final class AnnexUtils {
 							}
 						}
 						cell = row.createCell(ColumnNames.indexOf(OTROS));
+						cell.setCellValue(dataToInsert);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setOtros(dataToInsert);
 						// Páginas
@@ -2209,6 +2208,7 @@ public final class AnnexUtils {
 							}
 						}
 						cell = row.createCell(ColumnNames.indexOf(OTROS));
+						cell.setCellValue(dataToInsert);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setOtros(dataToInsert);
 						// Páginas
