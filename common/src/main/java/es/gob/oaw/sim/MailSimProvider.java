@@ -168,13 +168,13 @@ public class MailSimProvider implements MailProvider {
 		final DestinatariosMail destinatariosMail = factory.createDestinatariosMail();
 		final DestinatarioMail destinatarioMail = factory.createDestinatarioMail();
 		final Destinatarios destinatarios = factory.createDestinatarios();
-		for (String mail : mailTo) {
-			destinatarios.setTo(mail);
-		}
+		String emails = String.join(";", mailTo);
+		destinatarios.setTo(emails);
+		Logger.putLog("Mail to: " + emails, MailSimProvider.class, Logger.LOG_LEVEL_INFO);
 		if (mailToCco != null) {
-			for (String mail : mailToCco) {
-				destinatarios.setTo(mail);
-			}
+			emails = String.join(";", mailToCco);
+			destinatarios.setBcc(emails);
+			Logger.putLog("Mail to cco: " + emails, MailSimProvider.class, Logger.LOG_LEVEL_INFO);
 		}
 		destinatarioMail.setDestinatarios(destinatarios);
 		destinatariosMail.getDestinatarioMail().add(destinatarioMail);
