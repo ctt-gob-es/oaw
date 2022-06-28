@@ -52,9 +52,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static int countDependencias(Connection c, final DependenciaForm dependency, final String[] tagArr) throws Exception {
-				
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		int count = 1;
 		String query = "SELECT COUNT(*) FROM dependencia d WHERE 1=1 ";
 		query = appendWhereClauses(dependency, tagArr, query);
@@ -84,9 +82,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<DependenciaForm> getDependencias(Connection c, final DependenciaForm dependency, final String[] tagArr, int page) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<DependenciaForm> results = new ArrayList<>();
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official, d.acronym, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE 1=1 ";
 		query = appendWhereClauses(dependency, tagArr, query);
@@ -109,7 +105,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 					DependenciaForm dependenciaForm = new DependenciaForm();
 					dependenciaForm.setId(rs.getLong("d.id_dependencia"));
 					dependenciaForm.setName(rs.getString("d.nombre"));
-					dependenciaForm.setEmails(rs.getString("d.emails"));
+					dependenciaForm.setEmails(formatEmails(rs.getString("d.emails")));
 					if (rs.getInt("d.send_auto") == 0) {
 						dependenciaForm.setSendAuto(false);
 					} else {
@@ -147,9 +143,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	private static void loadAmbits(Connection c, DependenciaForm dependenciaForm) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		PreparedStatement psDependencias = c.prepareStatement(
 				"SELECT a.nombre, a.id_ambito FROM ambitos_lista a WHERE a.id_ambito in (SELECT id_ambito FROM dependencia_ambito WHERE id_dependencia = ?) ORDER BY UPPER(a.nombre)");
 		psDependencias.setLong(1, dependenciaForm.getId());
@@ -282,9 +276,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static DependenciaForm findById(Connection c, final Long id) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official, d.acronym FROM dependencia d WHERE d.id_dependencia = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, id);
@@ -293,7 +285,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 					DependenciaForm dependenciaForm = new DependenciaForm();
 					dependenciaForm.setId(rs.getLong("d.id_dependencia"));
 					dependenciaForm.setName(rs.getString("d.nombre"));
-					dependenciaForm.setEmails(rs.getString("d.emails"));
+					dependenciaForm.setEmails(formatEmails(rs.getString("d.emails")));
 					if (rs.getInt("d.send_auto") == 0) {
 						dependenciaForm.setSendAuto(false);
 					} else {
@@ -325,9 +317,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static DependenciaForm findByName(Connection c, final String name) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE d.nombre = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, name);
@@ -336,7 +326,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 					DependenciaForm dependenciaForm = new DependenciaForm();
 					dependenciaForm.setId(rs.getLong("d.id_dependencia"));
 					dependenciaForm.setName(rs.getString("d.nombre"));
-					dependenciaForm.setEmails(rs.getString("d.emails"));
+					dependenciaForm.setEmails(formatEmails(rs.getString("d.emails")));
 					if (rs.getInt("d.send_auto") == 0) {
 						dependenciaForm.setSendAuto(false);
 					} else {
@@ -375,9 +365,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<DependenciaForm> findNotExistsAnNotAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		List<DependenciaForm> list = new ArrayList<>();
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,e.id_etiqueta, e.nombre "
 				+ "FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag  " + "WHERE d.id_dependencia NOT IN (SELECT sd.id_dependencia FROM semilla_dependencia sd) ";
@@ -404,7 +392,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 					DependenciaForm dependenciaForm = new DependenciaForm();
 					dependenciaForm.setId(rs.getLong("d.id_dependencia"));
 					dependenciaForm.setName(rs.getString("d.nombre"));
-					dependenciaForm.setEmails(rs.getString("d.emails"));
+					dependenciaForm.setEmails(formatEmails(rs.getString("d.emails")));
 					if (rs.getInt("d.send_auto") == 0) {
 						dependenciaForm.setSendAuto(false);
 					} else {
@@ -443,9 +431,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<DependenciaForm> findNotExistsAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		List<DependenciaForm> list = new ArrayList<>();
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,e.id_etiqueta, e.nombre "
 				+ "FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag  " + "WHERE d.id_dependencia IN (SELECT sd.id_dependencia FROM semilla_dependencia sd) ";
@@ -472,7 +458,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 					DependenciaForm dependenciaForm = new DependenciaForm();
 					dependenciaForm.setId(rs.getLong("d.id_dependencia"));
 					dependenciaForm.setName(rs.getString("d.nombre"));
-					dependenciaForm.setEmails(rs.getString("d.emails"));
+					dependenciaForm.setEmails(formatEmails(rs.getString("d.emails")));
 					if (rs.getInt("d.send_auto") == 0) {
 						dependenciaForm.setSendAuto(false);
 					} else {
@@ -511,9 +497,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static boolean existsDependencia(Connection c, DependenciaForm dependencia) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		boolean exists = false;
 		final String query = "SELECT * FROM dependencia WHERE UPPER(nombre) = UPPER(?)";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -537,9 +521,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static void save(Connection c, DependenciaForm dependencia) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final String query = "INSERT INTO dependencia(nombre, emails, send_auto, official,id_tag, acronym) VALUES (?,?,?,?,?,?)";
 		try (PreparedStatement ps = c.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, dependencia.getName());
@@ -578,9 +560,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	private static void insertAmbits(Connection c, DependenciaForm dependencia, ResultSet generatedKeys) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		if (generatedKeys.next()) {
 			dependencia.setId(generatedKeys.getLong(1));
 			// Inserción de las nuevas
@@ -638,9 +618,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	private static void updateDependencyAmbits(Connection c, DependenciaForm dependencia) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		// Update ambits
 		// Borrar las relaciones (no se pueden crear FK a lista por MyISAM no
 		// lo permite
@@ -674,9 +652,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static void delete(Connection c, Long idDependencia) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM dependencia WHERE id_dependencia = ?")) {
 			ps.setLong(1, idDependencia);
 			ps.executeUpdate();
@@ -694,9 +670,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static void delete(Connection c, final List<DependenciaForm> dependencies) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		if (dependencies != null && !dependencies.isEmpty()) {
 			String query = "DELETE FROM dependencia WHERE 1=1";
 			query = query + " AND id_dependencia IN (" + dependencies.get(0).getId();
@@ -727,9 +701,7 @@ public final class DependenciaDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static void saveOrUpdate(Connection c, final List<DependenciaForm> dependencies) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
@@ -806,5 +778,19 @@ public final class DependenciaDAO extends DataBaseDAO {
 		} finally {
 			DAOUtils.closeQueries(ps, null);
 		}
-	}	
+	}
+
+	/**
+	 * Email formatter
+	 * 
+	 * @param emails
+	 * @return Formatted emails
+	 */
+	private static String formatEmails(String emails) {
+		String formattedEmails = "";
+		if (emails != null) {
+			formattedEmails = emails.trim().replaceAll("\\s+", "");
+		}
+		return formattedEmails;
+	}
 }
