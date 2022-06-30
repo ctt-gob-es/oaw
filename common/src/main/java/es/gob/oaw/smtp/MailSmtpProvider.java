@@ -64,7 +64,7 @@ public class MailSmtpProvider implements MailProvider {
 			// Create the email message
 			final MultiPartEmail email = createEmail();
 			setEmailInfo(email, mailTo, fromAddress, fromName, subject, body);
-			if (mailToCco != null && mailToCco.isEmpty()) {
+			if (mailToCco != null && !mailToCco.isEmpty()) {
 				for (String addressStr : mailToCco) {
 					email.addTo(addressStr);
 				}

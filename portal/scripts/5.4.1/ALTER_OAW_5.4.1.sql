@@ -1,0 +1,1 @@
+ALTER TABLE `lista` MODIFY COLUMN `observaciones` VARCHAR(5000);

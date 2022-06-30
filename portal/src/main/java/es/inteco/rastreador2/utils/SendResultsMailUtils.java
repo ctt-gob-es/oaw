@@ -288,7 +288,7 @@ public final class SendResultsMailUtils {
 		for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
 			i++;
 			Logger.putLog("Generando PDF: " + i + "/" + fulfilledCrawlings.size() + " - " + fulfilledCrawling.getSeed().getNombre(), SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR);
-			buildPdf(idObservatory, idObservatoryExecution, fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling());						
+			buildPdf(idObservatory, idObservatoryExecution, fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling());
 		}
 		PropertiesManager pmgr = new PropertiesManager();
 		return ZipUtils.pdfsZipToMap(idObservatory, idObservatoryExecution, pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav"));

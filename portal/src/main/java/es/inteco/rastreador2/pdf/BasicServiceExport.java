@@ -286,6 +286,7 @@ public final class BasicServiceExport {
 			while ((length = fis.read(bytes)) >= 0) {
 				zipOut.write(bytes, 0, length);
 			}
+			zipOut.closeEntry();
 			fis.close();
 		}
 	}
