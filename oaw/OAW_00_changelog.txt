@@ -1,5 +1,12 @@
-5.5.0
+5.4.1
 ------------------------------------------------------------------------------------------------------------------------------------
+- Fichero 1. Evolutivo SW y Discapacidad: No se estaba tratando el campo otros
+- Generación anexos - Ficheros excel - Temáticas sin espacios
+- Envío de resultados a varios correos
+- Seguimiento Simplificado - UNE del 2022
+- Al solicitar un informe de un código fuente, no se devuelve pdf
+- Vulnerabilidad: Deserialization of Untrusted Data in Gson
+- Campo Observaciones de las Semillas
 
 5.4.0
 ------------------------------------------------------------------------------------------------------------------------------------
