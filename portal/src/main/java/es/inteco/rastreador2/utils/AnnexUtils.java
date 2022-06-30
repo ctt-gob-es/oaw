@@ -216,9 +216,15 @@ public final class AnnexUtils {
 	/** The Constant ID. */
 	private static final String ID = "id";
 	/** The Constant ALL_WCAG_EM_POINTS. */
-	private static final String[] ALL_WCAG_EM_POINTS = new String[] { "1.1.1", "1.2.1", "1.2.2", "1.2.3", "1.2.4", "1.2.5", "1.3.1", "1.3.2", "1.3.3", "1.3.4", "1.3.5", "1.4.1", "1.4.2", "1.4.3",
-			"1.4.4", "1.4.5", "1.4.10", "1.4.11", "1.4.12", "1.4.13", "2.1.1", "2.1.2", "2.1.4", "2.2.1", "2.2.2", "2.3.1", "2.4.1", "2.4.2", "2.4.3", "2.4.4", "2.4.5", "2.4.6", "2.4.7", "2.5.1",
-			"2.5.2", "2.5.3", "2.5.4", "3.1.1", "3.1.2", "3.2.1", "3.2.2", "3.2.3", "3.2.4", "3.3.1", "3.3.2", "3.3.3", "3.3.4", "4.1.1", "4.1.2", "4.1.3" };
+	private static final String[] ALL_WCAG_EM_POINTS = new String[] { "5.2", "5.3", "5.4", "6.1", "6.2.1.1", "6.2.1.2", "6.2.2.1", "6.2.2.2", "6.2.2.3", "6.2.2.4", "6.2.3a", "6.2.3b", "6.2.3c",
+			"6.2.3d", "6.2.4", "6.3", "6.4", "6.5.2", "6.5.3", "6.5.4", "6.5.5", "6.5.6", "7.1.1", "7.1.2", "7.1.3", "7.1.4", "7.1.5", "7.2.1", "7.2.2", "7.2.3", "7.3", "9.1.1.1", "9.1.2.1",
+			"9.1.2.2", "9.1.2.3", "9.1.2.5", "9.1.3.1", "9.1.3.2", "9.1.3.3", "9.1.3.4", "9.1.3.5", "9.1.4.1", "9.1.4.2", "9.1.4.3", "9.1.4.4", "9.1.4.5", "9.1.4.10", "9.1.4.11", "9.1.4.12",
+			"9.1.4.13", "9.2.1.1", "9.2.1.2", "9.2.1.4", "9.2.2.1", "9.2.2.2", "9.2.3.1", "9.2.4.1", "9.2.4.2", "9.2.4.3", "9.2.4.4", "9.2.4.5", "9.2.4.6", "9.2.4.7", "9.2.5.1", "9.2.5.2", "9.2.5.3",
+			"9.2.5.4", "9.3.1.1", "9.3.1.2", "9.3.2.1", "9.3.2.2", "9.3.2.3", "9.3.2.4", "9.3.3.1", "9.3.3.2", "9.3.3.3", "9.3.3.4", "9.4.1.1", "9.4.1.2", "9.4.1.3", "9.6", "10.1.1.1", "10.1.2.1",
+			"10.1.2.2", "10.1.2.3", "10.1.2.5", "10.1.3.1", "10.1.3.2", "10.1.3.3", "10.1.3.4", "10.1.3.5", "10.1.4.1", "10.1.4.2", "10.1.4.3", "10.1.4.4", "10.1.4.5", "10.1.4.10", "10.1.4.11",
+			"10.1.4.12", "10.1.4.13", "10.2.1.1", "10.2.1.1", "10.2.1.2", "10.2.1.4", "10.2.2.1", "10.2.2.2", "10.2.3.1", "10.2.4.2", "10.2.4.3", "10.2.4.4", "10.2.4.6", "10.2.4.7", "10.2.5.1",
+			"10.2.5.2", "10.2.5.3", "10.2.5.4", "10.3.1.1", "10.3.1.2", "10.3.2.1", "10.3.2.2", "10.3.3.1", "10.3.3.2", "10.3.3.3", "10.3.3.4", "10.4.1.1", "10.4.1.2", "10.4.1.3", "11.7", "11.8.1",
+			"11.8.2", "11.8.3", "11.8.4", "11.8.5", "11.8.1", "12.1.1", "12.1.2", "12.2.2", "12.2.3", "12.2.4" };
 	/** The Constant EVOL_CUMPLIMIENTO_ANT. */
 	private static final String EVOL_CUMPLIMIENTO_ANT = "evol_cumplimiento_ant";
 	/** The Constant EVOL_CUMPLIMIENTO_PRIMER. */
@@ -917,12 +923,20 @@ public final class AnnexUtils {
 														compliance = messageResources.getMessage("resultados.anonimos.porc.portales.na");
 													}
 												} else {
-													compliance = "N/T";
+													// We set "No aplica" to no-web documents (as PDFs)
+													if (sWcagEmPoint.length() > 2 && sWcagEmPoint.substring(0, 2).equals("10"))
+														compliance = "No aplica";
+													else
+														compliance = "N/T";
 												}
 											} else {
-												compliance = "N/T";
+												// We set "No aplica" to no-web documents (as PDFs)
+												if (sWcagEmPoint.length() > 2 && sWcagEmPoint.substring(0, 2).equals("10"))
+													compliance = "No aplica";
+												else
+													compliance = "N/T";
 											}
-											writeTag(hd, "C_" + sWcagEmPoint.replace(".", "_"), compliance);
+											writeTag(hd, "R_" + sWcagEmPoint.replace(".", "_"), compliance);
 										}
 									}
 									hd.endElement(EMPTY_STRING, EMPTY_STRING, "pagina");
@@ -1195,9 +1209,13 @@ public final class AnnexUtils {
 										compliance = messageResources.getMessage("observatory.graphic.compilance.gray");
 									}
 								} else {
-									compliance = "N/T";
+									// We set "No aplica" to no-web documents (as PDFs)
+									if (sWcagEmPoint.length() > 2 && sWcagEmPoint.substring(0, 2).equals("10"))
+										compliance = "No aplica";
+									else
+										compliance = "N/T";
 								}
-								writeTag(hd, "C_" + sWcagEmPoint.replace(".", "_"), compliance);
+								writeTag(hd, "R_" + sWcagEmPoint.replace(".", "_"), compliance);
 							}
 						}
 						// Try to free memory
@@ -1329,7 +1347,7 @@ public final class AnnexUtils {
 							if (!tagsTematica.isEmpty()) {
 								for (int i = 0; i < tagsTematica.size(); i++) {
 									dataToInsert += tagsTematica.get(i).getName();
-									if (i < tagsDistribucion.size() - 1) {
+									if (i < tagsTematica.size() - 1) {
 										dataToInsert += BREAK_LINE;
 									}
 								}
@@ -1680,7 +1698,7 @@ public final class AnnexUtils {
 						if (!tagsTematica.isEmpty()) {
 							for (int i = 0; i < tagsTematica.size(); i++) {
 								dataToInsert += tagsTematica.get(i).getName();
-								if (i < tagsDistribucion.size() - 1) {
+								if (i < tagsTematica.size() - 1) {
 									dataToInsert += BREAK_LINE;
 								}
 							}
@@ -1728,6 +1746,7 @@ public final class AnnexUtils {
 							}
 						}
 						cell = row.createCell(ColumnNames.indexOf(OTROS));
+						cell.setCellValue(dataToInsert);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setOtros(dataToInsert);
 						// Páginas
@@ -2141,7 +2160,7 @@ public final class AnnexUtils {
 						if (!tagsTematica.isEmpty()) {
 							for (int i = 0; i < tagsTematica.size(); i++) {
 								dataToInsert += tagsTematica.get(i).getName();
-								if (i < tagsDistribucion.size() - 1) {
+								if (i < tagsTematica.size() - 1) {
 									dataToInsert += BREAK_LINE;
 								}
 							}
@@ -2189,6 +2208,7 @@ public final class AnnexUtils {
 							}
 						}
 						cell = row.createCell(ColumnNames.indexOf(OTROS));
+						cell.setCellValue(dataToInsert);
 						cell.setCellStyle(shadowStyle);
 						excelLine.setOtros(dataToInsert);
 						// Páginas
@@ -3552,6 +3572,9 @@ public final class AnnexUtils {
 		LinkedHashMap<String, BigDecimal> resultDataNV = new LinkedHashMap<String, BigDecimal>();
 		Map<String, BigDecimal> resultDataPC = new TreeMap<>();
 		Map<String, BigDecimal> resultDataTC = new TreeMap<>();
+		// Map<String, BigDecimal> resultDataNC = new TreeMap<>();
+		LinkedHashMap<String, BigDecimal> resultDataNCHashLink = new LinkedHashMap<String, BigDecimal>();
+		LinkedHashMap<String, BigDecimal> resultDataNVHashLink = new LinkedHashMap<String, BigDecimal>();
 		LinkedHashMap<String, BigDecimal> resultDataNC = new LinkedHashMap<String, BigDecimal>();
 		for (Date date : executionDatesWithFormat_Valid) {
 			int countA = 0;
@@ -3603,14 +3626,14 @@ public final class AnnexUtils {
 					resultDataAA.put(executionDateAux, new BigDecimal(0));
 				}
 				if (countNV > 0) {
-					resultDataNV.put(executionDateAux, new BigDecimal(countNV).divide(new BigDecimal(sumAdecuacy), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+					resultDataNVHashLink.put(executionDateAux, new BigDecimal(countNV).divide(new BigDecimal(sumAdecuacy), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
 				} else {
-					resultDataNV.put(executionDateAux, new BigDecimal(0));
+					resultDataNVHashLink.put(executionDateAux, new BigDecimal(0));
 				}
 			} else {
 				resultDataA.put(executionDateAux, new BigDecimal(0));
 				resultDataAA.put(executionDateAux, new BigDecimal(0));
-				resultDataNV.put(executionDateAux, new BigDecimal(0));
+				resultDataNVHashLink.put(executionDateAux, new BigDecimal(0));
 			}
 			int sumCompliance = countNC + countPC + countTC;
 			if (sumCompliance > 0) {
@@ -3625,14 +3648,14 @@ public final class AnnexUtils {
 					resultDataTC.put(executionDateAux, new BigDecimal(0));
 				}
 				if (countNC > 0) {
-					resultDataNC.put(executionDateAux, new BigDecimal(countNC).divide(new BigDecimal(sumCompliance), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+					resultDataNCHashLink.put(executionDateAux, new BigDecimal(countNC).divide(new BigDecimal(sumCompliance), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
 				} else {
-					resultDataNC.put(executionDateAux, new BigDecimal(0));
+					resultDataNCHashLink.put(executionDateAux, new BigDecimal(0));
 				}
 			} else {
 				resultDataPC.put(executionDateAux, new BigDecimal(0));
 				resultDataTC.put(executionDateAux, new BigDecimal(0));
-				resultDataNC.put(executionDateAux, new BigDecimal(0));
+				resultDataNCHashLink.put(executionDateAux, new BigDecimal(0));
 			}
 		}
 		// Styles
@@ -3654,7 +3677,7 @@ public final class AnnexUtils {
 		c.setCellValue(ALLOCATION_AA_LITERAL);
 		c.setCellStyle(headerStyle);
 		rowCount++;
-		for (Entry<String, BigDecimal> entry : resultDataNV.entrySet()) {
+		for (Entry<String, BigDecimal> entry : resultDataNVHashLink.entrySet()) {
 			r = sheet.createRow(rowCount);
 			c = r.createCell(0);
 			c.setCellValue(entry.getKey());
@@ -3686,7 +3709,7 @@ public final class AnnexUtils {
 		c.setCellStyle(headerStyle);
 		rowCount++;
 		firstRow = rowCount;
-		for (Entry<String, BigDecimal> entry : resultDataNC.entrySet()) {
+		for (Entry<String, BigDecimal> entry : resultDataNCHashLink.entrySet()) {
 			r = sheet.createRow(rowCount);
 			c = r.createCell(0);
 			c.setCellValue(entry.getKey());
@@ -3710,10 +3733,10 @@ public final class AnnexUtils {
 		// Try to free memory
 		resultDataA = null;
 		resultDataAA = null;
-		resultDataNV = null;
+		resultDataNVHashLink = null;
 		resultDataPC = null;
 		resultDataTC = null;
-		resultDataNC = null;
+		resultDataNCHashLink = null;
 		System.gc();
 	}
 
