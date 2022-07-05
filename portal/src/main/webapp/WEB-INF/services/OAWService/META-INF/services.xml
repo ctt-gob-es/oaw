@@ -1,0 +1,16 @@
+<serviceGroup>
+	<service name="OAWService" targetNamespace="http://ws.apache.org/axis2/oaw/">
+		<Description>
+			OAW Service
+		</Description>
+		<schema schemaNamespace="http://ws.apache.org/axis2/oaw/"/>
+		<parameter name="ServiceClass" locked="false">es.gob.oaw.webservice.OAWService</parameter>
+		<operation name="codeAnalysis">
+			<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+		</operation>
+        <operation name="scheduledTask">
+            <messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+	</service>
+</serviceGroup>
+ 

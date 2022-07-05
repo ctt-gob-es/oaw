@@ -9,19 +9,19 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>portal</artifactId>
-	<version>5.4.1</version>
-	<packaging>war</packaging>
+	<version>5.4.1.1</version>
+	<packaging>war</packaging> 
 
 	<name>oaw-portal</name>
 
 	<properties> 
-		<oaw.version>5.4.1</oaw.version>
+		<oaw.version>5.4.1.1</oaw.version>
 	</properties>
 
 	<parent>
 		<groupId>es.minhap.oaw</groupId>
 		<artifactId>oaw</artifactId>
-		<version>5.4.1</version>
+		<version>5.4.1.1</version>
 		<relativePath>../oaw/pom.xml</relativePath>
 	</parent>
 
@@ -150,8 +150,6 @@
 			<version>1.4</version>
 		</dependency>
 
-
-
 		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom</artifactId>
@@ -265,7 +263,7 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.13.1</version>
-		</dependency>
+		</dependency> 
 
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
 		<dependency>
@@ -296,15 +294,60 @@
 			<version>2.7.0</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.passay</groupId>
 			<artifactId>passay</artifactId>
 			<version>1.6.0</version>
 		</dependency>
-
-
-
+		
+		<dependency>  
+            <groupId>org.apache.axis2</groupId>  
+            <artifactId>axis2-adb</artifactId>  
+            <version>1.8.1</version>  
+        </dependency>  
+        
+		<dependency>
+		    <groupId>org.apache.axis2</groupId>
+		    <artifactId>axis2-jaxws</artifactId>
+		    <version>1.8.1</version>
+		</dependency>
+		 
+		<dependency>
+		    <groupId>org.apache.axis2</groupId>
+		    <artifactId>axis2-adb-codegen</artifactId>
+		    <version>1.8.1</version>
+	    </dependency>
+        
+	    <dependency>  
+            <groupId>org.apache.axis2</groupId>  
+            <artifactId>axis2-kernel</artifactId>  
+            <version>1.8.1</version>  
+       </dependency> 
+          
+       <dependency>  
+            <groupId>org.apache.axis2</groupId>  
+            <artifactId>axis2-transport-http</artifactId>  
+            <version>1.8.1</version>  
+       </dependency>  
+       
+       <dependency>  
+            <groupId>org.apache.axis2</groupId>  
+            <artifactId>axis2-transport-local</artifactId>  
+            <version>1.8.1</version>  
+       </dependency>  
+       
+       <dependency>
+            <groupId>wsdl4j</groupId>
+            <artifactId>wsdl4j</artifactId>
+            <version>1.5.2</version>
+       </dependency>
+        
+	   <dependency>
+		    <groupId>xalan</groupId>
+		    <artifactId>xalan</artifactId>
+		    <version>2.7.2</version>
+	   </dependency>
+        
 	</dependencies>
 
 </project>
