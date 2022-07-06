@@ -39,7 +39,7 @@ Currently OAW is deployment under this configuration:
 This is a Maven projet that requieres version 3.0.0 or high
 
 
-### Instalation
+### Installation
 
 You can find full documentacion (in Spanish) at https://administracionelectronica.gob.es/ctt/oaw/descargas in __Rastreador OAW WCAG 2.1__ section. At this moment, the last documentation avalaible can be downloaded [here](https://administracionelectronica.gob.es/ctt/resources/Soluciones/2431/Descargas/Liberacion-codigo-OAW---MAETD-v5-0-4.zip?idIniciativa=2431&idElemento=19053)
 
