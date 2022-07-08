@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
-	This program is licensed and may be used, modified and redistributed under 
-	the terms of the European Public License (EUPL), either version 1.2 or (at 
-	your option) any later version as soon as they are approved by the European 
-	Commission. Unless required by applicable law or agreed to in writing, software 
-	distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
-	License for the specific language governing permissions and more details. 
-	You should have received a copy of the EUPL1.2 license along with this program; 
-	if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 -->
+<!-- Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, This program is licensed and may be used, modified 
+	and redistributed under the terms of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+	version as soon as they are approved by the European Commission. Unless required by applicable law or agreed to in writing, 
+	software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+	either express or implied. See the License for the specific language governing permissions and more details. You should have 
+	received a copy of the EUPL1.2 license along with this program; if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 -->
 <guideline>
 	<type>observatory</type>
-	<title abbr="observatorio-une-en2019"
-		long-name="Pautas de verificación del Observatorio v5.0">Observatorio
+	<title abbr="observatorio-une-en2019" long-name="Pautas de verificación del Observatorio v5.0">Observatorio
 		MINHAP 3.0
 	</title>
 	<date>2019-10-03</date>
@@ -39,15 +34,13 @@
 					<check id="467" />
 					<!-- Input type image con alternativas -->
 					<check id="306" />
-					<!-- Applets sin alternativas (atributo alt o descripción en el cuerpo 
-						applet) -->
+					<!-- Applets sin alternativas (atributo alt o descripción en el cuerpo applet) -->
 					<check id="414" />
 					<!-- Imágenes con atributo alt sospechoso -->
 					<check id="100" />
 					<!-- Imágenes decorativas (alt blank) sin atributo title -->
 					<check id="413" />
-					<!-- Imágenes menores a X*Y deben ser decorativas (alt blank, no title, 
-						role=presentation) -->
+					<!-- Imágenes menores a X*Y deben ser decorativas (alt blank, no title, role=presentation) -->
 					<check id="426" />
 					<!-- Longdesc válido** Mod check original -->
 					<check id="278" />
@@ -111,11 +104,9 @@
 					<check id="313" />
 					<!-- Elemento de lista de definicion (dd) fuera de contenedor (dl) -->
 					<check id="314" />
-					<!-- Lista anidada directamente en lista ordenada (ol), no dentro de 
-						li -->
+					<!-- Lista anidada directamente en lista ordenada (ol), no dentro de li -->
 					<check id="317" />
-					<!-- Lista anidada directamente en lista no ordenada (ul), no dentro 
-						de li -->
+					<!-- Lista anidada directamente en lista no ordenada (ul), no dentro de li -->
 					<check id="318" />
 					<!-- Lista ordenada mal construida -->
 					<check id="319" />
@@ -129,14 +120,14 @@
 					<check id="425" />
 					<!-- Lista ordenada simulada con lista no ordenada -->
 					<check id="416" />
-					<!-- 3 o más párrafos seguidos que empiecen por una imagen cuyas dimensiones 
-						sean iguales o inferiores a X*Y (Heurístico X=10, Y=10). -->
+					<!-- 3 o más párrafos seguidos que empiecen por una imagen cuyas dimensiones sean iguales o inferiores a X*Y (Heurístico 
+						X=10, Y=10). -->
 					<check id="445" />
-					<!-- 3 o más líneas separadas por BR que empiecen por una imagen cuyas 
-						dimensiones sean iguales o inferiores a X*Y (Heurístico X=10, Y=10). -->
+					<!-- 3 o más líneas separadas por BR que empiecen por una imagen cuyas dimensiones sean iguales o inferiores a X*Y (Heurístico 
+						X=10, Y=10). -->
 					<check id="459" />
-					<!-- Tablas formadas por una única columna y 3 o más filas y que las 
-						celdas no superen los X caracteres (Heurístico X=150) -->
+					<!-- Tablas formadas por una única columna y 3 o más filas y que las celdas no superen los X caracteres (Heurístico 
+						X=150) -->
 					<check id="431" />
 				</checks>
 			</subgroup>
@@ -151,16 +142,14 @@
 					<check id="86" />
 					<!-- Encabezamientos de tabla correctos -->
 					<check id="116" />
-					<!-- Celdas únicas que ocupan el ancho completo de la tabla para simular 
-						encabezamientos -->
+					<!-- Celdas únicas que ocupan el ancho completo de la tabla para simular encabezamientos -->
 					<check id="156" />
 					<!-- Ningún th está vacío. -->
 					<check id="159" />
-					<!-- Las tablas de datos que contienen más de una fila/columna de cabeceras 
-						usan los atributos id y headers para identificar las celdas. -->
+					<!-- Las tablas de datos que contienen más de una fila/columna de cabeceras usan los atributos id y headers para identificar 
+						las celdas. -->
 					<check id="245" />
-					<!--Las tablas de datos que contienen más de una fila/columna de cabeceras 
-						presentan summary. -->
+					<!--Las tablas de datos que contienen más de una fila/columna de cabeceras presentan summary. -->
 					<check id="418" />
 					<!-- Summary y Caption diferentes. -->
 					<check id="243" />
@@ -191,15 +180,13 @@
 				<!-- Separación contenido y presentación -->
 				<name>minhap.observatory.5_0.subgroup.1.6</name>
 				<checks>
-					<!-- Utilizar en tablas de maquetación elementos de tablas de datos 
-						(th, caption, summary,...) -->
+					<!-- Utilizar en tablas de maquetación elementos de tablas de datos (th, caption, summary,...) -->
 					<!-- TODO: Comprobar todas las opciones descritas en la metodología -->
 					<check id="45" />
-					<!-- Uso de elementos HTML de presentación desaconsejados (basefont, 
-						font, center, s, strike, u) -->
+					<!-- Uso de elementos HTML de presentación desaconsejados (basefont, font, center, s, strike, u) -->
 					<check id="345" noExecutedMark="true" />
-					<!-- Contenido desde CSS mediante :before o :after y la propiedad “content” 
-						con texto igual o superior a X caracteres alfanuméricos (Heurístico X=2). -->
+					<!-- Contenido desde CSS mediante :before o :after y la propiedad “content” con texto igual o superior a X caracteres 
+						alfanuméricos (Heurístico X=2). -->
 					<check id="447" />
 				</checks>
 			</subgroup>
@@ -208,8 +195,7 @@
 				<!-- Identificación del idioma principal -->
 				<name>minhap.observatory.5_0.subgroup.1.7</name>
 				<checks>
-					<!-- Documento con atributos lang/xml:lang adecuados al tipo de documento 
-						(html/xhtml) -->
+					<!-- Documento con atributos lang/xml:lang adecuados al tipo de documento (html/xhtml) -->
 					<check id="48" />
 					<check id="49" relatedWith="48" />
 					<!-- Comprobar que el idioma de la página coincide con el declarado -->
@@ -223,19 +209,16 @@
 				<checks>
 					<!-- Si se usan eventos dependientes de dispositivo, éstos están replicados -->
 					<check id="160" />
-					<!-- Elementos con “onclick” u “onkeypress” son nativos de interacción 
-						(enlaces, botones) o bien tienen asignado un atributo “tabindex” y un “role” 
-						de WAI-ARIA adecuado -->
+					<!-- Elementos con “onclick” u “onkeypress” son nativos de interacción (enlaces, botones) o bien tienen asignado un 
+						atributo “tabindex” y un “role” de WAI-ARIA adecuado -->
 					<check id="432" />
 
 					<!-- MOVIDAS DE 2.1.2 -->
 					<!-- Se verifica que no se use la etiqueta "blink" o “marquee” -->
 					<check id="130" />
-					<!-- No se debe redigir automáticamente con el elemento "meta" y el 
-						atributo "http-equiv" (con tiempo > 0) -->
+					<!-- No se debe redigir automáticamente con el elemento "meta" y el atributo "http-equiv" (con tiempo > 0) -->
 					<check id="71" />
-					<!-- No se refresca la página con el elemento "meta" y el atributo "http-equiv" 
-						(independientemente del tiempo definido) -->
+					<!-- No se refresca la página con el elemento "meta" y el atributo "http-equiv" (independientemente del tiempo definido) -->
 					<check id="72" />
 					<!-- No se emplea la propiedad de CSS 'text-decoration: blink' -->
 					<check id="449" />
@@ -250,31 +233,27 @@
 				<checks>
 
 					<!-- /MOVIDAS DE 2.1.3 -->
-					<!-- Nota: Se considera etiqueta asociada a <label> (con texto) asociado 
-						explícitamente; “aria-labelledby” con un “id” correspondiente a un elemento 
-						con contenido textual; “aria-label” o “títle” con contenido. -->
+					<!-- Nota: Se considera etiqueta asociada a <label> (con texto) asociado explícitamente; “aria-labelledby” con un “id” 
+						correspondiente a un elemento con contenido textual; “aria-label” o “títle” con contenido. -->
 					<!-- Elementos input tienen una etiqueta explícitamente asociada -->
 					<check id="57" />
-					<!-- Elementos label no asociados controla que exista for con un id 
-						válido (a un control) -->
+					<!-- Elementos label no asociados controla que exista for con un id válido (a un control) -->
 					<check id="67" />
 					<!-- Elementos select tienen una etiqueta explícitamente asociada -->
 					<check id="91" />
 					<!-- Elementos textarea tienen una etiqueta explícitamente asociada -->
 					<check id="95" />
-					<!-- Se verifica que todos los elementos “label” que están asociados 
-						explícitamente y son la única etiqueta asociada a un control (título, aria-label, 
-						etc.) no están ocultos con CSS. -->
+					<!-- Se verifica que todos los elementos “label” que están asociados explícitamente y son la única etiqueta asociada 
+						a un control (título, aria-label, etc.) no están ocultos con CSS. -->
 					<check id="461" noExecutedMark="true" />
 
 
-					<!-- Se identifican los campos obligatorios en los formularios con más 
-						de N campos de introducción de texto (se busca la presencia de los términos 
-						“obligatorio”, “opcional” o sinónimos equivalentes en el texto, alternativas 
-						o títulos presentes dentro del formulario <form>). (N = 4) -->
+					<!-- Se identifican los campos obligatorios en los formularios con más de N campos de introducción de texto (se busca 
+						la presencia de los términos “obligatorio”, “opcional” o sinónimos equivalentes en el texto, alternativas o títulos presentes 
+						dentro del formulario <form>). (N = 4) -->
 					<check id="446" />
 					<!-- /MOVIDAS DE 2.1.3 -->
-					
+
 					<check id="476" />
 
 				</checks>
@@ -285,30 +264,24 @@
 				<name>minhap.observatory.5_0.subgroup.1.10</name>
 				<checks>
 
-					<!-- Tres o más de botones de radio y/o casillas de verificación agrupadas 
-						(mismo name) se agrupan bajo un fieldset. -->
+					<!-- Tres o más de botones de radio y/o casillas de verificación agrupadas (mismo name) se agrupan bajo un fieldset. -->
 					<check id="443" />
-					<!-- Se verifica que no existan dos o más elementos de encabezado dentro 
-						de un elemento <form> (en lugar de usar “fieldset”) -->
+					<!-- Se verifica que no existan dos o más elementos de encabezado dentro de un elemento <form> (en lugar de usar “fieldset”) -->
 					<check id="429" />
 					<!-- Modificación especial de la comprobación 429 para Sharepoint -->
 					<check id="466" onlyWarning="true" />
-					<!-- En formularios con X o más campos (text, file, password, select, 
-						textarea) debe existir al menos un fieldset y un legend (Heuristico X=10) -->
+					<!-- En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y 
+						un legend (Heuristico X=10) -->
 					<check id="430" relatedWith="430" />
-					<!-- En formularios con X o más campos (text, file, password, select, 
-						textarea) debe existir al menos un fieldset y un legend (Heuristico X=8) 
-						0-PASA -->
+					<!-- En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y 
+						un legend (Heuristico X=8) 0-PASA -->
 					<check id="465" onlyWarning="true" />
-					<!-- Se verifica que los “fieldsets” tengan un único elemento “legend” 
-						con contenido (primer elemento semántico hijo). -->
+					<!-- Se verifica que los “fieldsets” tengan un único elemento “legend” con contenido (primer elemento semántico hijo). -->
 					<check id="444" />
-					<!-- Elementos select con más de X opciones sin agrupar bajo elementos 
-						“optgroup”. (X=20) -->
+					<!-- Elementos select con más de X opciones sin agrupar bajo elementos “optgroup”. (X=20) -->
 					<check id="406" />
-					<!-- Elementos select con opciones que comiencen por sucesiones de 3 
-						o más caracteres repetidos no alfanuméricos (P. ej: “___”, “***”, “......”, 
-						etc.). -->
+					<!-- Elementos select con opciones que comiencen por sucesiones de 3 o más caracteres repetidos no alfanuméricos (P. 
+						ej: “___”, “***”, “......”, etc.). -->
 					<check id="417" />
 					<!-- Elementos optgroup tienen un atributo “label” con contenido -->
 					<check id="407" />
@@ -331,11 +304,9 @@
 					<check id="51" />
 					<!-- Title sospechoso (no title, sin título...) -->
 					<check id="53" />
-					<!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se 
-						usan frames -->
+					<!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan frames -->
 					<check id="32" onlyWarning="true" />
-					<!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se 
-						usan iframes -->
+					<!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan iframes -->
 					<!-- <check id="437" onlyWarning="true"/> -->
 					<!-- Frames tienen atributo title no vacío ni sospechoso -->
 					<check id="31" relatedWith="32" />
@@ -352,35 +323,28 @@
 				<checks>
 					<!-- Enlaces con solo una imagen que no tenga atributo alt -->
 					<check id="69" />
-					<!-- Enlaces con textos demasiado largos, excepto si el texto del enlace 
-						es el nombre de una ley -->
+					<!-- Enlaces con textos demasiado largos, excepto si el texto del enlace es el nombre de una ley -->
 					<check id="181" />
 					<!-- Enlaces no descriptivos (pincha aqui, haz click...) -->
 					<check id="79" />
-					<!-- Enlace con texto vacío (se comprueba que haya imagen con alt (pero 
-						no si es vacio) -->
+					<!-- Enlace con texto vacío (se comprueba que haya imagen con alt (pero no si es vacio) -->
 					<check id="142" />
-					<!-- Enlace de texto con imagen que repite el texto del enlace como 
-						alternativa -->
+					<!-- Enlace de texto con imagen que repite el texto del enlace como alternativa -->
 					<check id="428" />
 				</checks>
 			</subgroup>
 
 			<subgroup aspect="observatory.aspect.navigation">
 				<!-- Cambios de contexto -->
-				<!-- Se entiende por cambio de contexto una nueva página, ventana, pestaña 
-					o aplicación, o cambio de foco (window.location, window.history, window.open, 
-					window.focus, etc.). -->
+				<!-- Se entiende por cambio de contexto una nueva página, ventana, pestaña o aplicación, o cambio de foco (window.location, 
+					window.history, window.open, window.focus, etc.). -->
 				<name>minhap.observatory.5_0.subgroup.1.13</name>
 				<checks>
-					<!-- No se produce ningún cambio de contexto en los eventos “onfocus” 
-						u “onblur” -->
+					<!-- No se produce ningún cambio de contexto en los eventos “onfocus” u “onblur” -->
 					<check id="452" />
-					<!-- No se produce ningún cambio de contexto nada más cargarse la página 
-						(onload) -->
+					<!-- No se produce ningún cambio de contexto nada más cargarse la página (onload) -->
 					<check id="453" />
-					<!-- No se produce ningún cambio de contexto en el evento “onchange” 
-						de los elementos “select” -->
+					<!-- No se produce ningún cambio de contexto en el evento “onchange” de los elementos “select” -->
 					<check id="454" />
 				</checks>
 			</subgroup>
@@ -393,19 +357,16 @@
 					<!--<check id="232"/> -->
 					<!-- Documento tenga un DTD válido -->
 					<check id="323" />
-					<!-- Código HTML sea parseable (apertura y cierre de etiquetas y anidamiento 
-						correcto de elementos) -->
+					<!-- Código HTML sea parseable (apertura y cierre de etiquetas y anidamiento correcto de elementos) -->
 					<check id="440" />
-					<!-- Se verifica que no se repite el mismo atributo con diferente valor 
-						en el mismo elemento -->
+					<!-- Se verifica que no se repite el mismo atributo con diferente valor en el mismo elemento -->
 					<check id="441" />
 					<!-- Se verifica que los valores de los atributos están entrecomillados -->
 					<check id="439" />
-					<!-- Se verifica que el valor de los atributos que deben tener un valor 
-						único por página (“id”, “accesskey”) efectivamente tienen un valor único -->
+					<!-- Se verifica que el valor de los atributos que deben tener un valor único por página (“id”, “accesskey”) efectivamente 
+						tienen un valor único -->
 					<check id="438" />
-					<!-- Se verifica que el código CSS es parseable (bien formado, sin errores 
-						de sintaxis) -->
+					<!-- Se verifica que el código CSS es parseable (bien formado, sin errores de sintaxis) -->
 					<check id="450" />
 				</checks>
 			</subgroup>
@@ -436,16 +397,14 @@
 				<name>minhap.observatory.5_0.subgroup.2.2</name>
 				<checks>
 					<!-- Se verifica que las combinaciones de color de primer plano y de -->
-					<!-- color de fondo en una misma regla de las hojas de estilo tiene 
-						el -->
+					<!-- color de fondo en una misma regla de las hojas de estilo tiene el -->
 					<!-- contraste suficiente. -->
 					<check id="448" />
 					<check id="477" />
 				</checks>
 			</subgroup>
 
-			<subgroup aspect="observatory.aspect.general"
-				type="goodpractice">
+			<subgroup aspect="observatory.aspect.general" type="goodpractice">
 				<!-- Cambios de contexto -->
 				<name>minhap.observatory.5_0.subgroup.2.3</name>
 				<checks>
@@ -459,8 +418,7 @@
 				<!-- Multiples Ways -->
 				<name>minhap.observatory.5_0.subgroup.2.4</name>
 				<checks>
-					<!-- Se proporciona un mapa del sitio o una función de búsqueda dentro 
-						del sitio web. -->
+					<!-- Se proporciona un mapa del sitio o una función de búsqueda dentro del sitio web. -->
 					<check id="419" />
 				</checks>
 			</subgroup>
@@ -469,16 +427,14 @@
 				<!-- Foco Visible -->
 				<name>minhap.observatory.5_0.subgroup.2.5</name>
 				<checks>
-					<!-- Se verifica que en las hojas de estilo no se emplee la propiedad 
-						“outline” con valor “0” o “none” en elementos de interacción. -->
+					<!-- Se verifica que en las hojas de estilo no se emplee la propiedad “outline” con valor “0” o “none” en elementos 
+						de interacción. -->
 					<check id="451" />
-					<!-- Se verifica que no se estén empleando más de 3 atributos “tabindex” 
-						en la página (0 - PASA) -->
+					<!-- Se verifica que no se estén empleando más de 3 atributos “tabindex” en la página (0 - PASA) -->
 					<check id="434" onlyWarning="true" />
-					<!-- Se verifica que no se estén empleando más de 10 atributos “tabindex” 
-						en la página (0- FALLA) -->
+					<!-- Se verifica que no se estén empleando más de 10 atributos “tabindex” en la página (0- FALLA) -->
 					<check id="435" relatedWith="434" />
-					
+
 					<check id="480" />
 					<check id="481" />
 				</checks>
@@ -490,18 +446,17 @@
 				<checks>
 					<!-- Enlaces adyacentes al mismo recurso deben estar combinados -->
 					<check id="180" />
-					<!-- Si solo hay un enlace interno roto se controla mediante el check 
-						455 con valor GREEN-ZERO si hay más de un enlace interno entonces falla también 
-						por la comprobación 456 y el valor es RED-ZERO -->
+					<!-- Si solo hay un enlace interno roto se controla mediante el check 455 con valor GREEN-ZERO si hay más de un enlace 
+						interno entonces falla también por la comprobación 456 y el valor es RED-ZERO -->
 					<!-- Comprobamos que si hay enlaces rotos -->
-<!-- 					<check id="455" onlyWarning="true" /> -->
+					<!-- <check id="455" onlyWarning="true" /> -->
 					<!-- Comprobamos que haya MÁS de 1 enlace roto -->
-<!-- 					<check id="456" relatedWith="455" /> -->
+					<!-- <check id="456" relatedWith="455" /> -->
 					<!-- Idem para enlaces externos -->
 					<!-- Comprobamos que si hay enlaces externos rotos -->
-<!-- 					<check id="457" onlyWarning="true" /> -->
+					<!-- <check id="457" onlyWarning="true" /> -->
 					<!-- Comprobamos que haya MÁS de 2 enlaces rotos -->
-<!-- 					<check id="458" relatedWith="457" /> -->
+					<!-- <check id="458" relatedWith="457" /> -->
 				</checks>
 			</subgroup>
 		</suitability>

@@ -26,17 +26,16 @@ import java.util.List;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
-import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
+import es.inteco.rastreador2.dao.observatorio.DataBaseDAO;
 import es.inteco.rastreador2.utils.DAOUtils;
 
 /**
  * The Class DependenciaDAO.
  */
-public final class DependenciaDAO {
+public final class DependenciaDAO extends DataBaseDAO {
 	/**
 	 * Instantiates a new dependencia DAO.
 	 */
@@ -50,9 +49,10 @@ public final class DependenciaDAO {
 	 * @param dependency the dependency
 	 * @param tagArr     the tag arr
 	 * @return the int
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static int countDependencias(Connection c, final DependenciaForm dependency, final String[] tagArr) throws SQLException {
+	public static int countDependencias(Connection c, final DependenciaForm dependency, final String[] tagArr) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
 		int count = 1;
 		String query = "SELECT COUNT(*) FROM dependencia d WHERE 1=1 ";
 		query = appendWhereClauses(dependency, tagArr, query);
@@ -79,11 +79,12 @@ public final class DependenciaDAO {
 	 * @param tagArr     the tag arr
 	 * @param page       the page
 	 * @return the dependencias
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static List<DependenciaForm> getDependencias(Connection c, final DependenciaForm dependency, final String[] tagArr, int page) throws SQLException {
+	public static List<DependenciaForm> getDependencias(Connection c, final DependenciaForm dependency, final String[] tagArr, int page) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
 		final List<DependenciaForm> results = new ArrayList<>();
-		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official, d.acronym, a.nombre, a.id_ambito, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN ambitos_lista a ON d.id_ambit = a.id_ambito LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE 1=1 ";
+		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official, d.acronym, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE 1=1 ";
 		query = appendWhereClauses(dependency, tagArr, query);
 		query += "ORDER BY UPPER(d.nombre) ASC ";
 		if (page != Constants.NO_PAGINACION) {
@@ -104,7 +105,7 @@ public final class DependenciaDAO {
 					DependenciaForm dependenciaForm = new DependenciaForm();
 					dependenciaForm.setId(rs.getLong("d.id_dependencia"));
 					dependenciaForm.setName(rs.getString("d.nombre"));
-					dependenciaForm.setEmails(rs.getString("d.emails"));
+					dependenciaForm.setEmails(formatEmails(rs.getString("d.emails")));
 					if (rs.getInt("d.send_auto") == 0) {
 						dependenciaForm.setSendAuto(false);
 					} else {
@@ -115,12 +116,7 @@ public final class DependenciaDAO {
 					} else {
 						dependenciaForm.setOfficial(true);
 					}
-					if (rs.getInt("a.id_ambito") != 0) {
-						AmbitoForm ambit = new AmbitoForm();
-						ambit.setId(String.valueOf(rs.getInt("a.id_ambito")));
-						ambit.setName(rs.getString("a.nombre"));
-						dependenciaForm.setAmbito(ambit);
-					}
+					loadAmbits(c, dependenciaForm);
 					if (rs.getInt("e.id_etiqueta") != 0) {
 						EtiquetaForm tag = new EtiquetaForm();
 						tag.setId(rs.getLong("e.id_etiqueta"));
@@ -140,6 +136,37 @@ public final class DependenciaDAO {
 	}
 
 	/**
+	 * Load ambits.
+	 *
+	 * @param c               the c
+	 * @param dependenciaForm the dependencia form
+	 * @throws Exception the SQL exception
+	 */
+	private static void loadAmbits(Connection c, DependenciaForm dependenciaForm) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
+		PreparedStatement psDependencias = c.prepareStatement(
+				"SELECT a.nombre, a.id_ambito FROM ambitos_lista a WHERE a.id_ambito in (SELECT id_ambito FROM dependencia_ambito WHERE id_dependencia = ?) ORDER BY UPPER(a.nombre)");
+		psDependencias.setLong(1, dependenciaForm.getId());
+		List<AmbitoForm> listAmbits = new ArrayList<>();
+		ResultSet rsAmbits = null;
+		try {
+			rsAmbits = psDependencias.executeQuery();
+			while (rsAmbits.next()) {
+				AmbitoForm ambit = new AmbitoForm();
+				ambit.setId(String.valueOf(rsAmbits.getInt("a.id_ambito")));
+				ambit.setName(rsAmbits.getString("a.nombre"));
+				listAmbits.add(ambit);
+			}
+			dependenciaForm.setAmbitos(listAmbits);
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(psDependencias, rsAmbits);
+		}
+	}
+
+	/**
 	 * Fill where clauses.
 	 *
 	 * @param dependency the dependency
@@ -147,20 +174,39 @@ public final class DependenciaDAO {
 	 * @param ps         the ps
 	 * @param count      the count
 	 * @return the int
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	private static int fillWhereClauses(final DependenciaForm dependency, final String[] tagArr, PreparedStatement ps, int count) throws SQLException {
+	private static int fillWhereClauses(final DependenciaForm dependency, final String[] tagArr, PreparedStatement ps, int count) throws Exception {
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(dependency.getName())) {
 			ps.setString(count++, "%" + dependency.getName() + "%");
 		}
-		if (dependency.getAmbito() != null && !org.apache.commons.lang3.StringUtils.isEmpty(dependency.getAmbito().getId())) {
-			ps.setString(count++, dependency.getAmbito().getId());
+		if (dependency.getAmbitos() != null && !dependency.getAmbitos().isEmpty()) {
+			if (dependency.getAmbitos().size() == 1 && "0".equalsIgnoreCase(dependency.getAmbitos().get(0).getId())) {
+			} else {
+				for (int i = 0; i < dependency.getAmbitos().size(); i++) {
+					ps.setString(count++, dependency.getAmbitos().get(i).getId());
+				}
+			}
 		}
-		if (dependency.getOfficial() != null) {
-			ps.setBoolean(count++, dependency.getOfficial());
+		if (dependency.getOfficialSearch() != null) {
+			if (dependency.getOfficialSearch() != 3) {
+				if (dependency.getOfficialSearch() == 1) {
+					ps.setBoolean(count++, true);
+				}
+				if (dependency.getOfficialSearch() == 0) {
+					ps.setBoolean(count++, false);
+				}
+			}
 		}
-		if (dependency.getSendAuto() != null) {
-			ps.setBoolean(count++, dependency.getSendAuto());
+		if (dependency.getOfficialSearch() != null) {
+			if (dependency.getSendAutoSearch() != 3) {
+				if (dependency.getSendAutoSearch() == 1) {
+					ps.setBoolean(count++, true);
+				}
+				if (dependency.getSendAutoSearch() == 0) {
+					ps.setBoolean(count++, false);
+				}
+			}
 		}
 		if (tagArr != null && tagArr.length > 0) {
 			for (int i = 0; i < tagArr.length; i++) {
@@ -182,14 +228,34 @@ public final class DependenciaDAO {
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(dependency.getName())) {
 			query += " AND UPPER(d.nombre) like UPPER(?) ";
 		}
-		if (dependency.getAmbito() != null && !org.apache.commons.lang3.StringUtils.isEmpty(dependency.getAmbito().getId())) {
-			query += " AND d.id_ambit = ?  ";
+		if (dependency.getAmbitos() != null && !dependency.getAmbitos().isEmpty()) {
+			if (dependency.getAmbitos().size() == 1 && "0".equalsIgnoreCase(dependency.getAmbitos().get(0).getId())) {
+				query += " AND d.id_dependencia NOT IN (SELECT da.id_dependencia FROM dependencia_ambito da) ";
+			} else {
+				query += " AND d.id_dependencia IN (SELECT da.id_dependencia FROM dependencia_ambito da WHERE da.id_ambito IN (";
+				for (int i = 0; i < dependency.getAmbitos().size(); i++) {
+					query += "?";
+					if (i < dependency.getAmbitos().size() - 1) {
+						query += ",";
+					}
+				}
+				query += "))";
+			}
 		}
-		if (dependency.getOfficial() != null) {
-			query += " AND d.official = ?  ";
+		// Multiple values
+		if (dependency.getOfficialSearch() != null) {
+			if (dependency.getOfficialSearch() == 3) {
+				query += " AND d.official IS NULL  ";
+			} else if (dependency.getOfficialSearch() != 2) {
+				query += " AND d.official = ?  ";
+			}
 		}
-		if (dependency.getSendAuto() != null) {
-			query += " AND d.send_auto = ?  ";
+		if (dependency.getSendAutoSearch() != null) {
+			if (dependency.getSendAutoSearch() == 3) {
+				query += " AND d.send_auto IS NULL  ";
+			} else if (dependency.getSendAutoSearch() != 2) {
+				query += " AND d.send_auto = ?  ";
+			}
 		}
 		if (tagArr != null && tagArr.length > 0) {
 			query = query + " AND ( 1=0 ";
@@ -207,9 +273,10 @@ public final class DependenciaDAO {
 	 * @param c  the c
 	 * @param id the id
 	 * @return the dependencia form
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static DependenciaForm findById(Connection c, final Long id) throws SQLException {
+	public static DependenciaForm findById(Connection c, final Long id) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
 		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official, d.acronym FROM dependencia d WHERE d.id_dependencia = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, id);
@@ -218,7 +285,7 @@ public final class DependenciaDAO {
 					DependenciaForm dependenciaForm = new DependenciaForm();
 					dependenciaForm.setId(rs.getLong("d.id_dependencia"));
 					dependenciaForm.setName(rs.getString("d.nombre"));
-					dependenciaForm.setEmails(rs.getString("d.emails"));
+					dependenciaForm.setEmails(formatEmails(rs.getString("d.emails")));
 					if (rs.getInt("d.send_auto") == 0) {
 						dependenciaForm.setSendAuto(false);
 					} else {
@@ -247,10 +314,11 @@ public final class DependenciaDAO {
 	 * @param c    the c
 	 * @param name the name
 	 * @return the dependencia form
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static DependenciaForm findByName(Connection c, final String name) throws SQLException {
-		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,id_ambit, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE d.nombre = ? ";
+	public static DependenciaForm findByName(Connection c, final String name) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
+		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym, e.id_etiqueta, e.nombre FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag WHERE d.nombre = ? ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, name);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -258,7 +326,7 @@ public final class DependenciaDAO {
 					DependenciaForm dependenciaForm = new DependenciaForm();
 					dependenciaForm.setId(rs.getLong("d.id_dependencia"));
 					dependenciaForm.setName(rs.getString("d.nombre"));
-					dependenciaForm.setEmails(rs.getString("d.emails"));
+					dependenciaForm.setEmails(formatEmails(rs.getString("d.emails")));
 					if (rs.getInt("d.send_auto") == 0) {
 						dependenciaForm.setSendAuto(false);
 					} else {
@@ -277,9 +345,7 @@ public final class DependenciaDAO {
 						tag.setName(rs.getString("e.nombre"));
 						dependenciaForm.setTag(tag);
 					}
-					if (!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("d.id_ambit"))) {
-						dependenciaForm.setAmbito(AmbitoDAO.getAmbitByID(c, rs.getString("d.id_ambit")));
-					}
+					loadAmbits(c, dependenciaForm);
 					return dependenciaForm;
 				}
 			}
@@ -296,11 +362,12 @@ public final class DependenciaDAO {
 	 * @param c                         the c
 	 * @param updatedAndNewDependencies the updated and new dependencies
 	 * @return the list
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static List<DependenciaForm> findNotExistsAnNotAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws SQLException {
+	public static List<DependenciaForm> findNotExistsAnNotAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
 		List<DependenciaForm> list = new ArrayList<>();
-		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,id_ambit,e.id_etiqueta, e.nombre "
+		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,e.id_etiqueta, e.nombre "
 				+ "FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag  " + "WHERE d.id_dependencia NOT IN (SELECT sd.id_dependencia FROM semilla_dependencia sd) ";
 		if (updatedAndNewDependencies != null && !updatedAndNewDependencies.isEmpty()) {
 			query = query + "AND UPPER(d.nombre) NOT IN (";
@@ -325,7 +392,7 @@ public final class DependenciaDAO {
 					DependenciaForm dependenciaForm = new DependenciaForm();
 					dependenciaForm.setId(rs.getLong("d.id_dependencia"));
 					dependenciaForm.setName(rs.getString("d.nombre"));
-					dependenciaForm.setEmails(rs.getString("d.emails"));
+					dependenciaForm.setEmails(formatEmails(rs.getString("d.emails")));
 					if (rs.getInt("d.send_auto") == 0) {
 						dependenciaForm.setSendAuto(false);
 					} else {
@@ -344,9 +411,7 @@ public final class DependenciaDAO {
 						tag.setName(rs.getString("e.nombre"));
 						dependenciaForm.setTag(tag);
 					}
-					if (!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("d.id_ambit"))) {
-						dependenciaForm.setAmbito(AmbitoDAO.getAmbitByID(c, rs.getString("d.id_ambit")));
-					}
+					loadAmbits(c, dependenciaForm);
 					list.add(dependenciaForm);
 				}
 			}
@@ -363,11 +428,12 @@ public final class DependenciaDAO {
 	 * @param c                         the c
 	 * @param updatedAndNewDependencies the updated and new dependencies
 	 * @return the list
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static List<DependenciaForm> findNotExistsAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws SQLException {
+	public static List<DependenciaForm> findNotExistsAssociated(Connection c, final List<DependenciaForm> updatedAndNewDependencies) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
 		List<DependenciaForm> list = new ArrayList<>();
-		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,id_ambit,e.id_etiqueta, e.nombre "
+		String query = "SELECT d.id_dependencia, d.nombre, d.emails, d.send_auto, d.official,d.acronym,e.id_etiqueta, e.nombre "
 				+ "FROM dependencia d LEFT JOIN etiqueta e ON e.id_etiqueta = d.id_tag  " + "WHERE d.id_dependencia IN (SELECT sd.id_dependencia FROM semilla_dependencia sd) ";
 		if (updatedAndNewDependencies != null && !updatedAndNewDependencies.isEmpty()) {
 			query = query + "AND UPPER(d.nombre) NOT IN (";
@@ -392,7 +458,7 @@ public final class DependenciaDAO {
 					DependenciaForm dependenciaForm = new DependenciaForm();
 					dependenciaForm.setId(rs.getLong("d.id_dependencia"));
 					dependenciaForm.setName(rs.getString("d.nombre"));
-					dependenciaForm.setEmails(rs.getString("d.emails"));
+					dependenciaForm.setEmails(formatEmails(rs.getString("d.emails")));
 					if (rs.getInt("d.send_auto") == 0) {
 						dependenciaForm.setSendAuto(false);
 					} else {
@@ -411,9 +477,7 @@ public final class DependenciaDAO {
 						tag.setName(rs.getString("e.nombre"));
 						dependenciaForm.setTag(tag);
 					}
-					if (!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("d.id_ambit"))) {
-						dependenciaForm.setAmbito(AmbitoDAO.getAmbitByID(c, rs.getString("d.id_ambit")));
-					}
+					loadAmbits(c, dependenciaForm);
 					list.add(dependenciaForm);
 				}
 			}
@@ -430,9 +494,10 @@ public final class DependenciaDAO {
 	 * @param c           the c
 	 * @param dependencia the dependencia
 	 * @return true, if successful
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static boolean existsDependencia(Connection c, DependenciaForm dependencia) throws SQLException {
+	public static boolean existsDependencia(Connection c, DependenciaForm dependencia) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
 		boolean exists = false;
 		final String query = "SELECT * FROM dependencia WHERE UPPER(nombre) = UPPER(?)";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -453,11 +518,12 @@ public final class DependenciaDAO {
 	 *
 	 * @param c           the c
 	 * @param dependencia the dependencia
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static void save(Connection c, DependenciaForm dependencia) throws SQLException {
-		final String query = "INSERT INTO dependencia(nombre, emails, send_auto, official,id_ambit,id_tag, acronym) VALUES (?,?,?,?,?,?,?)";
-		try (PreparedStatement ps = c.prepareStatement(query)) {
+	public static void save(Connection c, DependenciaForm dependencia) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
+		final String query = "INSERT INTO dependencia(nombre, emails, send_auto, official,id_tag, acronym) VALUES (?,?,?,?,?,?)";
+		try (PreparedStatement ps = c.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, dependencia.getName());
 			ps.setString(2, dependencia.getEmails());
 			if (dependencia.getSendAuto() != null) {
@@ -470,21 +536,48 @@ public final class DependenciaDAO {
 			} else {
 				ps.setNull(4, Types.BOOLEAN);
 			}
-			if (dependencia.getAmbito() != null && StringUtils.isNotEmpty(dependencia.getAmbito().getId())) {
-				ps.setString(5, dependencia.getAmbito().getId());
+			if (dependencia.getTag() != null && dependencia.getTag().getId() != null) {
+				ps.setLong(5, dependencia.getTag().getId());
 			} else {
 				ps.setString(5, null);
 			}
-			if (dependencia.getTag() != null && dependencia.getTag().getId() != null) {
-				ps.setLong(6, dependencia.getTag().getId());
-			} else {
-				ps.setString(6, null);
-			}
-			ps.setString(7, dependencia.getAcronym());
+			ps.setString(6, dependencia.getAcronym());
 			ps.executeUpdate();
+			ResultSet generatedKeys = ps.getGeneratedKeys();
+			insertAmbits(c, dependencia, generatedKeys);
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
+		}
+	}
+
+	/**
+	 * Insert ambits.
+	 *
+	 * @param c             the c
+	 * @param dependencia   the dependencia
+	 * @param generatedKeys the generated keys
+	 * @throws Exception the SQL exception
+	 */
+	private static void insertAmbits(Connection c, DependenciaForm dependencia, ResultSet generatedKeys) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
+		if (generatedKeys.next()) {
+			dependencia.setId(generatedKeys.getLong(1));
+			// Inserción de las nuevas
+			if (dependencia.getAmbitos() != null && !dependencia.getAmbitos().isEmpty()) {
+				StringBuilder slqInsertSemillaDependencia = new StringBuilder("INSERT INTO dependencia_ambito(id_ambito, id_dependencia) VALUES ");
+				for (int i = 0; i < dependencia.getAmbitos().size(); i++) {
+					AmbitoForm currentAmbit = dependencia.getAmbitos().get(i);
+					slqInsertSemillaDependencia.append("(").append(currentAmbit.getId()).append(",").append(dependencia.getId()).append(")");
+					if (i < dependencia.getAmbitos().size() - 1) {
+						slqInsertSemillaDependencia.append(",");
+					}
+				}
+				PreparedStatement psInsertarSemillaDependencia = c.prepareStatement(slqInsertSemillaDependencia.toString());
+				psInsertarSemillaDependencia.executeUpdate();
+			}
+		} else {
+			throw new SQLException("Creating dependencias or tags failed, no ID obtained.");
 		}
 	}
 
@@ -493,32 +586,61 @@ public final class DependenciaDAO {
 	 *
 	 * @param c           the c
 	 * @param dependencia the dependencia
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static void update(Connection c, DependenciaForm dependencia) throws SQLException {
-		// d.emails, d.send_auto, d.official
-		final String query = "UPDATE dependencia SET nombre = ?, emails = ?, send_auto = ? , official = ?, id_ambit = ?, id_tag = ?, acronym =?   WHERE id_dependencia = ?";
+	public static void update(Connection c, DependenciaForm dependencia) throws Exception {
+		final String query = "UPDATE dependencia SET nombre = ?, emails = ?, send_auto = ? , official = ?, id_tag = ?, acronym =?   WHERE id_dependencia = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, dependencia.getName());
 			ps.setString(2, dependencia.getEmails());
 			ps.setBoolean(3, dependencia.getSendAuto());
 			ps.setBoolean(4, dependencia.getOfficial());
-			if (dependencia.getAmbito() != null && StringUtils.isNotEmpty(dependencia.getAmbito().getId())) {
-				ps.setString(5, dependencia.getAmbito().getId());
+			if (dependencia.getTag() != null && dependencia.getTag().getId() != null) {
+				ps.setLong(5, dependencia.getTag().getId());
 			} else {
 				ps.setString(5, null);
 			}
-			if (dependencia.getTag() != null && dependencia.getTag().getId() != null) {
-				ps.setLong(6, dependencia.getTag().getId());
-			} else {
-				ps.setString(6, null);
-			}
-			ps.setString(7, dependencia.getAcronym());
-			ps.setLong(8, dependencia.getId());
+			ps.setString(6, dependencia.getAcronym());
+			ps.setLong(7, dependencia.getId());
 			ps.executeUpdate();
+			updateDependencyAmbits(c, dependencia);
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
+		}
+	}
+
+	/**
+	 * Update dependency ambits.
+	 *
+	 * @param c           the c
+	 * @param dependencia the dependencia
+	 * @throws Exception the SQL exception
+	 */
+	private static void updateDependencyAmbits(Connection c, DependenciaForm dependencia) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
+		// Update ambits
+		// Borrar las relaciones (no se pueden crear FK a lista por MyISAM no
+		// lo permite
+		try {
+			PreparedStatement deleteSemillaDependencia = c.prepareStatement("DELETE FROM dependencia_ambito WHERE id_dependencia = ?");
+			deleteSemillaDependencia.setLong(1, dependencia.getId());
+			deleteSemillaDependencia.executeUpdate();
+		} catch (SQLException e) {
+			Logger.putLog("Error al eliminar las dependencias previas", DependenciaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		// Inserción de las nuevas
+		if (dependencia.getAmbitos() != null && !dependencia.getAmbitos().isEmpty()) {
+			StringBuilder slqInsertSemillaDependencia = new StringBuilder("INSERT INTO dependencia_ambito(id_ambito, id_dependencia) VALUES ");
+			for (int i = 0; i < dependencia.getAmbitos().size(); i++) {
+				AmbitoForm currentAmbit = dependencia.getAmbitos().get(i);
+				slqInsertSemillaDependencia.append("(").append(currentAmbit.getId()).append(",").append(dependencia.getId()).append(")");
+				if (i < dependencia.getAmbitos().size() - 1) {
+					slqInsertSemillaDependencia.append(",");
+				}
+			}
+			PreparedStatement psInsertarSemillaDependencia = c.prepareStatement(slqInsertSemillaDependencia.toString());
+			psInsertarSemillaDependencia.executeUpdate();
 		}
 	}
 
@@ -527,9 +649,10 @@ public final class DependenciaDAO {
 	 *
 	 * @param c             the c
 	 * @param idDependencia the id dependencia
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static void delete(Connection c, Long idDependencia) throws SQLException {
+	public static void delete(Connection c, Long idDependencia) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM dependencia WHERE id_dependencia = ?")) {
 			ps.setLong(1, idDependencia);
 			ps.executeUpdate();
@@ -544,9 +667,10 @@ public final class DependenciaDAO {
 	 *
 	 * @param c            the c
 	 * @param dependencies the dependencies
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static void delete(Connection c, final List<DependenciaForm> dependencies) throws SQLException {
+	public static void delete(Connection c, final List<DependenciaForm> dependencies) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
 		if (dependencies != null && !dependencies.isEmpty()) {
 			String query = "DELETE FROM dependencia WHERE 1=1";
 			query = query + " AND id_dependencia IN (" + dependencies.get(0).getId();
@@ -574,9 +698,10 @@ public final class DependenciaDAO {
 	 *
 	 * @param c            the c
 	 * @param dependencies the dependencies
-	 * @throws SQLException the SQL exception
+	 * @throws Exception the SQL exception
 	 */
-	public static void saveOrUpdate(Connection c, final List<DependenciaForm> dependencies) throws SQLException {
+	public static void saveOrUpdate(Connection c, final List<DependenciaForm> dependencies) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
@@ -606,7 +731,7 @@ public final class DependenciaDAO {
 					dependency.setTag(newTag);
 				}
 				if (dependency.getId() != null) {
-					ps = c.prepareStatement("UPDATE dependencia SET  emails = ?, official = ?, id_tag = ?, acronym = ?, id_ambit=?  WHERE id_dependencia = ?");
+					ps = c.prepareStatement("UPDATE dependencia SET  emails = ?, official = ?, id_tag = ?, acronym = ? WHERE id_dependencia = ?");
 					ps.setString(1, dependency.getEmails());
 					ps.setNull(2, Types.BIGINT);
 					if (dependency.getOfficial() != null) {
@@ -617,14 +742,12 @@ public final class DependenciaDAO {
 						ps.setLong(3, dependency.getTag().getId());
 					}
 					ps.setString(4, dependency.getAcronym());
-					if (dependency.getAmbito() != null) {
-						ps.setString(5, dependency.getAmbito().getId());
-					}
-					ps.setLong(6, dependency.getId());
+					updateDependencyAmbits(c, dependency);
+					ps.setLong(5, dependency.getId());
 					ps.executeUpdate();
 				} else {
 					ps = c.prepareStatement(
-							"INSERT INTO dependencia(nombre, emails, official,id_tag,acronym,id_ambit, send_auto) VALUES (?,?,?,?,?,?, 1) ON DUPLICATE KEY UPDATE emails=?, official=?, id_tag=?, acronym=?, id_ambit=?");
+							"INSERT INTO dependencia(nombre, emails, official,id_tag,acronym, send_auto) VALUES (?,?,?,?,?, 1) ON DUPLICATE KEY UPDATE emails=?, official=?, id_tag=?, acronym=?");
 					ps.setString(1, dependency.getName());
 					ps.setString(2, dependency.getEmails());
 					ps.setNull(3, Types.BIGINT);
@@ -636,22 +759,14 @@ public final class DependenciaDAO {
 						ps.setLong(4, dependency.getTag().getId());
 					}
 					ps.setString(5, dependency.getAcronym());
-					ps.setNull(6, Types.BIGINT);
-					if (dependency.getAmbito() != null) {
-						ps.setString(6, dependency.getAmbito().getId());
-					}
-					ps.setString(7, dependency.getEmails());
-					ps.setBoolean(8, dependency.getOfficial());
+					ps.setString(6, dependency.getEmails());
+					ps.setBoolean(7, dependency.getOfficial());
 					if (dependency.getTag() != null) {
-						ps.setLong(9, dependency.getTag().getId());
+						ps.setLong(8, dependency.getTag().getId());
 					} else {
-						ps.setNull(9, Types.BIGINT);
+						ps.setNull(8, Types.BIGINT);
 					}
-					ps.setString(10, dependency.getAcronym());
-					ps.setNull(11, Types.BIGINT);
-					if (dependency.getAmbito() != null) {
-						ps.setString(11, dependency.getAmbito().getId());
-					}
+					ps.setString(9, dependency.getAcronym());
 					ps.executeUpdate();
 				}
 			}
@@ -663,5 +778,19 @@ public final class DependenciaDAO {
 		} finally {
 			DAOUtils.closeQueries(ps, null);
 		}
+	}
+
+	/**
+	 * Email formatter
+	 * 
+	 * @param emails
+	 * @return Formatted emails
+	 */
+	private static String formatEmails(String emails) {
+		String formattedEmails = "";
+		if (emails != null) {
+			formattedEmails = emails.trim().replaceAll("\\s+", "");
+		}
+		return formattedEmails;
 	}
 }

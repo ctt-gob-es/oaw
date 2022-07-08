@@ -6180,8 +6180,7 @@
 		</machine>
 	</check>
 
-
-	<check id="489" key="html" confidence="high">
+<check id="489" key="html" confidence="high">
 		<prerequisite id="488" />
 		<name>Se verifica que en la declaración de accesibilidad se indica la fecha de su preparación.
 		</name>
@@ -6198,7 +6197,7 @@
 			<function call="section-has-date" node="." value="check.126.regex.pattern.2"
 				attribute1="check.488.regex.pattern" attribute2="check.489.regex.pattern.date.4" />
 			<function call="section-has-date" node="." value="check.126.regex.pattern.2"
-				attribute1="check.48	n8.regex.pattern" attribute2="check.489.regex.pattern.date.5" />
+				attribute1="check.488.regex.pattern" attribute2="check.489.regex.pattern.date.5" />
 			<function call="section-has-date" node="." value="check.126.regex.pattern.2"
 				attribute1="check.488.regex.pattern" attribute2="check.489.regex.pattern.date.6" />
 		</machine>

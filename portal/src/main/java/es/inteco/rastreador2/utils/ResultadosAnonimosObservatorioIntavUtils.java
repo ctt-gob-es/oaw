@@ -184,7 +184,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 			final String idExecution = request.getParameter(Constants.ID);
 			final MessageResources messageResources = CrawlerUtils.getResources(request);
 			final String noDataMess = messageResources.getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
-			final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(idExecution, Long.parseLong(category.getId()), null);
+			final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(idExecution, Long.parseLong(category.getId()), null, false);
 			if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 				String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.title", category.getName());
 				String file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.segment.name", category.getOrden()) + ".jpg";
@@ -1232,7 +1232,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 	}
 
 	/**
-	 * Gets the global result data.
+	 * Gets the global result data if is not a annexes generation
 	 *
 	 * @param executionId       the execution id
 	 * @param categoryId        the category id
@@ -1241,7 +1241,21 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 	 * @throws Exception the exception
 	 */
 	public static List<ObservatoryEvaluationForm> getGlobalResultData(String executionId, long categoryId, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-		return getGlobalResultData(executionId, categoryId, pageExecutionList, null);
+		return getGlobalResultData(executionId, categoryId, pageExecutionList, null, false);
+	}
+
+	/**
+	 * Gets the global result data during annexes generation
+	 *
+	 * @param executionId       the execution id
+	 * @param categoryId        the category id
+	 * @param pageExecutionList the page execution list
+	 * @param originAnnexes
+	 * @return the global result data
+	 * @throws Exception the exception
+	 */
+	public static List<ObservatoryEvaluationForm> getGlobalResultData(String executionId, long categoryId, List<ObservatoryEvaluationForm> pageExecutionList, boolean originAnnexes) throws Exception {
+		return getGlobalResultData(executionId, categoryId, pageExecutionList, null, originAnnexes);
 	}
 
 	/**
@@ -1254,14 +1268,15 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 	 * @return the global result data
 	 * @throws Exception the exception
 	 */
-	public static List<ObservatoryEvaluationForm> getGlobalResultData(String executionId, long categoryId, List<ObservatoryEvaluationForm> pageExecutionList, Long idCrawler) throws Exception {
+	public static List<ObservatoryEvaluationForm> getGlobalResultData(String executionId, long categoryId, List<ObservatoryEvaluationForm> pageExecutionList, Long idCrawler, boolean originAnnexes)
+			throws Exception {
 		List<ObservatoryEvaluationForm> observatoryEvaluationList = null;
 		Connection conn = null;
 		try {
 			observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
 		} catch (NeedsRefreshException nre) {
 			Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioIntavUtils.class,
-					Logger.LOG_LEVEL_ERROR);
+					Logger.LOG_LEVEL_WARNING);
 			try {
 				observatoryEvaluationList = new ArrayList<>();
 				List<Long> listAnalysis = new ArrayList<>();
@@ -1285,7 +1300,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 					for (Long idAnalysis : listAnalysis) {
 						// Logger.putLog(" i= " + i + "/" + listAnalysis.size() + "(" + idAnalysis + ")", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR);
 						i++;
-						final Evaluation evaluation = evaluator.getObservatoryAnalisisDB(conn, idAnalysis, EvaluatorUtils.getDocList());
+						final Evaluation evaluation = evaluator.getObservatoryAnalisisDB(conn, idAnalysis, EvaluatorUtils.getDocList(), originAnnexes);
 						final String methodology = ObservatorioDAO.getMethodology(conn, Long.parseLong(executionId));
 						RastreoDAO.getFullfilledCrawlingExecution(conn, Long.parseLong(executionId));
 						String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(conn, idAnalysis);

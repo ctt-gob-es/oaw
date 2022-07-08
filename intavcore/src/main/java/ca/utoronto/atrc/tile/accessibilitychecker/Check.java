@@ -2597,6 +2597,12 @@ public class Check {
 		if (nodeList != null && nodeList.getLength() > 0) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					// divs are allowed
+//					if (nodeList.item(i).getNodeName().equalsIgnoreCase("div")) {
+//						// TODO Recursively??
+//						// continue;
+//						return functionDefinitionListConstruction(checkCode, null, (Element) nodeList.item(i));
+//					} else
 					if (nodeList.item(i).getNodeName().equalsIgnoreCase("dd")) {
 						if (!isDt) {
 							if (!dtHasDd) {
@@ -4837,7 +4843,7 @@ public class Check {
 		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
 			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
 		}
-		boolean found = false;
+
 		String key1 = checkCode.getFunctionAttribute1();
 		String regexp1 = pm.getValue("check.patterns.properties", key1);
 		if (accessibilityLinks.isEmpty()) {
@@ -4884,7 +4890,7 @@ public class Check {
 		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
 			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
 		}
-		boolean found = false;
+
 		if (accessibilityLinks.isEmpty()) {
 			Logger.putLog("No hay enlaces: ", Check.class, Logger.LOG_LEVEL_ERROR);
 			// Si no hay enlaces es porque estamos en la página de accesibilidad
@@ -5840,8 +5846,7 @@ public class Check {
 	 * @return true, if successful
 	 */
 	private boolean functionAttributesAreEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-		String attribute1 = checkCode.getFunctionAttribute1();
-		String attribute2 = checkCode.getFunctionAttribute2();
+		
 		elementGiven.getAttribute("content");
 		String content = elementGiven.getAttributes().getNamedItem("content").getTextContent();
 		if (content != null && content.contains("initial-scale") && content.contains("maximum-scale")) {

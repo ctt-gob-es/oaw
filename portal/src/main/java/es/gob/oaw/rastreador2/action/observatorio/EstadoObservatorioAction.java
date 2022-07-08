@@ -107,6 +107,28 @@ public class EstadoObservatorioAction extends Action {
 				Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 			}
 			return null;
+		} else if (action != null && "finishWithoutResults".equalsIgnoreCase(action)) {
+			final Integer idEjecucionObservatorio = Integer.valueOf(request.getParameter(Constants.ID_EX_OBS));
+			final Integer idObservatory = Integer.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
+			try (Connection c = DataBaseManager.getConnection()) {
+				// Without results
+				List<Long> finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis(c, idObservatory.longValue(),
+						idEjecucionObservatorio.longValue());
+				List<ResultadoSemillaFullForm> finishWithoutResults = new ArrayList<ResultadoSemillaFullForm>();
+				if (finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis != null && !finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis.isEmpty()) {
+					finishWithoutResults = ObservatorioDAO.getResultSeedsFullFromObservatoryByIds(c, new SemillaForm(), idEjecucionObservatorio.longValue(), 0l, -1,
+							finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis);
+				}
+				String jsonAmbitos = new Gson().toJson(finishWithoutResults);
+				PrintWriter pw = response.getWriter();
+				pw.write("{\"seeds\": " + jsonAmbitos.toString() + ",\"paginador\": {\"total\":" + finishWithoutResults.size() + "}}");
+				// pw.write(jsonAmbitos);
+				pw.flush();
+				pw.close();
+			} catch (Exception e) {
+				Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+			return null;
 		} else {
 			final Integer idObservatory = Integer.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 			final Integer idEjecucionObservatorio = Integer.valueOf(request.getParameter(Constants.ID_EX_OBS));

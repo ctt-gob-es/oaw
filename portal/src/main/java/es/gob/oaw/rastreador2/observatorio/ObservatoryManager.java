@@ -53,24 +53,37 @@ public class ObservatoryManager {
 	}
 
 	/**
-	 * Devuelve los análisis de las páginas correspondientes a la ejecución de un rastreo con la metodología del observatorio.
+	 * Devuelve los análisis de las páginas correspondientes a la ejecución de un rastreo con la metodología del observatorio si no se están generando anexos
 	 *
 	 * @param idObservatoryExecution identificador correspondiente a una ejecución (iteración) de un observatorio
 	 * @param evaluationIds          identificadores de análisis de página que se quieren evaluar
 	 * @return una lista con las evaluaciones de las páginas correspondientes a la ejecución indicada
 	 */
 	public List<ObservatoryEvaluationForm> getObservatoryEvaluationsFromObservatoryExecution(final long idObservatoryExecution, final List<Long> evaluationIds) {
+		return getObservatoryEvaluationsFromObservatoryExecution(idObservatoryExecution, evaluationIds, false);
+	}
+
+	/**
+	 * Devuelve los análisis de las páginas correspondientes a la ejecución de un rastreo con la metodología del observatorio si se generan anexos.
+	 *
+	 * @param idObservatoryExecution identificador correspondiente a una ejecución (iteración) de un observatorio
+	 * @param evaluationIds          identificadores de análisis de página que se quieren evaluar
+	 * @param originAnnexes          flag para determinar si el origen de la petición es una generación de anexos.
+	 * @return una lista con las evaluaciones de las páginas correspondientes a la ejecución indicada
+	 */
+	public List<ObservatoryEvaluationForm> getObservatoryEvaluationsFromObservatoryExecution(final long idObservatoryExecution, final List<Long> evaluationIds, final boolean originAnnexes) {
 		final List<ObservatoryEvaluationForm> evaluationList = new ArrayList<>(evaluationIds.size());
 		try (Connection c = DataBaseManager.getConnection()) {
 			final String methodology = ObservatorioDAO.getMethodology(c, idObservatoryExecution);
+			String aplicacion = CartuchoDAO.getApplicationFromIdExObs(c, idObservatoryExecution);
 			final Evaluator evaluator = new Evaluator();
 			for (Long id : evaluationIds) {
 				try {
-					final Evaluation evaluation = evaluator.getAnalisisDB(c, id, EvaluatorUtils.getDocList(), false);
-					String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, id);
+					final Evaluation evaluation = evaluator.getAnalisisDB(c, id, EvaluatorUtils.getDocList(), false, originAnnexes);
+//					String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, id);
 					boolean pointWarning = Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion) ? true : false;
 					final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, true, pointWarning);
-					// TODO ADD SEED
+					// ADD SEED
 					final FulfilledCrawlingForm ffCrawling = RastreoDAO.getFullfilledCrawlingExecution(c, evaluationForm.getCrawlerExecutionId());
 					if (ffCrawling != null) {
 						final SeedForm seedForm = new SeedForm();
@@ -224,13 +237,13 @@ public class ObservatoryManager {
 						rankingInfo.setGlobalSeedsNumber(rankingInfo.getGlobalSeedsNumber() + 1);
 					}
 					final BigDecimal seedFormScore = new BigDecimal(seedForm.getScore());
-					if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
+					if (rankingInfo.getScore() != null && seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
 						rankingInfo.incrementGlobalRank();
 					}
 					// Category rank
 					if (currentSeed.getCategoria() != null && currentSeed.getCategoria().getId().equals(String.valueOf(seedForm.getIdCategory()))) {
 						rankingInfo.setCategorySeedsNumber(rankingInfo.getCategorySeedsNumber() + 1);
-						if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
+						if (rankingInfo.getScore() != null && seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
 							rankingInfo.incrementCategoryRank();
 						}
 					}
@@ -238,7 +251,7 @@ public class ObservatoryManager {
 					if (currentSeed.getComplejidad() != null && currentSeed.getComplejidad().getId() != null
 							&& currentSeed.getComplejidad().getId().equals(String.valueOf(seedForm.getIdComplexity()))) {
 						rankingInfo.setComplexitySeedsNumber(rankingInfo.getComplexitySeedsNumber() + 1);
-						if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
+						if (rankingInfo.getScore() != null && seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
 							rankingInfo.incrementComplexityRank();
 						}
 					}

@@ -403,11 +403,11 @@ public final class EtiquetaDAO {
 	 * @param c     the c
 	 * @param idTag the id tag
 	 * @return the by id
-	 * @throws Exception the exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static EtiquetaForm getById(Connection c, final int idTag) throws SQLException {
 		EtiquetaForm tag = null;
-		String query = "SELECT c.id_etiqueta, c.nombre FROM etiqueta c WHERE c.id_etiqueta = ?";
+		String query = "SELECT c.id_etiqueta, c.nombre FROM etiqueta c WHERE 1=1 AND c.id_etiqueta = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setInt(1, idTag);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -422,6 +422,57 @@ public final class EtiquetaDAO {
 			throw e;
 		}
 		return tag;
+	}
+
+	/**
+	 * Gets the by id.
+	 *
+	 * @param c             the c
+	 * @param idsTags       the ids tags
+	 * @param clasification the clasification
+	 * @return the by id
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<EtiquetaForm> getByIdsAndClasification(Connection c, final String[] idsTags, final int clasification) throws SQLException {
+		List<EtiquetaForm> tags = new ArrayList<>();
+		String query = "SELECT c.id_etiqueta, c.nombre FROM etiqueta c WHERE 1=1 AND c.id_clasificacion = ?";
+		if (idsTags != null && idsTags.length > 0) {
+			query += " AND c.id_etiqueta IN (";
+			for (int i = 0; i < idsTags.length; i++) {
+				if (!org.apache.commons.lang3.StringUtils.isEmpty(idsTags[i])) {
+					query += "?";
+					if (i < idsTags.length - 1) {
+						query += ",";
+					}
+				}
+			}
+			query += ")";
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			int paramIndex = 1;
+			ps.setInt(paramIndex, clasification);
+			paramIndex++;
+			if (idsTags != null && idsTags.length > 0) {
+				for (int i = 0; i < idsTags.length; i++) {
+					if (!org.apache.commons.lang3.StringUtils.isEmpty(idsTags[i])) {
+						ps.setInt(paramIndex, Integer.parseInt(idsTags[i]));
+						paramIndex++;
+					}
+				}
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					EtiquetaForm tag = new EtiquetaForm();
+					tag.setId(Long.parseLong(rs.getString("c.id_etiqueta")));
+					tag.setName(rs.getString("c.nombre"));
+					tags.add(tag);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return tags;
 	}
 
 	/**
