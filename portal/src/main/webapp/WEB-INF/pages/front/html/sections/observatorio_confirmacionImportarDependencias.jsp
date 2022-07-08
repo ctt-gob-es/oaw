@@ -103,9 +103,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</logic:notEmpty>
 										</td>
 										<td>
-											<logic:notEmpty name="dependency" property="ambito">
-												<bean:write name="dependency" property="ambito.name" />
-											</logic:notEmpty>
+											<%-- 											<logic:notEmpty name="dependency" property="ambito"> --%>
+											<%-- 												<bean:write name="dependency" property="ambito.name" /> --%>
+											<%-- 											</logic:notEmpty> --%>
+											<logic:iterate name="dependency" property="ambitos" id="ambito">
+												<bean:write name="ambito" property="name" />
+											</logic:iterate>
 										</td>
 										<td>
 											<logic:equal name="dependency" property="official" value="true">
@@ -194,9 +197,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</logic:notEmpty>
 										</td>
 										<td>
-											<logic:notEmpty name="dependency" property="dependency.ambito">
-												<bean:write name="dependency" property="dependency.ambito.name" />
-											</logic:notEmpty>
+											<%-- 											<logic:notEmpty name="dependency" property="dependency.ambito"> --%>
+											<%-- 												<bean:write name="dependency" property="dependency.ambito.name" /> --%>
+											<%-- 											</logic:notEmpty> --%>
+											<logic:iterate name="dependency" property="dependency.ambitos" id="ambito">
+												<bean:write name="ambito" property="name" />
+											</logic:iterate>
 										</td>
 										<td>
 											<logic:equal name="dependency" property="dependency.official" value="true">
@@ -224,9 +230,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</logic:notEmpty>
 										</td>
 										<td class="<c:if test="${dependency.sameAmbit!=true}">warning-import</c:if>">
-											<logic:notEmpty name="dependency" property="newDependency.ambito">
-												<bean:write name="dependency" property="newDependency.ambito.name" />
-											</logic:notEmpty>
+<%-- 											<logic:notEmpty name="dependency" property="newDependency.ambito"> --%>
+<%-- 												<bean:write name="dependency" property="newDependency.ambito.name" /> --%>
+<%-- 											</logic:notEmpty> --%>
+		<logic:iterate name="dependency" property="newDependency.ambitos" id="ambito">
+												<bean:write name="ambito" property="name" />
+											</logic:iterate>
 										</td>
 										<td class="<c:if test="${dependency.sameOfficial!=true}">warning-import</c:if>">
 											<logic:equal name="dependency" property="newDependency.official" value="true">
@@ -303,9 +312,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</logic:notEmpty>
 										</td>
 										<td>
-											<logic:notEmpty name="dependency" property="ambito">
-												<bean:write name="dependency" property="ambito.name" />
-											</logic:notEmpty>
+											<%-- 											<logic:notEmpty name="dependency" property="ambito"> --%>
+											<%-- 												<bean:write name="dependency" property="ambito.name" /> --%>
+											<%-- 											</logic:notEmpty> --%>
+											<logic:iterate name="dependency" property="ambitos" id="ambito">
+												<bean:write name="ambito" property="name" />
+											</logic:iterate>
 										</td>
 										<td>
 											<logic:equal name="dependency" property="official" value="true">
@@ -382,9 +394,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</logic:notEmpty>
 										</td>
 										<td>
-											<logic:notEmpty name="dependency" property="ambito">
-												<bean:write name="dependency" property="ambito.name" />
-											</logic:notEmpty>
+											<%-- 											<logic:notEmpty name="dependency" property="ambito"> --%>
+											<%-- 												<bean:write name="dependency" property="ambito.name" /> --%>
+											<%-- 											</logic:notEmpty> --%>
+											<logic:iterate name="dependency" property="ambitos" id="ambito">
+												<bean:write name="ambito" property="name" />
+											</logic:iterate>
 										</td>
 										<td>
 											<logic:equal name="dependency" property="official" value="true">
@@ -461,9 +476,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</logic:notEmpty>
 										</td>
 										<td>
-											<logic:notEmpty name="dependency" property="ambito">
-												<bean:write name="dependency" property="ambito.name" />
-											</logic:notEmpty>
+											<%-- 											<logic:notEmpty name="dependency" property="ambito"> --%>
+											<%-- 												<bean:write name="dependency" property="ambito.name" /> --%>
+											<%-- 											</logic:notEmpty> --%>
+											<logic:iterate name="dependency" property="ambitos" id="ambito">
+												<bean:write name="ambito" property="name" />
+											</logic:iterate>
 										</td>
 										<td>
 											<logic:equal name="dependency" property="official" value="true">
@@ -541,9 +559,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</logic:notEmpty>
 										</td>
 										<td>
-											<logic:notEmpty name="dependency" property="ambito">
-												<bean:write name="dependency" property="ambito.name" />
-											</logic:notEmpty>
+											<%-- 											<logic:notEmpty name="dependency" property="ambito"> --%>
+											<%-- 												<bean:write name="dependency" property="ambito.name" /> --%>
+											<%-- 											</logic:notEmpty> --%>
+											<logic:iterate name="dependency" property="ambitos" id="ambito">
+												<bean:write name="ambito" property="name" />
+											</logic:iterate>
 										</td>
 										<td>
 											<logic:equal name="dependency" property="official" value="true">

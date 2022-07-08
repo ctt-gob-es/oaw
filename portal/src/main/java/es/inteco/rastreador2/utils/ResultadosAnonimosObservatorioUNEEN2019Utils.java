@@ -2059,7 +2059,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 */
 	public static List<ObservatoryEvaluationForm> getGlobalResultData(final String executionId, final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList,
 			boolean isComplexityFilter, String[] tagsFilter) throws Exception {
-		return getGlobalResultData(executionId, categoryId, pageExecutionList, null, isComplexityFilter, tagsFilter);
+		return getGlobalResultData(executionId, categoryId, pageExecutionList, null, isComplexityFilter, tagsFilter, false);
 	}
 
 	/**
@@ -2075,10 +2075,10 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static List<ObservatoryEvaluationForm> getGlobalResultData(final String executionId, final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList, final Long idCrawler,
-			boolean isComplexityFilter, String[] tagsFilter) throws Exception {
+			boolean isComplexityFilter, String[] tagsFilter, final boolean originAnnexes) throws Exception {
 		List<ObservatoryEvaluationForm> observatoryEvaluationList;
 		Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioUNEEN2019Utils.class,
-				Logger.LOG_LEVEL_INFO);
+				Logger.LOG_LEVEL_WARNING);
 		try (Connection c = DataBaseManager.getConnection()) {
 			observatoryEvaluationList = new ArrayList<>();
 			final List<Long> listAnalysis = new ArrayList<>();
@@ -2103,7 +2103,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				}
 				final Evaluator evaluator = new Evaluator();
 				for (Long idAnalysis : listAnalysis) {
-					final Evaluation evaluation = evaluator.getObservatoryAnalisisDB(c, idAnalysis, EvaluatorUtils.getDocList());
+					final Evaluation evaluation = evaluator.getObservatoryAnalisisDB(c, idAnalysis, EvaluatorUtils.getDocList(), originAnnexes);
 					final String methodology = ObservatorioDAO.getMethodology(c, Long.parseLong(executionId));
 					final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false, true);
 					evaluationForm.setObservatoryExecutionId(Long.parseLong(executionId));

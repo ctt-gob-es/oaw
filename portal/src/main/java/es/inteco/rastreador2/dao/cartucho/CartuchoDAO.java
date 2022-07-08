@@ -198,4 +198,21 @@ public final class CartuchoDAO {
 			throw e;
 		}
 	}
+
+	public static String getApplicationFromIdExObs(final Connection c, final Long idExobs) throws SQLException {
+		try (PreparedStatement ps = c.prepareStatement(
+				"SELECT c.aplicacion FROM observatorio o JOIN observatorios_realizados obr ON o.id_observatorio = obr.id_observatorio JOIN cartucho c ON o.id_cartucho = c.id_cartucho WHERE obr.id = ?")) {
+			ps.setLong(1, idExobs);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					return rs.getString("aplicacion");
+				} else {
+					return null;
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
 }

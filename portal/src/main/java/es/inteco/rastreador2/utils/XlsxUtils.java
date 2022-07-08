@@ -3,6 +3,7 @@ package es.inteco.rastreador2.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -311,6 +312,10 @@ public class XlsxUtils {
 		paleBlueBackgroundWhite10Font.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
 		paleBlueBackgroundWhite10Font.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		paleBlueBackgroundWhite10Font.setFont(blackNormal10Font);
+		paleBlueBackgroundWhite10Font.setBorderBottom(BorderStyle.THIN);
+		paleBlueBackgroundWhite10Font.setBorderTop(BorderStyle.THIN);
+		paleBlueBackgroundWhite10Font.setBorderRight(BorderStyle.THIN);
+		paleBlueBackgroundWhite10Font.setBorderLeft(BorderStyle.THIN);
 		cellStyles.put(PALE_BLUE_BACKGROUND_WHITE10_FONT, paleBlueBackgroundWhite10Font);
 	}
 

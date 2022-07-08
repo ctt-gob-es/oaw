@@ -117,7 +117,7 @@ public final class SendResultsMailUtils {
 				ura.setSendDate(null);
 				// Find Dependency
 				DependenciaForm dependency = DependenciaDAO.findById(c, ura.getUraId());
-				String xlsxFilePath = annexPath + "/Dependencias/" + dependency.getName() + ".xlsx";
+				String xlsxFilePath = annexPath + "/Dependencias_v2/" + dependency.getName() + ".xlsx";
 				String pdfZipPath = pdfZipsPath.get(PDFUtils.formatSeedName(dependency.getName()));
 				if (!StringUtils.isEmpty(pdfZipPath) && !StringUtils.isEmpty(xlsxFilePath)) {
 					File xlsx = new File(xlsxFilePath);
@@ -284,7 +284,10 @@ public final class SendResultsMailUtils {
 	 * @return the pdfs
 	 */
 	private static Map<String, String> getPdfs(final Long idObservatory, final Long idObservatoryExecution, final List<FulFilledCrawling> fulfilledCrawlings) {
+		int i = 0;
 		for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
+			i++;
+			Logger.putLog("Generando PDF: " + i + "/" + fulfilledCrawlings.size() + " - " + fulfilledCrawling.getSeed().getNombre(), SendResultsMailUtils.class, Logger.LOG_LEVEL_ERROR);
 			buildPdf(idObservatory, idObservatoryExecution, fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling());
 		}
 		PropertiesManager pmgr = new PropertiesManager();
@@ -319,7 +322,7 @@ public final class SendResultsMailUtils {
 		final MailService mailService = new MailService();
 		// Get emails from URA
 		List<String> mailsTo = new LinkedList<String>(Arrays.asList(ura.getEmails().split(";")));
-		// TODO Check if can send as cco
+		// Check if can send as cco
 		List<String> mailsToCco = new ArrayList<>();
 		if (!StringUtils.isEmpty(cco)) {
 			mailsToCco.add(cco);
@@ -419,7 +422,7 @@ public final class SendResultsMailUtils {
 	 * @return the calendar
 	 * @throws SQLException the SQL exception
 	 */
-	private static Calendar calculateExpirationDate(Connection c) throws SQLException {
+	private static Calendar calculateExpirationDate(Connection c) throws Exception {
 		int days = ObservatorioDAO.getFileExpirationFromConfig(c);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(new Date());
