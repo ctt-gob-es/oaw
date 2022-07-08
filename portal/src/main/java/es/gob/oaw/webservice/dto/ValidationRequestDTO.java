@@ -1,8 +1,8 @@
 package es.gob.oaw.webservice.dto;
 
-public class CodeAnalysisDTO {
+public class ValidationRequestDTO {
 	private String code;
-	private String email;
+	private String url;
 
 	public String getCode() {
 		return code;
@@ -12,11 +12,11 @@ public class CodeAnalysisDTO {
 		this.code = code;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getUrl() {
+		return url;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 }
