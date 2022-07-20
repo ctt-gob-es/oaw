@@ -280,7 +280,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											{
 												editUrl : '/oaw/secure/estadoObservatorio.do?action=finishWithoutResults&idExObs='
 													+ $('[name=idExObs]').val()+"&id_observatorio="+ $('[name=id_observatorio]').val(),
-												colNames : [ colNameId2, colNameName, 
+												colNames : [ colNameId2, colNameName, colNameComplex, "URLs",
 													 colNameObs,
 													colNameRelaunch ],
 													
@@ -292,15 +292,31 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															width : 5,
 															editable : false,
 														},
-
 														{
 															name : "nombre",
 															width : 30,
 															sortable : false,
 															align : "left",
 															editable : false,
-														}
-														,{														
+														},
+														{
+															name : "complejidad.name",
+															width : 10,
+															align : "center",
+															sortable : false,
+															editable : false,
+															
+														},
+														{
+															name : "listaUrlsString",
+															align : "left",
+															width : 50,
+															edittype : 'custom',
+															sortable : false,
+															formatter : urlsFormatter,
+															editable : false
+														},
+														{														
 															name : "observaciones",
 															width : 20,
 															align : "left",
