@@ -46,7 +46,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	
 	function reloadGrid(path) {
 
-		lastUrl = path;
+		lastUrlResults = path;
 
 		// Mantener el scroll
 		scroll = $(window).scrollTop();
@@ -141,7 +141,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												],
 												inlineEditing : {
 													keys : true,
-													defaultFocusField : "observaciones"
+													defaultFocusField : "observaciones",
+													focusField: "observaciones",
 												},
 												cmTemplate : {
 													autoResizable : true,
@@ -172,11 +173,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 																		restoreAfterError : false,
 																		successfunc : function(
 																				response) {
-																			reloadGrid(lastUrl);
+																			reloadGrid(lastUrlResults);
 																		},
 																		afterrestorefunc : function(
 																				response) {
-																			reloadGrid(lastUrl);
+																			reloadGrid(lastUrlResults);
 																		}
 
 																	});
@@ -205,11 +206,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 																			{
 																				successfunc : function(
 																						response) {
-																					reloadGrid(lastUrl);
+																					reloadGrid(lastUrlResults);
 																				},
 																				afterrestorefunc : function(
 																						response) {
-																					reloadGrid(lastUrl);
+																					reloadGrid(lastUrlResults);
 																				},
 																				url : '/oaw/secure/estadoObservatorio.do?action=update',
 																				restoreAfterError : false,
@@ -254,7 +255,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	
 	function reloadGridWithoutresults(path) {
 
-		lastUrl = path;
+		lastUrlWithoutResults = path;
 
 		// Mantener el scroll
 		scroll = $(window).scrollTop();
@@ -364,11 +365,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 																		restoreAfterError : false,
 																		successfunc : function(
 																				response) {
-																			reloadGridWithoutresults(lastUrl);
+																			reloadGridWithoutresults(lastUrlWithoutResults);
 																		},
 																		afterrestorefunc : function(
 																				response) {
-																			reloadGridWithoutresults(lastUrl);
+																			reloadGridWithoutresults(lastUrlWithoutResults);
 																		}
 
 																	});
@@ -399,11 +400,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 																			{
 																				successfunc : function(
 																						response) {
-																					reloadGridWithoutresults(lastUrl);
+																					reloadGridWithoutresults(lastUrlWithoutResults);
 																				},
 																				afterrestorefunc : function(
 																						response) {
-																					reloadGridWithoutresults(lastUrl);
+																					reloadGridWithoutresults(lastUrlWithoutResults);
 																				},
 																				url : '/oaw/secure/estadoObservatorio.do?action=update',
 																				restoreAfterError : false,
@@ -483,7 +484,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 				var $jq = $.noConflict();
 
-				var lastUrl;
+				var lastUrlResults;
+				var lastUrlWithoutResults;
 
 				$jq(document)
 						.ready(
