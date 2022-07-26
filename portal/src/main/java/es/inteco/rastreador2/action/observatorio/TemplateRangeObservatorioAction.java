@@ -42,6 +42,9 @@ import es.inteco.rastreador2.utils.Pagination;
  * The Class EtiquetasObservatorioAction.
  */
 public class TemplateRangeObservatorioAction extends DispatchAction {
+	private static double RANGE_MIN_VALUE = -99.99;
+	private static double RANGE_MAX_VALUE = 99.99;
+
 	/**
 	 * Load. Carga de la página.
 	 *
@@ -111,14 +114,21 @@ public class TemplateRangeObservatorioAction extends DispatchAction {
 	 */
 	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+		List<JsonMessage> errores = new ArrayList<>();
 		TemplateRangeForm range = (TemplateRangeForm) form;
-		try (Connection c = DataBaseManager.getConnection()) {
-			TemplateRangeDAO.update(c, range);
-			response.getWriter().write(messageResources.getMessage("mensaje.exito.range.generada"));
-		} catch (Exception e) {
-			Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		validateNewRange(errores, range);
+		if (errores != null && errores.size() > 0) {
 			response.setStatus(400);
-			response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
+			response.getWriter().write(new Gson().toJson(errores));
+		} else {
+			try (Connection c = DataBaseManager.getConnection()) {
+				TemplateRangeDAO.update(c, range);
+				response.getWriter().write(messageResources.getMessage("mensaje.exito.range.generada"));
+			} catch (Exception e) {
+				Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+				response.setStatus(400);
+				response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
+			}
 		}
 		return null;
 	}
@@ -137,7 +147,11 @@ public class TemplateRangeObservatorioAction extends DispatchAction {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		List<JsonMessage> errores = new ArrayList<>();
 		TemplateRangeForm range = (TemplateRangeForm) form;
-		if (range != null && StringUtils.isNotEmpty(range.getName())) {
+		validateNewRange(errores, range);
+		if (errores != null && errores.size() > 0) {
+			response.setStatus(400);
+			response.getWriter().write(new Gson().toJson(errores));
+		} else {
 			try (Connection c = DataBaseManager.getConnection()) {
 				if (TemplateRangeDAO.exists(c, range)) {
 					response.setStatus(400);
@@ -153,10 +167,6 @@ public class TemplateRangeObservatorioAction extends DispatchAction {
 				response.setStatus(400);
 				response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
 			}
-		} else {
-			response.setStatus(400);
-			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.range.obligatorio")));
-			response.getWriter().write(new Gson().toJson(errores));
 		}
 		return null;
 	}
@@ -190,5 +200,28 @@ public class TemplateRangeObservatorioAction extends DispatchAction {
 			response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
 		}
 		return null;
+	}
+
+	/**
+	 * Validate new range
+	 * 
+	 * @param errores List of errors
+	 * @param range   Range
+	 */
+	private void validateNewRange(List<JsonMessage> errores, TemplateRangeForm range) {
+		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+		if (range == null) {
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.generico")));
+		}
+		if (StringUtils.isEmpty(range.getName())) {
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.range.obligatorio")));
+		}
+		if (range.getMinValue() == range.getMaxValue() || (range.getMinValue() > RANGE_MAX_VALUE) || (range.getMinValue() < RANGE_MIN_VALUE) || (range.getMaxValue() > RANGE_MAX_VALUE)
+				|| (range.getMaxValue() < RANGE_MIN_VALUE) || Float.isInfinite(range.getMinValue()) || Float.isInfinite(range.getMaxValue())) {
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.range.incorrecto")));
+		}
+		if (StringUtils.isEmpty(range.getTemplate())) {
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.plantilla.obligatorio")));
+		}
 	}
 }
