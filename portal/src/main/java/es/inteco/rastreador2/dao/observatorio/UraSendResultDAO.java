@@ -119,6 +119,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 					form.setUraId(rs.getLong("d.id_dependencia"));
 					form.setUraName(rs.getString("d.nombre"));
 					form.setTemplate(new String(Base64.decodeBase64(rs.getString("custom_text").getBytes())));
+					form.setHasCustomText(rs.getBoolean("c.has_custom_text"));
 					final RangeForm range = new RangeForm();
 					range.setId(rs.getLong("r.id"));
 					range.setName(rs.getString("r.name"));
