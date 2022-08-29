@@ -400,9 +400,9 @@ public final class PrimaryExportPdfUtils {
 					// ODS REPORT
 					SpreadSheet ods = WcagOdsUtils.generateOds(report);
 					Workbook wb = WcagXlsxUtils.generateXlsx(report);
-					File outputFile = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web - v2.0.0.ods");
+					File outputFile = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web.ods");
 					ods.saveAs(outputFile);
-					File outputFilexlsx = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web - v2.0.0.xlsx");
+					File outputFilexlsx = new File(new File(file.getPath()).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web.xlsx");
 					final FileOutputStream fos = new FileOutputStream(outputFilexlsx);
 					wb.write(fos);
 					fos.close();
