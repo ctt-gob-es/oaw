@@ -2643,7 +2643,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (Map.Entry<Long, Date> longDateEntry : executedObservatoryIdMap.entrySet()) {
 				if (exObsIds != null) {
 					List<String> list = Arrays.asList(exObsIds);
-					// Only add selected observatoriess
+					// Only add selected observatories
 					if (list.contains((String.valueOf(longDateEntry.getKey())))) {
 						final List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
 						final Map<Long, Map<String, Integer>> sites = getSitesByType(pageList);
@@ -2680,7 +2680,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (Map.Entry<Long, Date> longDateEntry : executedObservatoryIdMap.entrySet()) {
 				if (exObsIds != null) {
 					List<String> list = Arrays.asList(exObsIds);
-					// Only add selected observatoriess
+					// Only add selected observatories
 					if (list.contains((String.valueOf(longDateEntry.getKey())))) {
 						final List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
 						final Map<Long, Map<String, Integer>> sites = new TreeMap<>();
@@ -2723,7 +2723,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 						if (executionTags == null) {
 							executionTags = tagsFilter;
 						}
-						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, false, executionTags);
+						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, false, tagsFilter);
 						resultData.put(entry.getValue(), pageList);
 					}
 				} else {
@@ -2756,7 +2756,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
 				if (exObsIds != null) {
 					List<String> list = Arrays.asList(exObsIds);
-					// Only add selected observatoriess
+					// Only add selected observatories
 					if (list.contains((String.valueOf(entry.getKey())))) {
 						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), categoryId, null, false, tagsFilter);
 						resultData.put(entry.getValue(), pageList);
@@ -2789,7 +2789,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
 				if (exObsIds != null) {
 					List<String> list = Arrays.asList(exObsIds);
-					// Only add selected observatoriess
+					// Only add selected observatories
 					if (list.contains((String.valueOf(entry.getKey())))) {
 						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, true, tagsFilter);
 						resultData.put(entry.getValue(), pageList);
