@@ -108,7 +108,9 @@ public abstract class OpenOfficeDocumentBuilder {
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	protected void replaceText(final OdfTextDocument odt, final OdfFileDom odfFileContent, final String oldText, final String newText) throws XPathExpressionException {
-		replaceText(odt, odfFileContent, oldText, newText, "text:p");
+		if (oldText != null && newText != null) {
+			replaceText(odt, odfFileContent, oldText, newText, "text:p");
+		}
 	}
 
 	/**
