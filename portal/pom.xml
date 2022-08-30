@@ -9,19 +9,19 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>portal</artifactId>
-	<version>5.4.0</version>
+	<version>5.4.1</version>
 	<packaging>war</packaging>
 
 	<name>oaw-portal</name>
 
-	<properties>
-		<oaw.version>5.4.0</oaw.version>
+	<properties> 
+		<oaw.version>5.4.1</oaw.version>
 	</properties>
 
 	<parent>
 		<groupId>es.minhap.oaw</groupId>
 		<artifactId>oaw</artifactId>
-		<version>5.4.0</version>
+		<version>5.4.1</version>
 		<relativePath>../oaw/pom.xml</relativePath>
 	</parent>
 
@@ -250,7 +250,7 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.2.2</version>
+			<version>2.9.0</version>
 			<scope>compile</scope>
 		</dependency>
 

@@ -15,8 +15,10 @@
 ******************************************************************************/
 package es.inteco.rastreador2.actionform.basic.service;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.Normalizer;
 import java.util.Date;
 import java.util.List;
 
@@ -178,7 +180,15 @@ public class BasicServiceForm extends ValidatorForm {
 	 * @param name the new name
 	 */
 	public void setName(String name) {
-		this.name = name;
+		try {
+			String pathName = new String(name.getBytes("ISO-8859-1"), "utf-8");
+			pathName = Normalizer.normalize(pathName, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+			this.name = pathName.replaceAll("[^a-zA-Z0-9]", "_");
+			
+		} catch (UnsupportedEncodingException e) {
+			this.name = name;
+		}
+		;
 	}
 
 	/**
