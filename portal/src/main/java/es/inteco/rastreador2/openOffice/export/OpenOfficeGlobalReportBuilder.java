@@ -1974,7 +1974,7 @@ public final class OpenOfficeGlobalReportBuilder {
 		tableStyleColumn2.setProperty(OdfTableColumnProperties.RelColumnWidth, "4765");
 		OdfStyle tableStyleCellA1 = styles.newStyle(OdfStyleFamily.TableCell);
 		tableStyleCellA1.setAttribute("style:name", "TableGraphicCellBgGreen");
-		tableStyleCellA1.setProperty(OdfTableCellProperties.BackgroundColor, "#7e9a40");
+		tableStyleCellA1.setProperty(OdfTableCellProperties.BackgroundColor, "#657A33");
 		tableStyleCellA1.setProperty(OdfTableCellProperties.Border, "0.5pt solid #000000");
 		tableStyleCellA1.setProperty(OdfTableCellProperties.PaddingBottom, "0mm");
 		tableStyleCellA1.setProperty(OdfTableCellProperties.PaddingLeft, "1mm");

@@ -97,9 +97,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static ObservatorioRealizadoForm getFulfilledObservatory(Connection c, long idObservatory, long idObservatoryExecution) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final ObservatorioRealizadoForm observatorioRealizadoForm = new ObservatorioRealizadoForm();
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
@@ -142,8 +140,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the fulfilled observatories
 	 * @throws Exception the SQL exception
 	 */
-	public static List<ObservatorioRealizadoForm> getFulfilledObservatories(Connection c, long idObservatory, int page, Date date, final String[] exObsIds) 
-			throws Exception {
+	public static List<ObservatorioRealizadoForm> getFulfilledObservatories(Connection c, long idObservatory, int page, Date date, final String[] exObsIds) throws Exception {
 		return getFulfilledObservatories(c, idObservatory, page, date, true, exObsIds);
 	}
 
@@ -160,9 +157,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<ObservatorioRealizadoForm> getFulfilledObservatories(Connection c, long idObservatory, int page, Date date, boolean desc, final String[] exObsIds) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		List<ObservatorioRealizadoForm> results = new ArrayList<>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -236,9 +231,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 */
 	public static List<ObservatorioRealizadoForm> getFulfilledObservatoriesByTag(Connection c, long idObservatory, int page, Date date, boolean desc, final String[] exObsIds, final String tagId)
 			throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		List<ObservatorioRealizadoForm> results = new ArrayList<>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -309,11 +302,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the executed observatories from result
 	 * @throws Exception the SQL exception
 	 */
-	private static void getExecutedObservatoriesFromResult(Connection c, List<ObservatorioRealizadoForm> results, ResultSet rs, DateFormat df) 
-			throws Exception {
-
+	private static void getExecutedObservatoriesFromResult(Connection c, List<ObservatorioRealizadoForm> results, ResultSet rs, DateFormat df) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		ObservatorioRealizadoForm observatorioRealizadoForm = new ObservatorioRealizadoForm();
 		observatorioRealizadoForm.setId(rs.getLong("id"));
 		observatorioRealizadoForm.setFecha(rs.getTimestamp("fecha"));
@@ -359,11 +349,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the all fulfilled observatories
 	 * @throws Exception the SQL exception
 	 */
-	public static List<ObservatorioRealizadoForm> getAllFulfilledObservatories(Connection c) 
-			throws Exception {
-
+	public static List<ObservatorioRealizadoForm> getAllFulfilledObservatories(Connection c) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<ObservatorioRealizadoForm> results = new ArrayList<>();
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
@@ -395,11 +382,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the executed observarories
 	 * @throws Exception the SQL exception
 	 */
-	public static List<ExecutedObservatorioForm> getExecutedObservarories(Connection c) 
-			throws Exception {
-
+	public static List<ExecutedObservatorioForm> getExecutedObservarories(Connection c) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		List<ExecutedObservatorioForm> results = new ArrayList<>();
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
@@ -435,11 +419,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the int
 	 * @throws Exception the SQL exception
 	 */
-	public static int countFulfilledObservatories(Connection c, long idObservatory) 
-			throws Exception {
-
+	public static int countFulfilledObservatories(Connection c, long idObservatory) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(id) FROM observatorios_realizados WHERE id_observatorio = ?")) {
 			ps.setLong(1, idObservatory);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -462,11 +443,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the observatory list
 	 * @throws Exception the SQL exception
 	 */
-	public static List<ObservatorioForm> getObservatoryList(Connection c) 
-			throws Exception {
-
+	public static List<ObservatorioForm> getObservatoryList(Connection c) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<ObservatorioForm> results = new ArrayList<>();
 		try (Statement s = c.createStatement()) {
 			try (ResultSet rs = s.executeQuery("SELECT o.id_observatorio, o.nombre, o.fecha_inicio, o.id_cartucho, p.dias, p.cronExpression " + "FROM observatorio o "
@@ -501,11 +479,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the observatories from seed
 	 * @throws Exception the SQL exception
 	 */
-	public static List<ObservatorioForm> getObservatoriesFromSeed(Connection c, final String idSeed) 
-			throws Exception {
-
+	public static List<ObservatorioForm> getObservatoriesFromSeed(Connection c, final String idSeed) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<ObservatorioForm> observatoryFormList = new ArrayList<>();
 		try (PreparedStatement ps = c
 				.prepareStatement("SELECT o.id_observatorio, o.nombre FROM observatorio o " + "JOIN rastreo r ON (o.id_observatorio = r.id_observatorio) " + "WHERE r.semillas = ?")) {
@@ -533,11 +508,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the category by id
 	 * @throws Exception the SQL exception
 	 */
-	public static CategoriaForm getCategoryById(Connection c, final Long id) throws 
-	Exception {
-
+	public static CategoriaForm getCategoryById(Connection c, final Long id) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final CategoriaForm category = new CategoriaForm();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM categorias_lista WHERE id_categoria = ? ORDER BY id_categoria ASC")) {
 			ps.setLong(1, id);
@@ -563,11 +535,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the ambit by id
 	 * @throws Exception the SQL exception
 	 */
-	public static AmbitoForm getAmbitById(Connection c, final Long id) 
-			throws Exception {
-
+	public static AmbitoForm getAmbitById(Connection c, final Long id) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final AmbitoForm ambit = new AmbitoForm();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM ambitos_lista WHERE id_ambito = ? ORDER BY id_ambito ASC")) {
 			ps.setLong(1, id);
@@ -593,11 +562,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the ambit by id
 	 * @throws Exception the SQL exception
 	 */
-	public static AmbitoForm getAmbitByObservatoryId(Connection c, final Long idObservatory) 
-			throws Exception {
-
+	public static AmbitoForm getAmbitByObservatoryId(Connection c, final Long idObservatory) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		AmbitoForm ambit = null;
 		try (PreparedStatement ps = c.prepareStatement("SELECT al.* FROM ambitos_lista al JOIN observatorio o ON o.id_ambito= al.id_ambito WHERE o.id_observatorio = ? ORDER BY id_ambito ASC")) {
 			ps.setLong(1, idObservatory);
@@ -624,11 +590,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the ambit by observatory ex id
 	 * @throws Exception the SQL exception
 	 */
-	public static AmbitoForm getAmbitByObservatoryExId(Connection c, final Long idObservatory) 
-			throws Exception {
-
+	public static AmbitoForm getAmbitByObservatoryExId(Connection c, final Long idObservatory) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		AmbitoForm ambit = null;
 		try (PreparedStatement ps = c.prepareStatement(
 				"SELECT al.* FROM ambitos_lista al JOIN observatorio o ON o.id_ambito= al.id_ambito JOIN observatorios_realizados ore ON o.id_observatorio=ore.id_observatorio WHERE ore.id = ? ORDER BY id_ambito ASC")) {
@@ -656,11 +619,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the complexity by id
 	 * @throws Exception the SQL exception
 	 */
-	public static ComplejidadForm getComplexityById(Connection c, final Long id) 
-			throws Exception {
-
+	public static ComplejidadForm getComplexityById(Connection c, final Long id) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final ComplejidadForm complexity = new ComplejidadForm();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM complejidades_lista WHERE id_complejidad = ? ORDER BY id_complejidad ASC")) {
 			ps.setLong(1, id);
@@ -687,11 +647,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the observatories from category
 	 * @throws Exception the SQL exception
 	 */
-	public static List<ObservatorioForm> getObservatoriesFromCategory(Connection c, String idCategoria) 
-			throws Exception {
-
+	public static List<ObservatorioForm> getObservatoriesFromCategory(Connection c, String idCategoria) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<ObservatorioForm> observatoryFormList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(o.id_observatorio), o.nombre, o.id_language, o.profundidad, o.amplitud, o.id_cartucho FROM observatorio o "
 				+ "JOIN rastreo r ON (o.id_observatorio = r.id_observatorio) " + "JOIN observatorio_categoria oc ON (o.id_observatorio = oc.id_observatorio) "
@@ -734,11 +691,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the cargar observatorio form
 	 * @throws Exception the SQL exception
 	 */
-	public static CargarObservatorioForm userList(Connection c, CargarObservatorioForm cargarObservatorioForm) 
-			throws Exception {
-
+	public static CargarObservatorioForm userList(Connection c, CargarObservatorioForm cargarObservatorioForm) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<ListadoObservatorio> observatoryUserList = new ArrayList<>();
 		try (Statement s = c.createStatement()) {
 			try (ResultSet rs = s.executeQuery("SELECT nombre, id_observatorio FROM observatorio o")) {
@@ -767,11 +721,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the observatory seeds
 	 * @throws Exception the SQL exception
 	 */
-	public static List<SemillaForm> getObservatorySeeds(Connection c) 
-			throws Exception {
-
+	public static List<SemillaForm> getObservatorySeeds(Connection c) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<SemillaForm> seedList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT id_lista, nombre FROM lista WHERE id_tipo_lista = ?")) {
 			ps.setLong(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
@@ -798,11 +749,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the cargar observatorio form
 	 * @throws Exception the SQL exception
 	 */
-	public static CargarObservatorioForm observatoryList(Connection c, int page) 
-			throws Exception {
-
+	public static CargarObservatorioForm observatoryList(Connection c, int page) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final CargarObservatorioForm cargarObservatorioForm = new CargarObservatorioForm();
 		final List<ListadoObservatorio> observatoryList = new ArrayList<>();
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -872,11 +820,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the int
 	 * @throws Exception the SQL exception
 	 */
-	public static int countObservatories(Connection c) 
-			throws Exception {
-
+	public static int countObservatories(Connection c) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(id_observatorio) FROM observatorio"); ResultSet rs = ps.executeQuery()) {
 			if (rs.next()) {
 				return rs.getInt(1);
@@ -897,11 +842,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the int
 	 * @throws Exception the SQL exception
 	 */
-	public static int countSeeds(Connection c, long idObservatorio) 
-			throws Exception {
-
+	public static int countSeeds(Connection c, long idObservatorio) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM observatorio_lista WHERE id_observatorio = ?")) {
 			ps.setLong(1, idObservatorio);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -924,11 +866,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @param idObservatory the id observatory
 	 * @throws Exception the SQL exception
 	 */
-	public static void deteleObservatory( Connection c, final long idObservatory) 
-			throws Exception {
-
+	public static void deteleObservatory(Connection c, final long idObservatory) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final boolean isAutoCommit = c.getAutoCommit();
 		try {
 			c.setAutoCommit(false);
@@ -966,11 +905,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @param idExecution the id execution
 	 * @throws Exception the SQL exception
 	 */
-	public static void deteleFulfilledObservatory(Connection connR, long idExecution) 
-			throws Exception {
-
+	public static void deteleFulfilledObservatory(Connection connR, long idExecution) throws Exception {
 		connR = reOpenConnectionIfIsNecessary(connR);
-		
 		PreparedStatement ps = null;
 		try {
 			connR.setAutoCommit(false);
@@ -1004,11 +940,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the crawler ids
 	 * @throws Exception the SQL exception
 	 */
-	private static List<Long> getCrawlerIds(Connection connR, long idObservatorio) 
-			throws Exception {
-
+	private static List<Long> getCrawlerIds(Connection connR, long idObservatorio) throws Exception {
 		connR = reOpenConnectionIfIsNecessary(connR);
-		
 		final List<Long> crawlerIds = new ArrayList<>();
 		// RECUPERAMOS LOS IDS DE LOS RASTREOS PARA EL OBSERVATORIO
 		try (PreparedStatement ps = connR.prepareStatement("SELECT id_rastreo FROM rastreo r WHERE id_observatorio = ?")) {
@@ -1033,11 +966,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the fulfilled crawling ids
 	 * @throws Exception the SQL exception
 	 */
-	private static List<Long> getFulfilledCrawlingIds(Connection connR, long idExecution) 
-			throws Exception {
-
+	private static List<Long> getFulfilledCrawlingIds(Connection connR, long idExecution) throws Exception {
 		connR = reOpenConnectionIfIsNecessary(connR);
-		
 		final List<Long> crawlerIds = new ArrayList<>();
 		try (PreparedStatement ps = connR.prepareStatement("SELECT id FROM rastreos_realizados rr WHERE id_obs_realizado = ?")) {
 			ps.setLong(1, idExecution);
@@ -1062,9 +992,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<FulFilledCrawling> getFulfilledCrawlingByObservatoryExecution(Connection connR, long idExecution) throws Exception {
-
 		connR = reOpenConnectionIfIsNecessary(connR);
-		
 		final List<FulFilledCrawling> crawlings = new ArrayList<>();
 		try (PreparedStatement ps = connR.prepareStatement(
 				"SELECT * FROM rastreos_realizados rr JOIN lista l ON (l.id_lista = rr.id_lista) " + "JOIN categorias_lista cl ON (l.id_categoria = cl.id_categoria) WHERE id_obs_realizado = ?")) {
@@ -1105,9 +1033,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the exception
 	 */
 	public static long insertObservatory(Connection c, NuevoObservatorioForm nuevoObservatorioForm) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -1209,9 +1135,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static VerObservatorioForm getObservatoryView(Connection c, long idObservatorio, int page) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		PropertiesManager pmgr = new PropertiesManager();
@@ -1277,9 +1201,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static ObservatorioForm getObservatoryForm(Connection c, final long idObservatorio) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final ObservatorioForm observatorioForm = new ObservatorioForm();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM observatorio WHERE id_observatorio = ?")) {
 			ps.setLong(1, idObservatorio);
@@ -1325,9 +1247,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static ObservatorioForm getObservatoryFormFromExecution(Connection c, long idObservatorioExecution) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final ObservatorioForm observatorioForm = new ObservatorioForm();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM observatorio o JOIN observatorios_realizados ore " + "ON (o.id_observatorio = ore.id_observatorio) WHERE ore.id = ?;")) {
 			ps.setLong(1, idObservatorioExecution);
@@ -1365,9 +1285,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static ModificarObservatorioForm getObservatoryDataToUpdate(Connection c, ModificarObservatorioForm modificarObservatorioForm) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM observatorio o WHERE o.id_observatorio = ?")) {
 			ps.setLong(1, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
 			try (ResultSet rs = ps.executeQuery()) {
@@ -1390,11 +1308,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @param rs                        the rs
 	 * @throws Exception the SQL exception
 	 */
-	private static void populateModificarObservatorioFormFromResultSet(Connection c, ModificarObservatorioForm modificarObservatorioForm, ResultSet rs) 
-			throws Exception {
-		
+	private static void populateModificarObservatorioFormFromResultSet(Connection c, ModificarObservatorioForm modificarObservatorioForm, ResultSet rs) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		modificarObservatorioForm.setAmplitud(String.valueOf(rs.getInt("amplitud")));
 		modificarObservatorioForm.setFecha(rs.getTimestamp("fecha_inicio"));
 		modificarObservatorioForm.setNombre(rs.getString("nombre"));
@@ -1446,9 +1361,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 */
 	public static List<ResultadoSemillaForm> getResultSeedsFromObservatory(Connection c, final SemillaForm searchForm, final Long idObservatorio, final Long idCategoria, final int page)
 			throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final PropertiesManager pmgr = new PropertiesManager();
 		final List<ResultadoSemillaForm> semillasFormList = new ArrayList<>();
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"));
@@ -1539,9 +1452,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 */
 	public static List<ResultadoSemillaFullForm> getResultSeedsFullFromObservatory(Connection c, final SemillaForm searchForm, final Long idObservatorio, final Long idCategoria, final int page)
 			throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final PropertiesManager pmgr = new PropertiesManager();
 		final List<ResultadoSemillaFullForm> semillasFormList = new ArrayList<>();
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"));
@@ -1695,9 +1606,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the exception
 	 */
 	public static List<Long> getFinishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis(Connection c, Long idObservatory, Long idObsRealizado) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<Long> crawlerIds = new ArrayList<>();
 		// Union de rastreos no realizados y rastreos empezados pero no
 		// terminados (<> estado 4)
@@ -1734,9 +1643,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the exception
 	 */
 	public static List<Long> getFinishCrawlerIdsFromSeedAndObservatoryWithLessResultsThreshold(Connection c, final Long idObsRealizado, final Integer percent, final Integer seeds) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<Long> crawlerIds = new ArrayList<>();
 		final String tresholdCalculation = "(((cl.amplitud*cl.profundidad)+1)*(((select `value` from observatorio_extra_configuration where `key` ='umbral'))/100))";
 		String query = "SELECT ID_SEED,ID_RR,ID_R, NUM_C, ((cl.amplitud*cl.profundidad)+1) CX, " + tresholdCalculation
@@ -1787,11 +1694,9 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @return the result seeds full from observatory by ids
 	 * @throws Exception the SQL exception
 	 */
-	public static List<ResultadoSemillaFullForm> getResultSeedsFullFromObservatoryByIds(Connection c, final SemillaForm searchForm, final Long idObservatorio, final Long idCategoria,
-			final int page, final List<Long> crawlIds) throws Exception {
-
+	public static List<ResultadoSemillaFullForm> getResultSeedsFullFromObservatoryByIds(Connection c, final SemillaForm searchForm, final Long idObservatorio, final Long idCategoria, final int page,
+			final List<Long> crawlIds) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final PropertiesManager pmgr = new PropertiesManager();
 		final List<ResultadoSemillaFullForm> semillasFormList = new ArrayList<>();
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"));
@@ -1982,9 +1887,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static int countResultSeedsFromObservatory(Connection c, SemillaForm searchForm, long idExecutionObservatory, long idCategory) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		int paramCount = 1;
 		String query = "SELECT COUNT(*) FROM lista l " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) " + "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) "
 				+ "WHERE id_obs_realizado = ? ";
@@ -2029,9 +1932,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	private static List<SemillaForm> getSeedsFromObservatory(Connection c, long idObservatorio) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<SemillaForm> semillasFormList = new ArrayList<>();
 		try (PreparedStatement ps = c
 				.prepareStatement("SELECT * FROM lista l " + "LEFT JOIN observatorio_lista ol ON (ol.id_lista = l.id_lista) " + "WHERE ol.id_observatorio = ? AND l.id_categoria IS NULL")) {
@@ -2060,9 +1961,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	private static List<SemillaForm> getSeedsNotObservatory(Connection c, long idObservatorio) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<SemillaForm> semillasFormList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM lista l WHERE l.id_tipo_lista = ? AND l.id_categoria IS NULL " + "AND (l.id_lista NOT IN ("
 				+ "SELECT ol.id_lista FROM observatorio_lista ol " + "WHERE ol.id_observatorio = ?)) ")) {
@@ -2092,9 +1991,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	private static void updateObservatoryCrawlings(Connection c, final ModificarObservatorioForm newObservatory, final ObservatorioForm oldObservatory) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<String> newCategories = Arrays.asList(newObservatory.getCategoria());
 		final List<String> oldCategories = Arrays.asList(oldObservatory.getCategoria());
 		// Desactivamos las categorías antiguas que no están entre las nuevas
@@ -2125,9 +2022,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the exception
 	 */
 	public static ModificarObservatorioForm updateObservatory(Connection c, ModificarObservatorioForm modificarObservatorioForm) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
@@ -2228,9 +2123,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static void insertNewCrawlers(Connection c, final long idObservatory, final List<SemillaForm> seeds) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
 		final ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
 		putDataToInsert(insertarRastreoForm, observatorioForm);
@@ -2272,9 +2165,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static void updateCrawlers(Connection c, final long idObservatory, final List<SemillaForm> seeds) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		// Disable all
 		try (PreparedStatement ps = c.prepareStatement("UPDATE rastreo SET activo = 0 WHERE id_observatorio = ?")) {
 			ps.setLong(1, idObservatory);
@@ -2326,9 +2217,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	private static void disableCrawlers(Connection c, List<SemillaForm> seeds, String idObservatory) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		for (SemillaForm semillaForm : seeds) {
 			// Desactivamos los rastreos de las semilla sque han sido
 			// desasignadas al observatorio o
@@ -2352,9 +2241,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static void deleteSeedAssociation(Connection c, long idObservatorio) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_lista WHERE id_observatorio = ?")) {
 			ps.setLong(1, idObservatorio);
 			ps.executeUpdate();
@@ -2373,9 +2260,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	private static void addObservatorySeeds(Connection c, final List<SemillaForm> seeds, final long idObservatory) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("INSERT INTO observatorio_lista VALUES(?,?)")) {
 			for (SemillaForm semillaForm : seeds) {
 				ps.setLong(1, idObservatory);
@@ -2399,9 +2284,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static Map<Long, Date> getObservatoryExecutionIds(Connection c, long observatoryId, long executionId, long cartridgeId) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final Map<Long, Date> observatoryExecutionIdsList = new HashMap<>();
 		final PropertiesManager pmgr = new PropertiesManager();
 		final String limit = pmgr.getValue(CRAWLER_PROPERTIES, "observatory.evolution.limit").trim();
@@ -2432,9 +2315,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	private static long existObservatoryCrawl(Connection c, final long idObservatory, final long idSeed) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("SELECT r.id_rastreo FROM rastreo r " + "JOIN lista l ON (r.semillas = l.id_lista) "
 				+ "JOIN observatorio o ON (o.id_observatorio = r.id_observatorio) " + "WHERE l.id_lista = ? AND o.id_observatorio = ?")) {
 			ps.setLong(1, idSeed);
@@ -2457,9 +2338,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static boolean existObservatory(Connection c, String observatoryName) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM observatorio WHERE nombre = ?")) {
 			ps.setString(1, observatoryName);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -2480,9 +2359,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	private static List<Long> getCrawlerFromCategory(Connection c, final long idObservatory) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<Long> idCrawlerList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT r.id_rastreo FROM rastreo r " + "JOIN lista l ON (r.semillas = l.id_lista) " + "WHERE l.id_categoria = ?")) {
 			ps.setLong(1, idObservatory);
@@ -2507,9 +2384,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	private static List<Long> getCrawlerFromObservatory(Connection c, long idObservatory) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<Long> idCrawlerList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT r.id_rastreo FROM rastreo r " + "JOIN observatorio o ON (o.id_observatorio = r.id_observatorio) " + "WHERE o.id_observatorio = ?")) {
 			ps.setLong(1, idObservatory);
@@ -2533,9 +2408,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	private static void editCrawlings(Connection c, ModificarObservatorioForm modificarObservatorioForm) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
 		insertarRastreoForm.setProfundidad(Integer.parseInt(modificarObservatorioForm.getProfundidad()));
 		insertarRastreoForm.setTopN(Long.parseLong(modificarObservatorioForm.getAmplitud()));
@@ -2568,9 +2441,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static long getCartridgeFromExecutedObservatoryId(Connection c, final Long observatoryId) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("SELECT id_cartucho FROM rastreos_realizados WHERE id = ?")) {
 			ps.setLong(1, observatoryId);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -2597,9 +2468,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<Long> getSubsequentObservatoryExecutionIds(Connection c, Long observatoryId, Long executionId, Long cartridgeId) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<Long> subsequentExecutionIds = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement(
 				"SELECT id FROM observatorios_realizados WHERE id_observatorio = ? AND " + "id_cartucho = ? AND fecha > (SELECT fecha FROM observatorios_realizados WHERE id = ? )")) {
@@ -2627,9 +2496,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static void updateObservatoryStatus(Connection c, Long executedId, int estado) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("UPDATE observatorios_realizados SET estado = ? WHERE id = ?")) {
 			ps.setInt(1, estado);
 			ps.setLong(2, executedId);
@@ -2649,9 +2516,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<CategoriaForm> getObservatoryCategories(Connection c, Long idObservatory) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<CategoriaForm> observatoryCategories = new ArrayList<>();
 		try (PreparedStatement ps = c
 				.prepareStatement("SELECT * FROM observatorio_categoria oc " + "JOIN categorias_lista cl ON (cl.id_categoria = oc.id_categoria) " + "WHERE id_observatorio = ? ORDER BY cl.nombre")) {
@@ -2681,9 +2546,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<CategoriaForm> getExecutionObservatoryCategories(Connection c, final Long idExecutionObservatory) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<CategoriaForm> observatoryCategories = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT cl.nombre, cl.id_categoria, cl.orden FROM rastreos_realizados rr " + "JOIN lista l ON (l.id_lista = rr.id_lista) "
 				+ "JOIN observatorio_categoria oc ON (l.id_categoria = oc.id_categoria) " + "JOIN categorias_lista cl ON (oc.id_categoria = cl.id_categoria) "
@@ -2715,9 +2578,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<CategoriaForm> getExecutionObservatoryPrinmayCategoriesAmbit(Connection c, final Long idExecutionObservatory, final Long idAmbit) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<CategoriaForm> observatoryCategories = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT cl.nombre, cl.id_categoria, cl.orden FROM rastreos_realizados rr " + "JOIN lista l ON (l.id_lista = rr.id_lista) "
 				+ "JOIN observatorio_categoria oc ON (l.id_categoria = oc.id_categoria) " + "JOIN categorias_lista cl ON (oc.id_categoria = cl.id_categoria) "
@@ -2750,9 +2611,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static void saveMethodology(Connection c, Long idExecution, String methodology) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("INSERT INTO observatorio_metodologia (id_obs_realizado, metodologia) VALUES (?,?)")) {
 			ps.setLong(1, idExecution);
 			ps.setString(2, methodology);
@@ -2772,9 +2631,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static String getMethodology(Connection c, Long idExecution) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM observatorio_metodologia WHERE id_obs_realizado = ?")) {
 			ps.setLong(1, idExecution);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -2798,9 +2655,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<ObservatoryTypeForm> getAllObservatoryTypes(Connection c) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<ObservatoryTypeForm> typeList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM observatorio_tipo")) {
 			try (ResultSet rs = ps.executeQuery()) {
@@ -2826,9 +2681,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<AmbitoForm> getAllAmbitos(Connection c) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final List<AmbitoForm> typeList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM ambitos_lista")) {
 			try (ResultSet rs = ps.executeQuery()) {
@@ -2853,10 +2706,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @param idObservatoryExecution Identificador de la iteración (ejecución) de un observatorio
 	 * @return El identificador de la iteración anterior de ese observatorio o -1 si no existe
 	 */
-	public static Long getPreviousObservatoryExecution(Connection c, final Long idObservatoryExecution) throws Exception{
-
+	public static Long getPreviousObservatoryExecution(Connection c, final Long idObservatoryExecution) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("SELECT id FROM observatorios_realizados " + "WHERE id_observatorio = ? AND id<? AND estado=0 ORDER BY fecha DESC")) {
 			final long idObservatory = getObservatoryFormFromExecution(c, idObservatoryExecution).getId();
 			ps.setLong(1, idObservatory);
@@ -2882,11 +2733,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @param idCartucho    the id cartucho
 	 * @throws Exception the SQL exception
 	 */
-	public static void addSeedObservatory(Connection c, final Long idObservatory, final Long idExObs, final Long idSeed, final Long idCartucho) 
-			throws Exception {
-
+	public static void addSeedObservatory(Connection c, final Long idObservatory, final Long idExObs, final Long idSeed, final Long idCartucho) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		// Check if exists in rastreo table
 		SemillaForm seed = SemillaDAO.getSeedById(c, idSeed);
 		ObservatorioForm obs = ObservatorioDAO.getObservatoryForm(c, idObservatory);
@@ -2994,12 +2842,10 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @param id      the id
 	 * @param idSeed  the id seed
 	 * @throws Exception the SQL exception
-	 * @throws Exception    the exception
+	 * @throws Exception the exception
 	 */
 	private static void addFullfilledCrawl(Connection c, final Long idExObs, Long id, final Long idSeed) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DatosCartuchoRastreoForm dcrForm = RastreoDAO.cargarDatosCartuchoRastreo(c, String.valueOf(id));
 		dcrForm.setId_rastreo(id.intValue());
@@ -3027,9 +2873,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<ObservatorioRealizadoForm> getObserbatoriesDates(Connection c, final String[] exObsIds) throws Exception {
-		
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		List<ObservatorioRealizadoForm> list = new ArrayList<>();
 		String query = "SELECT a.nombre,obr.fecha FROM observatorios_realizados obr JOIN observatorio o ON obr.id_observatorio=o.id_observatorio JOIN ambitos_lista a ON a.id_ambito=o.id_ambito\n"
 				+ "WHERE  1=1 ";
@@ -3068,9 +2912,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<ExtraConfigurationForm> loadExtraConfiguration(Connection c) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		List<ExtraConfigurationForm> extraConfig = new ArrayList<>();
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		final String query = "SELECT `id` AS C_ID,`name` AS N_ID, `key` AS K_ID,`value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` <> 'autorelaunch' ORDER BY `id`";
@@ -3101,9 +2943,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<ExtraConfigurationForm> getExtraConfiguration(Connection c, final String key) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		List<ExtraConfigurationForm> extraConfig = new ArrayList<>();
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		final String query = "SELECT `id` AS C_ID,`name` AS N_ID, `key` AS K_ID,`value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = '" + key + "' ORDER BY `id`";
@@ -3133,9 +2973,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static int getTimeoutFromConfig(Connection c) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		int timeout = 0;
 		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'timeout'";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -3165,9 +3003,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static int getFileExpirationFromConfig(Connection c) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		int timeout = 0;
 		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'files_expiration'";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -3197,9 +3033,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static int getDepthFromConfig(Connection c) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		int timeout = 0;
 		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'depth'";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -3229,9 +3063,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static int getWidthFromConfig(Connection c) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		int timeout = 0;
 		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'width'";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -3261,9 +3093,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static int getTresholdFromConfig(Connection c) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		int timeout = 0;
 		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'umbral'";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -3293,9 +3123,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static String getMappingFromConfig(Connection c) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		String mapping = "";
 		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'file_mapping'";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -3324,9 +3152,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static void saveExtraConfiguration(Connection c, final List<ExtraConfigurationForm> extraConfig) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		if (extraConfig != null && !extraConfig.isEmpty()) {
 			for (ExtraConfigurationForm config : extraConfig) {
 				try (PreparedStatement ps = c.prepareStatement("UPDATE observatorio_extra_configuration SET `value` = ? WHERE `key` = ?")) {
@@ -3350,9 +3176,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static void saveExtraConfiguration(Connection c, final String key, final String value) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("UPDATE observatorio_extra_configuration SET `value` = ? WHERE `key` = ?")) {
 			ps.setString(1, value);
 			ps.setString(2, key);
@@ -3371,9 +3195,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static int getAutorelaunchFromConfig(Connection c) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		int autorelaunch = 0;
 		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'autorelaunch'";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -3403,9 +3225,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static double getFirstClassificationThresholdFromConfig(Connection c) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		double firstThreshold = 0;
 		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'firstclassthreshold'";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -3435,9 +3255,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static double getSecondClassificationThresholdFromConfig(Connection c) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		double secondThreshold = 0;
 		final String query = "SELECT `value` AS V_ID FROM `observatorio_extra_configuration` WHERE `key` = 'secondclassthreshold'";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -3469,9 +3287,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static int getNumCrawls(Connection c, final Long idObservatory, final Long idSeed) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		int numCrawls = 0;
 		// Count URL crawled
 		String numCrawlQuery = "SELECT count(ta.cod_url) as numCrawls  "
@@ -3502,13 +3318,11 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @param idObsExecution the id obs execution
 	 * @param exObsIds       the ex obs ids
 	 * @param comparision    the comparision
-	 * @throws Exception                 the SQL exception
+	 * @throws Exception                    the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	public static void saveConfig(Connection c, final Long idObsExecution, final String[] exObsIds, final List<ComparisionForm> comparision) throws Exception, UnsupportedEncodingException {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		PreparedStatement ps = null;
 		try {
 //			// Delete existing
@@ -3596,13 +3410,11 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @param idObsExecution the id obs execution
 	 * @param subject        the subject
 	 * @param cco            the cco
-	 * @throws Exception                 the SQL exception
+	 * @throws Exception                    the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	public static void saveConfigStep2(Connection c, final Long idObsExecution, final String subject, final String cco, final Long hasCustomTexts) throws Exception, UnsupportedEncodingException {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		PreparedStatement ps = null;
 		try {
 			// Insert new
@@ -3628,13 +3440,11 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @param subject        the subject
 	 * @param cco            the cco
 	 * @return the config step 2
-	 * @throws Exception                 the SQL exception
+	 * @throws Exception                    the SQL exception
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	public static Map<String, String> getConfigStep2(Connection c, final Long idObsExecution) throws Exception, UnsupportedEncodingException {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		Map<String, String> config = new HashMap<>();
 		PreparedStatement ps = null;
 		try {
@@ -3665,9 +3475,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static List<ComparisionForm> getComparisionConfig(Connection c, final Long idObsExecution) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		List<ComparisionForm> list = new ArrayList<>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -3704,9 +3512,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @throws Exception the SQL exception
 	 */
 	public static String[] getExObsIdsConfig(Connection c, Long idObsExecution) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -3737,10 +3543,8 @@ public final class ObservatorioDAO extends DataBaseDAO {
 	 * @param idObsExecution the id obs execution
 	 * @return the dependencies by id ex obs
 	 */
-	public static List<DependenciaForm> getDependenciesByIdExObs(Connection c, final Long idObsExecution) throws Exception{
-
+	public static List<DependenciaForm> getDependenciesByIdExObs(Connection c, final Long idObsExecution) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		List<DependenciaForm> dependencies = new ArrayList<>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -3753,7 +3557,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 				DependenciaForm d = new DependenciaForm();
 				d.setId(rs.getLong("d.id_dependencia"));
 				d.setName(rs.getString("d.nombre"));
-				d.setEmails(rs.getString("d.emails"));
+				d.setEmails(formatEmails(rs.getString("d.emails")));
 				d.setSendAuto(rs.getBoolean("d.send_auto"));
 				d.setOfficial(rs.getBoolean("d.official"));
 				dependencies.add(d);
@@ -3763,5 +3567,19 @@ public final class ObservatorioDAO extends DataBaseDAO {
 			DAOUtils.closeQueries(ps, rs);
 		}
 		return dependencies;
-	}	
+	}
+
+	/**
+	 * Email formatter
+	 * 
+	 * @param emails
+	 * @return Formatted emails
+	 */
+	private static String formatEmails(String emails) {
+		String formattedEmails = "";
+		if (emails != null) {
+			formattedEmails = emails.trim().replaceAll("\\s+", "");
+		}
+		return formattedEmails;
+	}
 }
