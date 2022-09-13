@@ -157,6 +157,20 @@
                               </span>
                            </p>
                         </li>
+                            <li class="col-sm-3">
+                           <div class="form-inline">
+                              <input type="radio" name="type" id="radio-4" class="radio" value="mixto" /> <label
+                                 for="radio-3">Análisis mixto</label>
+                           </div>
+                           <p>
+                              Analiza el c&oacute;digo fuente y las urls introducidas <span data-toggle="tooltip" tabindex="0"
+                                 title="An&aacute;lisis del c&oacute;digo fuente de una p&aacute;gina (p. ej. p&aacute;gina de una Intranet a la que el analizador no pueda acceder).">
+                              <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> <span class="tooltiptext sr-only">An&aacute;lisis
+                              del c&oacute;digo fuente de una p&aacute;gina (p. ej. p&aacute;gina de una Intranet a la que el analizador no
+                              pueda acceder).</span>
+                              </span>
+                           </p>
+                        </li>
                      </ul>
                   </fieldset>
                   <fieldset class="servicioAccesibilidad" id="crawler">
@@ -282,7 +296,7 @@
       <script src="/oaw/js/jquery-ui-1.12.4.min.js"></script>
       <script src="/oaw/bootstrap/js/bootstrap.min.js"></script>
       <script type="application/javascript">
-         $("#radio-1").click(function () {
+         	   $("#radio-1").click(function () {
                  $("#crawler").show();
                  $("#urlset").hide();
                  $("#source").hide();
@@ -301,6 +315,13 @@
                  $("#source").show();
                  $("#historico").hide();
                });
+               
+               $("#radio-4").click(function () {
+                 $("#crawler").hide();
+                 $("#urlset").show();
+                 $("#source").show();
+                 $("#historico").hide();
+                });
          
          $(function () { $('[data-toggle="tooltip"]').tooltip() })
          

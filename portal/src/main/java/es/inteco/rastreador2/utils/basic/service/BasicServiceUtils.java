@@ -196,7 +196,11 @@ public final class BasicServiceUtils {
 				basicServiceForm.setDomain(es.inteco.utils.CrawlerUtils.encodeUrl(basicServiceForm.getDomain()));
 			}
 			// basicServiceForm.setDomain(request.getParameter("urls"));
-			basicServiceForm.setAnalysisType(BasicServiceAnalysisType.LISTA_URLS);
+			if (basicServiceForm.getContent() != null && StringUtils.isNotEmpty(basicServiceForm.getContent())) {
+				basicServiceForm.setAnalysisType(BasicServiceAnalysisType.MIXTO);
+			} else {
+				basicServiceForm.setAnalysisType(BasicServiceAnalysisType.LISTA_URLS);
+			}
 		}
 		basicServiceForm.setInDirectory(Boolean.parseBoolean(request.getParameter(Constants.PARAM_IN_DIRECTORY)));
 		basicServiceForm.setRegisterAnalysis(Boolean.parseBoolean(request.getParameter("registerAnalysis")));
@@ -261,7 +265,11 @@ public final class BasicServiceUtils {
 			} catch (IOException e) {
 				Logger.putLog("No se puede leer el fichero zip adjuntado", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
 			}
-			basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE);
+			if (basicServiceForm.getDomain() != null && StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
+				basicServiceForm.setAnalysisType(BasicServiceAnalysisType.MIXTO);
+			} else {
+				basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE);
+			}
 		} else {
 			try {
 				String content = "";
@@ -273,7 +281,11 @@ public final class BasicServiceUtils {
 					content = new String(contentParameter.getBytes(StandardCharsets.ISO_8859_1.name()));
 				}
 				basicServiceForm.setContent(content);
-				basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE);
+				if (basicServiceForm.getDomain() != null && StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
+					basicServiceForm.setAnalysisType(BasicServiceAnalysisType.MIXTO);
+				} else {
+					basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE);
+				}
 			} catch (Exception e) {
 				Logger.putLog("No se puede procesar la entrada del fichero", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
 			}

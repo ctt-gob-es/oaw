@@ -65,6 +65,8 @@ public class BasicServiceAction extends Action {
 					BasicServiceUtils.getContent(basicServiceForm, basicServiceForm.getFileName(), request.getParameter(Constants.PARAM_CONTENT), true);
 				} else if (basicServiceForm.isContentAnalysisMultiple()) {
 					BasicServiceUtils.getContent(basicServiceForm, basicServiceForm.getFileName(), basicServiceFormRequest.getContent(), false);
+				} else if (basicServiceForm.isAnalysisMix()) {
+					BasicServiceUtils.getContent(basicServiceForm, basicServiceForm.getFileName(), basicServiceFormRequest.getContent(), false);
 				}
 				basicServiceForm.setAnalysisToDelete(basicServiceFormRequest.getAnalysisToDelete());
 				basicServiceManager.executeCrawling(basicServiceForm, CrawlerUtils.getResources(request));
