@@ -244,6 +244,15 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				specialChunkMap.put(2, chunk);
 				section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p3.merge.url.basic.service"), specialChunkMap, ConstantsFont.PARAGRAPH));
 				break;
+			case MIXTO:
+				chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p4.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT_NO_LINK);
+				specialChunkMap.put(1, chunk);
+				chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p5.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+				chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p5.basic.service.anchor1.url"));
+				chunk.setExternalLink(false);
+				specialChunkMap.put(2, chunk);
+				section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p3.merge.url.basic.service"), specialChunkMap, ConstantsFont.PARAGRAPH));
+				break;
 			}
 			/****** paragraph #3 *****/
 //			specialChunkMap = new HashMap<>();

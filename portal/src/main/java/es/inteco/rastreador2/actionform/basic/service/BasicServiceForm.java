@@ -128,10 +128,12 @@ public class BasicServiceForm extends ValidatorForm {
 	 */
 	public void setDomain(String domain) {
 		this.domain = domain;
-		if (domain.contains("\r\n")) {
-			analysisType = BasicServiceAnalysisType.LISTA_URLS;
-		} else {
-			analysisType = BasicServiceAnalysisType.URL;
+		if (analysisType != BasicServiceAnalysisType.MIXTO) {
+			if (domain.contains("\r\n")) {
+				analysisType = BasicServiceAnalysisType.LISTA_URLS;
+			} else {
+				analysisType = BasicServiceAnalysisType.URL;
+			}
 		}
 	}
 
@@ -184,7 +186,6 @@ public class BasicServiceForm extends ValidatorForm {
 			String pathName = new String(name.getBytes("ISO-8859-1"), "utf-8");
 			pathName = Normalizer.normalize(pathName, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 			this.name = pathName.replaceAll("[^a-zA-Z0-9]", "_");
-			
 		} catch (UnsupportedEncodingException e) {
 			this.name = name;
 		}
@@ -354,6 +355,15 @@ public class BasicServiceForm extends ValidatorForm {
 	 */
 	public boolean isContentAnalysisMultiple() {
 		return analysisType == BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE;
+	}
+
+	/**
+	 * Checks if is content analysis multiple.
+	 *
+	 * @return true, if is content analysis multiple
+	 */
+	public boolean isAnalysisMix() {
+		return analysisType == BasicServiceAnalysisType.MIXTO;
 	}
 
 	/**
