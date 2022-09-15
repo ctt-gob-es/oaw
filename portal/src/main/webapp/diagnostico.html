@@ -163,8 +163,8 @@
                                  for="radio-3">Análisis mixto</label>
                            </div>
                            <p>
-                              Analiza el c&oacute;digo fuente y las urls introducidas <span data-toggle="tooltip" tabindex="0"
-                                 title="An&aacute;lisis del c&oacute;digo fuente de una p&aacute;gina (p. ej. p&aacute;gina de una Intranet a la que el analizador no pueda acceder).">
+                              Mixto: Analiza el c&oacute;digo fuente y las urls introducidas <span data-toggle="tooltip" tabindex="0"
+                                 title="An&aacute;lisis del c&oacute;digo fuente de una p&aacute;gina (p. ej. p&aacute;gina de una Intranet a la que el analizador no pueda acceder) junto con un conjunto predefinido de p&aacute;ginas de un sitio web p&uacute;blico en Internet.">
                               <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> <span class="tooltiptext sr-only">An&aacute;lisis
                               del c&oacute;digo fuente de una p&aacute;gina (p. ej. p&aacute;gina de una Intranet a la que el analizador no
                               pueda acceder).</span>
@@ -300,7 +300,7 @@
                  $("#crawler").show();
                  $("#urlset").hide();
                  $("#source").hide();
-               });
+               }); 
          
                $("#radio-2").click(function () {
                  $("#crawler").hide();
@@ -310,7 +310,7 @@
                });
          
                $("#radio-3").click(function () {
-                 $("#crawler").hide();
+                 $("#crawler").hide(); 
                  $("#urlset").hide();
                  $("#source").show();
                  $("#historico").hide();

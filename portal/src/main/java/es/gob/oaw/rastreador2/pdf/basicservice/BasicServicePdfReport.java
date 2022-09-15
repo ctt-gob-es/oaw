@@ -174,7 +174,7 @@ public class BasicServicePdfReport {
 						subtitle = messageResources2019.getMessage("pdf.accessibility.cover.type.url.list");
 						break;
 					case MIXTO:
-						subtitle = "Prueba mixto";
+						subtitle = messageResources2019.getMessage("pdf.accessibility.cover.type.mix");
 						break;
 					default:
 						break;

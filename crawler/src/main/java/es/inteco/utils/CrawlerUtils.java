@@ -218,16 +218,16 @@ public final class CrawlerUtils {
 	 */
 	public static List<String> addDomainsToList(String seedsList, boolean getOnlyDomain, int type) {
 		if (StringUtils.isNotEmpty(seedsList)) {
-			final String[] seeds = seedsList.split(";");
+			final String[] seeds = seedsList.split("[;\n]");
 			final List<String> domains = new ArrayList<>(seeds.length);
 			for (int i = 0; i < seeds.length; i++) {
 				if (type == Constants.ID_LISTA_SEMILLA && !seeds[i].startsWith("http://") && !seeds[i].startsWith("https://")) {
-					seeds[i] = "http://" + seeds[i];
+					seeds[i] = "http://" + seeds[i].trim();
 				}
 				if (getOnlyDomain) {
-					domains.add(convertDomains(seeds[i]));
+					domains.add(convertDomains(seeds[i].trim()));
 				} else {
-					domains.add(seeds[i]);
+					domains.add(seeds[i].trim());
 				}
 			}
 			return domains;
