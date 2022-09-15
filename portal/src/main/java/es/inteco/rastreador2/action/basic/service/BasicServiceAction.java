@@ -63,9 +63,7 @@ public class BasicServiceAction extends Action {
 				final BasicServiceForm basicServiceForm = DiagnosisDAO.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceFormRequest.getId());
 				if (basicServiceForm.isContentAnalysis()) {
 					BasicServiceUtils.getContent(basicServiceForm, basicServiceForm.getFileName(), request.getParameter(Constants.PARAM_CONTENT), true);
-				} else if (basicServiceForm.isContentAnalysisMultiple()) {
-					BasicServiceUtils.getContent(basicServiceForm, basicServiceForm.getFileName(), basicServiceFormRequest.getContent(), false);
-				} else if (basicServiceForm.isAnalysisMix()) {
+				} else if (basicServiceForm.isContentAnalysisMultiple() || basicServiceForm.isAnalysisMix()) {
 					BasicServiceUtils.getContent(basicServiceForm, basicServiceForm.getFileName(), basicServiceFormRequest.getContent(), false);
 				}
 				basicServiceForm.setAnalysisToDelete(basicServiceFormRequest.getAnalysisToDelete());
