@@ -373,7 +373,7 @@ public class SendResultsByMailAction extends Action {
 			UraSendResultForm uraCustom = UraSendResultDAO.findById(c, idExObs, idSend);
 			DependenciaForm ura = DependenciaDAO.findById(c, uraCustom.getUra().getId());
 			final TemplateRangeForm template = TemplateRangeDAO.findById(c, idExObs, uraCustom.getRange().getId());
-			String mailBody = SendResultsMailUtils.composeMailBody(ura, uraCustom, template, "https://example.com", "examplePassword", calculateExpirationDate(c)).toString();
+			String mailBody = SendResultsMailUtils.composeMailBody(ura, uraCustom, template, "xxxxxxxxx.zip", "examplePassword", calculateExpirationDate(c)).toString();
 			PrintWriter pw = response.getWriter();
 //			pw.write("{\"preview\": \"" + StringEscapeUtils.escapeHtml4(mailBody) + "\" }");
 			pw.write("{\"preview\": " + new Gson().toJson(mailBody) + " }");

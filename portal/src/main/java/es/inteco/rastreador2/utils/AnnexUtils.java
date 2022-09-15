@@ -222,9 +222,9 @@ public final class AnnexUtils {
 			"9.1.4.13", "9.2.1.1", "9.2.1.2", "9.2.1.4", "9.2.2.1", "9.2.2.2", "9.2.3.1", "9.2.4.1", "9.2.4.2", "9.2.4.3", "9.2.4.4", "9.2.4.5", "9.2.4.6", "9.2.4.7", "9.2.5.1", "9.2.5.2", "9.2.5.3",
 			"9.2.5.4", "9.3.1.1", "9.3.1.2", "9.3.2.1", "9.3.2.2", "9.3.2.3", "9.3.2.4", "9.3.3.1", "9.3.3.2", "9.3.3.3", "9.3.3.4", "9.4.1.1", "9.4.1.2", "9.4.1.3", "9.6", "10.1.1.1", "10.1.2.1",
 			"10.1.2.2", "10.1.2.3", "10.1.2.5", "10.1.3.1", "10.1.3.2", "10.1.3.3", "10.1.3.4", "10.1.3.5", "10.1.4.1", "10.1.4.2", "10.1.4.3", "10.1.4.4", "10.1.4.5", "10.1.4.10", "10.1.4.11",
-			"10.1.4.12", "10.1.4.13", "10.2.1.1", "10.2.1.1", "10.2.1.2", "10.2.1.4", "10.2.2.1", "10.2.2.2", "10.2.3.1", "10.2.4.2", "10.2.4.3", "10.2.4.4", "10.2.4.6", "10.2.4.7", "10.2.5.1",
-			"10.2.5.2", "10.2.5.3", "10.2.5.4", "10.3.1.1", "10.3.1.2", "10.3.2.1", "10.3.2.2", "10.3.3.1", "10.3.3.2", "10.3.3.3", "10.3.3.4", "10.4.1.1", "10.4.1.2", "10.4.1.3", "11.7", "11.8.1",
-			"11.8.2", "11.8.3", "11.8.4", "11.8.5", "11.8.1", "12.1.1", "12.1.2", "12.2.2", "12.2.3", "12.2.4" };
+			"10.1.4.12", "10.1.4.13", "10.2.1.1", "10.2.1.2", "10.2.1.4", "10.2.2.1", "10.2.2.2", "10.2.3.1", "10.2.4.2", "10.2.4.3", "10.2.4.4", "10.2.4.6", "10.2.4.7", "10.2.5.1", "10.2.5.2",
+			"10.2.5.3", "10.2.5.4", "10.3.1.1", "10.3.1.2", "10.3.2.1", "10.3.2.2", "10.3.3.1", "10.3.3.2", "10.3.3.3", "10.3.3.4", "10.4.1.1", "10.4.1.2", "10.4.1.3", "11.7", "11.8.1", "11.8.2",
+			"11.8.3", "11.8.4", "11.8.5", "12.1.1", "12.1.2", "12.2.2", "12.2.3", "12.2.4" };
 	/** The Constant EVOL_CUMPLIMIENTO_ANT. */
 	private static final String EVOL_CUMPLIMIENTO_ANT = "evol_cumplimiento_ant";
 	/** The Constant EVOL_CUMPLIMIENTO_PRIMER. */
@@ -417,6 +417,8 @@ public final class AnnexUtils {
 	private static List<String> dependencies;
 	/** The annexmap. */
 	private static Map<SemillaForm, TreeMap<String, ScoreForm>> annexmap;
+	/** The annexmap advanced. Including all seeds */
+	private static Map<SemillaForm, TreeMap<String, ScoreForm>> annexmapAdvanced;
 	/** The evaluation ids. */
 	private static List<Long> evaluationIds;
 	/** The observatory manager. */
@@ -504,7 +506,8 @@ public final class AnnexUtils {
 	 * @throws SQLException the SQL exception
 	 */
 	private static void generateInfo(final Long idObsExecution, final String[] exObsIds, final boolean originAnnexes) throws Exception, SQLException {
-		annexmap = createAnnexMap(idObsExecution, exObsIds);
+		annexmap = createAnnexMap(idObsExecution, exObsIds, false);
+		annexmapAdvanced = createAnnexMap(idObsExecution, exObsIds, true);
 		evaluationIds = AnalisisDatos.getEvaluationIdsFromExecutedObservatory(idObsExecution);
 		observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
 		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds, originAnnexes);
@@ -3583,7 +3586,7 @@ public final class AnnexUtils {
 			int countPC = 0;
 			int countTC = 0;
 			int countNC = 0;
-			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmapAdvanced.entrySet()) {
 				SemillaForm semillaForm = semillaEntry.getKey();
 				boolean hasCategory = true;
 				String namecat = semillaForm.getCategoria().getName();
@@ -5785,7 +5788,7 @@ public final class AnnexUtils {
 	 * @param exObsIds       the ex obs ids
 	 * @return the map
 	 */
-	private static Map<SemillaForm, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] exObsIds) {
+	private static Map<SemillaForm, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] exObsIds, boolean addAllSeeds) {
 		final Map<SemillaForm, TreeMap<String, ScoreForm>> seedMapFilled = new HashMap<>();
 		Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
 		Connection c = null;
@@ -5802,10 +5805,12 @@ public final class AnnexUtils {
 				final ObservatoryForm observatory = ObservatoryExportManager.getObservatory(orForm.getId());
 				if (observatory != null) {
 					observatoryFormList.add(observatory);
-					if (observatory.getIdExecution().equals(idObsExecution.toString())) {
+					if (addAllSeeds || (!addAllSeeds && observatory.getIdExecution().equals(idObsExecution.toString()))) {
 						for (CategoryForm category : observatory.getCategoryFormList()) {
 							for (SiteForm siteForm : category.getSiteFormList()) {
-								selectedExecutionSeedIdsList.add(siteForm.getIdCrawlerSeed());
+								if (selectedExecutionSeedIdsList != null && !selectedExecutionSeedIdsList.contains(siteForm.getIdCrawlerSeed())) {
+									selectedExecutionSeedIdsList.add(siteForm.getIdCrawlerSeed());
+								}
 							}
 						}
 					}

@@ -225,4 +225,33 @@ public class EstadoObservatorioDAO {
 		}
 		return summary;
 	}
+
+	/**
+	 * Find execution tags.
+	 *
+	 * @param connection  the connection
+	 * @param executionId the id ejecución observatorio
+	 * @return Execution tags
+	 * @throws SQLException the SQL exception
+	 */
+	public static String[] getExecutionTags(final Connection connection, final Long executionId) throws SQLException {
+		String executionTags = null;
+		String query = "SELECT id, tags FROM observatorios_realizados o WHERE id = ?";
+		try (PreparedStatement ps = connection.prepareStatement(query)) {
+			ps.setLong(1, executionId);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					executionTags = rs.getString("tags");
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", EstadoObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		if (executionTags != null) {
+			return executionTags.split("\\,", -1);
+		} else {
+			return null;
+		}
+	}
 }

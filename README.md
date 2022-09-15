@@ -100,6 +100,8 @@ Into folder motor-js contains this tool has 3 packages:
 
 This project is configuring to execute as docker solution
 
+## WCAG EM Tool
 
+Into folder wcagemtool is an customitation of https://github.com/w3c/wcag-em-report-tool that can export result in ODS custom format.
 
 
