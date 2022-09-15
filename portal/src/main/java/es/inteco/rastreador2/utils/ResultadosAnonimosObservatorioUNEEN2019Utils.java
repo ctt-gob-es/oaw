@@ -48,6 +48,7 @@ import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.crawler.dao.EstadoObservatorioDAO;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ObservatoryLevelForm;
@@ -2642,7 +2643,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (Map.Entry<Long, Date> longDateEntry : executedObservatoryIdMap.entrySet()) {
 				if (exObsIds != null) {
 					List<String> list = Arrays.asList(exObsIds);
-					// Only add selected observatoriess
+					// Only add selected observatories
 					if (list.contains((String.valueOf(longDateEntry.getKey())))) {
 						final List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
 						final Map<Long, Map<String, Integer>> sites = getSitesByType(pageList);
@@ -2679,7 +2680,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (Map.Entry<Long, Date> longDateEntry : executedObservatoryIdMap.entrySet()) {
 				if (exObsIds != null) {
 					List<String> list = Arrays.asList(exObsIds);
-					// Only add selected observatoriess
+					// Only add selected observatories
 					if (list.contains((String.valueOf(longDateEntry.getKey())))) {
 						final List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
 						final Map<Long, Map<String, Integer>> sites = new TreeMap<>();
@@ -2716,8 +2717,12 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
 				if (exObsIds != null) {
 					List<String> list = Arrays.asList(exObsIds);
-					// Only add selected observatoriess
+					// Only add selected observatories
 					if (list.contains((String.valueOf(entry.getKey())))) {
+						String[] executionTags = getExecutionTags(entry.getKey());
+						if (executionTags == null) {
+							executionTags = tagsFilter;
+						}
 						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, false, tagsFilter);
 						resultData.put(entry.getValue(), pageList);
 					}
@@ -2751,7 +2756,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
 				if (exObsIds != null) {
 					List<String> list = Arrays.asList(exObsIds);
-					// Only add selected observatoriess
+					// Only add selected observatories
 					if (list.contains((String.valueOf(entry.getKey())))) {
 						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), categoryId, null, false, tagsFilter);
 						resultData.put(entry.getValue(), pageList);
@@ -2784,7 +2789,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
 				if (exObsIds != null) {
 					List<String> list = Arrays.asList(exObsIds);
-					// Only add selected observatoriess
+					// Only add selected observatories
 					if (list.contains((String.valueOf(entry.getKey())))) {
 						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, true, tagsFilter);
 						resultData.put(entry.getValue(), pageList);
@@ -4674,5 +4679,42 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			}
 		}
 		return results;
+	}
+
+	/**
+	 * Get execution tags
+	 * 
+	 * @param executionId
+	 * @return Execution tags
+	 */
+	private static String[] getExecutionTags(Long executionId) {
+		Connection c = null;
+		String[] executionTags = null;
+		try {
+			final Connection connection = DataBaseManager.getConnection();
+			c = connection;
+			c.setAutoCommit(false);
+			// Borramos de la tabla de estado
+			executionTags = EstadoObservatorioDAO.getExecutionTags(connection, executionId);
+		} catch (Exception e) {
+			Logger.putLog("Error al obtener las etiquetas de ejecución ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+			if (c != null) {
+				try {
+					c.rollback();
+				} catch (SQLException e1) {
+					Logger.putLog("Error al realizar rollback", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
+		} finally {
+			if (c != null) {
+				try {
+					c.rollback();
+					DataBaseManager.closeConnection(c);
+				} catch (SQLException e1) {
+					Logger.putLog("Error al realizar rollback", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e1);
+				}
+			}
+		}
+		return executionTags;
 	}
 }

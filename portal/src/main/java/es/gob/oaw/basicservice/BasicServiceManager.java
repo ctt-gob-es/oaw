@@ -202,11 +202,11 @@ public class BasicServiceManager {
 					WcagEmReport report = WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), basicServiceForm.getName(), idCrawling);
 					// ODS REPORT
 					SpreadSheet ods = WcagOdsUtils.generateOds(report);
-					File outputFile = new File(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web - v2.0.0.ods");
+					File outputFile = new File(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web.ods");
 					ods.saveAs(outputFile);
 					// XLSX REPORT
 					Workbook wb = WcagXlsxUtils.generateXlsx(report);
-					File outputFilexlsx = new File(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web - v2.0.0.xlsx");
+					File outputFilexlsx = new File(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web.xlsx");
 					wb.write(new FileOutputStream(outputFilexlsx));
 				}
 				// Generar código analizado

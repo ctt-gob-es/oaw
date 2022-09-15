@@ -71,4 +71,15 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 .listado-grid {
 	text-overflow: ellipsis;
 	overflow: hidden;
+} 
+ 
+.padding-fields-new-range {
+	padding-right:0px;
+}
+
+.col-xs-1-mod{
+	width:5%;
+	float:left;
+	padding-left:3%;
+	padding-right:3%;
 }

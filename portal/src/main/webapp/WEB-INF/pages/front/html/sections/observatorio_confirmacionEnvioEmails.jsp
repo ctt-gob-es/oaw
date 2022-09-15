@@ -318,7 +318,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									name: "minValue",
 									width: 20,
 									editrules: {
+										required: true,
 										number: true,
+										minValue: -100,
+										maxValue: 100
 									},
 									align: "center",
 									formatter: cellFormatter,
@@ -355,11 +358,15 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									},
 									sortable: false
 
-								},								{
+								},								
+								{
 									name: "maxValue",
 									width: 20,
 									editrules: {
+									    required: true,
 										number: true,
+										minValue: -100,
+										maxValue: 100
 									},
 									formatter: cellFormatter,
 									align: "center",
@@ -597,8 +604,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	
 	var dialog;
 	
-	var windowWidth = $(window).width() * 0.4;
-	var windowHeight = $(window).height() * 0.75;
+	var windowWidth = $(window).width() * 0.55;
+	var windowHeight = $(window).height() * 0.6;
 	
 	
 	function dialogNewRange() {
@@ -723,7 +730,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<bean:message key="range.observatory.new.name" />
 						</strong>
 					</label>
-					<div class="col-xs-6">
+					<div class="col-xs-8">
 						<input type="text" id="name" name="name" class="textoLargo form-control" />
 					</div>
 				</div>
@@ -733,27 +740,27 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
 							<bean:message key="colname.range" />
 						</strong>
-					</label>
-					<div class="col-xs-2">
-						<input type="number" id="minValue" name="minValue" class="form-control" step="0.1" />
+					</label> 
+					<div class="col-xs-2 padding-fields-new-range">
+						<input type="number" id="minValue" name="minValue" class="form-control" step="0.01" min=-100" max="100"/>
 					</div>
-					<div class="col-xs-2">
+					<div class="col-xs-1 padding-fields-new-range">
 						<select id="minValueOperator" name="minValueOperator" class="form-control">
 							<option value=""></option>
 							<option value="&#60;">&#60;</option>
 							<option value="&#60;&#61;">&#60;&#61;</option>
 						</select>
-					</div>
-					<div class="col-xs-1 text-center">X</div>
-					<div class="col-xs-2">
+					</div> 
+					<div class="col-xs-1-mod text-center">X</div> 
+					<div class="col-xs-1 padding-fields-new-range"> 
 						<select id="maxValueOperator" name="maxValueOperator" class="form-control">
 							<option value=""></option>
 							<option value="&#60;">&#60;</option>
 							<option value="&#60;&#61;">&#60;&#61;</option>
 						</select>
 					</div>
-					<div class="col-xs-2">
-						<input type="number" id="maxValue" name="maxValue" class="form-control" step="0.1" />
+					<div class="col-xs-2 padding-fields-new-range">
+						<input type="number" id="maxValue" name="maxValue" class="form-control" step="0.01" min=-100" max="100"/>
 					</div>
 				</div>
 				<div class="row formItem">

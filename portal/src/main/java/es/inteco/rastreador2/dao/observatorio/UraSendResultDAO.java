@@ -105,7 +105,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 	public static List<UraSendResultForm> findAll(Connection c, final Long idExObs, final boolean isSendAuto) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
 		final List<UraSendResultForm> results = new ArrayList<>();
-		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.range_value, c.has_custom_text, c.custom_text, c.send, c.send_date, c.send_error, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ";
+		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.range_value, c.has_custom_text, c.custom_text, c.send, c.send_date, c.send_error, c.file_link, c.file_pass, c.has_custom_text, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ";
 		if (isSendAuto) {
 			query = query + "AND d.send_auto = 1 ";
 		}
@@ -119,6 +119,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 					form.setUraId(rs.getLong("d.id_dependencia"));
 					form.setUraName(rs.getString("d.nombre"));
 					form.setTemplate(new String(Base64.decodeBase64(rs.getString("custom_text").getBytes())));
+					form.setHasCustomText(rs.getBoolean("c.has_custom_text"));
 					final RangeForm range = new RangeForm();
 					range.setId(rs.getLong("r.id"));
 					range.setName(rs.getString("r.name"));
@@ -160,7 +161,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 	public static List<UraSendResultForm> findAllNotSend(Connection c, final Long idExObs) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
 		final List<UraSendResultForm> results = new ArrayList<>();
-		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, c.send_error, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.send=0 AND c.id_observatory_execution = ? ORDER BY c.id ASC";
+		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, c.send_error, c.has_custom_text, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.send=0 AND c.id_observatory_execution = ? ORDER BY c.id ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idExObs);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -169,6 +170,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 					form.setId(rs.getLong("c.id"));
 					form.setUraId(rs.getLong("d.id_dependencia"));
 					form.setUraName(rs.getString("d.nombre"));
+					form.setHasCustomText(rs.getBoolean("c.has_custom_text"));
 					final RangeForm range = new RangeForm();
 					range.setId(rs.getLong("r.id"));
 					range.setName(rs.getString("r.name"));
@@ -204,7 +206,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 		c = reOpenConnectionIfIsNecessary(c);
 		final List<UraSendResultForm> results = new ArrayList<>();
 		if (ids != null && ids.length > 0) {
-			String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range,c.range_value, c.custom_text, c.send, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1  AND c.id_observatory_execution = ? ";
+			String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range,c.range_value, c.custom_text, c.send, c.has_custom_text, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1  AND c.id_observatory_execution = ? ";
 			query = query + " AND c.id_ura IN (" + ids[0];
 			for (int i = 1; i < ids.length; i++) {
 				query = query + "," + ids[i];
@@ -222,6 +224,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 						form.setId(rs.getLong("c.id"));
 						form.setTemplate(new String(Base64.decodeBase64(rs.getString("custom_text").getBytes())));
 						form.setSend(rs.getBoolean("c.send"));
+						form.setHasCustomText(rs.getBoolean("c.has_custom_text"));
 						final RangeForm range = new RangeForm();
 						range.setId(rs.getLong("r.id"));
 						range.setName(rs.getString("r.name"));
@@ -257,7 +260,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 	public static UraSendResultForm findById(Connection c, final Long idExObs, final Long id) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
 		UraSendResultForm result = null;
-		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? AND c.id = ?";
+		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.custom_text, c.send, c.has_custom_text, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? AND c.id = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idExObs);
 			ps.setLong(2, id);
@@ -267,6 +270,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 					form.setId(rs.getLong("c.id"));
 					form.setTemplate(new String(Base64.decodeBase64(rs.getString("custom_text").getBytes())));
 					form.setSend(rs.getBoolean("c.send"));
+					form.setHasCustomText(rs.getBoolean("c.has_custom_text"));
 					final RangeForm range = new RangeForm();
 					range.setId(rs.getLong("r.id"));
 					range.setName(rs.getString("r.name"));
