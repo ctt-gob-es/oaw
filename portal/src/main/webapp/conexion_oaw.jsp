@@ -24,7 +24,7 @@
     // Producción: http://oaw.redsara.es/oaw/
     // Preproducción: http://pre-oaw.redsara.es/oaw/
     // Integración: http://des-oaw.redsara.es/oaw/
-    private final static String BASE_URL = "http://localhost:8080/oaw/";
+    private final static String BASE_URL = "http://localhost:8080/oaw/";  
 
     // Path de los servicios que se invocarán. Se mantienen invariables entre entornos y solo hará falta modificarlos como consecuencia de cambios en la aplicación.
     private final static String BASIC_SERVICE_ENDPOINT = "basicServiceAction.do";

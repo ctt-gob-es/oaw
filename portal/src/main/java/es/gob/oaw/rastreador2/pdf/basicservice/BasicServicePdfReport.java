@@ -173,6 +173,9 @@ public class BasicServicePdfReport {
 					case LISTA_URLS:
 						subtitle = messageResources2019.getMessage("pdf.accessibility.cover.type.url.list");
 						break;
+					case MIXTO:
+						subtitle = messageResources2019.getMessage("pdf.accessibility.cover.type.mix");
+						break;
 					default:
 						break;
 					}
