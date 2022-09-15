@@ -95,7 +95,13 @@ public final class DiagnosisDAO {
 				Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, basicServiceForm.getUser());
 			ps.setString(2, basicServiceForm.getLanguage());
-			if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
+			if (basicServiceForm.getContents() != null && !basicServiceForm.getContents().isEmpty() && StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
+				StringBuilder sb = new StringBuilder(basicServiceForm.getFileName());
+				sb.append("\n");
+				sb.append(basicServiceForm.getDomain());
+				ps.setString(3, sb.toString());
+				ps.setString(11, BasicServiceAnalysisType.MIXTO.getLabel());
+			} else if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
 				ps.setString(3, basicServiceForm.getDomain());
 				ps.setString(11, basicServiceForm.getAnalysisType().getLabel());
 			} else if (basicServiceForm.getContents() != null && !basicServiceForm.getContents().isEmpty()) {
@@ -172,6 +178,8 @@ public final class DiagnosisDAO {
 						basicServiceForm.setName(new URL(basicServiceForm.getDomain()).getAuthority());
 					} else if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.LISTA_URLS) {
 						basicServiceForm.setDomain(rs.getString("domain"));
+					} else if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.MIXTO) {
+						basicServiceForm.setDomain(cleanUrls(rs.getString("domain")));
 					}
 					basicServiceForm.setComplexity(rs.getString("complexity"));
 					basicServiceForm.setFileName(rs.getString("filename"));
@@ -626,5 +634,17 @@ public final class DiagnosisDAO {
 		calendar.setTime(format.parse(endDate));
 		calendar.add(Calendar.DAY_OF_MONTH, 1);
 		return calendar.getTime();
+	}
+
+	private static String cleanUrls(String domain) {
+		String[] urls = domain.trim().split("\n");
+		List<String> out = new ArrayList<String>();
+		for (String url : urls) {
+			if (url.contains("http:") || url.contains("https:")) {
+				out.add(url);
+			}
+		}
+		// return Arrays.asList(out).stream().map(Object::toString).collect(Collectors.joining("\n"));
+		return String.join("\n", out);
 	}
 }
