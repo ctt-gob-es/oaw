@@ -63,8 +63,15 @@ public class BasicServiceAction extends Action {
 				final BasicServiceForm basicServiceForm = DiagnosisDAO.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceFormRequest.getId());
 				if (basicServiceForm.isContentAnalysis()) {
 					BasicServiceUtils.getContent(basicServiceForm, basicServiceForm.getFileName(), request.getParameter(Constants.PARAM_CONTENT), true);
-				} else if (basicServiceForm.isContentAnalysisMultiple() || basicServiceForm.isAnalysisMix()) {
+				} else if (basicServiceForm.isContentAnalysisMultiple()) {
 					BasicServiceUtils.getContent(basicServiceForm, basicServiceForm.getFileName(), basicServiceFormRequest.getContent(), false);
+				} else if (basicServiceForm.isAnalysisMix()) {
+					if (basicServiceForm.getFileName() != null && (basicServiceForm.getFileName().contains("zip") || basicServiceForm.getFileName().contains("rar")
+							|| basicServiceForm.getFileName().contains("tar") || basicServiceForm.getFileName().contains("tar.gz") || basicServiceForm.getFileName().contains("7z"))) {
+						BasicServiceUtils.getContent(basicServiceForm, basicServiceForm.getFileName(), basicServiceFormRequest.getContent(), false);
+					} else {
+						BasicServiceUtils.getContent(basicServiceForm, basicServiceForm.getFileName(), basicServiceFormRequest.getContent(), true);
+					}
 				}
 				basicServiceForm.setAnalysisToDelete(basicServiceFormRequest.getAnalysisToDelete());
 				basicServiceManager.executeCrawling(basicServiceForm, CrawlerUtils.getResources(request));

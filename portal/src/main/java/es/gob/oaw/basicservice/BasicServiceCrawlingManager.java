@@ -54,7 +54,7 @@ public class BasicServiceCrawlingManager {
 		// Cambio de numero de urls maximas a anilizar
 		PropertiesManager pmgr = new PropertiesManager();
 		maxUrl = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
-		final List<CrawledLink> crawledLinks;
+		List<CrawledLink> crawledLinks = new ArrayList<CrawledLink>();
 		final CrawlerJob crawlerJob = new CrawlerJob();
 		final CrawlerData crawlerData = createCrawlerData(basicServiceForm);
 		if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.URL) {
@@ -69,7 +69,11 @@ public class BasicServiceCrawlingManager {
 		} else if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.CODIGO_FUENTE_MULTIPLE) {
 			crawledLinks = crawlerJob.runMultiplaFilesAnalysis(crawlerData);
 		} else if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.MIXTO) {
-			crawledLinks = crawlerJob.runMultiplaFilesAnalysis(crawlerData);
+			if (basicServiceForm.getContents() != null) {
+				crawledLinks = crawlerJob.runMultiplaFilesAnalysis(crawlerData);
+			} else if (basicServiceForm.getContent() != null) {
+				crawledLinks = crawlerJob.runSimpleAnalysis(crawlerData);
+			}
 			disableCrawling(crawlerData);
 			crawledLinks.addAll(crawlerJob.testCrawler(crawlerData));
 		} else {

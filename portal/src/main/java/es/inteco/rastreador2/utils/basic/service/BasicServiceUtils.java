@@ -129,7 +129,11 @@ public final class BasicServiceUtils {
 	 */
 	public static BasicServiceForm getBasicServiceForm(final BasicServiceForm basicServiceForm, final HttpServletRequest request) {
 		Logger.putLog("getBasicServiceForm " + basicServiceForm.toString(), BasicServiceUtils.class, Logger.LOG_LEVEL_ERROR);
-		basicServiceForm.setUser(request.getParameter(Constants.PARAM_USER));
+		if (request.getParameter(Constants.PARAM_USER) != null) {
+			basicServiceForm.setUser(request.getParameter(Constants.PARAM_USER));
+		} else {
+			basicServiceForm.setUser(request.getParameter(Constants.PARAM_EMAIL));
+		}
 		String urlParameter = request.getParameter(Constants.PARAM_URL);
 		if (urlParameter != null) {
 			String url = "";
