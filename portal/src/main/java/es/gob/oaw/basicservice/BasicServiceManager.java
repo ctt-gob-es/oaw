@@ -148,8 +148,8 @@ public class BasicServiceManager {
 					}
 				}
 				final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "file.date.format"));
-				pdfPath = pmgr.getValue(CRAWLER_PROPERTIES, "pdf.basic.service.path") + idCrawling + File.separator + PDFUtils.formatSeedName(basicServiceForm.getName()) + "_" + df.format(new Date())
-						+ ".pdf";
+				pdfPath = pmgr.getValue(CRAWLER_PROPERTIES, "pdf.basic.service.path") + idCrawling + File.separator + PDFUtils.formatSeedName(basicServiceForm.getReportName()) + "_"
+						+ df.format(new Date()) + ".pdf";
 				final ObservatoryManager observatoryManager = new ObservatoryManager();
 				if (basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_UNE) || basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_UNE_FILE)
 						|| basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_WCAG_1_FILE) || basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_WCAG_2_FILE)) {

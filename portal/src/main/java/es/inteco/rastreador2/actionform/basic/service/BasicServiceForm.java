@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.struts.validator.ValidatorForm;
 
 import es.inteco.common.Constants;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 
 /**
@@ -167,7 +168,28 @@ public class BasicServiceForm extends ValidatorForm {
 			} catch (MalformedURLException e) {
 				return domain;
 			}
-		} else if (analysisType == BasicServiceAnalysisType.CODIGO_FUENTE || analysisType == BasicServiceAnalysisType.CODIGO_FUENTE) {
+		} else if (content != null && (analysisType == BasicServiceAnalysisType.CODIGO_FUENTE || analysisType == BasicServiceAnalysisType.MIXTO)) {
+			return BasicServiceUtils.getTitleFromContent(content).trim();
+		} else if (analysisType == BasicServiceAnalysisType.LISTA_URLS) {
+			return "Lista de páginas";
+		} else {
+			return "Informe del Servicio de diagnóstico";
+		}
+	}
+
+	/**
+	 * Gets the report name.
+	 *
+	 * @return the report name
+	 */
+	public String getReportName() {
+		if (analysisType == BasicServiceAnalysisType.URL) {
+			try {
+				return new URL(domain).getAuthority();
+			} catch (MalformedURLException e) {
+				return domain;
+			}
+		} else if (analysisType == BasicServiceAnalysisType.CODIGO_FUENTE) {
 			return BasicServiceUtils.getTitleFromContent(content);
 		} else if (analysisType == BasicServiceAnalysisType.LISTA_URLS) {
 			return "Lista de páginas";
@@ -225,6 +247,13 @@ public class BasicServiceForm extends ValidatorForm {
 	 * @param user the new user
 	 */
 	public void setUser(String user) {
+		if (user == null || !StringUtils.isNotEmpty(user) || user.contains("null")) {
+			if (email != null && StringUtils.isNotEmpty(email)) {
+				user = email;
+			} else {
+				user = " - ";
+			}
+		}
 		this.user = user;
 	}
 
