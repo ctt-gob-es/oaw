@@ -1,134 +1,54 @@
 package es.gob.oaw.webservice.dto;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import es.inteco.common.properties.PropertiesManager;
+import java.util.List;
 
 public class ProblemDTO {
-	private String date;
-	private String xpath;
-	private String nameElement;
-	private String stringLineNumber;
-	private String stringColumnNumber;
-	private boolean decisionPass;
-	private int lineOffset;
-	private int id;
-	private boolean summary;
+	private String title;
+	private String description;
+	private String help;
+	private String type;
+	private SpecificProblemDTO[] specificProblems;
 
 	public ProblemDTO() {
-		final PropertiesManager properties = new PropertiesManager();
-		final SimpleDateFormat dateFormat = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
-		date = dateFormat.format(new Date());
 	}
 
-	public String getDate() {
-		return date;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setDate(String aDate) {
-		date = aDate;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public String getXpath() {
-		return xpath;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setXpath(String anXpath) {
-		xpath = anXpath;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public void setLineOffset(int offset) {
-		lineOffset = offset;
+	public String getHelp() {
+		return help;
 	}
 
-	public int getLineNumber() {
-		if (stringLineNumber != null) {
-			int lineNumber = Integer.parseInt(stringLineNumber);
-			return lineNumber - lineOffset;
-		} else {
-			return 0;
-		}
+	public void setHelp(String help) {
+		this.help = help;
 	}
 
-	public String getLineNumberString() {
-		if (lineOffset == 0) {
-			return stringLineNumber;
-		} else {
-			int lineNumber = Integer.parseInt(stringLineNumber);
-			return Integer.toString(lineNumber - lineOffset);
-		}
+	public String getType() {
+		return type;
 	}
 
-	public int getColumnNumber() {
-		if (stringColumnNumber != null) {
-			return Integer.parseInt(stringColumnNumber);
-		} else {
-			return 0;
-		}
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public String getColumnNumberString() {
-		return stringColumnNumber;
+	public SpecificProblemDTO[] getSpecificProblems() {
+		return specificProblems;
 	}
 
-	public boolean getDecisionPass() {
-		return decisionPass;
-	}
-
-	public void setDecisionPass(boolean state) {
-		decisionPass = state;
-	}
-
-	public void setId(int number) {
-		id = number;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setLineNumber(int linenumber) {
-		stringLineNumber = Integer.toString(linenumber);
-	}
-
-	public void setColumnNumber(int columnnumber) {
-		stringColumnNumber = Integer.toString(columnnumber);
-	}
-
-	public boolean isSummary() {
-		return summary;
-	}
-
-	public void setSummary(boolean isSummary) {
-		this.summary = isSummary;
-	}
-
-	public String getNameElement() {
-		return nameElement;
-	}
-
-	public void setNameElement(String nameElement) {
-		this.nameElement = nameElement;
-	}
-
-	public String getStringLineNumber() {
-		return stringLineNumber;
-	}
-
-	public void setStringLineNumber(String stringLineNumber) {
-		this.stringLineNumber = stringLineNumber;
-	}
-
-	public String getStringColumnNumber() {
-		return stringColumnNumber;
-	}
-
-	public void setStringColumnNumber(String stringColumnNumber) {
-		this.stringColumnNumber = stringColumnNumber;
-	}
-
-	public int getLineOffset() {
-		return lineOffset;
+	public void setSpecificProblems(List<SpecificProblemDTO> specificProblems) {
+		this.specificProblems = specificProblems.toArray(new SpecificProblemDTO[specificProblems.size()]);
 	}
 }
