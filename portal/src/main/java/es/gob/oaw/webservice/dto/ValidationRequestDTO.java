@@ -1,22 +1,13 @@
 package es.gob.oaw.webservice.dto;
 
 public class ValidationRequestDTO {
-	private String code;
-	private String url;
+	private String sourceCode;
 
-	public String getCode() {
-		return code;
+	public String getSourceCode() {
+		return sourceCode;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
+	public void setSourceCode(String sourceCode) {
+		this.sourceCode = sourceCode;
 	}
 }

@@ -9,9 +9,6 @@
 		<operation name="validationRequest"> 
 			<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
 		</operation>
-        <operation name="scheduledTask">
-            <messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
-        </operation>
 	</service>
 </serviceGroup>
  
