@@ -20,6 +20,8 @@ import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +60,7 @@ import es.inteco.rastreador2.utils.basic.service.BasicServiceQueingThread;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceThread;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import es.inteco.utils.FileUtils;
+import es.oaw.wcagem.NoWebpage;
 import es.oaw.wcagem.WcagEmReport;
 import es.oaw.wcagem.WcagEmUtils;
 import es.oaw.wcagem.WcagOdsUtils;
@@ -200,6 +203,23 @@ public class BasicServiceManager {
 				// JSON WCAG-EM and ODS
 				if ("true".equalsIgnoreCase(basicServiceForm.getDepthReport())) {
 					WcagEmReport report = WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), basicServiceForm.getName(), idCrawling);
+					// PDF FILES
+					List<NoWebpage> noWebpages = new ArrayList<>();
+					int randCounterNoWeb = 0;
+					// Iterate currentEvaluationPageList to preserve order
+					for (CrawledLink crawledLink : crawledLinks) {
+						NoWebpage noWebpage = new NoWebpage();
+						noWebpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
+						noWebpage.setId("_:struct_" + randCounterNoWeb);
+						noWebpage.setDescription(crawledLink.getUrl());
+						noWebpage.setSource(crawledLink.getUrl());
+						noWebpage.setTitle(BasicServiceUtils.getTitleDocFromContent("Pdf", false));
+						noWebpage.setTested(false);// false to mark as incomplete un report step
+						noWebpages.add(noWebpage);
+						randCounterNoWeb++;
+					}
+					report.getGraph().get(0).getStructuredSample().setNoWebpage(noWebpages);
+					// END PDF FILES
 					// ODS REPORT
 					SpreadSheet ods = WcagOdsUtils.generateOds(report);
 					File outputFile = new File(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web.ods");

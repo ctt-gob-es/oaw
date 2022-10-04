@@ -27,13 +27,15 @@ public class OAWService {
 	final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 	final CheckDescriptionsManager checkDescriptionsManager = new CheckDescriptionsManager();
 	final PropertiesManager pmgr = new PropertiesManager();
+	static final String guideline = "observatorio-une-en2019-nobroken.xml";
 
 	public ProblemDTO[] validationRequest(ValidationRequestDTO validationRequestDTO) throws Exception {
 		byte[] decodedBytes = Base64.getDecoder().decode(validationRequestDTO.getSourceCode().trim());
 		String sourceCode = new String(decodedBytes);
 		CheckAccessibility checkAccessibility = new CheckAccessibility();
 		checkAccessibility.setContent(sourceCode);
-		checkAccessibility.setGuidelineFile("observatorio-inteco-1-0.xml");
+		checkAccessibility.setGuidelineFile(guideline);
+		checkAccessibility.setWebService(true);
 		EvaluatorUtility.initialize();
 		Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 		ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true, false);
@@ -50,15 +52,17 @@ public class OAWService {
 				for (ObservatorySubgroupForm subGroup : subGroups) {
 					List<ProblemForm> problems = subGroup.getProblems();
 					for (ProblemForm problem : problems) {
-						String errorMessage = checkDescriptionsManager.getString(problem.getError());
-						String rationaleMessage = checkDescriptionsManager.getString(problem.getRationale());
-						ProblemDTO problemDTO = new ProblemDTO();
-						problemDTO.setTitle(messageResources.getMessage(subGroup.getDescription()));
-						problemDTO.setDescription(errorMessage);
-						problemDTO.setHelp(rationaleMessage);
-						problemDTO.setType(getType(problem));
-						problemDTO.setSpecificProblems(getSpecificProblems(problem));
-						problemsDTO.add(problemDTO);
+						if (!ignoreProblem(problem)) {
+							String errorMessage = checkDescriptionsManager.getString(problem.getError());
+							String rationaleMessage = checkDescriptionsManager.getString(problem.getRationale());
+							ProblemDTO problemDTO = new ProblemDTO();
+							problemDTO.setTitle(messageResources.getMessage(subGroup.getDescription()));
+							problemDTO.setDescription(errorMessage);
+							problemDTO.setHelp(rationaleMessage);
+							problemDTO.setType(getType(problem));
+							problemDTO.setSpecificProblems(getSpecificProblems(problem));
+							problemsDTO.add(problemDTO);
+						}
 					}
 				}
 			}
@@ -91,5 +95,14 @@ public class OAWService {
 			specificProblemsDTO.add(specificProblemDTO);
 		}
 		return specificProblemsDTO;
+	}
+
+	private boolean ignoreProblem(ProblemForm problem) {
+		boolean ignore = false;
+		// Las páginas analizadas en el muestreo presentan todas el mismo título.
+		if (problem.getCheck().contains("462")) {
+			ignore = true;
+		}
+		return ignore;
 	}
 }

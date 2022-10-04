@@ -142,9 +142,8 @@
 	      org.apache.axis2.transport.http.AxisServlet
 	   </servlet-class>
 	   <load-on-startup>10</load-on-startup>
-	</servlet> 
-	
-	<!-- Standard Action Servlet Mapping -->
+	</servlet> 	
+
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>
 		<url-pattern>*.do</url-pattern>
@@ -155,20 +154,11 @@
 	   <url-pattern>/services/*</url-pattern>
 	</servlet-mapping>
 
-	<!-- The Usual Welcome File List -->
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 		<welcome-file>/axis2-web/index.jsp</welcome-file>
-	</welcome-file-list>
+	</welcome-file-list> 
 
-	<error-page>
-		<error-code>404</error-code>
-		<location>/noEncontrado.jsp</location>
-	</error-page>
-	<error-page>
-		<error-code>500</error-code>
-		<location>/errorPage.jsp</location>
-	</error-page>
 	<error-page>
 		<error-code>404</error-code>
 		<location>/axis2-web/Error/error404.jsp</location>
@@ -176,6 +166,15 @@
 	<error-page>
 		<error-code>500</error-code>
 		<location>/axis2-web/Error/error500.jsp</location>
+	</error-page> 
+	
+	<error-page>
+		<error-code>404</error-code>
+		<location>/noEncontrado.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/errorPage.jsp</location>
 	</error-page>
 
 	<!-- Struts Tag Library Descriptors -->

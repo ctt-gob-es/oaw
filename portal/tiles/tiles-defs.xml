@@ -866,4 +866,19 @@
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_resultadosEnvioEmails.jsp" />
 	</definition>
 
+	<definition name=".sspImportar" extends="mainLayout">
+		<put name="title" value="application.title.importacion"/>
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/ssp_importar_entidades.jsp" />
+	</definition>	
+	
+	<definition name=".sspImportarError" extends="mainLayout">
+		<put name="title" value="application.title.importacion"/>
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/ssp_importar_entidades.jsp" />
+	</definition>	
+	
+	<definition name=".sspImportarExito" extends="mainLayout">
+		<put name="title" value="application.title.importacion"/>
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/ssp_importar_entidades.jsp" />
+	</definition>	
+	
 </tiles-definitions>    

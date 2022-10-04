@@ -13,6 +13,11 @@
 
 	<!-- Form Bean Definitions -->
 	<form-beans>
+	
+		<!--  IMPORTAR ENTIDADES DEL SPP  -->
+	    <form-bean name="SSPImportarForm"
+			type="es.inteco.rastreador2.actionform.importacion.SSPImportarForm" />
+			
 		<!-- OBSERVATORIO -->
 		<form-bean name="CargarObservatorioForm"
 			type="es.inteco.rastreador2.actionform.observatorio.CargarObservatorioForm" />
@@ -384,6 +389,7 @@
 
 		<forward name="observatoryRanges" path="/secure/RangeObservatorio.do?action=load" />
 
+		<forward name="sspImportarMenu" path="/secure/SSPImportar.do" />
 
 	</global-forwards>
 
@@ -1106,8 +1112,14 @@
 		<action path="/secure/UraCustomTextObservatorio"
 			type="es.inteco.rastreador2.action.observatorio.UraCustomTextObservatorioAction" name="UraSendResultForm"
 			parameter="action" scope="request" validate="false">
+		</action> 
+		
+		<action path="/secure/SSPImportar" type="es.inteco.rastreador2.action.importacion.SSPImportarAction"
+			scope="request" name="SSPImportarForm" validate="false" input="/secure/SSPImportar.do">
+			<!-- <forward name="volver" path="/secure/SSPImportar.do" /> -->
+			<forward name="error" path=".sspImportarError" />
+			<forward name="exito" path=".sspImportarExito" />
 		</action>
-
 
 	</action-mappings>
 

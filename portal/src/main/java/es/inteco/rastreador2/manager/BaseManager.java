@@ -15,109 +15,118 @@
 ******************************************************************************/
 package es.inteco.rastreador2.manager;
 
-import es.inteco.rastreador2.dao.BaseDAO;
-import es.inteco.rastreador2.dao.utils.export.database.HibernateUtil;
+import java.util.List;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import es.inteco.rastreador2.dao.BaseDAO;
+import es.inteco.rastreador2.dao.utils.export.database.HibernateUtil;
+
 /**
  * The Class BaseManager.
  */
 public abstract class BaseManager {
-
-    /**
+	/**
 	 * Gets the session.
 	 *
 	 * @return the session
 	 */
-    protected static Session getSession() {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        return sessionFactory.openSession();
-    }
+	protected static Session getSession() {
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		return sessionFactory.openSession();
+	}
 
-    /**
+	/**
 	 * Salvar en base de datos.
 	 *
 	 * @param object the object
 	 * @return the object
 	 * @throws HibernateException the hibernate exception
 	 */
-    public static Object save(Object object) throws HibernateException {
-        Session session = getSession();
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
+	public static Object save(Object object) throws HibernateException {
+		Session session = getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			object = BaseDAO.save(session, object);
+			tx.commit();
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			throw new HibernateException(e);
+		} finally {
+			session.close();
+		}
+		return object;
+	}
 
-            object = BaseDAO.save(session, object);
-
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null) {
-                tx.rollback();
-            }
-            throw new HibernateException(e);
-        } finally {
-            session.close();
-        }
-
-        return object;
-    }
-
-    /**
+	/**
 	 * Actualizar en base de datos.
 	 *
 	 * @param object the object
 	 * @return the object
 	 * @throws HibernateException the hibernate exception
 	 */
-    public static Object update(Object object) throws HibernateException {
-        Session session = getSession();
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
+	public static Object update(Object object) throws HibernateException {
+		Session session = getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			object = BaseDAO.update(session, object);
+			tx.commit();
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			throw new HibernateException(e);
+		} finally {
+			session.close();
+		}
+		return object;
+	}
 
-            object = BaseDAO.update(session, object);
-
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null) {
-                tx.rollback();
-            }
-            throw new HibernateException(e);
-        } finally {
-            session.close();
-        }
-
-        return object;
-    }
-
-    /**
+	/**
 	 * Borrar en base de datos.
 	 *
 	 * @param object the object
 	 * @return the object
 	 * @throws HibernateException the hibernate exception
 	 */
-    public static Object delete(Object object) throws HibernateException {
-        Session session = getSession();
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
+	public static Object delete(Object object) throws HibernateException {
+		Session session = getSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			object = BaseDAO.delete(session, object);
+			tx.commit();
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			throw new HibernateException(e);
+		} finally {
+			session.close();
+		}
+		return object;
+	}
 
-            object = BaseDAO.delete(session, object);
-
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null) {
-                tx.rollback();
-            }
-            throw new HibernateException(e);
-        } finally {
-            session.close();
-        }
-
-        return object;
-    }
+	/**
+	 * Borrar todas las entradas asociadas a una entidad
+	 * 
+	 * @param clazz
+	 */
+	public static void deleteAll(final Class<?> clazz) {
+		Session session = getSession();
+		session.beginTransaction();
+		final List<?> instances = session.createCriteria(clazz).list();
+		for (Object obj : instances) {
+			session.delete(obj);
+		}
+		session.getTransaction().commit();
+		session.close();
+	}
 }
