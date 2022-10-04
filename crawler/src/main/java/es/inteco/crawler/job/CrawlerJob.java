@@ -436,8 +436,7 @@ public class CrawlerJob implements InterruptableJob {
 			String domain = null;
 			// Additional URL filter
 			if (url != null && !url.isEmpty() && !url.toLowerCase().startsWith("javascript") && !url.toLowerCase().startsWith("mailto") && !url.toLowerCase().startsWith("tel")
-					&& !url.toLowerCase().endsWith(".pdf") && !url.toLowerCase().endsWith(".doc") && !url.endsWith(".epub") && !url.endsWith(".xml") && !url.endsWith(".xls")
-					&& !url.endsWith(".wsdl")) {
+					&& !url.toLowerCase().endsWith(".doc") && !url.endsWith(".epub") && !url.endsWith(".xml") && !url.endsWith(".xls") && !url.endsWith(".wsdl")) {
 				try {
 					HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
 					updateTimeouts(crawlerData, connection);

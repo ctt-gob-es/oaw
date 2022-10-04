@@ -1135,6 +1135,8 @@ public interface Constants {
 	String FAILED_CHECKS = "failedChecks";
 	/** The menu. */
 	String MENU = "menu";
+	/** The submenu importar entidad. */
+	String SUBMENU_IMPORTAR = "menuImportar";
 	/** The submenu. */
 	String SUBMENU = "submenu";
 	/** The menu password. */

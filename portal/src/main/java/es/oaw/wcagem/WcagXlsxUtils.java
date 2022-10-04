@@ -94,6 +94,7 @@ public final class WcagXlsxUtils {
 		Sheet sampleSheet = workbook.getSheet("03.Muestra");
 		int initRow = 8; // Initial rowcount
 		final List<Webpage> webpageList = report.getGraph().get(0).getStructuredSample().getWebpage();
+		final List<NoWebpage> noWebpageList = report.getGraph().get(0).getStructuredSample().getNoWebpage();
 		final int totalPages = webpageList.size();
 		fillNotTell(workbook, totalPages < MAX_PAGES ? totalPages : MAX_PAGES);
 		for (Webpage webpage : webpageList) {
@@ -106,8 +107,19 @@ public final class WcagXlsxUtils {
 				initRow++;
 			}
 		}
+		for (NoWebpage nowebpage : noWebpageList) {
+			if (resultsProcessed < MAX_PAGES) {
+				resultsProcessed++;
+				sampleSheet.getRow(initRow - 1).getCell(2).setCellValue(nowebpage.getTitle());
+				sampleSheet.getRow(initRow - 1).getCell(3).setCellValue("Documento no web");
+				sampleSheet.getRow(initRow - 1).getCell(4).setCellValue("");
+				sampleSheet.getRow(initRow - 1).getCell(5).setCellValue(nowebpage.getSource());
+				initRow++;
+			}
+		}
 		// Fill results
 		final Sheet sheetR9 = workbook.getSheet("R9.Web");
+		final Sheet sheetR10 = workbook.getSheet("R10.Documentos no web");
 		resultsProcessed = 0;
 		for (AuditResult auditResult : report.getGraph().get(0).getAuditResult()) {
 			if (resultsProcessed < MAX_PAGES) {
@@ -171,7 +183,7 @@ public final class WcagXlsxUtils {
 					break;
 				// P3
 				case "WCAG2:language-of-page":
-					fillResult(sheetR9, auditResult,1387);
+					fillResult(sheetR9, auditResult, 1387);
 					break;
 				case "WCAG2:language-of-parts":
 					fillResult(sheetR9, auditResult, 1425);
@@ -200,6 +212,7 @@ public final class WcagXlsxUtils {
 				}
 			}
 		}
+		setNoWebPages(sheetR10, noWebpageList.size());
 		XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 		// lock workbook
 		for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
@@ -211,6 +224,33 @@ public final class WcagXlsxUtils {
 		workbook.setWorkbookPassword("OaW2020", HashAlgorithm.sha512);
 		workbook.lockStructure();
 		return workbook;
+	}
+
+	private static void setNoWebPages(Sheet sheetR10, int numElements) {
+		fillResultNoWeb(sheetR10, numElements, 19); // "WCAG2:non-text-content"
+		fillResultNoWeb(sheetR10, numElements, 209); // "WCAG2:info-and-relationships"
+		fillResultNoWeb(sheetR10, numElements, 323); // "WCAG2:orientation"
+		fillResultNoWeb(sheetR10, numElements, 361); // "WCAG2:identify-input-purpose":
+		fillResultNoWeb(sheetR10, numElements, 475); // "WCAG2:contrast-minimum":
+		fillResultNoWeb(sheetR10, numElements, 589); // "WCAG2:reflow":
+		fillResultNoWeb(sheetR10, numElements, 665); // "WCAG2:text-spacing"
+		fillResultNoWeb(sheetR10, numElements, 741); // "WCAG2:keyboard"
+		fillResultNoWeb(sheetR10, numElements, 855); // "WCAG2:timing-adjustable"
+		fillResultNoWeb(sheetR10, numElements, 893); // "WCAG2:pause-stop-hide"
+		fillResultNoWeb(sheetR10, numElements, 931); // "WCAG2:three-flashes-or-below-threshold"
+		fillResultNoWeb(sheetR10, numElements, 969); // "WCAG2:bypass-blocks"
+		fillResultNoWeb(sheetR10, numElements, 1007); // "WCAG2:page-titled"
+		fillResultNoWeb(sheetR10, numElements, 1045); // "WCAG2:focus-order"
+		fillResultNoWeb(sheetR10, numElements, 1083); // "WCAG2:link-purpose-in-context"
+		fillResultNoWeb(sheetR10, numElements, 1121); // "WCAG2:multiple-ways"
+		fillResultNoWeb(sheetR10, numElements, 1197); // "WCAG2:focus-visible"
+		fillResultNoWeb(sheetR10, numElements, 1311); // "WCAG2:label-in-name"
+		fillResultNoWeb(sheetR10, numElements, 1387); // "WCAG2:language-of-page"
+		fillResultNoWeb(sheetR10, numElements, 1425); // "WCAG2:language-of-parts"
+		fillResultNoWeb(sheetR10, numElements, 1463); // "WCAG2:on-focus"
+		fillResultNoWeb(sheetR10, numElements, 1501); // "WCAG2:on-input"
+		fillResultNoWeb(sheetR10, numElements, 1539); // "WCAG2:consistent-navigation"
+		fillResultNoWeb(sheetR10, numElements, 1653); // "WCAG2:labels-or-instructions"
 	}
 
 	/**
@@ -228,6 +268,27 @@ public final class WcagXlsxUtils {
 				final Cell cell = sheet.getRow(initRow - 1).getCell(3);
 				cell.setCellFormula(null);
 				cell.setCellValue(odsOutcome(hasPart.getResult().getOutcome()));
+				resultsProcessed++;
+				initRow++;
+			}
+		}
+	}
+
+	/**
+	 * Extracted.
+	 *
+	 * @param sheet        the sheet
+	 * @param auditResult  the audit result
+	 * @param initRowValue the init row value
+	 */
+	private static void fillResultNoWeb(final Sheet sheet, int numNoWebPages, final int initRowValue) {
+		int initRow = initRowValue;
+		int resultsProcessed = 0;
+		for (int i = 0; i < numNoWebPages; i++) {
+			if (resultsProcessed < MAX_PAGES) {
+				final Cell cell = sheet.getRow(initRow - 1).getCell(3);
+				cell.setCellFormula(null);
+				cell.setCellValue("N/T");
 				resultsProcessed++;
 				initRow++;
 			}
