@@ -39,6 +39,10 @@ public final class WcagXlsxUtils {
 	private static final String EARL_PASSED = "earl:passed";
 	/** The Constant EARL_CANNOT_TELL. */
 	private static final String EARL_CANNOT_TELL = "earl:cantTell";
+	/** Default value N/A */
+	private static final String DEFAULT_VALUE_NA = "N/A";
+	/** Default value N/T */
+	private static final String DEFAULT_VALUE_NT = "N/T";
 
 	/**
 	 * Gets the ods template.
@@ -94,7 +98,7 @@ public final class WcagXlsxUtils {
 		Sheet sampleSheet = workbook.getSheet("03.Muestra");
 		int initRow = 8; // Initial rowcount
 		final List<Webpage> webpageList = report.getGraph().get(0).getStructuredSample().getWebpage();
-		final List<NoWebpage> noWebpageList = report.getGraph().get(0).getStructuredSample().getNoWebpage();
+		final List<NoWebpage> nowebpageList = report.getGraph().get(0).getStructuredSample().getNoWebpage();
 		final int totalPages = webpageList.size();
 		fillNotTell(workbook, totalPages < MAX_PAGES ? totalPages : MAX_PAGES);
 		for (Webpage webpage : webpageList) {
@@ -107,7 +111,7 @@ public final class WcagXlsxUtils {
 				initRow++;
 			}
 		}
-		for (NoWebpage nowebpage : noWebpageList) {
+		for (NoWebpage nowebpage : nowebpageList) {
 			if (resultsProcessed < MAX_PAGES) {
 				resultsProcessed++;
 				sampleSheet.getRow(initRow - 1).getCell(2).setCellValue(nowebpage.getTitle());
@@ -212,7 +216,8 @@ public final class WcagXlsxUtils {
 				}
 			}
 		}
-		setNoWebPages(sheetR10, noWebpageList.size());
+		// R10 - Fill results
+		setNoWebPages(sheetR10, nowebpageList.size());
 		XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 		// lock workbook
 		for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
@@ -227,30 +232,47 @@ public final class WcagXlsxUtils {
 	}
 
 	private static void setNoWebPages(Sheet sheetR10, int numElements) {
-		fillResultNoWeb(sheetR10, numElements, 19); // "WCAG2:non-text-content"
-		fillResultNoWeb(sheetR10, numElements, 209); // "WCAG2:info-and-relationships"
-		fillResultNoWeb(sheetR10, numElements, 323); // "WCAG2:orientation"
-		fillResultNoWeb(sheetR10, numElements, 361); // "WCAG2:identify-input-purpose":
-		fillResultNoWeb(sheetR10, numElements, 475); // "WCAG2:contrast-minimum":
-		fillResultNoWeb(sheetR10, numElements, 589); // "WCAG2:reflow":
-		fillResultNoWeb(sheetR10, numElements, 665); // "WCAG2:text-spacing"
-		fillResultNoWeb(sheetR10, numElements, 741); // "WCAG2:keyboard"
-		fillResultNoWeb(sheetR10, numElements, 855); // "WCAG2:timing-adjustable"
-		fillResultNoWeb(sheetR10, numElements, 893); // "WCAG2:pause-stop-hide"
-		fillResultNoWeb(sheetR10, numElements, 931); // "WCAG2:three-flashes-or-below-threshold"
-		fillResultNoWeb(sheetR10, numElements, 969); // "WCAG2:bypass-blocks"
-		fillResultNoWeb(sheetR10, numElements, 1007); // "WCAG2:page-titled"
-		fillResultNoWeb(sheetR10, numElements, 1045); // "WCAG2:focus-order"
-		fillResultNoWeb(sheetR10, numElements, 1083); // "WCAG2:link-purpose-in-context"
-		fillResultNoWeb(sheetR10, numElements, 1121); // "WCAG2:multiple-ways"
-		fillResultNoWeb(sheetR10, numElements, 1197); // "WCAG2:focus-visible"
-		fillResultNoWeb(sheetR10, numElements, 1311); // "WCAG2:label-in-name"
-		fillResultNoWeb(sheetR10, numElements, 1387); // "WCAG2:language-of-page"
-		fillResultNoWeb(sheetR10, numElements, 1425); // "WCAG2:language-of-parts"
-		fillResultNoWeb(sheetR10, numElements, 1463); // "WCAG2:on-focus"
-		fillResultNoWeb(sheetR10, numElements, 1501); // "WCAG2:on-input"
-		fillResultNoWeb(sheetR10, numElements, 1539); // "WCAG2:consistent-navigation"
-		fillResultNoWeb(sheetR10, numElements, 1653); // "WCAG2:labels-or-instructions"
+		// N/T
+		fillResultNoWeb(sheetR10, numElements, 19, DEFAULT_VALUE_NT); // "WCAG2:non-text-content"
+		fillResultNoWeb(sheetR10, numElements, 209, DEFAULT_VALUE_NT); // "WCAG2:info-and-relationships"
+		fillResultNoWeb(sheetR10, numElements, 323, DEFAULT_VALUE_NT); // "WCAG2:orientation"
+		fillResultNoWeb(sheetR10, numElements, 361, DEFAULT_VALUE_NT); // "WCAG2:identify-input-purpose":
+		fillResultNoWeb(sheetR10, numElements, 475, DEFAULT_VALUE_NT); // "WCAG2:contrast-minimum":
+		fillResultNoWeb(sheetR10, numElements, 589, DEFAULT_VALUE_NT); // "WCAG2:reflow":
+		fillResultNoWeb(sheetR10, numElements, 665, DEFAULT_VALUE_NT); // "WCAG2:text-spacing"
+		fillResultNoWeb(sheetR10, numElements, 741, DEFAULT_VALUE_NT); // "WCAG2:keyboard"
+		fillResultNoWeb(sheetR10, numElements, 855, DEFAULT_VALUE_NT); // "WCAG2:timing-adjustable"
+		fillResultNoWeb(sheetR10, numElements, 893, DEFAULT_VALUE_NT); // "WCAG2:pause-stop-hide"
+		fillResultNoWeb(sheetR10, numElements, 931, DEFAULT_VALUE_NT); // "WCAG2:three-flashes-or-below-threshold"
+		fillResultNoWeb(sheetR10, numElements, 969, DEFAULT_VALUE_NT); // "WCAG2:bypass-blocks"
+		fillResultNoWeb(sheetR10, numElements, 1007, DEFAULT_VALUE_NT); // "WCAG2:page-titled"
+		fillResultNoWeb(sheetR10, numElements, 1045, DEFAULT_VALUE_NT); // "WCAG2:focus-order"
+		fillResultNoWeb(sheetR10, numElements, 1083, DEFAULT_VALUE_NT); // "WCAG2:link-purpose-in-context"
+		fillResultNoWeb(sheetR10, numElements, 1121, DEFAULT_VALUE_NT); // "WCAG2:multiple-ways"
+		fillResultNoWeb(sheetR10, numElements, 1197, DEFAULT_VALUE_NT); // "WCAG2:focus-visible"
+		fillResultNoWeb(sheetR10, numElements, 1311, DEFAULT_VALUE_NT); // "WCAG2:label-in-name"
+		fillResultNoWeb(sheetR10, numElements, 1387, DEFAULT_VALUE_NT); // "WCAG2:language-of-page"
+		fillResultNoWeb(sheetR10, numElements, 1425, DEFAULT_VALUE_NT); // "WCAG2:language-of-parts"
+		fillResultNoWeb(sheetR10, numElements, 1463, DEFAULT_VALUE_NT); // "WCAG2:on-focus"
+		fillResultNoWeb(sheetR10, numElements, 1501, DEFAULT_VALUE_NT); // "WCAG2:on-input"
+		fillResultNoWeb(sheetR10, numElements, 1539, DEFAULT_VALUE_NT); // "WCAG2:consistent-navigation"
+		fillResultNoWeb(sheetR10, numElements, 1653, DEFAULT_VALUE_NT); // "WCAG2:labels-or-instructions"
+		// N/A
+		fillResultNoWeb(sheetR10, numElements, 57, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 95, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 133, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 171, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 437, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 665, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 703, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 855, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 893, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 931, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 1159, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 1197, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 1273, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 1577, DEFAULT_VALUE_NA);
+		fillResultNoWeb(sheetR10, numElements, 1691, DEFAULT_VALUE_NA);
 	}
 
 	/**
@@ -281,14 +303,14 @@ public final class WcagXlsxUtils {
 	 * @param auditResult  the audit result
 	 * @param initRowValue the init row value
 	 */
-	private static void fillResultNoWeb(final Sheet sheet, int numNoWebPages, final int initRowValue) {
+	private static void fillResultNoWeb(final Sheet sheet, int numNoWebPages, final int initRowValue, String defaultValue) {
 		int initRow = initRowValue;
 		int resultsProcessed = 0;
 		for (int i = 0; i < numNoWebPages; i++) {
 			if (resultsProcessed < MAX_PAGES) {
 				final Cell cell = sheet.getRow(initRow - 1).getCell(3);
 				cell.setCellFormula(null);
-				cell.setCellValue("N/T");
+				cell.setCellValue(defaultValue);
 				resultsProcessed++;
 				initRow++;
 			}
