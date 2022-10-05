@@ -203,22 +203,7 @@ public class BasicServiceManager {
 				// JSON WCAG-EM and ODS
 				if ("true".equalsIgnoreCase(basicServiceForm.getDepthReport())) {
 					WcagEmReport report = WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), basicServiceForm.getName(), idCrawling);
-					// PDF FILES
-					List<NoWebpage> noWebpages = new ArrayList<>();
-					int randCounterNoWeb = 0;
-					// Iterate currentEvaluationPageList to preserve order
-					for (CrawledLink crawledLink : crawledLinks) {
-						NoWebpage noWebpage = new NoWebpage();
-						noWebpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
-						noWebpage.setId("_:struct_" + randCounterNoWeb);
-						noWebpage.setDescription(crawledLink.getUrl());
-						noWebpage.setSource(crawledLink.getUrl());
-						noWebpage.setTitle(BasicServiceUtils.getTitleDocFromContent("Pdf", false));
-						noWebpage.setTested(false);// false to mark as incomplete un report step
-						noWebpages.add(noWebpage);
-						randCounterNoWeb++;
-					}
-					report.getGraph().get(0).getStructuredSample().setNoWebpage(noWebpages);
+					report.getGraph().get(0).getStructuredSample().setNoWebpage(getNoWebPages(crawledLinks));
 					// END PDF FILES
 					// ODS REPORT
 					SpreadSheet ods = WcagOdsUtils.generateOds(report);
@@ -289,5 +274,32 @@ public class BasicServiceManager {
 				FileUtils.deleteDir(pdfFile.getParentFile());
 			}
 		}
+	}
+
+	/**
+	 * Adding Pdf files to IRA Reports
+	 * 
+	 * @param crawledLinks
+	 * @return
+	 */
+	private List<NoWebpage> getNoWebPages(List<CrawledLink> crawledLinks) {
+		// PDF FILES
+		List<NoWebpage> noWebPages = new ArrayList<>();
+		int randCounterNoWeb = 0;
+		// Iterate currentEvaluationPageList to preserve order
+		for (CrawledLink crawledLink : crawledLinks) {
+			if (crawledLink.getUrl() != null && crawledLink.getUrl().contains(".pdf")) {
+				NoWebpage noWebpage = new NoWebpage();
+				noWebpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
+				noWebpage.setId("_:struct_" + randCounterNoWeb);
+				noWebpage.setDescription(crawledLink.getUrl());
+				noWebpage.setSource(crawledLink.getUrl());
+				noWebpage.setTitle("Doc");
+				noWebpage.setTested(false);// false to mark as incomplete un report step
+				noWebPages.add(noWebpage);
+				randCounterNoWeb++;
+			}
+		}
+		return noWebPages;
 	}
 }

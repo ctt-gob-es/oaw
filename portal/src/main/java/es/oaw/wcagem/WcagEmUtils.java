@@ -262,11 +262,6 @@ public final class WcagEmUtils {
 						int pageCounter = 0;
 						// Iterate evl list to preserve order
 						for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
-							if (eval.getUrl().contains(".pdf")) {
-								auditResult.setWebAudit(false);
-							} else {
-								auditResult.setWebAudit(true);
-							}
 							Map<String, ValidationDetails> result = wcagCompliance.get(eval.getUrl());
 							// if cointain current wcag rule
 							if (result.containsKey(wcagEmPointKey.getWcagEmId())) {
@@ -325,30 +320,17 @@ public final class WcagEmUtils {
 			int randCounterNoWeb = 0;
 			// Iterate currentEvaluationPageList to preserve order
 			for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
-				if (!eval.getUrl().contains(".pdf")) {
-					Webpage webpage = new Webpage();
-					webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
-					webpage.setId("_:struct_" + randCounter);
-					webpage.setDescription(eval.getUrl());
-					webpage.setSource(eval.getUrl());
-					webpage.setTitle(BasicServiceUtils.getTitleDocFromContent(eval.getSource(), false));
-					webpage.setTested(false);// false to mark as incomplete un report step
-					webpages.add(webpage);
-					randCounter++;
-				} else {
-					NoWebpage noWebpage = new NoWebpage();
-					noWebpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
-					noWebpage.setId("_:struct_" + randCounterNoWeb);
-					noWebpage.setDescription(eval.getUrl());
-					noWebpage.setSource(eval.getUrl());
-					noWebpage.setTitle(BasicServiceUtils.getTitleDocFromContent(eval.getSource(), false));
-					noWebpage.setTested(false);// false to mark as incomplete un report step
-					noWebpages.add(noWebpage);
-					randCounterNoWeb++;
-				}
+				Webpage webpage = new Webpage();
+				webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
+				webpage.setId("_:struct_" + randCounter);
+				webpage.setDescription(eval.getUrl());
+				webpage.setSource(eval.getUrl());
+				webpage.setTitle(BasicServiceUtils.getTitleDocFromContent(eval.getSource(), false));
+				webpage.setTested(false);// false to mark as incomplete un report step
+				webpages.add(webpage);
+				randCounter++;
 			}
 			structuredSample.setWebpage(webpages);
-			structuredSample.setNoWebpage(noWebpages);
 			graph.setStructuredSample(structuredSample);
 		}
 		{
