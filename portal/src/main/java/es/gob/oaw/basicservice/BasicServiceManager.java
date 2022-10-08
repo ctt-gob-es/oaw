@@ -31,6 +31,7 @@ import org.apache.commons.mail.EmailException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.struts.util.MessageResources;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
 import es.gob.oaw.basicservice.historico.CheckHistoricoService;
 import es.gob.oaw.rastreador2.observatorio.ObservatoryManager;
@@ -64,6 +65,7 @@ import es.oaw.wcagem.NoWebpage;
 import es.oaw.wcagem.WcagEmReport;
 import es.oaw.wcagem.WcagEmUtils;
 import es.oaw.wcagem.WcagOdsUtils;
+import es.oaw.wcagem.WcagOdtUtils;
 import es.oaw.wcagem.WcagXlsxUtils;
 
 /**
@@ -185,6 +187,10 @@ public class BasicServiceManager {
 					final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
+					// DOCX REPORT
+					OdfTextDocument document = WcagOdtUtils.generateOdt(currentEvaluationPageList);
+					final FileOutputStream out = new FileOutputStream(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Hallazgos.odt");
+					document.save(out);
 				} else if (Constants.REPORT_OBSERVATORY_5.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_5_NOBROKEN.equals(basicServiceForm.getReport())) {
 					Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfAccesibilidad())", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
 					final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
@@ -194,6 +200,7 @@ public class BasicServiceManager {
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
 				}
 				/***
+				 * EvaluatorUtils.generateObservatoryEvaluationForm
 				 * 
 				 * 
 				 * 
