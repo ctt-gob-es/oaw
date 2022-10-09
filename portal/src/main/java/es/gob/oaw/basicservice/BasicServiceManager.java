@@ -166,6 +166,8 @@ public class BasicServiceManager {
 					final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = new TreeMap<>();
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNE2004(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
+					// Odt report: Hallazgos
+					generateOdtReport(currentEvaluationPageList, pdfPath);
 				} else if (Constants.REPORT_OBSERVATORY_2.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(basicServiceForm.getReport())) {
 					Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfUNE2012())", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
 					final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
@@ -173,6 +175,8 @@ public class BasicServiceManager {
 					final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNE2012(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
+					// Odt report: Hallazgos
+					generateOdtReport(currentEvaluationPageList, pdfPath);
 				} else if (Constants.REPORT_OBSERVATORY_3.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(basicServiceForm.getReport())) {
 					Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfUNE2012b())", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
 					final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
@@ -180,6 +184,8 @@ public class BasicServiceManager {
 					final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNE2012b(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
+					// Odt report: Hallazgos
+					generateOdtReport(currentEvaluationPageList, pdfPath);
 				} else if (Constants.REPORT_OBSERVATORY_4.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(basicServiceForm.getReport())) {
 					Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfUNEEN2019())", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
 					final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
@@ -187,10 +193,8 @@ public class BasicServiceManager {
 					final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
-					// DOCX REPORT
-					OdfTextDocument document = WcagOdtUtils.generateOdt(currentEvaluationPageList);
-					final FileOutputStream out = new FileOutputStream(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Hallazgos.odt");
-					document.save(out);
+					// Odt report: Hallazgos
+					generateOdtReport(currentEvaluationPageList, pdfPath);
 				} else if (Constants.REPORT_OBSERVATORY_5.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_5_NOBROKEN.equals(basicServiceForm.getReport())) {
 					Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfAccesibilidad())", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
 					final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
@@ -198,6 +202,8 @@ public class BasicServiceManager {
 					final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfAccesibilidad(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
+					// Odt report: Hallazgos
+					generateOdtReport(currentEvaluationPageList, pdfPath);
 				}
 				/***
 				 * EvaluatorUtils.generateObservatoryEvaluationForm
@@ -308,5 +314,18 @@ public class BasicServiceManager {
 			}
 		}
 		return noWebPages;
+	}
+
+	/**
+	 * Generate odt report
+	 * 
+	 * @param currentEvaluationPageList
+	 * @param pdfPath
+	 * @throws Exception
+	 */
+	private void generateOdtReport(final List<ObservatoryEvaluationForm> currentEvaluationPageList, final String pdfPath) throws Exception {
+		OdfTextDocument document = WcagOdtUtils.generateOdtReport(currentEvaluationPageList);
+		final FileOutputStream out = new FileOutputStream(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Hallazgos.odt");
+		document.save(out);
 	}
 }
