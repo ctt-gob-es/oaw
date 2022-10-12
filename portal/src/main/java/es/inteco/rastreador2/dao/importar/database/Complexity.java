@@ -1,8 +1,12 @@
 package es.inteco.rastreador2.dao.importar.database;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -17,6 +21,8 @@ public class Complexity {
 	private Integer profundidad;
 	@Column(name = "amplitud")
 	private Integer amplitud;
+	@OneToMany(mappedBy = "complejidad", cascade = CascadeType.ALL)
+	private Set<Seed> semillas;
 
 	public Long getId() {
 		return id;
@@ -48,5 +54,13 @@ public class Complexity {
 
 	public void setAmplitud(Integer amplitud) {
 		this.amplitud = amplitud;
+	}
+
+	public Set<Seed> getSemillas() {
+		return semillas;
+	}
+
+	public void setSemilla(Set<Seed> semillas) {
+		this.semillas = semillas;
 	}
 }

@@ -14,9 +14,9 @@
 	<!-- Form Bean Definitions -->
 	<form-beans>
 	
-		<!--  IMPORTAR ENTIDADES DEL SPP  -->
-	    <form-bean name="SSPImportarForm"
-			type="es.inteco.rastreador2.actionform.importacion.SSPImportarForm" />
+		<!--  IMPORTAR ENTIDADES DEL SSP  -->
+	    <form-bean name="ImportarEntidadesForm"
+			type="es.inteco.rastreador2.actionform.importacion.ImportarEntidadesForm" />
 			
 		<!-- OBSERVATORIO -->
 		<form-bean name="CargarObservatorioForm"
@@ -389,7 +389,7 @@
 
 		<forward name="observatoryRanges" path="/secure/RangeObservatorio.do?action=load" />
 
-		<forward name="sspImportarMenu" path="/secure/SSPImportar.do" />
+		<forward name="importarEntidadesMenu" path="/secure/ImportarEntidades.do" />
 
 	</global-forwards>
 
@@ -1114,11 +1114,10 @@
 			parameter="action" scope="request" validate="false">
 		</action> 
 		
-		<action path="/secure/SSPImportar" type="es.inteco.rastreador2.action.importacion.SSPImportarAction"
-			scope="request" name="SSPImportarForm" validate="false" input="/secure/SSPImportar.do">
-			<!-- <forward name="volver" path="/secure/SSPImportar.do" /> -->
-			<forward name="error" path=".sspImportarError" />
-			<forward name="exito" path=".sspImportarExito" />
+		<action path="/secure/ImportarEntidades" type="es.inteco.rastreador2.action.importacion.ImportarEntidadesAction"
+			scope="request" name="ImportarEntidadesForm" validate="false" input="/secure/ImportarEntidades.do">
+			<forward name="error" path=".importarEntidadesError" />
+			<forward name="exito" path=".importarEntidadesExito" />
 		</action>
 
 	</action-mappings>

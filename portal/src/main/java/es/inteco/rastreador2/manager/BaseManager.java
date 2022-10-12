@@ -16,6 +16,7 @@
 package es.inteco.rastreador2.manager;
 
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -23,6 +24,14 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import es.inteco.rastreador2.dao.BaseDAO;
+import es.inteco.rastreador2.dao.importar.database.AdministrativeLevel;
+import es.inteco.rastreador2.dao.importar.database.ClassificationLabel;
+import es.inteco.rastreador2.dao.importar.database.Complexity;
+import es.inteco.rastreador2.dao.importar.database.Label;
+import es.inteco.rastreador2.dao.importar.database.Scope;
+import es.inteco.rastreador2.dao.importar.database.Seed;
+import es.inteco.rastreador2.dao.importar.database.SeedType;
+import es.inteco.rastreador2.dao.importar.database.Segment;
 import es.inteco.rastreador2.dao.utils.export.database.HibernateUtil;
 
 /**
@@ -124,6 +133,41 @@ public abstract class BaseManager {
 		session.beginTransaction();
 		final List<?> instances = session.createCriteria(clazz).list();
 		for (Object obj : instances) {
+			if (obj instanceof ClassificationLabel) {
+				if (((ClassificationLabel) obj).getEtiquetas() != null) {
+					Set<Label> etiquetas = ((ClassificationLabel) obj).getEtiquetas();
+					for (Label etiqueta : etiquetas) {
+						session.delete(etiqueta);
+					}
+					((ClassificationLabel) obj).setEtiquetas(null);
+				}
+			} else if (obj instanceof Segment) {
+				((Segment) obj).setSemillas(null);
+			} else if (obj instanceof AdministrativeLevel) {
+				((AdministrativeLevel) obj).setSemillas(null);
+			} else if (obj instanceof Complexity) {
+				((Complexity) obj).setSemilla(null);
+			} else if (obj instanceof SeedType) {
+				((SeedType) obj).setSemilla(null);
+			} else if (obj instanceof Seed) {
+				((Seed) obj).setDependencias(null);
+			} else if (obj instanceof Scope) {
+				if (((Scope) obj).getSemillas() != null) {
+					Set<Seed> semillas = ((Scope) obj).getSemillas();
+					for (Seed semilla : semillas) {
+						session.delete(semilla);
+					}
+					((Scope) obj).setSemillas(null);
+				}
+			} else if (((Label) obj).getSemillas() != null) {
+				if (((Label) obj).getSemillas() != null) {
+					Set<Seed> semillas = ((Label) obj).getSemillas();
+					for (Seed semilla : semillas) {
+						session.delete(semilla);
+					}
+					((Label) obj).setSemillas(null);
+				}
+			}
 			session.delete(obj);
 		}
 		session.getTransaction().commit();

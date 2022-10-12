@@ -1,9 +1,13 @@
 package es.inteco.rastreador2.dao.importar.database;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -18,6 +22,16 @@ public class Label {
 	@ManyToOne
 	@JoinColumn(name = "id_clasificacion")
 	private ClassificationLabel clasificacionEtiqueta;
+	@ManyToMany(mappedBy = "etiquetas", fetch = FetchType.EAGER)
+	private Set<Seed> semillas;
+
+	public Set<Seed> getSemillas() {
+		return semillas;
+	}
+
+	public void setSemillas(Set<Seed> semillas) {
+		this.semillas = semillas;
+	}
 
 	public Long getId() {
 		return id;

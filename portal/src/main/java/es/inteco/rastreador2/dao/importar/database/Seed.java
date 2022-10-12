@@ -1,8 +1,15 @@
 package es.inteco.rastreador2.dao.importar.database;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -13,13 +20,11 @@ public class Seed {
 	private Long id;
 	@Column(name = "nombre")
 	private String nombre;
-	// @Column(name = "id_tipo_lista", nullable = false)
-	// private SeedType tipoSemilla;
 	@Column(name = "acronimo")
 	private String acronimo;
 	@Column(name = "activa")
 	private boolean activa;
-	@Column(name = "id_directory")
+	@Column(name = "in_directory")
 	private boolean enDirectorio;
 	@Column(name = "eliminar")
 	private boolean eliminada;
@@ -27,11 +32,25 @@ public class Seed {
 	private String observaciones;
 	@Column(name = "lista")
 	private String lista;
-	// @Column(name = "id_complejidad", nullable = false)
-	// private Complexity complejidad;
+	@ManyToOne
+	@JoinColumn(name = "id_tipo_lista")
+	private SeedType tipoSemilla;
+	@ManyToOne
+	@JoinColumn(name = "id_complejidad")
+	private Complexity complejidad;
+	@ManyToOne
+	@JoinColumn(name = "id_categoria")
+	private Segment segmento;
+	@ManyToOne
+	@JoinColumn(name = "id_ambito")
+	private AdministrativeLevel ambito;
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "semilla_dependencia", joinColumns = @JoinColumn(name = "id_lista"), inverseJoinColumns = @JoinColumn(name = "id_dependencia"))
+	private Set<Scope> dependencias;
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "semilla_etiqueta", joinColumns = @JoinColumn(name = "id_lista"), inverseJoinColumns = @JoinColumn(name = "id_etiqueta"))
+	private Set<Label> etiquetas;
 
-	// @Column(name = "id_ambito", nullable = false)
-	// private AdministrativeLevel ambito;
 	public Long getId() {
 		return id;
 	}
@@ -47,11 +66,6 @@ public class Seed {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	/*
-	 * public SeedType getTipoSemilla() { return tipoSemilla; }
-	 * 
-	 * public void setTipoSemilla(SeedType tipoSemilla) { this.tipoSemilla = tipoSemilla; }
-	 */
 
 	public String getAcronimo() {
 		return acronimo;
@@ -67,14 +81,6 @@ public class Seed {
 
 	public void setActiva(boolean activa) {
 		this.activa = activa;
-	}
-
-	public boolean isEnDirectorio() {
-		return enDirectorio;
-	}
-
-	public void setEnDirectorio(boolean enDirectorio) {
-		this.enDirectorio = enDirectorio;
 	}
 
 	public boolean isEliminada() {
@@ -100,9 +106,60 @@ public class Seed {
 	public void setLista(String lista) {
 		this.lista = lista;
 	}
-	/**
-	 * public Complexity getComplejidad() { return complejidad; }
-	 * 
-	 * public void setComplejidad(Complexity complejidad) { this.complejidad = complejidad; }
-	 **/
+
+	public SeedType getTipoSemilla() {
+		return tipoSemilla;
+	}
+
+	public void setTipoSemilla(SeedType tipoSemilla) {
+		this.tipoSemilla = tipoSemilla;
+	}
+
+	public boolean isEnDirectorio() {
+		return enDirectorio;
+	}
+
+	public void setEnDirectorio(boolean enDirectorio) {
+		this.enDirectorio = enDirectorio;
+	}
+
+	public Complexity getComplejidad() {
+		return complejidad;
+	}
+
+	public void setComplejidad(Complexity complejidad) {
+		this.complejidad = complejidad;
+	}
+
+	public AdministrativeLevel getAmbito() {
+		return ambito;
+	}
+
+	public void setAmbito(AdministrativeLevel ambito) {
+		this.ambito = ambito;
+	}
+
+	public Set<Label> getEtiquetas() {
+		return etiquetas;
+	}
+
+	public void setEtiquetas(Set<Label> etiquetas) {
+		this.etiquetas = etiquetas;
+	}
+
+	public Set<Scope> getDependencias() {
+		return dependencias;
+	}
+
+	public void setDependencias(Set<Scope> dependencias) {
+		this.dependencias = dependencias;
+	}
+
+	public Segment getSegmento() {
+		return segmento;
+	}
+
+	public void setSegmento(Segment segmento) {
+		this.segmento = segmento;
+	}
 }

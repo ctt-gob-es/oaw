@@ -19,11 +19,13 @@
 		<html:javascript formName="ModificarUsuarioPassFormAdmin"/>
 	</logic:notPresent>
 	
-    <div id="main">
-        <div id="container_menu_izq">
+<div id="main">
+   <div id="container_menu_izq">
             <jsp:include page="menu.jsp"/>
-        </div>
-        <div id="container_der">
+    </div>
+    
+    
+    <div id="container_der">
             <div id="migas">
                 <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
                 <ol class="breadcrumb">
@@ -37,25 +39,25 @@
                 <bean:define id="form" value="" />
                 <bean:define id="formName" value="" />
                 
-                <html:form method="post" styleClass="formulario" action="/secure/SSPImportar.do?action=upload" enctype="multipart/form-data">
-				
-                    <fieldset>
-                        <jsp:include page="/common/crawler_messages.jsp" />
-                        <div class="formItem">
-                            <label for="name" class="control-label">
-							<strong class="labelVisu">
-								<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
-								<bean:message key="subir.fichero.import" />
-							</strong>
-							</label>
-                            <html:file styleClass="texto formControl" maxlength="100" styleId="file" property="file"/>
-                        </div>
-                        <div class="formButton">
-                            <html:submit styleClass="btn btn-primary btn-lg"><bean:message key="boton.aceptar"/></html:submit>
-                            <html:cancel styleClass="btn btn-default btn-lg"><bean:message key="boton.cancelar"/></html:cancel>
-                        </div>
-                    </fieldset>
+                <html:form method="post" styleClass="formulario" action="/secure/ImportarEntidades.do?action=upload" enctype="multipart/form-data">
+				            
+					<jsp:include page="/common/crawler_messages.jsp" />
+					<div class="formItem">
+						<label for="name" class="control-label">
+						<strong class="labelVisu">
+							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
+							<bean:message key="subir.fichero.import" />
+						</strong>
+						</label>
+						<html:file styleClass="texto formControl" maxlength="100" styleId="file" property="file"/>
+					</div>
+					<div class="formButton">
+						<html:submit styleClass="btn btn-primary btn-lg"><bean:message key="boton.aceptar"/></html:submit>
+						<html:cancel styleClass="btn btn-default btn-lg"><bean:message key="boton.cancelar"/></html:cancel>
+					</div>
+                  
                 </html:form>
-            </div><!-- fin cajaformularios -->
-        </div>
+            </div>
+          
+    </div>
 </div>

@@ -249,8 +249,8 @@ Email: observ.accesibilidad@correo.gob.es
 	</inteco:menu>
 		<inteco:menu roles="<%=rolAdmin + \";\" + rolConfig%>">
 		<li>
-			<html:link forward="sspImportarMenu" styleId="subselected" titleKey="menuadmin.importar.title">
-				<bean:message key="menuadmin.importar.entidades" />
+			<html:link forward="importarEntidadesMenu" styleId="subselected" titleKey="menuadmin.importar.title">
+				<bean:message key="menuadmin.importar.entidades" /> 
 			</html:link>
 		</li>
 	</inteco:menu>			

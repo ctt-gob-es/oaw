@@ -21,7 +21,7 @@
     // URL donde se encuentra ubicado el servidor OAW (dependerá del entorno donde estemos)
     // Indicar únicamente dominio + contexto de despliegue.
     // Valores típicos serán:
-    // Producción: http://oaw.redsara.es/oaw/
+    // Producción: http://oaw.redsara.es/oaw/ 
     // Preproducción: http://pre-oaw.redsara.es/oaw/ 
     // Integración: http://des-oaw.redsara.es/oaw/
     private final static String BASE_URL = "http://localhost:8080/oaw/";   

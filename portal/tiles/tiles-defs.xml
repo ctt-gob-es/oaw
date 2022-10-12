@@ -864,19 +864,19 @@
 	<definition name=".resultsSendObservatoryResultsByMail" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_resultadosEnvioEmails.jsp" />
-	</definition>
+	</definition> 
 
-	<definition name=".sspImportar" extends="mainLayout">
+	<definition name=".importarEntidades" extends="mainLayout">
 		<put name="title" value="application.title.importacion"/>
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/ssp_importar_entidades.jsp" />
 	</definition>	
 	
-	<definition name=".sspImportarError" extends="mainLayout">
+	<definition name=".importarEntidadesError" extends="mainLayout">
 		<put name="title" value="application.title.importacion"/>
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/ssp_importar_entidades.jsp" />
 	</definition>	
 	
-	<definition name=".sspImportarExito" extends="mainLayout">
+	<definition name=".importarEntidadesExito" extends="mainLayout">
 		<put name="title" value="application.title.importacion"/>
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/ssp_importar_entidades.jsp" />
 	</definition>	
