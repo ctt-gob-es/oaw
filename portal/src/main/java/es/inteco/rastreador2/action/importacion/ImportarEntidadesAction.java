@@ -10,10 +10,10 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import es.inteco.common.Constants;
-import es.inteco.rastreador2.actionform.importacion.SSPImportarForm;
+import es.inteco.rastreador2.actionform.importacion.ImportarEntidadesForm;
 import es.inteco.rastreador2.manager.importacion.database.DatabaseImportarManager;
 
-public class SSPImportarAction extends Action {
+public class ImportarEntidadesAction extends Action {
 	/**
 	 * Execute.
 	 *
@@ -27,14 +27,14 @@ public class SSPImportarAction extends Action {
 		// Marcamos el menú
 		request.getSession().setAttribute(Constants.MENU, Constants.MENU_OTHER_OPTIONS);
 		request.getSession().setAttribute(Constants.MENU, Constants.SUBMENU_IMPORTAR);
-		SSPImportarForm importarEntidadForm = (SSPImportarForm) form;
+		ImportarEntidadesForm importarEntidadesForm = (ImportarEntidadesForm) form;
 		String sAction = request.getParameter(Constants.ACTION);
 		if (sAction != null && sAction.equalsIgnoreCase("upload")) {
-			ActionErrors errors = importarEntidadForm.validate(mapping, request);
+			ActionErrors errors = importarEntidadesForm.validate(mapping, request);
 			if (errors.isEmpty()) {
-				DatabaseImportarManager importarEntidadManager = new DatabaseImportarManager();
+				DatabaseImportarManager importarEntidadesManager = new DatabaseImportarManager();
 				String filePath = getServlet().getServletContext().getRealPath("/");
-				boolean uploadExito = importarEntidadManager.importData(importarEntidadForm.getFile());
+				boolean uploadExito = importarEntidadesManager.importData(importarEntidadesForm.getFile());
 				if (uploadExito) {
 					return mapping.findForward(Constants.EXITO);
 				} else {

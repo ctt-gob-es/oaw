@@ -1,8 +1,12 @@
 package es.inteco.rastreador2.dao.importar.database;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -15,6 +19,8 @@ public class AdministrativeLevel {
 	private String nombre;
 	@Column(name = "descripcion")
 	private String descripcion;
+	@OneToMany(mappedBy = "ambito", cascade = CascadeType.ALL)
+	private Set<Seed> semillas;
 
 	public Long getId() {
 		return id;
@@ -38,5 +44,13 @@ public class AdministrativeLevel {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public Set<Seed> getSemillas() {
+		return semillas;
+	}
+
+	public void setSemillas(Set<Seed> semillas) {
+		this.semillas = semillas;
 	}
 }

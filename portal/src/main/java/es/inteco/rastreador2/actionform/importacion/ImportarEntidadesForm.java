@@ -10,7 +10,7 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.validator.ValidatorForm;
 
-public class SSPImportarForm extends ValidatorForm implements Serializable {
+public class ImportarEntidadesForm extends ValidatorForm implements Serializable {
 	private FormFile file;
 
 	public FormFile getFile() {
