@@ -16,6 +16,7 @@ import org.apache.struts.upload.FormFile;
 import com.google.gson.Gson;
 
 import es.inteco.common.logging.Logger;
+import es.inteco.rastreador2.actionform.importacion.ImportarEntidadesResultadoForm;
 import es.inteco.rastreador2.dao.importar.database.AdministrativeLevel;
 import es.inteco.rastreador2.dao.importar.database.ClassificationLabel;
 import es.inteco.rastreador2.dao.importar.database.Complexity;
@@ -35,20 +36,24 @@ import es.inteco.rastreador2.importacion.database.form.SeedTypeForm;
 import es.inteco.rastreador2.importacion.database.form.SegmentForm;
 import es.inteco.rastreador2.manager.BaseManager;
 
+/**
+ * Importar entidades desde el SSP al Rastreador
+ * 
+ */
 public class DatabaseImportarManager extends BaseManager {
 	public DatabaseImportarManager() {
 	}
 
-	public boolean importData(FormFile formFile) {
-		boolean rightImport = true;
+	public ImportarEntidadesResultadoForm importData(FormFile formFile) {
+		ImportarEntidadesResultadoForm importResultForm = new ImportarEntidadesResultadoForm();
 		try {
 			deleteData();
-			saveData(loadFileData(formFile));
+			importResultForm = saveData(loadFileData(formFile));
 		} catch (Exception e) {
-			rightImport = false;
+			importResultForm.setValidImport(false);
 			Logger.putLog("Error: ", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-		return rightImport;
+		return importResultForm;
 	}
 
 	private OAWForm loadFileData(FormFile formFile) throws FileNotFoundException, IOException {
@@ -64,217 +69,222 @@ public class DatabaseImportarManager extends BaseManager {
 	}
 
 	private void deleteData() {
-		try {
-			Logger.putLog("Inicio de borrado de entidades", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
-			Logger.putLog("Borrado Dependencias", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
-			deleteAll(Scope.class);
-			Logger.putLog("Borrado Clasificación etiquetas", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
-			deleteAll(ClassificationLabel.class);
-			Logger.putLog("Borrado Etiquetas", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
-			deleteAll(Label.class);
-			Logger.putLog("Borrado Semillas", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
-			deleteAll(Seed.class);
-			Logger.putLog("Borrado Segmentos", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
-			deleteAll(Segment.class);
-			Logger.putLog("Borrado Ámbitos", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
-			deleteAll(AdministrativeLevel.class);
-			Logger.putLog("Borrado Complejidades", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
-			deleteAll(Complexity.class);
-			Logger.putLog("Borrado Tipo Semillas", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
-			deleteAll(SeedType.class);
-			Logger.putLog("Fin de borrado de entidades", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			Logger.putLog(e.getMessage(), DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
-		}
+		String[] tables = { "dependencia_ambito", "categorias_lista", "etiqueta", "clasificacion_etiqueta", "lista", "dependencia", "complejidades_lista", "tipo_lista", "ambitos_lista",
+				"semilla_dependencia", "semilla_etiqueta" };
+		truncateTables(tables);
 	}
 
-	private void saveData(OAWForm oawExportDTO) {
+	private ImportarEntidadesResultadoForm saveData(OAWForm oawExportDTO) {
+		ImportarEntidadesResultadoForm importResultForm = new ImportarEntidadesResultadoForm();
 		try {
-			saveSegments(oawExportDTO.getSegmentos());
-			saveAdministrativeLevels(oawExportDTO.getAmbitos());
-			saveClassificationLabels(oawExportDTO.getClasificacionEtiquetas());
-			saveLabels(oawExportDTO.getEtiquetas());
-			saveComplexities(oawExportDTO.getComplejidades());
-			saveSeedTypes(oawExportDTO.getTipoSemillas());
-			saveScopes(oawExportDTO.getDependencias());
-			saveSeeds(oawExportDTO.getSemillas());
+			int numSegments = saveSegments(oawExportDTO.getSegmentos());
+			int numAdminLevels = saveAdministrativeLevels(oawExportDTO.getAmbitos());
+			int numClassificationLabels = saveClassificationLabels(oawExportDTO.getClasificacionEtiquetas());
+			int numLabels = saveLabels(oawExportDTO.getEtiquetas());
+			int numComplexities = saveComplexities(oawExportDTO.getComplejidades());
+			int numSeedTypes = saveSeedTypes(oawExportDTO.getTipoSemillas());
+			int numScopes = saveScopes(oawExportDTO.getDependencias());
+			int numSeeds = saveSeeds(oawExportDTO.getSemillas());
+			importResultForm.setNumSegments(numSegments);
+			importResultForm.setNumAdminLevels(numAdminLevels);
+			importResultForm.setNumClassificationLabels(numClassificationLabels);
+			importResultForm.setNumLabels(numLabels);
+			importResultForm.setNumComplexities(numComplexities);
+			importResultForm.setNumSeedTypes(numSeedTypes);
+			importResultForm.setNumScopes(numScopes);
+			importResultForm.setNumSeeds(numSeeds);
+			importResultForm.setValidImport(true);
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			Logger.putLog(e.getMessage(), DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
+			importResultForm.setValidImport(false);
 		} catch (InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			Logger.putLog(e.getMessage(), DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
+			importResultForm.setValidImport(false);
 		}
+		return importResultForm;
 	}
 
-	private void saveAdministrativeLevels(List<AdministrativeLevelForm> nivelesAdministrativos) throws IllegalAccessException, InvocationTargetException {
+	private int saveAdministrativeLevels(List<AdministrativeLevelForm> administrativeLevelFormList) throws IllegalAccessException, InvocationTargetException {
 		Logger.putLog("Importar niveles administrativos", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
 		AdministrativeLevel administrationLevel = new AdministrativeLevel();
-		for (AdministrativeLevelForm nivelAdministrativo : nivelesAdministrativos) {
+		for (AdministrativeLevelForm administrativeLevelForm : administrativeLevelFormList) {
 			administrationLevel = new AdministrativeLevel();
-			BeanUtils.copyProperties(administrationLevel, nivelAdministrativo);
+			BeanUtils.copyProperties(administrationLevel, administrativeLevelForm);
 			save(administrationLevel);
 		}
+		return administrativeLevelFormList != null ? administrativeLevelFormList.size() : 0;
 	}
 
-	private void saveClassificationLabels(List<ClassificationLabelForm> clasificacionEtiquetas) throws IllegalAccessException, InvocationTargetException {
+	private int saveClassificationLabels(List<ClassificationLabelForm> classificationLabelFormList) throws IllegalAccessException, InvocationTargetException {
 		Logger.putLog("Importar clasificación de etiquetas", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
 		ClassificationLabel classificationLabel = new ClassificationLabel();
-		for (ClassificationLabelForm clasificacionEtiqueta : clasificacionEtiquetas) {
+		for (ClassificationLabelForm classificationLabelForm : classificationLabelFormList) {
 			classificationLabel = new ClassificationLabel();
-			BeanUtils.copyProperties(classificationLabel, clasificacionEtiqueta);
+			BeanUtils.copyProperties(classificationLabel, classificationLabelForm);
 			save(classificationLabel);
 		}
+		return classificationLabelFormList != null ? classificationLabelFormList.size() : 0;
 	}
 
-	private void saveComplexities(List<ComplexityForm> complejidades) throws IllegalAccessException, InvocationTargetException {
-		Logger.putLog("Importar Complejidades", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
+	private int saveSeedTypes(List<SeedTypeForm> seedTypeFormList) throws IllegalAccessException, InvocationTargetException {
+		Logger.putLog("Importar tipos de semilla", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
+		SeedType seedType = new SeedType();
+		for (SeedTypeForm seedTypeForm : seedTypeFormList) {
+			seedType = new SeedType();
+			BeanUtils.copyProperties(seedType, seedTypeForm);
+			save(seedType);
+		}
+		return seedTypeFormList != null ? seedTypeFormList.size() : 0;
+	}
+
+	private int saveSegments(List<SegmentForm> segmentFormList) throws IllegalAccessException, InvocationTargetException {
+		Logger.putLog("Importar segmentos", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
+		Segment segment = new Segment();
+		for (SegmentForm segmentForm : segmentFormList) {
+			segment = new Segment();
+			BeanUtils.copyProperties(segment, segmentForm);
+			save(segment);
+		}
+		return segmentFormList != null ? segmentFormList.size() : 0;
+	}
+
+	private int saveComplexities(List<ComplexityForm> complexityFormList) throws IllegalAccessException, InvocationTargetException {
+		Logger.putLog("Importar complejidades", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
 		Complexity complexity = new Complexity();
-		for (ComplexityForm complejidad : complejidades) {
+		for (ComplexityForm complexityForm : complexityFormList) {
 			complexity = new Complexity();
-			BeanUtils.copyProperties(complexity, complejidad);
+			BeanUtils.copyProperties(complexity, complexityForm);
 			save(complexity);
 		}
+		return complexityFormList != null ? complexityFormList.size() : 0;
 	}
 
-	private void saveLabels(List<LabelForm> etiquetas) throws IllegalAccessException, InvocationTargetException {
-		Logger.putLog("Importar Etiquetas", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
+	private int saveLabels(List<LabelForm> labelFormList) throws IllegalAccessException, InvocationTargetException {
+		Logger.putLog("Importar etiquetas", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
 		Label label = new Label();
 		ClassificationLabel classificationLabel = new ClassificationLabel();
-		for (LabelForm etiqueta : etiquetas) {
+		for (LabelForm labelForm : labelFormList) {
 			classificationLabel = new ClassificationLabel();
-			classificationLabel.setId(etiqueta.getClasificacionEtiqueta().getId());
-			classificationLabel.setNombre(etiqueta.getClasificacionEtiqueta().getNombre());
+			classificationLabel.setId(labelForm.getClasificacionEtiqueta().getId());
 			label = new Label();
-			label.setId(etiqueta.getId());
-			label.setNombre(etiqueta.getNombre());
+			label.setId(labelForm.getId());
+			label.setNombre(labelForm.getNombre());
 			label.setClasificacionEtiqueta(classificationLabel);
 			save(label);
 		}
+		return labelFormList != null ? labelFormList.size() : 0;
 	}
 
-	private void saveScopes(List<ScopeForm> ambitos) throws IllegalAccessException, InvocationTargetException {
+	private int saveScopes(List<ScopeForm> scopeFormList) throws IllegalAccessException, InvocationTargetException {
 		Logger.putLog("Importar dependencias", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
 		Scope scope = new Scope();
-		for (ScopeForm ambito : ambitos) {
+		AdministrativeLevel administrativeLevel = new AdministrativeLevel();
+		for (ScopeForm scopeForm : scopeFormList) {
+			// Admin Levels
+			Set<AdministrativeLevel> administrativeLevels = new HashSet<>();
+			if (scopeForm.getAmbitos() != null && scopeForm.getAmbitos().size() > 0) {
+				Logger.putLog("Tiene ambitos: " + scopeForm.getNombre(), DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
+				Set<AdministrativeLevelForm> administrativeLevelFormList = scopeForm.getAmbitos();
+				for (AdministrativeLevelForm administrativeLevelForm : administrativeLevelFormList) {
+					administrativeLevel = new AdministrativeLevel();
+					administrativeLevel.setId(administrativeLevelForm.getId());
+					administrativeLevel.setNombre(administrativeLevelForm.getNombre());
+					administrativeLevels.add(administrativeLevel);
+				}
+			}
 			scope = new Scope();
-			scope.setId(ambito.getId());
-			scope.setNombre(ambito.getNombre());
-			scope.setEmails(ambito.getEmails());
-			scope.setEnvioAutomatico(ambito.isEnvioAutomatico());
-			scope.setOficial(ambito.isOficial());
+			scope.setId(scopeForm.getId());
+			scope.setNombre(scopeForm.getNombre());
+			scope.setEmails(scopeForm.getEmails());
+			scope.setEnvioAutomatico(scopeForm.isEnvioAutomatico());
+			scope.setOficial(scopeForm.isOficial());
+			scope.setAmbitos(administrativeLevels);
 			save(scope);
 		}
+		return scopeFormList != null ? scopeFormList.size() : 0;
 	}
 
-	private void saveSeeds(List<SeedForm> semillas) throws IllegalAccessException, InvocationTargetException {
+	private int saveSeeds(List<SeedForm> seedFormList) throws IllegalAccessException, InvocationTargetException {
 		Logger.putLog("Importar semillas", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
 		Seed seed = new Seed();
 		SeedType seedType = new SeedType();
 		Complexity complexity = new Complexity();
 		AdministrativeLevel administrativeLevel = new AdministrativeLevel();
+		Scope dependency = new Scope();
 		Segment segment = new Segment();
-		for (SeedForm semilla : semillas) {
+		ClassificationLabel classificationLabel = new ClassificationLabel();
+		Label label = new Label();
+		for (SeedForm seedForm : seedFormList) {
 			// Seed type
 			seedType = new SeedType();
-			seedType.setId(semilla.getTipoSemilla().getId());
-			seedType.setNombre(semilla.getTipoSemilla().getNombre());
+			if (seedForm.getTipoSemilla() != null) {
+				seedType.setId(seedForm.getTipoSemilla().getId());
+			}
 			// Admin level
 			administrativeLevel = new AdministrativeLevel();
-			if (semilla.getAmbito() != null) {
-				administrativeLevel.setId(semilla.getAmbito().getId());
-				administrativeLevel.setNombre(semilla.getAmbito().getNombre());
-				administrativeLevel.setDescripcion(semilla.getAmbito().getDescripcion());
+			if (seedForm.getAmbito() != null) {
+				administrativeLevel.setId(seedForm.getAmbito().getId());
 			}
 			// Complexity
 			complexity = new Complexity();
-			if (semilla.getComplejidad() != null) {
-				complexity.setId(semilla.getComplejidad().getId());
-				complexity.setNombre(semilla.getComplejidad().getNombre());
-				complexity.setProfundidad(semilla.getComplejidad().getProfundidad());
+			if (seedForm.getComplejidad() != null) {
+				complexity.setId(seedForm.getComplejidad().getId());
 			}
 			// Segment
 			segment = new Segment();
-			if (semilla.getSegmento() != null) {
-				segment.setId(semilla.getSegmento().getId());
-				segment.setNombre(semilla.getSegmento().getNombre());
-				segment.setClave(semilla.getSegmento().getClave());
-				segment.setOrden(semilla.getSegmento().getOrden());
-				segment.setPrincipal(semilla.getSegmento().getPrincipal());
+			if (seedForm.getSegmento() != null) {
+				segment.setId(seedForm.getSegmento().getId());
 			}
 			// Labels
-			Set<Label> etiquetas = new HashSet<>();
-			if (semilla.getEtiquetas() != null) {
-				Set<LabelForm> labels = semilla.getEtiquetas();
-				ClassificationLabel classificationLabel = new ClassificationLabel();
-				Label etiqueta = new Label();
-				for (LabelForm label : labels) {
+			Set<Label> labels = new HashSet<>();
+			if (seedForm.getEtiquetas() != null) {
+				Set<LabelForm> labelFormList = seedForm.getEtiquetas();
+				classificationLabel = new ClassificationLabel();
+				label = new Label();
+				for (LabelForm labelForm : labelFormList) {
 					classificationLabel = new ClassificationLabel();
-					classificationLabel.setId(label.getClasificacionEtiqueta().getId());
-					classificationLabel.setNombre(label.getClasificacionEtiqueta().getNombre());
-					etiqueta = new Label();
-					etiqueta.setId(label.getId());
-					etiqueta.setNombre(label.getNombre());
-					etiqueta.setClasificacionEtiqueta(classificationLabel);
-					etiquetas.add(etiqueta);
+					classificationLabel.setId(labelForm.getClasificacionEtiqueta().getId());
+					classificationLabel.setNombre(labelForm.getClasificacionEtiqueta().getNombre());
+					label = new Label();
+					label.setId(labelForm.getId());
+					label.setNombre(labelForm.getNombre());
+					label.setClasificacionEtiqueta(classificationLabel);
+					labels.add(label);
 				}
 			}
 			// Dependencies - scopes
-			Set<ScopeForm> dependencias = semilla.getDependencias();
+			Set<ScopeForm> scopeFormList = seedForm.getDependencias();
 			Set<Scope> dependencies = new HashSet<>();
-			Scope dependency = new Scope();
-			for (ScopeForm dependencia : dependencias) {
+			dependency = new Scope();
+			for (ScopeForm scopeForm : scopeFormList) {
 				dependency = new Scope();
-				dependency.setId(dependencia.getId());
-				dependency.setEmails(dependencia.getEmails());
-				dependency.setEnvioAutomatico(dependencia.isEnvioAutomatico());
-				dependency.setOficial(dependencia.isOficial());
-				dependency.setNombre(dependencia.getNombre());
+				dependency.setId(scopeForm.getId());
+				dependency.setNombre(scopeForm.getNombre());
 				dependencies.add(dependency);
 			}
 			seed = new Seed();
-			seed.setId(semilla.getId());
-			seed.setAcronimo(semilla.getAcronimo());
-			seed.setNombre(semilla.getNombre());
-			seed.setLista(semilla.getLista());
-			seed.setObservaciones(semilla.getObservaciones());
-			seed.setActiva(semilla.isActiva());
-			seed.setEliminada(semilla.isEliminada());
-			seed.setEnDirectorio(semilla.isEnDirectorio());
+			seed.setId(seedForm.getId());
+			seed.setAcronimo(seedForm.getAcronimo());
+			seed.setNombre(seedForm.getNombre());
+			seed.setLista(seedForm.getLista());
+			seed.setObservaciones(seedForm.getObservaciones());
+			seed.setActiva(seedForm.isActiva());
+			seed.setEliminada(seedForm.isEliminada());
+			seed.setEnDirectorio(seedForm.isEnDirectorio());
 			seed.setTipoSemilla(seedType);
 			seed.setComplejidad(complexity);
-			seed.setEtiquetas(etiquetas);
+			seed.setEtiquetas(labels);
 			seed.setDependencias(dependencies);
 			if (administrativeLevel.getId() != null) {
-				// Logger.putLog("--> Admin level " + administrativeLevel.getId() + " - " + administrativeLevel.getNombre(), DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
 				seed.setAmbito(administrativeLevel);
 			}
 			if (segment.getId() != null) {
-				// Logger.putLog("--> Segmento " + segment.getId() + " - " + segment.getNombre(), DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
 				seed.setSegmento(segment);
 			}
 			save(seed);
 		}
-	}
-
-	private void saveSeedTypes(List<SeedTypeForm> tiposSemilla) throws IllegalAccessException, InvocationTargetException {
-		Logger.putLog("Importar tipos de semilla", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
-		SeedType seedType = new SeedType();
-		for (SeedTypeForm tipoSemilla : tiposSemilla) {
-			seedType = new SeedType();
-			BeanUtils.copyProperties(seedType, tipoSemilla);
-			save(seedType);
-		}
-	}
-
-	private void saveSegments(List<SegmentForm> segmentos) throws IllegalAccessException, InvocationTargetException {
-		Logger.putLog("Importar segmentos", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
-		Segment segment = new Segment();
-		for (SegmentForm segmento : segmentos) {
-			segment = new Segment();
-			BeanUtils.copyProperties(segment, segmento);
-			save(segment);
-		}
+		return seedFormList != null ? seedFormList.size() : 0;
 	}
 }

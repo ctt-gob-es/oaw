@@ -11,6 +11,7 @@ import org.apache.struts.action.ActionMapping;
 
 import es.inteco.common.Constants;
 import es.inteco.rastreador2.actionform.importacion.ImportarEntidadesForm;
+import es.inteco.rastreador2.actionform.importacion.ImportarEntidadesResultadoForm;
 import es.inteco.rastreador2.manager.importacion.database.DatabaseImportarManager;
 
 public class ImportarEntidadesAction extends Action {
@@ -29,13 +30,16 @@ public class ImportarEntidadesAction extends Action {
 		request.getSession().setAttribute(Constants.MENU, Constants.SUBMENU_IMPORTAR);
 		ImportarEntidadesForm importarEntidadesForm = (ImportarEntidadesForm) form;
 		String sAction = request.getParameter(Constants.ACTION);
+		if (isCancelled(request)) {
+			return (mapping.findForward(Constants.VOLVER));
+		}
 		if (sAction != null && sAction.equalsIgnoreCase("upload")) {
 			ActionErrors errors = importarEntidadesForm.validate(mapping, request);
 			if (errors.isEmpty()) {
 				DatabaseImportarManager importarEntidadesManager = new DatabaseImportarManager();
-				String filePath = getServlet().getServletContext().getRealPath("/");
-				boolean uploadExito = importarEntidadesManager.importData(importarEntidadesForm.getFile());
-				if (uploadExito) {
+				ImportarEntidadesResultadoForm importarEntidadesResultado = importarEntidadesManager.importData(importarEntidadesForm.getFile());
+				request.setAttribute("results", importarEntidadesResultado);
+				if (importarEntidadesResultado.isValidImport()) {
 					return mapping.findForward(Constants.EXITO);
 				} else {
 					return mapping.findForward(Constants.ERROR);
@@ -43,6 +47,6 @@ public class ImportarEntidadesAction extends Action {
 			} else
 				return mapping.findForward(Constants.ERROR);
 		}
-		return mapping.findForward(Constants.ERROR);
+		return mapping.findForward(Constants.IMPORTAR_ENTIDADES);
 	}
 }

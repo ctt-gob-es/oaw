@@ -1102,25 +1102,25 @@
 
 		</action>
 
-
 		<action path="/secure/TemplateRangeObservatorio"
 			type="es.inteco.rastreador2.action.observatorio.TemplateRangeObservatorioAction" name="TemplateRangeForm"
 			parameter="action" scope="request" validate="false">
 		</action>
 
-
 		<action path="/secure/UraCustomTextObservatorio"
 			type="es.inteco.rastreador2.action.observatorio.UraCustomTextObservatorioAction" name="UraSendResultForm"
 			parameter="action" scope="request" validate="false">
-		</action> 
-		
+		</action>  
+						
 		<action path="/secure/ImportarEntidades" type="es.inteco.rastreador2.action.importacion.ImportarEntidadesAction"
-			scope="request" name="ImportarEntidadesForm" validate="false" input="/secure/ImportarEntidades.do">
+			scope="request" name="ImportarEntidadesForm" validate="false" input=".importarEntidades">
+			<forward name="volver" path="/secure/CargarObservatorio.do" />
 			<forward name="error" path=".importarEntidadesError" />
-			<forward name="exito" path=".importarEntidadesExito" />
+			<forward name="exito" path=".importarEntidadesExito" /> 
+			<forward name="importarEntidades" path=".importarEntidades"/>
 		</action>
 
-	</action-mappings>
+	</action-mappings> 
 
 	<!-- Controller Configuration -->
 

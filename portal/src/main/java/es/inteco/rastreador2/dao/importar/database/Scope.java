@@ -2,10 +2,13 @@ package es.inteco.rastreador2.dao.importar.database;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
@@ -25,10 +28,10 @@ public class Scope {
 	private boolean oficial;
 	@ManyToMany(mappedBy = "dependencias", fetch = FetchType.EAGER)
 	private Set<Seed> semillas;
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "dependencia_ambito", joinColumns = @JoinColumn(name = "id_lista"), inverseJoinColumns = @JoinColumn(name = "id_dependencia"))
+	private Set<AdministrativeLevel> ambitos;
 
-	/**
-	 * @ManyToMany(mappedBy = "dependencias") private Set<AdministrativeLevel> ambitos;
-	 **/
 	public Long getId() {
 		return id;
 	}
@@ -76,9 +79,12 @@ public class Scope {
 	public void setSemillas(Set<Seed> semillas) {
 		this.semillas = semillas;
 	}
-	/**
-	 * public Set<AdministrativeLevel> getAmbitos() { return ambitos; }
-	 * 
-	 * public void setAmbitos(Set<AdministrativeLevel> ambitos) { this.ambitos = ambitos; }
-	 **/
+
+	public Set<AdministrativeLevel> getAmbitos() {
+		return ambitos;
+	}
+
+	public void setAmbitos(Set<AdministrativeLevel> ambitos) {
+		this.ambitos = ambitos;
+	}
 }
