@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -21,6 +22,8 @@ public class AdministrativeLevel {
 	private String descripcion;
 	@OneToMany(mappedBy = "ambito", cascade = CascadeType.ALL)
 	private Set<Seed> semillas;
+	@ManyToMany(mappedBy = "ambitos")
+	private Set<Scope> dependencias;
 
 	public Long getId() {
 		return id;
@@ -52,5 +55,13 @@ public class AdministrativeLevel {
 
 	public void setSemillas(Set<Seed> semillas) {
 		this.semillas = semillas;
+	}
+
+	public Set<Scope> getDependencias() {
+		return dependencias;
+	}
+
+	public void setDependencias(Set<Scope> dependencias) {
+		this.dependencias = dependencias;
 	}
 }

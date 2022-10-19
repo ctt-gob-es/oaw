@@ -15,23 +15,13 @@
 ******************************************************************************/
 package es.inteco.rastreador2.manager;
 
-import java.util.List;
-import java.util.Set;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import es.inteco.common.logging.Logger;
 import es.inteco.rastreador2.dao.BaseDAO;
-import es.inteco.rastreador2.dao.importar.database.AdministrativeLevel;
-import es.inteco.rastreador2.dao.importar.database.ClassificationLabel;
-import es.inteco.rastreador2.dao.importar.database.Complexity;
-import es.inteco.rastreador2.dao.importar.database.Label;
-import es.inteco.rastreador2.dao.importar.database.Scope;
-import es.inteco.rastreador2.dao.importar.database.Seed;
-import es.inteco.rastreador2.dao.importar.database.SeedType;
-import es.inteco.rastreador2.dao.importar.database.Segment;
 import es.inteco.rastreador2.dao.utils.export.database.HibernateUtil;
 
 /**
@@ -124,53 +114,25 @@ public abstract class BaseManager {
 	}
 
 	/**
-	 * Borrar todas las entradas asociadas a una entidad
+	 * Borra contenido de las tablas para facilitar la importación de entidades desde el SSP
 	 * 
-	 * @param clazz
+	 * @param tables Nombre de las tablas a borrar
 	 */
-	public static void deleteAll(final Class<?> clazz) {
+	public static void truncateTables(String[] tables) {
+		Logger.putLog("Truncate tables", BaseManager.class, Logger.LOG_LEVEL_ERROR);
 		Session session = getSession();
 		session.beginTransaction();
-		final List<?> instances = session.createCriteria(clazz).list();
-		for (Object obj : instances) {
-			if (obj instanceof ClassificationLabel) {
-				if (((ClassificationLabel) obj).getEtiquetas() != null) {
-					Set<Label> etiquetas = ((ClassificationLabel) obj).getEtiquetas();
-					for (Label etiqueta : etiquetas) {
-						session.delete(etiqueta);
-					}
-					((ClassificationLabel) obj).setEtiquetas(null);
-				}
-			} else if (obj instanceof Segment) {
-				((Segment) obj).setSemillas(null);
-			} else if (obj instanceof AdministrativeLevel) {
-				((AdministrativeLevel) obj).setSemillas(null);
-			} else if (obj instanceof Complexity) {
-				((Complexity) obj).setSemilla(null);
-			} else if (obj instanceof SeedType) {
-				((SeedType) obj).setSemilla(null);
-			} else if (obj instanceof Seed) {
-				((Seed) obj).setDependencias(null);
-			} else if (obj instanceof Scope) {
-				if (((Scope) obj).getSemillas() != null) {
-					Set<Seed> semillas = ((Scope) obj).getSemillas();
-					for (Seed semilla : semillas) {
-						session.delete(semilla);
-					}
-					((Scope) obj).setSemillas(null);
-				}
-			} else if (((Label) obj).getSemillas() != null) {
-				if (((Label) obj).getSemillas() != null) {
-					Set<Seed> semillas = ((Label) obj).getSemillas();
-					for (Seed semilla : semillas) {
-						session.delete(semilla);
-					}
-					((Label) obj).setSemillas(null);
-				}
-			}
-			session.delete(obj);
+		session.createSQLQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
+		for (String table : tables) {
+			Logger.putLog("Truncate table: " + table, BaseManager.class, Logger.LOG_LEVEL_ERROR);
+			session.createSQLQuery("truncate table " + table).executeUpdate();
 		}
 		session.getTransaction().commit();
+		session = getSession();
+		session.beginTransaction();
+		session.createSQLQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
+		session.getTransaction().commit();
 		session.close();
+		Logger.putLog("End Truncate tables", BaseManager.class, Logger.LOG_LEVEL_ERROR);
 	}
 }

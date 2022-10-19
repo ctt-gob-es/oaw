@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
-This program is licensed and may be used, modified and redistributed under the terms
+This program is licensed and may be used, modified and redistributed under the terms 
 of the European Public License (EUPL), either version 1.2 or (at your option) any later 
 version as soon as they are approved by the European Commission.
 Unless required by applicable law or agreed to in writing, software distributed under the 
@@ -12,11 +12,11 @@ You should have received a copy of the EUPL1.2 license along with this program; 
 you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
 -->
 <Context path="/oaw" reloadable="true">
-	<Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver"
+	<Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver" 
 		type="javax.sql.DataSource" name="jdbc/oaw" url="jdbc:mysql://mysql:3306/OAW5"
 		maxActive="100" maxIdle="10" maxWait="-1"
 		validationQuery="SELECT 1 as dbcp_connection_test" removeAbandoned="true"
 		testOnBorrow="true" timeBetweenEvictionRunsMillis="60000"
 		testWhileIdle="true" defaultTransactionIsolation="READ_UNCOMMITTED"
-		username="root" password="root" />
+		username="root" password="root" /> 
 </Context>
