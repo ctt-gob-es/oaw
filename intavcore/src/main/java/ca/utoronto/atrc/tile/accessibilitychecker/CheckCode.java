@@ -43,6 +43,8 @@ package ca.utoronto.atrc.tile.accessibilitychecker;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -77,6 +79,7 @@ public class CheckCode {
 	/** The string function position. */
 	private String stringFunctionPosition;
 	/** The vector code. */
+	@XmlTransient
 	private List<CheckCode> vectorCode;
 	/** The id analysis. */
 	private Long idAnalysis;
@@ -97,6 +100,70 @@ public class CheckCode {
 		stringFunctionAttribute1 = "";
 		stringFunctionAttribute2 = "";
 		stringFunctionPosition = "";
+	}
+
+	public String getStringNodeRelation() {
+		return stringNodeRelation;
+	}
+
+	public void setStringNodeRelation(String stringNodeRelation) {
+		this.stringNodeRelation = stringNodeRelation;
+	}
+
+	public String getStringLanguage() {
+		return stringLanguage;
+	}
+
+	public void setStringLanguage(String stringLanguage) {
+		this.stringLanguage = stringLanguage;
+	}
+
+	public String getStringFunctionValue() {
+		return stringFunctionValue;
+	}
+
+	public void setStringFunctionValue(String stringFunctionValue) {
+		this.stringFunctionValue = stringFunctionValue;
+	}
+
+	public String getStringFunctionElement() {
+		return stringFunctionElement;
+	}
+
+	public void setStringFunctionElement(String stringFunctionElement) {
+		this.stringFunctionElement = stringFunctionElement;
+	}
+
+	public String getStringFunctionNumber() {
+		return stringFunctionNumber;
+	}
+
+	public void setStringFunctionNumber(String stringFunctionNumber) {
+		this.stringFunctionNumber = stringFunctionNumber;
+	}
+
+	public String getStringFunctionAttribute1() {
+		return stringFunctionAttribute1;
+	}
+
+	public void setStringFunctionAttribute1(String stringFunctionAttribute1) {
+		this.stringFunctionAttribute1 = stringFunctionAttribute1;
+	}
+
+	public String getStringFunctionAttribute2() {
+		return stringFunctionAttribute2;
+	}
+
+	public void setStringFunctionAttribute2(String stringFunctionAttribute2) {
+		this.stringFunctionAttribute2 = stringFunctionAttribute2;
+	}
+
+	public String getStringFunctionPosition() {
+		return stringFunctionPosition;
+	}
+
+	public void setStringFunctionPosition(String stringFunctionPosition) {
+		this.stringFunctionPosition = stringFunctionPosition;
 	}
 
 	/**

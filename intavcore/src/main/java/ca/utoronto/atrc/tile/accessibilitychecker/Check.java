@@ -62,6 +62,7 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -117,10 +118,13 @@ public class Check {
 	/** The first occurance only. */
 	private boolean firstOccuranceOnly;
 	/** The name map. */
+	@XmlTransient
 	private Map<String, Node> nameMap;
 	/** The error hashtable. */
+	@XmlTransient
 	private Map<String, Node> errorHashtable;
 	/** The rationale hashtable. */
+	@XmlTransient
 	private Map<String, Node> rationaleHashtable;
 	/** The key element. */
 	private String keyElement;
@@ -129,9 +133,87 @@ public class Check {
 	/** The language appropriate. */
 	private String languageAppropriate;
 	/** The prerequisites. */
+	@XmlTransient
 	private List<Integer> prerequisites;
 	/** The vector code. */
+	@XmlTransient
 	private List<CheckCode> vectorCode;
+
+	public Map<String, Node> getNameMap() {
+		return nameMap;
+	}
+
+	public void setNameMap(Map<String, Node> nameMap) {
+		this.nameMap = nameMap;
+	}
+
+	public Map<String, Node> getErrorHashtable() {
+		return errorHashtable;
+	}
+
+	public void setErrorHashtable(Map<String, Node> errorHashtable) {
+		this.errorHashtable = errorHashtable;
+	}
+
+	public Map<String, Node> getRationaleHashtable() {
+		return rationaleHashtable;
+	}
+
+	public void setRationaleHashtable(Map<String, Node> rationaleHashtable) {
+		this.rationaleHashtable = rationaleHashtable;
+	}
+
+	public String getLanguageAppropriate() {
+		return languageAppropriate;
+	}
+
+	public String getAppropriateData() {
+		return languageAppropriate;
+	}
+
+	public void setLanguageAppropriate(String languageAppropriate) {
+		this.languageAppropriate = languageAppropriate;
+	}
+
+	public void setCheckOkCode(int checkOkCode) {
+		this.checkOkCode = checkOkCode;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public void setConfidence(int confidence) {
+		this.confidence = confidence;
+	}
+
+	public void setFirstOccuranceOnly(boolean firstOccuranceOnly) {
+		this.firstOccuranceOnly = firstOccuranceOnly;
+	}
+
+	public void setKeyElement(String keyElement) {
+		this.keyElement = keyElement;
+	}
+
+	public void setTriggerElement(String triggerElement) {
+		this.triggerElement = triggerElement;
+	}
+
+	public void setPrerequisites(List<Integer> prerequisites) {
+		this.prerequisites = prerequisites;
+	}
+
+	public void setVectorCode(List<CheckCode> vectorCode) {
+		this.vectorCode = vectorCode;
+	}
 
 	/**
 	 * Instantiates a new check.
@@ -4843,7 +4925,6 @@ public class Check {
 		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
 			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
 		}
-
 		String key1 = checkCode.getFunctionAttribute1();
 		String regexp1 = pm.getValue("check.patterns.properties", key1);
 		if (accessibilityLinks.isEmpty()) {
@@ -4890,7 +4971,6 @@ public class Check {
 		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
 			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
 		}
-
 		if (accessibilityLinks.isEmpty()) {
 			Logger.putLog("No hay enlaces: ", Check.class, Logger.LOG_LEVEL_ERROR);
 			// Si no hay enlaces es porque estamos en la página de accesibilidad
@@ -5846,7 +5926,6 @@ public class Check {
 	 * @return true, if successful
 	 */
 	private boolean functionAttributesAreEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-		
 		elementGiven.getAttribute("content");
 		String content = elementGiven.getAttributes().getNamedItem("content").getTextContent();
 		if (content != null && content.contains("initial-scale") && content.contains("maximum-scale")) {

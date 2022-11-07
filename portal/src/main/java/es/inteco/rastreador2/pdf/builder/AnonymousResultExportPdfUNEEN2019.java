@@ -244,6 +244,15 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				specialChunkMap.put(2, chunk);
 				section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p3.merge.url.basic.service"), specialChunkMap, ConstantsFont.PARAGRAPH));
 				break;
+			case MIXTO:
+				chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p4.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT_NO_LINK);
+				specialChunkMap.put(1, chunk);
+				chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p5.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+				chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p5.basic.service.anchor1.url"));
+				chunk.setExternalLink(false);
+				specialChunkMap.put(2, chunk);
+				section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p3.merge.url.basic.service"), specialChunkMap, ConstantsFont.PARAGRAPH));
+				break;
 			}
 			/****** paragraph #3 *****/
 //			specialChunkMap = new HashMap<>();
@@ -508,6 +517,8 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			createContentChapter(this.messageResources, document, getBasicServiceForm().getFileName(), pdfTocManager);
 		} else if (isBasicService() && getBasicServiceForm().isContentAnalysisMultiple()) {
 			createMultipleContentChapter(this.messageResources, document, getBasicServiceForm().getFileName(), pdfTocManager, evaList);
+		} else if (isBasicService() && getBasicServiceForm().isAnalysisMix()) {
+			createMixChapter(this.messageResources, document, pdfTocManager, titleFont, evaList);
 		} else {
 			createMuestraPaginasChapter(this.messageResources, document, pdfTocManager, titleFont, evaList);
 		}
@@ -623,6 +634,44 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 								+ (getBasicServiceForm().isInDirectory() ? messageResources.getMessage("select.yes") : messageResources.getMessage("select.no")),
 						listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			}
+			if (Constants.REPORT_OBSERVATORY_4.equals(getBasicServiceForm().getReport())) {
+				PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.p1.brokenlinks.yes"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+			} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
+				PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.p1.brokenlinks.no"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+			}
+			PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.methodology") + " " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH,
+					false, true);
+			chapter.add(listaConfiguracionRastreo);
+		}
+		document.add(chapter);
+	}
+
+	/**
+	 * Creates the mix chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param titleFont        the title font
+	 * @param evaList          the eva list
+	 * @throws DocumentException the document exception
+	 */
+	private void createMixChapter(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, final Font titleFont,
+			final java.util.List<ObservatoryEvaluationForm> evaList) throws DocumentException {
+		assert evaList != null;
+		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.sample.title"), pdfTocManager.getIndex(), pdfTocManager.addSection(),
+				pdfTocManager.getNumChapter(), titleFont, true, "anchor_muestra_paginas");
+		if (BasicServiceAnalysisType.LISTA_URLS.equals(this.getBasicServiceForm().getAnalysisType())) {
+			PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.sample.p1.list"), ConstantsFont.PARAGRAPH, chapter);
+		} else {
+			PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.sample.p1"), ConstantsFont.PARAGRAPH, chapter);
+		}
+		chapter.add(addURLTable(this.messageResources, evaList));
+		if (isBasicService()) {
+			PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.sample.config.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
+			final List listaConfiguracionRastreo = new List();
+			listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
+			listaConfiguracionRastreo.add(createOrigen(getOriginSources(evaList)));
 			if (Constants.REPORT_OBSERVATORY_4.equals(getBasicServiceForm().getReport())) {
 				PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.p1.brokenlinks.yes"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
@@ -2312,5 +2361,21 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.summary.table.nodata"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
 		tablaRankings.addCell(
 				PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.summary.table.nodata"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+	}
+
+	/**
+	 * Get origin sources
+	 * 
+	 * @param evaList
+	 * @return Origin sources
+	 */
+	private static String getOriginSources(java.util.List<ObservatoryEvaluationForm> evaList) {
+		String originSources = "";
+		for (ObservatoryEvaluationForm element : evaList) {
+			if (element.getUrl() != null) {
+				originSources = originSources.concat(element.getUrl().concat("\n"));
+			}
+		}
+		return originSources;
 	}
 }

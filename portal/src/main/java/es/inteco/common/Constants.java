@@ -1135,6 +1135,8 @@ public interface Constants {
 	String FAILED_CHECKS = "failedChecks";
 	/** The menu. */
 	String MENU = "menu";
+	/** The submenu importar entidad. */
+	String SUBMENU_IMPORTAR = "menuImportar";
 	/** The submenu. */
 	String SUBMENU = "submenu";
 	/** The menu password. */
@@ -1924,4 +1926,6 @@ public interface Constants {
 	BaseColor BC_GRIS_MUY_CLARO = new BaseColor(245, 245, 245);
 	/** The observatory extra configuration list. */
 	String OBSERVATORY_EXTRA_CONFIGURATION_LIST = "extraConfigurationList";
+	/** Import entities */
+	String IMPORTAR_ENTIDADES = "importarEntidades";
 }

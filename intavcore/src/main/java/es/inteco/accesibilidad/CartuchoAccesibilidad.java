@@ -61,7 +61,9 @@ public class CartuchoAccesibilidad extends Cartucho {
 		checkAccesibility.setCharset((String) datos.get("charset"));
 		boolean isLast = (Boolean) datos.get("isLast");
 		try {
-			EvaluatorUtils.evaluateContent(checkAccesibility, pmgr.getValue("crawler.core.properties", "check.accessibility.default.language"));
+			if (checkAccesibility.getUrl() != null && !checkAccesibility.getUrl().contains(".pdf")) {
+				EvaluatorUtils.evaluateContent(checkAccesibility, pmgr.getValue("crawler.core.properties", "check.accessibility.default.language"));
+			}
 		} catch (Exception e) {
 			Logger.putLog("Excepcion: ", CartuchoAccesibilidad.class, Logger.LOG_LEVEL_ERROR, e);
 		}

@@ -186,12 +186,11 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	private void addResultsByVerificationAndCompliance(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, final PdfTocManager pdfTocManager,
 			ScoreForm currentScore) {
 		chapter.newPage();
-		createTablaResumenResultadosPorNivelAndCompliance(messageResources, chapter, evaList, LEVEL_I_GROUP_INDEX, pdfTocManager, currentScore);
-		/*
-		 * if (evaList.size() > 2 && evaList.size() < 17) { chapter.newPage(); }
-		 */
-		chapter.newPage();
-		createTablaResumenResultadosPorNivelAndCompliance(messageResources, chapter, evaList, LEVEL_II_GROUP_INDEX, pdfTocManager, currentScore);
+		if (evaList != null & evaList.size() > 0) {
+			createTablaResumenResultadosPorNivelAndCompliance(messageResources, chapter, evaList, LEVEL_I_GROUP_INDEX, pdfTocManager, currentScore);
+			chapter.newPage();
+			createTablaResumenResultadosPorNivelAndCompliance(messageResources, chapter, evaList, LEVEL_II_GROUP_INDEX, pdfTocManager, currentScore);
+		}
 	}
 
 	/**
