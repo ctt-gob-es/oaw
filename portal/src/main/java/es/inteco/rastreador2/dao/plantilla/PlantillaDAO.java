@@ -104,8 +104,8 @@ public final class PlantillaDAO {
 	public static PlantillaForm findByName(Connection c, final String name) throws SQLException {
 		PlantillaForm plantilla = null;
 		// query += " LIMIT ? OFFSET ?";
-		try (PreparedStatement ps = c.prepareStatement("SELECT p.id_plantilla, p.nombre, p.documento, p.type FROM observatorio_plantillas p WHERE p.nombre = ?")) {
-			ps.setString(1, name);
+		try (PreparedStatement ps = c.prepareStatement("SELECT p.id_plantilla, p.nombre, p.documento, p.type FROM observatorio_plantillas p WHERE p.nombre LIKE ?")) {
+			ps.setString(1, "%" + name + "%");
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					plantilla = new PlantillaForm();

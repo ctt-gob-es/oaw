@@ -13,7 +13,7 @@
 <%--
     Necesita las librerias commons-fileupload-1.2.1.jar y commons-io-1.3.2.jar
 --%>
-<%@page import= "org.apache.tomcat.util.http.fileupload.*" %>
+<%@page import= "org.apache.tomcat.util.http.fileupload.*" %>     
 <%@page import= "org.apache.tomcat.util.http.fileupload.disk.*" %>
 <%@page import= "org.apache.tomcat.util.http.fileupload.servlet.*" %>
 <%@page import= "org.apache.commons.codec.net.URLCodec" %>
@@ -21,18 +21,18 @@
     // URL donde se encuentra ubicado el servidor OAW (dependerá del entorno donde estemos)
     // Indicar únicamente dominio + contexto de despliegue.
     // Valores típicos serán:
-    // Producción: http://oaw.redsara.es/oaw/
-    // Preproducción: http://pre-oaw.redsara.es/oaw/
+    // Producción: http://oaw.redsara.es/oaw/ 
+    // Preproducción: http://pre-oaw.redsara.es/oaw/ 
     // Integración: http://des-oaw.redsara.es/oaw/
-    private final static String BASE_URL = "http://localhost:8080/oaw/";
+    private final static String BASE_URL = "http://localhost:8080/oaw/";   
 
     // Path de los servicios que se invocarán. Se mantienen invariables entre entornos y solo hará falta modificarlos como consecuencia de cambios en la aplicación.
     private final static String BASIC_SERVICE_ENDPOINT = "basicServiceAction.do";
     private final static String HISTORICO_ENDPOINT = "checkHistorico.do";
-
+ 
     // Clase para manejar las solicitudes al servicio de diagnóstico y realizar peticiones a los servicios que manejan el historico/evolutivo del servicio de diagnóstico.
     class RequestManager {
-        private final URL host;
+        private final URL host; 
         String codigo;
         String url = "";
         String urls = "";
@@ -58,7 +58,7 @@
                 host = new URL(BASE_URL);
             } catch (Exception e) {
                 throw new Error("ERROR de configuración.", e);
-            }
+            } 
 
             // Create a factory for disk-based file items
             final DiskFileItemFactory factory = new DiskFileItemFactory();

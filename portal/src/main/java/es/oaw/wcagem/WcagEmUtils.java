@@ -36,55 +36,55 @@ import es.oaw.wcagem.util.ValidationResult;
  */
 public final class WcagEmUtils {
 	/** The Constant _1_6. */
-	private static final String _1_6 = "1.6";
+	public static final String _1_6 = "1.6";
 	/** The Constant _1_5. */
-	private static final String _1_5 = "1.5";
+	public static final String _1_5 = "1.5";
 	/** The Constant _1_4. */
-	private static final String _1_4 = "1.4";
+	public static final String _1_4 = "1.4";
 	/** The Constant _1_3. */
-	private static final String _1_3 = "1.3";
+	public static final String _1_3 = "1.3";
 	/** The Constant _1_2. */
-	private static final String _1_2 = "1.2";
+	public static final String _1_2 = "1.2";
 	/** The Constant _1_10. */
-	private static final String _1_10 = "1.10";
+	public static final String _1_10 = "1.10";
 	/** The Constant _2_6. */
-	private static final String _2_6 = "2.6";
+	public static final String _2_6 = "2.6";
 	/** The Constant _1_13. */
-	private static final String _1_13 = "1.13";
+	public static final String _1_13 = "1.13";
 	/** The Constant _1_14. */
-	private static final String _1_14 = "1.14";
+	public static final String _1_14 = "1.14";
 	/** The Constant _2_1. */
-	private static final String _2_1 = "2.1";
+	public static final String _2_1 = "2.1";
 	/** The Constant _1_7. */
-	private static final String _1_7 = "1.7";
+	public static final String _1_7 = "1.7";
 	/** The Constant _1_9. */
-	private static final String _1_9 = "1.9";
+	public static final String _1_9 = "1.9";
 	/** The Constant _2_4. */
-	private static final String _2_4 = "2.4";
+	public static final String _2_4 = "2.4";
 	/** The Constant _1_12. */
-	private static final String _1_12 = "1.12";
+	public static final String _1_12 = "1.12";
 	/** The Constant _1_11. */
-	private static final String _1_11 = "1.11";
+	public static final String _1_11 = "1.11";
 	/** The Constant _1_8. */
-	private static final String _1_8 = "1.8";
+	public static final String _1_8 = "1.8";
 	/** The Constant _2_2. */
-	private static final String _2_2 = "2.2";
+	public static final String _2_2 = "2.2";
 	/** The Constant _2_3. */
-	private static final String _2_3 = "2.3";
+	public static final String _2_3 = "2.3";
 	/** The Constant _2_5. */
-	private static final String _2_5 = "2.5";
+	public static final String _2_5 = "2.5";
 	/** The Constant _1_1. */
-	private static final String _1_1 = "1.1";
+	public static final String _1_1 = "1.1";
 	/** The Constant EARL_INAPPLICABLE. */
-	private static final String EARL_INAPPLICABLE = "earl:inapplicable";
+	public static final String EARL_INAPPLICABLE = "earl:inapplicable";
 	/** The Constant EARL_FAILED. */
-	private static final String EARL_FAILED = "earl:failed";
+	public static final String EARL_FAILED = "earl:failed";
 	/** The Constant EARL_PASSED. */
-	private static final String EARL_PASSED = "earl:passed";
+	public static final String EARL_PASSED = "earl:passed";
 	/** The Constant EARL_CANNOT_TELL. */
-	private static final String EARL_CANNOT_TELL = "earl:cantTell";
+	public static final String EARL_CANNOT_TELL = "earl:cantTell";
 	/** The Constant EARL_UNTESTED. */
-	private static final String EARL_UNTESTED = "earl:untested";
+	public static final String EARL_UNTESTED = "earl:untested";
 
 	/**
 	 * Generate report.
@@ -306,12 +306,18 @@ public final class WcagEmUtils {
 			graph.setAuditResult(auditResults);
 		}
 		graph.setCreator("_:evaluator");
-		graph.setTitle("Informe de revisión de accesibilidad - " + currentEvaluationPageList.get(0).getEntity());
+		if (currentEvaluationPageList != null && currentEvaluationPageList.size() > 0) {
+			graph.setTitle("Informe de revisión de accesibilidad - " + currentEvaluationPageList.get(0).getEntity());
+		} else {
+			graph.setTitle("Informe de revisión de accesibilidad");
+		}
 		graph.setCommissioner("");
 		{
 			StructuredSample structuredSample = new StructuredSample();
 			List<Webpage> webpages = new ArrayList<>();
+			List<NoWebpage> noWebpages = new ArrayList<>();
 			int randCounter = 0;
+			int randCounterNoWeb = 0;
 			// Iterate currentEvaluationPageList to preserve order
 			for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
 				Webpage webpage = new Webpage();

@@ -20,6 +20,8 @@ import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,7 @@ import org.apache.commons.mail.EmailException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.struts.util.MessageResources;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
 import es.gob.oaw.basicservice.historico.CheckHistoricoService;
 import es.gob.oaw.rastreador2.observatorio.ObservatoryManager;
@@ -58,9 +61,11 @@ import es.inteco.rastreador2.utils.basic.service.BasicServiceQueingThread;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceThread;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import es.inteco.utils.FileUtils;
+import es.oaw.wcagem.NoWebpage;
 import es.oaw.wcagem.WcagEmReport;
 import es.oaw.wcagem.WcagEmUtils;
 import es.oaw.wcagem.WcagOdsUtils;
+import es.oaw.wcagem.WcagOdtUtils;
 import es.oaw.wcagem.WcagXlsxUtils;
 
 /**
@@ -148,8 +153,8 @@ public class BasicServiceManager {
 					}
 				}
 				final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "file.date.format"));
-				pdfPath = pmgr.getValue(CRAWLER_PROPERTIES, "pdf.basic.service.path") + idCrawling + File.separator + PDFUtils.formatSeedName(basicServiceForm.getName()) + "_" + df.format(new Date())
-						+ ".pdf";
+				pdfPath = pmgr.getValue(CRAWLER_PROPERTIES, "pdf.basic.service.path") + idCrawling + File.separator + PDFUtils.formatSeedName(basicServiceForm.getReportName()) + "_"
+						+ df.format(new Date()) + ".pdf";
 				final ObservatoryManager observatoryManager = new ObservatoryManager();
 				if (basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_UNE) || basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_UNE_FILE)
 						|| basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_WCAG_1_FILE) || basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_WCAG_2_FILE)) {
@@ -161,6 +166,8 @@ public class BasicServiceManager {
 					final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = new TreeMap<>();
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNE2004(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
+					// Odt report: Hallazgos
+					generateOdtReport(currentEvaluationPageList, pdfPath);
 				} else if (Constants.REPORT_OBSERVATORY_2.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(basicServiceForm.getReport())) {
 					Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfUNE2012())", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
 					final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
@@ -168,6 +175,8 @@ public class BasicServiceManager {
 					final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNE2012(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
+					// Odt report: Hallazgos
+					generateOdtReport(currentEvaluationPageList, pdfPath);
 				} else if (Constants.REPORT_OBSERVATORY_3.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(basicServiceForm.getReport())) {
 					Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfUNE2012b())", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
 					final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
@@ -175,6 +184,8 @@ public class BasicServiceManager {
 					final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNE2012b(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
+					// Odt report: Hallazgos
+					generateOdtReport(currentEvaluationPageList, pdfPath);
 				} else if (Constants.REPORT_OBSERVATORY_4.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(basicServiceForm.getReport())) {
 					Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfUNEEN2019())", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
 					final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
@@ -182,6 +193,8 @@ public class BasicServiceManager {
 					final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
+					// Odt report: Hallazgos
+					generateOdtReport(currentEvaluationPageList, pdfPath);
 				} else if (Constants.REPORT_OBSERVATORY_5.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_5_NOBROKEN.equals(basicServiceForm.getReport())) {
 					Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfAccesibilidad())", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
 					final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
@@ -189,8 +202,11 @@ public class BasicServiceManager {
 					final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfAccesibilidad(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
+					// Odt report: Hallazgos
+					generateOdtReport(currentEvaluationPageList, pdfPath);
 				}
 				/***
+				 * EvaluatorUtils.generateObservatoryEvaluationForm
 				 * 
 				 * 
 				 * 
@@ -200,6 +216,8 @@ public class BasicServiceManager {
 				// JSON WCAG-EM and ODS
 				if ("true".equalsIgnoreCase(basicServiceForm.getDepthReport())) {
 					WcagEmReport report = WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), basicServiceForm.getName(), idCrawling);
+					report.getGraph().get(0).getStructuredSample().setNoWebpage(getNoWebPages(crawledLinks));
+					// END PDF FILES
 					// ODS REPORT
 					SpreadSheet ods = WcagOdsUtils.generateOds(report);
 					File outputFile = new File(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Sitios web.ods");
@@ -269,5 +287,45 @@ public class BasicServiceManager {
 				FileUtils.deleteDir(pdfFile.getParentFile());
 			}
 		}
+	}
+
+	/**
+	 * Adding Pdf files to IRA Reports
+	 * 
+	 * @param crawledLinks
+	 * @return
+	 */
+	private List<NoWebpage> getNoWebPages(List<CrawledLink> crawledLinks) {
+		// PDF FILES
+		List<NoWebpage> noWebPages = new ArrayList<>();
+		int randCounterNoWeb = 0;
+		// Iterate currentEvaluationPageList to preserve order
+		for (CrawledLink crawledLink : crawledLinks) {
+			if (crawledLink.getUrl() != null && crawledLink.getUrl().contains(".pdf")) {
+				NoWebpage noWebpage = new NoWebpage();
+				noWebpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
+				noWebpage.setId("_:struct_" + randCounterNoWeb);
+				noWebpage.setDescription(crawledLink.getUrl());
+				noWebpage.setSource(crawledLink.getUrl());
+				noWebpage.setTitle("Doc");
+				noWebpage.setTested(false);// false to mark as incomplete un report step
+				noWebPages.add(noWebpage);
+				randCounterNoWeb++;
+			}
+		}
+		return noWebPages;
+	}
+
+	/**
+	 * Generate odt report
+	 * 
+	 * @param currentEvaluationPageList
+	 * @param pdfPath
+	 * @throws Exception
+	 */
+	private void generateOdtReport(final List<ObservatoryEvaluationForm> currentEvaluationPageList, final String pdfPath) throws Exception {
+		OdfTextDocument document = WcagOdtUtils.generateOdtReport(currentEvaluationPageList);
+		final FileOutputStream out = new FileOutputStream(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Hallazgos.odt");
+		document.save(out);
 	}
 }

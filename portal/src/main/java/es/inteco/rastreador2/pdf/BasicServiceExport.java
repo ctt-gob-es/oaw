@@ -231,6 +231,8 @@ public final class BasicServiceExport {
 			try {
 				File parentFile = new File(reportFile).getParentFile();
 				zipFile(new File(parentFile + "/codigo_fuente.zip"), "codigo_fuente.zip", zos);
+				// ODT
+				zipFile(new File(parentFile + "/Informe Revision Accesibilidad - Hallazgos.odt"), "Informe Revision Accesibilidad - Hallazgos.odt", zos);
 				// JSON WCAG-EM and ODS
 				if ("true".equalsIgnoreCase(depthReport)) {
 					// JSON
