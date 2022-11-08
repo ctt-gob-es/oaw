@@ -22,6 +22,8 @@ import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.intav.form.ProblemForm;
 import es.inteco.intav.form.SpecificProblemForm;
 import es.inteco.intav.utils.EvaluatorUtils;
+import es.inteco.rastreador2.actionform.importacion.ImportarEntidadesResultadoForm;
+import es.inteco.rastreador2.manager.importacion.database.DatabaseImportarManager;
 
 public class OAWService {
 	final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
@@ -40,6 +42,13 @@ public class OAWService {
 		Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 		ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true, false);
 		return getProblems(oef);
+	}
+
+	public ImportarEntidadesResultadoForm importData(String content) {
+		DatabaseImportarManager importarEntidadesManager = new DatabaseImportarManager();
+		byte[] decodedBytes = Base64.getDecoder().decode(content.trim());
+		String data = new String(decodedBytes);
+		return importarEntidadesManager.importDataWS(data);
 	}
 
 	private ProblemDTO[] getProblems(ObservatoryEvaluationForm observatoryEvaluationForm) {
