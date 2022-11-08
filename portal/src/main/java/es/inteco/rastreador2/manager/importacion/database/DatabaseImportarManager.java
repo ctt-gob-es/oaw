@@ -56,6 +56,20 @@ public class DatabaseImportarManager extends BaseManager {
 		return importResultForm;
 	}
 
+	public ImportarEntidadesResultadoForm importDataWS(String content) {
+		ImportarEntidadesResultadoForm importResultForm = new ImportarEntidadesResultadoForm();
+		Gson g = new Gson();
+		OAWForm result = g.fromJson(content, OAWForm.class);
+		try {
+			deleteData();
+			importResultForm = saveData(result);
+		} catch (Exception e) {
+			importResultForm.setValidImport(false);
+			Logger.putLog("Error: ", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return importResultForm;
+	}
+
 	private OAWForm loadFileData(FormFile formFile) throws FileNotFoundException, IOException {
 		Logger.putLog("Carga de datos desde fichero", DatabaseImportarManager.class, Logger.LOG_LEVEL_ERROR);
 		InputStream stream = formFile.getInputStream();
