@@ -4,11 +4,11 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -22,8 +22,10 @@ public class Label {
 	@ManyToOne
 	@JoinColumn(name = "id_clasificacion")
 	private ClassificationLabel clasificacionEtiqueta;
-	@ManyToMany(mappedBy = "etiquetas", fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "etiquetas")
 	private Set<Seed> semillas;
+	@OneToMany(mappedBy = "etiqueta")
+	private Set<Scope> dependencias;
 
 	public Set<Seed> getSemillas() {
 		return semillas;
@@ -55,5 +57,13 @@ public class Label {
 
 	public void setClasificacionEtiqueta(ClassificationLabel clasificacionEtiqueta) {
 		this.clasificacionEtiqueta = clasificacionEtiqueta;
+	}
+
+	public Set<Scope> getDependencias() {
+		return dependencias;
+	}
+
+	public void setDependencias(Set<Scope> dependencias) {
+		this.dependencias = dependencias;
 	}
 }

@@ -2,14 +2,13 @@ package es.inteco.rastreador2.dao.importar.database;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -23,14 +22,19 @@ public class Scope {
 	@Column(name = "emails")
 	private String emails;
 	@Column(name = "send_auto")
-	private boolean envioAutomatico;
+	private Boolean envioAutomatico;
 	@Column(name = "official")
-	private boolean oficial;
-	@ManyToMany(mappedBy = "dependencias", fetch = FetchType.EAGER)
+	private Boolean oficial;
+	@Column(name = "acronym")
+	private String acronimo;
+	@ManyToMany(mappedBy = "dependencias")
 	private Set<Seed> semillas;
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "dependencia_ambito", joinColumns = @JoinColumn(name = "id_lista"), inverseJoinColumns = @JoinColumn(name = "id_dependencia"))
+	@ManyToMany
+	@JoinTable(name = "dependencia_ambito", joinColumns = @JoinColumn(name = "id_dependencia"), inverseJoinColumns = @JoinColumn(name = "id_ambito"))
 	private Set<AdministrativeLevel> ambitos;
+	@ManyToOne
+	@JoinColumn(name = "id_tag")
+	private Label etiqueta;
 
 	public Long getId() {
 		return id;
@@ -56,19 +60,19 @@ public class Scope {
 		this.emails = emails;
 	}
 
-	public boolean isEnvioAutomatico() {
+	public Boolean isEnvioAutomatico() {
 		return envioAutomatico;
 	}
 
-	public void setEnvioAutomatico(boolean envioAutomatico) {
+	public void setEnvioAutomatico(Boolean envioAutomatico) {
 		this.envioAutomatico = envioAutomatico;
 	}
 
-	public boolean isOficial() {
+	public Boolean isOficial() {
 		return oficial;
 	}
 
-	public void setOficial(boolean oficial) {
+	public void setOficial(Boolean oficial) {
 		this.oficial = oficial;
 	}
 
@@ -86,5 +90,21 @@ public class Scope {
 
 	public void setAmbitos(Set<AdministrativeLevel> ambitos) {
 		this.ambitos = ambitos;
+	}
+
+	public String getAcronimo() {
+		return acronimo;
+	}
+
+	public void setAcronimo(String acronimo) {
+		this.acronimo = acronimo;
+	}
+
+	public Label getEtiqueta() {
+		return etiqueta;
+	}
+
+	public void setEtiqueta(Label etiqueta) {
+		this.etiqueta = etiqueta;
 	}
 }

@@ -16,7 +16,12 @@
 	
 		<!--  IMPORTAR ENTIDADES DEL SSP  -->
 	    <form-bean name="ImportarEntidadesForm"
-			type="es.inteco.rastreador2.actionform.importacion.ImportarEntidadesForm" />
+			type="es.inteco.rastreador2.actionform.importation.ImportEntitiesForm" />
+		
+		<!--  Exportar ENTIDADES DEL SSP  -->
+	    <form-bean name="ExportarEntidadesForm"
+			type="es.inteco.rastreador2.actionform.exportation.ExportEntitiesForm" />	
+			
 			
 		<!-- OBSERVATORIO -->
 		<form-bean name="CargarObservatorioForm"
@@ -390,6 +395,8 @@
 		<forward name="observatoryRanges" path="/secure/RangeObservatorio.do?action=load" />
 
 		<forward name="importarEntidadesMenu" path="/secure/ImportarEntidades.do" />
+		
+		<forward name="exportarEntidadesMenu" path="/secure/ExportarEntidades.do" />
 
 	</global-forwards>
 
@@ -1118,6 +1125,14 @@
 			<forward name="error" path=".importarEntidadesError" />
 			<forward name="exito" path=".importarEntidadesExito" /> 
 			<forward name="importarEntidades" path=".importarEntidades"/>
+		</action>
+		
+		<action path="/secure/ExportarEntidades" type="es.inteco.rastreador2.action.exportacion.ExportarEntidadesAction"
+			scope="request" name="ExportarEntidadesForm" validate="false" input=".exportaEntidades">
+			<forward name="volver" path="/secure/CargarObservatorio.do" />
+			<forward name="error" path=".exportarEntidadesError" />
+			<forward name="exito" path=".exportarEntidadesExito" /> 
+			<forward name="exportarEntidades" path=".exportarEntidades"/>
 		</action>
 
 	</action-mappings> 

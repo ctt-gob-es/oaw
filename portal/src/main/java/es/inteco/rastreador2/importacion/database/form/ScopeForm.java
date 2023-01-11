@@ -6,8 +6,8 @@ public class ScopeForm extends BaseForm {
 	private LabelForm etiqueta;
 	private String acronimo;
 	private String emails;
-	private boolean oficial;
-	private boolean envioAutomatico;
+	private Boolean oficial;
+	private Boolean envioAutomatico;
 	private Set<AdministrativeLevelForm> ambitos;
 
 	public LabelForm getEtiqueta() {
@@ -34,19 +34,19 @@ public class ScopeForm extends BaseForm {
 		this.emails = emails;
 	}
 
-	public boolean isOficial() {
+	public Boolean isOficial() {
 		return oficial;
 	}
 
-	public void setOficial(boolean oficial) {
+	public void setOficial(Boolean oficial) {
 		this.oficial = oficial;
 	}
 
-	public boolean isEnvioAutomatico() {
+	public Boolean isEnvioAutomatico() {
 		return envioAutomatico;
 	}
 
-	public void setEnvioAutomatico(boolean envioAutomatico) {
+	public void setEnvioAutomatico(Boolean envioAutomatico) {
 		this.envioAutomatico = envioAutomatico;
 	}
 

@@ -2,7 +2,6 @@ package es.inteco.rastreador2.dao.importar.database;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -23,11 +22,11 @@ public class Seed {
 	@Column(name = "acronimo")
 	private String acronimo;
 	@Column(name = "activa")
-	private boolean activa;
+	private Boolean activa;
 	@Column(name = "in_directory")
-	private boolean enDirectorio;
+	private Boolean enDirectorio;
 	@Column(name = "eliminar")
-	private boolean eliminada;
+	private Boolean eliminada;
 	@Column(name = "observaciones")
 	private String observaciones;
 	@Column(name = "lista")
@@ -44,10 +43,10 @@ public class Seed {
 	@ManyToOne
 	@JoinColumn(name = "id_ambito")
 	private AdministrativeLevel ambito;
-	@ManyToMany(cascade = { CascadeType.ALL })
+	@ManyToMany
 	@JoinTable(name = "semilla_dependencia", joinColumns = @JoinColumn(name = "id_lista"), inverseJoinColumns = @JoinColumn(name = "id_dependencia"))
 	private Set<Scope> dependencias;
-	@ManyToMany(cascade = { CascadeType.ALL })
+	@ManyToMany
 	@JoinTable(name = "semilla_etiqueta", joinColumns = @JoinColumn(name = "id_lista"), inverseJoinColumns = @JoinColumn(name = "id_etiqueta"))
 	private Set<Label> etiquetas;
 
@@ -75,19 +74,19 @@ public class Seed {
 		this.acronimo = acronimo;
 	}
 
-	public boolean isActiva() {
+	public Boolean isActiva() {
 		return activa;
 	}
 
-	public void setActiva(boolean activa) {
+	public void setActiva(Boolean activa) {
 		this.activa = activa;
 	}
 
-	public boolean isEliminada() {
+	public Boolean isEliminada() {
 		return eliminada;
 	}
 
-	public void setEliminada(boolean eliminada) {
+	public void setEliminada(Boolean eliminada) {
 		this.eliminada = eliminada;
 	}
 
@@ -115,11 +114,11 @@ public class Seed {
 		this.tipoSemilla = tipoSemilla;
 	}
 
-	public boolean isEnDirectorio() {
+	public Boolean isEnDirectorio() {
 		return enDirectorio;
 	}
 
-	public void setEnDirectorio(boolean enDirectorio) {
+	public void setEnDirectorio(Boolean enDirectorio) {
 		this.enDirectorio = enDirectorio;
 	}
 
