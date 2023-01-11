@@ -1927,7 +1927,7 @@ public interface Constants {
 	/** The bc gris muy claro. */
 	BaseColor BC_GRIS_MUY_CLARO = new BaseColor(245, 245, 245);
 	/** The observatory extra configuration list. */
-	String OBSERVATORY_EXTRA_CONFIGURATION_LIST = "extraConfiguratioanList";
+	String OBSERVATORY_EXTRA_CONFIGURATION_LIST = "extraConfigurationList";
 	/** Import entities */
 	String IMPORTAR_ENTIDADES = "importarEntidades";
 	/** Export entities */
