@@ -8,7 +8,7 @@ public class ComplexityForm extends BaseForm {
 		return profundidad;
 	}
 
-	public void setDepth(Integer profundidad) {
+	public void setProfundidad(Integer profundidad) {
 		this.profundidad = profundidad;
 	}
 

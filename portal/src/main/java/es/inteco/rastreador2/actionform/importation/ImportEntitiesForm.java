@@ -1,4 +1,4 @@
-package es.inteco.rastreador2.actionform.importacion;
+package es.inteco.rastreador2.actionform.importation;
 
 import java.io.Serializable;
 
@@ -10,7 +10,8 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.validator.ValidatorForm;
 
-public class ImportarEntidadesForm extends ValidatorForm implements Serializable {
+public class ImportEntitiesForm extends ValidatorForm implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private FormFile file;
 
 	public FormFile getFile() {

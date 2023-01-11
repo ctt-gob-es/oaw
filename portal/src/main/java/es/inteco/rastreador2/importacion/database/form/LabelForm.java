@@ -7,7 +7,7 @@ public class LabelForm extends BaseForm {
 		return clasificacionEtiqueta;
 	}
 
-	public void setClassificationLabel(ClassificationLabelForm clasificacionEtiqueta) {
+	public void setClasificacionEtiqueta(ClassificationLabelForm clasificacionEtiqueta) {
 		this.clasificacionEtiqueta = clasificacionEtiqueta;
 	}
 }

@@ -2,10 +2,8 @@ package es.inteco.rastreador2.dao.importar.database;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -18,7 +16,7 @@ public class ClassificationLabel {
 	private Long id;
 	@Column(name = "nombre")
 	private String nombre;
-	@OneToMany(mappedBy = "clasificacionEtiqueta", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "clasificacionEtiqueta")
 	private Set<Label> etiquetas;
 
 	public Long getId() {
