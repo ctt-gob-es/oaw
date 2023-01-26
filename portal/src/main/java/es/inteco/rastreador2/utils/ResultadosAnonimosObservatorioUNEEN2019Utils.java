@@ -2055,7 +2055,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param categoryId         the category id
 	 * @param pageExecutionList  the page execution list
 	 * @param isComplexityFilter the is complexity filter
-	 * @param tagsFilter         the tags filter
+	 * @param tagsFilter         Tags filter
 	 * @return the global result data
 	 * @throws Exception the exception
 	 */
