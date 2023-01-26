@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -2060,7 +2061,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 */
 	public static List<ObservatoryEvaluationForm> getGlobalResultData(final String executionId, final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList,
 			boolean isComplexityFilter, String[] tagsFilter) throws Exception {
-		return getGlobalResultData(executionId, categoryId, pageExecutionList, null, isComplexityFilter, tagsFilter, false);
+		return getGlobalResultData(executionId, categoryId, pageExecutionList, null, isComplexityFilter, tagsFilter, true);
 	}
 
 	/**
@@ -2132,7 +2133,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			throw e;
 		}
 		CacheUtils.putInCacheForever(observatoryEvaluationList, Constants.OBSERVATORY_KEY_CACHE + executionId);
-		// Filteer by category or complexity
+		// Filter by category or complexity
 		if (!isComplexityFilter) {
 			return filterObservatoriesByCategory(observatoryEvaluationList, Long.parseLong(executionId), categoryId);
 		} else {
@@ -2720,10 +2721,10 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 					// Only add selected observatories
 					if (list.contains((String.valueOf(entry.getKey())))) {
 						String[] executionTags = getExecutionTags(entry.getKey());
-						if (executionTags == null) {
+						if (Objects.isNull(executionTags)) {
 							executionTags = tagsFilter;
 						}
-						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, false, tagsFilter);
+						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, false, executionTags);
 						resultData.put(entry.getValue(), pageList);
 					}
 				} else {
@@ -3329,8 +3330,9 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 *
 	 * @param observatoryEvaluationList the observatory evaluation list
 	 * @return the results by site level
+	 * @throws IOException
 	 */
-	public static Map<String, Integer> getResultsBySiteLevel(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
+	public static Map<String, Integer> getResultsBySiteLevel(final List<ObservatoryEvaluationForm> observatoryEvaluationList) throws IOException {
 		final Map<String, Integer> globalResult = new HashMap<>();
 		globalResult.put(Constants.OBS_NV, 0);
 		globalResult.put(Constants.OBS_A, 0);
@@ -3880,6 +3882,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 *
 	 * @param observatoryEvaluationList the observatory evaluation list
 	 * @return the sites by type
+	 * @throws IOException
 	 */
 	public static Map<Long, Map<String, Integer>> getSitesByType(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
 		final Map<String, List<ObservatoryEvaluationForm>> pagesByType = getPagesByType(observatoryEvaluationList);

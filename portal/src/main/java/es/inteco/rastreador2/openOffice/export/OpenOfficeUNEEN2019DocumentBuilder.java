@@ -20,6 +20,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -451,6 +454,11 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 							// and deletes
 							pes.delete();
 						}
+					}
+					Path path = Paths.get(filePath);
+					Path parent = path.getParent();
+					if (parent != null && Files.notExists(parent)) {
+						Files.createDirectories(parent);
 					}
 					odt.save(filePath);
 					removeAttributeFromFile(filePath, "META-INF/manifest.xml", "manifest:file-entry", "manifest:size", "text/xml");
@@ -1955,7 +1963,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			replaceText(odt, odfFileContent, "-452.t1.c6-", res.get(4).getRedPercentage());
 			replaceText(odt, odfFileContent, "-452.t1.b7-", res.get(5).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-452.t1.c7-", res.get(5).getRedPercentage());
-	    }
+		}
 	}
 
 	/**
