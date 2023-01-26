@@ -25,11 +25,10 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.xml.dtm.ref.DTMNodeList;
 import org.odftoolkit.odfdom.OdfElement;
 import org.odftoolkit.odfdom.OdfFileDom;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
-
-import com.sun.org.apache.xml.internal.dtm.ref.DTMNodeList;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;

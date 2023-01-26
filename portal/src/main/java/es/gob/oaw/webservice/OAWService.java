@@ -68,7 +68,7 @@ public class OAWService {
 		return importResultDTO;
 	}
 
-	// Importación de datos desde el SSP
+	// Backup de datos del Rastreador
 	public TrackerBackupResponseDTO trackerBackupRequest(TrackerBackupRequestDTO trackerBackupRequestDTO) {
 		DatabaseExportManager exportEntitiesManager = new DatabaseExportManager();
 		TrackerBackupResponseDTO trackerBackupResponseDTO = new TrackerBackupResponseDTO();
