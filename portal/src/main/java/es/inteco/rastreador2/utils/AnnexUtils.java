@@ -4458,18 +4458,21 @@ public final class AnnexUtils {
 	 * @return the string
 	 */
 	private static String generateComparisionPunctuactionFormula_v2(final int column, final int firstRow, final int lastRow) {
-//		final String substractColumnsResult = columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter;
 		String columName = GetExcelColumnNameForNumber(column);
 		String firstCell = columName + firstRow;
 		String secondCell = columName + lastRow;
 		final String substractColumnsResult = secondCell + "-" + firstCell;
-		String formula = "IF(" + secondCell + "=\"\",\"\",\"\")";
+		String formula = "IF(" + firstCell + "=\"\",\"Sin datos\",_next_if_clause_)";
+		String ifClause = "IF(" + secondCell + "=\"\",\"\",\"\")";
+		formula = formula.replace("_next_if_clause_", ifClause);
 		if (websiteRanges != null && !websiteRanges.isEmpty()) {
-			formula = "IF(" + secondCell + "=\"\",\"\",_next_if_clause_)";
+			formula = "IF(" + firstCell + "=\"\",\"Sin datos\",_next_if_clause_)";
+			ifClause = "IF(" + secondCell + "=\"\",\"\",_next_if_clause_)";
+			formula = formula.replace("_next_if_clause_", ifClause);
 			int index = 0;
 			for (RangeForm range : websiteRanges) {
 				String rangetoString = "";
-				String ifCaluse = "";
+				ifClause = "";
 				// has superior range
 				if (!StringUtils.isEmpty(range.getMinValueOperator()) && !StringUtils.isEmpty(range.getMaxValueOperator())) {
 					rangetoString = "AND(" + range.getMinValue() + "" + range.getMinValueOperator() + "" + substractColumnsResult + "," + substractColumnsResult + "" + range.getMaxValueOperator() + ""
@@ -4481,11 +4484,11 @@ public final class AnnexUtils {
 				}
 				// is last iteration
 				if (index == websiteRanges.size() - 1) {
-					ifCaluse = "IF(" + rangetoString + ",\"" + range.getName() + "\",\"ERROR\")";
+					ifClause = "IF(" + rangetoString + ",\"" + range.getName() + "\",\"ERROR\")";
 				} else {
-					ifCaluse = "IF(" + rangetoString + ",\"" + range.getName() + "\",_next_if_clause_)";
+					ifClause = "IF(" + rangetoString + ",\"" + range.getName() + "\",_next_if_clause_)";
 				}
-				formula = formula.replace("_next_if_clause_", ifCaluse);
+				formula = formula.replace("_next_if_clause_", ifClause);
 				index++;
 			}
 		}

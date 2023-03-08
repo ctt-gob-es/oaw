@@ -3,7 +3,9 @@ package es.gob.oaw.webservice;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.util.MessageResources;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
@@ -34,20 +36,51 @@ public class OAWService {
 	final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 	final CheckDescriptionsManager checkDescriptionsManager = new CheckDescriptionsManager();
 	final PropertiesManager pmgr = new PropertiesManager();
-	static final String guideline = "observatorio-une-en2019-nobroken.xml";
+	static final String defaultGuideline = "observatorio-une-en2019-nobroken.xml";
+	static final String defaultLanguage = "es";
+	static final String headersError = "<p>Los elementos de encabezado (<code>H1</code>...<code>H6</code>) sirven para identificar los títulos de las diferentes "
+			+ "secciones en las que se estructura un documento. El nivel empleado en cada encabezado es lo que definirá la estructura "
+			+ "jerárquica de las secciones del documento. Por tanto, esta estructura de encabezados y los niveles empleados ha de ser "
+			+ "correcta reflejando la estructura lógica del contenido de la página, identificando como encabezados todos los títulos de sección, "
+			+ "sin emplear elementos de encabezado únicamente para crear efectos de presentación y sin saltarse niveles intermedios al descender en "
+			+ "la jerarquia de encabezados.</p><p>Cada encabezado ha de disponer de la correspondiente sección de contenido a la que titulan. Un encabezado "
+			+ "que no tenga su correspondiente sección de contenido no tiene razón de ser y podrá generar consfusión a los usuarios. Por tanto, debe existir "
+			+ "algún contenido textual entre un encabezado y el siguiente encabezado del mismo nivel o de un nivel superior. Por ejemplo, debe existir contenido "
+			+ "entre secuencias de encabezados del tipo (<code>H2, H2</code>) o (<code>H2, H1</code>).</p><p>Una estructura correcta de encabezados es de gran "
+			+ "importancia ya que las aplicaciones de usuario y los productos de apoyo, como los lectores de pantalla, pueden proporcionar mecanismos especiales "
+			+ "de navegación que permitan a los usuarios acceder de forma rápida a las distintas secciones que componen una página web (p. ej. mediante una índice "
+			+ "o mapa del documento con accesos directos a las diferentes secciones del mismo).</p>";
+	static final String headersErrorAlternative = "Encabezados consecutivos del mismo nivel (o superior) sin contenido entre ellos.";
 
 	// Servicio de validación de página web
 	public ProblemDTO[] validationRequest(ValidationRequestDTO validationRequestDTO) throws Exception {
-		byte[] decodedBytes = Base64.getDecoder().decode(validationRequestDTO.getSourceCode().trim());
-		String sourceCode = new String(decodedBytes);
 		CheckAccessibility checkAccessibility = new CheckAccessibility();
-		checkAccessibility.setContent(sourceCode);
-		checkAccessibility.setGuidelineFile(guideline);
 		checkAccessibility.setWebService(true);
+		// Metodología por defecto (Plugins de CMS y Navegador)
+		checkAccessibility.setGuidelineFile(defaultGuideline);
+		// Si el usuario fija una metodología, comprobación de enlaces... buscamos en las guidelines (Validación de URL)
+		if (!StringUtils.isBlank(validationRequestDTO.getMethodology())) {
+			checkAccessibility.setGuidelineFile(getGuidelineFile(validationRequestDTO));
+		}
 		EvaluatorUtility.initialize();
-		Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-		ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true, false);
-		return getProblems(oef);
+		Evaluation evaluation = null;
+		// Validación de código fuente (Plugin de CMS)
+		if (!StringUtils.isBlank(validationRequestDTO.getHtmlContent())) {
+			byte[] decodedBytes = Base64.getDecoder().decode(validationRequestDTO.getHtmlContent().trim());
+			String sourceCode = new String(decodedBytes);
+			checkAccessibility.setContent(sourceCode);
+			evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, defaultLanguage);
+			// Validación por url (Plugin de Navegador, Validador de URL). Esta opción hace uso del motor-js para renderizar la página web a analizar
+		} else if (!StringUtils.isBlank(validationRequestDTO.getUrl())) {
+			checkAccessibility.setUrl(validationRequestDTO.getUrl());
+			evaluation = EvaluatorUtils.evaluate(checkAccessibility, defaultLanguage);
+		}
+		if (Objects.nonNull(evaluation)) {
+			ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true, false);
+			return getProblems(oef);
+		} else {
+			return getEvaluationProblems();
+		}
 	}
 
 	// Importación de datos desde el SSP
@@ -85,7 +118,7 @@ public class OAWService {
 	}
 
 	private ProblemDTO[] getProblems(ObservatoryEvaluationForm observatoryEvaluationForm) {
-		List<ProblemDTO> problemsDTO = new ArrayList<ProblemDTO>();
+		List<ProblemDTO> problemsDTO = new ArrayList<>();
 		List<ObservatoryLevelForm> groups = observatoryEvaluationForm.getGroups();
 		for (ObservatoryLevelForm group : groups) {
 			List<ObservatorySuitabilityForm> suitabilityGroups = group.getSuitabilityGroups();
@@ -99,8 +132,13 @@ public class OAWService {
 							String rationaleMessage = checkDescriptionsManager.getString(problem.getRationale());
 							ProblemDTO problemDTO = new ProblemDTO();
 							problemDTO.setTitle(messageResources.getMessage(subGroup.getDescription()));
-							problemDTO.setDescription(errorMessage);
-							problemDTO.setHelp(rationaleMessage);
+							if (headersError.equals(errorMessage)) {
+								problemDTO.setDescription(headersErrorAlternative);
+								problemDTO.setHelp(errorMessage);
+							} else {
+								problemDTO.setDescription(errorMessage);
+								problemDTO.setHelp(rationaleMessage);
+							}
 							problemDTO.setType(getType(problem));
 							problemDTO.setSpecificProblems(getSpecificProblems(problem));
 							problemsDTO.add(problemDTO);
@@ -127,7 +165,7 @@ public class OAWService {
 	}
 
 	private List<SpecificProblemDTO> getSpecificProblems(ProblemForm problem) {
-		List<SpecificProblemDTO> specificProblemsDTO = new ArrayList<SpecificProblemDTO>();
+		List<SpecificProblemDTO> specificProblemsDTO = new ArrayList<>();
 		List<SpecificProblemForm> specificProblems = problem.getSpecificProblems();
 		for (SpecificProblemForm specificProblem : specificProblems) {
 			SpecificProblemDTO specificProblemDTO = new SpecificProblemDTO();
@@ -169,5 +207,24 @@ public class OAWService {
 		stringBuilder.append(totalElements);
 		stringBuilder.append("\n");
 		return stringBuilder.toString();
+	}
+
+	private String getGuidelineFile(ValidationRequestDTO validationRequestDTO) {
+		String guideline = validationRequestDTO.getMethodology();
+		if (!validationRequestDTO.isBrokenLinks()) {
+			guideline = guideline.concat("-nobroken");
+		}
+		return guideline.concat(".xml");
+	}
+
+	private ProblemDTO[] getEvaluationProblems() {
+		List<ProblemDTO> problemsDTO = new ArrayList<>();
+		ProblemDTO problemDTO = new ProblemDTO();
+		problemDTO.setTitle("Problema de conectividad");
+		problemDTO.setDescription("No se ha podido establecer conexión con la web deseada");
+		problemDTO.setHelp("No se ha podido establecer conexión con la web deseada");
+		problemDTO.setType("-");
+		problemsDTO.add(problemDTO);
+		return problemsDTO.toArray(new ProblemDTO[problemsDTO.size()]);
 	}
 }
