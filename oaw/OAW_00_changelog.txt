@@ -1,6 +1,11 @@
 5.6.1
 ------------------------------------------------------------------------------------------------------------------------------------
-- 
+- Mejoras en el servicio web: La validación de url y plugin de navegador usan el motor-js (renderer) para obtener el código de la pagina a analizar
+- Mejoras en la importación de entidades desde el SSP
+- Se permite hacer un backup de entidades que se importan desde el SSP
+- Fichero 1. Evolutivo y Envío de Resultados- EVOLUCION DISTORSIONADA - Iteración anterior o primera sin resultados (inactiva, sin resultados, nueva semilla...) y Cambio de Recurrencia
+- Bug [2021-2022] (4001) Informe agregado 2022 - Evolución mal
+- Bug [2021-2022] (4001) Informe agregado e Informe global datos mal última iteración
 
 5.6.0
 ------------------------------------------------------------------------------------------------------------------------------------
