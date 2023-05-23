@@ -205,14 +205,6 @@ public class BasicServiceManager {
 					// Odt report: Hallazgos
 					generateOdtReport(currentEvaluationPageList, pdfPath);
 				}
-				/***
-				 * EvaluatorUtils.generateObservatoryEvaluationForm
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 */
 				// JSON WCAG-EM and ODS
 				if ("true".equalsIgnoreCase(basicServiceForm.getDepthReport())) {
 					WcagEmReport report = WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), basicServiceForm.getName(), idCrawling);

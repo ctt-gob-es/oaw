@@ -2708,7 +2708,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param executionId   the execution id
 	 * @param tagsFilter    the tags filter
 	 * @param exObsIds      the ex obs ids
-	 * @return the map
+	 * @return the map -1026.t1.b2-
 	 */
 	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionData(final Long observatoryId, final Long executionId, String[] tagsFilter, String[] exObsIds) {
 		final Map<Date, List<ObservatoryEvaluationForm>> resultData = new TreeMap<>();

@@ -68,6 +68,12 @@ public class DatabaseExportManager extends BaseManager {
 		return observatory;
 	}
 
+	/**
+	 * Entities backup
+	 * 
+	 * @return Entities backup
+	 * @throws Exception
+	 */
 	public String backup() throws Exception {
 		OAWForm oawForm = new OAWForm();
 		try {
@@ -198,6 +204,7 @@ public class DatabaseExportManager extends BaseManager {
 		List<ScopeForm> scopeFormList = new ArrayList<>();
 		ScopeForm scopeForm;
 		for (Scope scope : scopeList) {
+			scopeForm = new ScopeForm();
 			Set<AdministrativeLevelForm> administrativeLevelFormSet = null;
 			if (Objects.nonNull(scope.getAmbitos()) && scope.getAmbitos().size() > 0) {
 				administrativeLevelFormSet = new HashSet<>();
@@ -207,11 +214,16 @@ public class DatabaseExportManager extends BaseManager {
 					administrativeLevelFormSet.add(administrativeLevelForm);
 				}
 			}
-			LabelForm labelForm = new LabelForm();
 			if (Objects.nonNull(scope.getEtiqueta())) {
+				LabelForm labelForm = new LabelForm();
+				ClassificationLabelForm classificationLabelForm = new ClassificationLabelForm();
+				if (Objects.nonNull(scope.getEtiqueta().getClasificacionEtiqueta())) {
+					classificationLabelForm.setId(scope.getEtiqueta().getClasificacionEtiqueta().getId());
+					labelForm.setClasificacionEtiqueta(classificationLabelForm);
+				}
 				labelForm.setId(scope.getEtiqueta().getId());
+				scopeForm.setEtiqueta(labelForm);
 			}
-			scopeForm = new ScopeForm();
 			scopeForm.setId(scope.getId());
 			scopeForm.setNombre(scope.getNombre());
 			scopeForm.setEnvioAutomatico(scope.isEnvioAutomatico());
@@ -219,7 +231,6 @@ public class DatabaseExportManager extends BaseManager {
 			scopeForm.setEmails(scope.getEmails());
 			scopeForm.setAcronimo(scope.getAcronimo());
 			scopeForm.setAmbitos(administrativeLevelFormSet);
-			scopeForm.setEtiqueta(labelForm);
 			scopeFormList.add(scopeForm);
 		}
 		session.flush();
@@ -290,8 +301,12 @@ public class DatabaseExportManager extends BaseManager {
 			seedForm.setEliminada(seed.isEliminada());
 			seedForm.setEnDirectorio(seed.isEnDirectorio());
 			seedForm.setComplejidad(complexityForm);
-			seedForm.setEtiquetas(labelsForm);
-			seedForm.setDependencias(dependencyFormSet);
+			if (labelsForm.size() > 0) {
+				seedForm.setEtiquetas(labelsForm);
+			}
+			if (dependencyFormSet.size() > 0) {
+				seedForm.setDependencias(dependencyFormSet);
+			}
 			if (Objects.nonNull(administrativeLevelForm.getId())) {
 				seedForm.setAmbito(administrativeLevelForm);
 			}
