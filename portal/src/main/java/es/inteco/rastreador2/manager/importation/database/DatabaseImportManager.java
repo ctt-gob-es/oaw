@@ -326,12 +326,14 @@ public class DatabaseImportManager extends BaseManager {
 				}
 			}
 			// Dependencies - scopes
-			Set<ScopeForm> scopeFormList = seedForm.getDependencias();
 			Set<Scope> dependencies = new HashSet<>();
-			for (ScopeForm scopeForm : scopeFormList) {
-				dependency = new Scope();
-				dependency.setId(scopeForm.getId());
-				dependencies.add(dependency);
+			if (Objects.nonNull(seedForm.getDependencias())) {
+				Set<ScopeForm> scopeFormList = seedForm.getDependencias();
+				for (ScopeForm scopeForm : scopeFormList) {
+					dependency = new Scope();
+					dependency.setId(scopeForm.getId());
+					dependencies.add(dependency);
+				}
 			}
 			seed.setId(seedForm.getId());
 			seed.setAcronimo(seedForm.getAcronimo());

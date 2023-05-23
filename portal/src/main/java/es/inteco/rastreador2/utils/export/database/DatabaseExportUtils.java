@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -146,7 +147,11 @@ public final class DatabaseExportUtils {
 		for (String key : aspectAndScore.keySet()) {
 			AspectScore aspectScore = new AspectScore();
 			aspectScore.setAspect(key);
-			aspectScore.setScore(aspectAndScore.get(key));
+			if (Objects.nonNull(aspectAndScore.get(key))) {
+				aspectScore.setScore(aspectAndScore.get(key));
+			} else {
+				aspectScore.setScore(new BigDecimal(0));
+			}
 			aspectScore.setObservatory(observatory);
 			observatory.getAspectScoreList().add(aspectScore);
 		}
@@ -240,7 +245,11 @@ public final class DatabaseExportUtils {
 		for (String key : aspectAndScore.keySet()) {
 			AspectScore aspectScore = new AspectScore();
 			aspectScore.setAspect(key);
-			aspectScore.setScore(aspectAndScore.get(key));
+			if (Objects.nonNull(aspectAndScore.get(key))) {
+				aspectScore.setScore(aspectAndScore.get(key));
+			} else {
+				aspectScore.setScore(new BigDecimal(0));
+			}
 			aspectScore.setCategory(category);
 			category.getAspectScoreList().add(aspectScore);
 		}
@@ -354,7 +363,11 @@ public final class DatabaseExportUtils {
 		for (String key : aspectAndScore.keySet()) {
 			AspectScore aspectScore = new AspectScore();
 			aspectScore.setAspect(key);
-			aspectScore.setScore(aspectAndScore.get(key));
+			if (Objects.nonNull(aspectAndScore.get(key))) {
+				aspectScore.setScore(aspectAndScore.get(key));
+			} else {
+				aspectScore.setScore(new BigDecimal(0));
+			}
 			aspectScore.setSite(site);
 			site.getAspectScoreList().add(aspectScore);
 		}
@@ -425,7 +438,11 @@ public final class DatabaseExportUtils {
 		for (AspectScoreForm aspectScoreForm : observatoryEvaluationForm.getAspects()) {
 			AspectScore aspectScore = new AspectScore();
 			aspectScore.setAspect(messageResources.getMessage(aspectScoreForm.getName()));
-			aspectScore.setScore(aspectScoreForm.getScore());
+			if (Objects.nonNull(aspectScoreForm.getScore())) {
+				aspectScore.setScore(aspectScoreForm.getScore());
+			} else {
+				aspectScore.setScore(new BigDecimal(0));
+			}
 			aspectScore.setPage(page);
 			page.getAspectScoreList().add(aspectScore);
 		}

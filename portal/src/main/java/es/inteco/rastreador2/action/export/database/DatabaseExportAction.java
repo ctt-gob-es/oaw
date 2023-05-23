@@ -198,7 +198,7 @@ public class DatabaseExportAction extends Action {
 	}
 
 	/**
-	 * Export 2.
+	 * Export Async without tags to filter
 	 *
 	 * @param idObservatory    the id observatory
 	 * @param idExObservatory  the id ex observatory
@@ -212,7 +212,7 @@ public class DatabaseExportAction extends Action {
 	}
 
 	/**
-	 * Export 2.
+	 * Export Async tags to filter
 	 *
 	 * @param idObservatory    the id observatory
 	 * @param idExObservatory  the id ex observatory

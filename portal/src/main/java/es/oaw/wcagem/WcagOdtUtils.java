@@ -19,7 +19,6 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.util.MessageResources;
-import org.apache.xml.dtm.ref.DTMNodeList;
 import org.odftoolkit.odfdom.OdfElement;
 import org.odftoolkit.odfdom.OdfFileDom;
 import org.odftoolkit.odfdom.doc.OdfDocument;
@@ -28,6 +27,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.sun.org.apache.xml.internal.dtm.ref.DTMNodeList;
 
 import es.gob.oaw.rastreador2.pdf.utils.CheckDescriptionsManager;
 import es.inteco.common.Constants;

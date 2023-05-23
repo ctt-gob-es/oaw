@@ -204,7 +204,7 @@ public final class ComplejidadDAO {
 	public static ComplejidadForm getById(Connection c, String id) throws SQLException {
 		final String query = "SELECT * FROM complejidades_lista WHERE id_complejidad = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
-			ps.setLong(1, Long.parseLong(id) + 1);
+			ps.setLong(1, Long.parseLong(id));
 			ResultSet result = ps.executeQuery();
 			if (result.next()) {
 				ComplejidadForm cmp = new ComplejidadForm();

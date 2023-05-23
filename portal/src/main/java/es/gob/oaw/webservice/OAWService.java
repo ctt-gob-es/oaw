@@ -64,13 +64,13 @@ public class OAWService {
 		}
 		EvaluatorUtility.initialize();
 		Evaluation evaluation = null;
-		// Validación de código fuente (Plugin de CMS)
+		// Validación de código fuente (Plugin de CMS, Plugin de Navegador)
 		if (!StringUtils.isBlank(validationRequestDTO.getHtmlContent())) {
 			byte[] decodedBytes = Base64.getDecoder().decode(validationRequestDTO.getHtmlContent().trim());
 			String sourceCode = new String(decodedBytes);
 			checkAccessibility.setContent(sourceCode);
 			evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, defaultLanguage);
-			// Validación por url (Plugin de Navegador, Validador de URL). Esta opción hace uso del motor-js para renderizar la página web a analizar
+			// Validación por url (Validador de URL). Esta opción hace uso del motor-js para renderizar la página web a analizar
 		} else if (!StringUtils.isBlank(validationRequestDTO.getUrl())) {
 			checkAccessibility.setUrl(validationRequestDTO.getUrl());
 			evaluation = EvaluatorUtils.evaluate(checkAccessibility, defaultLanguage);
