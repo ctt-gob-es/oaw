@@ -114,4 +114,4 @@ These templates can be found in the following path -> /portal/scripts/5.6.0
 * generica_accesible_v1.odt
 * segmentos_accesible_v1.odt
 * complejidades_accesible_v1.odt
-* evolucion_segmentos_v1.odt
+* evolucion_segmentos_accesible_v1.odt
