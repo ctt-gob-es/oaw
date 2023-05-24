@@ -782,4 +782,13 @@
 			</field>
 		</form>
 	</formset>
+	
+	<formset>
+		<form name="ImportarEntidadForm">
+			<field property="file" depends="required">
+				<arg0 key="subir.fichero.import" />
+			</field>
+		</form>
+	</formset>
+	
 </form-validation>

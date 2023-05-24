@@ -1,7 +1,6 @@
 package es.gob.oaw.sim;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -62,7 +61,7 @@ public class MailSimProvider implements MailProvider {
 				Logger.putLog(String.format("Error SIM response code: %s, text: %s, details: %s", respuestaStatus.getStatusCode(), respuestaStatus.getStatusText(), respuestaStatus.getDetails()),
 						MailSimProvider.class, Logger.LOG_LEVEL_ERROR);
 			}
-		} catch (MalformedURLException e) {
+		} catch (Exception e) {
 			Logger.putLog(String.format("Invalid SIM WSDL URL value of %s", pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url")), MailSimProvider.class, Logger.LOG_LEVEL_ERROR);
 			throw new MailException(e.getMessage(), e.getCause());
 		}

@@ -1,0 +1,19 @@
+<serviceGroup>
+	<service name="OAWService" targetNamespace="http://ws.apache.org/axis2/oaw/">
+		<Description>
+			OAW Service
+		</Description>
+		<schema schemaNamespace="http://ws.apache.org/axis2/oaw/"/>
+		<parameter name="ServiceClass" locked="false">es.gob.oaw.webservice.OAWService</parameter>
+		<parameter name="disableSOAP12">true</parameter>
+		<operation name="validationRequest"> 
+			<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+		</operation>
+		<operation name="importDataRequest"> 
+			<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+		</operation>
+		<operation name="trackerBackupRequest"> 
+			<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+		</operation>
+	</service>
+</serviceGroup>

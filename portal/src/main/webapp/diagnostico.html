@@ -157,6 +157,20 @@
                               </span>
                            </p>
                         </li>
+                            <li class="col-sm-3">
+                           <div class="form-inline">
+                              <input type="radio" name="type" id="radio-4" class="radio" value="mixto" /> <label
+                                 for="radio-3">Análisis mixto</label>
+                           </div>
+                           <p>
+                              Mixto: Analiza el c&oacute;digo fuente y las urls introducidas <span data-toggle="tooltip" tabindex="0"
+                                 title="An&aacute;lisis del c&oacute;digo fuente de una p&aacute;gina (p. ej. p&aacute;gina de una Intranet a la que el analizador no pueda acceder) junto con un conjunto predefinido de p&aacute;ginas de un sitio web p&uacute;blico en Internet.">
+                              <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> <span class="tooltiptext sr-only">An&aacute;lisis
+                              del c&oacute;digo fuente de una p&aacute;gina (p. ej. p&aacute;gina de una Intranet a la que el analizador no
+                              pueda acceder).</span>
+                              </span>
+                           </p>
+                        </li>
                      </ul>
                   </fieldset>
                   <fieldset class="servicioAccesibilidad" id="crawler">
@@ -172,7 +186,7 @@
                               <label for="complexity">Cantidad de p&aacute;ginas:</label> 
                               <select id="complexity" name="complexity"
                                  class="form-control">
-                                 <option selected="selected" value="0">&#218;nica</option>
+                                 <option selected="selected" value="4">&#218;nica</option>
                                  <option value="1">Complejidad baja (17 p&aacute;ginas)</option>
                                  <option value="2">Complejidad media (33 p&aacute;ginas)</option>
                                  <option value="3">Complejidad alta (51 p&aacute;ginas)</option>
@@ -269,13 +283,13 @@
             <!-- fin cajaformularios_login -->
          </div>
          <!-- fin CUERPO PRINCIPAL -->
-      </div>
+      </div> 
       <!-- Pie -->
       <div id="pie">
          <div id="creditos">
-            Copyright &#169; 2019 - <span class="negrita">Ministerio de Pol&iacute;tica Territorial y Funci&oacute;n
-            P&uacute;blica</span> &nbsp; Versi&#243;n: <b>5.4.1</b>
-         </div>
+            Copyright &#169; 2023 - <span class="negrita">Ministerio de Pol&iacute;tica Territorial y Funci&oacute;n
+            P&uacute;blica</span> &nbsp; Versi&#243;n: <b>5.6.0</b>
+       </div>
       </div>
       <!-- Bootstrap core JavaScript -->
       <!-- Placed at the end of the document so the pages load faster -->
@@ -301,6 +315,13 @@
                  $("#source").show();
                  $("#historico").hide();
                });
+               
+               $("#radio-4").click(function () {
+                   $("#crawler").hide();
+                   $("#urlset").show();
+                   $("#source").show();
+                   $("#historico").hide();
+                });
          
          $(function () { $('[data-toggle="tooltip"]').tooltip() })
          

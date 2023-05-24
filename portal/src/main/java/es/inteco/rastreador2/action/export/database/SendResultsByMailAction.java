@@ -63,7 +63,7 @@ import es.inteco.rastreador2.dao.observatorio.UraSendResultDAO;
 import es.inteco.rastreador2.export.database.form.ComparisionForm;
 import es.inteco.rastreador2.manager.BaseManager;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
-import es.inteco.rastreador2.manager.export.database.DatabaseExportManager;
+import es.inteco.rastreador2.manager.exportation.database.DatabaseExportManager;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.SendResultsMailUtils;
 import es.inteco.rastreador2.utils.export.database.DatabaseExportUtils;
@@ -373,7 +373,7 @@ public class SendResultsByMailAction extends Action {
 			UraSendResultForm uraCustom = UraSendResultDAO.findById(c, idExObs, idSend);
 			DependenciaForm ura = DependenciaDAO.findById(c, uraCustom.getUra().getId());
 			final TemplateRangeForm template = TemplateRangeDAO.findById(c, idExObs, uraCustom.getRange().getId());
-			String mailBody = SendResultsMailUtils.composeMailBody(ura, uraCustom, template, "https://example.com", "examplePassword", calculateExpirationDate(c)).toString();
+			String mailBody = SendResultsMailUtils.composeMailBody(ura, uraCustom, template, "xxxxxxxxx.zip", "examplePassword", calculateExpirationDate(c)).toString();
 			PrintWriter pw = response.getWriter();
 //			pw.write("{\"preview\": \"" + StringEscapeUtils.escapeHtml4(mailBody) + "\" }");
 			pw.write("{\"preview\": " + new Gson().toJson(mailBody) + " }");

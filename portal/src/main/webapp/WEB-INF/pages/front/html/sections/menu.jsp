@@ -174,7 +174,7 @@ Email: observ.accesibilidad@correo.gob.es
 		<bean:message key="menuadmin.servicio_diagnostico" />
 	</a>
 	</li>
-	<li>
+	<li> 
 		<ul role="presentation" class="nav nav-pills nav-stacked">
 			<li>
 				<a href="/oaw/diagnostico.html">
@@ -245,6 +245,25 @@ Email: observ.accesibilidad@correo.gob.es
 			<html:link styleId="selected" forward="crawlingsMenu" titleKey="menuadmin.rastreos.title">
 				<bean:message key="menuadmin.rastreos" />
 			</html:link>
+		</li>
+	</inteco:menu>		
+	<inteco:menu roles="<%=rolAdmin + \";\" + rolConfig%>">
+		<li>
+			<a>
+			 	<bean:message key="menuadmin.backup.entidades" />
+			</a>
+			<ul class="nav nav-stacked nav-pills">
+				<li>
+					<html:link forward="importarEntidadesMenu" styleId="subselected" titleKey="menuadmin.importar.title">
+						<bean:message key="menuadmin.importar.entidades" /> 
+					</html:link>
+				</li>
+				<li>
+					<html:link forward="exportarEntidadesMenu" styleId="subselected" titleKey="menuadmin.exportar.title">
+						<bean:message key="menuadmin.exportar.entidades" /> 
+					</html:link>
+				</li>
+			</ul>
 		</li>
 	</inteco:menu>
 	<inteco:menu roles="<%=rolAdmin + \";\" + rolConfig%>">

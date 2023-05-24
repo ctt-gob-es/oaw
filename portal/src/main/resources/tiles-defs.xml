@@ -868,4 +868,35 @@
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_resultadosEnvioEmails.jsp" />
 	</definition>	
 	
+	<definition name=".importarEntidades" extends="mainLayout">
+		<put name="title" value="application.title.importacion"/>
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/importar_entidades.jsp" />
+	</definition>	
+	
+	<definition name=".importarEntidadesError" extends="mainLayout">
+		<put name="title" value="application.title.importacion"/>
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/importar_entidades_error.jsp" />
+	</definition>	
+	
+	<definition name=".importarEntidadesExito" extends="mainLayout">
+		<put name="title" value="application.title.importacion"/>
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/importar_entidades_exito.jsp" />
+	</definition>	
+	
+	<definition name=".exportarEntidades" extends="mainLayout">
+		<put name="title" value="application.title.exportacion"/>
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/exportar_entidades.jsp" />
+	</definition>	
+	
+	<definition name=".exportarEntidadesError" extends="mainLayout">
+		<put name="title" value="application.title.exportacion"/>
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/exportar_entidades_error.jsp" />
+	</definition>	
+	
+	<definition name=".exportarEntidadesExito" extends="mainLayout">
+		<put name="title" value="application.title.exportacion"/>
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/exportar_entidades_exito.jsp" />
+	</definition>	
+	
+	
 </tiles-definitions>    

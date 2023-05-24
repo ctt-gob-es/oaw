@@ -417,6 +417,8 @@ public final class AnnexUtils {
 	private static List<String> dependencies;
 	/** The annexmap. */
 	private static Map<SemillaForm, TreeMap<String, ScoreForm>> annexmap;
+	/** The annexmap advanced. Including all seeds */
+	private static Map<SemillaForm, TreeMap<String, ScoreForm>> annexmapAdvanced;
 	/** The evaluation ids. */
 	private static List<Long> evaluationIds;
 	/** The observatory manager. */
@@ -504,7 +506,8 @@ public final class AnnexUtils {
 	 * @throws SQLException the SQL exception
 	 */
 	private static void generateInfo(final Long idObsExecution, final String[] exObsIds, final boolean originAnnexes) throws Exception, SQLException {
-		annexmap = createAnnexMap(idObsExecution, exObsIds);
+		annexmap = createAnnexMap(idObsExecution, exObsIds, false);
+		annexmapAdvanced = createAnnexMap(idObsExecution, exObsIds, true);
 		evaluationIds = AnalisisDatos.getEvaluationIdsFromExecutedObservatory(idObsExecution);
 		observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
 		currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObsExecution, evaluationIds, originAnnexes);
@@ -3583,7 +3586,7 @@ public final class AnnexUtils {
 			int countPC = 0;
 			int countTC = 0;
 			int countNC = 0;
-			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+			for (Map.Entry<SemillaForm, TreeMap<String, ScoreForm>> semillaEntry : annexmapAdvanced.entrySet()) {
 				SemillaForm semillaForm = semillaEntry.getKey();
 				boolean hasCategory = true;
 				String namecat = semillaForm.getCategoria().getName();
@@ -4455,18 +4458,21 @@ public final class AnnexUtils {
 	 * @return the string
 	 */
 	private static String generateComparisionPunctuactionFormula_v2(final int column, final int firstRow, final int lastRow) {
-//		final String substractColumnsResult = columnSecondLetter + ":" + columnSecondLetter + "-" + columnFirstLetter + ":" + columnFirstLetter;
 		String columName = GetExcelColumnNameForNumber(column);
 		String firstCell = columName + firstRow;
 		String secondCell = columName + lastRow;
 		final String substractColumnsResult = secondCell + "-" + firstCell;
-		String formula = "IF(" + secondCell + "=\"\",\"\",\"\")";
+		String formula = "IF(" + firstCell + "=\"\",\"Sin datos\",_next_if_clause_)";
+		String ifClause = "IF(" + secondCell + "=\"\",\"\",\"\")";
+		formula = formula.replace("_next_if_clause_", ifClause);
 		if (websiteRanges != null && !websiteRanges.isEmpty()) {
-			formula = "IF(" + secondCell + "=\"\",\"\",_next_if_clause_)";
+			formula = "IF(" + firstCell + "=\"\",\"Sin datos\",_next_if_clause_)";
+			ifClause = "IF(" + secondCell + "=\"\",\"\",_next_if_clause_)";
+			formula = formula.replace("_next_if_clause_", ifClause);
 			int index = 0;
 			for (RangeForm range : websiteRanges) {
 				String rangetoString = "";
-				String ifCaluse = "";
+				ifClause = "";
 				// has superior range
 				if (!StringUtils.isEmpty(range.getMinValueOperator()) && !StringUtils.isEmpty(range.getMaxValueOperator())) {
 					rangetoString = "AND(" + range.getMinValue() + "" + range.getMinValueOperator() + "" + substractColumnsResult + "," + substractColumnsResult + "" + range.getMaxValueOperator() + ""
@@ -4478,11 +4484,11 @@ public final class AnnexUtils {
 				}
 				// is last iteration
 				if (index == websiteRanges.size() - 1) {
-					ifCaluse = "IF(" + rangetoString + ",\"" + range.getName() + "\",\"ERROR\")";
+					ifClause = "IF(" + rangetoString + ",\"" + range.getName() + "\",\"ERROR\")";
 				} else {
-					ifCaluse = "IF(" + rangetoString + ",\"" + range.getName() + "\",_next_if_clause_)";
+					ifClause = "IF(" + rangetoString + ",\"" + range.getName() + "\",_next_if_clause_)";
 				}
-				formula = formula.replace("_next_if_clause_", ifCaluse);
+				formula = formula.replace("_next_if_clause_", ifClause);
 				index++;
 			}
 		}
@@ -5785,7 +5791,7 @@ public final class AnnexUtils {
 	 * @param exObsIds       the ex obs ids
 	 * @return the map
 	 */
-	private static Map<SemillaForm, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] exObsIds) {
+	private static Map<SemillaForm, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution, final String[] exObsIds, boolean addAllSeeds) {
 		final Map<SemillaForm, TreeMap<String, ScoreForm>> seedMapFilled = new HashMap<>();
 		Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
 		Connection c = null;
@@ -5802,10 +5808,12 @@ public final class AnnexUtils {
 				final ObservatoryForm observatory = ObservatoryExportManager.getObservatory(orForm.getId());
 				if (observatory != null) {
 					observatoryFormList.add(observatory);
-					if (observatory.getIdExecution().equals(idObsExecution.toString())) {
+					if (addAllSeeds || (!addAllSeeds && observatory.getIdExecution().equals(idObsExecution.toString()))) {
 						for (CategoryForm category : observatory.getCategoryFormList()) {
 							for (SiteForm siteForm : category.getSiteFormList()) {
-								selectedExecutionSeedIdsList.add(siteForm.getIdCrawlerSeed());
+								if (selectedExecutionSeedIdsList != null && !selectedExecutionSeedIdsList.contains(siteForm.getIdCrawlerSeed())) {
+									selectedExecutionSeedIdsList.add(siteForm.getIdCrawlerSeed());
+								}
 							}
 						}
 					}

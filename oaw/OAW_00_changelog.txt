@@ -1,3 +1,29 @@
+5.6.0
+------------------------------------------------------------------------------------------------------------------------------------
+- Mejoras en el servicio web: La validación de url y plugin de navegador usan el motor-js (renderer) para obtener el código de la pagina a analizar
+- Mejoras en la importación de entidades desde el SSP
+- Se permite hacer un backup de entidades que se importan desde el SSP
+- Fichero 1. Evolutivo y Envío de Resultados- EVOLUCION DISTORSIONADA - Iteración anterior o primera sin resultados (inactiva, sin resultados, nueva semilla...) y Cambio de Recurrencia
+- Bug [2021-2022] (4001) Informe agregado 2022 - Evolución mal
+- Bug [2021-2022] (4001) Informe agregado e Informe global datos mal última iteración
+- Plantillas de agregados accesibles
+- Importación de entidades desde el SSP
+- Análisis mixto
+- Fichero de hallazgos: Debe añadirse la plantilla hallazgos.odt como hallazgos en el sistema para su correcto funcionamiento
+- Servicio web de validación para el plugin y el navegador
+
+5.5.0
+------------------------------------------------------------------------------------------------------------------------------------
+- Eliminar versión del de Informe Revision Accesibilidad
+- Ficheros PDFs individuales - EVOLUCION DISTORSIONADA - Cambio de Recurrencia
+- Envío correos automáticos observatorio. No se guarda rango con decimales.
+- Previsualización plantilla envío de resultados. Corregir Url
+- Añadir campos a listado semillas iteración observatorio relanzamiento
+- Detección errores envío correos observatorio automáticos
+- Ventana de relanzar semillas en observatorio. Comportamiento anómalo listados semillas.
+- Nuevas vulnerabilidades recibidas automáticamente 2022-06-02
+- Anexos - Fichero 4.Evolutivo y Progreso del observatorio - Cuando cambiar la recurrencia
+
 5.4.1
 ------------------------------------------------------------------------------------------------------------------------------------
 - Fichero 1. Evolutivo SW y Discapacidad: No se estaba tratando el campo otros

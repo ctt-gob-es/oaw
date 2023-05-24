@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, This program is licensed and may be 
+<!-- Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologï¿½as de la Comunicaciï¿½n, This program is licensed and may be 
 	used, modified and redistributed under the terms of the European Public License (EUPL), either version 1.2 or (at your option) 
 	any later version as soon as they are approved by the European Commission. Unless required by applicable law or agreed to 
 	in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
 	ANY KIND, either express or implied. See the License for the specific language governing permissions and more details. You 
 	should have received a copy of the EUPL1.2 license along with this program; if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 
 	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Modificaciones: MINHAFP (Ministerio 
-	de Hacienda y Función Pública) Email: observ.accesibilidad@correo.gob.es -->
+	de Hacienda y Funciï¿½n Pï¿½blica) Email: observ.accesibilidad@correo.gob.es -->
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
         "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
@@ -128,25 +128,46 @@
 		<load-on-startup>8</load-on-startup>
 	</servlet>
 
-	<!-- Reprogramar las peticiones al servicio básico -->
+	<!-- Reprogramar las peticiones al servicio bï¿½sico -->
 	<servlet>
 		<servlet-name>ScheduleBasicServiceServlet</servlet-name>
 		<servlet-class>es.inteco.rastreador2.servlets.ScheduleBasicServiceServlet</servlet-class>
 		<load-on-startup>9</load-on-startup>
 	</servlet>
+	
+	<servlet>
+	   <servlet-name>AxisServlet</servlet-name>
+	   <display-name>Apache-Axis Servlet</display-name>
+	   <servlet-class>
+	      org.apache.axis2.transport.http.AxisServlet
+	   </servlet-class>
+	   <load-on-startup>10</load-on-startup>
+	</servlet> 	
 
-	<!-- Standard Action Servlet Mapping -->
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
+	
+	<servlet-mapping>
+	   <servlet-name>AxisServlet</servlet-name>
+	   <url-pattern>/services/*</url-pattern>
+	</servlet-mapping>
 
-	<!-- The Usual Welcome File List -->
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
-		<!--<welcome-file>/axis2-web/index.jsp</welcome-file> -->
-	</welcome-file-list>
+		<welcome-file>/axis2-web/index.jsp</welcome-file>
+	</welcome-file-list> 
 
+	<error-page>
+		<error-code>404</error-code>
+		<location>/axis2-web/Error/error404.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/axis2-web/Error/error500.jsp</location>
+	</error-page> 
+	
 	<error-page>
 		<error-code>404</error-code>
 		<location>/noEncontrado.jsp</location>

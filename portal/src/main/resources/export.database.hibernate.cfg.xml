@@ -25,7 +25,7 @@ Email: observ.accesibilidad@correo.gob.es
         <property name="current_session_context_class">thread</property>
         <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
         <property name="show_sql">false</property>
-        <property name="hbm2ddl.auto">update</property>
+        <property name="hbm2ddl.auto">update</property>   
 
         <mapping class="es.inteco.rastreador2.dao.export.database.Observatory"/>
         <mapping class="es.inteco.rastreador2.dao.export.database.VerificationModality"/>
@@ -35,5 +35,15 @@ Email: observ.accesibilidad@correo.gob.es
         <mapping class="es.inteco.rastreador2.dao.export.database.Site"/>
         <mapping class="es.inteco.rastreador2.dao.export.database.Page"/>
         <mapping class="es.inteco.rastreador2.dao.export.database.VerificationPage"/>
+        
+        <mapping class="es.inteco.rastreador2.dao.importar.database.AdministrativeLevel"/> 
+        <mapping class="es.inteco.rastreador2.dao.importar.database.ClassificationLabel"/>
+        <mapping class="es.inteco.rastreador2.dao.importar.database.Complexity"/>
+        <mapping class="es.inteco.rastreador2.dao.importar.database.Label"/>
+        <mapping class="es.inteco.rastreador2.dao.importar.database.Scope"/>
+        <mapping class="es.inteco.rastreador2.dao.importar.database.Seed"/>
+        <mapping class="es.inteco.rastreador2.dao.importar.database.SeedType"/>
+        <mapping class="es.inteco.rastreador2.dao.importar.database.Segment"/>
+        
     </session-factory>
 </hibernate-configuration>

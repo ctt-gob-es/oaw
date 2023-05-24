@@ -11,7 +11,9 @@ public enum BasicServiceAnalysisType {
 	/** The codigo fuente multiple. */
 	CODIGO_FUENTE_MULTIPLE("multi_source_code"),
 	/** The lista urls. */
-	LISTA_URLS("lista_urls");
+	LISTA_URLS("lista_urls"),
+	/** Mix */
+	MIXTO("mixto");
 
 	/** The label. */
 	private final String label;
@@ -49,6 +51,8 @@ public enum BasicServiceAnalysisType {
 			return LISTA_URLS;
 		} else if ("multi_source_code".equalsIgnoreCase(label)) {
 			return CODIGO_FUENTE_MULTIPLE;
+		} else if ("mixto".equalsIgnoreCase(label)) {
+			return MIXTO;
 		} else {
 			return URL;
 		}

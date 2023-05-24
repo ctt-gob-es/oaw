@@ -102,4 +102,14 @@ This project is configuring to execute as docker solution
 
 
 
+## Templates
 
+From version 5.6.0 new versions of templates are available that must be incorporated into the application. 
+
+These templates can be found in the following path -> /portal/scripts/5.6.0
+
+* hallazgos.odt -> Must be saved as "hallazgos" in the system
+* generica_accesible_v1.odt
+* segmentos_accesible_v1.odt
+* complejidades_accesible_v1.odt
+* evolucion_segmentos_accesible_v1.odt

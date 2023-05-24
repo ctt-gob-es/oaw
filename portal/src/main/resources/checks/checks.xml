@@ -6180,8 +6180,7 @@
 		</machine>
 	</check>
 
-
-	<check id="489" key="html" confidence="high">
+<check id="489" key="html" confidence="high">
 		<prerequisite id="488" />
 		<name>Se verifica que en la declaración de accesibilidad se indica la fecha de su preparación.
 		</name>

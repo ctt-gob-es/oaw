@@ -244,6 +244,15 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				specialChunkMap.put(2, chunk);
 				section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p3.merge.url.basic.service"), specialChunkMap, ConstantsFont.PARAGRAPH));
 				break;
+			case MIXTO:
+				chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p4.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT_NO_LINK);
+				specialChunkMap.put(1, chunk);
+				chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p5.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+				chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p5.basic.service.anchor1.url"));
+				chunk.setExternalLink(false);
+				specialChunkMap.put(2, chunk);
+				section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p3.merge.url.basic.service"), specialChunkMap, ConstantsFont.PARAGRAPH));
+				break;
 			}
 			/****** paragraph #3 *****/
 //			specialChunkMap = new HashMap<>();
@@ -508,6 +517,8 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			createContentChapter(this.messageResources, document, getBasicServiceForm().getFileName(), pdfTocManager);
 		} else if (isBasicService() && getBasicServiceForm().isContentAnalysisMultiple()) {
 			createMultipleContentChapter(this.messageResources, document, getBasicServiceForm().getFileName(), pdfTocManager, evaList);
+		} else if (isBasicService() && getBasicServiceForm().isAnalysisMix()) {
+			createMixChapter(this.messageResources, document, pdfTocManager, titleFont, evaList);
 		} else {
 			createMuestraPaginasChapter(this.messageResources, document, pdfTocManager, titleFont, evaList);
 		}
@@ -623,6 +634,44 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 								+ (getBasicServiceForm().isInDirectory() ? messageResources.getMessage("select.yes") : messageResources.getMessage("select.no")),
 						listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			}
+			if (Constants.REPORT_OBSERVATORY_4.equals(getBasicServiceForm().getReport())) {
+				PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.p1.brokenlinks.yes"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+			} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
+				PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.p1.brokenlinks.no"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+			}
+			PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.methodology") + " " + Constants.OBSERVATORIO_UNE_EN2019, listaConfiguracionRastreo, ConstantsFont.PARAGRAPH,
+					false, true);
+			chapter.add(listaConfiguracionRastreo);
+		}
+		document.add(chapter);
+	}
+
+	/**
+	 * Creates the mix chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param titleFont        the title font
+	 * @param evaList          the eva list
+	 * @throws DocumentException the document exception
+	 */
+	private void createMixChapter(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, final Font titleFont,
+			final java.util.List<ObservatoryEvaluationForm> evaList) throws DocumentException {
+		assert evaList != null;
+		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.sample.title"), pdfTocManager.getIndex(), pdfTocManager.addSection(),
+				pdfTocManager.getNumChapter(), titleFont, true, "anchor_muestra_paginas");
+		if (BasicServiceAnalysisType.LISTA_URLS.equals(this.getBasicServiceForm().getAnalysisType())) {
+			PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.sample.p1.list"), ConstantsFont.PARAGRAPH, chapter);
+		} else {
+			PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.sample.p1"), ConstantsFont.PARAGRAPH, chapter);
+		}
+		chapter.add(addURLTable(this.messageResources, evaList));
+		if (isBasicService()) {
+			PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.sample.config.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
+			final List listaConfiguracionRastreo = new List();
+			listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
+			listaConfiguracionRastreo.add(createOrigen(getOriginSources(evaList)));
 			if (Constants.REPORT_OBSERVATORY_4.equals(getBasicServiceForm().getReport())) {
 				PDFUtils.addListItem(messageResources.getMessage("pdf.accessibility.sample.p1.brokenlinks.yes"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
@@ -1623,7 +1672,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			DataBaseManager.closeConnection(c);
 		}
 		section.add(Chunk.NEWLINE);
-		//// TABLA PUNTUCAION OBSERVATORIO
+		//// TABLA PUNTUACION OBSERVATORIO
 		final float[] columnWidths;
 		if (rankingPrevio != null) {
 			columnWidths = new float[] { 0.42f, 0.20f, 0.20f, 0.18f };
@@ -1653,20 +1702,28 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		tablaRankings.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.summary.table.pm"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_LEFT,
 				DEFAULT_PADDING, -1));
 		tablaRankings.addCell(PDFUtils.createTableCell(currentScore.getTotalScore().toPlainString(), Color.WHITE, ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-		if (rankingPrevio != null && previousScore != null) {
-			tablaRankings.addCell(PDFUtils.createTableCell(previousScore.getTotalScore().toPlainString(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-			tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(currentScore.getTotalScore(), previousScore.getTotalScore()),
-					String.valueOf(currentScore.getTotalScore().subtract(previousScore.getTotalScore()).toPlainString()), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING,
-					-1));
+		if (rankingPrevio != null) {
+			if (rankingPrevio.getScore() != null) {
+				tablaRankings.addCell(PDFUtils.createTableCell(previousScore.getTotalScore().toPlainString(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+				tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(currentScore.getTotalScore(), previousScore.getTotalScore()),
+						String.valueOf(currentScore.getTotalScore().subtract(previousScore.getTotalScore()).toPlainString()), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT,
+						DEFAULT_PADDING, -1));
+			} else {
+				emptyPreviousScore(tablaRankings, messageResources);
+			}
 		}
 		tablaRankings.completeRow();
 		// Adecuación
 		tablaRankings.addCell(
 				PDFUtils.createTableCell(messageResources.getMessage("observatorio.nivel.adecuacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 		tablaRankings.addCell(PDFUtils.createTableCell(currentScore.getLevel(), Color.WHITE, ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-		if (rankingPrevio != null && previousScore != null) {
-			tablaRankings.addCell(PDFUtils.createTableCell(previousScore.getLevel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-			tablaRankings.addCell(createEvolutionLevelCell(messageResources, currentScore.getLevel(), previousScore.getLevel()));
+		if (rankingPrevio != null) {
+			if (rankingPrevio.getScore() != null) {
+				tablaRankings.addCell(PDFUtils.createTableCell(previousScore.getLevel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+				tablaRankings.addCell(createEvolutionLevelCell(messageResources, currentScore.getLevel(), previousScore.getLevel()));
+			} else {
+				emptyPreviousScore(tablaRankings, messageResources);
+			}
 		}
 		tablaRankings.completeRow();
 		// Cumplimiento
@@ -1674,8 +1731,12 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				PDFUtils.createTableCell(messageResources.getMessage("observatorio.nivel.cumplimiento"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 		tablaRankings.addCell(PDFUtils.createTableCell(rankingActual.getCompliance(), Color.WHITE, ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
 		if (rankingPrevio != null) {
-			tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getCompliance(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-			tablaRankings.addCell(createEvolutionComplianceCell(messageResources, rankingActual.getCompliance(), rankingPrevio.getCompliance()));
+			if (rankingPrevio.getScore() != null) {
+				tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getCompliance(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+				tablaRankings.addCell(createEvolutionComplianceCell(messageResources, rankingActual.getCompliance(), rankingPrevio.getCompliance()));
+			} else {
+				emptyPreviousScore(tablaRankings, messageResources);
+			}
 		}
 		tablaRankings.completeRow();
 		if (rankingActual != null) {
@@ -1685,10 +1746,14 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			tablaRankings.addCell(PDFUtils.createTableCell(rankingActual.getGlobalRank() + " \n(" + messageResources.getMessage("de.text", rankingActual.getGlobalSeedsNumber()) + ")", Color.WHITE,
 					ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
 			if (rankingPrevio != null) {
-				tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getGlobalRank() + " \n(" + messageResources.getMessage("de.text", rankingPrevio.getGlobalSeedsNumber()) + ")", Color.WHITE,
-						ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-				tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(rankingActual.getGlobalRank(), rankingPrevio.getGlobalRank(), true),
-						String.valueOf(rankingPrevio.getGlobalRank() - rankingActual.getGlobalRank()), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+				if (rankingPrevio.getScore() != null) {
+					tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getGlobalRank() + " \n(" + messageResources.getMessage("de.text", rankingPrevio.getGlobalSeedsNumber()) + ")",
+							Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+					tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(rankingActual.getGlobalRank(), rankingPrevio.getGlobalRank(), true),
+							String.valueOf(rankingPrevio.getGlobalRank() - rankingActual.getGlobalRank()), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+				} else {
+					emptyPreviousScore(tablaRankings, messageResources);
+				}
 			}
 			tablaRankings.completeRow();
 			// Posición en categoría
@@ -1697,10 +1762,14 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			tablaRankings.addCell(PDFUtils.createTableCell(rankingActual.getCategoryRank() + " \n(" + messageResources.getMessage("de.text", rankingActual.getCategorySeedsNumber()) + ")", Color.WHITE,
 					ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
 			if (rankingPrevio != null) {
-				tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getCategoryRank() + " \n(" + messageResources.getMessage("de.text", rankingPrevio.getCategorySeedsNumber()) + ")",
-						Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-				tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(rankingActual.getCategoryRank(), rankingPrevio.getCategoryRank(), true),
-						String.valueOf(rankingPrevio.getCategoryRank() - rankingActual.getCategoryRank()), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+				if (rankingPrevio.getScore() != null) {
+					tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getCategoryRank() + " \n(" + messageResources.getMessage("de.text", rankingPrevio.getCategorySeedsNumber()) + ")",
+							Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+					tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(rankingActual.getCategoryRank(), rankingPrevio.getCategoryRank(), true),
+							String.valueOf(rankingPrevio.getCategoryRank() - rankingActual.getCategoryRank()), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+				} else {
+					emptyPreviousScore(tablaRankings, messageResources);
+				}
 			}
 			tablaRankings.completeRow();
 			// Posición en complejidad
@@ -1709,10 +1778,14 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			tablaRankings.addCell(PDFUtils.createTableCell(rankingActual.getComplexityRank() + " \n(" + messageResources.getMessage("de.text", rankingActual.getComplexitySeedsNumber()) + ")",
 					Color.WHITE, ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
 			if (rankingPrevio != null) {
-				tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getComplexityRank() + " \n(" + messageResources.getMessage("de.text", rankingPrevio.getComplexitySeedsNumber()) + ")",
-						Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-				tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(rankingActual.getComplexityRank(), rankingPrevio.getComplexityRank(), true),
-						String.valueOf(rankingPrevio.getComplexityRank() - rankingActual.getComplexityRank()), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+				if (rankingPrevio.getScore() != null) {
+					tablaRankings.addCell(PDFUtils.createTableCell(rankingPrevio.getComplexityRank() + " \n(" + messageResources.getMessage("de.text", rankingPrevio.getComplexitySeedsNumber()) + ")",
+							Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+					tablaRankings.addCell(PDFUtils.createTableCell(getEvolutionImage(rankingActual.getComplexityRank(), rankingPrevio.getComplexityRank(), true),
+							String.valueOf(rankingPrevio.getComplexityRank() - rankingActual.getComplexityRank()), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+				} else {
+					emptyPreviousScore(tablaRankings, messageResources);
+				}
 			}
 			tablaRankings.completeRow();
 		}
@@ -2276,5 +2349,33 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			BigDecimal result = divided.multiply(increment);
 			return result;
 		}
+	}
+
+	/**
+	 * Fill empty cells
+	 * 
+	 * @param tablaRankings Rankings table
+	 */
+	private static void emptyPreviousScore(PdfPTable tablaRankings, MessageResources messageResources) {
+		tablaRankings.addCell(
+				PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.summary.table.nodata"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+		tablaRankings.addCell(
+				PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.summary.table.nodata"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+	}
+
+	/**
+	 * Get origin sources
+	 * 
+	 * @param evaList
+	 * @return Origin sources
+	 */
+	private static String getOriginSources(java.util.List<ObservatoryEvaluationForm> evaList) {
+		String originSources = "";
+		for (ObservatoryEvaluationForm element : evaList) {
+			if (element.getUrl() != null) {
+				originSources = originSources.concat(element.getUrl().concat("\n"));
+			}
+		}
+		return originSources;
 	}
 }
