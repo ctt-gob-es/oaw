@@ -21,10 +21,9 @@
     </parent>
     
     <properties>
-		<oaw.version>5.6.0</oaw.version>
-	</properties>
-
-
+		     <oaw.version>5.6.0</oaw.version>
+    </parent>
+    
 	<build>
 		<resources>
 			<resource>

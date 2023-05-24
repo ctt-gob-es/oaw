@@ -276,7 +276,7 @@ public class ConectividadAction extends Action {
 			if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null) {
 				try {
 					Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
-					Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
+					Logger.putLog("1. Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
 					connection = (HttpURLConnection) url.openConnection(proxy);
 				} catch (NumberFormatException e) {
 					Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
@@ -286,9 +286,11 @@ public class ConectividadAction extends Action {
 				}
 				connection.setInstanceFollowRedirects(false);
 				connection.setConnectTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
-				connection.setReadTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+				connection.setReadTimeout(20000);
 				connection.addRequestProperty("Accept-Language", pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
-				connection.addRequestProperty("User-Agent", pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
+				// connection.addRequestProperty("User-Agent", pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
+				connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36");
+				connection.addRequestProperty("cookie", "<cookie value from the browser, from the header on a successful request>");
 				int responseCode = connection.getResponseCode();
 				if (HttpURLConnection.HTTP_OK == responseCode) {
 					urlConnectionProxy = true;

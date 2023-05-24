@@ -247,14 +247,10 @@ public class ResultadosObservatorioAction extends Action {
 					// Lanzamos el rastreo y recuperamos el id de ejecución
 					lanzarRastreo(c, String.valueOf(idCrawling), request.getParameter(Constants.ID_EX_OBS));
 					Long idNewExecution = Long.valueOf(RastreoDAO.getExecutedCrawling(c, idCrawling, Long.valueOf(request.getParameter(Constants.ID_SEMILLA))).getId());
-					// Borramos el rastreo ejecutado antigüo
-					try {
-						RastreoUtils.borrarArchivosAsociados(c, String.valueOf(idOldExecution));
-					} catch (Exception e) {
-						Logger.putLog("Error: ", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-					}
+					// Borramos el rastreo ejecutado antiguo
+					RastreoUtils.borrarArchivosAsociados(c, String.valueOf(idOldExecution));
 					RastreoDAO.borrarRastreoRealizado(c, idOldExecution);
-					// Le asiganmos el nuevo a la ejecución del observatorio
+					// Le asignamos el nuevo a la ejecución del observatorio
 					RastreoDAO.setObservatoryExecutionToCrawlerExecution(c, Long.parseLong(request.getParameter(Constants.ID_EX_OBS)), idNewExecution);
 					forward = new ActionForward(mapping.findForward(Constants.GET_SEED_RESULTS_FORWARD));
 					String path = forward.getPath() + "&" + Constants.ID_EX_OBS + "=" + request.getParameter(Constants.ID_EX_OBS) + "&" + Constants.ID_OBSERVATORIO + "="

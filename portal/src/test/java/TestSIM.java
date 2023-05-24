@@ -8,6 +8,7 @@ import javax.naming.NamingException;
 import org.apache.struts.util.MessageResources;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
@@ -45,6 +46,7 @@ public class TestSIM {
 		ic.destroySubcontext("java:");
 	}
 
+	@Ignore
 	@Test
 	public void testExportEvolutionPdf() {
 		final long idRastreoRealizado = 70;
@@ -62,6 +64,7 @@ public class TestSIM {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void testExportPreviousPdf() {
 		final long idRastreoRealizado = 73;

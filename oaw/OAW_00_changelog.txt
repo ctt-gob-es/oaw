@@ -24,7 +24,6 @@
 - Nuevas vulnerabilidades recibidas automáticamente 2022-06-02
 - Anexos - Fichero 4.Evolutivo y Progreso del observatorio - Cuando cambiar la recurrencia
 
-
 5.4.1
 ------------------------------------------------------------------------------------------------------------------------------------
 - Fichero 1. Evolutivo SW y Discapacidad: No se estaba tratando el campo otros
