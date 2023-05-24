@@ -10,11 +10,14 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import es.inteco.common.Constants;
-import es.inteco.rastreador2.actionform.importacion.ImportarEntidadesForm;
-import es.inteco.rastreador2.actionform.importacion.ImportarEntidadesResultadoForm;
-import es.inteco.rastreador2.manager.importacion.database.DatabaseImportarManager;
+import es.inteco.rastreador2.actionform.importation.ImportEntitiesForm;
+import es.inteco.rastreador2.actionform.importation.ImportEntitiesResultForm;
+import es.inteco.rastreador2.manager.importation.database.DatabaseImportManager;
 
 public class ImportarEntidadesAction extends Action {
+	private static final String UPLOAD = "upload";
+	private static final String RESULTS = "results";
+
 	/**
 	 * Execute.
 	 *
@@ -28,17 +31,17 @@ public class ImportarEntidadesAction extends Action {
 		// Marcamos el menú
 		request.getSession().setAttribute(Constants.MENU, Constants.MENU_OTHER_OPTIONS);
 		request.getSession().setAttribute(Constants.MENU, Constants.SUBMENU_IMPORTAR);
-		ImportarEntidadesForm importarEntidadesForm = (ImportarEntidadesForm) form;
+		ImportEntitiesForm importarEntidadesForm = (ImportEntitiesForm) form;
 		String sAction = request.getParameter(Constants.ACTION);
 		if (isCancelled(request)) {
 			return (mapping.findForward(Constants.VOLVER));
 		}
-		if (sAction != null && sAction.equalsIgnoreCase("upload")) {
+		if (sAction != null && sAction.equalsIgnoreCase(UPLOAD)) {
 			ActionErrors errors = importarEntidadesForm.validate(mapping, request);
 			if (errors.isEmpty()) {
-				DatabaseImportarManager importarEntidadesManager = new DatabaseImportarManager();
-				ImportarEntidadesResultadoForm importarEntidadesResultado = importarEntidadesManager.importData(importarEntidadesForm.getFile());
-				request.setAttribute("results", importarEntidadesResultado);
+				DatabaseImportManager importarEntidadesManager = new DatabaseImportManager();
+				ImportEntitiesResultForm importarEntidadesResultado = importarEntidadesManager.importData(importarEntidadesForm.getFile());
+				request.setAttribute(RESULTS, importarEntidadesResultado);
 				if (importarEntidadesResultado.isValidImport()) {
 					return mapping.findForward(Constants.EXITO);
 				} else {

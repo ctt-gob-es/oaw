@@ -11,25 +11,19 @@
                 <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
                 <ol class="breadcrumb">
                   <li><span class="glyphicon glyphicon-home" aria-hidden="true"></span><bean:message key="migas.other.options" /></li>
-                  <li class="active"><bean:message key="migas.importar.entidad"/></li>
+                  <li class="active"><bean:message key="migas.exportar.entidad"/></li>
                 </ol>
             </div>
             <div id="cajaformularios">
-                <h2><bean:message key="menuadmin.importar.entidades" /></h2>  
-                <html:form method="post" styleClass="formulario" action="/secure/ImportarEntidades" enctype="multipart/form-data">        
-					<input type="hidden" name="action" value="upload"/>
+                <h2><bean:message key="menuadmin.exportar.entidades" /></h2>
+                <html:form method="post" styleClass="formulario" action="/secure/ExportarEntidades" enctype="multipart/form-data">        
+					<input type="hidden" name="action" value="download"/>
 					<jsp:include page="/common/crawler_messages.jsp" />
 					<div class="formItem">
-						<label for="name" class="control-label">
-						<strong class="labelVisu">
-							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="subir.fichero.import" />
-						</strong>
-						</label>
-						<html:file styleClass="texto formControl" maxlength="100" styleId="file" property="file"/>
+						<bean:message key="exportar.backup.entidades"/>
 					</div>
 					<div class="formButton">
-						<html:submit styleClass="btn btn-primary btn-lg"><bean:message key="boton.aceptar"/></html:submit>
+						<html:submit styleClass="btn btn-primary btn-lg"><bean:message key="boton.exportar"/></html:submit>
 						<html:cancel styleClass="btn btn-default btn-lg"><bean:message key="boton.cancelar"/></html:cancel>
 					</div>
                 </html:form>

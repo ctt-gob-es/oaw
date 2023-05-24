@@ -9,5 +9,11 @@
 		<operation name="validationRequest"> 
 			<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
 		</operation>
+		<operation name="importDataRequest"> 
+			<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+		</operation>
+		<operation name="trackerBackupRequest"> 
+			<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+		</operation>
 	</service>
 </serviceGroup>

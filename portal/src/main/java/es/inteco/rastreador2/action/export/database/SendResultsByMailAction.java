@@ -63,7 +63,7 @@ import es.inteco.rastreador2.dao.observatorio.UraSendResultDAO;
 import es.inteco.rastreador2.export.database.form.ComparisionForm;
 import es.inteco.rastreador2.manager.BaseManager;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
-import es.inteco.rastreador2.manager.export.database.DatabaseExportManager;
+import es.inteco.rastreador2.manager.exportation.database.DatabaseExportManager;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.SendResultsMailUtils;
 import es.inteco.rastreador2.utils.export.database.DatabaseExportUtils;

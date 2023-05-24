@@ -321,6 +321,16 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<option value="8" <c:if test="${CategoriaForm.orden==8}">selected="selected"</c:if>>8</option>
 							<option value="9" <c:if test="${CategoriaForm.orden==9}">selected="selected"</c:if>>9</option>
 							<option value="10" <c:if test="${CategoriaForm.orden==10}">selected="selected"</c:if>>10</option>
+							<option value="11" <c:if test="${CategoriaForm.orden==11}">selected="selected"</c:if>>11</option>
+							<option value="12" <c:if test="${CategoriaForm.orden==12}">selected="selected"</c:if>>12</option>
+							<option value="13" <c:if test="${CategoriaForm.orden==13}">selected="selected"</c:if>>13</option>
+							<option value="14" <c:if test="${CategoriaForm.orden==14}">selected="selected"</c:if>>14</option>
+							<option value="15" <c:if test="${CategoriaForm.orden==15}">selected="selected"</c:if>>15</option>
+							<option value="16" <c:if test="${CategoriaForm.orden==16}">selected="selected"</c:if>>16</option>
+							<option value="17" <c:if test="${CategoriaForm.orden==17}">selected="selected"</c:if>>17</option>
+							<option value="18" <c:if test="${CategoriaForm.orden==18}">selected="selected"</c:if>>18</option>
+							<option value="19" <c:if test="${CategoriaForm.orden==19}">selected="selected"</c:if>>19</option>
+							<option value="20" <c:if test="${CategoriaForm.orden==20}">selected="selected"</c:if>>20</option>
 						</html:select>
 					</div>
 					<div class="formItem">

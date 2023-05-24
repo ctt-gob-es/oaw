@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -204,7 +205,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			// Gráfico nivel de cumplimiento global
 			title = messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.name") + ".jpg";
-			getGlobalMarkBySegmentGraphic(messageResources, executionId, pageExecutionList, globalGraphics, title, file, noDataMess, categories, tagsFilter);
+			getGlobalMarkBySegmentGraphic(messageResources, executionId, pageExecutionList, globalGraphics, title, file, noDataMess, categories, regenerate, tagsFilter);
 			// comparación adecuación segmento
 			title = messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.title");
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.name") + ".jpg";
@@ -2054,13 +2055,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param categoryId         the category id
 	 * @param pageExecutionList  the page execution list
 	 * @param isComplexityFilter the is complexity filter
-	 * @param tagsFilter         the tags filter
+	 * @param tagsFilter         Tags filter
 	 * @return the global result data
 	 * @throws Exception the exception
 	 */
 	public static List<ObservatoryEvaluationForm> getGlobalResultData(final String executionId, final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList,
 			boolean isComplexityFilter, String[] tagsFilter) throws Exception {
-		return getGlobalResultData(executionId, categoryId, pageExecutionList, null, isComplexityFilter, tagsFilter, false);
+		return getGlobalResultData(executionId, categoryId, pageExecutionList, null, isComplexityFilter, tagsFilter, true);
 	}
 
 	/**
@@ -2132,7 +2133,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			throw e;
 		}
 		CacheUtils.putInCacheForever(observatoryEvaluationList, Constants.OBSERVATORY_KEY_CACHE + executionId);
-		// Filteer by category or complexity
+		// Filter by category or complexity
 		if (!isComplexityFilter) {
 			return filterObservatoriesByCategory(observatoryEvaluationList, Long.parseLong(executionId), categoryId);
 		} else {
@@ -2707,7 +2708,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param executionId   the execution id
 	 * @param tagsFilter    the tags filter
 	 * @param exObsIds      the ex obs ids
-	 * @return the map
+	 * @return the map -1026.t1.b2-
 	 */
 	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionData(final Long observatoryId, final Long executionId, String[] tagsFilter, String[] exObsIds) {
 		final Map<Date, List<ObservatoryEvaluationForm>> resultData = new TreeMap<>();
@@ -2720,10 +2721,10 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 					// Only add selected observatories
 					if (list.contains((String.valueOf(entry.getKey())))) {
 						String[] executionTags = getExecutionTags(entry.getKey());
-						if (executionTags == null) {
+						if (Objects.isNull(executionTags)) {
 							executionTags = tagsFilter;
 						}
-						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, false, tagsFilter);
+						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, false, executionTags);
 						resultData.put(entry.getValue(), pageList);
 					}
 				} else {
@@ -3225,14 +3226,15 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static void getGlobalMarkBySegmentGraphic(final MessageResources messageResources, final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList,
-			Map<String, Object> globalGraphics, final String title, final String filePath, final String noDataMess, final List<CategoriaForm> categories, String[] tagsFilter) throws Exception {
+			Map<String, Object> globalGraphics, final String title, final String filePath, final String noDataMess, final List<CategoriaForm> categories, final boolean regenerate, String[] tagsFilter)
+			throws Exception {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final Map<Integer, List<CategoriaForm>> resultLists = createGraphicsMap(categories);
 		final List<CategoryViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
 			final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
 			final Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = calculateMidPuntuationResultsBySegmentMap(executionId, pageExecutionList, resultLists.get(i), tagsFilter);
-			if (!file.exists()) {
+			if (!file.exists() || regenerate) {
 				final ChartForm observatoryGraphicsForm = new ChartForm(createDataSet(resultDataBySegment, messageResources), true, true, false, false, true, false, false, x, y,
 						pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
 				observatoryGraphicsForm.setTitle(title);
@@ -3329,8 +3331,9 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 *
 	 * @param observatoryEvaluationList the observatory evaluation list
 	 * @return the results by site level
+	 * @throws IOException
 	 */
-	public static Map<String, Integer> getResultsBySiteLevel(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
+	public static Map<String, Integer> getResultsBySiteLevel(final List<ObservatoryEvaluationForm> observatoryEvaluationList) throws IOException {
 		final Map<String, Integer> globalResult = new HashMap<>();
 		globalResult.put(Constants.OBS_NV, 0);
 		globalResult.put(Constants.OBS_A, 0);
@@ -3880,6 +3883,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 *
 	 * @param observatoryEvaluationList the observatory evaluation list
 	 * @return the sites by type
+	 * @throws IOException
 	 */
 	public static Map<Long, Map<String, Integer>> getSitesByType(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
 		final Map<String, List<ObservatoryEvaluationForm>> pagesByType = getPagesByType(observatoryEvaluationList);

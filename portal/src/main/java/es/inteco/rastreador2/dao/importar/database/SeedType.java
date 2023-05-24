@@ -2,7 +2,6 @@ package es.inteco.rastreador2.dao.importar.database;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,7 +16,7 @@ public class SeedType {
 	private Long id;
 	@Column(name = "nombre")
 	private String nombre;
-	@OneToMany(mappedBy = "tipoSemilla", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "tipoSemilla")
 	private Set<Seed> semilla;
 
 	public Set<Seed> getSemilla() {

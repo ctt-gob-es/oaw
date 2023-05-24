@@ -5,10 +5,10 @@ import java.util.Set;
 public class SeedForm extends BaseForm {
 	private SeedTypeForm tipoSemilla;
 	private String acronimo;
-	private boolean activa;
-	private boolean enDirectorio;
-	private boolean eliminada;
-	private boolean rastreador;
+	private Boolean activa;
+	private Boolean enDirectorio;
+	private Boolean eliminada;
+	private Boolean rastreador;
 	private String observaciones;
 	private String observacionesRastreador;
 	private String lista;
@@ -34,35 +34,35 @@ public class SeedForm extends BaseForm {
 		this.acronimo = acronimo;
 	}
 
-	public boolean isActiva() {
+	public Boolean isActiva() {
 		return activa;
 	}
 
-	public void setActiva(boolean activa) {
+	public void setActiva(Boolean activa) {
 		this.activa = activa;
 	}
 
-	public boolean isEnDirectorio() {
+	public Boolean isEnDirectorio() {
 		return enDirectorio;
 	}
 
-	public void setEnDirectorio(boolean enDirectorio) {
+	public void setEnDirectorio(Boolean enDirectorio) {
 		this.enDirectorio = enDirectorio;
 	}
 
-	public boolean isEliminada() {
+	public Boolean isEliminada() {
 		return eliminada;
 	}
 
-	public void setEliminada(boolean eliminada) {
+	public void setEliminada(Boolean eliminada) {
 		this.eliminada = eliminada;
 	}
 
-	public boolean isRastreador() {
+	public Boolean isRastreador() {
 		return rastreador;
 	}
 
-	public void setRastreador(boolean rastreador) {
+	public void setRastreador(Boolean rastreador) {
 		this.rastreador = rastreador;
 	}
 
