@@ -36,7 +36,7 @@ Currently OAW is deployment under this configuration:
 * Apache Tomcat 7
 * MySQL 5
 
-This is a Maven projet that requieres version 3.0.0 or high
+This is a Maven project that requieres version 3.2.3 or high.
 
 
 ### Instalation
