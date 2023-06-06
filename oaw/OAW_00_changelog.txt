@@ -9,7 +9,7 @@
 - Plantillas de agregados accesibles
 - Importación de entidades desde el SSP
 - Análisis mixto
-- Fichero de hallazgos
+- Fichero de hallazgos: Debe añadirse la plantilla hallazgos.odt como hallazgos en el sistema para su correcto funcionamiento
 - Servicio web de validación para el plugin y el navegador
 
 5.5.0

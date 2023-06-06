@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -62,6 +63,9 @@ public class WcagOdtUtils {
 	 */
 	public static OdfTextDocument generateOdtReport(List<ObservatoryEvaluationForm> observatoryEvaluationForm) throws Exception {
 		File file = getOdtTemplate();
+		if (Objects.isNull(file)) {
+			return null;
+		}
 		FileInputStream fis = new FileInputStream(file.getAbsolutePath());
 		OdfTextDocument odtDocument = (OdfTextDocument) OdfDocument.loadDocument(fis);
 		final OdfFileDom odfFileContent = odtDocument.getContentDom();

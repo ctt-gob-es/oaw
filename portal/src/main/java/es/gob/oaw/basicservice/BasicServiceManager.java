@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import org.apache.commons.mail.EmailException;
@@ -317,7 +318,9 @@ public class BasicServiceManager {
 	 */
 	private void generateOdtReport(final List<ObservatoryEvaluationForm> currentEvaluationPageList, final String pdfPath) throws Exception {
 		OdfTextDocument document = WcagOdtUtils.generateOdtReport(currentEvaluationPageList);
-		final FileOutputStream out = new FileOutputStream(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Hallazgos.odt");
-		document.save(out);
+		if (Objects.nonNull(document)) {
+			final FileOutputStream out = new FileOutputStream(new File(pdfPath).getParentFile().getPath() + "/Informe Revision Accesibilidad - Hallazgos.odt");
+			document.save(out);
+		}
 	}
 }
