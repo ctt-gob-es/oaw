@@ -126,7 +126,7 @@ public class DatabaseExportDAO extends BaseDAO {
 
 	public static List<Seed> getSeedInformation(Session session) {
 		Criteria criteria = session.createCriteria(Seed.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		List<Seed> scopes = criteria.list();
-		return scopes;
+		List<Seed> seeds = criteria.list();
+		return seeds;
 	}
 }
