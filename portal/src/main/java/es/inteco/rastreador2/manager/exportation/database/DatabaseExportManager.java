@@ -27,6 +27,8 @@ import org.hibernate.Session;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import es.inteco.common.logging.Logger;
+import es.inteco.rastreador2.action.exportacion.ExportarEntidadesAction;
 import es.inteco.rastreador2.dao.export.database.DatabaseExportDAO;
 import es.inteco.rastreador2.dao.export.database.Observatory;
 import es.inteco.rastreador2.dao.importar.database.AdministrativeLevel;
@@ -77,15 +79,26 @@ public class DatabaseExportManager extends BaseManager {
 	public String backup() throws Exception {
 		OAWForm oawForm = new OAWForm();
 		try {
+			Logger.putLog("Exportar entidades: Inicio backups", DatabaseExportManager.class, Logger.LOG_LEVEL_ERROR);
 			oawForm.setComplejidades(getComplejidades());
+			Logger.putLog("Exportar entidades: Complejidades: " + oawForm.getComplejidades().size(), DatabaseExportManager.class, Logger.LOG_LEVEL_ERROR);
 			oawForm.setClasificacionEtiquetas(getClasificacionEtiquetas());
+			Logger.putLog("Exportar entidades: Clasificación etiquetas: " + oawForm.getClasificacionEtiquetas().size(), DatabaseExportManager.class, Logger.LOG_LEVEL_ERROR);
 			oawForm.setEtiquetas(getEtiquetas());
+			Logger.putLog("Exportar entidades: Etiquetas: " + oawForm.getEtiquetas().size(), DatabaseExportManager.class, Logger.LOG_LEVEL_ERROR);
 			oawForm.setSegmentos(getSegmentos());
+			Logger.putLog("Exportar entidades: Segmentos: " + oawForm.getSegmentos().size(), DatabaseExportManager.class, Logger.LOG_LEVEL_ERROR);
 			oawForm.setTipoSemillas(getTiposSemilla());
+			Logger.putLog("Exportar entidades: Tipos semillas: " + oawForm.getTipoSemillas().size(), DatabaseExportManager.class, Logger.LOG_LEVEL_ERROR);
 			oawForm.setAmbitos(getAmbitos());
+			Logger.putLog("Exportar entidades: Ámbitos: " + oawForm.getAmbitos().size(), DatabaseExportManager.class, Logger.LOG_LEVEL_ERROR);
 			oawForm.setDependencias(getDependencias());
+			Logger.putLog("Exportar entidades: Dependencias: " + oawForm.getDependencias().size(), DatabaseExportManager.class, Logger.LOG_LEVEL_ERROR);
 			oawForm.setSemillas(getSemillas());
+			Logger.putLog("Exportar entidades: Semillas: " + oawForm.getSemillas().size(), DatabaseExportManager.class, Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Exportar entidades: Fin backups", DatabaseExportManager.class, Logger.LOG_LEVEL_ERROR);
 		} catch (Exception e) {
+			Logger.putLog("Exportar entidades: Error backups", DatabaseExportManager.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(oawForm);
@@ -268,27 +281,37 @@ public class DatabaseExportManager extends BaseManager {
 			}
 			// Labels
 			Set<LabelForm> labelsForm = new HashSet<>();
-			if (Objects.nonNull(seed.getEtiquetas())) {
-				Set<Label> labelList = seed.getEtiquetas();
-				LabelForm labelForm;
-				ClassificationLabelForm classificationLabelForm;
-				for (Label label : labelList) {
-					classificationLabelForm = new ClassificationLabelForm();
-					classificationLabelForm.setId(label.getClasificacionEtiqueta().getId());
-					labelForm = new LabelForm();
-					labelForm.setId(label.getId());
-					labelForm.setClasificacionEtiqueta(classificationLabelForm);
-					labelsForm.add(labelForm);
+			try {
+				if (Objects.nonNull(seed.getEtiquetas())) {
+					Set<Label> labelList = seed.getEtiquetas();
+					LabelForm labelForm;
+					ClassificationLabelForm classificationLabelForm;
+					for (Label label : labelList) {
+						classificationLabelForm = new ClassificationLabelForm();
+						classificationLabelForm.setId(label.getClasificacionEtiqueta().getId());
+						labelForm = new LabelForm();
+						labelForm.setId(label.getId());
+						labelForm.setClasificacionEtiqueta(classificationLabelForm);
+						labelsForm.add(labelForm);
+					}
 				}
+			} catch (Exception e) {
+				Logger.putLog("Error de importación en semilla - etiquetas: " + seed.getId() + " - " + seed.getNombre(), ExportarEntidadesAction.class, Logger.LOG_LEVEL_ERROR);
 			}
 			// Dependencies - scopes
-			Set<Scope> scopeList = seed.getDependencias();
 			Set<ScopeForm> dependencyFormSet = new HashSet<>();
-			ScopeForm dependencyForm;
-			for (Scope scope : scopeList) {
-				dependencyForm = new ScopeForm();
-				dependencyForm.setId(scope.getId());
-				dependencyFormSet.add(dependencyForm);
+			try {
+				if (Objects.nonNull(seed.getDependencias())) {
+					Set<Scope> scopeList = seed.getDependencias();
+					ScopeForm dependencyForm;
+					for (Scope scope : scopeList) {
+						dependencyForm = new ScopeForm();
+						dependencyForm.setId(scope.getId());
+						dependencyFormSet.add(dependencyForm);
+					}
+				}
+			} catch (Exception e) {
+				Logger.putLog("Error de importación en semilla - dependencias: " + seed.getId() + " - " + seed.getNombre(), ExportarEntidadesAction.class, Logger.LOG_LEVEL_ERROR);
 			}
 			seedForm = new SeedForm();
 			seedForm.setId(seed.getId());

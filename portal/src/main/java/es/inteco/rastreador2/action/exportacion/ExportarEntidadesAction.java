@@ -11,6 +11,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import es.inteco.common.Constants;
+import es.inteco.common.logging.Logger;
 import es.inteco.rastreador2.manager.exportation.database.DatabaseExportManager;
 
 public class ExportarEntidadesAction extends Action {
@@ -26,6 +27,7 @@ public class ExportarEntidadesAction extends Action {
 	 * @return the action forward
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Logger.putLog("Exportar entidades: ", ExportarEntidadesAction.class, Logger.LOG_LEVEL_ERROR);
 		// Marcamos el menú
 		request.getSession().setAttribute(Constants.MENU, Constants.MENU_OTHER_OPTIONS);
 		request.getSession().setAttribute(Constants.MENU, Constants.SUBMENU_EXPORTAR);
@@ -34,14 +36,18 @@ public class ExportarEntidadesAction extends Action {
 			return (mapping.findForward(Constants.VOLVER));
 		}
 		if (sAction != null && sAction.equalsIgnoreCase(DOWNLOAD)) {
+			Logger.putLog("Exportar entidades: Inicialización", ExportarEntidadesAction.class, Logger.LOG_LEVEL_ERROR);
 			DatabaseExportManager exportarEntidadesManager = new DatabaseExportManager();
+			Logger.putLog("Exportar entidades: Generando backup", ExportarEntidadesAction.class, Logger.LOG_LEVEL_ERROR);
 			String result = exportarEntidadesManager.backup();
-			byte[] byteArrray = result.getBytes(StandardCharsets.UTF_8);
+			Logger.putLog("Exportar entidades: Transformando resultado", ExportarEntidadesAction.class, Logger.LOG_LEVEL_ERROR);
+			byte[] byteArray = result.getBytes(StandardCharsets.UTF_8);
 			response.setContentType("application/force-download");
 			response.setHeader("Content-Disposition", "attachment;filename=backup.json");
-			response.getOutputStream().write(byteArrray);
+			response.getOutputStream().write(byteArray);
 			response.flushBuffer();
-			// return mapping.findForward(Constants.EXITO);
+			Logger.putLog("Exportar entidades: Devolviendo resultado", ExportarEntidadesAction.class, Logger.LOG_LEVEL_ERROR);
+			return null;
 		}
 		return mapping.findForward(Constants.EXPORTAR_ENTIDADES);
 	}
