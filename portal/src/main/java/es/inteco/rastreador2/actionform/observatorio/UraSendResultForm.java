@@ -49,6 +49,10 @@ public class UraSendResultForm extends ValidatorForm implements Serializable {
 	private Date validDate;
 	/** The has custom text. */
 	private boolean hasCustomText;
+	/** The mid last scores. */
+	private Float midLastScores;
+	/** The mid previous scores. */
+	private Float midPreviousScores;
 
 	/**
 	 * Gets the file link.
@@ -381,5 +385,41 @@ public class UraSendResultForm extends ValidatorForm implements Serializable {
 	 */
 	public void setHasCustomText(boolean hasCustomText) {
 		this.hasCustomText = hasCustomText;
+	}
+
+	/**
+	 * Gets the mid last scores.
+	 *
+	 * @return the mid last scores
+	 */
+	public Float getMidLastScores() {
+		return midLastScores;
+	}
+
+	/**
+	 * Sets the mid last scores.
+	 *
+	 * @param mail the mid last scores
+	 */
+	public void setMidLastScores(Float midLastScores) {
+		this.midLastScores = midLastScores;
+	}
+
+	/**
+	 * Gets the mid previous scores.
+	 *
+	 * @return the mid previous scores
+	 */
+	public Float getMidPreviousScores() {
+		return midPreviousScores;
+	}
+
+	/**
+	 * Sets the mid previous scores.
+	 *
+	 * @param mail the mid previous scores
+	 */
+	public void setMidPreviousScores(Float midPreviousScores) {
+		this.midPreviousScores = midPreviousScores;
 	}
 }
