@@ -48,7 +48,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	var confirmRemoveMessage = '<bean:message key="range.observatory.modal.delete.confirm"/>';
 	
 	
-	var colNameRangeScore =  '<bean:message key="colname.range.score"/>';
+	var colNameRangeScore =  '<bean:message key="colname.range.score.abb"/>';
+	var colNamePosition =  '<bean:message key="colname.range.position.abb"/>';
 
 	var lastUrl;
 	var scroll;
@@ -160,6 +161,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 														colNameName,
 														colNameRange,
 														colNameRangeScore,
+														colNamePosition,
 														colNameTemplate,
 														colNameSendAuto, "", "" ],
 												colModel : [
@@ -191,10 +193,18 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															align : "center",
 															sortable : true
 
-														},														
+														},	
+														{
+															name : "midPreviousScore",
+															width : 10,
+															editable : false,
+															align : "center",
+															sortable : true
+
+														},	
 														{
 															name : "template",
-															width : 50,
+															width : 40,
 															editrules : {
 																required : false,
 															},

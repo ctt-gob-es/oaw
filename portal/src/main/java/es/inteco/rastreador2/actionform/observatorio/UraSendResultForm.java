@@ -49,10 +49,10 @@ public class UraSendResultForm extends ValidatorForm implements Serializable {
 	private Date validDate;
 	/** The has custom text. */
 	private boolean hasCustomText;
-	/** The mid last scores. */
-	private Float midLastScores;
-	/** The mid previous scores. */
-	private Float midPreviousScores;
+	/** The mid last score. */
+	private Float midLastScore;
+	/** The mid previous score. */
+	private Float midPreviousScore;
 
 	/**
 	 * Gets the file link.
@@ -388,38 +388,38 @@ public class UraSendResultForm extends ValidatorForm implements Serializable {
 	}
 
 	/**
-	 * Gets the mid last scores.
+	 * Gets the mid last score.
 	 *
-	 * @return the mid last scores
+	 * @return the mid last score
 	 */
-	public Float getMidLastScores() {
-		return midLastScores;
+	public Float getMidLastScore() {
+		return midLastScore;
 	}
 
 	/**
-	 * Sets the mid last scores.
+	 * Sets the mid last score.
 	 *
-	 * @param mail the mid last scores
+	 * @param mail the mid last score
 	 */
-	public void setMidLastScores(Float midLastScores) {
-		this.midLastScores = midLastScores;
+	public void setMidLastScore(Float midLastScore) {
+		this.midLastScore = midLastScore;
 	}
 
 	/**
-	 * Gets the mid previous scores.
+	 * Gets the mid previous score.
 	 *
-	 * @return the mid previous scores
+	 * @return the mid previous score
 	 */
-	public Float getMidPreviousScores() {
-		return midPreviousScores;
+	public Float getMidPreviousScore() {
+		return midPreviousScore;
 	}
 
 	/**
-	 * Sets the mid previous scores.
+	 * Sets the mid previous score.
 	 *
-	 * @param mail the mid previous scores
+	 * @param mail the mid previous score
 	 */
-	public void setMidPreviousScores(Float midPreviousScores) {
-		this.midPreviousScores = midPreviousScores;
+	public void setMidPreviousScore(Float midPreviousScore) {
+		this.midPreviousScore = midPreviousScore;
 	}
 }

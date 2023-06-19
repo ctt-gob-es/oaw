@@ -752,7 +752,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	}
 	
 	function cellFormatter(cellvalue, options, rowObject) {
-	    if (cellvalue !== undefined) {
+	    if (cellvalue != null && cellvalue !== undefined) {
 	        return cellvalue;
 	    } else {
 	        return "";

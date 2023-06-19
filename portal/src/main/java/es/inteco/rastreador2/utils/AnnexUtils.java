@@ -616,23 +616,23 @@ public final class AnnexUtils {
 				}
 			}
 			// Calculate mid
-			BigDecimal midLastScores = sumLastScore.divide(new BigDecimal(entry.getValue().size()), RoundingMode.HALF_UP);
-			BigDecimal midPreviousScores = sumPreviousScore.divide(new BigDecimal(entry.getValue().size()), RoundingMode.HALF_UP);
-			BigDecimal diffMidScores = midLastScores.subtract(midPreviousScores);
+			BigDecimal midLastScore = sumLastScore.divide(new BigDecimal(entry.getValue().size()), RoundingMode.HALF_UP);
+			BigDecimal midPreviousScore = sumPreviousScore.divide(new BigDecimal(entry.getValue().size()), RoundingMode.HALF_UP);
+			BigDecimal diffMidScores = midLastScore.subtract(midPreviousScore);
 			//
 			UraSendResultForm uraCustom = new UraSendResultForm();
 			uraCustom.setIdUra(entry.getKey().getId());
 			uraCustom.setIdObservatoryExecution(idObsExecution);
 			uraCustom.setRangeValue(diffMidScores.floatValue());
 			uraCustom.setIdRange(0L); // prevents not matching range
-			uraCustom.setMidLastScores(midLastScores.floatValue());
-			uraCustom.setMidPreviousScores(midPreviousScores.floatValue());
+			uraCustom.setMidLastScore(midLastScore.floatValue());
+			uraCustom.setMidPreviousScore(midPreviousScore.floatValue());
 			for (TemplateRangeForm range : iterationRanges) {
 				String expressionScore = generateRangeJsExpression(diffMidScores, range.getMinValueOperator(), range.getMaxValueOperator(), range.getMinValue(), range.getMaxValue());
 				if (checkExpressionPosition(range)) {
-					String expressionPosition = generateRangeJsExpression(midPreviousScores, range.getMinPositionValueOperator(), range.getMaxPositionValueOperator(), range.getMinPositionValue(),
+					String expressionPosition = generateRangeJsExpression(midPreviousScore, range.getMinPositionValueOperator(), range.getMaxPositionValueOperator(), range.getMinPositionValue(),
 							range.getMaxPositionValue());
-					Logger.putLog("Caso avanzado: Diferencia puntuación: " + diffMidScores + " Posición: " + midPreviousScores, AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
+					Logger.putLog("Caso avanzado: Diferencia puntuación: " + diffMidScores + " Posición: " + midPreviousScore, AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
 					if ((boolean) scriptEngine.eval(expressionScore) && (boolean) scriptEngine.eval(expressionPosition)) {
 						Logger.putLog("Condiciones: Diferencia puntuación " + expressionScore + " Diferencia posición: " + expressionPosition + " - Rango: " + range.getId(), AnnexUtils.class,
 								Logger.LOG_LEVEL_WARNING);

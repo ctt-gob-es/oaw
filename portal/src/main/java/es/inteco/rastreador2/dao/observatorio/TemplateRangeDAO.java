@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -78,8 +79,16 @@ public class TemplateRangeDAO extends DataBaseDAO {
 					form.setMaxValue(rs.getFloat("max_value"));
 					form.setMinValueOperator(rs.getString("min_value_operator"));
 					form.setMaxValueOperator(rs.getString("max_value_operator"));
-					form.setMinPositionValue(rs.getFloat("min_position_value"));
-					form.setMaxPositionValue(rs.getFloat("max_position_value"));
+					if (Objects.nonNull(rs.getString("min_position_value"))) {
+						form.setMinPositionValue(Float.parseFloat(rs.getString("min_position_value")));
+					} else {
+						form.setMinPositionValue(null);
+					}
+					if (Objects.nonNull(rs.getString("max_position_value"))) {
+						form.setMaxPositionValue(Float.parseFloat(rs.getString("max_position_value")));
+					} else {
+						form.setMaxPositionValue(null);
+					}
 					form.setMinPositionValueOperator(rs.getString("min_position_value_operator"));
 					form.setMaxPositionValueOperator(rs.getString("max_position_value_operator"));
 					form.setTemplate(new String(Base64.decodeBase64(rs.getString("template").getBytes())));
@@ -118,8 +127,16 @@ public class TemplateRangeDAO extends DataBaseDAO {
 					form.setMaxValue(rs.getFloat("max_value"));
 					form.setMinValueOperator(rs.getString("min_value_operator"));
 					form.setMaxValueOperator(rs.getString("max_value_operator"));
-					form.setMinPositionValue(rs.getFloat("min_position_value"));
-					form.setMaxPositionValue(rs.getFloat("max_position_value"));
+					if (Objects.nonNull(rs.getString("min_position_value"))) {
+						form.setMinPositionValue(Float.parseFloat(rs.getString("min_position_value")));
+					} else {
+						form.setMinPositionValue(null);
+					}
+					if (Objects.nonNull(rs.getString("max_position_value"))) {
+						form.setMaxPositionValue(Float.parseFloat(rs.getString("max_position_value")));
+					} else {
+						form.setMaxPositionValue(null);
+					}
 					form.setMinPositionValueOperator(rs.getString("min_position_value_operator"));
 					form.setMaxPositionValueOperator(rs.getString("max_position_value_operator"));
 					form.setTemplate(new String(Base64.decodeBase64(rs.getString("template").getBytes())));

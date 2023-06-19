@@ -105,7 +105,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 	public static List<UraSendResultForm> findAll(Connection c, final Long idExObs, final boolean isSendAuto) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
 		final List<UraSendResultForm> results = new ArrayList<>();
-		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.range_value, c.has_custom_text, c.custom_text, c.send, c.send_date, c.send_error, c.file_link, c.file_pass, c.has_custom_text, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ";
+		String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range, c.range_value, c.has_custom_text, c.custom_text, c.send, c.send_date, c.send_error, c.file_link, c.file_pass, c.has_custom_text, c.mid_previous_score, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_observatory_execution = ? ";
 		if (isSendAuto) {
 			query = query + "AND d.send_auto = 1 ";
 		}
@@ -140,6 +140,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 					form.setFileLink(rs.getString("c.file_link"));
 					form.setFilePass(rs.getString("c.file_pass"));
 					form.setRangeValue(rs.getFloat("c.range_value"));
+					form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
 					results.add(form);
 				}
 			}
@@ -206,7 +207,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 		c = reOpenConnectionIfIsNecessary(c);
 		final List<UraSendResultForm> results = new ArrayList<>();
 		if (ids != null && ids.length > 0) {
-			String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range,c.range_value, c.custom_text, c.send, c.has_custom_text, c.file_link, c.file_pass, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1  AND c.id_observatory_execution = ? ";
+			String query = "SELECT c.id, c.id_observatory_execution, c.id_ura, c.id_range,c.range_value, c.custom_text, c.send, c.has_custom_text, c.file_link, c.file_pass, c.mid_previous_score, r.id, r.name, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_ura_send_results c LEFT JOIN observatorio_template_range r ON c.id_range = r.id JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1  AND c.id_observatory_execution = ? ";
 			query = query + " AND c.id_ura IN (" + ids[0];
 			for (int i = 1; i < ids.length; i++) {
 				query = query + "," + ids[i];
@@ -236,6 +237,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 						form.setFileLink(rs.getString("c.file_link"));
 						form.setFilePass(rs.getString("c.file_pass"));
 						form.setRangeValue(rs.getFloat("c.range_value"));
+						form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
 						form.setUra(ura);
 						results.add(form);
 					}
@@ -271,6 +273,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 					form.setTemplate(new String(Base64.decodeBase64(rs.getString("custom_text").getBytes())));
 					form.setSend(rs.getBoolean("c.send"));
 					form.setHasCustomText(rs.getBoolean("c.has_custom_text"));
+					form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
 					final RangeForm range = new RangeForm();
 					range.setId(rs.getLong("r.id"));
 					range.setName(rs.getString("r.name"));
@@ -321,7 +324,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 		try {
 			c.setAutoCommit(false);
 			ps = c.prepareStatement(
-					"INSERT INTO observatorio_ura_send_results(id_observatory_execution, id_ura, id_range, custom_text, range_value) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE id_range = ?, range_value = ?;",
+					"INSERT INTO observatorio_ura_send_results(id_observatory_execution, id_ura, id_range, custom_text, range_value, mid_previous_score) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE id_range = ?, range_value = ?, mid_previous_score = ?;",
 					Statement.RETURN_GENERATED_KEYS);
 			ps.setLong(1, form.getIdObservatoryExecution());
 			ps.setLong(2, form.getIdUra());
@@ -336,8 +339,10 @@ public class UraSendResultDAO extends DataBaseDAO {
 			}
 			ps.setString(4, "");
 			ps.setFloat(5, form.getRangeValue());
-			ps.setLong(6, form.getIdRange());
-			ps.setFloat(7, form.getRangeValue());
+			ps.setFloat(6, form.getMidPreviousScore());
+			ps.setLong(7, form.getIdRange());
+			ps.setFloat(8, form.getRangeValue());
+			ps.setFloat(9, form.getMidPreviousScore());
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 0) {
 				throw new SQLException("Creating range failed, no rows affected.");
@@ -551,7 +556,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 						for (UraSendHistoricResults result : historic.getResults()) {
 							result.setIdSendHistoric(idSendHistoric);
 							PreparedStatement psResult = c.prepareStatement(
-									"INSERT INTO observatorio_send_historic_results(id_send_historic, id_ura, range_name, custom_text, range_value, mail,send_date,expiration_date,send_error,file_link,file_pass,send ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+									"INSERT INTO observatorio_send_historic_results(id_send_historic, id_ura, range_name, custom_text, range_value, mail, send_date, expiration_date, send_error,  file_link, file_pass, send, mid_previous_score) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
 									Statement.RETURN_GENERATED_KEYS);
 							psResult.setLong(1, result.getIdSendHistoric());
 							psResult.setLong(2, result.getUra().getId());
@@ -596,6 +601,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 							psResult.setString(10, result.getFileLink());
 							psResult.setString(11, result.getFilePass());
 							psResult.setBoolean(12, result.isSend());
+							psResult.setFloat(13, result.getMidPreviousScore());
 							psResult.executeUpdate();
 						}
 					}
@@ -674,7 +680,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 					historic.setComparisions(comparisionList);
 					// Results
 					PreparedStatement psResults = c.prepareStatement(
-							"SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.range_value, c.custom_text, c.send, c.send_date, c.expiration_date, c.send_error, c.file_link, c.file_pass, c.mail, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_send_historic = ? ORDER BY c.id ASC ");
+							"SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.range_value, c.custom_text, c.send, c.send_date, c.expiration_date, c.send_error, c.file_link, c.file_pass, c.mail, c.mid_previous_score, d.id_dependencia, d.nombre, d.send_auto, d.emails FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.id_send_historic = ? ORDER BY c.id ASC ");
 					psResults.setLong(1, historic.getId());
 					ResultSet rsResults = psResults.executeQuery();
 					List<UraSendHistoricResults> resultsList = new ArrayList<>();
@@ -705,6 +711,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 						result.setFileLink(rsResults.getString("c.file_link"));
 						result.setFilePass(rsResults.getString("c.file_pass"));
 						result.setRangeValue(rsResults.getFloat("c.range_value"));
+						result.setMidPreviousScore(rsResults.getFloat("c.mid_previous_score"));
 						resultsList.add(result);
 					}
 					historic.setResults(resultsList);
@@ -733,7 +740,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 	public static List<UraSendHistoricResults> findAllSendHistoric(Connection c, final Long idHistoric) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
 		final List<UraSendHistoricResults> results = new ArrayList<>();
-		String query = "SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.range_value, c.custom_text, c.send, c.send_error, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.send=1 AND c.id_send_historic = ? ORDER BY c.id ASC";
+		String query = "SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.range_value,  c.custom_text, c.send, c.send_error, c.mid_previous_score, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND c.send=1 AND c.id_send_historic = ? ORDER BY c.id ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idHistoric);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -751,6 +758,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 					form.setSend(rs.getBoolean("c.send"));
 					form.setSendError(rs.getString("c.send_error"));
 					form.setRangeValue(rs.getFloat("c.range_value"));
+					form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
 					results.add(form);
 				}
 			}
@@ -772,7 +780,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 	public static List<UraSendHistoricResults> findAllSendAutoFalseHistoric(Connection c, final Long idHistoric) throws Exception {
 		c = reOpenConnectionIfIsNecessary(c);
 		final List<UraSendHistoricResults> results = new ArrayList<>();
-		String query = "SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.range_value, c.custom_text, c.send, c.send_error, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND d.send_auto=0 AND c.id_send_historic = ? ORDER BY c.id ASC";
+		String query = "SELECT c.id, c.id_send_historic, c.id_ura, c.range_name, c.range_value, c.custom_text, c.send, c.send_error, c.mid_previous_score, d.id_dependencia, d.nombre, d.send_auto FROM observatorio_send_historic_results c JOIN dependencia d ON c.id_ura = d.id_dependencia WHERE 1=1 AND d.send_auto=0 AND c.id_send_historic = ? ORDER BY c.id ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idHistoric);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -790,6 +798,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 					form.setSend(rs.getBoolean("c.send"));
 					form.setSendError(rs.getString("c.send_error"));
 					form.setRangeValue(rs.getFloat("c.range_value"));
+					form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
 					results.add(form);
 				}
 			}
