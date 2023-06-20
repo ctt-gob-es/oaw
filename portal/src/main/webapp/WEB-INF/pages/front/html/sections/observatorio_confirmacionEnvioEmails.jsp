@@ -118,7 +118,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		console.log(key)
 		console.log(value)
 	})
-	
+	 
 	
 	function loadOptions(idObs, tagId, element) {
 	    $.ajaxSetup({
@@ -184,10 +184,17 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	
 	var colNameId = '<bean:message key="colname.id"/>';
 	var colNameName = '<bean:message key="colname.name"/>';
+	
 	var colNameMinValue = '<bean:message key="colname.min.value"/>';
 	var colNameMaxValue = '<bean:message key="colname.max.value"/>';
 	var colNameMinValueOperator = '<bean:message key="colname.min.value.operator"/>';
 	var colNameMaxValueOperator = '<bean:message key="colname.max.value.operator"/>';
+
+	var colNameMinPositionValue = '<bean:message key="colname.min.position.value"/>';
+	var colNameMaxPositionValue = '<bean:message key="colname.max.position.value"/>';
+	var colNameMinPositionValueOperator = '<bean:message key="colname.min.position.value.operator"/>';
+	var colNameMaxPositionValueOperator = '<bean:message key="colname.max.position.value.operator"/>';
+
 	var colNameTemplate = '<bean:message key="colname.template"/>';
 	var colNameRemove = '<bean:message key="colname.remove"/>';
 	
@@ -294,9 +301,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	                $('#grid')
 	                    .jqGrid({
 	                        editUrl: '/oaw/secure/TemplateRangeObservatorio.do?action=update',
-	                        colNames: [colNameId, colNameName, colNameMinValue, colNameMinValueOperator, "x",
-	                            colNameMaxValueOperator, colNameMaxValue, colNameTemplate,
-	                            colNameRemove
+	                        colNames: [colNameId, colNameName, 
+	                        	       colNameMinValue, colNameMinValueOperator, colNameMaxValueOperator, colNameMaxValue,
+	                        	       colNameMinPositionValue, colNameMinPositionValueOperator, colNameMaxPositionValueOperator, colNameMaxPositionValue, 
+	                        	       colNameTemplate, colNameRemove
 	                        ],
 	                        colModel: [{
 	                                name: "id",
@@ -316,7 +324,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	                            },
 								{
 									name: "minValue",
-									width: 20,
+									width: 15,
 									editrules: {
 										required: true,
 										number: true,
@@ -326,30 +334,20 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									align: "center",
 									formatter: cellFormatter,
 									sortable: true
-
 								},
 								{
 									name: "minValueOperator",
-									width: 20,
+									width: 12,
 									edittype : "select",
 									editoptions : {
 										value: ":;<:<;<=:<="
 									},
 									align: "center",
 									sortable: false
-
 								},
-								 {
-									name:'x',
-									width: 5,
-									editable:'false',
-									formatter: xFormatter,
-									
-								 },
-
 								{
 									name: "maxValueOperator",
-									width: 20,
+									width: 12,
 									align: "center",
 									edittype : "select",
 									formatter: cellFormatter,
@@ -357,11 +355,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										value: ":;<:<;<=:<="
 									},
 									sortable: false
-
 								},								
 								{
 									name: "maxValue",
-									width: 20,
+									width: 15,
 									editrules: {
 									    required: true,
 										number: true,
@@ -371,11 +368,58 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									formatter: cellFormatter,
 									align: "center",
 									sortable: true,
-
 								},	
-	                            {
+								{
+									name: "minPositionValue",
+									width: 15,
+									editrules: {
+										required: true,
+										number: true,
+										minValue: 0,
+										maxValue: 10
+									},
+									align: "center",
+									formatter: cellFormatter,
+									sortable: true
+
+								}, 
+								{
+									name: "minPositionValueOperator",
+									width: 12,
+									edittype : "select",
+									editoptions : {
+										value: ":;<:<;<=:<="
+									},
+									align: "center",
+									sortable: false
+								},
+								{
+									name: "maxPositionValueOperator",
+									width: 12,
+									align: "center",
+									edittype : "select",
+									formatter: cellFormatter,
+									editoptions : {
+										value: ":;<:<;<=:<="
+									},
+									sortable: false
+								},								
+								{
+									name: "maxPositionValue",
+									width: 17,
+									editrules: {
+									    required: true,
+										number: true,
+										minValue: 0,
+										maxValue: 10
+									},
+									formatter: cellFormatter,
+									align: "center",
+									sortable: true,
+								},	
+	                            { 
 	                                name: "template",
-	                                width: 50,
+	                                width: 45,
 	                                editable: true,
 	                                editrules: {
 	                                    required: true,
@@ -401,7 +445,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	                            },
 	                            {
 	                                name: "eliminar",
-	                                width: 10,
+	                                width: 15,
 	                                sortable: false,
 	                                editable: false,
 	                                formatter: eliminarFormatter,
@@ -517,7 +561,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	                if (total == 0) {
 	                    $('#grid')
 	                        .append(
-	                            '<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="9" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
+	                            '<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="11" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
 	                }
 	
 	                // Paginador
@@ -708,7 +752,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	}
 	
 	function cellFormatter(cellvalue, options, rowObject) {
-	    if (cellvalue) {
+	    if (cellvalue != null && cellvalue !== undefined) {
 	        return cellvalue;
 	    } else {
 	        return "";
@@ -761,6 +805,35 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</div>
 					<div class="col-xs-2 padding-fields-new-range">
 						<input type="number" id="maxValue" name="maxValue" class="form-control" step="0.01" min=-100" max="100"/>
+					</div>
+				</div>
+				<div class="row formItem">
+					<label for="minPositionValue" class="control-label">
+						<strong class="labelVisu">
+							<acronym title="<bean:message key="campo.obligatorio" />"> * </acronym>
+							<bean:message key="colname.position" />
+						</strong>
+					</label> 
+					<div class="col-xs-2 padding-fields-new-range">
+						<input type="number" id="minPositionValue" name="minPositionValue" class="form-control" step="0.01" min=0" max="10"/>
+					</div>
+					<div class="col-xs-1 padding-fields-new-range">
+						<select id="minPositionValueOperator" name="minPositionValueOperator" class="form-control">
+							<option value=""></option>
+							<option value="&#60;">&#60;</option>
+							<option value="&#60;&#61;">&#60;&#61;</option>
+						</select>
+					</div> 
+					<div class="col-xs-1-mod text-center">X</div> 
+					<div class="col-xs-1 padding-fields-new-range"> 
+						<select id="maxPositionValueOperator" name="maxPositionValueOperator" class="form-control">
+							<option value=""></option>
+							<option value="&#60;">&#60;</option>
+							<option value="&#60;&#61;">&#60;&#61;</option>
+						</select>
+					</div>
+					<div class="col-xs-2 padding-fields-new-range">
+						<input type="number" id="maxPositionValue" name="maxPositionValue" class="form-control" step="0.01" min=0" max="10"/>
 					</div>
 				</div>
 				<div class="row formItem">

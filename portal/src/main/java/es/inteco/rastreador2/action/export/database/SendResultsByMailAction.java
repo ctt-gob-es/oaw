@@ -177,8 +177,8 @@ public class SendResultsByMailAction extends Action {
 						final DatosForm userData = LoginDAO.getUserDataByName(connection, request.getSession().getAttribute(Constants.USER).toString());
 						final String url = request.getRequestURL().toString();
 						final String baseURL = url.substring(0, url.length() - request.getRequestURI().length()) + request.getContextPath() + "/";
-						final SendMailCalculateResultsThread sendMailThread = new SendMailCalculateResultsThread(CrawlerUtils.getResources(request), idObservatory, idExObservatory, tagsToFilter,
-								exObsIds, comparision, userData.getEmail(), baseURL);
+						final SendMailCalculateResultsThread sendMailThread = new SendMailCalculateResultsThread(CrawlerUtils.getResources(request), idObservatory, idExObservatory, idCartucho,
+								tagsToFilter, exObsIds, comparision, userData.getEmail(), baseURL);
 						sendMailThread.start();
 						DataBaseManager.closeConnection(connection);
 						return mapping.findForward("calculateResultsByMailAsync");

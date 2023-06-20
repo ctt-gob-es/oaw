@@ -24,6 +24,14 @@ public class TemplateRangeForm extends ValidatorForm implements Serializable {
 	private String minValueOperator;
 	/** The max value operator. */
 	private String maxValueOperator;
+	/** The min position value. */
+	private Float minPositionValue;
+	/** The max position value. */
+	private Float maxPositionValue;
+	/** The min position value operator. */
+	private String minPositionValueOperator;
+	/** The max position value operator. */
+	private String maxPositionValueOperator;
 	/** The template. */
 	private String template;
 
@@ -169,5 +177,77 @@ public class TemplateRangeForm extends ValidatorForm implements Serializable {
 	 */
 	public void setTemplate(String template) {
 		this.template = template;
+	}
+
+	/**
+	 * Gets the min position value.
+	 *
+	 * @return the min position value
+	 */
+	public Float getMinPositionValue() {
+		return minPositionValue;
+	}
+
+	/**
+	 * Sets the min position value.
+	 *
+	 * @param minPositionValue the new min position value
+	 */
+	public void setMinPositionValue(Float minPositionValue) {
+		this.minPositionValue = minPositionValue;
+	}
+
+	/**
+	 * Gets the max position value.
+	 *
+	 * @return the max position value
+	 */
+	public Float getMaxPositionValue() {
+		return maxPositionValue;
+	}
+
+	/**
+	 * Sets the max position value.
+	 *
+	 * @param maxPositionValue the new max position value
+	 */
+	public void setMaxPositionValue(Float maxPositionValue) {
+		this.maxPositionValue = maxPositionValue;
+	}
+
+	/**
+	 * Gets the min position value operator.
+	 *
+	 * @return the min position value operator
+	 */
+	public String getMinPositionValueOperator() {
+		return minPositionValueOperator;
+	}
+
+	/**
+	 * Sets the min position value operator.
+	 *
+	 * @param minPositionValueOperator the new min position value operator
+	 */
+	public void setMinPositionValueOperator(String minPositionValueOperator) {
+		this.minPositionValueOperator = minPositionValueOperator;
+	}
+
+	/**
+	 * Gets the max position value operator.
+	 *
+	 * @return the max position value operator
+	 */
+	public String getMaxPositionValueOperator() {
+		return maxPositionValueOperator;
+	}
+
+	/**
+	 * Sets the max position value operator.
+	 *
+	 * @param maxPositionValueOperator the new max position value operator
+	 */
+	public void setMaxPositionValueOperator(String maxPositionValueOperator) {
+		this.maxPositionValueOperator = maxPositionValueOperator;
 	}
 }

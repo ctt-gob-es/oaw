@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import javax.script.ScriptEngine;
@@ -615,19 +616,34 @@ public final class AnnexUtils {
 				}
 			}
 			// Calculate mid
-			BigDecimal midLastScores = sumLastScore.divide(new BigDecimal(entry.getValue().size()), RoundingMode.HALF_UP);
-			BigDecimal midPreviousScores = sumPreviousScore.divide(new BigDecimal(entry.getValue().size()), RoundingMode.HALF_UP);
-			BigDecimal diffMidScores = midLastScores.subtract(midPreviousScores);
+			BigDecimal midLastScore = sumLastScore.divide(new BigDecimal(entry.getValue().size()), RoundingMode.HALF_UP);
+			BigDecimal midPreviousScore = sumPreviousScore.divide(new BigDecimal(entry.getValue().size()), RoundingMode.HALF_UP);
+			BigDecimal diffMidScores = midLastScore.subtract(midPreviousScore);
 			//
 			UraSendResultForm uraCustom = new UraSendResultForm();
 			uraCustom.setIdUra(entry.getKey().getId());
 			uraCustom.setIdObservatoryExecution(idObsExecution);
 			uraCustom.setRangeValue(diffMidScores.floatValue());
 			uraCustom.setIdRange(0L); // prevents not matching range
+			uraCustom.setMidLastScore(midLastScore.floatValue());
+			uraCustom.setMidPreviousScore(midPreviousScore.floatValue());
 			for (TemplateRangeForm range : iterationRanges) {
-				String expression = generateRangeJsExpression(diffMidScores, range.getMinValueOperator(), range.getMaxValueOperator(), range.getMinValue(), range.getMaxValue());
-				if ((boolean) scriptEngine.eval(expression)) {
-					uraCustom.setIdRange(range.getId());
+				String expressionScore = generateRangeJsExpression(diffMidScores, range.getMinValueOperator(), range.getMaxValueOperator(), range.getMinValue(), range.getMaxValue());
+				if (checkExpressionPosition(range)) {
+					String expressionPosition = generateRangeJsExpression(midPreviousScore, range.getMinPositionValueOperator(), range.getMaxPositionValueOperator(), range.getMinPositionValue(),
+							range.getMaxPositionValue());
+					Logger.putLog("Caso avanzado: Diferencia puntuación: " + diffMidScores + " Posición: " + midPreviousScore, AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
+					if ((boolean) scriptEngine.eval(expressionScore) && (boolean) scriptEngine.eval(expressionPosition)) {
+						Logger.putLog("Condiciones: Diferencia puntuación " + expressionScore + " Diferencia posición: " + expressionPosition + " - Rango: " + range.getId(), AnnexUtils.class,
+								Logger.LOG_LEVEL_WARNING);
+						uraCustom.setIdRange(range.getId());
+					}
+				} else {
+					Logger.putLog("Caso básico: Diferencia puntuación: " + diffMidScores, AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
+					if ((boolean) scriptEngine.eval(expressionScore)) {
+						Logger.putLog("Condiciones: Diferencia puntuación " + expressionScore + " - Rango: " + range.getId(), AnnexUtils.class, Logger.LOG_LEVEL_WARNING);
+						uraCustom.setIdRange(range.getId());
+					}
 				}
 			}
 			uraCustomList.add(uraCustom);
@@ -638,6 +654,19 @@ public final class AnnexUtils {
 		// Save new custom
 		UraSendResultDAO.save(c, uraCustomList);
 		DataBaseManager.closeConnection(c);
+	}
+
+	/**
+	 * Check if is necessary add the position expression
+	 * 
+	 * @param range
+	 * @return true|false
+	 */
+	private static boolean checkExpressionPosition(TemplateRangeForm range) {
+		if (Objects.isNull(range.getMinPositionValue()) && Objects.isNull(range.getMaxPositionValue()) || (range.getMinPositionValue().equals(0.0f) && range.getMaxPositionValue().equals(0.0f))) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -662,17 +691,6 @@ public final class AnnexUtils {
 		return expression;
 	}
 
-	/****
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
 	/**
 	 * Creates the annex paginas.
 	 *

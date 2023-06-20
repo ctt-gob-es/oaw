@@ -26,6 +26,8 @@ public class SendMailCalculateResultsThread extends Thread {
 	private Long idObs;
 	/** The id obs execution. */
 	private Long idObsExecution;
+	/** The id cartucho. */
+	private Long idCartucho;
 	/** The tags to filter. */
 	private String[] tagsToFilter;
 	/** The ex obs ids. */
@@ -47,13 +49,14 @@ public class SendMailCalculateResultsThread extends Thread {
 	 * @param comparision      the comparision
 	 * @param email            the email
 	 */
-	public SendMailCalculateResultsThread(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final String[] tagsToFilter, final String[] exObsIds,
-			final List<ComparisionForm> comparision, final String email, final String baseURL) {
+	public SendMailCalculateResultsThread(final MessageResources messageResources, final Long idObs, final Long idObsExecution, final Long idCartucho, final String[] tagsToFilter,
+			final String[] exObsIds, final List<ComparisionForm> comparision, final String email, final String baseURL) {
 		this.idObsExecution = idObsExecution;
 		this.idObs = idObs;
 		this.messageResources = messageResources;
 		this.tagsToFilter = tagsToFilter;
 		this.exObsIds = exObsIds;
+		this.idCartucho = idCartucho;
 		this.email = email;
 		this.baseURL = baseURL;
 	}
@@ -76,6 +79,7 @@ public class SendMailCalculateResultsThread extends Thread {
 			linkUrl.append("secure/ConfigSendResultsByMailAction.do?action=finish");
 			linkUrl.append("&idExObs=").append(this.idObsExecution);
 			linkUrl.append("&&id_observatorio=").append(this.idObs);
+			linkUrl.append("&&idCartucho=").append(this.idCartucho);
 			mailBody.append("<a href=\"").append(linkUrl.toString()).append("\">").append("Ver resultados").append("</a><br>");
 			List<String> mailsTo = new ArrayList<>();
 			mailsTo.add(email);

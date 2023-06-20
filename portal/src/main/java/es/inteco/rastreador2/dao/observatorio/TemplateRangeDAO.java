@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -31,9 +32,7 @@ public class TemplateRangeDAO extends DataBaseDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static int count(Connection c, String nombre, final Long idExObs) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		int count = 1;
 		String query = "SELECT COUNT(*) FROM observatorio_template_range e WHERE 1=1 AND id_observatory_execution = ? ";
 		if (StringUtils.isNotEmpty(nombre)) {
@@ -65,13 +64,10 @@ public class TemplateRangeDAO extends DataBaseDAO {
 	 * @return the etiquetas
 	 * @throws Exception the SQL exception
 	 */
-	public static List<TemplateRangeForm> findAll(Connection c,final Long idExObs) throws Exception {
-		
-		c = reOpenConnectionIfIsNecessary(c);	
-		
+	public static List<TemplateRangeForm> findAll(Connection c, final Long idExObs) throws Exception {
+		c = reOpenConnectionIfIsNecessary(c);
 		final List<TemplateRangeForm> results = new ArrayList<>();
-		String query = "SELECT id, name, min_value, max_value, min_value_operator, max_value_operator, template FROM observatorio_template_range WHERE 1=1 AND id_observatory_execution = ? ORDER BY UPPER(name) ASC, UPPER(name) ASC";
-		
+		String query = "SELECT id, name, min_value, max_value, min_value_operator, max_value_operator, min_position_value, max_position_value, min_position_value_operator, max_position_value_operator, template FROM observatorio_template_range WHERE 1=1 AND id_observatory_execution = ? ORDER BY UPPER(name) ASC, UPPER(name) ASC";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idExObs);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -83,6 +79,18 @@ public class TemplateRangeDAO extends DataBaseDAO {
 					form.setMaxValue(rs.getFloat("max_value"));
 					form.setMinValueOperator(rs.getString("min_value_operator"));
 					form.setMaxValueOperator(rs.getString("max_value_operator"));
+					if (Objects.nonNull(rs.getString("min_position_value"))) {
+						form.setMinPositionValue(Float.parseFloat(rs.getString("min_position_value")));
+					} else {
+						form.setMinPositionValue(null);
+					}
+					if (Objects.nonNull(rs.getString("max_position_value"))) {
+						form.setMaxPositionValue(Float.parseFloat(rs.getString("max_position_value")));
+					} else {
+						form.setMaxPositionValue(null);
+					}
+					form.setMinPositionValueOperator(rs.getString("min_position_value_operator"));
+					form.setMaxPositionValueOperator(rs.getString("max_position_value_operator"));
 					form.setTemplate(new String(Base64.decodeBase64(rs.getString("template").getBytes())));
 					results.add(form);
 				}
@@ -104,11 +112,9 @@ public class TemplateRangeDAO extends DataBaseDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static TemplateRangeForm findById(Connection c, final Long idExObs, final Long id) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		final TemplateRangeForm result = null;
-		String query = "SELECT id, name, min_value, max_value, min_value_operator, max_value_operator, template FROM observatorio_template_range WHERE 1=1 AND id_observatory_execution = ? AND id =?";
+		String query = "SELECT id, name, min_value, max_value, min_value_operator, max_value_operator, min_position_value, max_position_value, min_position_value_operator, max_position_value_operator, template FROM observatorio_template_range WHERE 1=1 AND id_observatory_execution = ? AND id =?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(1, idExObs);
 			ps.setLong(2, id);
@@ -121,6 +127,18 @@ public class TemplateRangeDAO extends DataBaseDAO {
 					form.setMaxValue(rs.getFloat("max_value"));
 					form.setMinValueOperator(rs.getString("min_value_operator"));
 					form.setMaxValueOperator(rs.getString("max_value_operator"));
+					if (Objects.nonNull(rs.getString("min_position_value"))) {
+						form.setMinPositionValue(Float.parseFloat(rs.getString("min_position_value")));
+					} else {
+						form.setMinPositionValue(null);
+					}
+					if (Objects.nonNull(rs.getString("max_position_value"))) {
+						form.setMaxPositionValue(Float.parseFloat(rs.getString("max_position_value")));
+					} else {
+						form.setMaxPositionValue(null);
+					}
+					form.setMinPositionValueOperator(rs.getString("min_position_value_operator"));
+					form.setMaxPositionValueOperator(rs.getString("max_position_value_operator"));
 					form.setTemplate(new String(Base64.decodeBase64(rs.getString("template").getBytes())));
 					return form;
 				}
@@ -141,27 +159,29 @@ public class TemplateRangeDAO extends DataBaseDAO {
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	public static void save(Connection c, final TemplateRangeForm form) throws Exception, UnsupportedEncodingException {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
 			ps = c.prepareStatement(
-					"INSERT INTO observatorio_template_range(name, min_value, max_value, min_value_operator, max_value_operator,template,id_observatory_execution) VALUES (?,?,?,?,?,?,?)",
+					"INSERT INTO observatorio_template_range(name, min_value, max_value, min_value_operator, max_value_operator, min_position_value, max_position_value, min_position_value_operator, max_position_value_operator, template, id_observatory_execution) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
 					Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, form.getName());
 			ps.setFloat(2, form.getMinValue());
 			ps.setFloat(3, form.getMaxValue());
 			ps.setString(4, form.getMinValueOperator());
 			ps.setString(5, form.getMaxValueOperator());
+			ps.setFloat(6, form.getMinPositionValue());
+			ps.setFloat(7, form.getMaxPositionValue());
+			ps.setString(8, form.getMinPositionValueOperator());
+			ps.setString(9, form.getMaxPositionValueOperator());
 			// Encode BASE64 code
 			String template = new String(form.getTemplate());
 			if (!StringUtils.isEmpty(template)) {
 				template = new String(Base64.encodeBase64(template.getBytes("UTF-8")));
 			}
-			ps.setString(6, template);
-			ps.setLong(7, form.getIdObservatoryExecution());
+			ps.setString(10, template);
+			ps.setLong(11, form.getIdObservatoryExecution());
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 0) {
 				throw new SQLException("Creating range failed, no rows affected.");
@@ -185,23 +205,25 @@ public class TemplateRangeDAO extends DataBaseDAO {
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	public static void update(Connection c, final TemplateRangeForm form) throws Exception, UnsupportedEncodingException {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
-		final String query = "UPDATE observatorio_template_range SET name = ?, min_value = ?, max_value = ?, min_value_operator = ?, max_value_operator = ?, template = ? WHERE id = ?";
+		final String query = "UPDATE observatorio_template_range SET name = ?, min_value = ?, max_value = ?, min_value_operator = ?, max_value_operator = ?, min_position_value = ?, max_position_value = ?, min_position_value_operator = ?, max_position_value_operator = ?, template = ? WHERE id = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, form.getName());
 			ps.setFloat(2, form.getMinValue());
 			ps.setFloat(3, form.getMaxValue());
 			ps.setString(4, form.getMinValueOperator());
 			ps.setString(5, form.getMaxValueOperator());
+			ps.setFloat(6, form.getMinPositionValue());
+			ps.setFloat(7, form.getMaxPositionValue());
+			ps.setString(8, form.getMinPositionValueOperator());
+			ps.setString(9, form.getMaxPositionValueOperator());
 			// Encode BASE64 code
 			String template = new String(form.getTemplate());
 			if (!StringUtils.isEmpty(template)) {
 				template = new String(Base64.encodeBase64(template.getBytes("UTF-8")));
 			}
-			ps.setString(6, template);
-			ps.setLong(7, form.getId());
+			ps.setString(10, template);
+			ps.setLong(11, form.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", TemplateRangeDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -217,9 +239,7 @@ public class TemplateRangeDAO extends DataBaseDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static void delete(Connection c, final Long id) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_template_range WHERE id = ?")) {
 			ps.setLong(1, id);
 			ps.executeUpdate();
@@ -238,9 +258,7 @@ public class TemplateRangeDAO extends DataBaseDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static boolean exists(Connection c, final TemplateRangeForm form) throws Exception {
-
 		c = reOpenConnectionIfIsNecessary(c);
-		
 		boolean exists = false;
 		String query = "SELECT * FROM observatorio_template_range WHERE UPPER(name) = UPPER(?) AND id_observatory_execution = ?";
 		if (form.getId() != null) {
@@ -262,5 +280,4 @@ public class TemplateRangeDAO extends DataBaseDAO {
 		}
 		return exists;
 	}
-	
 }

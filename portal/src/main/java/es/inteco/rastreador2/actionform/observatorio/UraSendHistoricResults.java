@@ -35,6 +35,8 @@ public class UraSendHistoricResults extends ValidatorForm implements Serializabl
 	private Long uraId;
 	/** The range value. */
 	private Float rangeValue;
+	/** The mid previous score. */
+	private Float midPreviousScore;
 	/** The send. */
 	private boolean send;
 	/** The send date. */
@@ -372,5 +374,23 @@ public class UraSendHistoricResults extends ValidatorForm implements Serializabl
 	 */
 	public void setValidDate(Date validDate) {
 		this.validDate = validDate;
+	}
+
+	/**
+	 * Gets the mid previous score.
+	 *
+	 * @return the mid previous score
+	 */
+	public Float getMidPreviousScore() {
+		return midPreviousScore;
+	}
+
+	/**
+	 * Sets the mid previous score.
+	 *
+	 * @param mail the mid previous score
+	 */
+	public void setMidPreviousScore(Float midPreviousScore) {
+		this.midPreviousScore = midPreviousScore;
 	}
 }
