@@ -11,6 +11,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -140,7 +141,11 @@ public class UraSendResultDAO extends DataBaseDAO {
 					form.setFileLink(rs.getString("c.file_link"));
 					form.setFilePass(rs.getString("c.file_pass"));
 					form.setRangeValue(rs.getFloat("c.range_value"));
-					form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
+					if (Objects.nonNull(rs.getString("c.mid_previous_score"))) {
+						form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
+					} else {
+						form.setMidPreviousScore(null);
+					}
 					results.add(form);
 				}
 			}
@@ -237,7 +242,11 @@ public class UraSendResultDAO extends DataBaseDAO {
 						form.setFileLink(rs.getString("c.file_link"));
 						form.setFilePass(rs.getString("c.file_pass"));
 						form.setRangeValue(rs.getFloat("c.range_value"));
-						form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
+						if (Objects.nonNull(rs.getString("c.mid_previous_score"))) {
+							form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
+						} else {
+							form.setMidPreviousScore(null);
+						}
 						form.setUra(ura);
 						results.add(form);
 					}
@@ -273,7 +282,11 @@ public class UraSendResultDAO extends DataBaseDAO {
 					form.setTemplate(new String(Base64.decodeBase64(rs.getString("custom_text").getBytes())));
 					form.setSend(rs.getBoolean("c.send"));
 					form.setHasCustomText(rs.getBoolean("c.has_custom_text"));
-					form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
+					if (Objects.nonNull(rs.getString("c.mid_previous_score"))) {
+						form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
+					} else {
+						form.setMidPreviousScore(null);
+					}
 					final RangeForm range = new RangeForm();
 					range.setId(rs.getLong("r.id"));
 					range.setName(rs.getString("r.name"));
@@ -532,13 +545,17 @@ public class UraSendResultDAO extends DataBaseDAO {
 						for (UraSendHistoricRange range : historic.getRanges()) {
 							range.setIdSendHistoric(idSendHistoric);
 							PreparedStatement psRange = c.prepareStatement(
-									"INSERT INTO observatorio_send_historic_ranges(id_send_historic, name,min_value,max_value,min_value_operator,max_value_operator,template) VALUES (?,?,?,?,?,?,?)");
+									"INSERT INTO observatorio_send_historic_ranges(id_send_historic, name,min_value,max_value,min_value_operator,max_value_operator,min_position_value,max_position_value,min_position_value_operator,max_position_value_operator,template) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
 							psRange.setLong(1, range.getIdSendHistoric());
 							psRange.setString(2, range.getName());
 							psRange.setFloat(3, range.getMinValue());
 							psRange.setFloat(4, range.getMaxValue());
 							psRange.setString(5, range.getMinValueOperator());
 							psRange.setString(6, range.getMaxValueOperator());
+							psRange.setFloat(7, range.getMinPositionValue());
+							psRange.setFloat(8, range.getMaxPositionValue());
+							psRange.setString(9, range.getMinValueOperator());
+							psRange.setString(10, range.getMaxValueOperator());
 							// Encode BASE64 code
 							String template = new String(range.getTemplate());
 							try {
@@ -548,7 +565,7 @@ public class UraSendResultDAO extends DataBaseDAO {
 							} catch (UnsupportedEncodingException e) {
 								Logger.putLog("SQL_EXCEPTION: ", UraSendResultDAO.class, Logger.LOG_LEVEL_ERROR, e);
 							}
-							psRange.setString(7, template);
+							psRange.setString(11, template);
 							psRange.executeUpdate();
 						}
 					}
@@ -658,6 +675,18 @@ public class UraSendResultDAO extends DataBaseDAO {
 						range.setMaxValue(rsRanges.getFloat("max_value"));
 						range.setMinValueOperator(rsRanges.getString("min_value_operator"));
 						range.setMaxValueOperator(rsRanges.getString("max_value_operator"));
+						if (Objects.nonNull(rsRanges.getString("min_position_value"))) {
+							range.setMinPositionValue(rsRanges.getFloat("min_position_value"));
+						} else {
+							range.setMinPositionValue(null);
+						}
+						if (Objects.nonNull(rsRanges.getString("max_position_value"))) {
+							range.setMaxPositionValue(rsRanges.getFloat("max_position_value"));
+						} else {
+							range.setMaxPositionValue(null);
+						}
+						range.setMinPositionValueOperator(rsRanges.getString("min_position_value_operator"));
+						range.setMaxPositionValueOperator(rsRanges.getString("max_position_value_operator"));
 						range.setTemplate(new String(Base64.decodeBase64(rsRanges.getString("template").getBytes())));
 						rangeList.add(range);
 					}
@@ -711,7 +740,11 @@ public class UraSendResultDAO extends DataBaseDAO {
 						result.setFileLink(rsResults.getString("c.file_link"));
 						result.setFilePass(rsResults.getString("c.file_pass"));
 						result.setRangeValue(rsResults.getFloat("c.range_value"));
-						result.setMidPreviousScore(rsResults.getFloat("c.mid_previous_score"));
+						if (Objects.nonNull(rsResults.getString("c.mid_previous_score"))) {
+							result.setMidPreviousScore(rsResults.getFloat("c.mid_previous_score"));
+						} else {
+							result.setMidPreviousScore(null);
+						}
 						resultsList.add(result);
 					}
 					historic.setResults(resultsList);
@@ -758,7 +791,11 @@ public class UraSendResultDAO extends DataBaseDAO {
 					form.setSend(rs.getBoolean("c.send"));
 					form.setSendError(rs.getString("c.send_error"));
 					form.setRangeValue(rs.getFloat("c.range_value"));
-					form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
+					if (Objects.nonNull(rs.getString("c.mid_previous_score"))) {
+						form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
+					} else {
+						form.setMidPreviousScore(null);
+					}
 					results.add(form);
 				}
 			}
@@ -798,7 +835,11 @@ public class UraSendResultDAO extends DataBaseDAO {
 					form.setSend(rs.getBoolean("c.send"));
 					form.setSendError(rs.getString("c.send_error"));
 					form.setRangeValue(rs.getFloat("c.range_value"));
-					form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
+					if (Objects.nonNull(rs.getString("c.mid_previous_score"))) {
+						form.setMidPreviousScore(rs.getFloat("c.mid_previous_score"));
+					} else {
+						form.setMidPreviousScore(null);
+					}
 					results.add(form);
 				}
 			}

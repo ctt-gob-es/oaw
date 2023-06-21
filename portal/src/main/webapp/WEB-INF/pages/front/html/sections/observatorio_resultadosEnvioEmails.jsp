@@ -340,12 +340,23 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										<th>
 											<bean:message key="colname.min.value.operator" />
 										</th>
-										<th>x</th>
 										<th>
 											<bean:message key="colname.max.value.operator" />
 										</th>
 										<th>
 											<bean:message key="colname.max.value" />
+										</th>
+										<th>
+											<bean:message key="colname.min.position.value" />
+										</th>
+										<th>
+											<bean:message key="colname.min.position.value.operator" />
+										</th>
+										<th>
+											<bean:message key="colname.max.position.value.operator" />
+										</th>
+										<th>
+											<bean:message key="colname.max.position.value" />
 										</th>
 										<th>
 											<bean:message key="colname.template" />
@@ -370,12 +381,23 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												<td>
 													<bean:write name="range" property="minValueOperator" />
 												</td>
-												<td>x</td>
 												<td>
 													<bean:write name="range" property="maxValueOperator" />
 												</td>
 												<td>
 													<bean:write name="range" property="maxValue" />
+												</td>
+												<td>
+													<bean:write name="range" property="minPositionValue" />
+												</td>
+												<td>
+													<bean:write name="range" property="minPositionValueOperator" />
+												</td>
+												<td>
+													<bean:write name="range" property="maxPositionValueOperator" />
+												</td>
+												<td>
+													<bean:write name="range" property="maxPositionValue" />
 												</td>
 												<td>
 													<logic:notEmpty name="range" property="template">

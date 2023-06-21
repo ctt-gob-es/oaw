@@ -80,12 +80,12 @@ public class TemplateRangeDAO extends DataBaseDAO {
 					form.setMinValueOperator(rs.getString("min_value_operator"));
 					form.setMaxValueOperator(rs.getString("max_value_operator"));
 					if (Objects.nonNull(rs.getString("min_position_value"))) {
-						form.setMinPositionValue(Float.parseFloat(rs.getString("min_position_value")));
+						form.setMinPositionValue(rs.getFloat("min_position_value"));
 					} else {
 						form.setMinPositionValue(null);
 					}
 					if (Objects.nonNull(rs.getString("max_position_value"))) {
-						form.setMaxPositionValue(Float.parseFloat(rs.getString("max_position_value")));
+						form.setMaxPositionValue(rs.getFloat("max_position_value"));
 					} else {
 						form.setMaxPositionValue(null);
 					}
@@ -128,12 +128,12 @@ public class TemplateRangeDAO extends DataBaseDAO {
 					form.setMinValueOperator(rs.getString("min_value_operator"));
 					form.setMaxValueOperator(rs.getString("max_value_operator"));
 					if (Objects.nonNull(rs.getString("min_position_value"))) {
-						form.setMinPositionValue(Float.parseFloat(rs.getString("min_position_value")));
+						form.setMinPositionValue(rs.getFloat("min_position_value"));
 					} else {
 						form.setMinPositionValue(null);
 					}
 					if (Objects.nonNull(rs.getString("max_position_value"))) {
-						form.setMaxPositionValue(Float.parseFloat(rs.getString("max_position_value")));
+						form.setMaxPositionValue(rs.getFloat("max_position_value"));
 					} else {
 						form.setMaxPositionValue(null);
 					}
