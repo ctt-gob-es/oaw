@@ -2186,6 +2186,7 @@ public final class ObservatorioDAO extends DataBaseDAO {
 					insertarRastreoForm.setLenguaje(observatorioForm.getLenguaje());
 					final Long idCrawler = ObservatorioDAO.existObservatoryCrawl(c, idObservatory, semillaForm.getId());
 					if (idCrawler == -1) {
+						insertarRastreoForm.setLenguaje(observatorioForm.getLenguaje());
 						insertarRastreoForm.setActive(semillaForm.isActiva());
 						RastreoDAO.insertarRastreo(c, insertarRastreoForm, true);
 						// Desactivamos si la semilla está desactivada o borrada
