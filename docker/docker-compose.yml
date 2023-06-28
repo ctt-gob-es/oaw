@@ -43,7 +43,8 @@ services:
         # Si se coloca un fichero .sql.gz en la ruta del cointainer indicada
         # se lanzará el script contenido al inicializar la base de datos.
         # Comentar esta línea si no es necesaria
-        - "./mysql/CREATE_DATABSE_OAW5.sql:/docker-entrypoint-initdb.d/CREATE_DATABSE_OAW5.sql"
+        - "./mysql/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql"
+        - "./mysql/02_data.sql:/docker-entrypoint-initdb.d/02_data.sql"
         - "./volumes/mysql/:/var/lib/mysql/"
       container_name: oaw_mysql
 

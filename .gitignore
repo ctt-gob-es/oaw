@@ -92,7 +92,3 @@ docker/volumes/*
 
 ### Tmp folder
 docker/tmp/hsperfdata_root
-
-### Mysql folder
-docker/mysql/*
-!docker/mysql/database.tar.gz
