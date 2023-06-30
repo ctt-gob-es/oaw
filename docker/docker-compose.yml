@@ -45,6 +45,8 @@ services:
         # Comentar esta línea si no es necesaria
         - "./mysql/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql"
         - "./mysql/02_data.sql:/docker-entrypoint-initdb.d/02_data.sql"
+        - "./mysql/03_data.sql:/docker-entrypoint-initdb.d/03_data.sql"
+        - "./mysql/04_data.sql:/docker-entrypoint-initdb.d/04_data.sql"
         - "./volumes/mysql/:/var/lib/mysql/"
       container_name: oaw_mysql
 
