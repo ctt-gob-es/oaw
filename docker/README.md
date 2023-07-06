@@ -28,7 +28,7 @@ Dentro de este archivo podemos encontrar la `url` de la base de datos que vamos 
 ```xml
 <Context path="/oaw" reloadable="true">
 	<Resource auth="Container" driverClassName="com.mysql.cj.jdbc.Driver"
-	type="javax.sql.DataSource" name="jdbc/oaw" url="jdbc:mysql://mysql:3306/OAW5"
+	type="javax.sql.DataSource" name="jdbc/oaw" url="jdbc:mysql://mysql:3306/OAW"
 	maxActive="100" maxIdle="10" maxWait="-1"
 	validationQuery="SELECT 1 as dbcp_connection_test" removeAbandoned="true"
 	testOnBorrow="true" timeBetweenEvictionRunsMillis="60000"

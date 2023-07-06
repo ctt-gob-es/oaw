@@ -1,8 +1,8 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
-CREATE DATABASE IF NOT EXISTS `OAW5` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
-USE `OAW5`;
+CREATE DATABASE IF NOT EXISTS `OAW` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+USE `OAW`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ambitos_lista` (
