@@ -10,4 +10,5 @@ export JAVA_HOME=$jdk_route$jdk_version
 mvn  -f ./oaw/pom.xml clean install -P docker -Dmaven.test.skip=true
     
 ## Run containers
+docker compose -f ./docker/docker-compose.yml down
 docker compose -f ./docker/docker-compose.yml up -d --build
