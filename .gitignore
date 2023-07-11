@@ -86,9 +86,9 @@ int-stop-and-clean.sh
 server.crt
 server.key
 
-### Volumes folder
+### Volumes docker folder
 docker/volumes/*
 !docker/volumes/.gitkeep
 
-### Tmp folder
+### Tmp docker folder
 docker/tmp/*
