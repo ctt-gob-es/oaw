@@ -91,4 +91,4 @@ docker/volumes/*
 !docker/volumes/.gitkeep
 
 ### Tmp folder
-docker/tmp/hsperfdata_root
+docker/tmp/*
