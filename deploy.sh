@@ -9,6 +9,13 @@ export JAVA_HOME=$jdk_route$jdk_version
 ## War Generation
 mvn  -f ./oaw/pom.xml clean install -P docker -Dmaven.test.skip=true
     
-## Run containers
+## Run containers with version syntax control
 docker compose -f ./docker/docker-compose.yml down
+if [ $? -ne 0 ]; then
+  docker-compose -f ./docker/docker-compose.yml down
+fi
+
 docker compose -f ./docker/docker-compose.yml up -d --build
+if [ $? -ne 0 ]; then
+  docker-compose -f ./docker/docker-compose.yml up -d --build
+fi
