@@ -2,14 +2,32 @@ version: '2.2'
 
 services:
 
-    renderer:
+    renderer-1:
       privileged: true
       build: ./renderer
       image: oawjs_renderer
-      scale: 3
       cpus: 2
       restart: always
       command: node /opt/prerender/server.js
+      container_name: docker_renderer_1
+
+    renderer-2:
+      privileged: true
+      build: ./renderer
+      image: oawjs_renderer
+      cpus: 2
+      restart: always
+      command: node /opt/prerender/server.js
+      container_name: docker_renderer_2
+
+    renderer-3:
+      privileged: true
+      build: ./renderer
+      image: oawjs_renderer
+      cpus: 2
+      restart: always
+      command: node /opt/prerender/server.js
+      container_name: docker_renderer_3
       
     proxy:
       build: ./proxy      
@@ -27,7 +45,9 @@ services:
         - ./nginx/certs/server.crt:/etc/nginx/ssl/server.crt
         - ./nginx/certs/server.key:/etc/nginx/ssl/server.key        
       links:
-        - renderer
+        - renderer-1
+        - renderer-2
+        - renderer-3
       restart: always
       shm_size: '1gb'
       container_name: oaw_nginx
