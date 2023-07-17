@@ -148,14 +148,14 @@ Email: observ.accesibilidad@correo.gob.es
 
 		<logic:equal name="<%=Constants.SUBMENU%>" value="<%=Constants.SUBMENU_LISTADO_APIKEYS%>">
 			<li class="active">
-				<html:link styleId="subselected" forward="observatoryApiKeys" titleKey="menu.config.plantillas.title">
-					<bean:message key="menu.config.plantillas" />
+				<html:link styleId="subselected" forward="observatoryApiKeys" titleKey="menuadmin.apikeys.title">
+					<bean:message key="menuadmin.apikeys" />
 				</html:link>
 		</logic:equal>
 		<logic:notEqual name="<%=Constants.SUBMENU%>" value="<%=Constants.SUBMENU_LISTADO_APIKEYS%>">
 			<li>
-				<html:link forward="observatoryApiKeys" titleKey="menu.config.etiquetas.title">
-					<bean:message key="menu.config.plantillas" />
+				<html:link forward="observatoryApiKeys" titleKey="menuadmin.apikeys.title">
+					<bean:message key="menuadmin.apikeys" />
 				</html:link>
 		</logic:notEqual>
 

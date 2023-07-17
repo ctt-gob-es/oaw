@@ -321,7 +321,6 @@
 	</definition>
 
 
-
 	<!-- P�gina cargar complejidades observatorio -->
 	<definition name=".cargarComplejidadesObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />

@@ -13,7 +13,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <%@ include file="/common/taglibs.jsp"%>
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml />
-<html:javascript formName="ApiKeyForm" />
+<html:javascript formName="ApiKeyForm"/>
 
 <!--  JQ GRID   -->
 <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">

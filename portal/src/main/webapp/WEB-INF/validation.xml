@@ -529,8 +529,14 @@
 			<field property="name" depends="required">
 				<arg0 key="error.dependendencia" />
 			</field>
-		</form>
+		</form> 
 
+		<form name="ApiKeyForm">
+			<field property="name" depends="required">
+				<arg0 key="error.dependendencia" />
+			</field>
+		</form>
+		
 		<form name="ComplejidadForm">
 			<field property="name" depends="required">
 				<arg0 key="error.dependendencia" />
@@ -542,7 +548,6 @@
 				<arg0 key="error.dependendencia" />
 			</field>
 		</form>
-
 
 		<form name="EtiquetaForm">
 			<field property="name" depends="required">

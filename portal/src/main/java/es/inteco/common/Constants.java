@@ -171,6 +171,8 @@ public interface Constants {
 	String NEW_COMPLEXITY_SEED = "newComplexitySeed";
 	/** The complejidad form. */
 	String COMPLEJIDAD_FORM = "ComplejidadForm";
+	/** The apikey form. */
+	String API_KEY_FORM = "ApiKeyForm";
 	/** The add complexity seed. */
 	String ADD_COMPLEXITY_SEED = "addComplexitySeed";
 	/** The update complexity seed. */
