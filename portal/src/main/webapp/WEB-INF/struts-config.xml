@@ -378,6 +378,7 @@
 
 
 		<forward name="observatoryPlantillas" path="/secure/Plantilla.do?action=load" />
+		<forward name="observatoryApiKeys" path="/secure/ApiKey.do?action=load" />
 
 		<forward name="observatoryReducirTablas" path="/secure/ViewReducirTablasObservatorio.do?action=load" />
 
@@ -561,6 +562,11 @@
 		<action path="/secure/Plantilla" name="PlantillaForm"
 			type="es.inteco.rastreador2.action.observatorio.PlantillaAction" parameter="action" scope="request" validate="false">
 			<forward name="exito" path=".cargarPlantillasObservatorio" />
+		</action>
+
+		<action path="/secure/ApiKey" name="ApiKeyForm"
+			type="es.inteco.rastreador2.action.observatorio.ApiKeyAction" parameter="action" scope="request" validate="false">
+			<forward name="exito" path=".cargarApiKeys" />
 		</action>
 
 
