@@ -23,8 +23,6 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-import com.google.protobuf.Api;
-
 import es.inteco.rastreador2.dao.BaseDAO;
 import es.inteco.rastreador2.export.database.form.ApiKeyForm;
 
@@ -41,7 +39,7 @@ public class ApiKeyDAO extends BaseDAO {
 	 */
 	public static ApiKey getApiKey(Session session, Long id) {
 		Criteria criteria = session.createCriteria(ApiKey.class);
-		criteria.add(Restrictions.eq("id", id));
+		criteria.add(Restrictions.eq("idApiKey", id));
 		ApiKey apiKey = (ApiKey) criteria.uniqueResult();
 		return apiKey;
 		
@@ -83,4 +81,46 @@ public class ApiKeyDAO extends BaseDAO {
 		return (int) criteria.uniqueResult();
 
 	}
+
+	public static void deleteApiKey (Session session, Long id){
+		Criteria criteria = session.createCriteria(ApiKey.class);
+		criteria.add(Restrictions.eq("idApiKey", id));
+		List<ApiKey> resultList = criteria.list();
+		if (!resultList.isEmpty()) {
+			ApiKey elementToDelete = resultList.get(0);
+			session.delete(elementToDelete);
+		}
+	}
+
+	public static void updateApiKey (Session session, ApiKeyForm apiKeyForm){
+		Criteria criteria = session.createCriteria(ApiKey.class);
+		criteria.add(Restrictions.eq("idApiKey", apiKeyForm.getId()));
+		List<ApiKey> resultList = criteria.list();
+		if (!resultList.isEmpty()) {
+			ApiKey elementToUpdate = resultList.get(0);
+			elementToUpdate.setName(apiKeyForm.getName());
+			elementToUpdate.setDescription(apiKeyForm.getDescription());
+			elementToUpdate.setType(apiKeyForm.getType());
+			session.update(elementToUpdate);
+		}
+	}
+
+	public static void saveApiKey (Session session, ApiKeyForm apiKeyForm){
+			ApiKey newApiKey = new ApiKey();
+			newApiKey.setName(apiKeyForm.getName());
+			newApiKey.setDescription(apiKeyForm.getDescription());
+			newApiKey.setType(apiKeyForm.getType());
+			session.save(newApiKey);
+		
+	}
+	public static boolean existsApiKey (Session session, String name){
+		Criteria criteria = session.createCriteria(ApiKey.class);
+		criteria.add(Restrictions.eq("name", name));
+		List<ApiKey> resultList = criteria.list();
+		return !resultList.isEmpty();
+	}
+
+
+	
+
 }

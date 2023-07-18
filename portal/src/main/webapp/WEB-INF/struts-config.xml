@@ -566,7 +566,7 @@
 		</action>
 
 		<action path="/secure/ApiKey" name="ApiKeyForm"
-			type="es.inteco.rastreador2.action.observatorio.ApiKeyAction" parameter="action" scope="request" validate="false">
+			type="es.inteco.rastreador2.action.observatorio.ApiKeyAction" parameter="action" scope="session" validate="false">
 			<forward name="exito" path=".cargarApiKeys" />
 		</action>
 

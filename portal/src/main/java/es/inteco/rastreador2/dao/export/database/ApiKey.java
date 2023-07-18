@@ -15,23 +15,11 @@
 ******************************************************************************/
 package es.inteco.rastreador2.dao.export.database;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * The Class ApiKey.
@@ -45,7 +33,7 @@ public class ApiKey {
 	@Id
 	@GeneratedValue
 	@Column(name = "id", nullable = false)
-	private Long id;
+	private Long idApiKey;
 
 	@Column (name = "nombre", nullable = false)
 	private String name;
@@ -62,7 +50,7 @@ public class ApiKey {
 	 * @return the id
 	 */
     public Long getId() {
-        return id;
+        return idApiKey;
     }
 
     /**
@@ -71,7 +59,7 @@ public class ApiKey {
 	 * @param id the new id
 	 */
     public void setId(Long id) {
-        this.id = id;
+        this.idApiKey = id;
     }
 
 	 /**

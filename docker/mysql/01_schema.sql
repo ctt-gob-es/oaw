@@ -924,14 +924,17 @@ CREATE TABLE `usuario_rol` (
   PRIMARY KEY (`usuario`,`id_rol`),
   KEY `id_rol` (`id_rol`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `export_apiKey`(
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) NOT NULL,
   `descripcion` varchar(200),
-  `tipo` varchar (varchar) (50) NOT NULL,
+  `tipo` varchar (50) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `id` (`id`),
-)
+  KEY `id` (`id`)
+)ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50001 DROP VIEW IF EXISTS `oaw_dashboard`*/;

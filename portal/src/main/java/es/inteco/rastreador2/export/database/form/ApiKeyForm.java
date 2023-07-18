@@ -15,7 +15,6 @@
 ******************************************************************************/
 package es.inteco.rastreador2.export.database.form;
 
-import java.util.List;
 
 import org.apache.struts.validator.ValidatorForm;
 
@@ -28,7 +27,7 @@ public class ApiKeyForm extends ValidatorForm{
     private static final long serialVersionUID = 1L;
     
     /** The id. */
-    private Long id;
+    private Long idApiKey;
     
     /** The name. */
     private String name;
@@ -46,7 +45,7 @@ public class ApiKeyForm extends ValidatorForm{
      * @return the id
      */
     public Long getId() {
-        return id;
+        return idApiKey;
     }
 
     /**
@@ -55,7 +54,7 @@ public class ApiKeyForm extends ValidatorForm{
      * @param id the new id
      */
     public void setId(Long id) {
-        this.id = id;
+        this.idApiKey = id;
     }
 
     /**

@@ -33,7 +33,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
-<script src="/oaw/js/gridEtiquetas.js" type="text/javascript"></script>
+<script src="/oaw/js/gridApiKeys.js" type="text/javascript"></script>
 
 
 <!--  JQ GRID   -->
@@ -49,8 +49,6 @@ var colNameId = '<bean:message key="colname.id"/>';
 var colNameName = '<bean:message key="colname.name"/>';
 var colNameRemove = '<bean:message key="colname.remove"/>';
 
-var colNameClassification = '<bean:message key="colname.classification"/>';
-
 
 var windowTitleRemove = '<bean:message key="nueva.etiqueta.observatorio.modal.eliminar.title"/>';
 
@@ -61,53 +59,17 @@ var cancelButton = '<bean:message key="boton.cancelar"/>';
 var confirmRemoveMessage = '<bean:message key="nueva.etiqueta.observatorio.modal.eliminar.confirm"/>';
 
 
-//Cargar las clasificaciones
-	function cargarSelect(rowObject) {
-
-$jn('#selectClasificacionesNuevaEtiqueta').empty();
-$jn
-		.ajax(
-				{
-					url : '/oaw/secure/Apikey.do?action=list',
-				})
-		.done(
-				function(data) {
-
-					var response = $jn.parseJSON(data);
-
-					$jn('#selectClasificacionesNuevaEtiqueta').append();
-					if (response && response.length) {
-						for (var i = 0, l = response.length; i < l; i++) {
-							var ri = response[i];
-							$jn('#selectClasificacionesNuevaEtiqueta').append(
-											'<option value="'+ri.id+'">'
-													+ ri.nombre
-													+ '</option>');
-						}
-					}
-
-					if (rowObject != null) {
-
-						$jn('#selectClasificacionesNuevaEtiqueta').val(
-								rowObject.clasificacion.id);
-					}
-
-				});
-}
-
-
-
 var dialog;
 
 var windowWidth = $(window).width() * 0.4;
 var windowHeight = $(window).height() * 0.3;
 
 
-function dialogoNuevaEtiqueta() {
+function dialogoNuevaApiKey() {
 
 	window.scrollTo(0, 0);
 
-	$('#exitosNuevaSemillaMD').hide();
+	$('#exitosNuevaApiKey').hide();
 	$('#erroresNuevaSemillaMD').hide();
 
 	
@@ -127,7 +89,7 @@ function dialogoNuevaEtiqueta() {
 		buttons : {
 			"Guardar" : {
 				click: function() {
-					guardarNuevaEtiqueta();
+					guardarNuevaApiKey();
 				},
 				text : saveButton,
 				class: 'jdialog-btn-save'
@@ -143,29 +105,29 @@ function dialogoNuevaEtiqueta() {
 	});
 }
 
-function guardarNuevaEtiqueta() {
-	$('#exitosNuevaSemillaMD').hide();
-	$('#exitosNuevaSemillaMD').html("");
+function guardarNuevaApiKey() {
+	$('#exitosNuevaApiKey').hide();
+	$('#exitosNuevaApiKey').html("");
 	$('#erroresNuevaSemillaMD').hide();
 	$('#erroresNuevaSemillaMD').html("");
 
 	var guardado = $.ajax({
 		url : '/oaw/secure/ApiKey.do?action=save',
-		data : $('#nuevaEtiquetaForm').serialize(),
+		data : $('#nuevaApiKeyForm').serialize(),
 		method : 'POST',
 		cache : false
 	}).success(
 			function(response) {
-				$('#exitosNuevaSemillaMD').addClass('alert alert-success');
-				$('#exitosNuevaSemillaMD').append("<ul>");
+				$('#exitosNuevaApiKey').addClass('alert alert-success');
+				$('#exitosNuevaApiKey').append("<ul>");
 
 				$.each(JSON.parse(response), function(index, value) {
-					$('#exitosNuevaSemillaMD').append(
+					$('#exitosNuevaApiKey').append(
 							'<li>' + value.message + '</li>');
 				});
 
-				$('#exitosNuevaSemillaMD').append("</ul>");
-				$('#exitosNuevaSemillaMD').show();
+				$('#exitosNuevaApiKey').append("</ul>");
+				$('#exitosNuevaApiKey').show();
 				dialog.dialog("close");
 				reloadGrid(lastUrl);
 
@@ -195,7 +157,7 @@ function guardarNuevaEtiqueta() {
 </script>
 
 
-<!-- observatorio_cargarEtiquetas.jsp -->
+<!-- observatorio_cargarApiKeys.jsp -->
 <div id="main">
 
 
@@ -272,7 +234,7 @@ function guardarNuevaEtiqueta() {
 				<bean:message key="gestion.etiquetas.observatorio.titulo" />
 			</h2>
 
-			<div id="exitosNuevaSemillaMD" style="display: none"></div>
+			<div id="exitosNuevaApiKey" style="display: none"></div>
 
 			<!-- Nueva semilla -->
 			<p class="pull-right">

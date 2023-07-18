@@ -19,32 +19,29 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.intav.form.PageForm;
 import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.rastreador2.actionform.semillas.PlantillaForm;
-import es.inteco.rastreador2.actionform.semillas.SemillaSearchForm;
 import es.inteco.rastreador2.dao.export.database.ApiKeyDAO;
-import es.inteco.rastreador2.dao.plantilla.PlantillaDAO;
-import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.dao.utils.export.database.HibernateUtil;
 import es.inteco.rastreador2.export.database.form.ApiKeyForm;
-import es.inteco.rastreador2.utils.ActionUtils;
-import es.inteco.rastreador2.utils.CrawlerUtils;
+import es.inteco.rastreador2.json.JsonMessage;
 import es.inteco.rastreador2.utils.Pagination;
-import org.apache.struts.action.Action;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
+import org.apache.struts.util.MessageResources;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 
 import com.google.gson.Gson;
-import com.google.protobuf.Api;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.PrintWriter;
-import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,7 +63,7 @@ public class ApiKeyAction extends DispatchAction {
 
 
    /**
-	 * Search.
+	 * list.
 	 *
 	 * @param mapping  the mapping
 	 * @param form     the form
@@ -76,7 +73,6 @@ public class ApiKeyAction extends DispatchAction {
 	 * @throws Exception the exception
 	 */
 	public ActionForward list(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		try (Connection c = DataBaseManager.getConnection()) {
             SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
             Session session = sessionFactory.getCurrentSession();
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
@@ -91,8 +87,105 @@ public class ApiKeyAction extends DispatchAction {
 			pw.write("{\"apiKeys\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
 			pw.flush();
 			pw.close();
-		} catch (Exception e) {
-			Logger.putLog("Error: ", ApiKeyAction.class, Logger.LOG_LEVEL_ERROR, e);
+		return null;
+	}
+
+		/**
+	 * Delete.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+		List<JsonMessage> errores = new ArrayList<>();
+		String id = request.getParameter("idApikey");
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        Session session = sessionFactory.getCurrentSession();
+		if (id != null) {
+				ApiKeyDAO.deleteApiKey(session, Long.parseLong(id));
+				errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.etiqueta.eliminada")));
+				response.getWriter().write(new Gson().toJson(errores));		
+		} else {
+			response.setStatus(400);
+			response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
+		}
+		return null;
+	}
+
+	/**
+	 * Update.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        Session session = sessionFactory.getCurrentSession();
+		ApiKeyForm apiKeyForm = (ApiKeyForm) form;
+		ActionErrors errors = apiKeyForm.validate(mapping, request);
+		if (errors != null && !errors.isEmpty()) {
+			// Error de validación
+			response.setStatus(400);
+			response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.etiqueta.obligatorio"));
+		} else {
+				if (ApiKeyDAO.existsApiKey(session, apiKeyForm.getName())) {
+					response.setStatus(400);
+					response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado"));
+				} else {
+					ApiKeyDAO.updateApiKey(session, apiKeyForm);
+					response.getWriter().write(messageResources.getMessage("mensaje.exito.etiqueta.generada"));
+				}
+			
+		}
+		return null;
+	}
+
+	/**
+	 * Save.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+		List<JsonMessage> errores = new ArrayList<>();
+		String name = request.getParameter("nombre");
+		String description = request.getParameter("descripcion");
+		String type = request.getParameter("tipo");
+		if (StringUtils.isNotEmpty(name) && (StringUtils.isNotEmpty(type))) {
+			ApiKeyForm apiKey = new ApiKeyForm();
+			apiKey.setName(name);
+			apiKey.setDescription(description);
+			apiKey.setType(type);
+			SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        	Session session = sessionFactory.getCurrentSession();
+				if (ApiKeyDAO.existsApiKey(session, name)) {
+					response.setStatus(400);
+					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado")));
+					response.getWriter().write(new Gson().toJson(errores));
+				} else {
+					ApiKeyDAO.saveApiKey(session, apiKey);
+					errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.etiqueta.generada")));
+					response.getWriter().write(new Gson().toJson(errores));
+				}
+		} else {
+			response.setStatus(400);
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.etiqueta.obligatorio")));
+			response.getWriter().write(new Gson().toJson(errores));
 		}
 		return null;
 	}
