@@ -79,12 +79,12 @@ public class ApiKeyAction extends DispatchAction {
 			final int numResult = ApiKeyDAO.getApiKeySize(session);
 			response.setContentType("text/json");
 			List<ApiKeyForm> listaApiKeys = ApiKeyDAO.getApiKeyForms(session);
-			String jsonSeeds = new Gson().toJson(listaApiKeys);
+			String jsonApiKeys = new Gson().toJson(listaApiKeys);
 			// Paginacion
 			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
 			String jsonPagination = new Gson().toJson(paginas);
 			PrintWriter pw = response.getWriter();
-			pw.write("{\"apiKeys\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
+			pw.write("{\"apiKeys\": " + jsonApiKeys.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
 			pw.flush();
 			pw.close();
 		return null;
@@ -103,7 +103,7 @@ public class ApiKeyAction extends DispatchAction {
 	public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		List<JsonMessage> errores = new ArrayList<>();
-		String id = request.getParameter("idApikey");
+		String id = request.getParameter("id");
 		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
         Session session = sessionFactory.openSession();
 		if (id != null) {

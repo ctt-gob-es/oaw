@@ -39,7 +39,7 @@ public class ApiKeyDAO extends BaseDAO {
 	 */
 	public static ApiKey getApiKey(Session session, Long id) {
 		Criteria criteria = session.createCriteria(ApiKey.class);
-		criteria.add(Restrictions.eq("idApiKey", id));
+		criteria.add(Restrictions.eq("id", id));
 		ApiKey apiKey = (ApiKey) criteria.uniqueResult();
 		return apiKey;
 		
@@ -84,7 +84,7 @@ public class ApiKeyDAO extends BaseDAO {
 
 	public static void deleteApiKey (Session session, Long id){
 		Criteria criteria = session.createCriteria(ApiKey.class);
-		criteria.add(Restrictions.eq("idApiKey", id));
+		criteria.add(Restrictions.eq("id", id));
 		List<ApiKey> resultList = criteria.list();
 		if (!resultList.isEmpty()) {
 			ApiKey elementToDelete = resultList.get(0);
@@ -94,7 +94,7 @@ public class ApiKeyDAO extends BaseDAO {
 
 	public static void updateApiKey (Session session, ApiKeyForm apiKeyForm){
 		Criteria criteria = session.createCriteria(ApiKey.class);
-		criteria.add(Restrictions.eq("idApiKey", apiKeyForm.getId()));
+		criteria.add(Restrictions.eq("id", apiKeyForm.getId()));
 		List<ApiKey> resultList = criteria.list();
 		if (!resultList.isEmpty()) {
 			ApiKey elementToUpdate = resultList.get(0);

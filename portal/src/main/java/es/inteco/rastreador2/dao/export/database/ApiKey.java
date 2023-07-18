@@ -33,7 +33,7 @@ public class ApiKey {
 	@Id
 	@GeneratedValue
 	@Column(name = "id", nullable = false)
-	private Long idApiKey;
+	private Long id;
 
 	@Column (name = "nombre", nullable = false)
 	private String name;
@@ -50,7 +50,7 @@ public class ApiKey {
 	 * @return the id
 	 */
     public Long getId() {
-        return idApiKey;
+        return id;
     }
 
     /**
@@ -59,7 +59,7 @@ public class ApiKey {
 	 * @param id the new id
 	 */
     public void setId(Long id) {
-        this.idApiKey = id;
+        this.id = id;
     }
 
 	 /**

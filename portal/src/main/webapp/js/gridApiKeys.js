@@ -4,7 +4,7 @@ var scroll;
 var gridSelRow;
 
 function eliminarFormatter(cellvalue, options, rowObject) {
-	return "<span style='cursor:pointer' onclick='eliminarEtiqueta("
+	return "<span style='cursor:pointer' onclick='eliminarApiKey("
 			+ options.rowId
 			+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>"+colNameRemove+"</span></span>";
 }
@@ -15,7 +15,7 @@ function eliminarFormatter(cellvalue, options, rowObject) {
 function eliminarApiKey(rowId) {
 	var apiKey = $('#grid').jqGrid('getRowData', rowId);
 
-	var idApiKey = apiKey.idApiKey;
+	var id = apiKey.id;
 	var dialogoEliminar = $('<div id="dialogoEliminarContent"></div>');
 
 	dialogoEliminar.append('<p>'+ confirmRemoveMessage +' "'
@@ -34,8 +34,8 @@ function eliminarApiKey(rowId) {
 							$
 							.ajax(
 									{
-										url : '/oaw/secure/ApiKey.do?action=delete&idApiKey='
-												+ idApiKey,
+										url : '/oaw/secure/ApiKey.do?action=delete&id='
+												+ id,
 										method : 'POST',
 										cache : false
 									}).success(function(response) {
@@ -108,12 +108,11 @@ function reloadGrid(path) {
 								.jqGrid(
 										{
 											editUrl : '/oaw/secure/ApiKey.do?action=update',
-											colNames : [ colNameId, colNameOldName,colNameName,
-												colNameClassification,
+											colNames : [ colNameId,colNameName,colNameDescription, colNameType,
 												colNameRemove ],
 											colModel : [
 													{
-														name : "idApiKey",
+														name : "id",
 														hidden : true,
 														sortable : false
 													},

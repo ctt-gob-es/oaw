@@ -27,7 +27,7 @@ public class ApiKeyForm extends ValidatorForm{
     private static final long serialVersionUID = 1L;
     
     /** The id. */
-    private Long idApiKey;
+    private Long id;
     
     /** The name. */
     private String name;
@@ -45,7 +45,7 @@ public class ApiKeyForm extends ValidatorForm{
      * @return the id
      */
     public Long getId() {
-        return idApiKey;
+        return id;
     }
 
     /**
@@ -54,7 +54,7 @@ public class ApiKeyForm extends ValidatorForm{
      * @param id the new id
      */
     public void setId(Long id) {
-        this.idApiKey = id;
+        this.id = id;
     }
 
     /**

@@ -47,6 +47,8 @@ var colNameOldName = '<bean:message key="colname.oldname"/>';
 var colNameId = '<bean:message key="colname.id"/>';
 
 var colNameName = '<bean:message key="colname.name"/>';
+var colNameDescription = 'Descripcion';
+var colNameType = 'tipo';
 var colNameRemove = '<bean:message key="colname.remove"/>';
 
 
