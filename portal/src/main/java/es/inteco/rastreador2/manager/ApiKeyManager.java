@@ -10,6 +10,11 @@ import es.inteco.rastreador2.dao.apikey.ApiKey;
 import es.inteco.rastreador2.dao.apikey.ApiKeyDAO;
 import es.inteco.rastreador2.export.database.form.ApiKeyForm;
 
+/**
+ * ApiKeyManager
+ * 
+ *
+ */
 public class ApiKeyManager extends BaseManager {
 	public ApiKeyManager() {
 	}
