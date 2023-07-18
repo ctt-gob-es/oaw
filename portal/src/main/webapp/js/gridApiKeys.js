@@ -108,9 +108,7 @@ function reloadGrid(path) {
 								.jqGrid(
 										{
 											editUrl : '/oaw/secure/ApiKey.do?action=update',
-											colNames : [ colNameId, colNameOldName,colNameName,
-												colNameClassification,
-												colNameRemove ],
+											colNames : [ colNameId, colNameName, colNameRemove ],
 											colModel : [
 													{
 														name : "idApiKey",
@@ -123,28 +121,6 @@ function reloadGrid(path) {
 															required : true
 														},
 														sortable : false
-													},
-													{
-														name : "type",
-														width : 50,
-														editrules : {
-															required : true
-														},
-														
-														align : "center",
-														sortable : false
-															
-													},
-													{
-														name : "description",
-														width : 50,
-														editrules : {
-															required : true
-														},
-														
-														align : "center",
-														sortable : false
-															
 													},
 													{
 														name : "eliminar",
