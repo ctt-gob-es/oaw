@@ -74,7 +74,7 @@ public class ApiKeyAction extends DispatchAction {
 	 */
 	public ActionForward list(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
             SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-            Session session = sessionFactory.getCurrentSession();
+            Session session = sessionFactory.openSession();
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 			final int numResult = ApiKeyDAO.getApiKeySize(session);
 			response.setContentType("text/json");
@@ -105,7 +105,7 @@ public class ApiKeyAction extends DispatchAction {
 		List<JsonMessage> errores = new ArrayList<>();
 		String id = request.getParameter("idApikey");
 		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
+        Session session = sessionFactory.openSession();
 		if (id != null) {
 				ApiKeyDAO.deleteApiKey(session, Long.parseLong(id));
 				errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.etiqueta.eliminada")));
@@ -130,7 +130,7 @@ public class ApiKeyAction extends DispatchAction {
 	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
+        Session session = sessionFactory.openSession();
 		ApiKeyForm apiKeyForm = (ApiKeyForm) form;
 		ActionErrors errors = apiKeyForm.validate(mapping, request);
 		if (errors != null && !errors.isEmpty()) {
@@ -172,7 +172,7 @@ public class ApiKeyAction extends DispatchAction {
 			apiKey.setDescription(description);
 			apiKey.setType(type);
 			SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        	Session session = sessionFactory.getCurrentSession();
+        	Session session = sessionFactory.openSession();
 				if (ApiKeyDAO.existsApiKey(session, name)) {
 					response.setStatus(400);
 					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado")));
