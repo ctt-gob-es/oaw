@@ -13,7 +13,7 @@
 * Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
 * Email: observ.accesibilidad@correo.gob.es
 ******************************************************************************/
-package es.inteco.rastreador2.dao.export.database;
+package es.inteco.rastreador2.dao.apikey;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

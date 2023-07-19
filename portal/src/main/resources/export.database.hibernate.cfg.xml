@@ -35,8 +35,7 @@ Email: observ.accesibilidad@correo.gob.es
         <mapping class="es.inteco.rastreador2.dao.export.database.Site"/>
         <mapping class="es.inteco.rastreador2.dao.export.database.Page"/>
         <mapping class="es.inteco.rastreador2.dao.export.database.VerificationPage"/>
-        <mapping class="es.inteco.rastreador2.dao.export.database.ApiKey"/>
-        
+    
         <mapping class="es.inteco.rastreador2.dao.importar.database.AdministrativeLevel"/> 
         <mapping class="es.inteco.rastreador2.dao.importar.database.ClassificationLabel"/>
         <mapping class="es.inteco.rastreador2.dao.importar.database.Complexity"/>
@@ -46,6 +45,7 @@ Email: observ.accesibilidad@correo.gob.es
         <mapping class="es.inteco.rastreador2.dao.importar.database.SeedType"/>
         <mapping class="es.inteco.rastreador2.dao.importar.database.Segment"/>
         
+        <mapping class="es.inteco.rastreador2.dao.apikey.ApiKey"/>
         
     </session-factory>
 </hibernate-configuration>

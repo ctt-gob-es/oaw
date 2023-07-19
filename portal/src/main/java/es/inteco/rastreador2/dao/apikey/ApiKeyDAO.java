@@ -13,7 +13,7 @@
 * Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
 * Email: observ.accesibilidad@correo.gob.es
 ******************************************************************************/
-package es.inteco.rastreador2.dao.export.database;
+package es.inteco.rastreador2.dao.apikey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +33,8 @@ public class ApiKeyDAO extends BaseDAO {
 	/**
 	 * Gets the ApiKey.
 	 *
-	 * @param session     the session
-	 * @param id the id of the apiKey
+	 * @param session the session
+	 * @param id      the id of the apiKey
 	 * @return the ApiKey
 	 */
 	public static ApiKey getApiKey(Session session, Long id) {
@@ -42,10 +42,9 @@ public class ApiKeyDAO extends BaseDAO {
 		criteria.add(Restrictions.eq("id", id));
 		ApiKey apiKey = (ApiKey) criteria.uniqueResult();
 		return apiKey;
-		
 	}
 
-	public static ApiKeyForm getApiKeyForm(Session session, Long id){
+	public static ApiKeyForm getApiKeyForm(Session session, Long id) {
 		ApiKeyForm form = new ApiKeyForm();
 		ApiKey apiKey = getApiKey(session, id);
 		form.setDescription(apiKey.getDescription());
@@ -55,13 +54,12 @@ public class ApiKeyDAO extends BaseDAO {
 		return form;
 	}
 
-	public static List<ApiKey> getApiKeys (Session session) {
-		Criteria criteria = session.createCriteria(ApiKey.class);
+	public static List<ApiKey> getApiKeys(Session session) {
+		Criteria criteria = session.createCriteria(ApiKey.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return (List<ApiKey>) criteria.list();
 	}
 
-
-	public static List<ApiKeyForm> getApiKeyForms (Session session){
+	public static List<ApiKeyForm> getApiKeyForms(Session session) {
 		List<ApiKey> apiKeys = getApiKeys(session);
 		List<ApiKeyForm> apiKeyForms = new ArrayList<>();
 		for (ApiKey apiKey : apiKeys) {
@@ -75,14 +73,13 @@ public class ApiKeyDAO extends BaseDAO {
 		return apiKeyForms;
 	}
 
-	public static int getApiKeySize (Session session){
+	public static int getApiKeySize(Session session) {
 		Criteria criteria = session.createCriteria(ApiKey.class);
 		criteria.setProjection(Projections.rowCount());
 		return (int) criteria.uniqueResult();
-
 	}
 
-	public static void deleteApiKey (Session session, Long id){
+	public static void deleteApiKey(Session session, Long id) {
 		Criteria criteria = session.createCriteria(ApiKey.class);
 		criteria.add(Restrictions.eq("id", id));
 		List<ApiKey> resultList = criteria.list();
@@ -92,7 +89,7 @@ public class ApiKeyDAO extends BaseDAO {
 		}
 	}
 
-	public static void updateApiKey (Session session, ApiKeyForm apiKeyForm){
+	public static void updateApiKey(Session session, ApiKeyForm apiKeyForm) {
 		Criteria criteria = session.createCriteria(ApiKey.class);
 		criteria.add(Restrictions.eq("id", apiKeyForm.getId()));
 		List<ApiKey> resultList = criteria.list();
@@ -105,22 +102,18 @@ public class ApiKeyDAO extends BaseDAO {
 		}
 	}
 
-	public static void saveApiKey (Session session, ApiKeyForm apiKeyForm){
-			ApiKey newApiKey = new ApiKey();
-			newApiKey.setName(apiKeyForm.getName());
-			newApiKey.setDescription(apiKeyForm.getDescription());
-			newApiKey.setType(apiKeyForm.getType());
-			session.save(newApiKey);
-		
+	public static void saveApiKey(Session session, ApiKeyForm apiKeyForm) {
+		ApiKey newApiKey = new ApiKey();
+		newApiKey.setName(apiKeyForm.getName());
+		newApiKey.setDescription(apiKeyForm.getDescription());
+		newApiKey.setType(apiKeyForm.getType());
+		session.save(newApiKey);
 	}
-	public static boolean existsApiKey (Session session, String name){
+
+	public static boolean existsApiKey(Session session, String name) {
 		Criteria criteria = session.createCriteria(ApiKey.class);
 		criteria.add(Restrictions.eq("name", name));
 		List<ApiKey> resultList = criteria.list();
 		return !resultList.isEmpty();
 	}
-
-
-	
-
 }

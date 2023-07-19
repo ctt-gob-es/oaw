@@ -13,17 +13,14 @@
 * Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
 * Email: observ.accesibilidad@correo.gob.es
 ******************************************************************************/
-package es.inteco.rastreador2.action.observatorio;
+package es.inteco.rastreador2.action.apikey;
 
-import es.inteco.common.Constants;
-import es.inteco.common.logging.Logger;
-import es.inteco.intav.form.PageForm;
-import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.rastreador2.dao.export.database.ApiKeyDAO;
-import es.inteco.rastreador2.dao.utils.export.database.HibernateUtil;
-import es.inteco.rastreador2.export.database.form.ApiKeyForm;
-import es.inteco.rastreador2.json.JsonMessage;
-import es.inteco.rastreador2.utils.Pagination;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.action.ActionErrors;
@@ -37,20 +34,21 @@ import org.hibernate.classic.Session;
 
 import com.google.gson.Gson;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+import es.inteco.common.Constants;
+import es.inteco.intav.form.PageForm;
+import es.inteco.rastreador2.dao.apikey.ApiKey;
+import es.inteco.rastreador2.dao.apikey.ApiKeyDAO;
+import es.inteco.rastreador2.dao.utils.export.database.HibernateUtil;
+import es.inteco.rastreador2.export.database.form.ApiKeyForm;
+import es.inteco.rastreador2.json.JsonMessage;
+import es.inteco.rastreador2.manager.ApiKeyManager;
+import es.inteco.rastreador2.utils.Pagination;
 
 /**
  * The Class ListadoSemillaAction.
  */
 public class ApiKeyAction extends DispatchAction {
-
-
-    public ActionForward load(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ActionForward load(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// Marcamos el menú
 		request.getSession().setAttribute(Constants.MENU, Constants.MENU_INTECO_OBS);
 		if (request.getParameter(Constants.RETURN_OBSERVATORY_RESULTS) != null) {
@@ -61,8 +59,7 @@ public class ApiKeyAction extends DispatchAction {
 		return mapping.findForward(Constants.EXITO);
 	}
 
-
-   /**
+	/**
 	 * list.
 	 *
 	 * @param mapping  the mapping
@@ -73,24 +70,23 @@ public class ApiKeyAction extends DispatchAction {
 	 * @throws Exception the exception
 	 */
 	public ActionForward list(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-            SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-            Session session = sessionFactory.openSession();
-			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
-			final int numResult = ApiKeyDAO.getApiKeySize(session);
-			response.setContentType("text/json");
-			List<ApiKeyForm> listaApiKeys = ApiKeyDAO.getApiKeyForms(session);
-			String jsonApiKeys = new Gson().toJson(listaApiKeys);
-			// Paginacion
-			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
-			String jsonPagination = new Gson().toJson(paginas);
-			PrintWriter pw = response.getWriter();
-			pw.write("{\"apiKeys\": " + jsonApiKeys.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
-			pw.flush();
-			pw.close();
+		ApiKeyManager apiKeyManager = new ApiKeyManager();
+		final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
+		final int numResult = apiKeyManager.getApiKeys().size();
+		response.setContentType("text/json");
+		List<ApiKeyForm> listaApiKeys = apiKeyManager.getApiKeys();
+		String jsonSeeds = new Gson().toJson(listaApiKeys);
+		// Paginacion
+		List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
+		String jsonPagination = new Gson().toJson(paginas);
+		PrintWriter pw = response.getWriter();
+		pw.write("{\"apiKeys\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
+		pw.flush();
+		pw.close();
 		return null;
 	}
 
-		/**
+	/**
 	 * Delete.
 	 *
 	 * @param mapping  the mapping
@@ -105,11 +101,11 @@ public class ApiKeyAction extends DispatchAction {
 		List<JsonMessage> errores = new ArrayList<>();
 		String id = request.getParameter("id");
 		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        Session session = sessionFactory.openSession();
+		Session session = sessionFactory.openSession();
 		if (id != null) {
-				ApiKeyDAO.deleteApiKey(session, Long.parseLong(id));
-				errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.etiqueta.eliminada")));
-				response.getWriter().write(new Gson().toJson(errores));		
+			ApiKeyDAO.deleteApiKey(session, Long.parseLong(id));
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.etiqueta.eliminada")));
+			response.getWriter().write(new Gson().toJson(errores));
 		} else {
 			response.setStatus(400);
 			response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
@@ -130,7 +126,7 @@ public class ApiKeyAction extends DispatchAction {
 	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        Session session = sessionFactory.openSession();
+		Session session = sessionFactory.openSession();
 		ApiKeyForm apiKeyForm = (ApiKeyForm) form;
 		ActionErrors errors = apiKeyForm.validate(mapping, request);
 		if (errors != null && !errors.isEmpty()) {
@@ -138,14 +134,13 @@ public class ApiKeyAction extends DispatchAction {
 			response.setStatus(400);
 			response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.etiqueta.obligatorio"));
 		} else {
-				if (ApiKeyDAO.existsApiKey(session, apiKeyForm.getName())) {
-					response.setStatus(400);
-					response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado"));
-				} else {
-					ApiKeyDAO.updateApiKey(session, apiKeyForm);
-					response.getWriter().write(messageResources.getMessage("mensaje.exito.etiqueta.generada"));
-				}
-			
+			if (ApiKeyDAO.existsApiKey(session, apiKeyForm.getName())) {
+				response.setStatus(400);
+				response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado"));
+			} else {
+				ApiKeyDAO.updateApiKey(session, apiKeyForm);
+				response.getWriter().write(messageResources.getMessage("mensaje.exito.etiqueta.generada"));
+			}
 		}
 		return null;
 	}
@@ -189,5 +184,4 @@ public class ApiKeyAction extends DispatchAction {
 		}
 		return null;
 	}
-
 }
