@@ -49,16 +49,17 @@ var colNameId = '<bean:message key="colname.id"/>';
 var colNameName = '<bean:message key="colname.name"/>';
 var colNameDescription = 'Descripcion';
 var colNameType = 'tipo';
+var colNameApiKey = 'apiKey';
 var colNameRemove = '<bean:message key="colname.remove"/>';
 
 
-var windowTitleRemove = '<bean:message key="nueva.etiqueta.observatorio.modal.eliminar.title"/>';
+var windowTitleRemove = '<bean:message key="nueva.apiKey.modal.eliminar.title"/>';
 
 var saveButton = '<bean:message key="boton.aceptar"/>';
 
 var cancelButton = '<bean:message key="boton.cancelar"/>';
 
-var confirmRemoveMessage = '<bean:message key="nueva.etiqueta.observatorio.modal.eliminar.confirm"/>';
+var confirmRemoveMessage = '<bean:message key="nueva.apiKey.modal.eliminar.confirm"/>';
 
 
 var dialog;
@@ -75,7 +76,7 @@ function dialogoNuevaApiKey() {
 	$('#erroresNuevaSemillaMD').hide();
 
 	
-	var windowTitle = '<bean:message key="nueva.etiqueta.observatorio.modal.title"/>';
+	var windowTitle = '<bean:message key="nueva.apiKey.modal.title"/>';
 	
 	var saveButton = '<bean:message key="boton.guardar"/>';
 	
@@ -174,18 +175,19 @@ function guardarNuevaApiKey() {
 					<label for="nombre" class="control-label"><strong
 						class="labelVisu"><acronym
 							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
-								key="nombre" /></strong></label>
+								key="nueva.apiKey.modal.nombre" /></strong></label>
 					<div class="col-xs-6">
 						<input type="text" id="nombre" name="nombre"
 							class="textoLargo form-control" />
 					</div>
 				</div>
+				
 
 				<div class="row formItem">
 					<label for="tipo" class="control-label"><strong
 						class="labelVisu"><acronym
 							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
-								key="tipo" /></strong></label>
+								key="nueva.apiKey.modal.tipo" /></strong></label>
 					<div class="col-xs-6">
 						<input type="text" id="type" name="tipo"
 							class="textoLargo form-control" />
@@ -196,7 +198,7 @@ function guardarNuevaApiKey() {
 					<label for="tipo" class="control-label"><strong
 						class="labelVisu"><acronym
 							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
-								key="descripcion" /></strong></label>
+								key="nueva.apiKey.modal.descripcion" /></strong></label>
 					<div class="col-xs-6">
 						<input type="text" id="description" name="descripcion"
 							class="textoLargo form-control" />
@@ -245,7 +247,7 @@ function guardarNuevaApiKey() {
 					class="glyphicon glyphicon-plus" aria-hidden="true"
 					data-toggle="tooltip" title=""
 					data-original-title="Crear una apiKey"></span> <bean:message
-						key="nueva.etiqueta.observatorio" />
+						key="nueva.apiKey" />
 				</a>
 			</p>
 			<!-- Grid -->

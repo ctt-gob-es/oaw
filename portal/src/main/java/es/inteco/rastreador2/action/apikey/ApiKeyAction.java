@@ -163,6 +163,7 @@ public class ApiKeyAction extends DispatchAction {
 		String type = request.getParameter("tipo");
 		if (StringUtils.isNotEmpty(name) && (StringUtils.isNotEmpty(type))) {
 			ApiKeyForm apiKey = new ApiKeyForm();
+			apiKey.setApiKey(apiKey.generateApiKey());
 			apiKey.setName(name);
 			apiKey.setDescription(description);
 			apiKey.setType(type);

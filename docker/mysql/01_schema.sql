@@ -929,6 +929,7 @@ CREATE TABLE `usuario_rol` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `export_apiKey`(
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `apiKey` varchar(100) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `descripcion` varchar(200),
   `tipo` varchar (50) NOT NULL,

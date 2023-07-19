@@ -107,6 +107,7 @@ public class ApiKeyDAO extends BaseDAO {
 		newApiKey.setName(apiKeyForm.getName());
 		newApiKey.setDescription(apiKeyForm.getDescription());
 		newApiKey.setType(apiKeyForm.getType());
+		newApiKey.setApiKey(apiKeyForm.getApiKey());
 		session.save(newApiKey);
 	}
 

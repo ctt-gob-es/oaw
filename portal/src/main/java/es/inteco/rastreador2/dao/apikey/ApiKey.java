@@ -38,6 +38,9 @@ public class ApiKey {
 	@Column (name = "nombre", nullable = false)
 	private String name;
 
+	@Column (name = "apiKey", nullable = false)
+	private String apiKey;
+
 	@Column (name = "descripcion")
 	private String description;
 
@@ -115,4 +118,24 @@ public class ApiKey {
     public void setType(String type) {
         this.type = type;
     }
+
+	 /**
+	 * Gets the apiKey.
+	 *
+	 * @return the apiKey
+	 */
+	public String getApiKey() {
+		return apiKey;
+	}
+
+	 /**
+	 * Sets the apiKey.
+	 *
+	 * @param type the new apiKey
+	 */
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
+
+
 }

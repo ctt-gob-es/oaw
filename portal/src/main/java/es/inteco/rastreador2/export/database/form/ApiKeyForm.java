@@ -14,7 +14,8 @@
 * Email: observ.accesibilidad@correo.gob.es
 ******************************************************************************/
 package es.inteco.rastreador2.export.database.form;
-
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 
 import org.apache.struts.validator.ValidatorForm;
 
@@ -31,7 +32,10 @@ public class ApiKeyForm extends ValidatorForm{
     
     /** The name. */
     private String name;
-    
+
+    /** The apiKey */
+    private String apiKey;
+
     /** The description. */
     private String description;
 
@@ -93,7 +97,25 @@ public class ApiKeyForm extends ValidatorForm{
         return type;
     }
 
+
+    /**
+     * Sets the apiKey.
+     *
+     * @param apiKey the new apiKey
+     */
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
     
+
+    /**
+     * Gets the apiKey
+     * @return the apiKey
+     */
+    public String getApiKey() {
+        return apiKey;
+    }
+
     /**
      * Sets the description.
      *
@@ -112,6 +134,30 @@ public class ApiKeyForm extends ValidatorForm{
     public void setType(String type) {
         this.type = type;
     }
+
+
+    /**
+   * Gets a new api key
+   *
+   * @return the object updated
+   */
+  public String generateApiKey() {
+    KeyPairGenerator keyGen;
+    try {
+      keyGen = KeyPairGenerator.getInstance("RSA");
+      keyGen.initialize(512);
+      byte[] publicKey = keyGen.genKeyPair().getPublic().getEncoded();
+      StringBuffer newApiKey = new StringBuffer();
+      for (int i = 0; i < publicKey.length; ++i) {
+        newApiKey.append(Integer.toHexString(0x0100 + (publicKey[i] & 0x00FF)).substring(1));
+      }
+      return newApiKey.toString();
+
+    } catch (NoSuchAlgorithmException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 
 
   
