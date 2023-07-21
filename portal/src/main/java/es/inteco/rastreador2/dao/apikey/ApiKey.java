@@ -24,102 +24,96 @@ import javax.persistence.Table;
 /**
  * The Class ApiKey.
  */
-
 @Entity
 @Table(name = "export_apiKey")
 public class ApiKey {
-	
 	/** The id. */
 	@Id
 	@GeneratedValue
-	@Column(name = "id", nullable = false)
+	@Column(name = "id")
 	private Long id;
-
-	@Column (name = "nombre", nullable = false)
+	@Column(name = "nombre")
 	private String name;
-
-	@Column (name = "apiKey", nullable = false)
+	@Column(name = "apiKey")
 	private String apiKey;
-
-	@Column (name = "descripcion")
+	@Column(name = "descripcion")
 	private String description;
-
-	@Column (name = "tipo")
+	@Column(name = "tipo")
 	private String type;
 
-	 /**
+	/**
 	 * Gets the id.
 	 *
 	 * @return the id
 	 */
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    /**
+	/**
 	 * Sets the id.
 	 *
 	 * @param id the new id
 	 */
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-	 /**
+	/**
 	 * Gets the name.
 	 *
 	 * @return the name
 	 */
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    /**
+	/**
 	 * Sets the name.
 	 *
 	 * @param name the new name
 	 */
-    public void setName(String name) {
-        this.name = name;
-    }
-	
-	 /**
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
 	 * Gets the description.
 	 *
 	 * @return the description
 	 */
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    /**
+	/**
 	 * Sets the description.
 	 *
 	 * @param description the new description
 	 */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-	
-	 /**
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
 	 * Gets the type.
 	 *
 	 * @return the type
 	 */
-    public String getType() {
-        return type;
-    }
+	public String getType() {
+		return type;
+	}
 
-    /**
+	/**
 	 * Sets the type.
 	 *
 	 * @param type the new type
 	 */
-    public void setType(String type) {
-        this.type = type;
-    }
+	public void setType(String type) {
+		this.type = type;
+	}
 
-	 /**
+	/**
 	 * Gets the apiKey.
 	 *
 	 * @return the apiKey
@@ -128,7 +122,7 @@ public class ApiKey {
 		return apiKey;
 	}
 
-	 /**
+	/**
 	 * Sets the apiKey.
 	 *
 	 * @param type the new apiKey
@@ -136,6 +130,4 @@ public class ApiKey {
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
 	}
-
-
 }

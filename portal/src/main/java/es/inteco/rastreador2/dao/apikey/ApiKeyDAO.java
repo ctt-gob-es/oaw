@@ -15,7 +15,6 @@
 ******************************************************************************/
 package es.inteco.rastreador2.dao.apikey;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -24,7 +23,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import es.inteco.rastreador2.dao.BaseDAO;
-import es.inteco.rastreador2.export.database.form.ApiKeyForm;
 
 /**
  * The Class ApiKeyDAO.
@@ -44,71 +42,15 @@ public class ApiKeyDAO extends BaseDAO {
 		return apiKey;
 	}
 
-	public static ApiKeyForm getApiKeyForm(Session session, Long id) {
-		ApiKeyForm form = new ApiKeyForm();
-		ApiKey apiKey = getApiKey(session, id);
-		form.setDescription(apiKey.getDescription());
-		form.setId(apiKey.getId());
-		form.setName(apiKey.getName());
-		form.setType(apiKey.getType());
-		return form;
-	}
-
 	public static List<ApiKey> getApiKeys(Session session) {
 		Criteria criteria = session.createCriteria(ApiKey.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return (List<ApiKey>) criteria.list();
 	}
 
-	public static List<ApiKeyForm> getApiKeyForms(Session session) {
-		List<ApiKey> apiKeys = getApiKeys(session);
-		List<ApiKeyForm> apiKeyForms = new ArrayList<>();
-		for (ApiKey apiKey : apiKeys) {
-			ApiKeyForm form = new ApiKeyForm();
-			form.setId(apiKey.getId());
-			form.setDescription(apiKey.getDescription());
-			form.setName(apiKey.getName());
-			form.setType(apiKey.getType());
-			apiKeyForms.add(form);
-		}
-		return apiKeyForms;
-	}
-
-	public static int getApiKeySize(Session session) {
+	public static int getNumApiKeys(Session session) {
 		Criteria criteria = session.createCriteria(ApiKey.class);
 		criteria.setProjection(Projections.rowCount());
 		return (int) criteria.uniqueResult();
-	}
-
-	public static void deleteApiKey(Session session, Long id) {
-		Criteria criteria = session.createCriteria(ApiKey.class);
-		criteria.add(Restrictions.eq("id", id));
-		List<ApiKey> resultList = criteria.list();
-		if (!resultList.isEmpty()) {
-			ApiKey elementToDelete = resultList.get(0);
-			session.delete(elementToDelete);
-		}
-	}
-
-	public static void updateApiKey(Session session, ApiKeyForm apiKeyForm) {
-		Criteria criteria = session.createCriteria(ApiKey.class);
-		criteria.add(Restrictions.eq("id", apiKeyForm.getId()));
-		List<ApiKey> resultList = criteria.list();
-		if (!resultList.isEmpty()) {
-			ApiKey elementToUpdate = resultList.get(0);
-			elementToUpdate.setName(apiKeyForm.getName());
-			elementToUpdate.setDescription(apiKeyForm.getDescription());
-			elementToUpdate.setType(apiKeyForm.getType());
-			session.update(elementToUpdate);
-		}
-	}
-
-	public static void saveApiKey(Session session, ApiKeyForm apiKeyForm) {
-		ApiKey newApiKey = new ApiKey();
-		newApiKey.setName(apiKeyForm.getName());
-		newApiKey.setDescription(apiKeyForm.getDescription());
-		newApiKey.setType(apiKeyForm.getType());
-		newApiKey.setApiKey(apiKeyForm.getApiKey());
-		session.save(newApiKey);
 	}
 
 	public static boolean existsApiKey(Session session, String name) {

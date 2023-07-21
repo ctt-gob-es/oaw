@@ -22,6 +22,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
@@ -29,16 +30,12 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 import org.apache.struts.util.MessageResources;
-import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
 
 import com.google.gson.Gson;
 
 import es.inteco.common.Constants;
 import es.inteco.intav.form.PageForm;
 import es.inteco.rastreador2.dao.apikey.ApiKey;
-import es.inteco.rastreador2.dao.apikey.ApiKeyDAO;
-import es.inteco.rastreador2.dao.utils.export.database.HibernateUtil;
 import es.inteco.rastreador2.export.database.form.ApiKeyForm;
 import es.inteco.rastreador2.json.JsonMessage;
 import es.inteco.rastreador2.manager.ApiKeyManager;
@@ -70,11 +67,10 @@ public class ApiKeyAction extends DispatchAction {
 	 * @throws Exception the exception
 	 */
 	public ActionForward list(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ApiKeyManager apiKeyManager = new ApiKeyManager();
 		final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
-		final int numResult = apiKeyManager.getApiKeys().size();
+		final int numResult = ApiKeyManager.getNumApiKeys();
 		response.setContentType("text/json");
-		List<ApiKeyForm> listaApiKeys = apiKeyManager.getApiKeys();
+		List<ApiKeyForm> listaApiKeys = ApiKeyManager.getApiKeys();
 		String jsonSeeds = new Gson().toJson(listaApiKeys);
 		// Paginacion
 		List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
@@ -100,10 +96,10 @@ public class ApiKeyAction extends DispatchAction {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		List<JsonMessage> errores = new ArrayList<>();
 		String id = request.getParameter("id");
-		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		Session session = sessionFactory.openSession();
 		if (id != null) {
-			ApiKeyDAO.deleteApiKey(session, Long.parseLong(id));
+			ApiKey apiKey = new ApiKey();
+			apiKey.setId(new Long(id));
+			ApiKeyManager.delete(apiKey);
 			errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.etiqueta.eliminada")));
 			response.getWriter().write(new Gson().toJson(errores));
 		} else {
@@ -125,8 +121,6 @@ public class ApiKeyAction extends DispatchAction {
 	 */
 	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
-		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		Session session = sessionFactory.openSession();
 		ApiKeyForm apiKeyForm = (ApiKeyForm) form;
 		ActionErrors errors = apiKeyForm.validate(mapping, request);
 		if (errors != null && !errors.isEmpty()) {
@@ -134,11 +128,13 @@ public class ApiKeyAction extends DispatchAction {
 			response.setStatus(400);
 			response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.etiqueta.obligatorio"));
 		} else {
-			if (ApiKeyDAO.existsApiKey(session, apiKeyForm.getName())) {
+			ApiKey apiKey = new ApiKey();
+			BeanUtils.copyProperties(apiKey, apiKeyForm);
+			if (ApiKeyManager.existsApiKey(apiKey.getName())) {
 				response.setStatus(400);
 				response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado"));
 			} else {
-				ApiKeyDAO.updateApiKey(session, apiKeyForm);
+				ApiKeyManager.update(apiKey);
 				response.getWriter().write(messageResources.getMessage("mensaje.exito.etiqueta.generada"));
 			}
 		}
@@ -162,22 +158,20 @@ public class ApiKeyAction extends DispatchAction {
 		String description = request.getParameter("descripcion");
 		String type = request.getParameter("tipo");
 		if (StringUtils.isNotEmpty(name) && (StringUtils.isNotEmpty(type))) {
-			ApiKeyForm apiKey = new ApiKeyForm();
-			apiKey.setApiKey(apiKey.generateApiKey());
+			ApiKey apiKey = new ApiKey();
+			apiKey.setApiKey(ApiKeyManager.generateApiKey());
 			apiKey.setName(name);
 			apiKey.setDescription(description);
 			apiKey.setType(type);
-			SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        	Session session = sessionFactory.openSession();
-				if (ApiKeyDAO.existsApiKey(session, name)) {
-					response.setStatus(400);
-					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado")));
-					response.getWriter().write(new Gson().toJson(errores));
-				} else {
-					ApiKeyDAO.saveApiKey(session, apiKey);
-					errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.etiqueta.generada")));
-					response.getWriter().write(new Gson().toJson(errores));
-				}
+			if (ApiKeyManager.existsApiKey(apiKey.getName())) {
+				response.setStatus(400);
+				errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado")));
+				response.getWriter().write(new Gson().toJson(errores));
+			} else {
+				ApiKeyManager.save(apiKey);
+				errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.etiqueta.generada")));
+				response.getWriter().write(new Gson().toJson(errores));
+			}
 		} else {
 			response.setStatus(400);
 			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.etiqueta.obligatorio")));
