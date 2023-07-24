@@ -135,7 +135,7 @@ public class ApiKeyAction extends DispatchAction {
 				response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado"));
 			} else {
 				ApiKeyManager.update(apiKey);
-				response.getWriter().write(messageResources.getMessage("mensaje.exito.etiqueta.generada"));
+				response.getWriter().write(messageResources.getMessage("mensaje.exito.apikey.generada"));
 			}
 		}
 		return null;
