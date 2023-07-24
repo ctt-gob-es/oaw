@@ -154,15 +154,13 @@ public class ApiKeyAction extends DispatchAction {
 	public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		List<JsonMessage> errores = new ArrayList<>();
-		String name = request.getParameter("nombre");
-		String description = request.getParameter("descripcion");
-		String type = request.getParameter("tipo");
-		if (StringUtils.isNotEmpty(name) && (StringUtils.isNotEmpty(type))) {
+		ApiKeyForm apiKeyForm = (ApiKeyForm) form;
+		if (StringUtils.isNotEmpty(apiKeyForm.getName())) {
 			ApiKey apiKey = new ApiKey();
 			apiKey.setApiKey(ApiKeyManager.generateApiKey());
-			apiKey.setName(name);
-			apiKey.setDescription(description);
-			apiKey.setType(type);
+			apiKey.setName(apiKeyForm.getName());
+			apiKey.setDescription(apiKeyForm.getDescription());
+			apiKey.setActive(apiKeyForm.isActive());
 			if (ApiKeyManager.existsApiKey(apiKey.getName())) {
 				response.setStatus(400);
 				errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado")));

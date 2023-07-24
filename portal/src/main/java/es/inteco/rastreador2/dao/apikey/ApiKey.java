@@ -38,8 +38,8 @@ public class ApiKey {
 	private String apiKey;
 	@Column(name = "descripcion")
 	private String description;
-	@Column(name = "tipo")
-	private String type;
+	@Column(name = "activa")
+	private boolean active;
 
 	/**
 	 * Gets the id.
@@ -95,23 +95,6 @@ public class ApiKey {
 		this.description = description;
 	}
 
-	/**
-	 * Gets the type.
-	 *
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * Sets the type.
-	 *
-	 * @param type the new type
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
 
 	/**
 	 * Gets the apiKey.
@@ -125,9 +108,19 @@ public class ApiKey {
 	/**
 	 * Sets the apiKey.
 	 *
-	 * @param type the new apiKey
+	 * @param apiKey the new apiKey
 	 */
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
 	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	
 }

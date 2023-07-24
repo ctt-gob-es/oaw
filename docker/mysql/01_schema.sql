@@ -932,7 +932,7 @@ CREATE TABLE `export_apiKey`(
   `apiKey` varchar(300) NOT NULL,
   `nombre` varchar(100) NOT NULL,
   `descripcion` varchar(200),
-  `tipo` varchar (50) NOT NULL,
+  `activa` tinyint (1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
 )ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

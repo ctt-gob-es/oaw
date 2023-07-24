@@ -32,7 +32,7 @@ public class ApiKeyForm extends ValidatorForm {
 	/** The description. */
 	private String description;
 	/** The type. */
-	private String type;
+	private boolean active;
 
 	/**
 	 * Gets the id.
@@ -79,14 +79,6 @@ public class ApiKeyForm extends ValidatorForm {
 		return description;
 	}
 
-	/**
-	 * Gets the type.
-	 *
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
 
 	/**
 	 * Sets the apiKey.
@@ -115,12 +107,13 @@ public class ApiKeyForm extends ValidatorForm {
 		this.description = description;
 	}
 
-	/**
-	 * Sets the type.
-	 *
-	 * @param type the new type
-	 */
-	public void setType(String type) {
-		this.type = type;
+	public boolean isActive() {
+		return active;
 	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+
 }
