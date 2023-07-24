@@ -4,12 +4,16 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -93,7 +97,11 @@ public class WcagOdtUtils {
 		List<AnalysisResult> errors = null;
 		for (String site : sites.keySet()) {
 			errors = sites.get(site);
-			createHeader(odtDocument, odfFileContent, reportCode, site);
+			if (checkSpecialCharacters(site)) {
+				createHeader(odtDocument, odfFileContent, reportCode, URLEncoder.encode(site, StandardCharsets.UTF_8.toString()));
+			} else {
+				createHeader(odtDocument, odfFileContent, reportCode, site);
+			}
 			for (AnalysisResult error : errors) {
 				createError(odtDocument, odfFileContent, reportCode, error);
 			}
@@ -400,5 +408,12 @@ public class WcagOdtUtils {
 		} else {
 			return "-";
 		}
+	}
+
+	private static boolean checkSpecialCharacters(String text) {
+		String specialCharactersRegex = "[!@#$%^&*(),.?\":{}|<>]";
+		Pattern pattern = Pattern.compile(specialCharactersRegex);
+		Matcher matcher = pattern.matcher(text);
+		return matcher.find();
 	}
 }
