@@ -48,7 +48,7 @@ var colNameId = '<bean:message key="colname.id"/>';
 
 var colNameName = '<bean:message key="colname.name"/>';
 var colNameDescription = 'Descripcion';
-var colNameType = 'tipo';
+var colNameActive = 'activa';
 var colNameApiKey = 'apiKey';
 var colNameRemove = '<bean:message key="colname.remove"/>';
 
@@ -105,6 +105,9 @@ function dialogoNuevaApiKey() {
 				class: 'jdialog-btn-cancel'
 			}
 		},
+		close : function() {
+				$('#nuevaApiKeyForm')[0].reset();
+			}
 	});
 }
 
@@ -177,35 +180,35 @@ function guardarNuevaApiKey() {
 							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 								key="nueva.apiKey.modal.nombre" /></strong></label>
 					<div class="col-xs-6">
-						<input type="text" id="nombre" name="nombre"
-							class="textoLargo form-control" />
-					</div>
-				</div>
-				
-
-				<div class="row formItem">
-					<label for="tipo" class="control-label"><strong
-						class="labelVisu"><acronym
-							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
-								key="nueva.apiKey.modal.tipo" /></strong></label>
-					<div class="col-xs-6">
-						<input type="text" id="type" name="tipo"
+						<input type="text" id="name" name="name"
 							class="textoLargo form-control" />
 					</div>
 				</div>
 
 				<div class="row formItem">
-					<label for="tipo" class="control-label"><strong
+					<label for="descripcion" class="control-label"><strong
 						class="labelVisu"><acronym
 							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 								key="nueva.apiKey.modal.descripcion" /></strong></label>
 					<div class="col-xs-6">
-						<input type="text" id="description" name="descripcion"
+						<input type="text" id="description" name="description"
 							class="textoLargo form-control" />
 					</div>
 				</div>
 
-				
+				<div class="row formItem">
+					<label for="activa" class="control-label"><strong
+						class="labelVisu"><acronym
+							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+								key="nueva.apiKey.modal.activa" /></strong></label>
+								<div class="col-xs-4">
+									<select name="active" class="textoSelect form-control">
+										<option value="1"><bean:message key="select.yes" /></option>
+										<option value="0"><bean:message key="select.no" /></option>
+									</select>
+								</div>
+							</div>
+				</div>
 
 
 			</form>
@@ -235,7 +238,7 @@ function guardarNuevaApiKey() {
 
 		<div id="cajaformularios">
 			<h2>
-				<bean:message key="gestion.etiquetas.observatorio.titulo" />
+				<bean:message key="gestion.apikeys.observatorio.titulo" />
 			</h2>
 
 			<div id="exitosNuevaApiKey" style="display: none"></div>
