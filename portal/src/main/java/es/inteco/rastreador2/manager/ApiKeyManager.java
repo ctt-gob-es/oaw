@@ -2,6 +2,7 @@ package es.inteco.rastreador2.manager;
 
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,15 +69,16 @@ public class ApiKeyManager extends BaseManager {
 	}
 
 	/**
-	 * Gets a new api key
+	 * Generates a new api key
 	 *
-	 * @return the object updated
+	 * @return the apiKey
 	 */
 	public static String generateApiKey() {
 		KeyPairGenerator keyGen;
 		try {
 			keyGen = KeyPairGenerator.getInstance("RSA");
-			keyGen.initialize(512);
+			SecureRandom secureRandom = new SecureRandom();
+			keyGen.initialize(512, secureRandom);
 			byte[] publicKey = keyGen.genKeyPair().getPublic().getEncoded();
 			StringBuffer newApiKey = new StringBuffer();
 			for (int i = 0; i < publicKey.length; ++i) {

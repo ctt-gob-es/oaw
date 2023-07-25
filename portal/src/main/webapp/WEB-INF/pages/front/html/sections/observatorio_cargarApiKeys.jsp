@@ -238,7 +238,7 @@ function guardarNuevaApiKey() {
 
 		<div id="cajaformularios">
 			<h2>
-				<bean:message key="gestion.etiquetas.observatorio.titulo" />
+				<bean:message key="gestion.apikeys.observatorio.titulo" />
 			</h2>
 
 			<div id="exitosNuevaApiKey" style="display: none"></div>

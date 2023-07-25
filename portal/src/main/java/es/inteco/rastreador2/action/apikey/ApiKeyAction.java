@@ -100,7 +100,7 @@ public class ApiKeyAction extends DispatchAction {
 			ApiKey apiKey = new ApiKey();
 			apiKey.setId(new Long(id));
 			ApiKeyManager.delete(apiKey);
-			errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.etiqueta.eliminada")));
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.apikey.eliminada")));
 			response.getWriter().write(new Gson().toJson(errores));
 		} else {
 			response.setStatus(400);
@@ -126,16 +126,16 @@ public class ApiKeyAction extends DispatchAction {
 		if (errors != null && !errors.isEmpty()) {
 			// Error de validación
 			response.setStatus(400);
-			response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.etiqueta.obligatorio"));
+			response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.apikey.obligatorio"));
 		} else {
 			ApiKey apiKey = new ApiKey();
 			BeanUtils.copyProperties(apiKey, apiKeyForm);
-			if (ApiKeyManager.existsApiKey(apiKey.getName())) {
+			if (ApiKeyManager.existsApiKey(apiKey.getName()) && !ApiKeyManager.getApiKey(apiKey.getId()).getName().equals(apiKeyForm.getName())) {
 				response.setStatus(400);
-				response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado"));
+				response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.apikey.duplicado"));
 			} else {
 				ApiKeyManager.update(apiKey);
-				response.getWriter().write(messageResources.getMessage("mensaje.exito.apikey.generada"));
+				response.getWriter().write(messageResources.getMessage("mensaje.exito.apikey.editada"));
 			}
 		}
 		return null;
@@ -163,16 +163,16 @@ public class ApiKeyAction extends DispatchAction {
 			apiKey.setActive(apiKeyForm.isActive());
 			if (ApiKeyManager.existsApiKey(apiKey.getName())) {
 				response.setStatus(400);
-				errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado")));
+				errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.apikey.duplicado")));
 				response.getWriter().write(new Gson().toJson(errores));
 			} else {
 				ApiKeyManager.save(apiKey);
-				errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.etiqueta.generada")));
+				errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.apikey.generada")));
 				response.getWriter().write(new Gson().toJson(errores));
 			}
 		} else {
 			response.setStatus(400);
-			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.etiqueta.obligatorio")));
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.apikey.obligatorio")));
 			response.getWriter().write(new Gson().toJson(errores));
 		}
 		return null;
