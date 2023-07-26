@@ -58,6 +58,16 @@ public class ApiKeyManager extends BaseManager {
 		return apiKey;
 	}
 
+	public static ApiKey getApiKey(String apiKey) {
+		Session session = getSession();
+		ApiKey aKey = ApiKeyDAO.getApiKey(session, apiKey);
+		session.flush();
+		if (session.isOpen()) {
+			session.close();
+		}
+		return aKey;
+	}
+
 	public static boolean existsApiKey(String name) {
 		Session session = getSession();
 		boolean exist = ApiKeyDAO.existsApiKey(session, name);
