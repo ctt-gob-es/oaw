@@ -39,6 +39,7 @@ CREATE TABLE complejidades_lista (
 INSERT INTO complejidades_lista (id_complejidad, nombre, profundidad, amplitud) VALUES(1, 'Baja', 2, 2);
 INSERT INTO complejidades_lista (id_complejidad, nombre, profundidad, amplitud) VALUES(2, 'Media', 4, 8);
 INSERT INTO complejidades_lista (id_complejidad, nombre, profundidad, amplitud) VALUES(3, 'Alta', 4, 11);
+INSERT INTO complejidades_lista (id_complejidad, nombre, profundidad, amplitud) VALUES(4, 'Única', 1, 1);
 
 CREATE TABLE observatorio_complejidad ( id_observatorio BIGINT(20) NOT NULL , id_complejidad INT(20) NOT NULL ) ;
 
