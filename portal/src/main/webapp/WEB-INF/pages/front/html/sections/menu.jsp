@@ -146,18 +146,6 @@ Email: observ.accesibilidad@correo.gob.es
 				</html:link>
 		</logic:notEqual>
 
-		<logic:equal name="<%=Constants.SUBMENU%>" value="<%=Constants.SUBMENU_LISTADO_APIKEYS%>">
-			<li class="active">
-				<html:link styleId="subselected" forward="observatoryApiKeys" titleKey="menuadmin.apikeys.title">
-					<bean:message key="menuadmin.apikeys" />
-				</html:link>
-		</logic:equal>
-		<logic:notEqual name="<%=Constants.SUBMENU%>" value="<%=Constants.SUBMENU_LISTADO_APIKEYS%>">
-			<li>
-				<html:link forward="observatoryApiKeys" titleKey="menuadmin.apikeys.title">
-					<bean:message key="menuadmin.apikeys" />
-				</html:link>
-		</logic:notEqual>
 
 
 		<logic:equal name="<%=Constants.SUBMENU%>" value="<%=Constants.SUBMENU_OBS_RANGES%>">
@@ -310,6 +298,18 @@ Email: observ.accesibilidad@correo.gob.es
 			</ul>
 		</li>
 	</inteco:menu>
+	<logic:equal name="<%=Constants.SUBMENU%>" value="<%=Constants.SUBMENU_LISTADO_APIKEYS%>">
+			<li>
+				<html:link styleId="subselected" forward="apiKeys" titleKey="menuadmin.apikeys.title">
+					<bean:message key="menuadmin.apikeys" />
+				</html:link>
+		</logic:equal>
+		<logic:notEqual name="<%=Constants.SUBMENU%>" value="<%=Constants.SUBMENU_LISTADO_APIKEYS%>">
+			<li>
+				<html:link forward="apiKeys" titleKey="menuadmin.apikeys.title">
+					<bean:message key="menuadmin.apikeys" />
+				</html:link>
+		</logic:notEqual>
 </ul>
 </li>
 </ul>

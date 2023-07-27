@@ -317,7 +317,7 @@
 
 	<definition name=".cargarApiKeys" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
-		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarApiKeys.jsp" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/menu_cargarApiKeys.jsp" />
 	</definition>
 
 

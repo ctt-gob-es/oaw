@@ -380,7 +380,7 @@
 
 		<forward name="observatoryPlantillas" path="/secure/Plantilla.do?action=load" />
 		
-		<forward name="observatoryApiKeys" path="/secure/ApiKey.do?action=load" />
+		<forward name="apiKeys" path="/secure/ApiKey.do?action=load" />
 
 		<forward name="observatoryReducirTablas" path="/secure/ViewReducirTablasObservatorio.do?action=load" />
 
