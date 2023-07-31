@@ -10,7 +10,7 @@ export JAVA_HOME=$jdk_route$jdk_version
 ## Nginx certificate generation
 if ! [ -f "./docker/nginx/certs/server.key" -a -f "./docker/nginx/certs/server.crt" ]; then
 
- # Removing empty folders with exclusive names
+ # Removing possible empty folders with exclusive names
  sudo rmdir ./docker/nginx/certs/server.key >> /dev/null 2>&1
  sudo rmdir ./docker/nginx/certs/server.crt >> /dev/null 2>&1
 
@@ -22,6 +22,8 @@ if ! [ -f "./docker/nginx/certs/server.key" -a -f "./docker/nginx/certs/server.c
 
 fi
 
+# Removing possible empty folders with oaw.war name
+sudo rmdir ./portal/target/oaw.war >> /dev/null 2>&1
 
 ## War Generation
 mvn  -f ./oaw/pom.xml clean install -P docker -Dmaven.test.skip=true
