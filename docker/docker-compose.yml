@@ -36,7 +36,7 @@ services:
       restart: always
       ports:
         - "18088:18088"        
-      container_name: proxy   
+      container_name: oaw_proxy   
 
     nginx:
       image: nginx:1.13.8-alpine      
@@ -50,7 +50,7 @@ services:
         - renderer-3
       restart: always
       shm_size: '1gb'
-      container_name: nginx
+      container_name: oaw_nginx
 
     mysql:
       image: mysql:5.7.21
