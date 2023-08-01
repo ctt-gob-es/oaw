@@ -38,6 +38,30 @@ Currently OAW is deployment under this configuration:
 
 This is a Maven projet that requieres version 3.0.0 or high
 
+### Quick Deployment (Linux & Docker)
+
+You can deploy all application running `deploy.sh` script.
+
+But first, you need the following requirements:
+- Openssl 3.0.2: Used for Nginx certificate generation
+- java-8-openjdk-amd64: JDK, not JRE
+- Maven 3.6.3: Compile and war creation
+- Docker 24.0.5 and Docker Compose 2.20.2
+
+*Note: The quick Deployment was built with all of these specific versions. We do not guarantee that it will work with other versions. Especially lower versions.
+
+Run this command in your terminal at the root path:
+
+```bash
+./deploy.sh
+```
+
+This script performs the following tasks:
+
+1. Set JAVA_HOME environment variable
+2. Generate Nginx certificates, if it doesn't already exist
+3. War generation
+4. Build and run docker containers
 
 ### Instalation
 

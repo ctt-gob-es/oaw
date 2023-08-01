@@ -12,11 +12,33 @@ Las siguientes intrucciones se han realizado en Ubuntu 22.04, es posible que en 
 
 Para realizar los siguientes pasos es necesario tener instalado en el equipo el siguiente software:
 - Apache Maven
+- OpenSSL
 - openjdk-8-jdk (No compatible con versiones superiores)
 - Docker
 - Docker compose
 
-### 2. Selección de la Base de datos (Opcional)
+### 2. Generación de certificados Nginx
+
+Para que nuestro contenedor de Nginx funcione es necesario agregarle una clave y certificado en una carpeta epecífica a través de un volumen de Docker.
+
+Puedes generar la clave con el siguiente comando:
+
+```bash
+openssl genpkey -algorithm RSA -out ./docker/nginx/certs/server.key >> /dev/null 2>&1
+```
+
+Una vez generada la utilizaremos para crear el certificado autofirmado:
+
+```bash
+openssl req -new -key ./docker/nginx/certs/server.key -x509 -out ./docker/nginx/certs/server.crt
+```
+
+Finalmente se te pedirán unos datos a rellenar para la generación del certificado. 
+Puedes inventarte estos datos, ya que este certificado solo lo usaremos como prueba para realizar nuestro despligue local.
+
+*Nota: La validez por defecto de un certificado son 30 días.
+
+### 3. Selección de la Base de datos (Opcional)
 
 Este paso no es necesario, a no ser que quieras cambiar el nombre o la url a la que apunta en busca de la base de datos.
 
@@ -37,7 +59,7 @@ Dentro de este archivo podemos encontrar la `url` de la base de datos que vamos 
 </Context>
 ```
 
-### 3. Generación del War
+### 4. Generación del War
 
 Previamente asegurate de tener instalada la versión 8 de JDK, dado que no sirve con versiones superiores.
 
@@ -80,7 +102,7 @@ mvn clean install -P docker -Dmaven.test.skip=true
 Finalmente, encontrarás el war generado en la carpeta `portal/target` con el nombre `oaw.war`. **No cambies el nombre ni muevas el war de esta ubicación.**
 
 
-### 3. Arranque
+### 5. Arranque
 
 Una vez generado el war, ve a la carpeta de `docker` que se encuentra en la raíz y levanta los contenedores con `docker compose`.
 
@@ -96,7 +118,7 @@ Para reiniciar la base de datos simplemente elimina la carpeta `/docker/volumes/
 **Nota:** No confundir esta carpeta con `docker/mysql`, esta última contiene los script SQL necesarios para generar el volumen inicial.
 
 
-### 4. Comprobaciones
+### 6. Comprobaciones
 
 Tomcat se ejecuta en http://localhost:18081
 
