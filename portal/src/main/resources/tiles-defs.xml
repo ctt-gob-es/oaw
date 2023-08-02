@@ -320,7 +320,6 @@
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/menu_cargarApiKeys.jsp" />
 	</definition>
 
-
 	<!-- P�gina cargar complejidades observatorio -->
 	<definition name=".cargarComplejidadesObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
