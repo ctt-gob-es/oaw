@@ -25,7 +25,7 @@ import javax.persistence.Table;
  * The Class ApiKey.
  */
 @Entity
-@Table(name = "export_apiKey")
+@Table(name = "apiKey")
 public class ApiKey {
 	/** The id. */
 	@Id

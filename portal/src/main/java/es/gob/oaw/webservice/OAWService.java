@@ -2,11 +2,19 @@ package es.gob.oaw.webservice;
 
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.xml.ws.WebServiceContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.util.MessageResources;
+import org.apache.xmlbeans.impl.jam.mutable.MElement;
+import org.w3c.dom.NodeList;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
@@ -20,6 +28,7 @@ import es.gob.oaw.webservice.dto.TrackerBackupResponseDTO;
 import es.gob.oaw.webservice.dto.ValidationRequestDTO;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.common.Constants;
+import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ObservatoryLevelForm;
@@ -29,10 +38,27 @@ import es.inteco.intav.form.ProblemForm;
 import es.inteco.intav.form.SpecificProblemForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.rastreador2.actionform.importation.ImportEntitiesResultForm;
+import es.inteco.rastreador2.manager.ApiKeyManager;
 import es.inteco.rastreador2.manager.exportation.database.DatabaseExportManager;
 import es.inteco.rastreador2.manager.importation.database.DatabaseImportManager;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.soap.SOAPHeader;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.description.AxisOperation;
+import org.apache.axis2.description.AxisService;
+import org.apache.axis2.engine.Handler;
+import org.apache.axis2.engine.Phase;
+import org.apache.axis2.phaseresolver.PhaseMetadata;
+import org.apache.axis2.transport.http.HTTPConstants;
+
+import javax.xml.namespace.QName;
+
+import java.util.ArrayList;
+import java.util.List;
 public class OAWService {
+
 	final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 	final CheckDescriptionsManager checkDescriptionsManager = new CheckDescriptionsManager();
 	final PropertiesManager pmgr = new PropertiesManager();
@@ -52,8 +78,33 @@ public class OAWService {
 			+ "o mapa del documento con accesos directos a las diferentes secciones del mismo).</p>";
 	static final String headersErrorAlternative = "Encabezados consecutivos del mismo nivel (o superior) sin contenido entre ellos.";
 
-	// Servicio de validación de página web
+	private boolean hasAccess(String apiKey){
+		if (ApiKeyManager.getApiKey(apiKey) == null){
+			Logger.putLog("ApiKey no encontrada", OAWService.class, Logger.LOG_LEVEL_ERROR);
+			return false;
+		}
+		else return ApiKeyManager.getApiKey(apiKey).isActive();
+	}
+	
 	public ProblemDTO[] validationRequest(ValidationRequestDTO validationRequestDTO) throws Exception {
+		MessageContext messageContext = MessageContext.getCurrentMessageContext();
+
+		SOAPHeader soapHeader = messageContext.getEnvelope().getHeader();
+		OMElement apiKeyHeaderElement = soapHeader.getFirstChildWithName(
+            new javax.xml.namespace.QName("http://ws.apache.org/axis2/oaw/", "apiKey"));
+            
+			if (apiKeyHeaderElement != null) {
+				String apiKey = apiKeyHeaderElement.getText();
+				Logger.putLog("apikey:" + apiKey, OAWService.class, Logger.LOG_LEVEL_WARNING);
+				if(!hasAccess(apiKey)){
+					return getAccessProblems();
+				}	
+			}
+			else {
+				Logger.putLog("apikey no encontrada", OAWService.class, Logger.LOG_LEVEL_ERROR);
+				return getAccessProblems();
+			}
+		
 		CheckAccessibility checkAccessibility = new CheckAccessibility();
 		checkAccessibility.setWebService(true);
 		// Metodología por defecto (Plugins de CMS y Navegador)
@@ -223,6 +274,16 @@ public class OAWService {
 		problemDTO.setTitle("Problema de conectividad");
 		problemDTO.setDescription("No se ha podido establecer conexión con la web deseada");
 		problemDTO.setHelp("No se ha podido establecer conexión con la web deseada");
+		problemDTO.setType("-");
+		problemsDTO.add(problemDTO);
+		return problemsDTO.toArray(new ProblemDTO[problemsDTO.size()]);
+	}
+	private ProblemDTO[] getAccessProblems() {
+		List<ProblemDTO> problemsDTO = new ArrayList<>();
+		ProblemDTO problemDTO = new ProblemDTO();
+		problemDTO.setTitle("Acceso denegado");
+		problemDTO.setDescription("No se ha proporcionado una apiKey activa");
+		problemDTO.setHelp("Comprobar si la apiKey es correcta y está activa");
 		problemDTO.setType("-");
 		problemsDTO.add(problemDTO);
 		return problemsDTO.toArray(new ProblemDTO[problemsDTO.size()]);

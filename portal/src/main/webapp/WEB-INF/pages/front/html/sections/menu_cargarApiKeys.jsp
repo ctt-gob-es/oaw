@@ -163,7 +163,7 @@ function guardarNuevaApiKey() {
 </script>
 
 
-<!-- observatorio_cargarApiKeys.jsp -->
+<!-- menu_cargarApiKeys.jsp -->
 <div id="main">
 
 
@@ -229,16 +229,16 @@ function guardarNuevaApiKey() {
 			<ol class="breadcrumb">
 				<li><html:link forward="observatoryMenu">
 						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-						<bean:message key="migas.observatorio" />
+						<bean:message key="migas.apiKey" />
 					</html:link></li>
 				<li class="active"><bean:message
-						key="migas.etiquetas.observatorio" /></li>
+						key="migas.apiKey" /></li>
 			</ol>
 		</div>
 
 		<div id="cajaformularios">
 			<h2>
-				<bean:message key="gestion.apikeys.observatorio.titulo" />
+				<bean:message key="gestion.apikeys.titulo" />
 			</h2>
 
 			<div id="exitosNuevaApiKey" style="display: none"></div>
