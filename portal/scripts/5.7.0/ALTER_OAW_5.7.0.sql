@@ -10,7 +10,7 @@ ADD COLUMN max_position_value FLOAT(4,2) NULL AFTER min_position_value,
 ADD COLUMN min_position_value_operator VARCHAR(255) NULL AFTER max_position_value,
 ADD COLUMN max_position_value_operator VARCHAR(255) NULL AFTER min_position_value_operator;
 
-ALTER TABLE observatorio_ura_send_results
+ALTER TABLE observatorio_ura_send_results 
 ADD COLUMN mid_previous_score FLOAT(4,2) NULL DEFAULT NULL;
 
 ALTER TABLE observatorio_send_historic_results
@@ -24,6 +24,6 @@ CREATE TABLE apiKey (
   activa bit(1) DEFAULT b'0',
   PRIMARY KEY (id),
   KEY id (id)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+);
 
 
