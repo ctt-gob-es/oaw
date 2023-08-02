@@ -5,6 +5,9 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.soap.SOAPHeader;
+import org.apache.axis2.context.MessageContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.util.MessageResources;
 
@@ -20,6 +23,7 @@ import es.gob.oaw.webservice.dto.TrackerBackupResponseDTO;
 import es.gob.oaw.webservice.dto.ValidationRequestDTO;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.common.Constants;
+import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ObservatoryLevelForm;
@@ -29,6 +33,7 @@ import es.inteco.intav.form.ProblemForm;
 import es.inteco.intav.form.SpecificProblemForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.rastreador2.actionform.importation.ImportEntitiesResultForm;
+import es.inteco.rastreador2.manager.ApiKeyManager;
 import es.inteco.rastreador2.manager.exportation.database.DatabaseExportManager;
 import es.inteco.rastreador2.manager.importation.database.DatabaseImportManager;
 
@@ -52,8 +57,12 @@ public class OAWService {
 			+ "o mapa del documento con accesos directos a las diferentes secciones del mismo).</p>";
 	static final String headersErrorAlternative = "Encabezados consecutivos del mismo nivel (o superior) sin contenido entre ellos.";
 
-	// Servicio de validación de página web
 	public ProblemDTO[] validationRequest(ValidationRequestDTO validationRequestDTO) throws Exception {
+		ProblemDTO[] accessProblems = checkAccessProblems();
+		if (Objects.nonNull(accessProblems)) {
+			Logger.putLog("Acceso al servicio de validación no permitido", OAWService.class, Logger.LOG_LEVEL_WARNING);
+			return accessProblems;
+		}
 		CheckAccessibility checkAccessibility = new CheckAccessibility();
 		checkAccessibility.setWebService(true);
 		// Metodología por defecto (Plugins de CMS y Navegador)
@@ -85,10 +94,17 @@ public class OAWService {
 
 	// Importación de datos desde el SSP
 	public ImportDataResponseDTO importDataRequest(ImportDataRequestDTO importDataRequestDTO) {
+		ImportDataResponseDTO importResultDTO = new ImportDataResponseDTO();
+		ProblemDTO[] accessProblems = checkAccessProblems();
+		if (Objects.nonNull(accessProblems)) {
+			Logger.putLog("Acceso al servicio de importación de entidades no permitido: No se ha proporcionado una apiKey activa", OAWService.class, Logger.LOG_LEVEL_WARNING);
+			importResultDTO.setObservations("Acceso al servicio de importación de entidades no permitido: No se ha proporcionado una apiKey activa");
+			importResultDTO.setValidImport(false);
+			return importResultDTO;
+		}
 		DatabaseImportManager importEntitiesManager = new DatabaseImportManager();
 		byte[] decodedBytes = Base64.getDecoder().decode(importDataRequestDTO.getContent().trim());
 		String data = new String(decodedBytes);
-		ImportDataResponseDTO importResultDTO = new ImportDataResponseDTO();
 		try {
 			ImportEntitiesResultForm importEntitiesResultForm = importEntitiesManager.importDataWS(data);
 			String result = formatResults(importEntitiesResultForm);
@@ -103,8 +119,15 @@ public class OAWService {
 
 	// Backup de datos del Rastreador
 	public TrackerBackupResponseDTO trackerBackupRequest(TrackerBackupRequestDTO trackerBackupRequestDTO) {
-		DatabaseExportManager exportEntitiesManager = new DatabaseExportManager();
+		ProblemDTO[] accessProblems = checkAccessProblems();
 		TrackerBackupResponseDTO trackerBackupResponseDTO = new TrackerBackupResponseDTO();
+		if (Objects.nonNull(accessProblems)) {
+			Logger.putLog("Acceso al servicio de exportación de entidades no permitido: No se ha proporcionado una apiKey activa", OAWService.class, Logger.LOG_LEVEL_WARNING);
+			trackerBackupResponseDTO.setObservations("Acceso al servicio de exportación de entidades no permitido: No se ha proporcionado una apiKey activa");
+			trackerBackupResponseDTO.setValidExport(false);
+			return trackerBackupResponseDTO;
+		}
+		DatabaseExportManager exportEntitiesManager = new DatabaseExportManager();
 		try {
 			String content = exportEntitiesManager.backup();
 			trackerBackupResponseDTO.setContent(Base64.getEncoder().encodeToString(content.getBytes()));
@@ -223,6 +246,41 @@ public class OAWService {
 		problemDTO.setTitle("Problema de conectividad");
 		problemDTO.setDescription("No se ha podido establecer conexión con la web deseada");
 		problemDTO.setHelp("No se ha podido establecer conexión con la web deseada");
+		problemDTO.setType("-");
+		problemsDTO.add(problemDTO);
+		return problemsDTO.toArray(new ProblemDTO[problemsDTO.size()]);
+	}
+
+	private ProblemDTO[] checkAccessProblems() {
+		MessageContext messageContext = MessageContext.getCurrentMessageContext();
+		SOAPHeader soapHeader = messageContext.getEnvelope().getHeader();
+		OMElement apiKeyHeaderElement = soapHeader.getFirstChildWithName(new javax.xml.namespace.QName("http://ws.apache.org/axis2/oaw/", "apiKey"));
+		if (Objects.nonNull(apiKeyHeaderElement)) {
+			String apiKey = apiKeyHeaderElement.getText();
+			Logger.putLog("ApiKey:" + apiKey, OAWService.class, Logger.LOG_LEVEL_WARNING);
+			if (!hasAccess(apiKey)) {
+				return getAccessProblems();
+			}
+			return null;
+		}
+		Logger.putLog("ApiKey no encontrada", OAWService.class, Logger.LOG_LEVEL_ERROR);
+		return getAccessProblems();
+	}
+
+	private boolean hasAccess(String apiKey) {
+		if (ApiKeyManager.getApiKey(apiKey) == null) {
+			Logger.putLog("ApiKey no encontrada", OAWService.class, Logger.LOG_LEVEL_ERROR);
+			return false;
+		} else
+			return ApiKeyManager.getApiKey(apiKey).isActive();
+	}
+
+	private ProblemDTO[] getAccessProblems() {
+		List<ProblemDTO> problemsDTO = new ArrayList<>();
+		ProblemDTO problemDTO = new ProblemDTO();
+		problemDTO.setTitle("Acceso denegado");
+		problemDTO.setDescription("No se ha proporcionado una apiKey activa");
+		problemDTO.setHelp("Comprobar si la apiKey es correcta y está activa");
 		problemDTO.setType("-");
 		problemsDTO.add(problemDTO);
 		return problemsDTO.toArray(new ProblemDTO[problemsDTO.size()]);

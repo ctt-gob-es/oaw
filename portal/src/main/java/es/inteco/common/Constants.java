@@ -171,6 +171,8 @@ public interface Constants {
 	String NEW_COMPLEXITY_SEED = "newComplexitySeed";
 	/** The complejidad form. */
 	String COMPLEJIDAD_FORM = "ComplejidadForm";
+	/** The apikey form. */
+	String API_KEY_FORM = "ApiKeyForm";
 	/** The add complexity seed. */
 	String ADD_COMPLEXITY_SEED = "addComplexitySeed";
 	/** The update complexity seed. */
@@ -1157,6 +1159,8 @@ public interface Constants {
 	String MENU_CRAWLINGS = "menuCrawlings";
 	/** The menu seeds. */
 	String MENU_SEEDS = "menuSeeds";
+	/** The menu ApiKeys. */
+	String MENU_APIKEYS = "menuApiKeys";
 	/** The menu client crawlings. */
 	String MENU_CLIENT_CRAWLINGS = "menuClientCrawlings";
 	/** The menu client crawlings account. */
@@ -1169,6 +1173,8 @@ public interface Constants {
 	String SUBMENU_GOOGLE = "submenuGoogle";
 	/** The submenu listado sem. */
 	String SUBMENU_LISTADO_SEM = "submenuListadoSem";
+	/** The submenu listado apiKeys */
+	String SUBMENU_LISTADO_APIKEYS = "submenuListadoApiKeys";
 	/** The submenu categories. */
 	String SUBMENU_CATEGORIES = "submenuCategories";
 	/** The submenu obs semilla. */
@@ -1309,6 +1315,8 @@ public interface Constants {
 	String GET_SEED_RESULTS_FORWARD = "resultadosObservatorioSemillas";
 	/** The seed list. */
 	String SEED_LIST = "seedList";
+	/** The apikey list */
+	String APIKEY_LIST = "apiKeyList";
 	/** The observatory seed list. */
 	String OBSERVATORY_SEED_LIST = "observatorySeedList";
 	/** The observatory form. */
