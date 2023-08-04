@@ -10,7 +10,7 @@ Las siguientes intrucciones se han realizado en Ubuntu 22.04, es posible que en 
 
 ### 1. Requisitos previos
 
-Para realizar los siguientes pasos es necesario tener instalado en el equipo el siguiente software:
+Para realizar los siguientes pasos es necesario ubicarse en la carpeta `docker` y tener instalado en el equipo el siguiente software:
 - [Apache Maven](https://maven.apache.org/what-is-maven.html) 3.6.3
 - [OpenSSL](https://www.openssl.org/) 3.0.2
 - [openjdk-8-jdk](https://www.oracle.com/es/java/technologies/javase/javase8-archive-downloads.html) (No compatible con versiones superiores)
@@ -26,13 +26,13 @@ Para que nuestro contenedor de Nginx funcione es necesario agregarle una clave y
 Puedes generar la clave con el siguiente comando:
 
 ```bash
-openssl genpkey -algorithm RSA -out ./docker/nginx/certs/server.key >> /dev/null 2>&1
+openssl genpkey -algorithm RSA -out ../motor-js/nginx/certs/server.key
 ```
 
 Una vez generada la utilizaremos para crear el certificado autofirmado:
 
 ```bash
-openssl req -new -key ./docker/nginx/certs/server.key -x509 -out ./docker/nginx/certs/server.crt
+openssl req -new -key ../motor-js/nginx/certs/server.key -x509 -out ../motor-js/nginx/certs/server.crt
 ```
 
 Finalmente se te pedirán unos datos a rellenar para la generación del certificado. 
