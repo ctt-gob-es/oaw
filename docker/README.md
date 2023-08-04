@@ -11,11 +11,13 @@ Las siguientes intrucciones se han realizado en Ubuntu 22.04, es posible que en 
 ### 1. Requisitos previos
 
 Para realizar los siguientes pasos es necesario tener instalado en el equipo el siguiente software:
-- Apache Maven
-- OpenSSL
-- openjdk-8-jdk (No compatible con versiones superiores)
-- Docker
-- Docker compose
+- [Apache Maven](https://maven.apache.org/what-is-maven.html) 3.6.3
+- [OpenSSL](https://www.openssl.org/) 3.0.2
+- [openjdk-8-jdk](https://www.oracle.com/es/java/technologies/javase/javase8-archive-downloads.html) (No compatible con versiones superiores)
+- [Docker](https://docs.docker.com/get-started/overview/) 24.0.5
+- [Docker compose](https://docs.docker.com/compose/) 2.20.2
+
+*Nota: Las versiones indicadas son con las que se ha desarrollado la versión dockerizada. Puede funcionar con otras versiones exceptuando el caso de openjdk-8-jdk.
 
 ### 2. Generación de certificados Nginx
 

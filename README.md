@@ -28,13 +28,13 @@ To do this, inside the oaw directory we will execute the following command so th
 
 If everything goes well, a war will be generated in the portal/target folder which will be the one we should display this war in the webapps folder of the tomcat server. 
 
-### Requeriments
+### Requirements
 
 Currently OAW is deployment under this configuration:
 
-* Java 1.8.0_202 
-* Apache Tomcat 7
-* MySQL 5
+* [Java 1.8.0_202](https://www.oracle.com/es/java/technologies/javase/javase8-archive-downloads.html) 
+* [Apache Tomcat 7](https://tomcat.apache.org/tomcat-7.0-doc/)
+* [MySQL 5](https://dev.mysql.com/doc/relnotes/mysql/5.7/en/news-5-7-21.html)
 
 This is a Maven projet that requieres version 3.0.0 or high
 
@@ -43,10 +43,10 @@ This is a Maven projet that requieres version 3.0.0 or high
 You can deploy all application running `deploy.sh` script.
 
 But first, you need the following requirements:
-- Openssl 3.0.2: Used for Nginx certificate generation
-- java-8-openjdk-amd64: JDK, not JRE
-- Maven 3.6.3: Compile and war creation
-- Docker 24.0.5 and Docker Compose 2.20.2
+- [OpenSSL](https://www.openssl.org/) 3.0.2: Used for Nginx certificate generation
+- [java-8-openjdk-amd64](https://www.oracle.com/es/java/technologies/javase/javase8-archive-downloads.html): JDK, not JRE
+- [Apache Maven](https://maven.apache.org/what-is-maven.html) 3.6.3: Compile and war creation
+- [Docker](https://docs.docker.com/get-started/overview/) 24.0.5 and [Docker Compose](https://docs.docker.com/compose/) 2.20.2
 
 *Note: The quick Deployment was built with all of these specific versions. We do not guarantee that it will work with other versions. Especially lower versions.
 
