@@ -43,10 +43,11 @@ This is a Maven projet that requieres version 3.0.0 or high
 You can deploy all application running `deploy.sh` script.
 
 But first, you need the following requirements:
-- [OpenSSL](https://www.openssl.org/) 3.0.2: Used for Nginx certificate generation
-- [java-8-openjdk-amd64](https://www.oracle.com/es/java/technologies/javase/javase8-archive-downloads.html): JDK, not JRE
-- [Apache Maven](https://maven.apache.org/what-is-maven.html) 3.6.3: Compile and war creation
-- [Docker](https://docs.docker.com/get-started/overview/) 24.0.5 and [Docker Compose](https://docs.docker.com/compose/) 2.20.2
+
+* [OpenSSL](https://www.openssl.org/) 3.0.2: Used for Nginx certificate generation
+* [java-8-openjdk-amd64](https://www.oracle.com/es/java/technologies/javase/javase8-archive-downloads.html): JDK, not JRE
+* [Apache Maven](https://maven.apache.org/what-is-maven.html) 3.6.3: Compile and war creation
+* [Docker](https://docs.docker.com/get-started/overview/) 24.0.5 and [Docker Compose](https://docs.docker.com/compose/) 2.20.2
 
 *Note: The quick Deployment was built with all of these specific versions. We do not guarantee that it will work with other versions. Especially lower versions.
 

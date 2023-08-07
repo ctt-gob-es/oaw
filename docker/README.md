@@ -11,11 +11,12 @@ The following instructions have been performed on Ubuntu 22.04. It's possible th
 ### 1. Prerequisites
 
 To perform the following steps, you need to navigate to the `docker` folder and have the following software installed on your system:
-- [Apache Maven](https://maven.apache.org/what-is-maven.html) 3.6.3
-- [OpenSSL](https://www.openssl.org/) 3.0.2
-- [openjdk-8-jdk](https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html) (Not compatible with higher versions)
-- [Docker](https://docs.docker.com/get-started/overview/) 24.0.5
-- [Docker Compose](https://docs.docker.com/compose/) 2.20.2
+
+* [Apache Maven](https://maven.apache.org/what-is-maven.html) 3.6.3
+* [OpenSSL](https://www.openssl.org/) 3.0.2
+* [openjdk-8-jdk](https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html) (Not compatible with higher versions)
+* [Docker](https://docs.docker.com/get-started/overview/) 24.0.5
+* [Docker Compose](https://docs.docker.com/compose/) 2.20.2
 
 *Note: The specified versions are those with which the dockerized version has been developed. It might work with other versions except for openjdk-8-jdk.
 
