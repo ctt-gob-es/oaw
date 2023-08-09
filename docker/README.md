@@ -60,8 +60,6 @@ Inside this file, you can find the `url` of the database that will be used.
 </Context>
 ```
 
-Please note that this step is optional and should only be performed if you intend to change the database configuration.
-
 ### 4. Generating the War File
 
 Ensure that you have JDK version 8 installed beforehand, as higher versions are not compatible.
@@ -84,7 +82,6 @@ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 If you still encounter the same error, ensure that you have `jdk` installed and not just `jre`. You can have both versions, but you definitely need `jdk`.
 
-Please note that this step involves generating the "war" file for your application.
 Other commands that might be helpful are:
 
 ```bash
