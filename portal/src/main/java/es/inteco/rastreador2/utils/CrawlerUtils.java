@@ -419,7 +419,8 @@ public final class CrawlerUtils {
 			final PropertiesManager pmgr = new PropertiesManager();
 			final List<String> adminMails = DAOUtils.getMailsByRol(Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "role.administrator.id")));
 			final String alertSubject = pmgr.getValue(MAIL_PROPERTIES, "alert.from.subject");
-			final String alertText = pmgr.getValue(MAIL_PROPERTIES, "warning.administrator.message") + exception.getMessage();
+			final String alertText = pmgr.getValue(MAIL_PROPERTIES, "warning.administrator.message") + exception.getMessage() + "\n\n"
+					+ pmgr.getValue(MAIL_PROPERTIES, "warning.administrator.signature");
 			MailService mailService = new MailService();
 			mailService.sendMail(adminMails, alertSubject, alertText);
 		} catch (Exception e) {

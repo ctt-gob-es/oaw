@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologï¿½as de la Comunicaciï¿½n, 
 This program is licensed and may be used, modified and redistributed under the terms
 of the European Public License (EUPL), either version 1.2 or (at your option) any later 
 version as soon as they are approved by the European Commission.
@@ -10,7 +10,7 @@ permissions and more details.
 You should have received a copy of the EUPL1.2 license along with this program; if not, 
 you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
+Modificaciones: MINHAFP (Ministerio de Hacienda y Funciï¿½n Pï¿½blica) 
 Email: observ.accesibilidad@correo.gob.es
 -->
 <%@ include file="/common/taglibs.jsp"%>
@@ -145,6 +145,9 @@ Email: observ.accesibilidad@correo.gob.es
 					<bean:message key="menu.config.plantillas" />
 				</html:link>
 		</logic:notEqual>
+
+
+
 		<logic:equal name="<%=Constants.SUBMENU%>" value="<%=Constants.SUBMENU_OBS_RANGES%>">
 			<li class="active">
 				<html:link styleId="subselected" forward="observatoryRanges" titleKey="menu.config.ranges.title">
@@ -295,6 +298,18 @@ Email: observ.accesibilidad@correo.gob.es
 			</ul>
 		</li>
 	</inteco:menu>
+	<logic:equal name="<%=Constants.SUBMENU%>" value="<%=Constants.SUBMENU_LISTADO_APIKEYS%>">
+			<li>
+				<html:link styleId="subselected" forward="apiKeys" titleKey="menuadmin.apikeys.title">
+					<bean:message key="menuadmin.apikeys" />
+				</html:link>
+		</logic:equal>
+		<logic:notEqual name="<%=Constants.SUBMENU%>" value="<%=Constants.SUBMENU_LISTADO_APIKEYS%>">
+			<li>
+				<html:link forward="apiKeys" titleKey="menuadmin.apikeys.title">
+					<bean:message key="menuadmin.apikeys" />
+				</html:link>
+		</logic:notEqual>
 </ul>
 </li>
 </ul>

@@ -150,6 +150,8 @@
 			type="es.gob.oaw.rastreador2.actionform.diagnostico.ServicioDiagnosticoForm" />
 
 		<form-bean name="PlantillaForm" type="es.inteco.rastreador2.actionform.semillas.PlantillaForm" />
+		
+		<form-bean name="ApiKeyForm" type="es.inteco.rastreador2.export.database.form.ApiKeyForm" />
 
 	</form-beans>
 
@@ -376,8 +378,9 @@
 
 		<forward name="observatoryEtiquetas" path="/secure/ViewEtiquetasObservatorio.do?action=load" />
 
-
 		<forward name="observatoryPlantillas" path="/secure/Plantilla.do?action=load" />
+		
+		<forward name="apiKeys" path="/secure/ApiKey.do?action=load" />
 
 		<forward name="observatoryReducirTablas" path="/secure/ViewReducirTablasObservatorio.do?action=load" />
 
@@ -390,7 +393,6 @@
 
 		<forward name="confirmSendObservatoryResultsByMail"
 			path="/secure/ConfigSendResultsByMailAction.do?action=confirm" />
-
 
 		<forward name="observatoryRanges" path="/secure/RangeObservatorio.do?action=load" />
 
@@ -563,6 +565,10 @@
 			<forward name="exito" path=".cargarPlantillasObservatorio" />
 		</action>
 
+		<action path="/secure/ApiKey" name="ApiKeyForm"
+			type="es.inteco.rastreador2.action.apikey.ApiKeyAction" parameter="action" scope="session" validate="false">
+			<forward name="exito" path=".cargarApiKeys" />
+		</action>
 
 		<action path="/secure/VerObservatorio" type="es.inteco.rastreador2.action.observatorio.VerObservatorioAction"
 			scope="request" name="VerObservatorioForm" validate="false">
