@@ -16,11 +16,11 @@ ADD COLUMN mid_previous_score FLOAT(4,2) NULL DEFAULT NULL;
 ALTER TABLE observatorio_send_historic_results
 ADD COLUMN mid_previous_score FLOAT(4,2) NULL DEFAULT NULL;
 
-CREATE TABLE apiKey (
+CREATE TABLE apikey (
   id bigint(20) NOT NULL AUTO_INCREMENT,
   nombre varchar(100) COLLATE utf8_bin NOT NULL,
   descripcion varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  apiKey varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  apikey varchar(255) COLLATE utf8_bin DEFAULT NULL,
   activa bit(1) DEFAULT b'0',
   PRIMARY KEY (id),
   KEY id (id)

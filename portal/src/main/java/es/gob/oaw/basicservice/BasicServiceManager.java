@@ -146,8 +146,8 @@ public class BasicServiceManager {
 								basicServiceForm.getAmplitud(), basicServiceForm.getProfundidad(), basicServiceForm.getReport())) {
 							// Si el analisis marcado corresponde a un análisis
 							// de esa url lo borramos
-							Logger.putLog("Borrando analisis antiguo " + basicServiceForm.getAnalysisToDelete(), BasicServiceManager.class, Logger.LOG_LEVEL_ERROR);
-							checkHistoricoService.deleteAnalysis(basicServiceForm.getName(), basicServiceForm.getAnalysisToDelete());
+							// Logger.putLog("Borrando analisis antiguo " + basicServiceForm.getAnalysisToDelete(), BasicServiceManager.class, Logger.LOG_LEVEL_ERROR);
+							// checkHistoricoService.deleteAnalysis(basicServiceForm.getName(), basicServiceForm.getAnalysisToDelete());
 						} else {
 							Logger.putLog("Los datos indicados no corresponden a ningún analisis registrado para " + basicServiceForm.getDomain(), BasicServiceManager.class, Logger.LOG_LEVEL_ERROR);
 						}
@@ -245,8 +245,8 @@ public class BasicServiceManager {
 				pdfPath = BasicServiceExport.compressReportWithCode(pdfPath, basicServiceForm.isContentAnalysis(), basicServiceForm.getFileName(), basicServiceForm.getDepthReport());
 				if (!basicServiceForm.isRegisterAnalysis()) {
 					// Si no es necesario registrar el análisis se borra
-					Logger.putLog("Borrando analisis " + idCrawling, BasicServiceManager.class, Logger.LOG_LEVEL_INFO);
-					checkHistoricoService.deleteAnalysis(basicServiceForm.getName(), idCrawling.toString());
+					// Logger.putLog("Borrando analisis " + idCrawling, BasicServiceManager.class, Logger.LOG_LEVEL_INFO);
+					// checkHistoricoService.deleteAnalysis(basicServiceForm.getName(), idCrawling.toString());
 				}
 				// Lo enviamos por correo electrónico
 				Logger.putLog("Enviando correo del servicio de diagnóstico", BasicServiceManager.class, Logger.LOG_LEVEL_INFO);

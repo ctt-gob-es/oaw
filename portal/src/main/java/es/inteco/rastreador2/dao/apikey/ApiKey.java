@@ -25,7 +25,7 @@ import javax.persistence.Table;
  * The Class ApiKey.
  */
 @Entity
-@Table(name = "apiKey")
+@Table(name = "apikey")
 public class ApiKey {
 	/** The id. */
 	@Id
@@ -34,7 +34,7 @@ public class ApiKey {
 	private Long id;
 	@Column(name = "nombre")
 	private String name;
-	@Column(name = "apiKey")
+	@Column(name = "apikey")
 	private String apiKey;
 	@Column(name = "descripcion")
 	private String description;
@@ -95,7 +95,6 @@ public class ApiKey {
 		this.description = description;
 	}
 
-
 	/**
 	 * Gets the apiKey.
 	 *
@@ -114,13 +113,21 @@ public class ApiKey {
 		this.apiKey = apiKey;
 	}
 
+	/**
+	 * Is active
+	 * 
+	 * @return boolean value
+	 */
 	public boolean isActive() {
 		return active;
 	}
 
+	/**
+	 * Set if is active
+	 * 
+	 * @param active boolean
+	 */
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-
-	
 }
