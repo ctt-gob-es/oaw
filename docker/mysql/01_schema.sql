@@ -38,29 +38,6 @@ CREATE TABLE `basic_service` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `basic_service_backup` (
-  `id` bigint(20) NOT NULL DEFAULT '0',
-  `usr` varchar(250) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `language` varchar(10) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `domain` varchar(12000) CHARACTER SET latin1 DEFAULT NULL,
-  `email` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `depth` int(11) DEFAULT NULL,
-  `width` int(11) DEFAULT NULL,
-  `report` varchar(30) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `date` datetime DEFAULT NULL,
-  `status` varchar(25) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT 'launched',
-  `send_date` datetime DEFAULT NULL,
-  `scheduling_date` datetime DEFAULT NULL,
-  `analysis_type` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `in_directory` tinyint(1) NOT NULL DEFAULT '0',
-  `register_result` tinyint(1) NOT NULL DEFAULT '0',
-  `complexity` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `filename` varchar(1024) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `depthReport` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cartucho` (
   `id_cartucho` bigint(20) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) COLLATE utf8_bin NOT NULL,
@@ -793,44 +770,6 @@ CREATE TABLE `tanalisis` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tanalisis_accesibilidad` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_analisis` int(11) NOT NULL,
-  `url` varchar(256) DEFAULT NULL,
-  `checks_ok` int(11) DEFAULT '0',
-  `COD_FUENTE` mediumtext,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_analisis_UNIQUE` (`id_analisis`,`url`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tanalisis_accesibilidad_backup` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `id_analisis` int(11) NOT NULL,
-  `url` varchar(256) DEFAULT NULL,
-  `checks_ok` int(11) DEFAULT '0',
-  `COD_FUENTE` mediumtext
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tanalisis_backup` (
-  `cod_analisis` bigint(20) NOT NULL DEFAULT '0',
-  `fec_analisis` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `cod_url` varchar(2050) DEFAULT NULL,
-  `num_duracion` bigint(20) DEFAULT NULL,
-  `nom_entidad` varchar(100) NOT NULL,
-  `cod_rastreo` bigint(20) NOT NULL,
-  `cod_guideline` bigint(20) NOT NULL,
-  `checks_ejecutados` text,
-  `estado` int(11) NOT NULL,
-  `cod_fuente` mediumtext,
-  `ref_cod_fuente` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tanalisis_css` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `url` varchar(2050) DEFAULT NULL,
@@ -839,15 +778,6 @@ CREATE TABLE `tanalisis_css` (
   PRIMARY KEY (`id`),
   KEY `id` (`id`),
   KEY `cod_analisis` (`cod_analisis`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tanalisis_css_backup` (
-  `id` bigint(20) NOT NULL DEFAULT '0',
-  `url` varchar(2050) DEFAULT NULL,
-  `codigo` mediumtext,
-  `cod_analisis` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
