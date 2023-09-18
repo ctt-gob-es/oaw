@@ -311,7 +311,7 @@ public final class LoginDAO {
 		try (PreparedStatement ps = c
 				.prepareStatement("SELECT DISTINCT(u.usuario), u.id_usuario , r.id_tipo, GROUP_CONCAT(DISTINCT(r.rol)) AS grupo, GROUP_CONCAT(DISTINCT(c.aplicacion)) AS cartuchos "
 						+ "FROM usuario u	" + "LEFT JOIN usuario_rol ur ON (ur.usuario = u.id_usuario) " + "LEFT JOIN roles r ON (r.id_rol = ur.id_rol) "
-						+ "LEFT JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) " + "LEFT JOIN cartucho c ON (c.id_cartucho = uc.id_cartucho) " + "WHERE u.id_usuario != 1 "
+						+ "LEFT JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) " + "LEFT JOIN cartucho c ON (c.id_cartucho = uc.id_cartucho) " 
 						+ "GROUP BY u.usuario, u.id_usuario, r.id_tipo ORDER BY u.usuario LIMIT ? OFFSET ?")) {
 			ps.setInt(1, pagSize);
 			ps.setInt(2, resultFrom);

@@ -34,30 +34,7 @@ CREATE TABLE `basic_service` (
   `filename` varchar(1024) COLLATE utf8_bin DEFAULT NULL,
   `depthReport` varchar(128) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `basic_service_backup` (
-  `id` bigint(20) NOT NULL DEFAULT '0',
-  `usr` varchar(250) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `language` varchar(10) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `domain` varchar(12000) CHARACTER SET latin1 DEFAULT NULL,
-  `email` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `depth` int(11) DEFAULT NULL,
-  `width` int(11) DEFAULT NULL,
-  `report` varchar(30) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `date` datetime DEFAULT NULL,
-  `status` varchar(25) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT 'launched',
-  `send_date` datetime DEFAULT NULL,
-  `scheduling_date` datetime DEFAULT NULL,
-  `analysis_type` varchar(20) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `in_directory` tinyint(1) NOT NULL DEFAULT '0',
-  `register_result` tinyint(1) NOT NULL DEFAULT '0',
-  `complexity` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `filename` varchar(1024) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `depthReport` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -110,7 +87,7 @@ CREATE TABLE `categorias_lista` (
   `clave` varchar(1024) COLLATE utf8_bin DEFAULT NULL,
   `principal` int(11) DEFAULT '0',
   PRIMARY KEY (`id_categoria`)
-) ENGINE=MyISAM AUTO_INCREMENT=110 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=111 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -153,7 +130,7 @@ CREATE TABLE `cuenta_cliente` (
   KEY `lista_rastreable` (`lista_rastreable`),
   KEY `lista_no_rastreable` (`lista_no_rastreable`),
   KEY `id_language` (`id_language`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -216,7 +193,7 @@ CREATE TABLE `etiqueta` (
   UNIQUE KEY `nombre` (`nombre`),
   KEY `FKADC57F94AF7028F6` (`id_clasificacion`),
   CONSTRAINT `FKADC57F94AF7028F6` FOREIGN KEY (`id_clasificacion`) REFERENCES `clasificacion_etiqueta` (`id_clasificacion`)
-) ENGINE=InnoDB AUTO_INCREMENT=18833 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -237,7 +214,7 @@ CREATE TABLE `export_aspect_score` (
   KEY `FK39330E96BBF2859D` (`idCategory`),
   KEY `FK39330E96B29C2AF` (`idSite`),
   KEY `FK39330E965BDB7C31` (`idExecution`)
-) ENGINE=InnoDB AUTO_INCREMENT=135141 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -255,7 +232,7 @@ CREATE TABLE `export_category` (
   PRIMARY KEY (`id`),
   KEY `FKA67C529B3ADA411` (`idExecution`),
   KEY `FKA67C5295BDB7C31` (`idExecution`)
-) ENGINE=InnoDB AUTO_INCREMENT=556 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -282,7 +259,7 @@ CREATE TABLE `export_page` (
   PRIMARY KEY (`id`),
   KEY `FK8322383A8342B6CF` (`idSite`),
   KEY `FK8322383AB29C2AF` (`idSite`)
-) ENGINE=InnoDB AUTO_INCREMENT=24762 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -302,7 +279,7 @@ CREATE TABLE `export_site` (
   PRIMARY KEY (`id`),
   KEY `FK8323B4F2D83469BD` (`idCategory`),
   KEY `FK8323B4F2BBF2859D` (`idCategory`)
-) ENGINE=InnoDB AUTO_INCREMENT=1165 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -321,7 +298,7 @@ CREATE TABLE `export_verification_modality` (
   KEY `FKC9F9E23ABBF2859D` (`idCategory`),
   KEY `FKC9F9E23AB29C2AF` (`idSite`),
   KEY `FKC9F9E23A5BDB7C31` (`idExecution`)
-) ENGINE=InnoDB AUTO_INCREMENT=51162 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -334,7 +311,7 @@ CREATE TABLE `export_verification_page` (
   PRIMARY KEY (`id`),
   KEY `FK724BD668833FBD5F` (`idPage`),
   KEY `FK724BD668B26C93F` (`idPage`)
-) ENGINE=InnoDB AUTO_INCREMENT=495221 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -352,7 +329,7 @@ CREATE TABLE `export_verification_score` (
   KEY `FKD75A45D9BBF2859D` (`idCategory`),
   KEY `FKD75A45D9B29C2AF` (`idSite`),
   KEY `FKD75A45D95BDB7C31` (`idExecution`)
-) ENGINE=InnoDB AUTO_INCREMENT=45341 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -388,7 +365,7 @@ CREATE TABLE `lista` (
   KEY `FK6236383E4BE25A2` (`id_complejidad`),
   KEY `FK6236383BD8D2820` (`id_ambito`),
   KEY `FK623638314AE8A4F` (`id_tipo_lista`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
@@ -427,7 +404,7 @@ CREATE TABLE `observatorio` (
   KEY `id_language` (`id_language`),
   KEY `id_cartucho` (`id_cartucho`),
   KEY `id_tipo` (`id_tipo`)
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -469,7 +446,7 @@ CREATE TABLE `observatorio_estado` (
   `tiempo_acumulado` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_observatorio` (`id_observatorio`,`id_ejecucion_observatorio`)
-) ENGINE=InnoDB AUTO_INCREMENT=538 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -480,7 +457,7 @@ CREATE TABLE `observatorio_extra_configuration` (
   `value` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -499,7 +476,7 @@ CREATE TABLE `observatorio_metodologia` (
   `metodologia` mediumtext COLLATE utf8_bin,
   PRIMARY KEY (`id`),
   KEY `id_obs_realizado` (`id_obs_realizado`)
-) ENGINE=MyISAM AUTO_INCREMENT=546 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -509,7 +486,7 @@ CREATE TABLE `observatorio_plantillas` (
   `documento` longblob NOT NULL,
   `type` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id_plantilla`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -517,7 +494,7 @@ CREATE TABLE `observatorio_proxy` (
   `status` tinyint(1) NOT NULL,
   `url` varchar(64) NOT NULL,
   `port` varchar(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -531,7 +508,7 @@ CREATE TABLE `observatorio_range` (
   `weight` int(11) NOT NULL,
   `color` varchar(7) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -543,7 +520,7 @@ CREATE TABLE `observatorio_send_configuration` (
   `subject` varchar(255) DEFAULT NULL,
   `cco` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -674,7 +651,7 @@ CREATE TABLE `observatorios_realizados` (
   PRIMARY KEY (`id`),
   KEY `id_observatorio` (`id_observatorio`),
   KEY `id_cartucho` (`id_cartucho`)
-) ENGINE=MyISAM AUTO_INCREMENT=557 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -715,7 +692,7 @@ CREATE TABLE `rastreo` (
   KEY `id_language` (`id_language`),
   KEY `rastreo_ibfk_4` (`lista_rastreable`),
   KEY `rastreo_ibfk_5` (`lista_no_rastreable`)
-) ENGINE=MyISAM AUTO_INCREMENT=1182 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=1183 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -735,7 +712,7 @@ CREATE TABLE `rastreos_realizados` (
   KEY `id_cartucho` (`id_cartucho`),
   KEY `id_obs_realizado` (`id_obs_realizado`),
   KEY `id_lista` (`id_lista`)
-) ENGINE=MyISAM AUTO_INCREMENT=1053 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -793,44 +770,6 @@ CREATE TABLE `tanalisis` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tanalisis_accesibilidad` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_analisis` int(11) NOT NULL,
-  `url` varchar(256) DEFAULT NULL,
-  `checks_ok` int(11) DEFAULT '0',
-  `COD_FUENTE` mediumtext,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_analisis_UNIQUE` (`id_analisis`,`url`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tanalisis_accesibilidad_backup` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `id_analisis` int(11) NOT NULL,
-  `url` varchar(256) DEFAULT NULL,
-  `checks_ok` int(11) DEFAULT '0',
-  `COD_FUENTE` mediumtext
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tanalisis_backup` (
-  `cod_analisis` bigint(20) NOT NULL DEFAULT '0',
-  `fec_analisis` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `cod_url` varchar(2050) DEFAULT NULL,
-  `num_duracion` bigint(20) DEFAULT NULL,
-  `nom_entidad` varchar(100) NOT NULL,
-  `cod_rastreo` bigint(20) NOT NULL,
-  `cod_guideline` bigint(20) NOT NULL,
-  `checks_ejecutados` text,
-  `estado` int(11) NOT NULL,
-  `cod_fuente` mediumtext,
-  `ref_cod_fuente` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tanalisis_css` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `url` varchar(2050) DEFAULT NULL,
@@ -839,15 +778,6 @@ CREATE TABLE `tanalisis_css` (
   PRIMARY KEY (`id`),
   KEY `id` (`id`),
   KEY `cod_analisis` (`cod_analisis`)
-) ENGINE=InnoDB AUTO_INCREMENT=1145 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tanalisis_css_backup` (
-  `id` bigint(20) NOT NULL DEFAULT '0',
-  `url` varchar(2050) DEFAULT NULL,
-  `codigo` mediumtext,
-  `cod_analisis` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -905,7 +835,7 @@ CREATE TABLE `usuario` (
   `departamento` varchar(100) COLLATE utf8_bin NOT NULL,
   `email` varchar(100) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id_usuario`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

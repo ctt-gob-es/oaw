@@ -1,29 +1,52 @@
-# Instrucciones de despliegue
+# Deployment Instructions
 
-En este apartado se recogen las diferentes instrucciones para poder arrancar la aplicación a través de Docker Compose.
-
-
-## Despligue en Linux
-
-Las siguientes intrucciones se han realizado en Ubuntu 22.04, es posible que en otras distribuciones o versiones de la misma algunos de estos pasos sean diferentes o incluso no sean necesarios.
+In this section, you will find the various instructions to start the application using Docker Compose.
 
 
-### 1. Requisitos previos
+## Deployment on Linux
 
-Para realizar los siguientes pasos es necesario tener instalado en el equipo el siguiente software:
-- Apache Maven
-- openjdk-8-jdk (No compatible con versiones superiores)
-- Docker
-- Docker compose
+The following instructions have been performed on Ubuntu 22.04. It's possible that on other distributions or versions of the same, some of these steps might be different or even unnecessary.
 
-### 2. Selección de la Base de datos (Opcional)
 
-Este paso no es necesario, a no ser que quieras cambiar el nombre o la url a la que apunta en busca de la base de datos.
+### 1. Prerequisites
 
-La selección de la base de datos se realiza en el perfil indicado.
-Para el despliegue en Docker el perfil utilizado es `docker` , este perfil lo podemos encontrar en la ruta `portal/profiles/docker` y el archivo que nos interesa es `context.xml`.
+To perform the following steps, you need to navigate to the `docker` folder and have the following software installed on your system:
 
-Dentro de este archivo podemos encontrar la `url` de la base de datos que vamos a utilizar.
+* [Apache Maven](https://maven.apache.org/what-is-maven.html) 3.6.3
+* [OpenSSL](https://www.openssl.org/) 3.0.2
+* [openjdk-8-jdk](https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html) (Not compatible with higher versions)
+* [Docker](https://docs.docker.com/get-started/overview/) 24.0.5
+* [Docker Compose](https://docs.docker.com/compose/) 2.20.2
+
+*Note: The specified versions are those with which the dockerized version has been developed. It might work with other versions except for openjdk-8-jdk.
+
+### 2. Generating Nginx Certificates
+
+In order for our Nginx container to function, it's necessary to add a key and certificate to a specific folder within the Docker volume.
+
+You can generate the key using the following command:
+
+```bash
+openssl genpkey -algorithm RSA -out ../motor-js/nginx/certs/server.key
+```
+
+Once generated, we will use it to create a self-signed certificate:
+
+```bash
+openssl req -new -key ../motor-js/nginx/certs/server.key -x509 -out ../motor-js/nginx/certs/server.crt
+```
+
+Finally, you will be prompted to enter some details for the certificate generation. You can invent these details since this certificate will only be used as a test for our local deployment.
+
+*Note: The default validity period for a certificate is 30 days.
+
+### 3. Database Selection (Optional)
+
+This step is not necessary unless you want to change the name or URL to which the database points.
+
+The selection of the database is done within the specified profile. For deployment using Docker, the profile used is `docker`. You can find this profile in the path `portal/profiles/docker`, and the relevant file is `context.xml`.
+
+Inside this file, you can find the `url` of the database that will be used.
 
 ```xml
 <Context path="/oaw" reloadable="true">
@@ -37,67 +60,64 @@ Dentro de este archivo podemos encontrar la `url` de la base de datos que vamos 
 </Context>
 ```
 
-### 3. Generación del War
+### 4. Generating the War File
 
-Previamente asegurate de tener instalada la versión 8 de JDK, dado que no sirve con versiones superiores.
+Ensure that you have JDK version 8 installed beforehand, as higher versions are not compatible.
 
 ```bash
 sudo apt install openjdk-8-jdk
 ```
 
-Una vez instalado, en la carpeta `/oaw/` del directorio raíz del proyecto, realiza la siguiente prueba.
+Once installed, in the `/oaw/` folder within the root directory of the project, perform the following test:
 
 ```bash
 mvn compile
 ```
 
-En caso de fallo comprueba el contenido de la variable de entorno `$JAVA_HOME`, en caso de que no tenga contenido o que esté apuntando a otra versión del JDK, copia y pega el siguiente comando en tu terminal.
+If you encounter any failures, check the contents of the `$JAVA_HOME` environment variable. If it is empty or pointing to a different JDK version, copy and paste the following command in your terminal:
 
-```bash 
+```bash
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ```
 
-Si sigues teniendo el mismo error compueba que realmente tengas instalado `jdk` y no `jre`.
-Puedes tener ambas versiones, pero necesitas si o si `jdk`.
+If you still encounter the same error, ensure that you have `jdk` installed and not just `jre`. You can have both versions, but you definitely need `jdk`.
 
-Otros comandos que te pueden servir son:
+Other commands that might be helpful are:
+
 ```bash
-# Selección de la versión específica de java de las intaladas en el equipo
+# Selecting a specific version of Java from those installed on the system
 sudo update-alternatives --config java
 
-# Variable de entorno para el PATH (necesario el export anterior)
+# Environment variable for the PATH (requires the previous export)
 export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin
 ```
 
-Una vez comprobado que la compilación funciona generamos el war con el siguiente comando situados en el mismo directorio que mencionamos anteriormente.
+Once you've verified that the compilation is successful, generate the war file with the following command in the same directory mentioned earlier:
 
 ```bash
 mvn clean install -P docker -Dmaven.test.skip=true
 ```
 
-**Nota:** `-P` se refiere al perfil indicado, siendo en este caso `docker` porque es el que nos interesa. En este perfil se indican varios parámetros, entre ellos, la url de la base de datos que vamos a utilizar una vez generado el `war`.
+**Note:** `-P` refers to the specified profile, which in this case is `docker` since that's the one we're interested in. This profile contains various parameters, including the URL of the database that we will use once the `war` file is generated.
 
-Finalmente, encontrarás el war generado en la carpeta `portal/target` con el nombre `oaw.war`. **No cambies el nombre ni muevas el war de esta ubicación.**
+Finally, you will find the generated `war` file in the `portal/target` folder with the name `oaw.war`. **Do not change the name or move the `war` file from this location.**
 
+### 5. Startup
 
-### 3. Arranque
-
-Una vez generado el war, ve a la carpeta de `docker` que se encuentra en la raíz y levanta los contenedores con `docker compose`.
+Once the `war` file is generated, navigate to the `docker` folder located in the root directory and start the containers using `docker compose`.
 
 ```bash
 docker compose up -d --build
 ```
 
-El volumen de la base de datos se encuentra en la carpeta `/docker/volumes/mysql`.
-Recuerda que si esta carpeta se encuentra en el directorio, Mysql cargará internamente la base de datos existente y no generará una nueva con los scripts SQL.
+The database volume is located in the `/docker/volumes/mysql` folder. Remember that if this folder is present in the directory, MySQL will internally load the existing database and will not generate a new one from the SQL scripts.
 
-Para reiniciar la base de datos simplemente elimina la carpeta `/docker/volumes/mysql`. 
+To reset the database, simply delete the `/docker/volumes/mysql` folder.
 
-**Nota:** No confundir esta carpeta con `docker/mysql`, esta última contiene los script SQL necesarios para generar el volumen inicial.
+**Note:** Do not confuse this folder with `docker/mysql`. The latter contains the necessary SQL scripts to generate the initial volume.
 
+### 6. Checks
 
-### 4. Comprobaciones
+Tomcat is running at [http://localhost:18081](http://localhost:18081/)
 
-Tomcat se ejecuta en http://localhost:18081
-
-Por lo que si todos los pasos se han ejecutado correctamente, deberías encontrar la aplicación desplegada en http://localhost:18081/oaw
+If all the steps have been executed correctly, you should find the deployed application at [http://localhost:18081/oaw](http://localhost:18081/oaw)
