@@ -318,6 +318,7 @@ public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJo
 		if (url != null && !url.isEmpty()) {
 			alertText += "\n" + pmgr.getValue(CRAWLER_PROPERTIES, "url.administrator.message") + url;
 		}
+		alertText += "\n\n" + pmgr.getValue(MAIL_PROPERTIES, "warning.administrator.signature");
 		MailService mailService = new MailService();
 		try {
 			mailService.sendMail(adminMails, alertSubject, alertText);

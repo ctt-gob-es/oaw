@@ -1,3 +1,10 @@
+5.7.0
+------------------------------------------------------------------------------------------------------------------------------------
+- Bug 6340 - Incidencia en urls con varios parámetros separados por &
+- Mejoras en la seguridad y en la gestión de apikeys para la comunicación con las integraciones: cms, navegador
+- Mejoras en la plantilla de envío de resultados. Se añade posición inicial de referencia
+- Primera versión dockerizada
+
 5.6.0
 ------------------------------------------------------------------------------------------------------------------------------------
 - Mejoras en el servicio web: La validación de url y plugin de navegador usan el motor-js (renderer) para obtener el código de la pagina a analizar
@@ -10,7 +17,7 @@
 - Importación de entidades desde el SSP
 - Análisis mixto
 - Fichero de hallazgos: Debe añadirse la plantilla hallazgos.odt como hallazgos en el sistema para su correcto funcionamiento
-- Servicio web de validación para el plugin y el navegador
+- Servicio web de validación para el plugin de cms y el navegador
 
 5.5.0
 ------------------------------------------------------------------------------------------------------------------------------------

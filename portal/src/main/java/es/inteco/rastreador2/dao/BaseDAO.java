@@ -22,8 +22,7 @@ import org.hibernate.Session;
  * The Class BaseDAO.
  */
 public abstract class BaseDAO {
-
-    /**
+	/**
 	 * Salvar en base de datos.
 	 *
 	 * @param session the session
@@ -31,12 +30,12 @@ public abstract class BaseDAO {
 	 * @return the object
 	 * @throws HibernateException the hibernate exception
 	 */
-    public static Object save(Session session, Object object) throws HibernateException {
-        session.save(object);
-        return object;
-    }
+	public static Object save(Session session, Object object) throws HibernateException {
+		session.save(object);
+		return object;
+	}
 
-    /**
+	/**
 	 * Actualizar en base de datos.
 	 *
 	 * @param session the session
@@ -44,12 +43,12 @@ public abstract class BaseDAO {
 	 * @return the object
 	 * @throws HibernateException the hibernate exception
 	 */
-    public static Object update(Session session, Object object) throws HibernateException {
-        session.update(object);
-        return object;
-    }
+	public static Object update(Session session, Object object) throws HibernateException {
+		session.update(object);
+		return object;
+	}
 
-    /**
+	/**
 	 * Borrar en base de datos.
 	 *
 	 * @param session the session
@@ -57,8 +56,8 @@ public abstract class BaseDAO {
 	 * @return the object
 	 * @throws HibernateException the hibernate exception
 	 */
-    public static Object delete(Session session, Object object) throws HibernateException {
-        session.delete(object);
-        return object;
-    }
+	public static Object delete(Session session, Object object) throws HibernateException {
+		session.delete(object);
+		return object;
+	}
 }
