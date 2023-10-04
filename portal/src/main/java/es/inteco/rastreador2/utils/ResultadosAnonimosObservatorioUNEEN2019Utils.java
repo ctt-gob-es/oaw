@@ -120,6 +120,10 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	private static final List<String> LEVEL_II_VERIFICATIONS = Arrays.asList(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION,
 			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION,
 			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION);
+	/** The Constant FIXED_RESULTS_PREFIX. */
+	private static final String FIXED_RESULTS_PREFIX = "ef";
+	/** The Constant GLOBAL_RESULTS_PREFIX. */
+	private static final String GLOBAL_RESULTS_PREFIX = "eg";
 
 	/**
 	 * COnstructor.
@@ -396,7 +400,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 */
 	public static Map<String, Object> generateEvolutionGraphics(MessageResources messageResources, String observatoryId, final String executionId, String filePath, String color, boolean regenerate,
 			String[] tagsFilter, String[] exObsIds) throws Exception {
-		final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = resultEvolutionData(Long.valueOf(observatoryId), Long.valueOf(executionId), tagsFilter, exObsIds);
+		final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = resultEvolutionData(Long.valueOf(observatoryId), Long.valueOf(executionId), tagsFilter, exObsIds, GLOBAL_RESULTS_PREFIX);
 		final Map<String, Object> evolutionGraphics = new HashMap<>();
 		if (pageObservatoryMap != null && !pageObservatoryMap.isEmpty()) {
 			if (pageObservatoryMap.size() != 1) {
@@ -488,7 +492,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	public static Map<String, Object> generateEvolutionGraphicsFixed(MessageResources messageResources, String observatoryId, final String executionId, String filePath, String color,
 			boolean regenerate, String[] tagsFilter, final String[] tagsFilterFixed, String[] exObsIds) throws Exception {
 		final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId), Long.valueOf(executionId),
-				tagsFilterFixed, exObsIds);
+				tagsFilterFixed, exObsIds, FIXED_RESULTS_PREFIX);
 		final Map<String, Object> evolutionGraphics = new HashMap<>();
 		if (pageObservatoryMap != null && !pageObservatoryMap.isEmpty()) {
 			if (pageObservatoryMap.size() != 1) {
@@ -2710,7 +2714,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param exObsIds      the ex obs ids
 	 * @return the map -1026.t1.b2-
 	 */
-	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionData(final Long observatoryId, final Long executionId, String[] tagsFilter, String[] exObsIds) {
+	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionData(final Long observatoryId, final Long executionId, String[] tagsFilter, String[] exObsIds, String origin) {
 		final Map<Date, List<ObservatoryEvaluationForm>> resultData = new TreeMap<>();
 		try (Connection c = DataBaseManager.getConnection()) {
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, observatoryId);
@@ -2719,14 +2723,15 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				if (exObsIds != null) {
 					List<String> list = Arrays.asList(exObsIds);
 					// Only add selected observatories
-					if (list.contains((String.valueOf(entry.getKey())))) {
-						String[] executionTags = getExecutionTags(entry.getKey());
+					String[] executionTags = tagsFilter;
+					if (GLOBAL_RESULTS_PREFIX.equals(origin) && list.contains((String.valueOf(entry.getKey())))) {
+						executionTags = getExecutionTags(entry.getKey());
 						if (Objects.isNull(executionTags)) {
 							executionTags = tagsFilter;
 						}
-						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, false, executionTags);
-						resultData.put(entry.getValue(), pageList);
 					}
+					final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, false, executionTags);
+					resultData.put(entry.getValue(), pageList);
 				} else {
 					final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, false, tagsFilter);
 					resultData.put(entry.getValue(), pageList);

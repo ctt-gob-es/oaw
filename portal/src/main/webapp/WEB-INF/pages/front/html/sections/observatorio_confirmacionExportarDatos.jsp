@@ -14,7 +14,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml />
 <bean:parameter name="<%=Constants.ID_OBSERVATORIO%>" id="idObservatorio" />
-<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.8.3.min.js"></script>
 <script src="/oaw/js/tagbox/tagbox.js" type="text/javascript"></script>
 <link rel="stylesheet" href="/oaw/js/tagbox/tagbox.css">
 <script>
