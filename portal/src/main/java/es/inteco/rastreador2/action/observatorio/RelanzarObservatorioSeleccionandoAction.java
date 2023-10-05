@@ -12,6 +12,19 @@
 ******************************************************************************/
 package es.inteco.rastreador2.action.observatorio;
 
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -21,15 +34,6 @@ import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.sql.Connection;
-import java.util.*;
 
 /**
  * RelanzarObservatorioAction. Action para relanzar un observatorio incompleto.
@@ -96,23 +100,18 @@ public class RelanzarObservatorioSeleccionandoAction extends Action {
 		String idEjecucionObservatorio = request.getParameter(Constants.ID_EX_OBS);
 		List<Long> seedIds = new ArrayList<>();
 		List<Long> crawlerIds = new ArrayList<>();
-
 		while (parameterNames.hasMoreElements()) {
-
 			String paramName = parameterNames.nextElement();
-
-			if (paramName.contains("line_check_")){
+			if (paramName.contains("line_check_")) {
 				int lineNumber = Integer.parseInt(paramName.substring(11));
-				String[] values = request.getParameterValues("line_data_" + lineNumber);
-				seedIds.add(Long.valueOf(values[0]));
+				String[] values = request.getParameterValues("line_check_" + lineNumber);
+				seedIds = getSeedsIds(values);
 			}
 		}
-
 		try {
 			c = DataBaseManager.getConnection();
 			c.setAutoCommit(false);
-
-			for (Long seed : seedIds){
+			for (Long seed : seedIds) {
 				Long idCrawling = RastreoDAO.getCrawlerFromSeedAndObservatory(c, seed, Long.parseLong(idObservatorio));
 				crawlerIds.add(idCrawling);
 			}
@@ -125,15 +124,31 @@ public class RelanzarObservatorioSeleccionandoAction extends Action {
 		} finally {
 			DataBaseManager.closeConnection(c);
 		}
-
 		// Lanzar en un hilo nuevo para acabar la acción
 		RelanzarObservatorioThread t = new RelanzarObservatorioThread(idObservatorio, idEjecucionObservatorio, crawlerIds);
 		t.setName("RelanzarObservatorioThread_" + idEjecucionObservatorio);
 		t.start();
-
 		final PropertiesManager pmgr = new PropertiesManager();
 		request.setAttribute("mensajeExito", getResources(request).getMessage("mensaje.exito.relanzar.observatorio"));
 		request.setAttribute("accionVolver", pmgr.getValue("returnPaths.properties", "volver.carga.observatorio"));
 		return mapping.findForward(Constants.EXITO);
+	}
+
+	/**
+	 * Get seed ids
+	 * 
+	 * @param seeds values
+	 * @return List seed ids
+	 */
+	private static final List<Long> getSeedsIds(String[] seeds) {
+		List<Long> seedIds = new ArrayList<>();
+		for (String seed : seeds) {
+			try {
+				seedIds.add(Long.parseLong(seed));
+			} catch (NumberFormatException e) {
+				Logger.putLog("Error: ", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+		}
+		return seedIds;
 	}
 }
