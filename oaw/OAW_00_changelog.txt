@@ -1,6 +1,10 @@
 5.7.1
 ------------------------------------------------------------------------------------------------------------------------------------
-
+- Bug 6286 - Relanzamiento de semillas del observatorio
+- Bug 6322 - Cambio de copy para las alternativas textuales
+- Bug 6351 - Formato de urls en el informe de hallazgos
+- Bug 6268 - Cálculo de parte fija en los informes de agregados
+ 
 5.7.0
 ------------------------------------------------------------------------------------------------------------------------------------
 - Bug 6340 - Incidencia en urls con varios parámetros separados por &
