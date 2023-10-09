@@ -26,7 +26,7 @@ Email: observ.accesibilidad@correo.gob.es
 	<bean:message key="boton.aceptar" />
 </bean:define>
 
-<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.8.3.min.js"></script>
 <script src="/oaw/js/tagbox/tagbox.js" type="text/javascript"></script>
 <link rel="stylesheet" href="/oaw/js/tagbox/tagbox.css">
 <style>

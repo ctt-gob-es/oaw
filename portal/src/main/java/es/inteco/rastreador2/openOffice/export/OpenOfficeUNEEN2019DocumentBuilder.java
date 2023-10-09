@@ -572,13 +572,13 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			 * General results
 			 */
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
-					Long.valueOf(executionId), tagsFilter, exObsIds);
+					Long.valueOf(executionId), tagsFilter, exObsIds, GLOBAL_RESULTS_PREFIX);
 			evolutionSections(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMap, GLOBAL_RESULTS_PREFIX);
 			/**
 			 * Results fixed
 			 */
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
-					Long.valueOf(executionId), tagsFilterFixed, exObsIds);
+					Long.valueOf(executionId), tagsFilterFixed, exObsIds, FIXED_RESULTS_PREFIX);
 			evolutionSectionsFixed(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMapFixed, FIXED_RESULTS_PREFIX);
 			/**
 			 * Results by segment

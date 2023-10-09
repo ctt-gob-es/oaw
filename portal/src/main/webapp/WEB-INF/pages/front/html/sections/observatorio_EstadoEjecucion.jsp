@@ -458,13 +458,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	
 	function checkboxFormattter(cellvalue, options, rowObject) {
 		
-		return '<input type="checkbox" class="threshold_selectionCheckBox" name="line_check_'+options.pos +'"><input type="hidden" name="line_data_'+options.pos+'" value="'+ rowObject.id +'" />';
+		return '<input type="checkbox" class="threshold_selectionCheckBox" value="'+ rowObject.id +'" name="line_check_'+options.pos +'"/><input type="hidden" name="line_data_'+options.pos+'" value="'+ rowObject.id +'" />';
 	}
 	
 	
 	function checkboxFormattter2(cellvalue, options, rowObject) {
 		
-		return '<input type="checkbox" class="selectionCheckBox" name="line_check_'+options.pos +'"><input type="hidden" name="line_data_'+options.pos+'" value="'+ rowObject.id +'" />';
+		return '<input type="checkbox" class="selectionCheckBox" value="'+ rowObject.id +'" name="line_check_'+options.pos +'"/><input type="hidden" name="line_data_'+options.pos+'" value="'+ rowObject.id +'" />';
 	}
 	
 	

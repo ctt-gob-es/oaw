@@ -4,8 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,6 +20,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.util.MessageResources;
 import org.odftoolkit.odfdom.OdfElement;
@@ -98,7 +97,7 @@ public class WcagOdtUtils {
 		for (String site : sites.keySet()) {
 			errors = sites.get(site);
 			if (checkSpecialCharacters(site)) {
-				createHeader(odtDocument, odfFileContent, reportCode, URLEncoder.encode(site, StandardCharsets.UTF_8.toString()));
+				createHeader(odtDocument, odfFileContent, reportCode, StringEscapeUtils.escapeHtml(site));
 			} else {
 				createHeader(odtDocument, odfFileContent, reportCode, site);
 			}
