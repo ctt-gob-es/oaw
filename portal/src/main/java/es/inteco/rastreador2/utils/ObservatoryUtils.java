@@ -277,7 +277,7 @@ public final class ObservatoryUtils {
 									numZeroRed = numZeroRed + 1;
 								}
 							}
-							if (numZeroRed > maxFails) {
+							if (numZeroRed > (maxFails - 1)) {
 								isAA = false;
 							}
 						}

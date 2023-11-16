@@ -1260,20 +1260,22 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		sb.append("<table:table-column table:style-name='TableGraphicColumn3'/>");
 		sb.append("<table:table-column table:style-name='TableGraphicColumn4'/>");
 		// Header row
+		sb.append("<table:table-header-rows>");
 		sb.append("<table:table-row>");
 		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
-		sb.append("<text:p text:style-name='Encabezado_20_tablas_20_resultados'>").append(header0).append("</text:p>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header0).append("</text:p>");
 		sb.append("</table:table-cell>");
 		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
-		sb.append("<text:p text:style-name='Encabezado_20_tablas_20_resultados'>").append(columna1).append("</text:p>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(columna1).append("</text:p>");
 		sb.append("</table:table-cell>");
 		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
-		sb.append("<text:p text:style-name='Encabezado_20_tablas_20_resultados'>").append(columna2).append("</text:p>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(columna2).append("</text:p>");
 		sb.append("</table:table-cell>");
 		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
-		sb.append("<text:p text:style-name='Encabezado_20_tablas_20_resultados'>").append(columna3).append("</text:p>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>").append(columna3).append("</text:p>");
 		sb.append("</table:table-cell>");
 		sb.append("</table:table-row>");
+		sb.append("</table:table-header-rows>");
 		return sb;
 	}
 

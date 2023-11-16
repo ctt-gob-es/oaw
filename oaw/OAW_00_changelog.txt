@@ -1,3 +1,8 @@
+5.7.2
+------------------------------------------------------------------------------------------------------------------------------------
+- Mejoras de accesibilidad en los informes agregados
+- Cáculo del nivel de adecuación en los informes individuales, ajuste de metodología
+ 
 5.7.1
 ------------------------------------------------------------------------------------------------------------------------------------
 - Bug 6286 - Relanzamiento de semillas del observatorio
