@@ -30,7 +30,7 @@ CREATE TABLE semilla_dependencia (
 -- foreign key (id_lista) references lista (id_lista), foreign key (id_dependencia) references dependencia (id_dependencia) <-- lista esta MyISAM que no permite FK
 
 -- RELLENAMOS LA TABLA ANTERIOR CON  LA TABLA DE RELACION CON LAS DEPENDENCIAS DE LA NUEVA TABLA
---INSERT INTO semilla_dependencia(id_lista, id_dependencia) SELECT l.id_lista, d.id_dependencia FROM lista l, dependencia d WHERE l.dependencia=d.nombre;
+-- INSERT INTO semilla_dependencia(id_lista, id_dependencia) SELECT l.id_lista, d.id_dependencia FROM lista l, dependencia d WHERE l.dependencia=d.nombre;
 INSERT INTO semilla_dependencia(id_lista, id_dependencia) SELECT l.id_lista, d.id_dependencia FROM lista l, dependencia d  WHERE l.dependencia collate utf8_general_ci like d.nombre collate latin1_spanish_ci;
 
 
