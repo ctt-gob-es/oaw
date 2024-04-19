@@ -1,11 +1,11 @@
 # Installation
 
 * Download full repository
-* Build and run with docker-compose:
+* Build and run with docker compose:
     ```
     cd docker
-    docker-compose build
-    docker-compose up -d 
+    docker compose build
+    docker compose up -d 
     ```
 * Connect to database and change user data in `usuario` table.
 * Go to http://localhost:8080 and login.
