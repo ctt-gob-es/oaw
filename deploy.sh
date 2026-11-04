@@ -26,7 +26,7 @@ fi
 sudo rmdir ./portal/target/oaw.war >> /dev/null 2>&1
 
 ## War Generation
-mvn  -f ./oaw/pom.xml clean install -P docker -Dmaven.test.skip=true
+mvn  -f ./oaw/pom.xml clean install -P docker -Dmaven.test.skip=true || exit "$?"
 
 ## Run containers with Docker version syntax control
 docker compose -f ./docker/docker-compose.yml down
